@@ -4,68 +4,109 @@ import { useAuth } from '../context/AuthContext';
 import { getMyCourses, getCourseWeeks, getProgress } from '../utils/api';
 
 const s = {
-  page: { minHeight: '100vh', background: '#f0f4f8' },
+  page: { minHeight: '100vh', background: 'var(--background)' },
+
+  // ── Nav ──────────────────────────────────────────────────────────────────
   nav: {
-    background: '#fff', borderBottom: '1px solid #e5e7eb',
-    padding: '0 2rem', display: 'flex', alignItems: 'center',
-    justifyContent: 'space-between', height: '60px',
+    background: 'var(--primary)', padding: '0 2rem',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '60px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
   },
-  navBrand: { fontWeight: 700, fontSize: '1.2rem', color: '#1a1a2e', textDecoration: 'none' },
+  navBrand: {
+    fontWeight: 800, fontSize: '1.15rem', color: '#fff',
+    textDecoration: 'none', letterSpacing: '-0.01em',
+    display: 'flex', alignItems: 'center', gap: '0.5rem',
+  },
+  navDot: {
+    width: '8px', height: '8px', borderRadius: '50%',
+    background: 'rgba(255,255,255,0.7)',
+  },
   navRight: { display: 'flex', alignItems: 'center', gap: '1rem' },
-  navLink: { color: '#4f46e5', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 500 },
-  signOutBtn: {
-    background: 'none', border: '1px solid #ddd', borderRadius: '6px',
-    padding: '0.4rem 0.9rem', cursor: 'pointer', fontSize: '0.875rem', color: '#555',
+  navLink: {
+    color: 'rgba(255,255,255,0.9)', textDecoration: 'none',
+    fontSize: '0.875rem', fontWeight: 600,
+    padding: '0.3rem 0.75rem', borderRadius: '6px',
+    background: 'rgba(255,255,255,0.15)', transition: 'background 0.15s',
   },
+  signOutBtn: {
+    background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)',
+    borderRadius: '6px', padding: '0.35rem 0.9rem', cursor: 'pointer',
+    fontSize: '0.875rem', color: '#fff', fontWeight: 500,
+  },
+
+  // ── Hero strip ────────────────────────────────────────────────────────────
+  hero: {
+    background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent-foreground) 100%)',
+    padding: '2.5rem 2rem', color: '#fff',
+  },
+  heroInner: { maxWidth: '900px', margin: '0 auto' },
+  heroTitle: { fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.35rem' },
+  heroSub: { color: 'rgba(255,255,255,0.8)', fontSize: '1rem' },
+
+  // ── Main content ──────────────────────────────────────────────────────────
   main: { maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' },
-  heading: { fontSize: '1.6rem', fontWeight: 700, color: '#1a1a2e', marginBottom: '0.5rem' },
-  subheading: { color: '#666', marginBottom: '2rem' },
+  sectionLabel: {
+    fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)',
+    textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '1rem',
+  },
+
+  // ── Week cards ────────────────────────────────────────────────────────────
   weekCard: {
-    background: '#fff', borderRadius: '12px', padding: '1.5rem',
-    marginBottom: '1rem', border: '1px solid #e5e7eb',
+    background: 'var(--card)', borderRadius: '12px', padding: '1.25rem 1.5rem',
+    marginBottom: '0.75rem', border: '1px solid var(--border)',
     display: 'flex', alignItems: 'center', gap: '1.25rem',
     textDecoration: 'none', color: 'inherit',
-    transition: 'box-shadow 0.2s',
+    boxShadow: 'var(--shadow-sm)', transition: 'box-shadow 0.2s, transform 0.15s',
   },
   weekNum: {
-    width: '48px', height: '48px', borderRadius: '50%',
-    background: '#ede9fe', color: '#4f46e5',
+    width: '44px', height: '44px', borderRadius: '10px',
+    background: 'var(--accent)', color: 'var(--primary)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontWeight: 700, fontSize: '1rem', flexShrink: 0,
+    fontWeight: 800, fontSize: '0.95rem', flexShrink: 0,
   },
-  weekInfo: { flex: 1 },
-  weekTitle: { fontWeight: 600, fontSize: '1rem', color: '#1a1a2e', marginBottom: '0.2rem' },
-  weekDesc: { fontSize: '0.85rem', color: '#666' },
-  statusBadge: {
-    fontSize: '0.75rem', fontWeight: 600, padding: '0.3rem 0.75rem',
-    borderRadius: '99px', flexShrink: 0,
+  weekNumComplete: {
+    background: 'var(--success-light)', color: 'var(--success-fg)',
   },
-  progressBar: {
-    height: '6px', background: '#e5e7eb', borderRadius: '3px',
+  weekInfo: { flex: 1, minWidth: 0 },
+  weekTitle: {
+    fontWeight: 700, fontSize: '0.975rem', color: 'var(--foreground)',
+    marginBottom: '0.15rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+  },
+  weekDesc: { fontSize: '0.825rem', color: 'var(--muted-foreground)' },
+  progressBarWrap: {
+    height: '4px', background: 'var(--muted)', borderRadius: '2px',
     marginTop: '0.5rem', overflow: 'hidden',
   },
-  progressFill: { height: '100%', borderRadius: '3px', transition: 'width 0.3s' },
-  locked: { opacity: 0.5, cursor: 'default', pointerEvents: 'none' },
-  error: { color: '#dc2626', padding: '2rem' },
-  loading: { padding: '2rem', color: '#666' },
+  progressBarFill: { height: '100%', borderRadius: '2px', transition: 'width 0.4s' },
+  statusBadge: {
+    fontSize: '0.72rem', fontWeight: 700, padding: '0.25rem 0.65rem',
+    borderRadius: '99px', flexShrink: 0, letterSpacing: '0.02em',
+  },
+  locked: { opacity: 0.45, cursor: 'default', pointerEvents: 'none' },
+
+  // ── States ────────────────────────────────────────────────────────────────
+  empty: { color: 'var(--muted-foreground)', textAlign: 'center', padding: '3rem 0', fontSize: '0.9rem' },
+  error: { color: 'var(--destructive)', padding: '3rem 2rem' },
+  loading: { padding: '3rem 2rem', color: 'var(--muted-foreground)' },
+};
+
+const BADGE = {
+  complete:     { label: 'Complete',     bg: 'var(--success-light)', color: 'var(--success-fg)' },
+  'quiz-ready': { label: 'Take Quiz',    bg: 'hsl(38, 92%, 90%)',    color: 'hsl(32, 81%, 29%)' },
+  'in-progress':{ label: 'In Progress',  bg: 'var(--accent)',        color: 'var(--accent-foreground)' },
+  'not-started':{ label: 'Not Started',  bg: 'var(--muted)',         color: 'var(--muted-foreground)' },
 };
 
 function weekStatus(progress) {
   if (!progress) return 'not-started';
-  if (progress.quizPassed) return 'complete';
+  if (progress.quizPassed)   return 'complete';
   if (progress.videoComplete) return 'quiz-ready';
   if (progress.watchedSegments?.length > 0) return 'in-progress';
   return 'not-started';
 }
 
 function StatusBadge({ status }) {
-  const map = {
-    'complete': { label: 'Complete', bg: '#d1fae5', color: '#065f46' },
-    'quiz-ready': { label: 'Take Quiz', bg: '#fef3c7', color: '#92400e' },
-    'in-progress': { label: 'In Progress', bg: '#dbeafe', color: '#1e40af' },
-    'not-started': { label: 'Not Started', bg: '#f3f4f6', color: '#6b7280' },
-  };
-  const { label, bg, color } = map[status] || map['not-started'];
+  const { label, bg, color } = BADGE[status] || BADGE['not-started'];
   return <span style={{ ...s.statusBadge, background: bg, color }}>{label}</span>;
 }
 
@@ -74,45 +115,39 @@ function ProgressBar({ progress }) {
   const segments = progress.watchedSegments?.length || 0;
   const total = progress.duration ? Math.ceil(progress.duration / 10) : 1;
   const pct = Math.min(Math.round((segments / total) * 100), 100);
-  const color = progress.videoComplete ? '#10b981' : '#4f46e5';
+  const color = progress.videoComplete ? 'var(--success)' : 'var(--primary)';
   return (
-    <div style={s.progressBar}>
-      <div style={{ ...s.progressFill, width: `${pct}%`, background: color }} />
+    <div style={s.progressBarWrap}>
+      <div style={{ ...s.progressBarFill, width: `${pct}%`, background: color }} />
     </div>
   );
 }
 
 export default function DashboardPage() {
-  const { user, isAdmin, logout } = useAuth();
+  const { isAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   const [courses, setCourses] = useState([]);
   const [weeks, setWeeks] = useState([]);
-  const [progressMap, setProgressMap] = useState({});  // weekId → progress item
+  const [progressMap, setProgressMap] = useState({});
   const [activeCourse, setActiveCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
   async function loadData() {
     try {
       const { data } = await getMyCourses();
       const courseList = data.courses || [];
       setCourses(courseList);
-
       if (courseList.length > 0) {
         const course = courseList[0];
         setActiveCourse(course);
         await loadCourse(course.courseId);
       }
-    } catch (err) {
-      setError('Failed to load your courses. Please refresh.');
-    } finally {
-      setLoading(false);
-    }
+    } catch { setError('Failed to load your courses. Please refresh.'); }
+    finally { setLoading(false); }
   }
 
   async function loadCourse(courseId) {
@@ -122,15 +157,10 @@ export default function DashboardPage() {
         getProgress(courseId),
       ]);
       setWeeks(weeksRes.data.weeks || []);
-
       const map = {};
-      for (const p of (progressRes.data.progress || [])) {
-        map[p.weekId] = p;
-      }
+      for (const p of (progressRes.data.progress || [])) map[p.weekId] = p;
       setProgressMap(map);
-    } catch (err) {
-      setError('Failed to load course content.');
-    }
+    } catch { setError('Failed to load course content.'); }
   }
 
   async function handleSignOut() {
@@ -139,42 +169,60 @@ export default function DashboardPage() {
   }
 
   if (loading) return <div style={s.loading}>Loading your courses…</div>;
-  if (error) return <div style={s.error}>{error}</div>;
+  if (error)   return <div style={s.error}>{error}</div>;
+
+  const completedCount = weeks.filter((w) => progressMap[w.weekId]?.quizPassed).length;
 
   return (
     <div style={s.page}>
+      {/* Nav */}
       <nav style={s.nav}>
-        <span style={s.navBrand}>CourseLab</span>
+        <div style={s.navBrand}>
+          <div style={s.navDot} />
+          CourseLab
+        </div>
         <div style={s.navRight}>
-          {isAdmin && (
-            <Link to="/admin" style={s.navLink}>Admin Panel</Link>
-          )}
+          {isAdmin && <Link to="/admin" style={s.navLink}>Admin</Link>}
           <button style={s.signOutBtn} onClick={handleSignOut}>Sign Out</button>
         </div>
       </nav>
 
+      {/* Hero */}
+      <div style={s.hero}>
+        <div style={s.heroInner}>
+          <div style={s.heroTitle}>{activeCourse?.name || 'My Courses'}</div>
+          <div style={s.heroSub}>
+            {activeCourse?.description || 'Welcome back!'}
+            {weeks.length > 0 && (
+              <span style={{ marginLeft: '1rem', fontWeight: 600 }}>
+                {completedCount}/{weeks.length} weeks complete
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Week list */}
       <main style={s.main}>
-        <div style={s.heading}>
-          {activeCourse ? activeCourse.name : 'My Courses'}
-        </div>
-        <div style={s.subheading}>
-          {activeCourse ? activeCourse.description : 'Welcome back!'}
-        </div>
+        <div style={s.sectionLabel}>Course Weeks</div>
 
         {weeks.length === 0 ? (
-          <p style={{ color: '#666' }}>No weeks have been released yet. Check back soon.</p>
+          <div style={s.empty}>No weeks released yet — check back soon.</div>
         ) : (
           weeks.map((week) => {
             const progress = progressMap[week.weekId];
             const status = weekStatus(progress);
             const isLocked = !week.visible;
+            const isComplete = status === 'complete';
             return (
               <Link
                 key={week.weekId}
                 to={`/learn/${week.courseId}/${week.weekId}`}
                 style={{ ...s.weekCard, ...(isLocked ? s.locked : {}) }}
               >
-                <div style={s.weekNum}>{week.weekNumber}</div>
+                <div style={{ ...s.weekNum, ...(isComplete ? s.weekNumComplete : {}) }}>
+                  {isComplete ? '✓' : week.weekNumber}
+                </div>
                 <div style={s.weekInfo}>
                   <div style={s.weekTitle}>{week.title}</div>
                   <div style={s.weekDesc}>{week.description}</div>

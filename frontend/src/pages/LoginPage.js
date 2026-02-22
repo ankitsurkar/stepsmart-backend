@@ -4,41 +4,71 @@ import { useAuth } from '../context/AuthContext';
 
 const styles = {
   container: {
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    minHeight: '100vh', background: '#f0f4f8', padding: '1rem',
+    display: 'flex', minHeight: '100vh', background: 'var(--background)',
+  },
+  // Left decorative panel
+  panel: {
+    display: 'none',
+    flexDirection: 'column', justifyContent: 'center',
+    padding: '3rem', width: '420px', flexShrink: 0,
+    background: 'var(--primary)',
+  },
+  panelHeading: { fontSize: '2rem', fontWeight: 800, color: '#fff', marginBottom: '0.75rem' },
+  panelSub: { color: 'rgba(255,255,255,0.8)', fontSize: '1rem', lineHeight: 1.6 },
+  // Right login form area
+  formArea: {
+    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem',
   },
   card: {
-    background: '#fff', borderRadius: '12px', padding: '2.5rem',
+    background: 'var(--card)', borderRadius: '16px', padding: '2.5rem',
     width: '100%', maxWidth: '420px',
-    boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
+    boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border)',
   },
-  logo: { fontSize: '1.6rem', fontWeight: 700, color: '#1a1a2e', marginBottom: '0.25rem' },
-  subtitle: { fontSize: '0.9rem', color: '#666', marginBottom: '2rem' },
-  label: { display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#333', marginBottom: '0.4rem' },
+  brandRow: { display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' },
+  brandDot: {
+    width: '28px', height: '28px', borderRadius: '8px',
+    background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+  },
+  brandDotInner: { width: '10px', height: '10px', borderRadius: '50%', background: '#fff' },
+  logo: { fontSize: '1.4rem', fontWeight: 800, color: 'var(--foreground)' },
+  subtitle: {
+    fontSize: '0.9rem', color: 'var(--muted-foreground)',
+    marginBottom: '2rem', marginTop: '0.25rem',
+  },
+  label: {
+    display: 'block', fontSize: '0.78rem', fontWeight: 700,
+    color: 'var(--foreground)', marginBottom: '0.4rem', letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+  },
   input: {
-    width: '100%', padding: '0.75rem 1rem', fontSize: '1rem',
-    border: '1.5px solid #ddd', borderRadius: '8px', outline: 'none',
-    transition: 'border-color 0.2s', marginBottom: '1rem',
-    boxSizing: 'border-box',
+    width: '100%', padding: '0.7rem 1rem', fontSize: '0.95rem',
+    border: '1.5px solid var(--border)', borderRadius: '8px', outline: 'none',
+    background: 'var(--background)', color: 'var(--foreground)',
+    marginBottom: '1rem', boxSizing: 'border-box',
+    transition: 'border-color 0.2s',
   },
   button: {
-    width: '100%', padding: '0.85rem', fontSize: '1rem', fontWeight: 600,
-    background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px',
-    cursor: 'pointer', transition: 'background 0.2s', marginTop: '0.5rem',
+    width: '100%', padding: '0.8rem', fontSize: '0.95rem', fontWeight: 700,
+    background: 'var(--primary)', color: 'var(--primary-foreground)',
+    border: 'none', borderRadius: '8px', cursor: 'pointer',
+    transition: 'background 0.2s', marginTop: '0.25rem', letterSpacing: '0.01em',
   },
   error: {
-    background: '#fef2f2', border: '1px solid #fca5a5', color: '#dc2626',
-    borderRadius: '8px', padding: '0.75rem 1rem', fontSize: '0.875rem',
-    marginBottom: '1rem',
+    background: 'hsl(0, 84%, 96%)', border: '1px solid var(--destructive)',
+    color: 'var(--destructive)', borderRadius: '8px',
+    padding: '0.7rem 1rem', fontSize: '0.875rem', marginBottom: '1rem',
   },
   info: {
-    background: '#eff6ff', border: '1px solid #93c5fd', color: '#1d4ed8',
-    borderRadius: '8px', padding: '0.75rem 1rem', fontSize: '0.875rem',
-    marginBottom: '1rem',
+    background: 'var(--accent)', border: '1px solid var(--primary)',
+    color: 'var(--accent-foreground)', borderRadius: '8px',
+    padding: '0.7rem 1rem', fontSize: '0.875rem', marginBottom: '1rem', lineHeight: 1.5,
+  },
+  footerText: {
+    textAlign: 'center', color: 'var(--muted-foreground)',
+    fontSize: '0.78rem', marginTop: '1.75rem',
   },
 };
 
-// mode: 'login' | 'newPassword'
 export default function LoginPage() {
   const { login, completeNewPassword } = useAuth();
   const navigate = useNavigate();
@@ -57,110 +87,105 @@ export default function LoginPage() {
     setSubmitting(true);
     const result = await login(email, password);
     setSubmitting(false);
-
-    if (result.requiresNewPassword) {
-      // Cognito wants the student to set a permanent password before continuing.
-      setMode('newPassword');
-      return;
-    }
-    if (result.error) {
-      setError(result.error);
-      return;
-    }
+    if (result.requiresNewPassword) { setMode('newPassword'); return; }
+    if (result.error) { setError(result.error); return; }
     navigate('/dashboard', { replace: true });
   }
 
   async function handleNewPassword(e) {
     e.preventDefault();
     setError('');
-    if (newPassword !== confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
-    if (newPassword.length < 8) {
-      setError('Password must be at least 8 characters.');
-      return;
-    }
+    if (newPassword !== confirmPassword) { setError('Passwords do not match.'); return; }
+    if (newPassword.length < 8) { setError('Password must be at least 8 characters.'); return; }
     setSubmitting(true);
     const result = await completeNewPassword(newPassword);
     setSubmitting(false);
-
-    if (result.error) {
-      setError(result.error);
-      return;
-    }
+    if (result.error) { setError(result.error); return; }
     navigate('/dashboard', { replace: true });
   }
 
   return (
     <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.logo}>CourseLab</div>
-        <div style={styles.subtitle}>
-          {mode === 'login' ? 'Sign in to your course portal' : 'Set your permanent password'}
-        </div>
-
-        {error && <div style={styles.error}>{error}</div>}
-
-        {mode === 'login' ? (
-          <form onSubmit={handleLogin}>
-            <label style={styles.label}>Email</label>
-            <input
-              style={styles.input}
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-              autoFocus
-            />
-
-            <label style={styles.label}>Password</label>
-            <input
-              style={styles.input}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
-
-            <button style={styles.button} type="submit" disabled={submitting}>
-              {submitting ? 'Signing in…' : 'Sign In'}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleNewPassword}>
-            <div style={styles.info}>
-              Your account requires a new password. Choose something secure that you'll remember.
+      <div style={styles.formArea}>
+        <div style={styles.card}>
+          {/* Brand */}
+          <div style={styles.brandRow}>
+            <div style={styles.brandDot}>
+              <div style={styles.brandDotInner} />
             </div>
+            <div style={styles.logo}>CourseLab</div>
+          </div>
+          <div style={styles.subtitle}>
+            {mode === 'login' ? 'Sign in to your learning portal' : 'Create your permanent password'}
+          </div>
 
-            <label style={styles.label}>New Password</label>
-            <input
-              style={styles.input}
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="At least 8 characters"
-              required
-              autoFocus
-            />
+          {error && <div style={styles.error}>{error}</div>}
 
-            <label style={styles.label}>Confirm Password</label>
-            <input
-              style={styles.input}
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Same as above"
-              required
-            />
+          {mode === 'login' ? (
+            <form onSubmit={handleLogin}>
+              <label style={styles.label}>Email address</label>
+              <input
+                style={styles.input}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+                autoFocus
+              />
+              <label style={styles.label}>Password</label>
+              <input
+                style={styles.input}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+              <button
+                style={{ ...styles.button, opacity: submitting ? 0.65 : 1 }}
+                type="submit"
+                disabled={submitting}
+              >
+                {submitting ? 'Signing in…' : 'Sign In →'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleNewPassword}>
+              <div style={styles.info}>
+                Your account requires a new password before you can access the portal.
+              </div>
+              <label style={styles.label}>New password</label>
+              <input
+                style={styles.input}
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="At least 8 characters"
+                required
+                autoFocus
+              />
+              <label style={styles.label}>Confirm password</label>
+              <input
+                style={styles.input}
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repeat new password"
+                required
+              />
+              <button
+                style={{ ...styles.button, opacity: submitting ? 0.65 : 1 }}
+                type="submit"
+                disabled={submitting}
+              >
+                {submitting ? 'Setting password…' : 'Set Password & Continue →'}
+              </button>
+            </form>
+          )}
 
-            <button style={styles.button} type="submit" disabled={submitting}>
-              {submitting ? 'Setting password…' : 'Set Password & Continue'}
-            </button>
-          </form>
-        )}
+          <div style={styles.footerText}>StepSmart · Product Management</div>
+        </div>
       </div>
     </div>
   );

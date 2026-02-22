@@ -1,0 +1,81 @@
+/* ─── Brand Design Tokens ─────────────────────────────────────────────────── */
+:root {
+  /* Primary brand — cyan/teal */
+  --primary:            hsl(195, 83%, 38%);
+  --primary-dark:       hsl(195, 83%, 30%);
+  --primary-light:      hsl(195, 83%, 48%);
+  --primary-foreground: hsl(0, 0%, 100%);
+
+  /* Backgrounds */
+  --background:         hsl(214, 100%, 98%);
+  --card:               hsl(0, 0%, 100%);
+  --popover:            hsl(0, 0%, 100%);
+
+  /* Text */
+  --foreground:         hsl(214, 40%, 16%);
+  --card-foreground:    hsl(214, 40%, 16%);
+  --muted-foreground:   hsl(214, 20%, 46%);
+
+  /* Surfaces / borders */
+  --secondary:          hsl(214, 32%, 91%);
+  --muted:              hsl(214, 32%, 91%);
+  --border:             hsl(214, 32%, 91%);
+  --input:              hsl(214, 32%, 91%);
+
+  /* Accent — very light cyan */
+  --accent:             hsl(195, 83%, 94%);
+  --accent-foreground:  hsl(195, 83%, 30%);
+
+  /* Destructive */
+  --destructive:        hsl(0, 84.2%, 60.2%);
+  --destructive-fg:     hsl(0, 0%, 100%);
+
+  /* Success */
+  --success:            hsl(152, 69%, 31%);
+  --success-light:      hsl(152, 60%, 94%);
+  --success-fg:         hsl(152, 69%, 31%);
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(15, 40, 80, 0.08);
+  --shadow-md:  0 4px 16px rgba(15, 40, 80, 0.1);
+  --shadow-lg:  0 8px 32px rgba(15, 40, 80, 0.12);
+}
+
+/* ─── Reset & Base ────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+#root { min-height: 100vh; }
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--muted); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+/* ─── Focus ring ──────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Utility classes used by components ─────────────────────────────────── */
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.btn-primary:hover { background: var(--primary-dark); box-shadow: var(--shadow-sm); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
