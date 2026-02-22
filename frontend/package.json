@@ -2,7 +2,7 @@
   "name": "courselab-lms",
   "version": "1.0.0",
   "private": true,
-  "homepage": "/",
+  "homepage": "/learn",
   "dependencies": {
     "@aws-amplify/auth": "^6.0.0",
     "aws-amplify": "^6.0.0",
