@@ -3,6 +3,10 @@
     {
       "source": "/learn/(.*)",
       "destination": "/learn/index.html"
+    },
+    {
+      "source": "/learn",
+      "destination": "/learn/index.html"
     }
   ]
 }
