@@ -14,7 +14,7 @@ import AdminPage from './pages/AdminPage';
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter basename="/learn">
+      <BrowserRouter basename="/">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
 
