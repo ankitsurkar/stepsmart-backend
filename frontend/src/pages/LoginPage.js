@@ -113,7 +113,7 @@ export default function LoginPage() {
             <div style={styles.brandDot}>
               <div style={styles.brandDotInner} />
             </div>
-            <div style={styles.logo}>CourseLab</div>
+            <div style={styles.logo}>StepSmart</div>
           </div>
           <div style={styles.subtitle}>
             {mode === 'login' ? 'Sign in to your learning portal' : 'Create your permanent password'}

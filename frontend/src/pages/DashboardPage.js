@@ -179,7 +179,7 @@ export default function DashboardPage() {
       <nav style={s.nav}>
         <div style={s.navBrand}>
           <div style={s.navDot} />
-          CourseLab
+          StepSmart
         </div>
         <div style={s.navRight}>
           {isAdmin && <Link to="/admin" style={s.navLink}>Admin</Link>}

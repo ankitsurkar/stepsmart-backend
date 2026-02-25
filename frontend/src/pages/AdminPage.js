@@ -478,7 +478,7 @@ export default function AdminPage() {
   return (
     <div style={s.page}>
       <nav style={s.nav}>
-        <span style={s.navBrand}>CourseLab Admin</span>
+        <span style={s.navBrand}>StepSmart Admin</span>
         <span style={s.navSep}>|</span>
         <Link to="/dashboard" style={s.backLink}>← Student View</Link>
       </nav>

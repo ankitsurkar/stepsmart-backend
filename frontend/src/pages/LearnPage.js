@@ -148,7 +148,7 @@ export default function LearnPage() {
       {/* Nav */}
       <nav style={s.nav}>
         <Link to="/dashboard" style={s.backLink}>← Dashboard</Link>
-        <span style={s.navBrand}>CourseLab</span>
+        <span style={s.navBrand}>StepSmart</span>
         <span style={s.weekBadge}>Week {week.weekNumber}</span>
       </nav>
 
