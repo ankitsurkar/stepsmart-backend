@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { sendHeartbeat } from '../utils/api';
 
-const HEARTBEAT_INTERVAL    = 10;           // seconds per segment
+const HEARTBEAT_INTERVAL = 10;           // seconds per segment
 const ATTENTION_INTERVAL_MS = 3 * 60 * 1000; // 3 minutes
 
 const s = {
@@ -14,11 +14,17 @@ const s = {
 
   // ── 16:9 video box ────────────────────────────────────────────────────────
   aspectBox: { position: 'relative', paddingBottom: '56.25%', height: 0, background: '#000' },
-  iframe:    { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' },
+  iframe: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' },
 
   // Transparent overlay that absorbs clicks on YouTube's seekbar area (bottom 80px).
   seekbarBlock: {
     position: 'absolute', bottom: 0, left: 0, right: 0, height: '80px',
+    zIndex: 10, cursor: 'not-allowed', background: 'transparent',
+  },
+
+  // Transparent overlay that absorbs clicks on YouTube's top title area (top 80px).
+  titleBlock: {
+    position: 'absolute', top: 0, left: 0, right: 0, height: '80px',
     zIndex: 10, cursor: 'not-allowed', background: 'transparent',
   },
 
@@ -66,7 +72,7 @@ const s = {
     fontSize: '1.4rem',
   },
   modalTitle: { fontSize: '1rem', fontWeight: 800, color: 'var(--foreground)', marginBottom: '0.4rem' },
-  modalSub:   { color: 'var(--muted-foreground)', fontSize: '0.85rem', marginBottom: '1.25rem', lineHeight: 1.5 },
+  modalSub: { color: 'var(--muted-foreground)', fontSize: '0.85rem', marginBottom: '1.25rem', lineHeight: 1.5 },
   modalBtn: {
     background: 'var(--primary)', color: 'var(--primary-foreground)',
     border: 'none', borderRadius: '8px', padding: '0.7rem 1.5rem',
@@ -82,16 +88,30 @@ const s = {
 };
 
 export default function VideoPlayer({ videoId, courseId, weekId, initialProgress, onVideoComplete }) {
-  const playerRef         = useRef(null);
+  const playerRef = useRef(null);
   const playerInstanceRef = useRef(null);
-  const watchedSegmentsRef  = useRef(new Set());
-  const heartbeatTimerRef   = useRef(null);
-  const attentionTimerRef   = useRef(null);
+  const wrapperRef = useRef(null);
+  const watchedSegmentsRef = useRef(new Set());
+  const heartbeatTimerRef = useRef(null);
+  const attentionTimerRef = useRef(null);
 
-  const [isPlaying,     setIsPlaying]     = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [completionPct, setCompletionPct] = useState(0);
   const [videoComplete, setVideoComplete] = useState(false);
-  const [attentionCheck,setAttentionCheck]= useState(false);
+  const [attentionCheck, setAttentionCheck] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!(document.fullscreenElement || document.webkitFullscreenElement));
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    };
+  }, []);
 
   // Hydrate from server progress on mount
   useEffect(() => {
@@ -127,7 +147,7 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     playerInstanceRef.current = new window.YT.Player(playerRef.current, {
       videoId,
       playerVars: { controls: 0, disablekb: 1, fs: 0, rel: 0, modestbranding: 1, iv_load_policy: 3 },
-      events: { onReady: () => {}, onStateChange },
+      events: { onReady: () => { }, onStateChange },
     });
   }
 
@@ -161,10 +181,10 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     const player = playerInstanceRef.current;
     if (!player) return;
     const currentTime = Math.floor(player.getCurrentTime());
-    const duration    = Math.floor(player.getDuration());
+    const duration = Math.floor(player.getDuration());
     if (!duration) return;
 
-    const segment      = Math.floor(currentTime / HEARTBEAT_INTERVAL);
+    const segment = Math.floor(currentTime / HEARTBEAT_INTERVAL);
     const totalSegments = Math.ceil(duration / HEARTBEAT_INTERVAL);
     watchedSegmentsRef.current.add(segment);
 
@@ -191,15 +211,41 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     player.seekTo(Math.max(0, player.getCurrentTime() - 10), true);
   }
 
+  function handleFullScreen() {
+    if (!wrapperRef.current) return;
+    const doc = document;
+    if (doc.fullscreenElement || doc.webkitFullscreenElement) {
+      if (doc.exitFullscreen) doc.exitFullscreen();
+      else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
+    } else {
+      const el = wrapperRef.current;
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(err => {
+          console.error(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      }
+    }
+  }
+
   function handleAttentionConfirm() {
     setAttentionCheck(false);
     playerInstanceRef.current?.playVideo();
   }
 
   return (
-    <div style={s.wrapper}>
-      <div style={s.aspectBox}>
+    <div
+      ref={wrapperRef}
+      style={{
+        ...s.wrapper,
+        ...(isFullscreen ? { borderRadius: 0, border: 'none', display: 'flex', flexDirection: 'column', height: '100%' } : {})
+      }}
+    >
+      <div style={{ ...s.aspectBox, ...(isFullscreen ? { paddingBottom: 0, flex: 1, height: 'auto' } : {}) }}>
         <div ref={playerRef} style={s.iframe} />
+        {/* Title block overlay */}
+        <div style={s.titleBlock} />
         {/* Seekbar block overlay */}
         <div style={s.seekbarBlock} />
         {/* Attention modal */}
@@ -229,6 +275,9 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
           }} />
         </div>
         <span style={s.pctLabel}>{completionPct}%</span>
+        <button style={{ ...s.btn, ...s.btnSecondary, marginLeft: 'auto' }} onClick={handleFullScreen} title="Fullscreen">
+          {isFullscreen ? '⤓ Exit Fullscreen' : '⛶ Fullscreen'}
+        </button>
       </div>
 
       {videoComplete && (

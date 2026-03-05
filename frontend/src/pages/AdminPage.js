@@ -80,12 +80,12 @@ const s = {
     color: 'var(--primary-foreground)', border: 'none', borderRadius: '7px',
     cursor: 'pointer', fontWeight: 700, fontSize: '0.825rem', transition: 'background 0.15s',
   },
-  btnDanger:    { background: 'var(--destructive)', color: '#fff' },
+  btnDanger: { background: 'var(--destructive)', color: '#fff' },
   btnSecondary: { background: 'var(--muted)', color: 'var(--foreground)', border: '1px solid var(--border)' },
-  btnSuccess:   { background: 'var(--success)', color: '#fff' },
+  btnSuccess: { background: 'var(--success)', color: '#fff' },
 
   // ── Tables ────────────────────────────────────────────────────────────────
-  table:   { width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' },
+  table: { width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' },
   th: {
     textAlign: 'left', padding: '0.55rem 0.75rem',
     borderBottom: '2px solid var(--border)',
@@ -100,9 +100,9 @@ const s = {
     padding: '0.2rem 0.55rem', borderRadius: '99px',
   },
   badgeSuccess: { background: 'var(--success-light)', color: 'var(--success-fg)' },
-  badgeInfo:    { background: 'var(--accent)',         color: 'var(--accent-foreground)' },
-  badgeWarning: { background: 'hsl(38, 92%, 90%)',     color: 'hsl(32, 81%, 29%)' },
-  badgeMuted:   { background: 'var(--muted)',           color: 'var(--muted-foreground)' },
+  badgeInfo: { background: 'var(--accent)', color: 'var(--accent-foreground)' },
+  badgeWarning: { background: 'hsl(38, 92%, 90%)', color: 'hsl(32, 81%, 29%)' },
+  badgeMuted: { background: 'var(--muted)', color: 'var(--muted-foreground)' },
 
   // ── Misc ──────────────────────────────────────────────────────────────────
   message: { color: 'var(--primary)', fontSize: '0.875rem', marginTop: '0.75rem', fontWeight: 500 },
@@ -116,11 +116,11 @@ const s = {
 // Students Tab
 // ────────────────────────────────────────────────────────────────────────────────
 function StudentsTab() {
-  const [students, setStudents]   = useState([]);
-  const [loading,  setLoading]    = useState(true);
-  const [form,     setForm]       = useState({ email: '', name: '', tempPassword: '' });
-  const [creating, setCreating]   = useState(false);
-  const [message,  setMessage]    = useState('');
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({ email: '', name: '', tempPassword: '' });
+  const [creating, setCreating] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => { load(); }, []);
 
@@ -204,17 +204,18 @@ function StudentsTab() {
 // ────────────────────────────────────────────────────────────────────────────────
 // Weeks Tab
 // ────────────────────────────────────────────────────────────────────────────────
-const EMPTY_WEEK = { title: '', description: '', weekNumber: '', youtubeUrl: '', qaLink: '', quiz: { questions: [] } };
-const EMPTY_Q    = { id: '', text: '', options: ['', '', '', ''], correctIndex: 0, explanation: '' };
+const EMPTY_WEEK = { title: '', description: '', weekNumber: '', youtubeUrl: '', qaLink: '', quiz: { questions: [] }, resources: [] };
+const EMPTY_Q = { id: '', text: '', options: ['', '', '', ''], correctIndex: 0, explanation: '' };
+const EMPTY_RESOURCE = { id: '', title: '', url: '' };
 
 function WeeksTab() {
-  const [weeks,      setWeeks]      = useState([]);
-  const [loading,    setLoading]    = useState(true);
-  const [form,       setForm]       = useState(EMPTY_WEEK);
-  const [editingId,  setEditingId]  = useState(null);
-  const [saving,     setSaving]     = useState(false);
-  const [message,    setMessage]    = useState('');
-  const [showForm,   setShowForm]   = useState(false);
+  const [weeks, setWeeks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState(EMPTY_WEEK);
+  const [editingId, setEditingId] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => { load(); }, []);
 
@@ -230,8 +231,10 @@ function WeeksTab() {
   }
 
   function startEdit(week) {
-    setForm({ title: week.title, description: week.description, weekNumber: String(week.weekNumber),
-      youtubeUrl: week.youtubeUrl || '', qaLink: week.qaLink || '', quiz: week.quiz || { questions: [] } });
+    setForm({
+      title: week.title, description: week.description, weekNumber: String(week.weekNumber),
+      youtubeUrl: week.youtubeUrl || '', qaLink: week.qaLink || '', quiz: week.quiz || { questions: [] }, resources: week.resources || []
+    });
     setEditingId(week.weekId); setShowForm(true); setMessage('');
   }
 
@@ -241,7 +244,7 @@ function WeeksTab() {
     try {
       const payload = { ...form, weekNumber: parseInt(form.weekNumber, 10) };
       if (editingId) { await adminUpdateWeek(COURSE_ID, editingId, payload); setMessage('Week updated.'); }
-      else           { await adminCreateWeek(COURSE_ID, payload);            setMessage('Week created.'); }
+      else { await adminCreateWeek(COURSE_ID, payload); setMessage('Week created.'); }
       setShowForm(false); setEditingId(null); load();
     } catch (err) { setMessage(err.response?.data?.message || 'Save failed.'); }
     finally { setSaving(false); }
@@ -284,6 +287,23 @@ function WeeksTab() {
     setForm((f) => ({ ...f, quiz: { questions: f.quiz.questions.filter((_, i) => i !== idx) } }));
   }
 
+  function addResource() {
+    const r = { ...EMPTY_RESOURCE, id: `r${Date.now()}` };
+    setForm((f) => ({ ...f, resources: [...(f.resources || []), r] }));
+  }
+
+  function updateResource(idx, field, value) {
+    setForm((f) => {
+      const resList = [...(f.resources || [])];
+      resList[idx] = { ...resList[idx], [field]: value };
+      return { ...f, resources: resList };
+    });
+  }
+
+  function removeResource(idx) {
+    setForm((f) => ({ ...f, resources: (f.resources || []).filter((_, i) => i !== idx) }));
+  }
+
   return (
     <div>
       {message && <p style={s.message}>{message}</p>}
@@ -316,6 +336,34 @@ function WeeksTab() {
             <label style={s.label}>Q&amp;A / Calendly Link</label>
             <input style={s.input} type="url" placeholder="https://calendly.com/..."
               value={form.qaLink} onChange={(e) => setForm({ ...form, qaLink: e.target.value })} />
+
+            {/* Resources */}
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Resources (Links, PDFs, etc.)</span>
+                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addResource}>+ Resource</button>
+              </div>
+              {(form.resources || []).map((r, ri) => (
+                <div key={r.id || ri} style={s.qPanel}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Resource {ri + 1}</span>
+                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeResource(ri)}>Remove</button>
+                  </div>
+                  <div style={s.grid2}>
+                    <div>
+                      <label style={s.label}>Title</label>
+                      <input style={s.input} type="text" placeholder="e.g. Week 1 Slides"
+                        value={r.title} onChange={(e) => updateResource(ri, 'title', e.target.value)} required />
+                    </div>
+                    <div>
+                      <label style={s.label}>URL (Link)</label>
+                      <input style={s.input} type="url" placeholder="https://..."
+                        value={r.url} onChange={(e) => updateResource(ri, 'url', e.target.value)} required />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
 
             {/* Quiz */}
             <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem' }}>
@@ -369,42 +417,42 @@ function WeeksTab() {
         <div style={s.cardTitle}>All Weeks</div>
         {loading ? <p style={{ color: 'var(--muted-foreground)' }}>Loading…</p>
           : weeks.length === 0 ? <p style={{ color: 'var(--muted-foreground)' }}>No weeks yet.</p>
-          : (
-            <table style={s.table}>
-              <thead>
-                <tr>
-                  <th style={s.th}>#</th>
-                  <th style={s.th}>Title</th>
-                  <th style={s.th}>Questions</th>
-                  <th style={s.th}>Status</th>
-                  <th style={s.th}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {weeks.map((w) => (
-                  <tr key={w.weekId}>
-                    <td style={s.td}>{w.weekNumber}</td>
-                    <td style={s.td}>{w.title}</td>
-                    <td style={s.td}>{w.quiz?.questions?.length || 0}</td>
-                    <td style={s.td}>
-                      <span style={{ ...s.badge, ...(w.visible ? s.badgeSuccess : s.badgeMuted) }}>
-                        {w.visible ? 'Released' : 'Hidden'}
-                      </span>
-                    </td>
-                    <td style={s.td}>
-                      <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
-                        <button style={{ ...s.btn, padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => startEdit(w)}>Edit</button>
-                        <button style={{ ...s.btn, ...(w.visible ? s.btnSecondary : s.btnSuccess), padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => handleToggleVisible(w)}>
-                          {w.visible ? 'Hide' : 'Release'}
-                        </button>
-                        <button style={{ ...s.btn, ...s.btnDanger, padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => handleDelete(w.weekId)}>Delete</button>
-                      </div>
-                    </td>
+            : (
+              <table style={s.table}>
+                <thead>
+                  <tr>
+                    <th style={s.th}>#</th>
+                    <th style={s.th}>Title</th>
+                    <th style={s.th}>Questions</th>
+                    <th style={s.th}>Status</th>
+                    <th style={s.th}>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                </thead>
+                <tbody>
+                  {weeks.map((w) => (
+                    <tr key={w.weekId}>
+                      <td style={s.td}>{w.weekNumber}</td>
+                      <td style={s.td}>{w.title}</td>
+                      <td style={s.td}>{w.quiz?.questions?.length || 0}</td>
+                      <td style={s.td}>
+                        <span style={{ ...s.badge, ...(w.visible ? s.badgeSuccess : s.badgeMuted) }}>
+                          {w.visible ? 'Released' : 'Hidden'}
+                        </span>
+                      </td>
+                      <td style={s.td}>
+                        <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+                          <button style={{ ...s.btn, padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => startEdit(w)}>Edit</button>
+                          <button style={{ ...s.btn, ...(w.visible ? s.btnSecondary : s.btnSuccess), padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => handleToggleVisible(w)}>
+                            {w.visible ? 'Hide' : 'Release'}
+                          </button>
+                          <button style={{ ...s.btn, ...s.btnDanger, padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => handleDelete(w.weekId)}>Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
       </div>
     </div>
   );
@@ -414,9 +462,9 @@ function WeeksTab() {
 // Progress Tab
 // ────────────────────────────────────────────────────────────────────────────────
 function ProgressTab() {
-  const [data,    setData]    = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error,   setError]   = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => { load(); }, []);
   async function load() {
@@ -426,7 +474,7 @@ function ProgressTab() {
   }
 
   if (loading) return <p style={{ color: 'var(--muted-foreground)' }}>Loading…</p>;
-  if (error)   return <p style={{ color: 'var(--destructive)' }}>{error}</p>;
+  if (error) return <p style={{ color: 'var(--destructive)' }}>{error}</p>;
 
   return (
     <div style={s.card}>
@@ -485,7 +533,7 @@ export default function AdminPage() {
 
       <div style={s.tabs}>
         {[
-          { id: 'weeks',    label: 'Manage Weeks' },
+          { id: 'weeks', label: 'Manage Weeks' },
           { id: 'students', label: 'Students' },
           { id: 'progress', label: 'Progress' },
         ].map((t) => (
@@ -500,7 +548,7 @@ export default function AdminPage() {
       </div>
 
       <div style={s.content}>
-        {tab === 'weeks'    && <WeeksTab />}
+        {tab === 'weeks' && <WeeksTab />}
         {tab === 'students' && <StudentsTab />}
         {tab === 'progress' && <ProgressTab />}
       </div>

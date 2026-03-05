@@ -48,6 +48,17 @@ const s = {
     boxShadow: 'var(--shadow-sm)',
   },
 
+  // ── Resources ────────────────────────────────────────────────────────────
+  resourceSection: { marginTop: '2rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' },
+  resourceHeading: { fontSize: '1.05rem', fontWeight: 800, color: 'var(--foreground)', marginBottom: '1rem' },
+  resourceList: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
+  resourceLink: {
+    display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+    padding: '0.75rem 1rem', background: 'var(--card)', border: '1px solid var(--border)',
+    borderRadius: '8px', color: 'var(--foreground)', textDecoration: 'none',
+    fontSize: '0.875rem', fontWeight: 500, transition: 'background 0.15s, border-color 0.15s',
+  },
+
   // ── Sidebar ───────────────────────────────────────────────────────────────
   sidebar: {
     borderLeft: '1px solid var(--border)', background: 'var(--card)',
@@ -87,7 +98,7 @@ function ProgressStep({ label, done, active, locked }) {
   let iconColor = 'var(--border)';
   let labelColor = 'var(--muted-foreground)';
 
-  if (done)   { icon = '✓'; iconColor = 'var(--success)'; labelColor = 'var(--success)'; }
+  if (done) { icon = '✓'; iconColor = 'var(--success)'; labelColor = 'var(--success)'; }
   else if (active) { icon = '●'; iconColor = 'var(--primary)'; labelColor = 'var(--foreground)'; }
 
   return (
@@ -138,8 +149,8 @@ export default function LearnPage() {
   }
 
   if (loading) return <div style={s.loading}>Loading week content…</div>;
-  if (error)   return <div style={s.error}>{error}</div>;
-  if (!week)   return null;
+  if (error) return <div style={s.error}>{error}</div>;
+  if (!week) return null;
 
   const videoId = extractYouTubeId(week.youtubeUrl);
 
@@ -175,6 +186,20 @@ export default function LearnPage() {
               <a href={week.qaLink} target="_blank" rel="noopener noreferrer" style={s.qaLink}>
                 Book your Q&amp;A session →
               </a>
+            </div>
+          )}
+
+          {videoComplete && week.resources && week.resources.length > 0 && (
+            <div style={s.resourceSection}>
+              <div style={s.resourceHeading}>Resources</div>
+              <div style={s.resourceList}>
+                {week.resources.map((r, i) => (
+                  <a key={r.id || i} href={r.url} target="_blank" rel="noopener noreferrer" style={s.resourceLink}>
+                    <span style={{ fontSize: '1.1rem' }}>📄</span>
+                    {r.title}
+                  </a>
+                ))}
+              </div>
             </div>
           )}
         </div>
