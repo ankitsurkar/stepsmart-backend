@@ -147,6 +147,7 @@ async function createWeek(courseId, body) {
     description: body.description || '',
     youtubeUrl:  body.youtubeUrl  || null,
     qaLink:      body.qaLink      || null,
+    docs:        body.docs        || [],
     visible:     false,  // always starts hidden — admin must explicitly release
     quiz:        body.quiz || { questions: [] },
     createdAt:   new Date().toISOString(),
@@ -160,7 +161,7 @@ async function createWeek(courseId, body) {
 // Updates any subset of week fields. Commonly used to toggle visibility.
 async function updateWeek(courseId, weekId, body) {
   // Build a dynamic UpdateExpression from whatever fields were provided.
-  const fields = ['title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber', 'quiz'];
+  const fields = ['title', 'description', 'youtubeUrl', 'qaLink', 'docs', 'visible', 'weekNumber', 'quiz'];
   const setClauses = [];
   const exprAttrValues = {};
   const exprAttrNames  = {};

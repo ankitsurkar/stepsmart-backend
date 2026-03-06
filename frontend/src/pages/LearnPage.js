@@ -40,6 +40,13 @@ const s = {
     lineHeight: 1.6,
   },
   qaSection: { marginTop: '1.25rem' },
+  docLink: {
+    display: 'flex', alignItems: 'center', gap: '0.4rem',
+    padding: '0.45rem 0.75rem', background: 'var(--background)',
+    border: '1px solid var(--border)', borderRadius: '7px',
+    color: 'var(--foreground)', textDecoration: 'none', fontSize: '0.825rem',
+    fontWeight: 500, marginBottom: '0.5rem', transition: 'border-color 0.15s',
+  },
   qaLink: {
     display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
     padding: '0.6rem 1.25rem', background: 'var(--primary)',
@@ -206,6 +213,27 @@ export default function LearnPage() {
               />
             )}
           </div>
+
+          {week.docs?.length > 0 && (
+            <>
+              <hr style={s.divider} />
+              <div style={s.sidebarSection}>
+                <div style={s.sidebarHeading}>Reference Documents</div>
+                {week.docs.map((doc) => (
+                  <a
+                    key={doc.id}
+                    href={doc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={s.docLink}
+                  >
+                    <span style={{ fontSize: '0.9rem' }}>📄</span>
+                    {doc.label}
+                  </a>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

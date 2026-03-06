@@ -204,7 +204,8 @@ function StudentsTab() {
 // ────────────────────────────────────────────────────────────────────────────────
 // Weeks Tab
 // ────────────────────────────────────────────────────────────────────────────────
-const EMPTY_WEEK = { title: '', description: '', weekNumber: '', youtubeUrl: '', qaLink: '', quiz: { questions: [] } };
+const EMPTY_WEEK = { title: '', description: '', weekNumber: '', youtubeUrl: '', qaLink: '', docs: [], quiz: { questions: [] } };
+const EMPTY_DOC  = { id: '', label: '', url: '' };
 const EMPTY_Q    = { id: '', text: '', options: ['', '', '', ''], correctIndex: 0, explanation: '' };
 
 function WeeksTab() {
@@ -231,7 +232,7 @@ function WeeksTab() {
 
   function startEdit(week) {
     setForm({ title: week.title, description: week.description, weekNumber: String(week.weekNumber),
-      youtubeUrl: week.youtubeUrl || '', qaLink: week.qaLink || '', quiz: week.quiz || { questions: [] } });
+      youtubeUrl: week.youtubeUrl || '', qaLink: week.qaLink || '', docs: week.docs || [], quiz: week.quiz || { questions: [] } });
     setEditingId(week.weekId); setShowForm(true); setMessage('');
   }
 
@@ -284,6 +285,23 @@ function WeeksTab() {
     setForm((f) => ({ ...f, quiz: { questions: f.quiz.questions.filter((_, i) => i !== idx) } }));
   }
 
+  function addDoc() {
+    const d = { ...EMPTY_DOC, id: `doc${Date.now()}` };
+    setForm((f) => ({ ...f, docs: [...(f.docs || []), d] }));
+  }
+
+  function updateDoc(idx, field, value) {
+    setForm((f) => {
+      const docs = [...(f.docs || [])];
+      docs[idx] = { ...docs[idx], [field]: value };
+      return { ...f, docs };
+    });
+  }
+
+  function removeDoc(idx) {
+    setForm((f) => ({ ...f, docs: (f.docs || []).filter((_, i) => i !== idx) }));
+  }
+
   return (
     <div>
       {message && <p style={s.message}>{message}</p>}
@@ -316,6 +334,30 @@ function WeeksTab() {
             <label style={s.label}>Q&amp;A / Calendly Link</label>
             <input style={s.input} type="url" placeholder="https://calendly.com/..."
               value={form.qaLink} onChange={(e) => setForm({ ...form, qaLink: e.target.value })} />
+
+            {/* Reference Documents */}
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Reference Documents</span>
+                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addDoc}>+ Document</button>
+              </div>
+              {(form.docs || []).map((doc, di) => (
+                <div key={doc.id || di} style={{ ...s.qPanel, display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.5rem', alignItems: 'end' }}>
+                  <div>
+                    <label style={s.label}>Label</label>
+                    <input style={{ ...s.input, marginBottom: 0 }} type="text" placeholder="e.g. Week 1 Slides"
+                      value={doc.label} onChange={(e) => updateDoc(di, 'label', e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={s.label}>Drive URL</label>
+                    <input style={{ ...s.input, marginBottom: 0 }} type="url" placeholder="https://drive.google.com/..."
+                      value={doc.url} onChange={(e) => updateDoc(di, 'url', e.target.value)} />
+                  </div>
+                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.3rem 0.5rem', fontSize: '0.72rem', marginBottom: 0 }}
+                    onClick={() => removeDoc(di)}>✕</button>
+                </div>
+              ))}
+            </div>
 
             {/* Quiz */}
             <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem' }}>

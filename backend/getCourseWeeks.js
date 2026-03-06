@@ -83,6 +83,7 @@ exports.handler = async (event) => {
     description: w.description,
     youtubeUrl:  w.youtubeUrl || null,
     qaLink:      w.qaLink     || null,
+    docs:        w.docs       || [],
     visible:     w.visible    || false,
     createdAt:   w.createdAt  || null,
     quiz: {
