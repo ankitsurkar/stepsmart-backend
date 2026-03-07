@@ -242,7 +242,7 @@ function WeeksTab() {
     e.preventDefault();
     setSaving(true); setMessage('');
     try {
-      const payload = { ...form, weekNumber: parseInt(form.weekNumber, 10) };
+      const payload = { ...form, weekNumber: parseFloat(form.weekNumber) };
       if (editingId) { await adminUpdateWeek(COURSE_ID, editingId, payload); setMessage('Week updated.'); }
       else { await adminCreateWeek(COURSE_ID, payload); setMessage('Week created.'); }
       setShowForm(false); setEditingId(null); load();
@@ -317,8 +317,8 @@ function WeeksTab() {
           <form onSubmit={handleSave}>
             <div style={s.grid2}>
               <div>
-                <label style={s.label}>Week Number</label>
-                <input style={s.input} type="number" min="1"
+                <label style={s.label}>Module Number</label>
+                <input style={s.input} type="number" min="0" step="any"
                   value={form.weekNumber} onChange={(e) => setForm({ ...form, weekNumber: e.target.value })} required />
               </div>
               <div>

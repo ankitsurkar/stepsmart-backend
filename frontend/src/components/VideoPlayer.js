@@ -101,6 +101,10 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   const [attentionCheck, setAttentionCheck] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // If the user already completed the video on a previous visit, seeking is allowed.
+  // We only set this to true initially, or mid-session when they hit 90%.
+  const [seekAllowed, setSeekAllowed] = useState(initialProgress?.videoComplete === true);
+
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!(document.fullscreenElement || document.webkitFullscreenElement));
@@ -141,12 +145,37 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     };
   }, [videoId]);
 
-  function initPlayer() {
+  // If seekAllowed flips from false to true mid-session, we need to re-init the player
+  // to turn on the native YouTube controls.
+  useEffect(() => {
+    if (seekAllowed && playerInstanceRef.current && window.YT?.Player) {
+      const currentState = playerInstanceRef.current.getPlayerState();
+      const currentTime = playerInstanceRef.current.getCurrentTime();
+
+      initPlayer(currentTime, currentState === 1);
+    }
+  }, [seekAllowed]);
+
+  function initPlayer(startTime = 0, autoPlay = false) {
     if (!playerRef.current) return;
     if (playerInstanceRef.current) playerInstanceRef.current.destroy();
+
+    // When seekAllowed is true, we turn on YouTube controls and keyboard shortcuts
+    const controlsValue = seekAllowed ? 1 : 0;
+    const disablekbValue = seekAllowed ? 0 : 1;
+
     playerInstanceRef.current = new window.YT.Player(playerRef.current, {
       videoId,
-      playerVars: { controls: 0, disablekb: 1, fs: 0, rel: 0, modestbranding: 1, iv_load_policy: 3 },
+      playerVars: {
+        controls: controlsValue,
+        disablekb: disablekbValue,
+        fs: 0,
+        rel: 0,
+        modestbranding: 1,
+        iv_load_policy: 3,
+        start: Math.floor(startTime),
+        autoplay: autoPlay ? 1 : 0
+      },
       events: { onReady: () => { }, onStateChange },
     });
   }
@@ -195,6 +224,7 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
 
     if (pct >= 90 && !videoComplete) {
       setVideoComplete(true);
+      setSeekAllowed(true); // Unlock seeking immediately for the rest of the session!
       onVideoComplete?.();
     }
   }, [courseId, weekId, videoComplete, onVideoComplete]);
@@ -209,6 +239,15 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     const player = playerInstanceRef.current;
     if (!player) return;
     player.seekTo(Math.max(0, player.getCurrentTime() - 10), true);
+  }
+
+  function handleForward() {
+    const player = playerInstanceRef.current;
+    if (!player) return;
+    const duration = player.getDuration();
+    if (duration) {
+      player.seekTo(Math.min(duration, player.getCurrentTime() + 10), true);
+    }
   }
 
   function handleFullScreen() {
@@ -244,10 +283,10 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     >
       <div style={{ ...s.aspectBox, ...(isFullscreen ? { paddingBottom: 0, flex: 1, height: 'auto' } : {}) }}>
         <div ref={playerRef} style={s.iframe} />
-        {/* Title block overlay */}
-        <div style={s.titleBlock} />
+        {/* Title block overlay - still block title clicking if we want, but definitely hide seekbar block if seekAllowed */}
+        {!seekAllowed && <div style={s.titleBlock} />}
         {/* Seekbar block overlay */}
-        <div style={s.seekbarBlock} />
+        {!seekAllowed && <div style={s.seekbarBlock} />}
         {/* Attention modal */}
         {attentionCheck && (
           <div style={s.modalOverlay}>
@@ -267,6 +306,9 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
       <div style={s.controls}>
         <button style={s.btn} onClick={handlePlayPause}>{isPlaying ? '⏸ Pause' : '▶ Play'}</button>
         <button style={{ ...s.btn, ...s.btnSecondary }} onClick={handleRewind}>−10s</button>
+        {seekAllowed && (
+          <button style={{ ...s.btn, ...s.btnSecondary }} onClick={handleForward}>+10s</button>
+        )}
         <div style={s.progressTrack}>
           <div style={{
             ...s.progressFill,
