@@ -85,6 +85,7 @@ exports.handler = async (event) => {
     qaLink: w.qaLink || null,
     visible: w.visible || false,
     resources: w.resources || [],
+    docs: w.docs || [],
     createdAt: w.createdAt || null,
     quiz: {
       questions: (w.quiz?.questions || []).map((q) => ({
