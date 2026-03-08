@@ -43,14 +43,14 @@ const ddb = DynamoDBDocumentClient.from(ddbClient, {
 });
 const cognito = new CognitoIdentityProviderClient({ region: 'us-east-1' });
 
-const COURSES_TABLE  = process.env.COURSES_TABLE  || 'lms-courses';
+const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
 const PROGRESS_TABLE = process.env.PROGRESS_TABLE || 'lms-progress';
-const USER_POOL_ID   = process.env.USER_POOL_ID   || '';
-const FRONTEND_URL   = process.env.FRONTEND_URL   || 'https://stepsmart.net';
+const USER_POOL_ID = process.env.USER_POOL_ID || '';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
 
 function corsHeaders() {
   return {
-    'Access-Control-Allow-Origin':  FRONTEND_URL,
+    'Access-Control-Allow-Origin': FRONTEND_URL,
     'Access-Control-Allow-Headers': 'Content-Type,Authorization',
     'Access-Control-Allow-Methods': 'GET,POST,PATCH,DELETE,OPTIONS',
   };
@@ -84,11 +84,11 @@ async function listStudents() {
     const attrs = {};
     for (const a of u.Attributes || []) attrs[a.Name] = a.Value;
     return {
-      Username:       u.Username,
-      UserStatus:     u.UserStatus,
+      Username: u.Username,
+      UserStatus: u.UserStatus,
       UserCreateDate: u.UserCreateDate,
-      email:          attrs.email || '',
-      name:           attrs.name  || '',
+      email: attrs.email || '',
+      name: attrs.name || '',
     };
   });
   return res(200, { students });
@@ -104,13 +104,13 @@ async function createStudent(body) {
   }
 
   await cognito.send(new AdminCreateUserCommand({
-    UserPoolId:        USER_POOL_ID,
-    Username:          email,
+    UserPoolId: USER_POOL_ID,
+    Username: email,
     TemporaryPassword: tempPassword,
     UserAttributes: [
-      { Name: 'email',          Value: email },
+      { Name: 'email', Value: email },
       { Name: 'email_verified', Value: 'true' },
-      { Name: 'name',           Value: name },
+      { Name: 'name', Value: name },
     ],
     MessageAction: 'SUPPRESS',  // Do not send Cognito's default email; use your own onboarding flow
   }));
@@ -125,7 +125,7 @@ async function listWeeks(courseId) {
     TableName: COURSES_TABLE,
     KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
     ExpressionAttributeValues: {
-      ':pk':     `COURSE#${courseId}`,
+      ':pk': `COURSE#${courseId}`,
       ':prefix': 'WEEK#',
     },
   }));
@@ -138,19 +138,20 @@ async function listWeeks(courseId) {
 async function createWeek(courseId, body) {
   const weekId = `week-${randomUUID().slice(0, 8)}`;
   const item = {
-    pk:          `COURSE#${courseId}`,
-    sk:          `WEEK#${weekId}`,
+    pk: `COURSE#${courseId}`,
+    sk: `WEEK#${weekId}`,
     weekId,
     courseId,
-    weekNumber:  body.weekNumber  || 1,
-    title:       body.title       || 'Untitled Week',
+    weekNumber: body.weekNumber || 1,
+    title: body.title || 'Untitled Week',
     description: body.description || '',
-    youtubeUrl:  body.youtubeUrl  || null,
-    qaLink:      body.qaLink      || null,
-    docs:        body.docs        || [],
-    visible:     false,  // always starts hidden — admin must explicitly release
-    quiz:        body.quiz || { questions: [] },
-    createdAt:   new Date().toISOString(),
+    youtubeUrl: body.youtubeUrl || null,
+    qaLink: body.qaLink || null,
+    visible: false,  // always starts hidden — admin must explicitly release
+    quiz: body.quiz || { questions: [] },
+    resources: body.resources || [],
+    docs: body.docs || [],
+    createdAt: new Date().toISOString(),
   };
 
   await ddb.send(new PutCommand({ TableName: COURSES_TABLE, Item: item }));
@@ -161,10 +162,10 @@ async function createWeek(courseId, body) {
 // Updates any subset of week fields. Commonly used to toggle visibility.
 async function updateWeek(courseId, weekId, body) {
   // Build a dynamic UpdateExpression from whatever fields were provided.
-  const fields = ['title', 'description', 'youtubeUrl', 'qaLink', 'docs', 'visible', 'weekNumber', 'quiz'];
+  const fields = ['title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber', 'quiz', 'resources', 'docs'];
   const setClauses = [];
   const exprAttrValues = {};
-  const exprAttrNames  = {};
+  const exprAttrNames = {};
 
   for (const field of fields) {
     if (body[field] !== undefined) {
@@ -173,7 +174,7 @@ async function updateWeek(courseId, weekId, body) {
       const alias = `#f_${field}`;
       const valAlias = `:v_${field}`;
       setClauses.push(`${alias} = ${valAlias}`);
-      exprAttrNames[alias]   = field;
+      exprAttrNames[alias] = field;
       exprAttrValues[valAlias] = body[field];
     }
   }
@@ -188,7 +189,7 @@ async function updateWeek(courseId, weekId, body) {
     TableName: COURSES_TABLE,
     Key: { pk: `COURSE#${courseId}`, sk: `WEEK#${weekId}` },
     UpdateExpression: `SET ${setClauses.join(', ')}`,
-    ExpressionAttributeNames:  exprAttrNames,
+    ExpressionAttributeNames: exprAttrNames,
     ExpressionAttributeValues: exprAttrValues,
   }));
 
@@ -216,15 +217,15 @@ async function getCourseProgress(courseId) {
   }));
 
   const progress = (result.Items || []).map((item) => ({
-    userId:        item.userId,
-    weekId:        item.weekId,
+    userId: item.userId,
+    weekId: item.weekId,
     videoComplete: item.videoComplete || false,
     watchedSegments: item.watchedSegments ? [...item.watchedSegments] : [],
-    quizPassed:    item.quizPassed  || false,
-    quizScore:     item.quizScore   ?? null,
-    quizTotal:     item.quizTotal   ?? null,
-    quizAttempts:  item.quizAttempts || 0,
-    lastSeen:      item.lastSeen    || null,
+    quizPassed: item.quizPassed || false,
+    quizScore: item.quizScore ?? null,
+    quizTotal: item.quizTotal ?? null,
+    quizAttempts: item.quizAttempts || 0,
+    lastSeen: item.lastSeen || null,
   }));
 
   return res(200, { progress });
@@ -240,11 +241,11 @@ exports.handler = async (event) => {
     return res(403, { message: 'Forbidden: admin access required' });
   }
 
-  const method   = event.httpMethod;
+  const method = event.httpMethod;
   const resource = event.resource;  // API Gateway route template, e.g. '/admin/courses/{courseId}/weeks/{weekId}'
-  const params   = event.pathParameters || {};
+  const params = event.pathParameters || {};
   const courseId = params.courseId;
-  const weekId   = params.weekId;
+  const weekId = params.weekId;
 
   let body = {};
   try {
@@ -255,14 +256,14 @@ exports.handler = async (event) => {
 
   try {
     // ── Students ──────────────────────────────────────────────────────
-    if (method === 'GET'  && resource === '/admin/students') return await listStudents();
+    if (method === 'GET' && resource === '/admin/students') return await listStudents();
     if (method === 'POST' && resource === '/admin/students') return await createStudent(body);
 
     // ── Weeks ─────────────────────────────────────────────────────────
-    if (method === 'GET'    && resource === '/admin/courses/{courseId}/weeks')           return await listWeeks(courseId);
-    if (method === 'POST'   && resource === '/admin/courses/{courseId}/weeks')           return await createWeek(courseId, body);
-    if (method === 'PATCH'  && resource === '/admin/courses/{courseId}/weeks/{weekId}')  return await updateWeek(courseId, weekId, body);
-    if (method === 'DELETE' && resource === '/admin/courses/{courseId}/weeks/{weekId}')  return await deleteWeek(courseId, weekId);
+    if (method === 'GET' && resource === '/admin/courses/{courseId}/weeks') return await listWeeks(courseId);
+    if (method === 'POST' && resource === '/admin/courses/{courseId}/weeks') return await createWeek(courseId, body);
+    if (method === 'PATCH' && resource === '/admin/courses/{courseId}/weeks/{weekId}') return await updateWeek(courseId, weekId, body);
+    if (method === 'DELETE' && resource === '/admin/courses/{courseId}/weeks/{weekId}') return await deleteWeek(courseId, weekId);
 
     // ── Progress ──────────────────────────────────────────────────────
     if (method === 'GET' && resource === '/admin/courses/{courseId}/progress') return await getCourseProgress(courseId);

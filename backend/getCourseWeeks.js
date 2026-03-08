@@ -19,11 +19,11 @@ const ddb = DynamoDBDocumentClient.from(ddbClient, {
 });
 
 const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
-const FRONTEND_URL  = process.env.FRONTEND_URL  || 'https://stepsmart.net';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
 
 function corsHeaders() {
   return {
-    'Access-Control-Allow-Origin':  FRONTEND_URL,
+    'Access-Control-Allow-Origin': FRONTEND_URL,
     'Access-Control-Allow-Headers': 'Content-Type,Authorization',
     'Access-Control-Allow-Methods': 'GET,OPTIONS',
   };
@@ -60,7 +60,7 @@ exports.handler = async (event) => {
       TableName: COURSES_TABLE,
       KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
       ExpressionAttributeValues: {
-        ':pk':     `COURSE#${courseId}`,
+        ':pk': `COURSE#${courseId}`,
         ':prefix': 'WEEK#',
       },
     }));
@@ -76,21 +76,22 @@ exports.handler = async (event) => {
     .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
 
   const weeks = filtered.map((w) => ({
-    weekId:      w.weekId,
-    courseId:    w.courseId || courseId,
-    weekNumber:  w.weekNumber,
-    title:       w.title,
+    weekId: w.weekId,
+    courseId: w.courseId || courseId,
+    weekNumber: w.weekNumber,
+    title: w.title,
     description: w.description,
-    youtubeUrl:  w.youtubeUrl || null,
-    qaLink:      w.qaLink     || null,
-    docs:        w.docs       || [],
-    visible:     w.visible    || false,
-    createdAt:   w.createdAt  || null,
+    youtubeUrl: w.youtubeUrl || null,
+    qaLink: w.qaLink || null,
+    visible: w.visible || false,
+    resources: w.resources || [],
+    docs: w.docs || [],
+    createdAt: w.createdAt || null,
     quiz: {
       questions: (w.quiz?.questions || []).map((q) => ({
-        id:          q.id,
-        text:        q.text,
-        options:     q.options,
+        id: q.id,
+        text: q.text,
+        options: q.options,
         explanation: q.explanation,
         // SECURITY: correctIndex is only included for admins.
         // For students this field is absent — it cannot be reverse-engineered from the response.
