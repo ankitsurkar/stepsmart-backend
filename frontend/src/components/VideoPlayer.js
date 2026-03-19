@@ -122,30 +122,15 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     };
   }, [videoId]);
 
-  // If seekAllowed flips from false to true mid-session, we need to re-init the player
-  // to turn on the native YouTube controls.
-  useEffect(() => {
-    if (seekAllowed && playerInstanceRef.current && window.YT?.Player) {
-      const currentState = playerInstanceRef.current.getPlayerState();
-      const currentTime = playerInstanceRef.current.getCurrentTime();
-
-      initPlayer(currentTime, currentState === 1);
-    }
-  }, [seekAllowed]);
-
   function initPlayer(startTime = 0, autoPlay = false) {
     if (!playerRef.current) return;
     if (playerInstanceRef.current) playerInstanceRef.current.destroy();
 
-    // When seekAllowed is true, we turn on YouTube controls and keyboard shortcuts
-    const controlsValue = seekAllowed ? 1 : 0;
-    const disablekbValue = seekAllowed ? 0 : 1;
-
     playerInstanceRef.current = new window.YT.Player(playerRef.current, {
       videoId,
       playerVars: {
-        controls: controlsValue,
-        disablekb: disablekbValue,
+        controls: 0,
+        disablekb: 1,
         fs: 0,
         rel: 0,
         modestbranding: 1,
