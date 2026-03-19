@@ -72,6 +72,7 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   const wrapperRef = useRef(null);
   const watchedSegmentsRef = useRef(new Set());
   const heartbeatTimerRef = useRef(null);
+  const lastHeartbeatTimeRef = useRef(0);  // video-time (seconds) at last heartbeat
   const fireHeartbeatRef = useRef(null);   // always points to the latest heartbeat logic
   const onStateChangeRef = useRef(null);   // always points to the latest state-change handler
 
@@ -149,6 +150,9 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   onStateChangeRef.current = function (event) {
     if (event.data === 1) {          // PLAYING
       setIsPlaying(true);
+      // Anchor the gap-fill starting point to where we are right now,
+      // so the first heartbeat after play/resume fills correctly.
+      lastHeartbeatTimeRef.current = Math.floor(playerInstanceRef.current?.getCurrentTime() ?? 0);
       startHeartbeat();
     } else {
       setIsPlaying(false);
@@ -163,9 +167,18 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     const duration = Math.floor(player.getDuration());
     if (!duration) return;
 
-    const segment = Math.floor(currentTime / HEARTBEAT_INTERVAL);
+    // Fill every segment between the previous heartbeat position and now.
+    // At 1.25x or 1.5x the video advances faster than the 10-second interval,
+    // so without this, segments are skipped and completion never reaches 90%.
+    const prevTime = lastHeartbeatTimeRef.current;
+    lastHeartbeatTimeRef.current = currentTime;
+    const startSeg = Math.floor(prevTime / HEARTBEAT_INTERVAL);
+    const endSeg   = Math.floor(currentTime / HEARTBEAT_INTERVAL);
+    for (let seg = startSeg; seg <= endSeg; seg++) {
+      watchedSegmentsRef.current.add(seg);
+    }
+
     const totalSegments = Math.ceil(duration / HEARTBEAT_INTERVAL);
-    watchedSegmentsRef.current.add(segment);
 
     const pct = Math.min(Math.round((watchedSegmentsRef.current.size / totalSegments) * 100), 100);
     setCompletionPct(pct);
