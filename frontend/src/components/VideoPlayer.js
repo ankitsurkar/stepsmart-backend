@@ -21,7 +21,7 @@ const s = {
     position: 'absolute', bottom: 0, left: 0, right: 0, height: '80px',
     zIndex: 10, cursor: 'not-allowed', background: 'transparent',
   },
-
+// Making dummy update to trigger redeploy and test production build, since YouTube blocking seems to only happen in prod for some reason. Will remove this comment after confirming the fix works
   // Transparent overlay that absorbs clicks on YouTube's top title area (top 80px).
   titleBlock: {
     position: 'absolute', top: 0, left: 0, right: 0, height: '80px',
