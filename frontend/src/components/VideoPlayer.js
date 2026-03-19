@@ -51,6 +51,12 @@ const s = {
   progressFill: { height: '100%', borderRadius: '3px', transition: 'width 0.5s', background: 'var(--primary)' },
   progressFillComplete: { background: 'var(--success)' },
   pctLabel: { color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', minWidth: '36px', textAlign: 'right' },
+  speedSelect: {
+    background: 'rgba(255,255,255,0.12)', color: '#fff',
+    border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px',
+    padding: '0.3rem 0.55rem', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700,
+    outline: 'none',
+  },
 
   // ── Completion banner ─────────────────────────────────────────────────────
   completionBanner: {
@@ -71,6 +77,7 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   const [completionPct, setCompletionPct] = useState(0);
   const [videoComplete, setVideoComplete] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1);
 
   // If the user already completed the video on a previous visit, seeking is allowed.
   // We only set this to true initially, or mid-session when they hit 90%.
@@ -228,6 +235,10 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     }
   }
 
+  function handleSpeedChange(rate) {
+    playerInstanceRef.current?.setPlaybackRate(rate);
+    setPlaybackRate(rate);
+  }
   return (
     <div
       ref={wrapperRef}
@@ -251,6 +262,15 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
         {seekAllowed && (
           <button style={{ ...s.btn, ...s.btnSecondary }} onClick={handleForward}>+10s</button>
         )}
+        <select
+          style={s.speedSelect}
+          value={playbackRate}
+          onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
+        >
+          {[1, 1.25, 1.5].map((rate) => (
+            <option key={rate} value={rate}>{rate}x</option>
+          ))}
+        </select>
         <div style={s.progressTrack}>
           <div style={{
             ...s.progressFill,

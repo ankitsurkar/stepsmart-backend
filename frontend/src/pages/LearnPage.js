@@ -216,7 +216,7 @@ export default function LearnPage() {
           <div style={s.sidebarSection}>
             <div style={s.sidebarHeading}>Your progress</div>
             <ProgressStep label="Watch video" done={videoComplete} active={!videoComplete} />
-            <ProgressStep label="Pass quiz" done={quizPassed} active={videoComplete && !quizPassed} locked={!videoComplete} />
+            <ProgressStep label="Pass quizes" done={quizPassed} active={videoComplete && !quizPassed} locked={!videoComplete} />
             <ProgressStep label="Week complete" done={quizPassed} locked={!quizPassed} />
           </div>
 
