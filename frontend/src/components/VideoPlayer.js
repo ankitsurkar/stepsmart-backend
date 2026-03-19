@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { sendHeartbeat } from '../utils/api';
 
 const HEARTBEAT_INTERVAL = 10;           // seconds per segment
@@ -72,6 +72,8 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   const wrapperRef = useRef(null);
   const watchedSegmentsRef = useRef(new Set());
   const heartbeatTimerRef = useRef(null);
+  const fireHeartbeatRef = useRef(null);   // always points to the latest heartbeat logic
+  const onStateChangeRef = useRef(null);   // always points to the latest state-change handler
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [completionPct, setCompletionPct] = useState(0);
@@ -138,11 +140,13 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
         start: Math.floor(startTime),
         autoplay: autoPlay ? 1 : 0
       },
-      events: { onReady: () => { }, onStateChange },
+      events: { onReady: () => {}, onStateChange: (e) => onStateChangeRef.current(e) },
     });
   }
 
-  function onStateChange(event) {
+  // Assign to ref on every render so the interval and YT callbacks always
+  // use the latest values of videoComplete, onVideoComplete, etc.
+  onStateChangeRef.current = function (event) {
     if (event.data === 1) {          // PLAYING
       setIsPlaying(true);
       startHeartbeat();
@@ -150,15 +154,9 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
       setIsPlaying(false);
       stopHeartbeat();
     }
-  }
+  };
 
-  function startHeartbeat() {
-    clearInterval(heartbeatTimerRef.current);
-    heartbeatTimerRef.current = setInterval(fireHeartbeat, HEARTBEAT_INTERVAL * 1000);
-  }
-  function stopHeartbeat() { clearInterval(heartbeatTimerRef.current); }
-
-  const fireHeartbeat = useCallback(async () => {
+  fireHeartbeatRef.current = async function () {
     const player = playerInstanceRef.current;
     if (!player) return;
     const currentTime = Math.floor(player.getCurrentTime());
@@ -176,10 +174,16 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
 
     if (pct >= 90 && !videoComplete) {
       setVideoComplete(true);
-      setSeekAllowed(true); // Unlock seeking immediately for the rest of the session!
+      setSeekAllowed(true);
       onVideoComplete?.();
     }
-  }, [courseId, weekId, videoComplete, onVideoComplete]);
+  };
+
+  function startHeartbeat() {
+    clearInterval(heartbeatTimerRef.current);
+    heartbeatTimerRef.current = setInterval(() => fireHeartbeatRef.current(), HEARTBEAT_INTERVAL * 1000);
+  }
+  function stopHeartbeat() { clearInterval(heartbeatTimerRef.current); }
 
   function handlePlayPause() {
     const player = playerInstanceRef.current;
