@@ -160,6 +160,8 @@ export default function LearnPage() {
   if (!week) return null;
 
   const videoId = extractYouTubeId(week.youtubeUrl);
+  const hasQuiz = (week.quiz?.questions || []).length > 0;
+  const weekComplete = videoComplete && (!hasQuiz || quizPassed);
 
   return (
     <div style={s.page}>
@@ -216,15 +218,23 @@ export default function LearnPage() {
           <div style={s.sidebarSection}>
             <div style={s.sidebarHeading}>Your progress</div>
             <ProgressStep label="Watch video" done={videoComplete} active={!videoComplete} />
-            <ProgressStep label="Pass quizes" done={quizPassed} active={videoComplete && !quizPassed} locked={!videoComplete} />
-            <ProgressStep label="Week complete" done={quizPassed} locked={!quizPassed} />
+            {hasQuiz ? (
+              <ProgressStep label="Pass quiz" done={quizPassed} active={videoComplete && !quizPassed} locked={!videoComplete} />
+            ) : (
+              <ProgressStep label="Quiz not required" done={videoComplete} locked={!videoComplete} />
+            )}
+            <ProgressStep label="Week complete" done={weekComplete} locked={!weekComplete} />
           </div>
 
           <hr style={s.divider} />
 
           <div style={s.sidebarSection}>
             <div style={s.sidebarHeading}>Quiz</div>
-            {!videoComplete ? (
+            {!hasQuiz ? (
+              <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5 }}>
+                No quiz for this week. This week is complete after finishing the video.
+              </p>
+            ) : !videoComplete ? (
               <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5 }}>
                 Finish the video to unlock the quiz.
               </p>
