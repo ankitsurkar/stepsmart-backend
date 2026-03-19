@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { sendHeartbeat } from '../utils/api';
 
 const HEARTBEAT_INTERVAL = 10;           // seconds per segment
-const ATTENTION_INTERVAL_MS = 3 * 60 * 1000; // 3 minutes
 
 const s = {
   // ── Outer wrapper ─────────────────────────────────────────────────────────
@@ -59,32 +58,6 @@ const s = {
     outline: 'none',
   },
 
-  // ── Attention-check modal ─────────────────────────────────────────────────
-  modalOverlay: {
-    position: 'absolute', inset: 0, background: 'rgba(15,30,60,0.88)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20,
-    backdropFilter: 'blur(4px)',
-  },
-  modalCard: {
-    background: 'var(--card)', borderRadius: '16px', padding: '2rem',
-    textAlign: 'center', maxWidth: '300px', width: '90%',
-    boxShadow: 'var(--shadow-lg)',
-    border: '1px solid var(--border)',
-  },
-  modalIcon: {
-    width: '48px', height: '48px', borderRadius: '50%',
-    background: 'var(--accent)', margin: '0 auto 1rem',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '1.4rem',
-  },
-  modalTitle: { fontSize: '1rem', fontWeight: 800, color: 'var(--foreground)', marginBottom: '0.4rem' },
-  modalSub: { color: 'var(--muted-foreground)', fontSize: '0.85rem', marginBottom: '1.25rem', lineHeight: 1.5 },
-  modalBtn: {
-    background: 'var(--primary)', color: 'var(--primary-foreground)',
-    border: 'none', borderRadius: '8px', padding: '0.7rem 1.5rem',
-    cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, width: '100%',
-  },
-
   // ── Completion banner ─────────────────────────────────────────────────────
   completionBanner: {
     background: 'var(--success-light)', color: 'var(--success-fg)',
@@ -99,12 +72,10 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   const wrapperRef = useRef(null);
   const watchedSegmentsRef = useRef(new Set());
   const heartbeatTimerRef = useRef(null);
-  const attentionTimerRef = useRef(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [completionPct, setCompletionPct] = useState(0);
   const [videoComplete, setVideoComplete] = useState(false);
-  const [attentionCheck, setAttentionCheck] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
 
@@ -147,7 +118,6 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
 
     return () => {
       clearInterval(heartbeatTimerRef.current);
-      clearTimeout(attentionTimerRef.current);
       if (playerInstanceRef.current) { playerInstanceRef.current.destroy(); playerInstanceRef.current = null; }
     };
   }, [videoId]);
@@ -191,11 +161,9 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     if (event.data === 1) {          // PLAYING
       setIsPlaying(true);
       startHeartbeat();
-      startAttentionTimer();
     } else {
       setIsPlaying(false);
       stopHeartbeat();
-      clearTimeout(attentionTimerRef.current);
     }
   }
 
@@ -204,14 +172,6 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     heartbeatTimerRef.current = setInterval(fireHeartbeat, HEARTBEAT_INTERVAL * 1000);
   }
   function stopHeartbeat() { clearInterval(heartbeatTimerRef.current); }
-
-  function startAttentionTimer() {
-    clearTimeout(attentionTimerRef.current);
-    attentionTimerRef.current = setTimeout(() => {
-      playerInstanceRef.current?.pauseVideo();
-      setAttentionCheck(true);
-    }, ATTENTION_INTERVAL_MS);
-  }
 
   const fireHeartbeat = useCallback(async () => {
     const player = playerInstanceRef.current;
@@ -275,16 +235,10 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     }
   }
 
-  function handleAttentionConfirm() {
-    setAttentionCheck(false);
-    playerInstanceRef.current?.playVideo();
-  }
-
   function handleSpeedChange(rate) {
     playerInstanceRef.current?.setPlaybackRate(rate);
     setPlaybackRate(rate);
   }
-
   return (
     <div
       ref={wrapperRef}
@@ -299,19 +253,6 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
         {!seekAllowed && <div style={s.titleBlock} />}
         {/* Seekbar block overlay */}
         {!seekAllowed && <div style={s.seekbarBlock} />}
-        {/* Attention modal */}
-        {attentionCheck && (
-          <div style={s.modalOverlay}>
-            <div style={s.modalCard}>
-              <div style={s.modalIcon}>👋</div>
-              <div style={s.modalTitle}>Still watching?</div>
-              <div style={s.modalSub}>The video paused to confirm you're still there.</div>
-              <button style={s.modalBtn} onClick={handleAttentionConfirm}>
-                Yes, continue watching
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Controls */}

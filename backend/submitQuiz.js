@@ -27,12 +27,12 @@ const ddb = DynamoDBDocumentClient.from(ddbClient, {
 });
 
 const PROGRESS_TABLE = process.env.PROGRESS_TABLE || 'lms-progress';
-const COURSES_TABLE  = process.env.COURSES_TABLE  || 'lms-courses';
-const FRONTEND_URL   = process.env.FRONTEND_URL   || 'https://stepsmart.net';
+const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
 
 function corsHeaders() {
   return {
-    'Access-Control-Allow-Origin':  FRONTEND_URL,
+    'Access-Control-Allow-Origin': FRONTEND_URL,
     'Access-Control-Allow-Headers': 'Content-Type,Authorization',
     'Access-Control-Allow-Methods': 'POST,OPTIONS',
   };
@@ -108,12 +108,14 @@ exports.handler = async (event) => {
 
   // Step 3: Grade — compare submitted answers against the stored correctIndex.
   let correct = 0;
+  const correctAnswers = {};
   for (const q of questions) {
+    correctAnswers[q.id] = q.correctIndex;
     if (answers[q.id] === q.correctIndex) correct++;
   }
 
-  const total  = questions.length;
-  const pct    = Math.round((correct / total) * 100);
+  const total = questions.length;
+  const pct = Math.round((correct / total) * 100);
   const passed = pct >= PASSING_PCT;
 
   // Step 4: Persist the result. Always save, never block retries.
@@ -131,10 +133,10 @@ exports.handler = async (event) => {
       `,
       ExpressionAttributeValues: {
         ':passed': passed,
-        ':score':  correct,
-        ':total':  total,
-        ':now':    new Date().toISOString(),
-        ':one':    1,
+        ':score': correct,
+        ':total': total,
+        ':now': new Date().toISOString(),
+        ':one': 1,
       },
       ReturnValues: 'UPDATED_NEW',
     }));
@@ -144,5 +146,5 @@ exports.handler = async (event) => {
     // The student can retry and the write will succeed on the next attempt.
   }
 
-  return res(200, { passed, score: correct, total, pct });
+  return res(200, { passed, score: correct, total, pct, correctAnswers });
 };
