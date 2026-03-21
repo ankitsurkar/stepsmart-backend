@@ -106,12 +106,13 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
       if (initialProgress.videoComplete) {
         setVideoComplete(true);
         quizUnlockedRef.current = true;
+        onQuizUnlock?.();
       }
       if (initialProgress.duration) {
         const total = Math.ceil(initialProgress.duration / HEARTBEAT_INTERVAL);
         const pct = Math.min(Math.round((watchedSegmentsRef.current.size / total) * 100), 100);
         setCompletionPct(pct);
-        if (pct >= 50) quizUnlockedRef.current = true;
+        if (pct >= 50) { quizUnlockedRef.current = true; onQuizUnlock?.(); }
       }
     }
   }, [initialProgress]);
