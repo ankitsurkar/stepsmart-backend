@@ -64,28 +64,7 @@ exports.handler = async (event) => {
     return res(400, { message: 'Missing required fields: courseId, weekId, answers' });
   }
 
-  const progressPk = `USER#${userId}`;
-  const progressSk = `PROGRESS#${courseId}#${weekId}`;
-
-  // Step 1: Verify the student has watched at least 90% of the video.
-  //         The quiz gate lives on the server — a UI bypass cannot circumvent this.
-  let progressItem;
-  try {
-    const r = await ddb.send(new GetCommand({
-      TableName: PROGRESS_TABLE,
-      Key: { pk: progressPk, sk: progressSk },
-    }));
-    progressItem = r.Item;
-  } catch (err) {
-    console.error('getProgress error:', err);
-    return res(500, { message: 'Failed to verify video completion' });
-  }
-
-  if (!progressItem?.videoComplete) {
-    return res(403, { message: 'You must complete the video before taking the quiz.' });
-  }
-
-  // Step 2: Fetch the correct answers from DynamoDB.
+  // Step 1: Fetch the correct answers from DynamoDB.
   //         These never leave this Lambda — they are not included in the response.
   let weekItem;
   try {
@@ -117,6 +96,9 @@ exports.handler = async (event) => {
   const total = questions.length;
   const pct = Math.round((correct / total) * 100);
   const passed = pct >= PASSING_PCT;
+
+  const progressPk = `USER#${userId}`;
+  const progressSk = `PROGRESS#${courseId}#${weekId}`;
 
   // Step 4: Persist the result. Always save, never block retries.
   //         ADD quizAttempts increments atomically — no race condition if two tabs submit.

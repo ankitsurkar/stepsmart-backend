@@ -132,10 +132,11 @@ export default function AssignmentUpload({ courseId, weekId }) {
       const ext      = fileExt(selectedFile.name);
       const mimeType = MIME_MAP[ext] || selectedFile.type;
 
-      const { data } = await uploadAssignment(courseId, weekId, selectedFile.name, mimeType, fileBase64);
+      const uploadedName = selectedFile.name;
+      await uploadAssignment(courseId, weekId, uploadedName, mimeType, fileBase64);
 
       setUploadPct(100);
-      setSuccessMsg(`"${data.fileName}" uploaded successfully.`);
+      setSuccessMsg(`"${uploadedName}" uploaded successfully.`);
       setSelectedFile(null);
       if (inputRef.current) inputRef.current.value = '';
     } catch (err) {
