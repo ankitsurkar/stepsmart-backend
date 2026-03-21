@@ -505,13 +505,34 @@ function WeeksTab() {
 // Progress Tab
 // ────────────────────────────────────────────────────────────────────────────────
 function ProgressTab() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [data,     setData]     = useState([]);
+  const [students, setStudents] = useState({});   // userId → name
+  const [weeks,    setWeeks]    = useState({});    // weekId → title
+  const [loading,  setLoading]  = useState(true);
+  const [error,    setError]    = useState('');
 
   useEffect(() => { load(); }, []);
   async function load() {
-    try { const res = await adminGetAllProgress(COURSE_ID); setData(res.data.progress || []); }
+    try {
+      const [progressRes, studentsRes, weeksRes] = await Promise.all([
+        adminGetAllProgress(COURSE_ID),
+        adminGetStudents(),
+        adminGetWeeks(COURSE_ID),
+      ]);
+      setData(progressRes.data.progress || []);
+
+      const studentMap = {};
+      for (const st of (studentsRes.data.students || [])) {
+        studentMap[st.Username] = st.name || st.email || st.Username;
+      }
+      setStudents(studentMap);
+
+      const weekMap = {};
+      for (const w of (weeksRes.data.weeks || [])) {
+        weekMap[w.weekId] = `Week ${w.weekNumber} – ${w.title}`;
+      }
+      setWeeks(weekMap);
+    }
     catch { setError('Failed to load progress data.'); }
     finally { setLoading(false); }
   }
@@ -526,7 +547,7 @@ function ProgressTab() {
         <table style={s.table}>
           <thead>
             <tr>
-              <th style={s.th}>User ID</th>
+              <th style={s.th}>Student</th>
               <th style={s.th}>Week</th>
               <th style={s.th}>Video</th>
               <th style={s.th}>Quiz</th>
@@ -537,8 +558,8 @@ function ProgressTab() {
           <tbody>
             {data.map((p, i) => (
               <tr key={i}>
-                <td style={s.td} title={p.userId}>{p.userId?.slice(0, 8)}…</td>
-                <td style={s.td}>{p.weekId}</td>
+                <td style={s.td}>{students[p.userId] || p.userId?.slice(0, 8) + '…'}</td>
+                <td style={s.td}>{weeks[p.weekId] || p.weekId}</td>
                 <td style={s.td}>
                   <span style={{ ...s.badge, ...(p.videoComplete ? s.badgeSuccess : s.badgeInfo) }}>
                     {p.videoComplete ? 'Done' : `${p.watchedSegments?.length || 0} segs`}
