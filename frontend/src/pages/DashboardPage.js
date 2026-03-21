@@ -97,10 +97,14 @@ const BADGE = {
   'not-started':{ label: 'Not Started',  bg: 'var(--muted)',         color: 'var(--muted-foreground)' },
 };
 
-function weekStatus(progress) {
+function hasQuiz(week) {
+  return (week?.quiz?.questions || []).length > 0;
+}
+
+function weekStatus(week, progress) {
   if (!progress) return 'not-started';
   if (progress.quizPassed)   return 'complete';
-  if (progress.videoComplete) return 'quiz-ready';
+  if (progress.videoComplete) return hasQuiz(week) ? 'quiz-ready' : 'complete';
   if (progress.watchedSegments?.length > 0) return 'in-progress';
   return 'not-started';
 }
@@ -171,7 +175,11 @@ export default function DashboardPage() {
   if (loading) return <div style={s.loading}>Loading your courses…</div>;
   if (error)   return <div style={s.error}>{error}</div>;
 
-  const completedCount = weeks.filter((w) => progressMap[w.weekId]?.quizPassed).length;
+  const completedCount = weeks.filter((w) => {
+    const p = progressMap[w.weekId];
+    if (!p) return false;
+    return hasQuiz(w) ? !!p.quizPassed : !!p.videoComplete;
+  }).length;
 
   return (
     <div style={s.page}>
@@ -211,7 +219,7 @@ export default function DashboardPage() {
         ) : (
           weeks.map((week) => {
             const progress = progressMap[week.weekId];
-            const status = weekStatus(progress);
+            const status = weekStatus(week, progress);
             const isLocked = !week.visible;
             const isComplete = status === 'complete';
             return (
