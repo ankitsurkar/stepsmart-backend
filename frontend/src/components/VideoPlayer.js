@@ -147,15 +147,37 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
 
   // Assign to ref on every render so the interval and YT callbacks always
   // use the latest values of videoComplete, onVideoComplete, etc.
+  function checkAndMarkComplete(pct) {
+    if (pct >= 80 && !videoComplete) {
+      setVideoComplete(true);
+      setSeekAllowed(true);
+      onVideoComplete?.();
+    }
+  }
+
   onStateChangeRef.current = function (event) {
     if (event.data === 1) {          // PLAYING
       setIsPlaying(true);
-      // Anchor the gap-fill starting point to where we are right now,
-      // so the first heartbeat after play/resume fills correctly.
       lastHeartbeatTimeRef.current = Math.floor(playerInstanceRef.current?.getCurrentTime() ?? 0);
       startHeartbeat();
     } else {
       setIsPlaying(false);
+      if (event.data === 0) {        // ENDED — fill remaining segments up to video end
+        const player = playerInstanceRef.current;
+        if (player) {
+          const duration = Math.floor(player.getDuration());
+          if (duration) {
+            const totalSegments = Math.ceil(duration / HEARTBEAT_INTERVAL);
+            const startSeg = Math.floor(lastHeartbeatTimeRef.current / HEARTBEAT_INTERVAL);
+            for (let seg = startSeg; seg < totalSegments; seg++) {
+              watchedSegmentsRef.current.add(seg);
+            }
+            const pct = Math.min(Math.round((watchedSegmentsRef.current.size / totalSegments) * 100), 100);
+            setCompletionPct(pct);
+            checkAndMarkComplete(pct);
+          }
+        }
+      }
       stopHeartbeat();
     }
   };
@@ -169,7 +191,7 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
 
     // Fill every segment between the previous heartbeat position and now.
     // At 1.25x or 1.5x the video advances faster than the 10-second interval,
-    // so without this, segments are skipped and completion never reaches 90%.
+    // so without this, segments are skipped and completion never reaches 80%.
     const prevTime = lastHeartbeatTimeRef.current;
     lastHeartbeatTimeRef.current = currentTime;
     const startSeg = Math.floor(prevTime / HEARTBEAT_INTERVAL);
@@ -179,17 +201,12 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     }
 
     const totalSegments = Math.ceil(duration / HEARTBEAT_INTERVAL);
-
     const pct = Math.min(Math.round((watchedSegmentsRef.current.size / totalSegments) * 100), 100);
     setCompletionPct(pct);
 
     try { await sendHeartbeat(courseId, weekId, currentTime, duration); } catch { /* retry next interval */ }
 
-    if (pct >= 90 && !videoComplete) {
-      setVideoComplete(true);
-      setSeekAllowed(true);
-      onVideoComplete?.();
-    }
+    checkAndMarkComplete(pct);
   };
 
   function startHeartbeat() {
