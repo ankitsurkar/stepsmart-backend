@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { getCourseWeeks, getProgress } from '../utils/api';
 import VideoPlayer from '../components/VideoPlayer';
 import QuizComponent from '../components/QuizComponent';
+import AssignmentUpload from '../components/AssignmentUpload';
 
 const s = {
   page: { minHeight: '100vh', background: 'var(--background)' },
@@ -130,6 +131,7 @@ export default function LearnPage() {
   const [week, setWeek] = useState(null);
   const [progress, setProgress] = useState(null);
   const [videoComplete, setVideoComplete] = useState(false);
+  const [quizUnlocked, setQuizUnlocked] = useState(false);
   const [quizPassed, setQuizPassed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -151,6 +153,8 @@ export default function LearnPage() {
       setProgress(weekProgress);
       setVideoComplete(weekProgress?.videoComplete || false);
       setQuizPassed(weekProgress?.quizPassed || false);
+      // Quiz unlocks once 50 % of the video has been watched (or if already complete)
+      setQuizUnlocked(weekProgress?.videoComplete || false);
     } catch { setError('Failed to load this week. Please try again.'); }
     finally { setLoading(false); }
   }
@@ -185,6 +189,7 @@ export default function LearnPage() {
               weekId={weekId}
               initialProgress={progress}
               onVideoComplete={() => setVideoComplete(true)}
+              onQuizUnlock={() => setQuizUnlocked(true)}
             />
           ) : (
             <div style={s.noVideo}>No video has been attached to this week yet.</div>
@@ -211,6 +216,8 @@ export default function LearnPage() {
               </div>
             </div>
           )}
+
+          <AssignmentUpload courseId={courseId} weekId={weekId} />
         </div>
 
         {/* Sidebar */}
@@ -219,7 +226,7 @@ export default function LearnPage() {
             <div style={s.sidebarHeading}>Your progress</div>
             <ProgressStep label="Watch video" done={videoComplete} active={!videoComplete} />
             {hasQuiz ? (
-              <ProgressStep label="Pass quiz" done={quizPassed} active={videoComplete && !quizPassed} locked={!videoComplete} />
+              <ProgressStep label="Pass quiz" done={quizPassed} active={quizUnlocked && !quizPassed} locked={!quizUnlocked} />
             ) : (
               <ProgressStep label="Quiz not required" done={videoComplete} locked={!videoComplete} />
             )}
@@ -234,9 +241,9 @@ export default function LearnPage() {
               <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5 }}>
                 No quiz for this week. This week is complete after finishing the video.
               </p>
-            ) : !videoComplete ? (
+            ) : !quizUnlocked ? (
               <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5 }}>
-                Finish the video to unlock the quiz.
+                Watch 50% of the video to unlock the quiz.
               </p>
             ) : (
               <QuizComponent

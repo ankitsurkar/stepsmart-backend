@@ -66,15 +66,16 @@ const s = {
   },
 };
 
-export default function VideoPlayer({ videoId, courseId, weekId, initialProgress, onVideoComplete }) {
+export default function VideoPlayer({ videoId, courseId, weekId, initialProgress, onVideoComplete, onQuizUnlock }) {
   const playerRef = useRef(null);
   const playerInstanceRef = useRef(null);
   const wrapperRef = useRef(null);
   const watchedSegmentsRef = useRef(new Set());
   const heartbeatTimerRef = useRef(null);
   const lastHeartbeatTimeRef = useRef(0);  // video-time (seconds) at last heartbeat
-  const fireHeartbeatRef = useRef(null);   // always points to the latest heartbeat logic
-  const onStateChangeRef = useRef(null);   // always points to the latest state-change handler
+  const fireHeartbeatRef   = useRef(null);  // always points to the latest heartbeat logic
+  const onStateChangeRef   = useRef(null);  // always points to the latest state-change handler
+  const quizUnlockedRef    = useRef(false); // fired once when pct hits 50%
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [completionPct, setCompletionPct] = useState(0);
@@ -102,10 +103,15 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   useEffect(() => {
     if (initialProgress?.watchedSegments) {
       watchedSegmentsRef.current = new Set(initialProgress.watchedSegments);
-      if (initialProgress.videoComplete) setVideoComplete(true);
+      if (initialProgress.videoComplete) {
+        setVideoComplete(true);
+        quizUnlockedRef.current = true;
+      }
       if (initialProgress.duration) {
         const total = Math.ceil(initialProgress.duration / HEARTBEAT_INTERVAL);
-        setCompletionPct(Math.min(Math.round((watchedSegmentsRef.current.size / total) * 100), 100));
+        const pct = Math.min(Math.round((watchedSegmentsRef.current.size / total) * 100), 100);
+        setCompletionPct(pct);
+        if (pct >= 50) quizUnlockedRef.current = true;
       }
     }
   }, [initialProgress]);
@@ -148,6 +154,10 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   // Assign to ref on every render so the interval and YT callbacks always
   // use the latest values of videoComplete, onVideoComplete, etc.
   function checkAndMarkComplete(pct) {
+    if (pct >= 50 && !quizUnlockedRef.current) {
+      quizUnlockedRef.current = true;
+      onQuizUnlock?.();
+    }
     if (pct >= 80 && !videoComplete) {
       setVideoComplete(true);
       setSeekAllowed(true);

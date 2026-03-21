@@ -78,4 +78,9 @@ export const adminDeleteWeek = (courseId, weekId) =>
 export const adminGetAllProgress = (courseId) =>
   api.get(`/admin/courses/${courseId}/progress`);
 
+// ─── Assignments ──────────────────────────────────────────────────────────────
+
+export const uploadAssignment = (courseId, weekId, fileName, mimeType, fileBase64) =>
+  api.post('/assignments/upload', { courseId, weekId, fileName, mimeType, fileBase64 });
+
 export default api;
