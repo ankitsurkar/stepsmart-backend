@@ -41,7 +41,6 @@ const ddb = DynamoDBDocumentClient.from(
 );
 
 const ASSIGNMENTS_TABLE = process.env.ASSIGNMENTS_TABLE || 'lms-assignments';
-const FRONTEND_URL      = process.env.FRONTEND_URL      || 'https://stepsmart.net';
 const MAX_FILE_BYTES    = 7 * 1024 * 1024; // 7 MB original-file limit
 
 const ALLOWED_MIME_TYPES = new Set([
@@ -56,7 +55,7 @@ const ALLOWED_MIME_TYPES = new Set([
 
 function corsHeaders() {
   return {
-    'Access-Control-Allow-Origin':  FRONTEND_URL,
+    'Access-Control-Allow-Origin':  '*',
     'Access-Control-Allow-Headers': 'Content-Type,Authorization',
     'Access-Control-Allow-Methods': 'POST,OPTIONS',
   };
@@ -91,16 +90,20 @@ exports.handler = async (event) => {
 
   try {
     // POST to the Apps Script web-app. fetch() is available natively in Node 18.
-    // AbortSignal timeout ensures we respond well within API Gateway's 29 s hard limit.
-    const scriptRes = await fetch(scriptUrl, {
+    // Promise.race enforces a 25 s deadline so we always respond before API Gateway's
+    // hard 29 s integration timeout (which returns a 504 with no CORS headers).
+    const fetchPromise = fetch(scriptUrl, {
       method:   'POST',
       headers:  { 'Content-Type': 'application/json' },
       redirect: 'follow',
-      signal:   AbortSignal.timeout(26000),
       body:     JSON.stringify({
         secret: scriptSecret, courseId, weekId, userId, fileName, mimeType, fileBase64,
       }),
     });
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Apps Script timeout')), 25000)
+    );
+    const scriptRes = await Promise.race([fetchPromise, timeoutPromise]);
 
     const result = await scriptRes.json();
     if (!result.ok) {

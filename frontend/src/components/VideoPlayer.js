@@ -77,6 +77,13 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   const onStateChangeRef   = useRef(null);  // always points to the latest state-change handler
   const quizUnlockedRef    = useRef(false); // fired once when pct hits 50%
 
+  // Resume position: last watched segment converted to seconds, computed once at mount.
+  const resumeTimeRef = useRef(
+    initialProgress?.watchedSegments?.length > 0
+      ? Math.max(...initialProgress.watchedSegments) * HEARTBEAT_INTERVAL
+      : 0
+  );
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [completionPct, setCompletionPct] = useState(0);
   const [videoComplete, setVideoComplete] = useState(false);
@@ -123,8 +130,8 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
       tag.src = 'https://www.youtube.com/iframe_api';
       document.head.appendChild(tag);
     }
-    window.onYouTubeIframeAPIReady = initPlayer;
-    if (window.YT?.Player) initPlayer();
+    window.onYouTubeIframeAPIReady = () => initPlayer(resumeTimeRef.current);
+    if (window.YT?.Player) initPlayer(resumeTimeRef.current);
 
     return () => {
       clearInterval(heartbeatTimerRef.current);
