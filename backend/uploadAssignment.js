@@ -24,28 +24,7 @@
 //      GOOGLE_SCRIPT_SECRET = <the same SECRET string from the script>
 //
 // ── Apps Script code ──────────────────────────────────────────────────────
-// const FOLDER_ID = 'YOUR_DRIVE_FOLDER_ID';
-// const SECRET    = 'YOUR_SECRET_TOKEN';
-//
-// function doPost(e) {
-//   try {
-//     const d = JSON.parse(e.postData.contents);
-//     if (d.secret !== SECRET) return json({ ok: false, error: 'Unauthorized' });
-//     const blob = Utilities.newBlob(
-//       Utilities.base64Decode(d.fileBase64), d.mimeType,
-//       `${d.courseId}_${d.weekId}_${d.userId}_${d.fileName}`
-//     );
-//     const file = DriveApp.getFolderById(FOLDER_ID).createFile(blob);
-//     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-//     return json({ ok: true, fileId: file.getId(), fileUrl: file.getUrl() });
-//   } catch (err) {
-//     return json({ ok: false, error: err.toString() });
-//   }
-// }
-// function json(obj) {
-//   return ContentService.createTextOutput(JSON.stringify(obj))
-//     .setMimeType(ContentService.MimeType.JSON);
-// }
+c
 // ──────────────────────────────────────────────────────────────────────────
 //
 // Required environment variables:
@@ -112,10 +91,12 @@ exports.handler = async (event) => {
 
   try {
     // POST to the Apps Script web-app. fetch() is available natively in Node 18.
+    // AbortSignal timeout ensures we respond well within API Gateway's 29 s hard limit.
     const scriptRes = await fetch(scriptUrl, {
       method:   'POST',
       headers:  { 'Content-Type': 'application/json' },
       redirect: 'follow',
+      signal:   AbortSignal.timeout(26000),
       body:     JSON.stringify({
         secret: scriptSecret, courseId, weekId, userId, fileName, mimeType, fileBase64,
       }),
