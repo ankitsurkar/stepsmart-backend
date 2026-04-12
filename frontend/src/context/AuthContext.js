@@ -6,6 +6,8 @@ import {
   confirmSignIn,
   getCurrentUser,
   fetchAuthSession,
+  fetchUserAttributes,
+  updateUserAttributes,
 } from 'aws-amplify/auth';
 import awsConfig from '../config/aws-config';
 
@@ -19,6 +21,25 @@ export function AuthProvider({ children }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);   // true while checking persisted session
 
+  async function loadAuthenticatedUser() {
+    const currentUser = await getCurrentUser();
+    const [session, attributes] = await Promise.all([
+      fetchAuthSession(),
+      fetchUserAttributes(),
+    ]);
+    const groups = session.tokens?.idToken?.payload?.['cognito:groups'] || [];
+    const nextUser = {
+      ...currentUser,
+      profileName: attributes?.name || '',
+      email: attributes?.email || '',
+    };
+
+    setUser(nextUser);
+    setIsAdmin(Array.isArray(groups) ? groups.includes('admins') : groups === 'admins');
+
+    return nextUser;
+  }
+
   // On mount, check whether there's already a valid session (page refresh or tab reopen).
   useEffect(() => {
     restoreSession();
@@ -26,11 +47,7 @@ export function AuthProvider({ children }) {
 
   async function restoreSession() {
     try {
-      const currentUser = await getCurrentUser();
-      const session = await fetchAuthSession();
-      const groups = session.tokens?.idToken?.payload?.['cognito:groups'] || [];
-      setUser(currentUser);
-      setIsAdmin(Array.isArray(groups) ? groups.includes('admins') : groups === 'admins');
+      await loadAuthenticatedUser();
     } catch {
       // No active session — user needs to log in.
       setUser(null);
@@ -54,11 +71,7 @@ export function AuthProvider({ children }) {
         return { requiresNewPassword: true };
       }
 
-      const currentUser = await getCurrentUser();
-      const session = await fetchAuthSession();
-      const groups = session.tokens?.idToken?.payload?.['cognito:groups'] || [];
-      setUser(currentUser);
-      setIsAdmin(Array.isArray(groups) ? groups.includes('admins') : groups === 'admins');
+      await loadAuthenticatedUser();
       return { success: true };
     } catch (err) {
       return { error: err.message || 'Login failed' };
@@ -70,14 +83,29 @@ export function AuthProvider({ children }) {
   async function completeNewPassword(newPassword) {
     try {
       await confirmSignIn({ challengeResponse: newPassword });
-      const currentUser = await getCurrentUser();
-      const session = await fetchAuthSession();
-      const groups = session.tokens?.idToken?.payload?.['cognito:groups'] || [];
-      setUser(currentUser);
-      setIsAdmin(Array.isArray(groups) ? groups.includes('admins') : groups === 'admins');
+      await loadAuthenticatedUser();
       return { success: true };
     } catch (err) {
       return { error: err.message || 'Password reset failed' };
+    }
+  }
+
+  async function updateDisplayName(name) {
+    const nextName = name.trim();
+    if (!nextName) {
+      return { error: 'Display name cannot be empty.' };
+    }
+
+    try {
+      await updateUserAttributes({
+        userAttributes: {
+          name: nextName,
+        },
+      });
+      await loadAuthenticatedUser();
+      return { success: true };
+    } catch (err) {
+      return { error: err.message || 'Failed to update display name.' };
     }
   }
 
@@ -88,7 +116,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, loading, login, completeNewPassword, logout }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, login, completeNewPassword, updateDisplayName, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -2,6 +2,28 @@ import React, { useEffect, useRef, useState } from 'react';
 import { sendHeartbeat } from '../utils/api';
 
 const HEARTBEAT_INTERVAL = 10;           // seconds per segment
+let youtubeApiReadyPromise = null;
+
+function ensureYouTubeApi() {
+  if (window.YT?.Player) return Promise.resolve(window.YT);
+
+  if (!youtubeApiReadyPromise) {
+    youtubeApiReadyPromise = new Promise((resolve) => {
+      window.onYouTubeIframeAPIReady = () => {
+        resolve(window.YT);
+        youtubeApiReadyPromise = Promise.resolve(window.YT);
+      };
+
+      if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(tag);
+      }
+    });
+  }
+
+  return youtubeApiReadyPromise;
+}
 
 const s = {
   // ── Outer wrapper ─────────────────────────────────────────────────────────
@@ -9,18 +31,25 @@ const s = {
     borderRadius: '12px', overflow: 'hidden',
     border: '1px solid var(--border)', boxShadow: 'var(--shadow-md)',
     background: '#000',
+    outline: 'none',
   },
 
   // ── 16:9 video box ────────────────────────────────────────────────────────
   aspectBox: { position: 'relative', paddingBottom: '56.25%', height: 0, background: '#000' },
   iframe: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' },
+  surfaceBlock: {
+    position: 'absolute',
+    inset: 0,
+    zIndex: 5,
+    background: 'transparent',
+    cursor: 'pointer',
+  },
 
   // Transparent overlay that absorbs clicks on YouTube's seekbar area (bottom 80px).
   seekbarBlock: {
     position: 'absolute', bottom: 0, left: 0, right: 0, height: '80px',
     zIndex: 10, cursor: 'not-allowed', background: 'transparent',
   },
-// Making dummy update to trigger redeploy and test production build, since YouTube blocking seems to only happen in prod for some reason. Will remove this comment after confirming the fix works
   // Transparent overlay that absorbs clicks on YouTube's top title area (top 80px).
   titleBlock: {
     position: 'absolute', top: 0, left: 0, right: 0, height: '80px',
@@ -43,14 +72,41 @@ const s = {
     color: '#fff',
     border: '1px solid rgba(255,255,255,0.2)',
   },
+  btnDisabled: {
+    opacity: 0.45,
+    cursor: 'not-allowed',
+  },
   // Progress track
   progressTrack: {
-    flex: 1, height: '6px', background: 'rgba(255,255,255,0.2)',
-    borderRadius: '3px', overflow: 'hidden',
+    position: 'relative',
+    flex: 1,
+    height: '8px',
+    background: 'rgba(255,255,255,0.2)',
+    borderRadius: '999px',
+    overflow: 'visible',
+    touchAction: 'none',
   },
-  progressFill: { height: '100%', borderRadius: '3px', transition: 'width 0.5s', background: 'var(--primary)' },
+  progressFill: { height: '100%', borderRadius: '999px', transition: 'width 0.2s linear', background: 'var(--primary)' },
   progressFillComplete: { background: 'var(--success)' },
-  pctLabel: { color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', minWidth: '36px', textAlign: 'right' },
+  progressThumb: {
+    position: 'absolute',
+    top: '50%',
+    width: '16px',
+    height: '16px',
+    borderRadius: '999px',
+    border: '2px solid rgba(255,255,255,0.95)',
+    boxShadow: '0 0 0 4px rgba(0,0,0,0.16)',
+    transform: 'translateY(-50%)',
+    transition: 'left 0.2s linear, opacity 0.2s linear',
+    pointerEvents: 'none',
+  },
+  timeLabel: {
+    color: 'rgba(255,255,255,0.72)',
+    fontSize: '0.78rem',
+    minWidth: '88px',
+    textAlign: 'right',
+    fontVariantNumeric: 'tabular-nums',
+  },
   speedSelect: {
     background: 'rgba(255,255,255,0.12)', color: '#fff',
     border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px',
@@ -64,18 +120,32 @@ const s = {
     padding: '0.65rem 1rem', fontSize: '0.875rem', textAlign: 'center', fontWeight: 600,
     borderTop: '1px solid var(--border)',
   },
+  hintBanner: {
+    background: 'rgba(255,255,255,0.06)',
+    color: 'rgba(255,255,255,0.72)',
+    padding: '0.65rem 1rem',
+    fontSize: '0.8rem',
+    textAlign: 'center',
+    borderTop: '1px solid rgba(255,255,255,0.08)',
+  },
 };
 
 export default function VideoPlayer({ videoId, courseId, weekId, initialProgress, onVideoComplete, onQuizUnlock }) {
   const playerRef = useRef(null);
   const playerInstanceRef = useRef(null);
   const wrapperRef = useRef(null);
+  const progressTrackRef = useRef(null);
   const watchedSegmentsRef = useRef(new Set());
   const heartbeatTimerRef = useRef(null);
+  const uiTimerRef = useRef(null);
   const lastHeartbeatTimeRef = useRef(0);  // video-time (seconds) at last heartbeat
   const fireHeartbeatRef   = useRef(null);  // always points to the latest heartbeat logic
   const onStateChangeRef   = useRef(null);  // always points to the latest state-change handler
   const quizUnlockedRef    = useRef(false); // fired once when pct hits 50%
+  const playbackRateRef    = useRef(1);
+  const wasPlayingBeforeScrubRef = useRef(false);
+  const activePointerIdRef = useRef(null);
+  const playerRecoveryCountRef = useRef(0);
 
   // Resume position: last watched segment converted to seconds, computed once at mount.
   const resumeTimeRef = useRef(
@@ -89,9 +159,13 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   const [videoComplete, setVideoComplete] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [currentTime, setCurrentTime] = useState(resumeTimeRef.current);
+  const [duration, setDuration] = useState(initialProgress?.duration || 0);
+  const [isScrubbing, setIsScrubbing] = useState(false);
+  const [playerNonce, setPlayerNonce] = useState(0);
 
-  // If the user already completed the video on a previous visit, seeking is allowed.
-  // We only set this to true initially, or mid-session when they hit 90%.
+  // If the user already completed the video on a previous visit, custom seeking is allowed.
+  // We only set this to true initially, or mid-session when the lesson is marked complete.
   const [seekAllowed, setSeekAllowed] = useState(initialProgress?.videoComplete === true);
 
   useEffect(() => {
@@ -112,10 +186,12 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
       watchedSegmentsRef.current = new Set(initialProgress.watchedSegments);
       if (initialProgress.videoComplete) {
         setVideoComplete(true);
+        setSeekAllowed(true);
         quizUnlockedRef.current = true;
         onQuizUnlock?.();
       }
       if (initialProgress.duration) {
+        setDuration(initialProgress.duration);
         const total = Math.ceil(initialProgress.duration / HEARTBEAT_INTERVAL);
         const pct = Math.min(Math.round((watchedSegmentsRef.current.size / total) * 100), 100);
         setCompletionPct(pct);
@@ -125,21 +201,150 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   }, [initialProgress]);
 
   useEffect(() => {
-    if (!window.YT) {
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      document.head.appendChild(tag);
-    }
-    window.onYouTubeIframeAPIReady = () => initPlayer(resumeTimeRef.current);
-    if (window.YT?.Player) initPlayer(resumeTimeRef.current);
+    let cancelled = false;
+    const bootPlayer = () => {
+      let startTime = resumeTimeRef.current;
+      let shouldAutoPlay = false;
+      let currentRate = playbackRateRef.current;
+      const existingPlayer = playerInstanceRef.current;
+
+      if (existingPlayer) {
+        try {
+          startTime = existingPlayer.getCurrentTime() || startTime;
+          shouldAutoPlay = existingPlayer.getPlayerState() === 1;
+          currentRate = existingPlayer.getPlaybackRate?.() || currentRate;
+        } catch {
+          // If the player is not ready yet, fall back to the last known values.
+        }
+        stopHeartbeat();
+        clearInterval(uiTimerRef.current);
+        existingPlayer.destroy();
+        playerInstanceRef.current = null;
+      }
+
+      initPlayer(startTime, shouldAutoPlay, currentRate);
+    };
+
+    ensureYouTubeApi().then(() => {
+      if (!cancelled) bootPlayer();
+    });
 
     return () => {
-      clearInterval(heartbeatTimerRef.current);
-      if (playerInstanceRef.current) { playerInstanceRef.current.destroy(); playerInstanceRef.current = null; }
+      cancelled = true;
     };
+  }, [videoId, playerNonce]);
+
+  useEffect(() => () => {
+    clearInterval(heartbeatTimerRef.current);
+    clearInterval(uiTimerRef.current);
+    if (playerInstanceRef.current) {
+      playerInstanceRef.current.destroy();
+      playerInstanceRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    playbackRateRef.current = playbackRate;
+  }, [playbackRate]);
+
+  useEffect(() => {
+    playerRecoveryCountRef.current = 0;
   }, [videoId]);
 
-  function initPlayer(startTime = 0, autoPlay = false) {
+  useEffect(() => {
+    if (!seekAllowed) return undefined;
+
+    function handleKeyDown(event) {
+      const targetTag = event.target?.tagName;
+      if (targetTag === 'INPUT' || targetTag === 'TEXTAREA' || targetTag === 'SELECT' || event.target?.isContentEditable) {
+        return;
+      }
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        handleRewind();
+      }
+
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        handleForward();
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, [seekAllowed, currentTime, duration]);
+
+  function formatTime(seconds) {
+    const safeSeconds = Math.max(0, Math.floor(seconds || 0));
+    const mins = Math.floor(safeSeconds / 60);
+    const secs = safeSeconds % 60;
+    return `${mins}:${String(secs).padStart(2, '0')}`;
+  }
+
+  function syncTimelineState(forcedTime = null, forcedDuration = null) {
+    const player = playerInstanceRef.current;
+    const nextDuration = Math.max(
+      0,
+      Math.floor(typeof forcedDuration === 'number' ? forcedDuration : player?.getDuration?.() || 0),
+    );
+    const rawTime = typeof forcedTime === 'number' ? forcedTime : player?.getCurrentTime?.() || 0;
+    const nextTime = Math.max(0, Math.min(rawTime, nextDuration || rawTime));
+
+    setDuration(nextDuration);
+    setCurrentTime(nextTime);
+  }
+
+  function startUiTimer() {
+    clearInterval(uiTimerRef.current);
+    uiTimerRef.current = setInterval(() => syncTimelineState(), 250);
+  }
+
+  function stopUiTimer() {
+    clearInterval(uiTimerRef.current);
+  }
+
+  function seekToTime(nextTime) {
+    const player = playerInstanceRef.current;
+    if (!player || !seekAllowed) return;
+
+    const nextDuration = Math.max(duration, Math.floor(player.getDuration() || 0));
+    if (!nextDuration) return;
+
+    const clampedTime = Math.max(0, Math.min(nextTime, nextDuration));
+    player.seekTo(clampedTime, true);
+    lastHeartbeatTimeRef.current = Math.floor(clampedTime);
+    syncTimelineState(clampedTime, nextDuration);
+  }
+
+  function seekFromClientX(clientX) {
+    const track = progressTrackRef.current;
+    if (!track || !seekAllowed) return;
+
+    const rect = track.getBoundingClientRect();
+    if (!rect.width) return;
+
+    const ratio = Math.max(0, Math.min((clientX - rect.left) / rect.width, 1));
+    const nextDuration = Math.max(duration, Math.floor(playerInstanceRef.current?.getDuration?.() || 0));
+    seekToTime(nextDuration * ratio);
+  }
+
+  function finishScrub(pointerId = null) {
+    if (pointerId !== null && activePointerIdRef.current !== pointerId) return;
+    if (pointerId !== null) {
+      progressTrackRef.current?.releasePointerCapture?.(pointerId);
+    }
+
+    activePointerIdRef.current = null;
+    setIsScrubbing(false);
+
+    if (wasPlayingBeforeScrubRef.current) {
+      playerInstanceRef.current?.playVideo();
+    }
+    wasPlayingBeforeScrubRef.current = false;
+  }
+
+  function initPlayer(startTime = 0, autoPlay = false, rate = playbackRateRef.current) {
     if (!playerRef.current) return;
     if (playerInstanceRef.current) playerInstanceRef.current.destroy();
 
@@ -152,10 +357,24 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
         rel: 0,
         modestbranding: 1,
         iv_load_policy: 3,
-        start: Math.floor(startTime),
-        autoplay: autoPlay ? 1 : 0
+        playsinline: 1,
       },
-      events: { onReady: () => {}, onStateChange: (e) => onStateChangeRef.current(e) },
+      events: {
+        onReady: (event) => {
+          if (startTime > 0) event.target.seekTo(startTime, true);
+          if (rate && rate !== 1) event.target.setPlaybackRate(rate);
+          if (autoPlay) event.target.playVideo();
+          syncTimelineState(startTime, event.target.getDuration?.() || 0);
+        },
+        onStateChange: (e) => onStateChangeRef.current(e),
+        onError: () => {
+          if (playerRecoveryCountRef.current >= 1) return;
+          playerRecoveryCountRef.current += 1;
+          window.setTimeout(() => {
+            setPlayerNonce((value) => value + 1);
+          }, 250);
+        },
+      },
     });
   }
 
@@ -178,6 +397,7 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
       setIsPlaying(true);
       lastHeartbeatTimeRef.current = Math.floor(playerInstanceRef.current?.getCurrentTime() ?? 0);
       startHeartbeat();
+      startUiTimer();
     } else {
       setIsPlaying(false);
       if (event.data === 0) {        // ENDED — fill remaining segments up to video end
@@ -193,10 +413,13 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
             const pct = Math.min(Math.round((watchedSegmentsRef.current.size / totalSegments) * 100), 100);
             setCompletionPct(pct);
             checkAndMarkComplete(pct);
+            syncTimelineState(duration, duration);
           }
         }
       }
       stopHeartbeat();
+      stopUiTimer();
+      syncTimelineState();
     }
   };
 
@@ -221,6 +444,7 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     const totalSegments = Math.ceil(duration / HEARTBEAT_INTERVAL);
     const pct = Math.min(Math.round((watchedSegmentsRef.current.size / totalSegments) * 100), 100);
     setCompletionPct(pct);
+    syncTimelineState(currentTime, duration);
 
     try { await sendHeartbeat(courseId, weekId, currentTime, duration); } catch { /* retry next interval */ }
 
@@ -240,18 +464,13 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   }
 
   function handleRewind() {
-    const player = playerInstanceRef.current;
-    if (!player) return;
-    player.seekTo(Math.max(0, player.getCurrentTime() - 10), true);
+    const liveTime = playerInstanceRef.current?.getCurrentTime?.();
+    seekToTime((typeof liveTime === 'number' ? liveTime : currentTime) - 10);
   }
 
   function handleForward() {
-    const player = playerInstanceRef.current;
-    if (!player) return;
-    const duration = player.getDuration();
-    if (duration) {
-      player.seekTo(Math.min(duration, player.getCurrentTime() + 10), true);
-    }
+    const liveTime = playerInstanceRef.current?.getCurrentTime?.();
+    seekToTime((typeof liveTime === 'number' ? liveTime : currentTime) + 10);
   }
 
   function handleFullScreen() {
@@ -276,9 +495,47 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     playerInstanceRef.current?.setPlaybackRate(rate);
     setPlaybackRate(rate);
   }
+
+  function handleSurfaceMouseDown() {
+    wrapperRef.current?.focus?.();
+  }
+
+  function handleSurfaceClick() {
+    wrapperRef.current?.focus?.();
+    handlePlayPause();
+  }
+
+  function handleProgressPointerDown(event) {
+    if (!seekAllowed) return;
+
+    event.preventDefault();
+    activePointerIdRef.current = event.pointerId;
+    wasPlayingBeforeScrubRef.current = playerInstanceRef.current?.getPlayerState?.() === 1;
+    playerInstanceRef.current?.pauseVideo();
+    progressTrackRef.current?.setPointerCapture?.(event.pointerId);
+    setIsScrubbing(true);
+    seekFromClientX(event.clientX);
+  }
+
+  function handleProgressPointerMove(event) {
+    if (!isScrubbing || activePointerIdRef.current !== event.pointerId) return;
+    seekFromClientX(event.clientX);
+  }
+
+  const playbackPct = duration > 0
+    ? Math.max(0, Math.min((currentTime / duration) * 100, 100))
+    : 0;
+  const thumbOffset = duration > 0
+    ? `calc(${playbackPct}% - 8px)`
+    : 'calc(0% - 8px)';
+  const metaLabel = duration > 0
+    ? `${formatTime(currentTime)} / ${formatTime(duration)}`
+    : `${completionPct}% watched`;
+
   return (
     <div
       ref={wrapperRef}
+      tabIndex={0}
       style={{
         ...s.wrapper,
         ...(isFullscreen ? { borderRadius: 0, border: 'none', display: 'flex', flexDirection: 'column', height: '100%' } : {})
@@ -286,19 +543,34 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     >
       <div style={{ ...s.aspectBox, ...(isFullscreen ? { paddingBottom: 0, flex: 1, height: 'auto' } : {}) }}>
         <div ref={playerRef} style={s.iframe} />
-        {/* Title block overlay - still block title clicking if we want, but definitely hide seekbar block if seekAllowed */}
-        {!seekAllowed && <div style={s.titleBlock} />}
-        {/* Seekbar block overlay */}
-        {!seekAllowed && <div style={s.seekbarBlock} />}
+        <div
+          style={s.surfaceBlock}
+          onMouseDown={handleSurfaceMouseDown}
+          onClick={handleSurfaceClick}
+        />
+        <div style={s.titleBlock} />
+        <div style={s.seekbarBlock} />
       </div>
 
       {/* Controls */}
       <div style={s.controls}>
         <button style={s.btn} onClick={handlePlayPause}>{isPlaying ? '⏸ Pause' : '▶ Play'}</button>
-        <button style={{ ...s.btn, ...s.btnSecondary }} onClick={handleRewind}>−10s</button>
-        {seekAllowed && (
-          <button style={{ ...s.btn, ...s.btnSecondary }} onClick={handleForward}>+10s</button>
-        )}
+        <button
+          style={{ ...s.btn, ...s.btnSecondary, ...(seekAllowed ? {} : s.btnDisabled) }}
+          onClick={handleRewind}
+          disabled={!seekAllowed}
+          title={seekAllowed ? 'Rewind 10 seconds' : 'Complete the video to unlock rewinding'}
+        >
+          −10s
+        </button>
+        <button
+          style={{ ...s.btn, ...s.btnSecondary, ...(seekAllowed ? {} : s.btnDisabled) }}
+          onClick={handleForward}
+          disabled={!seekAllowed}
+          title={seekAllowed ? 'Forward 10 seconds' : 'Complete the video to unlock forwarding'}
+        >
+          +10s
+        </button>
         <select
           style={s.speedSelect}
           value={playbackRate}
@@ -308,14 +580,33 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
             <option key={rate} value={rate}>{rate}x</option>
           ))}
         </select>
-        <div style={s.progressTrack}>
+        <div
+          ref={progressTrackRef}
+          style={{
+            ...s.progressTrack,
+            cursor: seekAllowed ? (isScrubbing ? 'grabbing' : 'pointer') : 'not-allowed',
+            opacity: seekAllowed ? 1 : 0.85,
+          }}
+          onPointerDown={handleProgressPointerDown}
+          onPointerMove={handleProgressPointerMove}
+          onPointerUp={(event) => finishScrub(event.pointerId)}
+          onPointerCancel={(event) => finishScrub(event.pointerId)}
+        >
           <div style={{
             ...s.progressFill,
-            width: `${completionPct}%`,
+            width: `${playbackPct}%`,
             ...(videoComplete ? s.progressFillComplete : {}),
           }} />
+          <div
+            style={{
+              ...s.progressThumb,
+              left: thumbOffset,
+              background: videoComplete ? 'var(--success)' : 'var(--primary)',
+              opacity: duration > 0 ? 1 : 0,
+            }}
+          />
         </div>
-        <span style={s.pctLabel}>{completionPct}%</span>
+        <span style={s.timeLabel}>{metaLabel}</span>
         <button style={{ ...s.btn, ...s.btnSecondary, marginLeft: 'auto' }} onClick={handleFullScreen} title="Fullscreen">
           {isFullscreen ? '⤓ Exit Fullscreen' : '⛶ Fullscreen'}
         </button>
@@ -323,7 +614,13 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
 
       {videoComplete && (
         <div style={s.completionBanner}>
-          ✓ Video complete — take the quiz in the sidebar
+          ✓ Video complete — drag the green line or use the arrow keys to move around the lecture.
+        </div>
+      )}
+
+      {!seekAllowed && (
+        <div style={s.hintBanner}>
+          Complete the video first to unlock dragging, rewinding, forwarding, and arrow-key seeking.
         </div>
       )}
     </div>

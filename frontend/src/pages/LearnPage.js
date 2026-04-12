@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { getCourseWeeks, getProgress } from '../utils/api';
 import VideoPlayer from '../components/VideoPlayer';
 import QuizComponent from '../components/QuizComponent';
-import AssignmentUpload from '../components/AssignmentUpload';
 
 const s = {
   page: { minHeight: '100vh', background: 'var(--background)' },
@@ -101,6 +100,28 @@ function extractYouTubeId(url) {
   return match ? match[1] : null;
 }
 
+function getDisplayWeekNumber(allWeeks, targetWeek) {
+  if (!targetWeek) return '';
+
+  const numericWeek = Number(targetWeek.weekNumber);
+  if (!Number.isFinite(numericWeek) || numericWeek <= 0) {
+    return String(targetWeek.weekNumber || '');
+  }
+
+  const groupNumber = Math.floor(numericWeek);
+  const groupWeeks = [...allWeeks]
+    .filter((week) => {
+      const current = Number(week.weekNumber);
+      return Number.isFinite(current) && Math.floor(current) === groupNumber;
+    })
+    .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
+
+  const lessonIndex = groupWeeks.findIndex((week) => week.weekId === targetWeek.weekId);
+  if (lessonIndex === -1) return String(targetWeek.weekNumber || '');
+
+  return `${groupNumber}.${lessonIndex + 1}`;
+}
+
 function ProgressStep({ label, done, active, locked }) {
   let icon = '○';
   let iconColor = 'var(--border)';
@@ -129,6 +150,7 @@ export default function LearnPage() {
   const { courseId, weekId } = useParams();
 
   const [week, setWeek] = useState(null);
+  const [displayWeekNumber, setDisplayWeekNumber] = useState('');
   const [progress, setProgress] = useState(null);
   const [videoComplete, setVideoComplete] = useState(false);
   const [quizUnlocked, setQuizUnlocked] = useState(false);
@@ -149,6 +171,7 @@ export default function LearnPage() {
       const found = allWeeks.find((w) => w.weekId === weekId);
       if (!found) { setError('Week not found or not yet released.'); return; }
       setWeek(found);
+      setDisplayWeekNumber(getDisplayWeekNumber(allWeeks, found));
       const weekProgress = (progressRes.data.progress || []).find((p) => p.weekId === weekId) || null;
       setProgress(weekProgress);
       setVideoComplete(weekProgress?.videoComplete || false);
@@ -171,9 +194,9 @@ export default function LearnPage() {
     <div style={s.page}>
       {/* Nav */}
       <nav style={s.nav}>
-        <Link to="/dashboard" style={s.backLink}>← Dashboard</Link>
+        <Link to="/dashboard?view=courses" style={s.backLink}>← My Courses</Link>
         <span style={s.navBrand}>StepSmart</span>
-        <span style={s.weekBadge}>Week {week.weekNumber}</span>
+        <span style={s.weekBadge}>Week {displayWeekNumber || week.weekNumber}</span>
       </nav>
 
       <div style={s.layout}>
@@ -216,8 +239,6 @@ export default function LearnPage() {
               </div>
             </div>
           )}
-
-          <AssignmentUpload courseId={courseId} weekId={weekId} />
         </div>
 
         {/* Sidebar */}

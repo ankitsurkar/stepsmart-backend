@@ -35,8 +35,9 @@ export const sendHeartbeat = (courseId, weekId, currentTime, duration) =>
   api.post('/progress/heartbeat', { courseId, weekId, currentTime, duration });
 
 // Returns all watched-segment data for a student in one course.
-export const getProgress = (courseId) =>
-  api.get(`/progress/${courseId}`);
+// Pass { includeLeaderboard: true } when the dashboard also needs ranking data.
+export const getProgress = (courseId, params = {}) =>
+  api.get(`/progress/${courseId}`, { params });
 
 // ─── Courses ─────────────────────────────────────────────────────────────────
 
@@ -80,8 +81,24 @@ export const adminGetAllProgress = (courseId) =>
 
 // ─── Assignments ──────────────────────────────────────────────────────────────
 
-export const uploadAssignment = (courseId, weekId, fileName, mimeType, fileBase64) =>
-  api.post('/assignments/upload', { courseId, weekId, fileName, mimeType, fileBase64 }, {
+export const uploadAssignment = (
+  courseId,
+  weekId,
+  fileName,
+  mimeType,
+  fileBase64,
+  assignmentId,
+  assignmentTitle,
+) =>
+  api.post('/assignments/upload', {
+    courseId,
+    weekId,
+    fileName,
+    mimeType,
+    fileBase64,
+    assignmentId,
+    assignmentTitle,
+  }, {
     transformResponse: [data => { try { return JSON.parse(data); } catch { return {}; } }],
   });
 
