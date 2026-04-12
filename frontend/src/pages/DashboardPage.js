@@ -42,12 +42,72 @@ const s = {
   heroInner: { maxWidth: '900px', margin: '0 auto' },
   heroTitle: { fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.35rem' },
   heroSub: { color: 'rgba(255,255,255,0.8)', fontSize: '1rem' },
+  heroStats: {
+    display: 'flex', flexWrap: 'wrap', gap: '0.75rem',
+    marginTop: '1.15rem',
+  },
+  heroStat: {
+    display: 'inline-flex', alignItems: 'baseline', gap: '0.45rem',
+    padding: '0.55rem 0.9rem', borderRadius: '999px',
+    background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)',
+  },
+  heroStatValue: { fontSize: '1rem', fontWeight: 800, color: '#fff' },
+  heroStatLabel: { fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.8)' },
 
   // ── Main content ──────────────────────────────────────────────────────────
   main: { maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' },
   sectionLabel: {
     fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)',
     textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '1rem',
+  },
+  leaderboardCard: {
+    background: 'var(--card)', borderRadius: '16px', padding: '1.25rem',
+    marginBottom: '2rem', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)',
+  },
+  leaderboardIntro: {
+    color: 'var(--muted-foreground)', fontSize: '0.875rem',
+    lineHeight: 1.6, marginBottom: '1rem',
+  },
+  leaderboardList: { display: 'flex', flexDirection: 'column', gap: '0.7rem' },
+  leaderboardRow: {
+    display: 'grid', gridTemplateColumns: '56px minmax(0, 1fr) auto',
+    gap: '0.85rem', alignItems: 'center',
+    padding: '0.85rem 1rem', borderRadius: '12px',
+    background: 'var(--background)', border: '1px solid var(--border)',
+  },
+  leaderboardRowCurrent: {
+    background: 'linear-gradient(135deg, rgba(72, 153, 194, 0.14) 0%, rgba(72, 153, 194, 0.05) 100%)',
+    borderColor: 'rgba(72, 153, 194, 0.32)',
+  },
+  leaderboardRank: {
+    width: '44px', height: '44px', borderRadius: '12px',
+    background: 'var(--accent)', color: 'var(--primary)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontWeight: 800, fontSize: '0.92rem',
+  },
+  leaderboardIdentity: { minWidth: 0 },
+  leaderboardNameRow: { display: 'flex', alignItems: 'center', gap: '0.55rem', marginBottom: '0.15rem' },
+  leaderboardName: {
+    fontSize: '0.95rem', fontWeight: 700, color: 'var(--foreground)',
+    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+  },
+  youBadge: {
+    fontSize: '0.7rem', fontWeight: 800,
+    padding: '0.18rem 0.45rem', borderRadius: '999px',
+    background: 'var(--success-light)', color: 'var(--success-fg)',
+    letterSpacing: '0.03em',
+  },
+  leaderboardMeta: { fontSize: '0.82rem', color: 'var(--muted-foreground)' },
+  leaderboardPoints: { textAlign: 'right', flexShrink: 0 },
+  leaderboardPointsValue: { fontSize: '1.1rem', fontWeight: 800, color: 'var(--foreground)' },
+  leaderboardPointsLabel: {
+    fontSize: '0.74rem', fontWeight: 700, color: 'var(--muted-foreground)',
+    textTransform: 'uppercase', letterSpacing: '0.05em',
+  },
+  leaderboardSubLabel: {
+    fontSize: '0.72rem', fontWeight: 700, color: 'var(--muted-foreground)',
+    textTransform: 'uppercase', letterSpacing: '0.06em',
+    margin: '1.1rem 0 0.75rem',
   },
 
   // ── Week cards ────────────────────────────────────────────────────────────
@@ -127,6 +187,31 @@ function ProgressBar({ progress }) {
   );
 }
 
+function LeaderboardRow({ entry }) {
+  return (
+    <div style={{ ...s.leaderboardRow, ...(entry.isCurrentUser ? s.leaderboardRowCurrent : {}) }}>
+      <div style={s.leaderboardRank}>#{entry.rank}</div>
+
+      <div style={s.leaderboardIdentity}>
+        <div style={s.leaderboardNameRow}>
+          <div style={s.leaderboardName}>{entry.displayName}</div>
+          {entry.isCurrentUser && <span style={s.youBadge}>You</span>}
+        </div>
+        <div style={s.leaderboardMeta}>
+          {entry.completedLectures} lecture{entry.completedLectures === 1 ? '' : 's'} complete
+          {' • '}
+          {entry.assignmentsSubmitted} assignment{entry.assignmentsSubmitted === 1 ? '' : 's'} submitted
+        </div>
+      </div>
+
+      <div style={s.leaderboardPoints}>
+        <div style={s.leaderboardPointsValue}>{entry.totalPoints}</div>
+        <div style={s.leaderboardPointsLabel}>Points</div>
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const { isAdmin, logout } = useAuth();
   const navigate = useNavigate();
@@ -134,6 +219,7 @@ export default function DashboardPage() {
   const [courses, setCourses] = useState([]);
   const [weeks, setWeeks] = useState([]);
   const [progressMap, setProgressMap] = useState({});
+  const [leaderboard, setLeaderboard] = useState([]);
   const [activeCourse, setActiveCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -158,12 +244,13 @@ export default function DashboardPage() {
     try {
       const [weeksRes, progressRes] = await Promise.all([
         getCourseWeeks(courseId),
-        getProgress(courseId),
+        getProgress(courseId, { includeLeaderboard: true }),
       ]);
       setWeeks(weeksRes.data.weeks || []);
       const map = {};
       for (const p of (progressRes.data.progress || [])) map[p.weekId] = p;
       setProgressMap(map);
+      setLeaderboard(progressRes.data.leaderboard || []);
     } catch { setError('Failed to load course content.'); }
   }
 
@@ -180,6 +267,10 @@ export default function DashboardPage() {
     if (!p) return false;
     return hasQuiz(w) ? !!p.quizPassed : !!p.videoComplete;
   }).length;
+  const leaderboardRows = (leaderboard || []).filter((entry) => entry.totalPoints > 0 || entry.isCurrentUser);
+  const myLeaderboardEntry = leaderboardRows.find((entry) => entry.isCurrentUser) || null;
+  const topLeaderboard = leaderboardRows.slice(0, 8);
+  const showPinnedCurrentUser = myLeaderboardEntry && !topLeaderboard.some((entry) => entry.userId === myLeaderboardEntry.userId);
 
   return (
     <div style={s.page}>
@@ -207,11 +298,51 @@ export default function DashboardPage() {
               </span>
             )}
           </div>
+          {myLeaderboardEntry && (
+            <div style={s.heroStats}>
+              <div style={s.heroStat}>
+                <span style={s.heroStatValue}>{myLeaderboardEntry.totalPoints}</span>
+                <span style={s.heroStatLabel}>total points</span>
+              </div>
+              <div style={s.heroStat}>
+                <span style={s.heroStatValue}>#{myLeaderboardEntry.rank}</span>
+                <span style={s.heroStatLabel}>leaderboard rank</span>
+              </div>
+              <div style={s.heroStat}>
+                <span style={s.heroStatValue}>{myLeaderboardEntry.assignmentsSubmitted}</span>
+                <span style={s.heroStatLabel}>assignments submitted</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Week list */}
       <main style={s.main}>
+        {leaderboardRows.length > 0 && (
+          <>
+            <div style={s.sectionLabel}>Leaderboard</div>
+            <div style={s.leaderboardCard}>
+              <div style={s.leaderboardIntro}>
+                Earn 1 point for each completed lecture and 5 points for the first assignment upload in a week.
+              </div>
+
+              <div style={s.leaderboardList}>
+                {topLeaderboard.map((entry) => (
+                  <LeaderboardRow key={entry.userId} entry={entry} />
+                ))}
+              </div>
+
+              {showPinnedCurrentUser && (
+                <>
+                  <div style={s.leaderboardSubLabel}>Your Position</div>
+                  <LeaderboardRow entry={myLeaderboardEntry} />
+                </>
+              )}
+            </div>
+          </>
+        )}
+
         <div style={s.sectionLabel}>Course Weeks</div>
 
         {weeks.length === 0 ? (
