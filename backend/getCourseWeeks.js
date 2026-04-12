@@ -8,7 +8,7 @@
 // Admins (cognito:groups includes 'admins') receive correctIndex for review purposes.
 //
 // Path parameter: courseId
-// Returns: { weeks: [ { weekId, weekNumber, title, description, youtubeUrl, qaLink, quiz: { questions } } ] }
+// Returns: { weeks: [ { weekId, weekNumber, title, description, youtubeUrl, qaLink, assignments, liveRecordedSessions, calendarEvents, quiz: { questions } } ] }
 
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, QueryCommand } = require('@aws-sdk/lib-dynamodb');
@@ -86,6 +86,9 @@ exports.handler = async (event) => {
     visible: w.visible || false,
     resources: w.resources || [],
     docs: w.docs || [],
+    assignments: w.assignments || [],
+    liveRecordedSessions: w.liveRecordedSessions || [],
+    calendarEvents: w.calendarEvents || [],
     createdAt: w.createdAt || null,
     quiz: {
       questions: (w.quiz?.questions || []).map((q) => ({

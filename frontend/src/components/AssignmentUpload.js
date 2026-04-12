@@ -23,6 +23,7 @@ const FILE_ICONS = {
 
 const s = {
   section: { marginTop: '2rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' },
+  embeddedSection: { marginTop: 0, borderTop: 'none', paddingTop: 0 },
   heading: { fontSize: '1.05rem', fontWeight: 800, color: 'var(--foreground)', marginBottom: '0.25rem' },
   sub:     { fontSize: '0.825rem', color: 'var(--muted-foreground)', marginBottom: '1.1rem' },
 
@@ -32,6 +33,7 @@ const s = {
     transition: 'border-color 0.15s, background 0.15s',
     background: 'var(--background)',
   },
+  embeddedDropzone: { padding: '1.25rem 0.9rem' },
   dropzoneActive: { borderColor: 'var(--primary)', background: 'var(--accent)' },
   dropzoneIcon:  { fontSize: '2rem', marginBottom: '0.4rem' },
   dropzoneLabel: { fontSize: '0.875rem', color: 'var(--muted-foreground)', lineHeight: 1.5 },
@@ -53,6 +55,7 @@ const s = {
     border: 'none', borderRadius: '8px', cursor: 'pointer',
     fontWeight: 700, fontSize: '0.875rem', transition: 'background 0.15s',
   },
+  embeddedUploadBtn: { width: '100%', display: 'inline-flex', justifyContent: 'center' },
 
   progress: {
     marginTop: '0.75rem', height: '6px', borderRadius: '99px',
@@ -77,7 +80,15 @@ function fileExt(name) {
   return (name.split('.').pop() || '').toLowerCase();
 }
 
-export default function AssignmentUpload({ courseId, weekId }) {
+export default function AssignmentUpload({
+  courseId,
+  weekId,
+  assignmentId,
+  assignmentTitle,
+  embedded = false,
+  title = 'Submit Assignment',
+  subtitle = `Upload your PDF, Word document, or PowerPoint (max ${MAX_FILE_MB} MB).`,
+}) {
   const inputRef = useRef(null);
   const [dragging,     setDragging]     = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -133,7 +144,15 @@ export default function AssignmentUpload({ courseId, weekId }) {
       const mimeType = MIME_MAP[ext] || selectedFile.type;
 
       const uploadedName = selectedFile.name;
-      await uploadAssignment(courseId, weekId, uploadedName, mimeType, fileBase64);
+      await uploadAssignment(
+        courseId,
+        weekId,
+        uploadedName,
+        mimeType,
+        fileBase64,
+        assignmentId,
+        assignmentTitle,
+      );
 
       setUploadPct(100);
       setSuccessMsg(`"${uploadedName}" uploaded successfully.`);
@@ -148,19 +167,36 @@ export default function AssignmentUpload({ courseId, weekId }) {
   }
 
   const ext = selectedFile ? fileExt(selectedFile.name) : null;
+  const sectionStyle = embedded ? { ...s.section, ...s.embeddedSection } : s.section;
+  const dropzoneStyle = {
+    ...s.dropzone,
+    ...(embedded ? s.embeddedDropzone : {}),
+    ...(dragging ? s.dropzoneActive : {}),
+  };
+  const uploadButtonStyle = embedded
+    ? { ...s.uploadBtn, ...s.embeddedUploadBtn }
+    : s.uploadBtn;
 
   return (
-    <div style={s.section}>
-      <div style={s.heading}>Submit Assignment</div>
-      <div style={s.sub}>Upload your PDF, Word document, or PowerPoint (max {MAX_FILE_MB} MB).</div>
+    <div style={sectionStyle}>
+      {title && <div style={s.heading}>{title}</div>}
+      {subtitle && <div style={s.sub}>{subtitle}</div>}
 
       {/* Drop zone */}
       <div
-        style={{ ...s.dropzone, ...(dragging ? s.dropzoneActive : {}) }}
+        style={dropzoneStyle}
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
         onClick={() => inputRef.current?.click()}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            inputRef.current?.click();
+          }
+        }}
+        role="button"
+        tabIndex={0}
       >
         <div style={s.dropzoneIcon}>📁</div>
         <div style={s.dropzoneLabel}>
@@ -178,7 +214,7 @@ export default function AssignmentUpload({ courseId, weekId }) {
 
       {/* Selected file preview */}
       {selectedFile && (
-        <div style={s.filePreview}>
+        <div style={{ ...s.filePreview, flexWrap: embedded ? 'wrap' : 'nowrap' }}>
           <span style={{ fontSize: '1.3rem' }}>{FILE_ICONS[ext] || '📄'}</span>
           <span style={s.fileName}>{selectedFile.name}</span>
           <span style={s.fileSize}>({(selectedFile.size / (1024 * 1024)).toFixed(1)} MB)</span>
@@ -197,7 +233,7 @@ export default function AssignmentUpload({ courseId, weekId }) {
       {successMsg && <div style={s.success}>✓ {successMsg}</div>}
 
       {selectedFile && !uploading && (
-        <button style={s.uploadBtn} onClick={handleUpload}>
+        <button style={uploadButtonStyle} onClick={handleUpload}>
           Upload to Drive
         </button>
       )}

@@ -204,10 +204,40 @@ function StudentsTab() {
 // ────────────────────────────────────────────────────────────────────────────────
 // Weeks Tab
 // ────────────────────────────────────────────────────────────────────────────────
-const EMPTY_WEEK = { title: '', description: '', weekNumber: '', youtubeUrl: '', qaLink: '', quiz: { questions: [] }, resources: [], docs: [] };
+const EMPTY_WEEK = {
+  title: '',
+  description: '',
+  weekNumber: '',
+  youtubeUrl: '',
+  qaLink: '',
+  quiz: { questions: [] },
+  resources: [],
+  docs: [],
+  assignments: [],
+  liveRecordedSessions: [],
+  calendarEvents: [],
+};
 const EMPTY_Q = { id: '', text: '', options: ['', '', '', ''], correctIndex: 0, explanation: '' };
 const EMPTY_RESOURCE = { id: '', title: '', url: '' };
 const EMPTY_DOC = { id: '', label: '', url: '' };
+const EMPTY_ASSIGNMENT = { id: '', title: '', description: '' };
+const EMPTY_RECORDED_SESSION = { id: '', title: '', description: '', url: '' };
+const EMPTY_CALENDAR_EVENT = { id: '', kind: '', title: '', description: '', startDate: '', endDate: '' };
+
+function makeClientId(prefix) {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `${prefix}-${crypto.randomUUID().slice(0, 8)}`;
+  }
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function normalizeAssignments(assignments = []) {
+  return assignments.map((assignment, index) => ({
+    id: assignment.id || makeClientId('assignment'),
+    title: (assignment.title || '').trim() || `Assignment ${index + 1}`,
+    description: (assignment.description || '').trim(),
+  }));
+}
 
 function WeeksTab() {
   const [weeks, setWeeks] = useState([]);
@@ -234,7 +264,14 @@ function WeeksTab() {
   function startEdit(week) {
     setForm({
       title: week.title, description: week.description, weekNumber: String(week.weekNumber),
-      youtubeUrl: week.youtubeUrl || '', qaLink: week.qaLink || '', quiz: week.quiz || { questions: [] }, resources: week.resources || [], docs: week.docs || []
+      youtubeUrl: week.youtubeUrl || '',
+      qaLink: week.qaLink || '',
+      quiz: week.quiz || { questions: [] },
+      resources: week.resources || [],
+      docs: week.docs || [],
+      assignments: week.assignments || [],
+      liveRecordedSessions: week.liveRecordedSessions || [],
+      calendarEvents: week.calendarEvents || [],
     });
     setEditingId(week.weekId); setShowForm(true); setMessage('');
   }
@@ -243,7 +280,11 @@ function WeeksTab() {
     e.preventDefault();
     setSaving(true); setMessage('');
     try {
-      const payload = { ...form, weekNumber: parseFloat(form.weekNumber) };
+      const payload = {
+        ...form,
+        weekNumber: parseFloat(form.weekNumber),
+        assignments: normalizeAssignments(form.assignments || []),
+      };
       if (editingId) { await adminUpdateWeek(COURSE_ID, editingId, payload); setMessage('Week updated.'); }
       else { await adminCreateWeek(COURSE_ID, payload); setMessage('Week created.'); }
       setShowForm(false); setEditingId(null); load();
@@ -322,6 +363,66 @@ function WeeksTab() {
     setForm((f) => ({ ...f, docs: (f.docs || []).filter((_, i) => i !== idx) }));
   }
 
+  function addAssignment() {
+    setForm((f) => ({
+      ...f,
+      assignments: [
+        ...(f.assignments || []),
+        {
+          ...EMPTY_ASSIGNMENT,
+          id: makeClientId('assignment'),
+          title: `Assignment ${(f.assignments || []).length + 1}`,
+        },
+      ],
+    }));
+  }
+
+  function updateAssignment(idx, field, value) {
+    setForm((f) => {
+      const assignments = [...(f.assignments || [])];
+      assignments[idx] = { ...assignments[idx], [field]: value };
+      return { ...f, assignments };
+    });
+  }
+
+  function removeAssignment(idx) {
+    setForm((f) => ({ ...f, assignments: (f.assignments || []).filter((_, i) => i !== idx) }));
+  }
+
+  function addRecordedSession() {
+    const session = { ...EMPTY_RECORDED_SESSION, id: `rec${Date.now()}` };
+    setForm((f) => ({ ...f, liveRecordedSessions: [...(f.liveRecordedSessions || []), session] }));
+  }
+
+  function updateRecordedSession(idx, field, value) {
+    setForm((f) => {
+      const sessions = [...(f.liveRecordedSessions || [])];
+      sessions[idx] = { ...sessions[idx], [field]: value };
+      return { ...f, liveRecordedSessions: sessions };
+    });
+  }
+
+  function removeRecordedSession(idx) {
+    setForm((f) => ({ ...f, liveRecordedSessions: (f.liveRecordedSessions || []).filter((_, i) => i !== idx) }));
+  }
+
+  function addCalendarEvent() {
+    const event = { ...EMPTY_CALENDAR_EVENT, id: `cal${Date.now()}` };
+    setForm((f) => ({ ...f, calendarEvents: [...(f.calendarEvents || []), event] }));
+  }
+
+  function updateCalendarEvent(idx, field, value) {
+    setForm((f) => {
+      const events = [...(f.calendarEvents || [])];
+      events[idx] = { ...events[idx], [field]: value };
+      return { ...f, calendarEvents: events };
+    });
+  }
+
+  function removeCalendarEvent(idx) {
+    setForm((f) => ({ ...f, calendarEvents: (f.calendarEvents || []).filter((_, i) => i !== idx) }));
+  }
+
   return (
     <div>
       {message && <p style={s.message}>{message}</p>}
@@ -354,6 +455,74 @@ function WeeksTab() {
             <label style={s.label}>Q&amp;A / Calendly Link</label>
             <input style={s.input} type="url" placeholder="https://calendly.com/..."
               value={form.qaLink} onChange={(e) => setForm({ ...form, qaLink: e.target.value })} />
+
+            {/* Calendar Events */}
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Calendar Events</span>
+                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addCalendarEvent}>+ Calendar Event</button>
+              </div>
+              {(form.calendarEvents || []).map((event, ci) => (
+                <div key={event.id || ci} style={s.qPanel}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Event {ci + 1}</span>
+                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeCalendarEvent(ci)}>Remove</button>
+                  </div>
+
+                  <div style={s.grid2}>
+                    <div>
+                      <label style={s.label}>Event Type</label>
+                      <input
+                        style={s.input}
+                        type="text"
+                        placeholder="e.g. Recorded Video Upload"
+                        value={event.kind}
+                        onChange={(e) => updateCalendarEvent(ci, 'kind', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label style={s.label}>Title</label>
+                      <input
+                        style={s.input}
+                        type="text"
+                        placeholder="e.g. Product Strategy"
+                        value={event.title}
+                        onChange={(e) => updateCalendarEvent(ci, 'title', e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={s.grid2}>
+                    <div>
+                      <label style={s.label}>Start Date</label>
+                      <input
+                        style={s.input}
+                        type="date"
+                        value={event.startDate}
+                        onChange={(e) => updateCalendarEvent(ci, 'startDate', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label style={s.label}>End Date (Optional)</label>
+                      <input
+                        style={s.input}
+                        type="date"
+                        value={event.endDate}
+                        onChange={(e) => updateCalendarEvent(ci, 'endDate', e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <label style={s.label}>Description</label>
+                  <textarea
+                    style={s.textarea}
+                    placeholder="Short description shown in the student calendar"
+                    value={event.description}
+                    onChange={(e) => updateCalendarEvent(ci, 'description', e.target.value)}
+                  />
+                </div>
+              ))}
+            </div>
 
             {/* Resources */}
             <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem', marginBottom: '1rem' }}>
@@ -403,6 +572,76 @@ function WeeksTab() {
                   </div>
                   <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.3rem 0.5rem', fontSize: '0.72rem', marginBottom: 0 }}
                     onClick={() => removeDoc(di)}>✕</button>
+                </div>
+              ))}
+            </div>
+
+            {/* Assignments */}
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Assignments</span>
+                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addAssignment}>+ Assignment</button>
+              </div>
+              {(form.assignments || []).map((assignment, ai) => (
+                <div key={assignment.id || ai} style={s.qPanel}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Assignment {ai + 1}</span>
+                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeAssignment(ai)}>Remove</button>
+                  </div>
+                  <label style={s.label}>Title</label>
+                  <input
+                    style={s.input}
+                    type="text"
+                    placeholder={`Assignment ${ai + 1}`}
+                    value={assignment.title}
+                    onChange={(e) => updateAssignment(ai, 'title', e.target.value)}
+                  />
+                  <label style={s.label}>Instructions</label>
+                  <textarea
+                    style={s.textarea}
+                    placeholder="Tell students what to upload for this assignment."
+                    value={assignment.description}
+                    onChange={(e) => updateAssignment(ai, 'description', e.target.value)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Live Recorded Sessions */}
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Live Recorded Sessions</span>
+                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addRecordedSession}>+ Recorded Session</button>
+              </div>
+              {(form.liveRecordedSessions || []).map((session, si) => (
+                <div key={session.id || si} style={s.qPanel}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Recording {si + 1}</span>
+                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeRecordedSession(si)}>Remove</button>
+                  </div>
+                  <label style={s.label}>Title</label>
+                  <input
+                    style={s.input}
+                    type="text"
+                    placeholder="e.g. Week 1 Live Session Recording"
+                    value={session.title}
+                    onChange={(e) => updateRecordedSession(si, 'title', e.target.value)}
+                  />
+                  <label style={s.label}>Description</label>
+                  <textarea
+                    style={s.textarea}
+                    placeholder="Short description shown in the student dashboard"
+                    value={session.description}
+                    onChange={(e) => updateRecordedSession(si, 'description', e.target.value)}
+                  />
+                  <label style={s.label}>Recording URL</label>
+                  <input
+                    style={s.input}
+                    type="url"
+                    placeholder="https://..."
+                    value={session.url}
+                    onChange={(e) => updateRecordedSession(si, 'url', e.target.value)}
+                  />
                 </div>
               ))}
             </div>
@@ -466,6 +705,8 @@ function WeeksTab() {
                   <tr>
                     <th style={s.th}>#</th>
                     <th style={s.th}>Title</th>
+                    <th style={s.th}>Calendar</th>
+                    <th style={s.th}>Assignments</th>
                     <th style={s.th}>Questions</th>
                     <th style={s.th}>Status</th>
                     <th style={s.th}>Actions</th>
@@ -476,6 +717,8 @@ function WeeksTab() {
                     <tr key={w.weekId}>
                       <td style={s.td}>{w.weekNumber}</td>
                       <td style={s.td}>{w.title}</td>
+                      <td style={s.td}>{w.calendarEvents?.length || 0}</td>
+                      <td style={s.td}>{w.assignments?.length || 0}</td>
                       <td style={s.td}>{w.quiz?.questions?.length || 0}</td>
                       <td style={s.td}>
                         <span style={{ ...s.badge, ...(w.visible ? s.badgeSuccess : s.badgeMuted) }}>

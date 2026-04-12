@@ -81,8 +81,24 @@ export const adminGetAllProgress = (courseId) =>
 
 // ─── Assignments ──────────────────────────────────────────────────────────────
 
-export const uploadAssignment = (courseId, weekId, fileName, mimeType, fileBase64) =>
-  api.post('/assignments/upload', { courseId, weekId, fileName, mimeType, fileBase64 }, {
+export const uploadAssignment = (
+  courseId,
+  weekId,
+  fileName,
+  mimeType,
+  fileBase64,
+  assignmentId,
+  assignmentTitle,
+) =>
+  api.post('/assignments/upload', {
+    courseId,
+    weekId,
+    fileName,
+    mimeType,
+    fileBase64,
+    assignmentId,
+    assignmentTitle,
+  }, {
     transformResponse: [data => { try { return JSON.parse(data); } catch { return {}; } }],
   });
 

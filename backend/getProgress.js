@@ -166,7 +166,8 @@ async function buildLeaderboard(courseId, currentUserId, event) {
   for (const item of (assignmentsResult.Items || [])) {
     if (!item.userId || !item.weekId) continue;
 
-    const assignmentKey = `${item.userId}#${item.weekId}`;
+    const uniqueAssignmentId = item.assignmentId || item.weekId;
+    const assignmentKey = `${item.userId}#${uniqueAssignmentId}`;
     if (awardedAssignments.has(assignmentKey)) continue;
     awardedAssignments.add(assignmentKey);
 

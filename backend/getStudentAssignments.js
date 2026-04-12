@@ -53,6 +53,8 @@ exports.handler = async (event) => {
     }));
 
     const assignments = (result.Items || []).map((item) => ({
+      assignmentId: item.assignmentId || null,
+      assignmentTitle: item.assignmentTitle || null,
       fileName:    item.fileName,
       driveUrl:    item.driveUrl,
       driveFileId: item.driveFileId,

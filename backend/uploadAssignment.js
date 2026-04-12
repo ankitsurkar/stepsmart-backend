@@ -24,7 +24,6 @@
 //      GOOGLE_SCRIPT_SECRET = <the same SECRET string from the script>
 //
 // ── Apps Script code ──────────────────────────────────────────────────────
-c
 // ──────────────────────────────────────────────────────────────────────────
 //
 // Required environment variables:
@@ -74,7 +73,7 @@ exports.handler = async (event) => {
   try { body = JSON.parse(event.body || '{}'); }
   catch { return res(400, { message: 'Invalid JSON body' }); }
 
-  const { courseId, weekId, fileName, mimeType, fileBase64 } = body;
+  const { courseId, weekId, fileName, mimeType, fileBase64, assignmentId, assignmentTitle } = body;
   if (!courseId || !weekId || !fileName || !mimeType || !fileBase64)
     return res(400, { message: 'Missing required fields' });
 
@@ -97,7 +96,15 @@ exports.handler = async (event) => {
       headers:  { 'Content-Type': 'application/json' },
       redirect: 'follow',
       body:     JSON.stringify({
-        secret: scriptSecret, courseId, weekId, userId, fileName, mimeType, fileBase64,
+        secret: scriptSecret,
+        courseId,
+        weekId,
+        userId,
+        fileName,
+        mimeType,
+        fileBase64,
+        assignmentId,
+        assignmentTitle,
       }),
     });
     const timeoutPromise = new Promise((_, reject) =>
@@ -118,14 +125,26 @@ exports.handler = async (event) => {
       Item: {
         pk:          `COURSE#${courseId}#WEEK#${weekId}`,
         sk:          `USER#${userId}#${uploadedAt}`,
-        userId, courseId, weekId, fileName, mimeType,
+        userId,
+        courseId,
+        weekId,
+        assignmentId: assignmentId || null,
+        assignmentTitle: assignmentTitle || null,
+        fileName,
+        mimeType,
         driveFileId: result.fileId,
         driveUrl:    result.fileUrl,
         uploadedAt,
       },
     }));
 
-    return res(200, { driveUrl: result.fileUrl, fileName, uploadedAt });
+    return res(200, {
+      driveUrl: result.fileUrl,
+      fileName,
+      uploadedAt,
+      assignmentId: assignmentId || null,
+      assignmentTitle: assignmentTitle || null,
+    });
   } catch (err) {
     console.error('uploadAssignment error:', err);
     return res(500, { message: 'Upload failed. Please try again.' });

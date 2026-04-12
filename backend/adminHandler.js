@@ -151,6 +151,9 @@ async function createWeek(courseId, body) {
     quiz: body.quiz || { questions: [] },
     resources: body.resources || [],
     docs: body.docs || [],
+    liveRecordedSessions: body.liveRecordedSessions || [],
+    calendarEvents: body.calendarEvents || [],
+    assignments: body.assignments || [],
     createdAt: new Date().toISOString(),
   };
 
@@ -162,7 +165,7 @@ async function createWeek(courseId, body) {
 // Updates any subset of week fields. Commonly used to toggle visibility.
 async function updateWeek(courseId, weekId, body) {
   // Build a dynamic UpdateExpression from whatever fields were provided.
-  const fields = ['title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber', 'quiz', 'resources', 'docs'];
+  const fields = ['title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber', 'quiz', 'resources', 'docs', 'liveRecordedSessions', 'calendarEvents', 'assignments'];
   const setClauses = [];
   const exprAttrValues = {};
   const exprAttrNames = {};
