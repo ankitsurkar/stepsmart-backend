@@ -239,12 +239,47 @@ function normalizeAssignments(assignments = []) {
   }));
 }
 
+function buildDraftBasicPayload(form) {
+  const payload = {};
+  const parsedWeekNumber = Number.parseFloat(form.weekNumber);
+
+  if (Number.isFinite(parsedWeekNumber)) payload.weekNumber = parsedWeekNumber;
+  if ((form.title || '').trim()) payload.title = form.title.trim();
+  if ((form.description || '').trim()) payload.description = form.description.trim();
+  if ((form.youtubeUrl || '').trim()) payload.youtubeUrl = form.youtubeUrl.trim();
+  if ((form.qaLink || '').trim()) payload.qaLink = form.qaLink.trim();
+
+  return payload;
+}
+
+function SectionSaveButton({ label, saving, disabled, onClick, message }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.75rem', flexWrap: 'wrap' }}>
+      <button
+        type="button"
+        style={{ ...s.btn, ...s.btnSuccess, opacity: disabled ? 0.5 : 1, cursor: disabled ? 'not-allowed' : 'pointer', padding: '0.45rem 1rem', fontSize: '0.8rem' }}
+        disabled={saving || disabled}
+        onClick={onClick}
+      >
+        {saving ? 'Saving…' : label}
+      </button>
+      {disabled && (
+        <span style={{ fontSize: '0.76rem', color: 'var(--muted-foreground)', fontStyle: 'italic' }}>Save basic info first</span>
+      )}
+      {message && (
+        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: message.startsWith('✓') ? 'var(--success-fg, #15803d)' : 'var(--destructive, #dc2626)' }}>{message}</span>
+      )}
+    </div>
+  );
+}
+
 function WeeksTab() {
   const [weeks, setWeeks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(EMPTY_WEEK);
   const [editingId, setEditingId] = useState(null);
-  const [saving, setSaving] = useState(false);
+  const [savingSection, setSavingSection] = useState('');
+  const [sectionMessages, setSectionMessages] = useState({});
   const [message, setMessage] = useState('');
   const [showForm, setShowForm] = useState(false);
 
@@ -256,9 +291,17 @@ function WeeksTab() {
     finally { setLoading(false); }
   }
 
+  function setSectionMsg(section, msg) {
+    setSectionMessages((prev) => ({ ...prev, [section]: msg }));
+  }
+
+  function clearSectionMessages() {
+    setSectionMessages({});
+  }
+
   function startAdd() {
     setForm({ ...EMPTY_WEEK, weekNumber: String(weeks.length + 1) });
-    setEditingId(null); setShowForm(true); setMessage('');
+    setEditingId(null); setShowForm(true); setMessage(''); clearSectionMessages();
   }
 
   function startEdit(week) {
@@ -273,23 +316,71 @@ function WeeksTab() {
       liveRecordedSessions: week.liveRecordedSessions || [],
       calendarEvents: week.calendarEvents || [],
     });
-    setEditingId(week.weekId); setShowForm(true); setMessage('');
+    setEditingId(week.weekId); setShowForm(true); setMessage(''); clearSectionMessages();
   }
 
-  async function handleSave(e) {
+  async function handleSaveBasicInfo(e) {
     e.preventDefault();
-    setSaving(true); setMessage('');
+    setSavingSection('basic'); setSectionMsg('basic', '');
     try {
       const payload = {
-        ...form,
+        title: form.title,
+        description: form.description,
         weekNumber: parseFloat(form.weekNumber),
-        assignments: normalizeAssignments(form.assignments || []),
+        youtubeUrl: form.youtubeUrl,
+        qaLink: form.qaLink,
       };
-      if (editingId) { await adminUpdateWeek(COURSE_ID, editingId, payload); setMessage('Week updated.'); }
-      else { await adminCreateWeek(COURSE_ID, payload); setMessage('Week created.'); }
-      setShowForm(false); setEditingId(null); load();
-    } catch (err) { setMessage(err.response?.data?.message || 'Save failed.'); }
-    finally { setSaving(false); }
+      if (editingId) {
+        await adminUpdateWeek(COURSE_ID, editingId, payload);
+        setSectionMsg('basic', '✓ Basic info saved');
+      } else {
+        const result = await adminCreateWeek(COURSE_ID, payload);
+        const newWeekId = result?.data?.week?.weekId;
+        if (newWeekId) setEditingId(newWeekId);
+        setSectionMsg('basic', '✓ Week created — you can now save other sections');
+      }
+      load();
+    } catch (err) { setSectionMsg('basic', err.response?.data?.message || 'Save failed.'); }
+    finally { setSavingSection(''); }
+  }
+
+  async function handleSaveSection(sectionKey, payload) {
+    setSavingSection(sectionKey); setSectionMsg(sectionKey, '');
+    try {
+      let targetWeekId = editingId;
+      let createdWeek = null;
+
+      if (!targetWeekId) {
+        const draftPayload = {
+          ...buildDraftBasicPayload(form),
+          ...payload,
+        };
+        const createResult = await adminCreateWeek(COURSE_ID, draftPayload);
+        createdWeek = createResult?.data?.week || null;
+        targetWeekId = createdWeek?.weekId || null;
+
+        if (!targetWeekId) {
+          throw new Error('Failed to create a draft week.');
+        }
+
+        setEditingId(targetWeekId);
+        setSectionMsg('basic', '✓ Draft week created');
+        setForm((prev) => ({
+          ...prev,
+          weekNumber: prev.weekNumber || String(createdWeek.weekNumber || ''),
+          title: prev.title || createdWeek.title || '',
+          description: prev.description || createdWeek.description || '',
+          youtubeUrl: prev.youtubeUrl || createdWeek.youtubeUrl || '',
+          qaLink: prev.qaLink || createdWeek.qaLink || '',
+        }));
+      } else {
+        await adminUpdateWeek(COURSE_ID, targetWeekId, payload);
+      }
+
+      setSectionMsg(sectionKey, createdWeek ? '✓ Saved and created week' : '✓ Saved');
+      load();
+    } catch (err) { setSectionMsg(sectionKey, err.response?.data?.message || 'Save failed.'); }
+    finally { setSavingSection(''); }
   }
 
   async function handleToggleVisible(week) {
@@ -432,8 +523,13 @@ function WeeksTab() {
 
       {showForm && (
         <div style={s.card}>
-          <div style={s.cardTitle}>{editingId ? 'Edit Week' : 'New Week'}</div>
-          <form onSubmit={handleSave}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.1rem' }}>
+            <div style={s.cardTitle}>{editingId ? 'Edit Week' : 'New Week'}</div>
+            <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={() => setShowForm(false)}>✕ Close</button>
+          </div>
+
+          {/* ── Basic Info ──────────────────────────────────────────────── */}
+          <form onSubmit={handleSaveBasicInfo}>
             <div style={s.grid2}>
               <div>
                 <label style={s.label}>Module Number</label>
@@ -455,242 +551,281 @@ function WeeksTab() {
             <label style={s.label}>Q&amp;A / Calendly Link</label>
             <input style={s.input} type="url" placeholder="https://calendly.com/..."
               value={form.qaLink} onChange={(e) => setForm({ ...form, qaLink: e.target.value })} />
-
-            {/* Calendar Events */}
-            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem', marginBottom: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Calendar Events</span>
-                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addCalendarEvent}>+ Calendar Event</button>
-              </div>
-              {(form.calendarEvents || []).map((event, ci) => (
-                <div key={event.id || ci} style={s.qPanel}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Event {ci + 1}</span>
-                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeCalendarEvent(ci)}>Remove</button>
-                  </div>
-
-                  <div style={s.grid2}>
-                    <div>
-                      <label style={s.label}>Event Type</label>
-                      <input
-                        style={s.input}
-                        type="text"
-                        placeholder="e.g. Recorded Video Upload"
-                        value={event.kind}
-                        onChange={(e) => updateCalendarEvent(ci, 'kind', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label style={s.label}>Title</label>
-                      <input
-                        style={s.input}
-                        type="text"
-                        placeholder="e.g. Product Strategy"
-                        value={event.title}
-                        onChange={(e) => updateCalendarEvent(ci, 'title', e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={s.grid2}>
-                    <div>
-                      <label style={s.label}>Start Date</label>
-                      <input
-                        style={s.input}
-                        type="date"
-                        value={event.startDate}
-                        onChange={(e) => updateCalendarEvent(ci, 'startDate', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label style={s.label}>End Date (Optional)</label>
-                      <input
-                        style={s.input}
-                        type="date"
-                        value={event.endDate}
-                        onChange={(e) => updateCalendarEvent(ci, 'endDate', e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <label style={s.label}>Description</label>
-                  <textarea
-                    style={s.textarea}
-                    placeholder="Short description shown in the student calendar"
-                    value={event.description}
-                    onChange={(e) => updateCalendarEvent(ci, 'description', e.target.value)}
-                  />
-                </div>
-              ))}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
+              <button style={s.btn} type="submit" disabled={savingSection === 'basic'}>
+                {savingSection === 'basic' ? 'Saving…' : editingId ? 'Save Basic Info' : 'Create Week'}
+              </button>
+              {sectionMessages.basic && (
+                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: sectionMessages.basic.startsWith('✓') ? 'var(--success-fg, #15803d)' : 'var(--destructive, #dc2626)' }}>{sectionMessages.basic}</span>
+              )}
             </div>
+          </form>
 
-            {/* Resources */}
-            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem', marginBottom: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Resources (Links, PDFs, etc.)</span>
-                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addResource}>+ Resource</button>
-              </div>
-              {(form.resources || []).map((r, ri) => (
-                <div key={r.id || ri} style={s.qPanel}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Resource {ri + 1}</span>
-                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeResource(ri)}>Remove</button>
-                  </div>
-                  <div style={s.grid2}>
-                    <div>
-                      <label style={s.label}>Title</label>
-                      <input style={s.input} type="text" placeholder="e.g. Week 1 Slides"
-                        value={r.title} onChange={(e) => updateResource(ri, 'title', e.target.value)} required />
-                    </div>
-                    <div>
-                      <label style={s.label}>URL (Link)</label>
-                      <input style={s.input} type="url" placeholder="https://..."
-                        value={r.url} onChange={(e) => updateResource(ri, 'url', e.target.value)} required />
-                    </div>
-                  </div>
-                </div>
-              ))}
+          {/* ── Calendar Events ─────────────────────────────────────────── */}
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '1rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Calendar Events</span>
+              <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addCalendarEvent}>+ Calendar Event</button>
             </div>
+            {(form.calendarEvents || []).map((event, ci) => (
+              <div key={event.id || ci} style={s.qPanel}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Event {ci + 1}</span>
+                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeCalendarEvent(ci)}>Remove</button>
+                </div>
 
-            {/* Reference Documents */}
-            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Reference Documents</span>
-                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addDoc}>+ Document</button>
-              </div>
-              {(form.docs || []).map((doc, di) => (
-                <div key={doc.id || di} style={{ ...s.qPanel, display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.5rem', alignItems: 'end' }}>
+                <div style={s.grid2}>
                   <div>
-                    <label style={s.label}>Label</label>
-                    <input style={{ ...s.input, marginBottom: 0 }} type="text" placeholder="e.g. Week 1 Slides"
-                      value={doc.label} onChange={(e) => updateDoc(di, 'label', e.target.value)} />
+                    <label style={s.label}>Event Type</label>
+                    <input
+                      style={s.input}
+                      type="text"
+                      placeholder="e.g. Recorded Video Upload"
+                      value={event.kind}
+                      onChange={(e) => updateCalendarEvent(ci, 'kind', e.target.value)}
+                    />
                   </div>
                   <div>
-                    <label style={s.label}>Drive URL</label>
-                    <input style={{ ...s.input, marginBottom: 0 }} type="url" placeholder="https://drive.google.com/..."
-                      value={doc.url} onChange={(e) => updateDoc(di, 'url', e.target.value)} />
+                    <label style={s.label}>Title</label>
+                    <input
+                      style={s.input}
+                      type="text"
+                      placeholder="e.g. Product Strategy"
+                      value={event.title}
+                      onChange={(e) => updateCalendarEvent(ci, 'title', e.target.value)}
+                    />
                   </div>
-                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.3rem 0.5rem', fontSize: '0.72rem', marginBottom: 0 }}
-                    onClick={() => removeDoc(di)}>✕</button>
                 </div>
-              ))}
-            </div>
 
-            {/* Assignments */}
-            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Assignments</span>
-                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addAssignment}>+ Assignment</button>
-              </div>
-              {(form.assignments || []).map((assignment, ai) => (
-                <div key={assignment.id || ai} style={s.qPanel}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Assignment {ai + 1}</span>
-                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeAssignment(ai)}>Remove</button>
+                <div style={s.grid2}>
+                  <div>
+                    <label style={s.label}>Start Date</label>
+                    <input
+                      style={s.input}
+                      type="date"
+                      value={event.startDate}
+                      onChange={(e) => updateCalendarEvent(ci, 'startDate', e.target.value)}
+                    />
                   </div>
-                  <label style={s.label}>Title</label>
-                  <input
-                    style={s.input}
-                    type="text"
-                    placeholder={`Assignment ${ai + 1}`}
-                    value={assignment.title}
-                    onChange={(e) => updateAssignment(ai, 'title', e.target.value)}
-                  />
-                  <label style={s.label}>Instructions</label>
-                  <textarea
-                    style={s.textarea}
-                    placeholder="Tell students what to upload for this assignment."
-                    value={assignment.description}
-                    onChange={(e) => updateAssignment(ai, 'description', e.target.value)}
-                  />
+                  <div>
+                    <label style={s.label}>End Date (Optional)</label>
+                    <input
+                      style={s.input}
+                      type="date"
+                      value={event.endDate}
+                      onChange={(e) => updateCalendarEvent(ci, 'endDate', e.target.value)}
+                    />
+                  </div>
                 </div>
-              ))}
-            </div>
 
-            {/* Live Recorded Sessions */}
-            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Live Recorded Sessions</span>
-                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addRecordedSession}>+ Recorded Session</button>
+                <label style={s.label}>Description</label>
+                <textarea
+                  style={s.textarea}
+                  placeholder="Short description shown in the student calendar"
+                  value={event.description}
+                  onChange={(e) => updateCalendarEvent(ci, 'description', e.target.value)}
+                />
               </div>
-              {(form.liveRecordedSessions || []).map((session, si) => (
-                <div key={session.id || si} style={s.qPanel}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Recording {si + 1}</span>
-                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeRecordedSession(si)}>Remove</button>
-                  </div>
-                  <label style={s.label}>Title</label>
-                  <input
-                    style={s.input}
-                    type="text"
-                    placeholder="e.g. Week 1 Live Session Recording"
-                    value={session.title}
-                    onChange={(e) => updateRecordedSession(si, 'title', e.target.value)}
-                  />
-                  <label style={s.label}>Description</label>
-                  <textarea
-                    style={s.textarea}
-                    placeholder="Short description shown in the student dashboard"
-                    value={session.description}
-                    onChange={(e) => updateRecordedSession(si, 'description', e.target.value)}
-                  />
-                  <label style={s.label}>Recording URL</label>
-                  <input
-                    style={s.input}
-                    type="url"
-                    placeholder="https://..."
-                    value={session.url}
-                    onChange={(e) => updateRecordedSession(si, 'url', e.target.value)}
-                  />
+            ))}
+            <SectionSaveButton
+              label="Save Calendar Events"
+              saving={savingSection === 'calendarEvents'}
+              onClick={() => handleSaveSection('calendarEvents', { calendarEvents: form.calendarEvents || [] })}
+              message={sectionMessages.calendarEvents}
+            />
+          </div>
+
+          {/* ── Resources ───────────────────────────────────────────────── */}
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Resources (Links, PDFs, etc.)</span>
+              <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addResource}>+ Resource</button>
+            </div>
+            {(form.resources || []).map((r, ri) => (
+              <div key={r.id || ri} style={s.qPanel}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Resource {ri + 1}</span>
+                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeResource(ri)}>Remove</button>
                 </div>
-              ))}
-            </div>
-
-            {/* Quiz */}
-            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Quiz Questions</span>
-                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addQuestion}>+ Question</button>
+                <div style={s.grid2}>
+                  <div>
+                    <label style={s.label}>Title</label>
+                    <input style={s.input} type="text" placeholder="e.g. Week 1 Slides"
+                      value={r.title} onChange={(e) => updateResource(ri, 'title', e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={s.label}>URL (Link)</label>
+                    <input style={s.input} type="url" placeholder="https://..."
+                      value={r.url} onChange={(e) => updateResource(ri, 'url', e.target.value)} />
+                  </div>
+                </div>
               </div>
-              {form.quiz.questions.map((q, qi) => (
-                <div key={q.id || qi} style={s.qPanel}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Q{qi + 1}</span>
-                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeQuestion(qi)}>Remove</button>
-                  </div>
-                  <label style={s.label}>Question text</label>
-                  <input style={s.input} type="text"
-                    value={q.text} onChange={(e) => updateQuestion(qi, 'text', e.target.value)} placeholder="What is...?" />
-                  <div style={s.grid2}>
-                    {q.options.map((opt, oi) => (
-                      <div key={oi}>
-                        <label style={s.label}>Option {String.fromCharCode(65 + oi)}</label>
-                        <input style={s.input} type="text" value={opt}
-                          onChange={(e) => updateOption(qi, oi, e.target.value)} />
-                      </div>
-                    ))}
-                  </div>
-                  <div style={s.grid2}>
-                    <div>
-                      <label style={s.label}>Correct (0=A 1=B 2=C 3=D)</label>
-                      <input style={s.input} type="number" min="0" max="3"
-                        value={q.correctIndex} onChange={(e) => updateQuestion(qi, 'correctIndex', parseInt(e.target.value, 10))} />
+            ))}
+            <SectionSaveButton
+              label="Save Resources"
+              saving={savingSection === 'resources'}
+              onClick={() => handleSaveSection('resources', { resources: form.resources || [] })}
+              message={sectionMessages.resources}
+            />
+          </div>
+
+          {/* ── Reference Documents ─────────────────────────────────────── */}
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Reference Documents</span>
+              <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addDoc}>+ Document</button>
+            </div>
+            {(form.docs || []).map((doc, di) => (
+              <div key={doc.id || di} style={{ ...s.qPanel, display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.5rem', alignItems: 'end' }}>
+                <div>
+                  <label style={s.label}>Label</label>
+                  <input style={{ ...s.input, marginBottom: 0 }} type="text" placeholder="e.g. Week 1 Slides"
+                    value={doc.label} onChange={(e) => updateDoc(di, 'label', e.target.value)} />
+                </div>
+                <div>
+                  <label style={s.label}>Drive URL</label>
+                  <input style={{ ...s.input, marginBottom: 0 }} type="url" placeholder="https://drive.google.com/..."
+                    value={doc.url} onChange={(e) => updateDoc(di, 'url', e.target.value)} />
+                </div>
+                <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.3rem 0.5rem', fontSize: '0.72rem', marginBottom: 0 }}
+                  onClick={() => removeDoc(di)}>✕</button>
+              </div>
+            ))}
+            <SectionSaveButton
+              label="Save Documents"
+              saving={savingSection === 'docs'}
+              onClick={() => handleSaveSection('docs', { docs: form.docs || [] })}
+              message={sectionMessages.docs}
+            />
+          </div>
+
+          {/* ── Assignments ─────────────────────────────────────────────── */}
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Assignments</span>
+              <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addAssignment}>+ Assignment</button>
+            </div>
+            {(form.assignments || []).map((assignment, ai) => (
+              <div key={assignment.id || ai} style={s.qPanel}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Assignment {ai + 1}</span>
+                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeAssignment(ai)}>Remove</button>
+                </div>
+                <label style={s.label}>Title</label>
+                <input
+                  style={s.input}
+                  type="text"
+                  placeholder={`Assignment ${ai + 1}`}
+                  value={assignment.title}
+                  onChange={(e) => updateAssignment(ai, 'title', e.target.value)}
+                />
+                <label style={s.label}>Instructions</label>
+                <textarea
+                  style={s.textarea}
+                  placeholder="Tell students what to upload for this assignment."
+                  value={assignment.description}
+                  onChange={(e) => updateAssignment(ai, 'description', e.target.value)}
+                />
+              </div>
+            ))}
+            <SectionSaveButton
+              label="Save Assignments"
+              saving={savingSection === 'assignments'}
+              onClick={() => handleSaveSection('assignments', { assignments: normalizeAssignments(form.assignments || []) })}
+              message={sectionMessages.assignments}
+            />
+          </div>
+
+          {/* ── Live Recorded Sessions ──────────────────────────────────── */}
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Live Recorded Sessions</span>
+              <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addRecordedSession}>+ Recorded Session</button>
+            </div>
+            {(form.liveRecordedSessions || []).map((session, si) => (
+              <div key={session.id || si} style={s.qPanel}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Recording {si + 1}</span>
+                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeRecordedSession(si)}>Remove</button>
+                </div>
+                <label style={s.label}>Title</label>
+                <input
+                  style={s.input}
+                  type="text"
+                  placeholder="e.g. Week 1 Live Session Recording"
+                  value={session.title}
+                  onChange={(e) => updateRecordedSession(si, 'title', e.target.value)}
+                />
+                <label style={s.label}>Description</label>
+                <textarea
+                  style={s.textarea}
+                  placeholder="Short description shown in the student dashboard"
+                  value={session.description}
+                  onChange={(e) => updateRecordedSession(si, 'description', e.target.value)}
+                />
+                <label style={s.label}>Recording URL</label>
+                <input
+                  style={s.input}
+                  type="url"
+                  placeholder="https://..."
+                  value={session.url}
+                  onChange={(e) => updateRecordedSession(si, 'url', e.target.value)}
+                />
+              </div>
+            ))}
+            <SectionSaveButton
+              label="Save Recorded Sessions"
+              saving={savingSection === 'liveRecordedSessions'}
+              onClick={() => handleSaveSection('liveRecordedSessions', { liveRecordedSessions: form.liveRecordedSessions || [] })}
+              message={sectionMessages.liveRecordedSessions}
+            />
+          </div>
+
+          {/* ── Quiz ────────────────────────────────────────────────────── */}
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Quiz Questions</span>
+              <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addQuestion}>+ Question</button>
+            </div>
+            {form.quiz.questions.map((q, qi) => (
+              <div key={q.id || qi} style={s.qPanel}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Q{qi + 1}</span>
+                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeQuestion(qi)}>Remove</button>
+                </div>
+                <label style={s.label}>Question text</label>
+                <input style={s.input} type="text"
+                  value={q.text} onChange={(e) => updateQuestion(qi, 'text', e.target.value)} placeholder="What is...?" />
+                <div style={s.grid2}>
+                  {q.options.map((opt, oi) => (
+                    <div key={oi}>
+                      <label style={s.label}>Option {String.fromCharCode(65 + oi)}</label>
+                      <input style={s.input} type="text" value={opt}
+                        onChange={(e) => updateOption(qi, oi, e.target.value)} />
                     </div>
-                    <div>
-                      <label style={s.label}>Explanation</label>
-                      <input style={s.input} type="text" value={q.explanation}
-                        onChange={(e) => updateQuestion(qi, 'explanation', e.target.value)} />
-                    </div>
+                  ))}
+                </div>
+                <div style={s.grid2}>
+                  <div>
+                    <label style={s.label}>Correct (0=A 1=B 2=C 3=D)</label>
+                    <input style={s.input} type="number" min="0" max="3"
+                      value={q.correctIndex} onChange={(e) => updateQuestion(qi, 'correctIndex', parseInt(e.target.value, 10))} />
+                  </div>
+                  <div>
+                    <label style={s.label}>Explanation</label>
+                    <input style={s.input} type="text" value={q.explanation}
+                      onChange={(e) => updateQuestion(qi, 'explanation', e.target.value)} />
                   </div>
                 </div>
-              ))}
-            </div>
-
-            <div style={{ display: 'flex', gap: '0.65rem', marginTop: '0.5rem' }}>
-              <button style={s.btn} type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Week'}</button>
-              <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={() => setShowForm(false)}>Cancel</button>
-            </div>
-          </form >
+              </div>
+            ))}
+            <SectionSaveButton
+              label="Save Quiz"
+              saving={savingSection === 'quiz'}
+              onClick={() => handleSaveSection('quiz', { quiz: form.quiz })}
+              message={sectionMessages.quiz}
+            />
+          </div>
         </div >
       )
       }
