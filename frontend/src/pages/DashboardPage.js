@@ -965,6 +965,35 @@ function getDisplayName(user) {
   return user?.username || 'Student';
 }
 
+function getLeaderboardScore(entry) {
+  if (typeof entry?.score === 'number' && Number.isFinite(entry.score)) return entry.score;
+  if (typeof entry?.totalPoints === 'number' && Number.isFinite(entry.totalPoints)) return entry.totalPoints;
+  return 0;
+}
+
+function normalizeLeaderboardEntries(entries = []) {
+  const normalized = (entries || []).map((entry, index) => ({
+    ...entry,
+    displayName: (entry?.displayName || entry?.name || entry?.email || `Student ${index + 1}`).trim(),
+    completedLectures: Number(entry?.completedLectures || 0),
+    assignmentsSubmitted: Number(entry?.assignmentsSubmitted || 0),
+    score: getLeaderboardScore(entry),
+  }));
+
+  return normalized
+    .sort((a, b) =>
+      b.score - a.score ||
+      b.completedLectures - a.completedLectures ||
+      b.assignmentsSubmitted - a.assignmentsSubmitted ||
+      a.displayName.localeCompare(b.displayName)
+    )
+    .map((entry, index) => ({
+      ...entry,
+      rank: index + 1,
+      totalPoints: entry.score,
+    }));
+}
+
 function formatDateLabel() {
   try {
     return new Intl.DateTimeFormat('en-IN', {
@@ -1229,8 +1258,8 @@ function LeaderboardRow({ entry }) {
       </div>
 
       <div style={s.leaderboardPoints}>
-        <div style={s.leaderboardPointsValue}>{entry.totalPoints}</div>
-        <div style={s.leaderboardPointsLabel}>Points</div>
+        <div style={s.leaderboardPointsValue}>{entry.score}</div>
+        <div style={s.leaderboardPointsLabel}>Score</div>
       </div>
     </div>
   );
@@ -1512,7 +1541,7 @@ export default function DashboardPage() {
       }
 
       setProgressMap(nextProgressMap);
-      setLeaderboard(progressRes.data.leaderboard || []);
+      setLeaderboard(normalizeLeaderboardEntries(progressRes.data.leaderboard || []));
       setExpandedGroups({});
       setExpandedAssignments({});
     } catch {
@@ -1587,7 +1616,7 @@ export default function DashboardPage() {
   const progressPercent = releasedLessonWeeks.length > 0
     ? Math.round((completedCount / releasedLessonWeeks.length) * 100)
     : 0;
-  const leaderboardRows = (leaderboard || []).filter((entry) => entry.totalPoints > 0 || entry.isCurrentUser);
+  const leaderboardRows = leaderboard || [];
   const myLeaderboardEntry = leaderboardRows.find((entry) => entry.isCurrentUser) || null;
   const topLeaderboard = leaderboardRows.slice(0, 6);
   const assignmentsSubmittedCount = myLeaderboardEntry?.assignmentsSubmitted || 0;
@@ -1759,7 +1788,7 @@ export default function DashboardPage() {
                 </div>
                 <div style={{ ...s.snapshotRow, borderBottom: 'none', paddingBottom: 0 }}>
                   <div style={s.snapshotLabel}>Points earned</div>
-                  <div style={s.snapshotValue}>{myLeaderboardEntry?.totalPoints || 0}</div>
+                  <div style={s.snapshotValue}>{myLeaderboardEntry?.score || 0}</div>
                 </div>
               </div>
 
