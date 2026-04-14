@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getMyCourses, getCourseWeeks, getProgress } from '../utils/api';
+import { getMyCourses, getCourseWeeks, getProgress, adminGetWeeks } from '../utils/api';
 import AssignmentUpload from '../components/AssignmentUpload';
 
 const NAV_ITEMS = [
@@ -835,7 +835,30 @@ function buildWeekGroups(weeks) {
   return [...groups.values()].sort((a, b) => a.groupNumber - b.groupNumber);
 }
 
-function buildRecordedSessionGroups(weeks) {
+function normalizeSupplementalContent(raw) {
+  return {
+    assignments: Array.isArray(raw?.assignments) ? raw.assignments : [],
+    liveRecordedSessions: Array.isArray(raw?.liveRecordedSessions) ? raw.liveRecordedSessions : [],
+    calendarEvents: Array.isArray(raw?.calendarEvents) ? raw.calendarEvents : [],
+  };
+}
+
+function findLegacySupplementalWeek(weeks = []) {
+  return weeks.find((week) => {
+    const hasSupplementalPayload = (week.assignments?.length || 0)
+      || (week.liveRecordedSessions?.length || 0)
+      || (week.calendarEvents?.length || 0);
+    const supplementalById = week.weekId === '__supplemental__';
+    const supplementalByKey = week.sk === 'WEEK#__supplemental__';
+    const supplementalByShape = Number(week.weekNumber) === 0
+      && !week.youtubeUrl
+      && hasSupplementalPayload
+      && /supplemental/i.test(week.title || '');
+    return supplementalById || supplementalByKey || supplementalByShape;
+  });
+}
+
+function buildRecordedSessionGroups(weeks, supplementalSessions = [], fallbackCourseId = '') {
   const groups = new Map();
   const sortedWeeks = [...weeks].sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
 
@@ -865,28 +888,71 @@ function buildRecordedSessionGroups(weeks) {
     });
   });
 
+  if (supplementalSessions.length > 0) {
+    if (!groups.has(0)) {
+      groups.set(0, {
+        groupNumber: 0,
+        groupLabel: 'Course Sessions',
+        sessions: [],
+      });
+    }
+
+    const group = groups.get(0);
+    supplementalSessions.forEach((session, index) => {
+      group.sessions.push({
+        ...session,
+        id: session.id || `rec-supplemental-${index + 1}`,
+        courseId: fallbackCourseId || sortedWeeks[0]?.courseId || '',
+        sourceWeekId: '__supplemental__',
+        sourceTitle: 'Course Sessions',
+        displaySessionNumber: `C.${group.sessions.length + 1}`,
+      });
+    });
+  }
+
   return [...groups.values()].sort((a, b) => a.groupNumber - b.groupNumber);
 }
 
-function buildAssignments(weeks) {
+function buildAssignments(weeks, supplementalAssignments = [], fallbackCourseId = '') {
   const sortedWeeks = [...weeks].sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
   let assignmentNumber = 0;
+  const combined = [];
 
-  return sortedWeeks.flatMap((week) =>
-    (week.assignments || []).map((assignment, index) => {
+  sortedWeeks.forEach((week) => {
+    (week.assignments || []).forEach((assignment, index) => {
       assignmentNumber += 1;
-      return {
+      combined.push({
         id: assignment.id || `assignment-${week.weekId}-${index + 1}`,
         courseId: week.courseId,
         weekId: week.weekId,
         weekNumber: week.weekNumber,
         weekTitle: week.title,
+        sourceLabel: Number.isFinite(Number(week.weekNumber))
+          ? `Week ${Math.floor(Number(week.weekNumber))}`
+          : 'Course Module',
         assignmentNumber,
         title: (assignment.title || '').trim(),
         description: (assignment.description || '').trim(),
-      };
-    }),
-  );
+      });
+    });
+  });
+
+  supplementalAssignments.forEach((assignment, index) => {
+    assignmentNumber += 1;
+    combined.push({
+      id: assignment.id || `assignment-supplemental-${index + 1}`,
+      courseId: fallbackCourseId || sortedWeeks[0]?.courseId || '',
+      weekId: '__supplemental__',
+      weekNumber: null,
+      weekTitle: 'Course Assignments',
+      sourceLabel: 'Course Assignments',
+      assignmentNumber,
+      title: (assignment.title || '').trim(),
+      description: (assignment.description || '').trim(),
+    });
+  });
+
+  return combined;
 }
 
 function getDisplayName(user) {
@@ -1003,7 +1069,7 @@ function getCalendarKindPalette(kind) {
   };
 }
 
-function buildCalendarEventDefinitions(weeks) {
+function buildCalendarEventDefinitions(weeks, supplementalEvents = []) {
   const weekEvents = [...weeks]
     .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0))
     .flatMap((week) => {
@@ -1026,8 +1092,24 @@ function buildCalendarEventDefinitions(weeks) {
     })
     .filter((event) => event.startDate);
 
-  const events = weekEvents.length > 0
-    ? weekEvents
+  const globalEvents = supplementalEvents
+    .map((event, index) => ({
+      ...event,
+      id: event.id || `calendar-supplemental-${index + 1}`,
+      kind: event.kind || 'Course Event',
+      title: event.title || 'Course Event',
+      description: event.description || '',
+      startDate: event.startDate || '',
+      endDate: event.endDate || event.startDate || '',
+      weekLabel: null,
+      sourceWeekId: '__supplemental__',
+    }))
+    .filter((event) => event.startDate);
+
+  const mergedEvents = [...weekEvents, ...globalEvents];
+
+  const events = mergedEvents.length > 0
+    ? mergedEvents
     : DEFAULT_CALENDAR_EVENTS.map((event) => ({
       ...event,
       endDate: event.endDate || event.startDate,
@@ -1251,6 +1333,7 @@ export default function DashboardPage() {
 
   const [courses, setCourses] = useState([]);
   const [weeks, setWeeks] = useState([]);
+  const [supplementalContent, setSupplementalContent] = useState(() => normalizeSupplementalContent());
   const [progressMap, setProgressMap] = useState({});
   const [leaderboard, setLeaderboard] = useState([]);
   const [activeCourse, setActiveCourse] = useState(null);
@@ -1274,6 +1357,16 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
+    if (!activeCourse?.courseId) return;
+
+    setLoading(true);
+    setError('');
+
+    loadCourse(activeCourse.courseId)
+      .finally(() => setLoading(false));
+  }, [activeCourse?.courseId, isAdmin]);
+
+  useEffect(() => {
     function handleResize() {
       setIsCompact(window.innerWidth < 980);
     }
@@ -1284,9 +1377,14 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
+    const releasedLessonWeeks = weeks.filter((week) => week.visible === true);
     const groups = activeCoursesTab === 'videos'
-      ? buildWeekGroups(weeks)
-      : buildRecordedSessionGroups(weeks);
+      ? buildWeekGroups(releasedLessonWeeks)
+      : buildRecordedSessionGroups(
+        weeks,
+        supplementalContent.liveRecordedSessions || [],
+        activeCourse?.courseId || '',
+      );
     if (groups.length === 0) return;
 
     setExpandedGroups((prev) => {
@@ -1305,10 +1403,13 @@ export default function DashboardPage() {
 
       return { [firstIncomplete.groupNumber]: true };
     });
-  }, [weeks, activeCoursesTab, progressMap]);
+  }, [weeks, supplementalContent, activeCoursesTab, progressMap, activeCourse]);
 
   useEffect(() => {
-    const entries = expandCalendarEntries(buildCalendarEventDefinitions(weeks));
+    const entries = expandCalendarEntries(buildCalendarEventDefinitions(
+      weeks,
+      supplementalContent.calendarEvents || [],
+    ));
     if (entries.length === 0) return;
 
     const firstEntryDate = parseDateKey(entries[0].dateKey);
@@ -1329,7 +1430,7 @@ export default function DashboardPage() {
       if (prev && entries.some((entry) => entry.dateKey === prev)) return prev;
       return entries[0].dateKey;
     });
-  }, [weeks]);
+  }, [weeks, supplementalContent]);
 
   useEffect(() => {
     setDisplayNameInput(getDisplayName(user));
@@ -1342,6 +1443,7 @@ export default function DashboardPage() {
   async function loadData() {
     setLoading(true);
     setError('');
+    let deferLoadingClear = false;
 
     try {
       const { data } = await getMyCourses();
@@ -1351,23 +1453,58 @@ export default function DashboardPage() {
       if (courseList.length > 0) {
         const course = courseList[0];
         setActiveCourse(course);
-        await loadCourse(course.courseId);
+        deferLoadingClear = true;
       }
     } catch {
       setError('Failed to load your courses. Please refresh.');
     } finally {
-      setLoading(false);
+      if (!deferLoadingClear) setLoading(false);
     }
   }
 
   async function loadCourse(courseId) {
     try {
-      const [weeksRes, progressRes] = await Promise.all([
+      const requests = [
         getCourseWeeks(courseId),
         getProgress(courseId, { includeLeaderboard: true }),
-      ]);
+      ];
 
-      setWeeks(weeksRes.data.weeks || []);
+      if (isAdmin) {
+        requests.push(adminGetWeeks(courseId));
+      }
+
+      const [weeksRes, progressRes, adminWeeksRes] = await Promise.all(requests);
+
+      const allWeeks = weeksRes.data.weeks || [];
+      const legacySupplementalWeek = findLegacySupplementalWeek(allWeeks);
+      const regularWeeks = allWeeks.filter((week) => week !== legacySupplementalWeek && week.weekId !== '__supplemental__');
+      const responseSupplemental = normalizeSupplementalContent(weeksRes.data.supplementalContent);
+      const hasSupplementalInResponse = responseSupplemental.assignments.length > 0
+        || responseSupplemental.liveRecordedSessions.length > 0
+        || responseSupplemental.calendarEvents.length > 0;
+      const adminWeeks = adminWeeksRes?.data?.weeks || [];
+      const adminLegacySupplementalWeek = findLegacySupplementalWeek(adminWeeks);
+      const adminSupplemental = normalizeSupplementalContent(
+        (adminWeeksRes?.data?.supplementalContent && (
+          (adminWeeksRes.data.supplementalContent.assignments?.length || 0)
+          || (adminWeeksRes.data.supplementalContent.liveRecordedSessions?.length || 0)
+          || (adminWeeksRes.data.supplementalContent.calendarEvents?.length || 0)
+        ))
+          ? adminWeeksRes.data.supplementalContent
+          : adminLegacySupplementalWeek,
+      );
+      const hasAdminSupplemental = adminSupplemental.assignments.length > 0
+        || adminSupplemental.liveRecordedSessions.length > 0
+        || adminSupplemental.calendarEvents.length > 0;
+
+      const supplementalSource = hasSupplementalInResponse
+        ? responseSupplemental
+        : hasAdminSupplemental
+          ? adminSupplemental
+          : normalizeSupplementalContent(legacySupplementalWeek);
+
+      setWeeks(regularWeeks);
+      setSupplementalContent(normalizeSupplementalContent(supplementalSource));
 
       const nextProgressMap = {};
       for (const progress of (progressRes.data.progress || [])) {
@@ -1386,14 +1523,6 @@ export default function DashboardPage() {
   async function handleSelectCourse(course) {
     if (!course || course.courseId === activeCourse?.courseId) return;
     setActiveCourse(course);
-    setLoading(true);
-    setError('');
-
-    try {
-      await loadCourse(course.courseId);
-    } finally {
-      setLoading(false);
-    }
   }
 
   async function handleSignOut() {
@@ -1439,19 +1568,35 @@ export default function DashboardPage() {
   if (loading) return <div style={s.loading}>Loading your dashboard…</div>;
   if (error) return <div style={s.error}>{error}</div>;
 
-  const weekGroups = buildWeekGroups(weeks);
-  const recordedSessionGroups = buildRecordedSessionGroups(weeks);
-  const courseAssignments = buildAssignments(weeks);
-  const completedCount = weeks.filter((week) => weekStatus(week, progressMap[week.weekId]) === 'complete').length;
-  const remainingCount = Math.max(weeks.length - completedCount, 0);
-  const progressPercent = weeks.length > 0 ? Math.round((completedCount / weeks.length) * 100) : 0;
+  const normalizedSupplemental = normalizeSupplementalContent(supplementalContent);
+  const releasedLessonWeeks = weeks.filter((week) => week.visible === true);
+  const weekGroups = buildWeekGroups(releasedLessonWeeks);
+  const recordedSessionGroups = buildRecordedSessionGroups(
+    weeks,
+    normalizedSupplemental.liveRecordedSessions,
+    activeCourse?.courseId || '',
+  );
+  const courseAssignments = buildAssignments(
+    weeks,
+    normalizedSupplemental.assignments,
+    activeCourse?.courseId || '',
+  );
+  const completedCount = releasedLessonWeeks
+    .filter((week) => weekStatus(week, progressMap[week.weekId]) === 'complete').length;
+  const remainingCount = Math.max(releasedLessonWeeks.length - completedCount, 0);
+  const progressPercent = releasedLessonWeeks.length > 0
+    ? Math.round((completedCount / releasedLessonWeeks.length) * 100)
+    : 0;
   const leaderboardRows = (leaderboard || []).filter((entry) => entry.totalPoints > 0 || entry.isCurrentUser);
   const myLeaderboardEntry = leaderboardRows.find((entry) => entry.isCurrentUser) || null;
   const topLeaderboard = leaderboardRows.slice(0, 6);
   const assignmentsSubmittedCount = myLeaderboardEntry?.assignmentsSubmitted || 0;
   const currentDateLabel = formatDateLabel();
   const displayName = getDisplayName(user);
-  const calendarEventDefinitions = buildCalendarEventDefinitions(weeks);
+  const calendarEventDefinitions = buildCalendarEventDefinitions(
+    weeks,
+    normalizedSupplemental.calendarEvents,
+  );
   const calendarEntries = expandCalendarEntries(calendarEventDefinitions);
   const calendarEntriesByDate = buildCalendarEntriesByDate(calendarEntries);
   const visibleCalendarMonth = startOfMonth(calendarMonth);
@@ -1551,7 +1696,7 @@ export default function DashboardPage() {
             <StatCard
               label="Lessons Completed"
               value={completedCount}
-              detail={`${weeks.length} lessons available in this course`}
+              detail={`${releasedLessonWeeks.length} lessons available in this course`}
               accent="var(--primary)"
               progress={progressPercent}
               progressColor="var(--primary)"
@@ -1682,7 +1827,11 @@ export default function DashboardPage() {
         </div>
 
         {activeGroups.length === 0 ? (
-          <div style={s.empty}>No weeks have been released yet for this course.</div>
+          <div style={s.empty}>
+            {showingVideos
+              ? 'No weeks have been released yet for this course.'
+              : 'No live recorded sessions have been added yet.'}
+          </div>
         ) : (
           <div style={s.accordionList}>
             {activeGroups.map((group) => {
@@ -1704,7 +1853,9 @@ export default function DashboardPage() {
                   >
                     <div style={s.weekGroupTop}>
                       <div>
-                        <div style={s.weekGroupLabel}>Week {group.groupNumber}</div>
+                        <div style={s.weekGroupLabel}>
+                          {showingVideos ? `Week ${group.groupNumber}` : (group.groupLabel || `Week ${group.groupNumber}`)}
+                        </div>
                         <div style={s.weekGroupMeta}>
                           {groupItemCount} {showingVideos ? `video${groupItemCount === 1 ? '' : 's'}` : `recording${groupItemCount === 1 ? '' : 's'}`}
                           {showingVideos && (
@@ -1769,7 +1920,7 @@ export default function DashboardPage() {
                           );
                         })
                       ) : group.sessions.length === 0 ? (
-                        <div style={s.empty}>No live recorded sessions have been added for this week yet.</div>
+                        <div style={s.empty}>No live recorded sessions have been added yet.</div>
                       ) : (
                         group.sessions.map((session) => (
                           <RecordedSessionCard
@@ -1906,9 +2057,10 @@ export default function DashboardPage() {
           <div style={s.accordionList}>
             {courseAssignments.map((assignment) => {
               const isExpanded = !!expandedAssignments[assignment.id];
-              const sourceWeekLabel = Number.isFinite(Number(assignment.weekNumber))
-                ? `Week ${Math.floor(Number(assignment.weekNumber))}`
-                : 'Course Module';
+              const sourceWeekLabel = assignment.sourceLabel
+                || (Number.isFinite(Number(assignment.weekNumber))
+                  ? `Week ${Math.floor(Number(assignment.weekNumber))}`
+                  : 'Course Module');
               const assignmentLabel = `Assignment ${assignment.assignmentNumber}`;
               const assignmentTitle = assignment.title || assignmentLabel;
 
