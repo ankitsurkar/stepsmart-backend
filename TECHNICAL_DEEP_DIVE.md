@@ -1160,7 +1160,7 @@ Go to **DynamoDB → Tables → lms-courses → Explore items → Create item**:
   "sk": "METADATA",
   "courseId": "course-001",
   "type": "course",
-  "name": "Product Management Bootcamp",
+  "name": "PM -X Accelerator",
   "description": "Weekly videos, quizzes, and live Q&A sessions."
 }
 ```
