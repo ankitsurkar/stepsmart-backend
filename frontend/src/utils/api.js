@@ -73,6 +73,9 @@ export const adminCreateWeek = (courseId, weekData) =>
 export const adminUpdateWeek = (courseId, weekId, updates) =>
   api.patch(`/admin/courses/${courseId}/weeks/${weekId}`, updates);
 
+export const adminUpdateSupplementalContent = (courseId, updates) =>
+  api.patch(`/admin/courses/${courseId}/weeks/__supplemental__`, updates);
+
 export const adminDeleteWeek = (courseId, weekId) =>
   api.delete(`/admin/courses/${courseId}/weeks/${weekId}`);
 

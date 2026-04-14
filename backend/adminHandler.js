@@ -22,6 +22,7 @@ const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const {
   DynamoDBDocumentClient,
   QueryCommand,
+  GetCommand,
   PutCommand,
   UpdateCommand,
   DeleteCommand,
@@ -47,6 +48,7 @@ const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
 const PROGRESS_TABLE = process.env.PROGRESS_TABLE || 'lms-progress';
 const USER_POOL_ID = process.env.USER_POOL_ID || '';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
+const SUPPLEMENTAL_SK = 'SUPPLEMENTAL#GLOBAL';
 
 function corsHeaders() {
   return {
@@ -61,6 +63,22 @@ function res(statusCode, body) {
     statusCode,
     headers: { 'Content-Type': 'application/json', ...corsHeaders() },
     body: JSON.stringify(body),
+  };
+}
+
+async function getSupplementalContent(courseId) {
+  const result = await ddb.send(new GetCommand({
+    TableName: COURSES_TABLE,
+    Key: { pk: `COURSE#${courseId}`, sk: SUPPLEMENTAL_SK },
+  }));
+
+  const item = result.Item || {};
+  return {
+    assignments: Array.isArray(item.assignments) ? item.assignments : [],
+    liveRecordedSessions: Array.isArray(item.liveRecordedSessions) ? item.liveRecordedSessions : [],
+    calendarEvents: Array.isArray(item.calendarEvents) ? item.calendarEvents : [],
+    updatedAt: item.updatedAt || null,
+    createdAt: item.createdAt || null,
   };
 }
 
@@ -121,16 +139,22 @@ async function createStudent(body) {
 // GET /admin/courses/{courseId}/weeks
 // Returns all weeks (including hidden ones) with full quiz data including correctIndex.
 async function listWeeks(courseId) {
-  const result = await ddb.send(new QueryCommand({
-    TableName: COURSES_TABLE,
-    KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
-    ExpressionAttributeValues: {
-      ':pk': `COURSE#${courseId}`,
-      ':prefix': 'WEEK#',
-    },
-  }));
-  const weeks = (result.Items || []).sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
-  return res(200, { weeks });
+  const [result, supplementalContent] = await Promise.all([
+    ddb.send(new QueryCommand({
+      TableName: COURSES_TABLE,
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': `COURSE#${courseId}`,
+        ':prefix': 'WEEK#',
+      },
+    })),
+    getSupplementalContent(courseId),
+  ]);
+
+  const weeks = (result.Items || [])
+    .filter((item) => item.weekId !== '__supplemental__')
+    .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
+  return res(200, { weeks, supplementalContent });
 }
 
 // POST /admin/courses/{courseId}/weeks
@@ -199,6 +223,37 @@ async function updateWeek(courseId, weekId, body) {
   return res(200, { message: 'Week updated', weekId });
 }
 
+async function updateSupplementalContent(courseId, body) {
+  const hasSupportedField = ['assignments', 'liveRecordedSessions', 'calendarEvents']
+    .some((field) => body[field] !== undefined);
+  if (!hasSupportedField) {
+    return res(400, { message: 'No supplemental fields provided' });
+  }
+
+  const existing = await getSupplementalContent(courseId);
+  const now = new Date().toISOString();
+
+  const nextContent = {
+    assignments: body.assignments !== undefined ? body.assignments : existing.assignments,
+    liveRecordedSessions: body.liveRecordedSessions !== undefined ? body.liveRecordedSessions : existing.liveRecordedSessions,
+    calendarEvents: body.calendarEvents !== undefined ? body.calendarEvents : existing.calendarEvents,
+  };
+
+  await ddb.send(new PutCommand({
+    TableName: COURSES_TABLE,
+    Item: {
+      pk: `COURSE#${courseId}`,
+      sk: SUPPLEMENTAL_SK,
+      courseId,
+      ...nextContent,
+      createdAt: existing.createdAt || now,
+      updatedAt: now,
+    },
+  }));
+
+  return res(200, { message: 'Supplemental content updated', supplementalContent: nextContent });
+}
+
 // DELETE /admin/courses/{courseId}/weeks/{weekId}
 async function deleteWeek(courseId, weekId) {
   await ddb.send(new DeleteCommand({
@@ -265,6 +320,9 @@ exports.handler = async (event) => {
     // ── Weeks ─────────────────────────────────────────────────────────
     if (method === 'GET' && resource === '/admin/courses/{courseId}/weeks') return await listWeeks(courseId);
     if (method === 'POST' && resource === '/admin/courses/{courseId}/weeks') return await createWeek(courseId, body);
+    if (method === 'PATCH' && resource === '/admin/courses/{courseId}/weeks/{weekId}' && weekId === '__supplemental__') {
+      return await updateSupplementalContent(courseId, body);
+    }
     if (method === 'PATCH' && resource === '/admin/courses/{courseId}/weeks/{weekId}') return await updateWeek(courseId, weekId, body);
     if (method === 'DELETE' && resource === '/admin/courses/{courseId}/weeks/{weekId}') return await deleteWeek(courseId, weekId);
 

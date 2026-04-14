@@ -60,6 +60,9 @@ function makeLeaderboardEntry(userId, profile, currentUserId) {
     assignmentPoints: 0,
     completedLectures: 0,
     assignmentsSubmitted: 0,
+    // Keep `score` as the canonical leaderboard number while retaining
+    // `totalPoints` for backward compatibility with existing clients.
+    score: 0,
     totalPoints: 0,
     lastActivity: null,
     isCurrentUser: userId === currentUserId,
@@ -158,6 +161,7 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     const entry = getOrCreateEntry(leaderboardEntries, item.userId, userProfiles, currentUserId);
     entry.lecturePoints += 1;
     entry.completedLectures += 1;
+    entry.score += 1;
     entry.totalPoints += 1;
     entry.lastActivity = laterDate(entry.lastActivity, toIso(item.videoCompletedAt || item.lastSeen));
   }
@@ -174,6 +178,7 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     const entry = getOrCreateEntry(leaderboardEntries, item.userId, userProfiles, currentUserId);
     entry.assignmentPoints += 5;
     entry.assignmentsSubmitted += 1;
+    entry.score += 5;
     entry.totalPoints += 5;
     entry.lastActivity = laterDate(entry.lastActivity, toIso(item.uploadedAt));
   }
@@ -187,13 +192,19 @@ async function buildLeaderboard(courseId, currentUserId, event) {
 
   return [...leaderboardEntries.values()]
     .sort((a, b) =>
-      b.totalPoints - a.totalPoints ||
+      b.score - a.score ||
       b.completedLectures - a.completedLectures ||
       b.assignmentsSubmitted - a.assignmentsSubmitted ||
       (b.lastActivity || '').localeCompare(a.lastActivity || '') ||
       a.displayName.localeCompare(b.displayName)
     )
-    .map((entry, index) => ({ ...entry, rank: index + 1 }));
+    .map((entry, index) => ({
+      ...entry,
+      // Ensure old and new clients both see the same value.
+      totalPoints: entry.score,
+      score: entry.score,
+      rank: index + 1,
+    }));
 }
 
 function corsHeaders() {

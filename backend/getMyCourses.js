@@ -22,6 +22,9 @@ const ddb = DynamoDBDocumentClient.from(ddbClient, {
 
 const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
 const FRONTEND_URL  = process.env.FRONTEND_URL  || 'https://stepsmart.net';
+const COURSE_NAME_OVERRIDES = {
+  'course-001': 'PM -X Accelerator',
+};
 
 function corsHeaders() {
   return {
@@ -63,7 +66,7 @@ exports.handler = async (event) => {
 
   const courses = items.map((item) => ({
     courseId:    item.courseId,
-    name:        item.name,
+    name:        COURSE_NAME_OVERRIDES[item.courseId] || item.name,
     description: item.description || '',
   }));
 
