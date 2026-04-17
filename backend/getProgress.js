@@ -36,7 +36,13 @@ function deriveUserPoolId(event) {
 }
 
 function toIso(value) {
-  return value ? new Date(value).toISOString() : null;
+  if (!value) return null;
+  try {
+    const date = new Date(value);
+    return isNaN(date.getTime()) ? null : date.toISOString();
+  } catch {
+    return null;
+  }
 }
 
 function laterDate(a, b) {
@@ -124,16 +130,16 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     }),
     ddb.send(new ScanCommand({
       TableName: PROGRESS_TABLE,
-      FilterExpression: 'courseId = :cid',
-      ExpressionAttributeValues: { ':cid': courseId },
+      FilterExpression: 'begins_with(sk, :prefix)',
+      ExpressionAttributeValues: { ':prefix': `PROGRESS#${courseId}#` },
     })).catch((err) => {
       console.error('Progress scan failed while building leaderboard:', err);
       return { Items: [] };
     }),
     ddb.send(new ScanCommand({
       TableName: ASSIGNMENTS_TABLE,
-      FilterExpression: 'courseId = :cid',
-      ExpressionAttributeValues: { ':cid': courseId },
+      FilterExpression: 'begins_with(pk, :prefix)',
+      ExpressionAttributeValues: { ':prefix': `COURSE#${courseId}#` },
     })).catch((err) => {
       console.error('Assignments scan failed while building leaderboard:', err);
       return { Items: [] };
@@ -151,14 +157,16 @@ async function buildLeaderboard(courseId, currentUserId, event) {
   const leaderboardEntries = new Map();
 
   for (const item of (progressResult.Items || [])) {
-    if (!item.userId || !item.weekId) continue;
+    const itemUserId = item.userId || (item.pk ? item.pk.replace('USER#', '') : null);
+    const itemWeekId = item.weekId || (item.sk ? item.sk.split('#')[2] : null);
+    if (!itemUserId || !itemWeekId) continue;
 
-    const hasQuiz = weekQuizMap.has(item.weekId)
-      ? weekQuizMap.get(item.weekId)
+    const hasQuiz = weekQuizMap.has(itemWeekId)
+      ? weekQuizMap.get(itemWeekId)
       : item.quizTotal !== null && item.quizTotal !== undefined;
     if (!isLectureComplete(item, hasQuiz)) continue;
 
-    const entry = getOrCreateEntry(leaderboardEntries, item.userId, userProfiles, currentUserId);
+    const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
     entry.lecturePoints += 1;
     entry.completedLectures += 1;
     entry.score += 1;
@@ -168,14 +176,16 @@ async function buildLeaderboard(courseId, currentUserId, event) {
 
   const awardedAssignments = new Set();
   for (const item of (assignmentsResult.Items || [])) {
-    if (!item.userId || !item.weekId) continue;
+    const itemUserId = item.userId || (item.sk ? item.sk.split('#')[1] : null);
+    const itemWeekId = item.weekId || (item.pk ? item.pk.split('#')[3] : null);
+    if (!itemUserId || !itemWeekId) continue;
 
-    const uniqueAssignmentId = item.assignmentId || item.weekId;
-    const assignmentKey = `${item.userId}#${uniqueAssignmentId}`;
+    const uniqueAssignmentId = item.assignmentId || itemWeekId;
+    const assignmentKey = `${itemUserId}#${uniqueAssignmentId}`;
     if (awardedAssignments.has(assignmentKey)) continue;
     awardedAssignments.add(assignmentKey);
 
-    const entry = getOrCreateEntry(leaderboardEntries, item.userId, userProfiles, currentUserId);
+    const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
     entry.assignmentPoints += 5;
     entry.assignmentsSubmitted += 1;
     entry.score += 5;
