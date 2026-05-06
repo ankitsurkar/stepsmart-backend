@@ -188,9 +188,11 @@ async function createWeek(courseId, body) {
 // PATCH /admin/courses/{courseId}/weeks/{weekId}
 // Updates any subset of week fields. Commonly used to toggle visibility.
 async function updateWeek(courseId, weekId, body) {
+  console.log('DEPLOY_CHECK_V2: updateWeek called with weekId =', weekId);
   // Guard: if this is actually a supplemental content update, redirect to the correct handler.
   // This ensures data is always saved to SUPPLEMENTAL#GLOBAL (not WEEK#__supplemental__).
   if (weekId === '__supplemental__') {
+    console.log('DEPLOY_CHECK_V2: Redirecting to updateSupplementalContent');
     return await updateSupplementalContent(courseId, body);
   }
 
@@ -257,7 +259,7 @@ async function updateSupplementalContent(courseId, body) {
     },
   }));
 
-  return res(200, { message: 'Supplemental content updated', supplementalContent: nextContent });
+  return res(200, { message: 'Supplemental content updated', version: 'V2', supplementalContent: nextContent });
 }
 
 // DELETE /admin/courses/{courseId}/weeks/{weekId}
