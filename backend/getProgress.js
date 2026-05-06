@@ -18,11 +18,11 @@ const {
   ListUsersCommand,
 } = require('@aws-sdk/client-cognito-identity-provider');
 
-const ddbClient = new DynamoDBClient({ region: 'us-east-1' });
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const ddb = DynamoDBDocumentClient.from(ddbClient, {
   marshallOptions: { convertEmptyValues: true },
 });
-const cognito = new CognitoIdentityProviderClient({ region: 'us-east-1' });
+const cognito = new CognitoIdentityProviderClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 
 const PROGRESS_TABLE = process.env.PROGRESS_TABLE || 'lms-progress';
 const COURSES_TABLE  = process.env.COURSES_TABLE  || 'lms-courses';

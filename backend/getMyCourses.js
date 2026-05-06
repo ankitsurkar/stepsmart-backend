@@ -15,7 +15,7 @@ const {
   ScanCommand,
 } = require('@aws-sdk/lib-dynamodb');
 
-const ddbClient = new DynamoDBClient({ region: 'us-east-1' });
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const ddb = DynamoDBDocumentClient.from(ddbClient, {
   marshallOptions: { convertEmptyValues: true },
 });
