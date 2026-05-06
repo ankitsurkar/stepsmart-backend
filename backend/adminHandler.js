@@ -300,10 +300,12 @@ exports.handler = async (event) => {
   }
 
   const method = event.httpMethod;
-  const resource = event.resource;  // API Gateway route template, e.g. '/admin/courses/{courseId}/weeks/{weekId}'
+  const resource = (event.resource || '')
+    .replace('{courseID}', '{courseId}')
+    .replace('{weekID}', '{weekId}');
   const params = event.pathParameters || {};
-  const courseId = params.courseId;
-  const weekId = params.weekId;
+  const courseId = params.courseId || params.courseID;
+  const weekId = params.weekId || params.weekID;
 
   let body = {};
   try {
