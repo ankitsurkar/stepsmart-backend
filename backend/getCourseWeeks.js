@@ -66,7 +66,7 @@ exports.handler = async (event) => {
   const userId = event.requestContext?.authorizer?.claims?.sub;
   if (!userId) return res(401, { message: 'Unauthorized' });
 
-  const courseId = event.pathParameters?.courseId;
+  const courseId = event.pathParameters?.courseId || event.pathParameters?.courseID;
   if (!courseId) return res(400, { message: 'Missing courseId path parameter' });
 
   // Determine if the caller is an admin so we can conditionally include correctIndex.
