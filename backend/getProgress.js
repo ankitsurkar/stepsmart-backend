@@ -65,6 +65,7 @@ function makeLeaderboardEntry(userId, profile, currentUserId) {
     lecturePoints: 0,
     assignmentPoints: 0,
     completedLectures: 0,
+    completedQuizzes: 0,
     assignmentsSubmitted: 0,
     // Keep `score` as the canonical leaderboard number while retaining
     // `totalPoints` for backward compatibility with existing clients.
@@ -164,13 +165,17 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     const hasQuiz = weekQuizMap.has(itemWeekId)
       ? weekQuizMap.get(itemWeekId)
       : item.quizTotal !== null && item.quizTotal !== undefined;
-    if (!isLectureComplete(item, hasQuiz)) continue;
-
     const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
-    entry.lecturePoints += 1;
-    entry.completedLectures += 1;
-    entry.score += 1;
-    entry.totalPoints += 1;
+    if (item.videoComplete) {
+      entry.completedLectures += 1;
+      entry.score += 1;
+      entry.totalPoints += 1;
+    }
+    if (item.quizPassed) {
+      entry.completedQuizzes += 1;
+      entry.score += 2; // Award points for quizzes too? Let's assume 2 points for quiz
+      entry.totalPoints += 2;
+    }
     entry.lastActivity = laterDate(entry.lastActivity, toIso(item.videoCompletedAt || item.lastSeen));
   }
 

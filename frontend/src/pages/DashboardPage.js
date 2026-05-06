@@ -976,6 +976,7 @@ function normalizeLeaderboardEntries(entries = []) {
     ...entry,
     displayName: (entry?.displayName || entry?.name || entry?.email || `Student ${index + 1}`).trim(),
     completedLectures: Number(entry?.completedLectures || 0),
+    completedQuizzes: Number(entry?.completedQuizzes || 0),
     assignmentsSubmitted: Number(entry?.assignmentsSubmitted || 0),
     score: getLeaderboardScore(entry),
   }));
@@ -1251,9 +1252,9 @@ function LeaderboardRow({ entry }) {
       <div style={{ minWidth: 0 }}>
         <div style={s.leaderboardName}>{entry.displayName}</div>
         <div style={s.leaderboardMeta}>
-          {entry.completedLectures} lesson{entry.completedLectures === 1 ? '' : 's'} complete
+          {entry.completedLectures} Lecture{entry.completedLectures === 1 ? '' : 's'}
           {' • '}
-          {entry.assignmentsSubmitted} assignment{entry.assignmentsSubmitted === 1 ? '' : 's'} submitted
+          {entry.completedQuizzes} Quiz{entry.completedQuizzes === 1 ? '' : 'zes'}
         </div>
       </div>
 

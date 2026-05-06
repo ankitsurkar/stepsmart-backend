@@ -214,18 +214,27 @@ const EMPTY_WEEK = {
   quiz: { questions: [] },
   resources: [],
   docs: [],
-};
-const EMPTY_SUPPLEMENTAL = {
   assignments: [],
   liveRecordedSessions: [],
   calendarEvents: [],
 };
+
 const EMPTY_Q = { id: '', text: '', options: ['', '', '', ''], correctIndex: 0, explanation: '' };
 const EMPTY_RESOURCE = { id: '', title: '', url: '' };
 const EMPTY_DOC = { id: '', label: '', url: '' };
 const EMPTY_ASSIGNMENT = { id: '', title: '', description: '' };
 const EMPTY_RECORDED_SESSION = { id: '', title: '', description: '', url: '' };
 const EMPTY_CALENDAR_EVENT = { id: '', kind: '', title: '', description: '', startDate: '', endDate: '' };
+const EMPTY_SUPPLEMENTAL = {
+  assignments: [],
+  liveRecordedSessions: [],
+  calendarEvents: [],
+};
+const SECTION_META = {
+  calendarEvents: { label: 'Calendar events' },
+  assignments: { label: 'Assignments' },
+  liveRecordedSessions: { label: 'Live recorded sessions' },
+};
 
 function makeClientId(prefix) {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -242,11 +251,7 @@ function normalizeAssignments(assignments = []) {
   }));
 }
 
-const SECTION_META = {
-  calendarEvents: { label: 'Calendar events' },
-  assignments: { label: 'Assignments' },
-  liveRecordedSessions: { label: 'Live recorded sessions' },
-};
+
 
 function WeeksTab() {
   const [weeks, setWeeks] = useState([]);
@@ -263,9 +268,14 @@ function WeeksTab() {
     try {
       const { data } = await adminGetWeeks(COURSE_ID);
       const allWeeks = data.weeks || [];
+      // Filter out any system-managed supplemental weeks (weekNumber 0) or legacy supplemental IDs
       const visibleWeeks = allWeeks
-        .filter((week) => week.weekId !== '__supplemental__')
-        .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
+        .filter((week) => (
+          week.weekId !== '__supplemental__' &&
+          week.sk !== 'WEEK#__supplemental__' &&
+          Number(week.weekNumber) !== 0
+        ))
+        .sort((a, b) => (Number(a.weekNumber) || 0) - (Number(b.weekNumber) || 0));
       setWeeks(visibleWeeks);
     }
     catch { setMessage('Failed to load weeks.'); }
@@ -279,12 +289,17 @@ function WeeksTab() {
 
   function startEdit(week) {
     setForm({
-      title: week.title, description: week.description, weekNumber: String(week.weekNumber),
+      title: week.title || '',
+      description: week.description || '',
+      weekNumber: String(week.weekNumber || ''),
       youtubeUrl: week.youtubeUrl || '',
       qaLink: week.qaLink || '',
       quiz: week.quiz || { questions: [] },
       resources: week.resources || [],
       docs: week.docs || [],
+      assignments: normalizeAssignments(week.assignments || []),
+      liveRecordedSessions: week.liveRecordedSessions || [],
+      calendarEvents: week.calendarEvents || [],
     });
     setEditingId(week.weekId); setShowForm(true); setMessage('');
   }
@@ -297,96 +312,135 @@ function WeeksTab() {
         ...form,
         weekNumber: parseFloat(form.weekNumber),
       };
-      if (editingId) { await adminUpdateWeek(COURSE_ID, editingId, payload); setMessage('Week updated.'); }
-      else { await adminCreateWeek(COURSE_ID, payload); setMessage('Week created.'); }
-      setShowForm(false); setEditingId(null); load();
-    } catch (err) { setMessage(err.response?.data?.message || 'Save failed.'); }
-    finally { setSaving(false); }
+      if (editingId) {
+        await adminUpdateWeek(COURSE_ID, editingId, payload);
+        setMessage('Week updated.');
+      } else {
+        await adminCreateWeek(COURSE_ID, payload);
+        setMessage('Week created.');
+      }
+      setShowForm(false);
+      setEditingId(null);
+      load();
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Save failed.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function handleToggleVisible(week) {
-    try { await adminUpdateWeek(COURSE_ID, week.weekId, { visible: !week.visible }); load(); }
-    catch { setMessage('Failed to update visibility.'); }
+    try {
+      await adminUpdateWeek(COURSE_ID, week.weekId, { visible: !week.visible });
+      load();
+    } catch {
+      setMessage('Failed to update visibility.');
+    }
   }
 
   async function handleDelete(weekId) {
     if (!window.confirm('Delete this week? This cannot be undone.')) return;
-    try { await adminDeleteWeek(COURSE_ID, weekId); load(); }
-    catch { setMessage('Delete failed.'); }
+    try {
+      await adminDeleteWeek(COURSE_ID, weekId);
+      setMessage('Week deleted.');
+      load();
+    } catch {
+      setMessage('Delete failed.');
+    }
   }
 
-  function addQuestion() {
+  // Helper functions for form updates
+  const addQuestion = () => {
     const q = { ...EMPTY_Q, id: `q${Date.now()}` };
-    setForm((f) => ({ ...f, quiz: { questions: [...f.quiz.questions, q] } }));
-  }
-
-  function updateQuestion(idx, field, value) {
+    setForm((f) => ({ ...f, quiz: { ...f.quiz, questions: [...f.quiz.questions, q] } }));
+  };
+  const updateQuestion = (idx, field, val) => {
     setForm((f) => {
       const qs = [...f.quiz.questions];
-      qs[idx] = { ...qs[idx], [field]: value };
-      return { ...f, quiz: { questions: qs } };
+      qs[idx] = { ...qs[idx], [field]: val };
+      return { ...f, quiz: { ...f.quiz, questions: qs } };
     });
-  }
-
-  function updateOption(qIdx, oIdx, value) {
+  };
+  const updateOption = (qIdx, oIdx, val) => {
     setForm((f) => {
       const qs = [...f.quiz.questions];
-      const opts = [...qs[qIdx].options]; opts[oIdx] = value;
+      const opts = [...qs[qIdx].options];
+      opts[oIdx] = val;
       qs[qIdx] = { ...qs[qIdx], options: opts };
-      return { ...f, quiz: { questions: qs } };
+      return { ...f, quiz: { ...f.quiz, questions: qs } };
     });
-  }
+  };
+  const removeQuestion = (idx) => {
+    setForm((f) => ({ ...f, quiz: { ...f.quiz, questions: f.quiz.questions.filter((_, i) => i !== idx) } }));
+  };
 
-  function removeQuestion(idx) {
-    setForm((f) => ({ ...f, quiz: { questions: f.quiz.questions.filter((_, i) => i !== idx) } }));
-  }
+  const addResource = () => setForm((f) => ({ ...f, resources: [...f.resources, { ...EMPTY_RESOURCE, id: `r${Date.now()}` }] }));
+  const updateResource = (idx, field, val) => setForm((f) => {
+    const list = [...f.resources];
+    list[idx] = { ...list[idx], [field]: val };
+    return { ...f, resources: list };
+  });
+  const removeResource = (idx) => setForm((f) => ({ ...f, resources: f.resources.filter((_, i) => i !== idx) }));
 
-  function addResource() {
-    const r = { ...EMPTY_RESOURCE, id: `r${Date.now()}` };
-    setForm((f) => ({ ...f, resources: [...(f.resources || []), r] }));
-  }
+  const addDoc = () => setForm((f) => ({ ...f, docs: [...f.docs, { ...EMPTY_DOC, id: `doc${Date.now()}` }] }));
+  const updateDoc = (idx, field, val) => setForm((f) => {
+    const list = [...f.docs];
+    list[idx] = { ...list[idx], [field]: val };
+    return { ...f, docs: list };
+  });
+  const removeDoc = (idx) => setForm((f) => ({ ...f, docs: f.docs.filter((_, i) => i !== idx) }));
 
-  function updateResource(idx, field, value) {
-    setForm((f) => {
-      const resList = [...(f.resources || [])];
-      resList[idx] = { ...resList[idx], [field]: value };
-      return { ...f, resources: resList };
-    });
-  }
+  const addAssignment = () => setForm((f) => ({
+    ...f,
+    assignments: [...f.assignments, { ...EMPTY_ASSIGNMENT, id: makeClientId('asgn'), title: `Assignment ${f.assignments.length + 1}` }]
+  }));
+  const updateAssignment = (idx, field, val) => setForm((f) => {
+    const list = [...f.assignments];
+    list[idx] = { ...list[idx], [field]: val };
+    return { ...f, assignments: list };
+  });
+  const removeAssignment = (idx) => setForm((f) => ({ ...f, assignments: f.assignments.filter((_, i) => i !== idx) }));
 
-  function removeResource(idx) {
-    setForm((f) => ({ ...f, resources: (f.resources || []).filter((_, i) => i !== idx) }));
-  }
+  const addRecordedSession = () => setForm((f) => ({
+    ...f,
+    liveRecordedSessions: [...f.liveRecordedSessions, { ...EMPTY_RECORDED_SESSION, id: makeClientId('rec') }]
+  }));
+  const updateRecordedSession = (idx, field, val) => setForm((f) => {
+    const list = [...f.liveRecordedSessions];
+    list[idx] = { ...list[idx], [field]: val };
+    return { ...f, liveRecordedSessions: list };
+  });
+  const removeRecordedSession = (idx) => setForm((f) => ({ ...f, liveRecordedSessions: f.liveRecordedSessions.filter((_, i) => i !== idx) }));
 
-  function addDoc() {
-    const d = { ...EMPTY_DOC, id: `doc${Date.now()}` };
-    setForm((f) => ({ ...f, docs: [...(f.docs || []), d] }));
-  }
 
-  function updateDoc(idx, field, value) {
-    setForm((f) => {
-      const docs = [...(f.docs || [])];
-      docs[idx] = { ...docs[idx], [field]: value };
-      return { ...f, docs };
-    });
-  }
-
-  function removeDoc(idx) {
-    setForm((f) => ({ ...f, docs: (f.docs || []).filter((_, i) => i !== idx) }));
-  }
-
+  const addCalendarEvent = () => setForm((f) => ({
+    ...f,
+    calendarEvents: [...f.calendarEvents, { ...EMPTY_CALENDAR_EVENT, id: makeClientId('cal') }]
+  }));
+  const updateCalendarEvent = (idx, field, val) => setForm((f) => {
+    const list = [...f.calendarEvents];
+    list[idx] = { ...list[idx], [field]: val };
+    return { ...f, calendarEvents: list };
+  });
+  const removeCalendarEvent = (idx) => setForm((f) => ({ ...f, calendarEvents: f.calendarEvents.filter((_, i) => i !== idx) }));
 
   return (
     <div>
       {message && <p style={s.message}>{message}</p>}
-      <div style={{ marginBottom: '1rem' }}>
-        <button style={s.btn} onClick={startAdd}>+ Add Week</button>
+      <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <button style={s.btn} onClick={startAdd}>+ Create New Week</button>
+        <span style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)' }}>
+          {weeks.length} modules configured
+        </span>
       </div>
 
-
       {showForm && (
-        <div style={s.card}>
-          <div style={s.cardTitle}>{editingId ? 'Edit Week' : 'New Week'}</div>
+        <div style={{ ...s.card, marginBottom: '2rem', border: '2px solid var(--primary)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+            <div style={s.cardTitle}>{editingId ? `Editing Module ${form.weekNumber}` : 'Create New Module'}</div>
+            <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.4rem 0.8rem' }} onClick={() => setShowForm(false)}>✕ Close Editor</button>
+          </div>
+
           <form onSubmit={handleSave}>
             <div style={s.grid2}>
               <div>
@@ -395,127 +449,157 @@ function WeeksTab() {
                   value={form.weekNumber} onChange={(e) => setForm({ ...form, weekNumber: e.target.value })} required />
               </div>
               <div>
-                <label style={s.label}>YouTube URL</label>
+                <label style={s.label}>Main Lecture Video (YouTube URL)</label>
                 <input style={s.input} type="url" placeholder="https://youtu.be/..."
                   value={form.youtubeUrl} onChange={(e) => setForm({ ...form, youtubeUrl: e.target.value })} />
               </div>
             </div>
+
             <label style={s.label}>Title</label>
-            <input style={s.input} type="text" placeholder="Week title"
+            <input style={s.input} type="text" placeholder="e.g. Introduction to Product Management"
               value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
+
             <label style={s.label}>Description</label>
-            <textarea style={s.textarea} placeholder="Short description shown on dashboard"
+            <textarea style={s.textarea} placeholder="Summary of what students will learn this week"
               value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+
             <label style={s.label}>Q&amp;A / Calendly Link</label>
             <input style={s.input} type="url" placeholder="https://calendly.com/..."
               value={form.qaLink} onChange={(e) => setForm({ ...form, qaLink: e.target.value })} />
 
-            {/* Resources */}
-            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem', marginBottom: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Resources (Links, PDFs, etc.)</span>
-                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addResource}>+ Resource</button>
+            {/* Resources & Docs Section */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Resources</span>
+                  <button type="button" style={{ ...s.btn, ...s.btnSecondary, padding: '0.3rem 0.6rem', fontSize: '0.75rem' }} onClick={addResource}>+ Add</button>
+                </div>
+                {form.resources.map((r, i) => (
+                  <div key={r.id || i} style={{ ...s.qPanel, marginBottom: '0.75rem' }}>
+                    <input style={{ ...s.input, marginBottom: '0.5rem' }} placeholder="Title" value={r.title} onChange={(e) => updateResource(i, 'title', e.target.value)} />
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <input style={{ ...s.input, marginBottom: 0 }} placeholder="URL" value={r.url} onChange={(e) => updateResource(i, 'url', e.target.value)} />
+                      <button type="button" style={{ ...s.btn, ...s.btnDanger }} onClick={() => removeResource(i)}>✕</button>
+                    </div>
+                  </div>
+                ))}
               </div>
-              {(form.resources || []).map((r, ri) => (
-                <div key={r.id || ri} style={s.qPanel}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Reference Docs</span>
+                  <button type="button" style={{ ...s.btn, ...s.btnSecondary, padding: '0.3rem 0.6rem', fontSize: '0.75rem' }} onClick={addDoc}>+ Add</button>
+                </div>
+                {form.docs.map((d, i) => (
+                  <div key={d.id || i} style={{ ...s.qPanel, marginBottom: '0.75rem' }}>
+                    <input style={{ ...s.input, marginBottom: '0.5rem' }} placeholder="Label" value={d.label} onChange={(e) => updateDoc(i, 'label', e.target.value)} />
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <input style={{ ...s.input, marginBottom: 0 }} placeholder="Drive URL" value={d.url} onChange={(e) => updateDoc(i, 'url', e.target.value)} />
+                      <button type="button" style={{ ...s.btn, ...s.btnDanger }} onClick={() => removeDoc(i)}>✕</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Live Recordings Section */}
+            <div style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <span style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--primary)' }}>Live Recorded Sessions</span>
+                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addRecordedSession}>+ Add Recording</button>
+              </div>
+              {form.liveRecordedSessions.length === 0 && <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', textAlign: 'center', padding: '1rem', border: '1px dashed var(--border)', borderRadius: '12px' }}>No recordings added yet.</p>}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+                {form.liveRecordedSessions.map((rec, i) => (
+                  <div key={rec.id || i} style={s.qPanel}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.8rem' }}>Recording {i + 1}</span>
+                      <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.4rem', fontSize: '0.7rem' }} onClick={() => removeRecordedSession(i)}>Remove</button>
+                    </div>
+                    <input style={s.input} placeholder="Title (e.g. Q&A Session)" value={rec.title} onChange={(e) => updateRecordedSession(i, 'title', e.target.value)} />
+                    <textarea style={{ ...s.textarea, height: '60px' }} placeholder="Brief description" value={rec.description} onChange={(e) => updateRecordedSession(i, 'description', e.target.value)} />
+                    <input style={{ ...s.input, marginBottom: 0 }} placeholder="URL (Zoom/YouTube)" value={rec.url} onChange={(e) => updateRecordedSession(i, 'url', e.target.value)} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Assignments Section */}
+            <div style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <span style={{ fontWeight: 800, fontSize: '1rem' }}>Assignments</span>
+                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addAssignment}>+ Add Assignment</button>
+              </div>
+              {form.assignments.map((asgn, i) => (
+                <div key={asgn.id || i} style={s.qPanel}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Resource {ri + 1}</span>
-                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeResource(ri)}>Remove</button>
+                    <span style={{ fontWeight: 700, fontSize: '0.8rem' }}>Assignment {i + 1}</span>
+                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.4rem', fontSize: '0.7rem' }} onClick={() => removeAssignment(i)}>Remove</button>
                   </div>
-                  <div style={s.grid2}>
-                    <div>
-                      <label style={s.label}>Title</label>
-                      <input style={s.input} type="text" placeholder="e.g. Week 1 Slides"
-                        value={r.title} onChange={(e) => updateResource(ri, 'title', e.target.value)} required />
-                    </div>
-                    <div>
-                      <label style={s.label}>URL (Link)</label>
-                      <input style={s.input} type="url" placeholder="https://..."
-                        value={r.url} onChange={(e) => updateResource(ri, 'url', e.target.value)} required />
-                    </div>
-                  </div>
+                  <input style={s.input} placeholder="Assignment Title" value={asgn.title} onChange={(e) => updateAssignment(i, 'title', e.target.value)} />
+                  <textarea style={{ ...s.textarea, marginBottom: 0 }} placeholder="Instructions for students" value={asgn.description} onChange={(e) => updateAssignment(i, 'description', e.target.value)} />
                 </div>
               ))}
             </div>
 
-            {/* Reference Documents */}
-            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Reference Documents</span>
-                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addDoc}>+ Document</button>
+            {/* Quiz Section */}
+            <div style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <span style={{ fontWeight: 800, fontSize: '1rem' }}>Quiz Questions</span>
+                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addQuestion}>+ Add Question</button>
               </div>
-              {(form.docs || []).map((doc, di) => (
-                <div key={doc.id || di} style={{ ...s.qPanel, display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.5rem', alignItems: 'end' }}>
-                  <div>
-                    <label style={s.label}>Label</label>
-                    <input style={{ ...s.input, marginBottom: 0 }} type="text" placeholder="e.g. Week 1 Slides"
-                      value={doc.label} onChange={(e) => updateDoc(di, 'label', e.target.value)} />
+              {form.quiz.questions.map((q, i) => (
+                <div key={q.id || i} style={s.qPanel}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                    <span style={{ fontWeight: 700 }}>Question {i + 1}</span>
+                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.4rem' }} onClick={() => removeQuestion(i)}>✕</button>
                   </div>
-                  <div>
-                    <label style={s.label}>Drive URL</label>
-                    <input style={{ ...s.input, marginBottom: 0 }} type="url" placeholder="https://drive.google.com/..."
-                      value={doc.url} onChange={(e) => updateDoc(di, 'url', e.target.value)} />
-                  </div>
-                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.3rem 0.5rem', fontSize: '0.72rem', marginBottom: 0 }}
-                    onClick={() => removeDoc(di)}>✕</button>
-                </div>
-              ))}
-            </div>
-
-            {/* Quiz */}
-            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Quiz Questions</span>
-                <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addQuestion}>+ Question</button>
-              </div>
-              {form.quiz.questions.map((q, qi) => (
-                <div key={q.id || qi} style={s.qPanel}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Q{qi + 1}</span>
-                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeQuestion(qi)}>Remove</button>
-                  </div>
-                  <label style={s.label}>Question text</label>
-                  <input style={s.input} type="text"
-                    value={q.text} onChange={(e) => updateQuestion(qi, 'text', e.target.value)} placeholder="What is...?" />
-                  <div style={s.grid2}>
+                  <input style={s.input} placeholder="Question text" value={q.text} onChange={(e) => updateQuestion(i, 'text', e.target.value)} />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                     {q.options.map((opt, oi) => (
                       <div key={oi}>
-                        <label style={s.label}>Option {String.fromCharCode(65 + oi)}</label>
-                        <input style={s.input} type="text" value={opt}
-                          onChange={(e) => updateOption(qi, oi, e.target.value)} />
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, display: 'block', marginBottom: '0.25rem' }}>Option {String.fromCharCode(65 + oi)} {q.correctIndex === oi && '(Correct)'}</label>
+                        <input style={s.input} value={opt} onChange={(e) => updateOption(i, oi, e.target.value)} />
                       </div>
                     ))}
                   </div>
                   <div style={s.grid2}>
                     <div>
-                      <label style={s.label}>Correct (0=A 1=B 2=C 3=D)</label>
-                      <input style={s.input} type="number" min="0" max="3"
-                        value={q.correctIndex} onChange={(e) => updateQuestion(qi, 'correctIndex', parseInt(e.target.value, 10))} />
+                      <label style={s.label}>Correct Index (0-3)</label>
+                      <input style={s.input} type="number" min="0" max="3" value={q.correctIndex} onChange={(e) => updateQuestion(i, 'correctIndex', parseInt(e.target.value, 10))} />
                     </div>
                     <div>
                       <label style={s.label}>Explanation</label>
-                      <input style={s.input} type="text" value={q.explanation}
-                        onChange={(e) => updateQuestion(qi, 'explanation', e.target.value)} />
+                      <input style={s.input} value={q.explanation} onChange={(e) => updateQuestion(i, 'explanation', e.target.value)} />
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div style={{ display: 'flex', gap: '0.65rem', marginTop: '0.5rem' }}>
-              <button style={s.btn} type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Week'}</button>
-              <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={() => setShowForm(false)}>Cancel</button>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
+              <button style={{ ...s.btn, padding: '0.8rem 2rem' }} type="submit" disabled={saving}>
+                {saving ? 'Saving Changes...' : editingId ? 'Update Module' : 'Create Module'}
+              </button>
+              <button type="button" style={{ ...s.btn, ...s.btnSecondary, padding: '0.8rem 1.5rem' }} onClick={() => setShowForm(false)}>Cancel</button>
             </div>
-          </form >
-        </div >
-      )
-      }
+          </form>
+        </div>
+      )}
 
-      <div style={s.card}>
-        <div style={s.cardTitle}>All Weeks</div>
-        {loading ? <p style={{ color: 'var(--muted-foreground)' }}>Loading…</p>
-          : weeks.length === 0 ? <p style={{ color: 'var(--muted-foreground)' }}>No weeks yet.</p>
-            : (
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '3rem' }}>
+          <p style={{ color: 'var(--muted-foreground)' }}>Loading course structure...</p>
+        </div>
+      ) : (
+        <div style={s.weekList}>
+          {weeks.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '4rem', background: 'var(--background)', borderRadius: '22px', border: '1px dashed var(--border)' }}>
+              <p style={{ color: 'var(--muted-foreground)', marginBottom: '1rem' }}>No modules found for this course.</p>
+              <button style={s.btn} onClick={startAdd}>Add your first module</button>
+            </div>
+          ) : (
+            <div style={s.card}>
+              <div style={s.cardTitle}>All Weeks</div>
               <table style={s.table}>
                 <thead>
                   <tr>
@@ -552,9 +636,11 @@ function WeeksTab() {
                   ))}
                 </tbody>
               </table>
-            )}
-      </div>
-    </div >
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
