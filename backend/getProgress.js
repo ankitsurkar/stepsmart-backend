@@ -239,7 +239,7 @@ exports.handler = async (event) => {
   const userId = event.requestContext?.authorizer?.claims?.sub;
   if (!userId) return res(401, { message: 'Unauthorized' });
 
-  const courseId = event.pathParameters?.courseId;
+  const courseId = event.pathParameters?.courseId || event.pathParameters?.courseID;
   if (!courseId) return res(400, { message: 'Missing courseId path parameter' });
   const includeLeaderboard = event.queryStringParameters?.includeLeaderboard === 'true';
 
