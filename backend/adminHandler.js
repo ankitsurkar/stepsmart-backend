@@ -228,7 +228,7 @@ async function updateWeek(courseId, weekId, body) {
     ExpressionAttributeValues: exprAttrValues,
   }));
 
-  return res(200, { message: 'Week updated', weekId });
+  return res(200, { message: 'Week updated V3', weekId });
 }
 
 async function updateSupplementalContent(courseId, body) {
