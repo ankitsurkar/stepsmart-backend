@@ -252,10 +252,8 @@ function WeeksTab() {
   const [weeks, setWeeks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(EMPTY_WEEK);
-  const [supplementalForm, setSupplementalForm] = useState(EMPTY_SUPPLEMENTAL);
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [savingSection, setSavingSection] = useState('');
   const [message, setMessage] = useState('');
   const [showForm, setShowForm] = useState(false);
 
@@ -265,37 +263,10 @@ function WeeksTab() {
     try {
       const { data } = await adminGetWeeks(COURSE_ID);
       const allWeeks = data.weeks || [];
-      const legacySupplementalWeek = allWeeks.find((week) => {
-        const hasSupplementalPayload = (week.assignments?.length || 0)
-          || (week.liveRecordedSessions?.length || 0)
-          || (week.calendarEvents?.length || 0);
-        const supplementalById = week.weekId === '__supplemental__';
-        const supplementalByKey = week.sk === 'WEEK#__supplemental__';
-        const supplementalByShape = Number(week.weekNumber) === 0
-          && !week.youtubeUrl
-          && hasSupplementalPayload
-          && /supplemental/i.test(week.title || '');
-        return supplementalById || supplementalByKey || supplementalByShape;
-      });
       const visibleWeeks = allWeeks
-        .filter((week) => week !== legacySupplementalWeek && week.weekId !== '__supplemental__')
-        .sort((a, b) => a.weekNumber - b.weekNumber);
+        .filter((week) => week.weekId !== '__supplemental__')
+        .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
       setWeeks(visibleWeeks);
-
-      const supplementalFromResponse = data.supplementalContent || {};
-      const supplementalSource = (
-        (supplementalFromResponse.assignments?.length || 0)
-        || (supplementalFromResponse.liveRecordedSessions?.length || 0)
-        || (supplementalFromResponse.calendarEvents?.length || 0)
-      )
-        ? supplementalFromResponse
-        : legacySupplementalWeek || {};
-
-      setSupplementalForm({
-        assignments: normalizeAssignments(supplementalSource.assignments || []),
-        liveRecordedSessions: supplementalSource.liveRecordedSessions || [],
-        calendarEvents: supplementalSource.calendarEvents || [],
-      });
     }
     catch { setMessage('Failed to load weeks.'); }
     finally { setLoading(false); }
@@ -404,163 +375,6 @@ function WeeksTab() {
     setForm((f) => ({ ...f, docs: (f.docs || []).filter((_, i) => i !== idx) }));
   }
 
-  function addSupplementalAssignment() {
-    setSupplementalForm((f) => ({
-      ...f,
-      assignments: [
-        ...(f.assignments || []),
-        {
-          ...EMPTY_ASSIGNMENT,
-          id: makeClientId('assignment'),
-          title: `Assignment ${(f.assignments || []).length + 1}`,
-        },
-      ],
-    }));
-  }
-
-  function updateSupplementalAssignment(idx, field, value) {
-    setSupplementalForm((f) => {
-      const assignments = [...(f.assignments || [])];
-      assignments[idx] = { ...assignments[idx], [field]: value };
-      return { ...f, assignments };
-    });
-  }
-
-  function removeSupplementalAssignment(idx) {
-    setSupplementalForm((f) => ({
-      ...f,
-      assignments: (f.assignments || []).filter((_, i) => i !== idx),
-    }));
-  }
-
-  function addSupplementalRecordedSession() {
-    const session = { ...EMPTY_RECORDED_SESSION, id: makeClientId('rec') };
-    setSupplementalForm((f) => ({
-      ...f,
-      liveRecordedSessions: [...(f.liveRecordedSessions || []), session],
-    }));
-  }
-
-  function updateSupplementalRecordedSession(idx, field, value) {
-    setSupplementalForm((f) => {
-      const sessions = [...(f.liveRecordedSessions || [])];
-      sessions[idx] = { ...sessions[idx], [field]: value };
-      return { ...f, liveRecordedSessions: sessions };
-    });
-  }
-
-  function removeSupplementalRecordedSession(idx) {
-    setSupplementalForm((f) => ({
-      ...f,
-      liveRecordedSessions: (f.liveRecordedSessions || []).filter((_, i) => i !== idx),
-    }));
-  }
-
-  function addSupplementalCalendarEvent() {
-    const event = { ...EMPTY_CALENDAR_EVENT, id: makeClientId('cal') };
-    setSupplementalForm((f) => ({
-      ...f,
-      calendarEvents: [...(f.calendarEvents || []), event],
-    }));
-  }
-
-  function updateSupplementalCalendarEvent(idx, field, value) {
-    setSupplementalForm((f) => {
-      const events = [...(f.calendarEvents || [])];
-      events[idx] = { ...events[idx], [field]: value };
-      return { ...f, calendarEvents: events };
-    });
-  }
-
-  function removeSupplementalCalendarEvent(idx) {
-    setSupplementalForm((f) => ({
-      ...f,
-      calendarEvents: (f.calendarEvents || []).filter((_, i) => i !== idx),
-    }));
-  }
-
-  async function handleSaveSection(sectionKey) {
-    const updates = {};
-    if (sectionKey === 'assignments') {
-      updates.assignments = normalizeAssignments(supplementalForm.assignments || []);
-    } else if (sectionKey === 'calendarEvents') {
-      updates.calendarEvents = supplementalForm.calendarEvents || [];
-    } else if (sectionKey === 'liveRecordedSessions') {
-      updates.liveRecordedSessions = supplementalForm.liveRecordedSessions || [];
-    } else {
-      return;
-    }
-
-    setSavingSection(sectionKey);
-    setMessage('');
-    try {
-      await adminUpdateSupplementalContent(COURSE_ID, {
-        ...updates,
-        // Backward-compatible fallback for older backend code paths that still
-        // route this through week updates.
-        title: 'Course Supplemental Content',
-        description: 'System-managed course-level content',
-        weekNumber: 0,
-        visible: true,
-        youtubeUrl: null,
-        qaLink: null,
-        quiz: { questions: [] },
-        resources: [],
-        docs: [],
-      });
-
-      if (sectionKey === 'assignments') {
-        setSupplementalForm((f) => ({ ...f, assignments: updates.assignments }));
-      }
-
-      const hasCalendarWithoutStartDate = sectionKey === 'calendarEvents'
-        && (updates.calendarEvents || []).some((event) => !event.startDate);
-
-      let successMessage = `${SECTION_META[sectionKey].label} saved.`;
-      successMessage += ' This is independent from weeks and visible for students immediately.';
-      if (hasCalendarWithoutStartDate) successMessage += ' Add Start Date for each event to make it visible in Calendar.';
-
-      setMessage(successMessage);
-      load();
-    } catch (err) {
-      setMessage(err.response?.data?.message || err.message || `Failed to save ${SECTION_META[sectionKey].label}.`);
-    } finally {
-      setSavingSection('');
-    }
-  }
-
-  async function handleClearSection(sectionKey) {
-    const updates = {};
-    if (sectionKey === 'assignments') {
-      updates.assignments = [];
-    } else if (sectionKey === 'calendarEvents') {
-      updates.calendarEvents = [];
-    } else if (sectionKey === 'liveRecordedSessions') {
-      updates.liveRecordedSessions = [];
-    } else {
-      return;
-    }
-
-    setSavingSection(sectionKey);
-    setMessage('');
-    try {
-      await adminUpdateSupplementalContent(COURSE_ID, {
-        ...updates,
-        // Keep metadata stable for older backend code paths.
-        title: 'Course Supplemental Content',
-        description: 'System-managed course-level content',
-        weekNumber: 0,
-        visible: true,
-      });
-      setSupplementalForm((f) => ({ ...f, ...updates }));
-      setMessage(`${SECTION_META[sectionKey].label} removed.`);
-      load();
-    } catch (err) {
-      setMessage(err.response?.data?.message || `Failed to remove ${SECTION_META[sectionKey].label}.`);
-    } finally {
-      setSavingSection('');
-    }
-  }
 
   return (
     <div>
@@ -569,201 +383,6 @@ function WeeksTab() {
         <button style={s.btn} onClick={startAdd}>+ Add Week</button>
       </div>
 
-      <div style={s.card}>
-        <div style={s.cardTitle}>Course Content (Independent of Week Release)</div>
-
-        {/* Calendar Events */}
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '0.25rem', marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-            <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Calendar Events</span>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addSupplementalCalendarEvent}>+ Calendar Event</button>
-              <button
-                type="button"
-                style={s.btn}
-                disabled={saving || !!savingSection}
-                onClick={() => handleSaveSection('calendarEvents')}
-              >
-                {savingSection === 'calendarEvents' ? 'Saving…' : 'Save Calendar'}
-              </button>
-              <button
-                type="button"
-                style={{ ...s.btn, ...s.btnDanger }}
-                disabled={saving || !!savingSection}
-                onClick={() => handleClearSection('calendarEvents')}
-              >
-                Remove Saved
-              </button>
-            </div>
-          </div>
-          {(supplementalForm.calendarEvents || []).map((event, ci) => (
-            <div key={event.id || ci} style={s.qPanel}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Event {ci + 1}</span>
-                <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeSupplementalCalendarEvent(ci)}>Remove</button>
-              </div>
-
-              <div style={s.grid2}>
-                <div>
-                  <label style={s.label}>Event Type</label>
-                  <input
-                    style={s.input}
-                    type="text"
-                    placeholder="e.g. Recorded Video Upload"
-                    value={event.kind}
-                    onChange={(e) => updateSupplementalCalendarEvent(ci, 'kind', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label style={s.label}>Title</label>
-                  <input
-                    style={s.input}
-                    type="text"
-                    placeholder="e.g. Product Strategy"
-                    value={event.title}
-                    onChange={(e) => updateSupplementalCalendarEvent(ci, 'title', e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div style={s.grid2}>
-                <div>
-                  <label style={s.label}>Start Date</label>
-                  <input
-                    style={s.input}
-                    type="date"
-                    value={event.startDate}
-                    onChange={(e) => updateSupplementalCalendarEvent(ci, 'startDate', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label style={s.label}>End Date (Optional)</label>
-                  <input
-                    style={s.input}
-                    type="date"
-                    value={event.endDate}
-                    onChange={(e) => updateSupplementalCalendarEvent(ci, 'endDate', e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <label style={s.label}>Description</label>
-              <textarea
-                style={s.textarea}
-                placeholder="Short description shown in the student calendar"
-                value={event.description}
-                onChange={(e) => updateSupplementalCalendarEvent(ci, 'description', e.target.value)}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Assignments */}
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-            <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Assignments</span>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addSupplementalAssignment}>+ Assignment</button>
-              <button
-                type="button"
-                style={s.btn}
-                disabled={saving || !!savingSection}
-                onClick={() => handleSaveSection('assignments')}
-              >
-                {savingSection === 'assignments' ? 'Saving…' : 'Save Assignments'}
-              </button>
-              <button
-                type="button"
-                style={{ ...s.btn, ...s.btnDanger }}
-                disabled={saving || !!savingSection}
-                onClick={() => handleClearSection('assignments')}
-              >
-                Remove Saved
-              </button>
-            </div>
-          </div>
-          {(supplementalForm.assignments || []).map((assignment, ai) => (
-            <div key={assignment.id || ai} style={s.qPanel}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Assignment {ai + 1}</span>
-                <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeSupplementalAssignment(ai)}>Remove</button>
-              </div>
-              <label style={s.label}>Title</label>
-              <input
-                style={s.input}
-                type="text"
-                placeholder={`Assignment ${ai + 1}`}
-                value={assignment.title}
-                onChange={(e) => updateSupplementalAssignment(ai, 'title', e.target.value)}
-              />
-              <label style={s.label}>Instructions</label>
-              <textarea
-                style={s.textarea}
-                placeholder="Tell students what to upload for this assignment."
-                value={assignment.description}
-                onChange={(e) => updateSupplementalAssignment(ai, 'description', e.target.value)}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Live Recorded Sessions */}
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-            <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>Live Recorded Sessions</span>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addSupplementalRecordedSession}>+ Recorded Session</button>
-              <button
-                type="button"
-                style={s.btn}
-                disabled={saving || !!savingSection}
-                onClick={() => handleSaveSection('liveRecordedSessions')}
-              >
-                {savingSection === 'liveRecordedSessions' ? 'Saving…' : 'Save Live Sessions'}
-              </button>
-              <button
-                type="button"
-                style={{ ...s.btn, ...s.btnDanger }}
-                disabled={saving || !!savingSection}
-                onClick={() => handleClearSection('liveRecordedSessions')}
-              >
-                Remove Saved
-              </button>
-            </div>
-          </div>
-          {(supplementalForm.liveRecordedSessions || []).map((session, si) => (
-            <div key={session.id || si} style={s.qPanel}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Recording {si + 1}</span>
-                <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeSupplementalRecordedSession(si)}>Remove</button>
-              </div>
-              <label style={s.label}>Title</label>
-              <input
-                style={s.input}
-                type="text"
-                placeholder="e.g. Week 1 Live Session Recording"
-                value={session.title}
-                onChange={(e) => updateSupplementalRecordedSession(si, 'title', e.target.value)}
-              />
-              <label style={s.label}>Description</label>
-              <textarea
-                style={s.textarea}
-                placeholder="Short description shown in the student dashboard"
-                value={session.description}
-                onChange={(e) => updateSupplementalRecordedSession(si, 'description', e.target.value)}
-              />
-              <label style={s.label}>Recording URL</label>
-              <input
-                style={s.input}
-                type="url"
-                placeholder="https://..."
-                value={session.url}
-                onChange={(e) => updateSupplementalRecordedSession(si, 'url', e.target.value)}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
 
       {showForm && (
         <div style={s.card}>
@@ -940,6 +559,331 @@ function WeeksTab() {
 }
 
 // ────────────────────────────────────────────────────────────────────────────────
+// Supplemental Content Tab (Assignments, Calendar, Live Sessions)
+// ────────────────────────────────────────────────────────────────────────────────
+function SupplementalTab() {
+  const [supplementalForm, setSupplementalForm] = useState(EMPTY_SUPPLEMENTAL);
+  const [loading, setLoading] = useState(true);
+  const [savingSection, setSavingSection] = useState('');
+  const [message, setMessage] = useState('');
+
+  useEffect(() => { load(); }, []);
+
+  async function load() {
+    try {
+      const { data } = await adminGetWeeks(COURSE_ID);
+      const allWeeks = data.weeks || [];
+      const legacySupplementalWeek = allWeeks.find((week) => {
+        const hasSupplementalPayload = (week.assignments?.length || 0)
+          || (week.liveRecordedSessions?.length || 0)
+          || (week.calendarEvents?.length || 0);
+        const supplementalById = week.weekId === '__supplemental__';
+        const supplementalByKey = week.sk === 'WEEK#__supplemental__';
+        const supplementalByShape = Number(week.weekNumber) === 0
+          && !week.youtubeUrl
+          && hasSupplementalPayload
+          && /supplemental/i.test(week.title || '');
+        return supplementalById || supplementalByKey || supplementalByShape;
+      });
+
+      const supplementalFromResponse = data.supplementalContent || {};
+      const supplementalSource = (
+        (supplementalFromResponse.assignments?.length || 0)
+        || (supplementalFromResponse.liveRecordedSessions?.length || 0)
+        || (supplementalFromResponse.calendarEvents?.length || 0)
+      )
+        ? supplementalFromResponse
+        : legacySupplementalWeek || {};
+
+      setSupplementalForm({
+        assignments: normalizeAssignments(supplementalSource.assignments || []),
+        liveRecordedSessions: supplementalSource.liveRecordedSessions || [],
+        calendarEvents: supplementalSource.calendarEvents || [],
+      });
+    }
+    catch { setMessage('Failed to load supplemental content.'); }
+    finally { setLoading(false); }
+  }
+
+  // ── Assignment CRUD ──────────────────────────────────────────────────────
+  function addSupplementalAssignment() {
+    setSupplementalForm((f) => ({
+      ...f,
+      assignments: [
+        ...(f.assignments || []),
+        {
+          ...EMPTY_ASSIGNMENT,
+          id: makeClientId('assignment'),
+          title: `Assignment ${(f.assignments || []).length + 1}`,
+        },
+      ],
+    }));
+  }
+
+  function updateSupplementalAssignment(idx, field, value) {
+    setSupplementalForm((f) => {
+      const assignments = [...(f.assignments || [])];
+      assignments[idx] = { ...assignments[idx], [field]: value };
+      return { ...f, assignments };
+    });
+  }
+
+  function removeSupplementalAssignment(idx) {
+    setSupplementalForm((f) => ({
+      ...f,
+      assignments: (f.assignments || []).filter((_, i) => i !== idx),
+    }));
+  }
+
+  // ── Recorded Session CRUD ────────────────────────────────────────────────
+  function addSupplementalRecordedSession() {
+    const session = { ...EMPTY_RECORDED_SESSION, id: makeClientId('rec') };
+    setSupplementalForm((f) => ({
+      ...f,
+      liveRecordedSessions: [...(f.liveRecordedSessions || []), session],
+    }));
+  }
+
+  function updateSupplementalRecordedSession(idx, field, value) {
+    setSupplementalForm((f) => {
+      const sessions = [...(f.liveRecordedSessions || [])];
+      sessions[idx] = { ...sessions[idx], [field]: value };
+      return { ...f, liveRecordedSessions: sessions };
+    });
+  }
+
+  function removeSupplementalRecordedSession(idx) {
+    setSupplementalForm((f) => ({
+      ...f,
+      liveRecordedSessions: (f.liveRecordedSessions || []).filter((_, i) => i !== idx),
+    }));
+  }
+
+  // ── Calendar Event CRUD ──────────────────────────────────────────────────
+  function addSupplementalCalendarEvent() {
+    const event = { ...EMPTY_CALENDAR_EVENT, id: makeClientId('cal') };
+    setSupplementalForm((f) => ({
+      ...f,
+      calendarEvents: [...(f.calendarEvents || []), event],
+    }));
+  }
+
+  function updateSupplementalCalendarEvent(idx, field, value) {
+    setSupplementalForm((f) => {
+      const events = [...(f.calendarEvents || [])];
+      events[idx] = { ...events[idx], [field]: value };
+      return { ...f, calendarEvents: events };
+    });
+  }
+
+  function removeSupplementalCalendarEvent(idx) {
+    setSupplementalForm((f) => ({
+      ...f,
+      calendarEvents: (f.calendarEvents || []).filter((_, i) => i !== idx),
+    }));
+  }
+
+  // ── Save / Clear ─────────────────────────────────────────────────────────
+  async function handleSaveSection(sectionKey) {
+    const updates = {};
+    if (sectionKey === 'assignments') {
+      updates.assignments = normalizeAssignments(supplementalForm.assignments || []);
+    } else if (sectionKey === 'calendarEvents') {
+      updates.calendarEvents = supplementalForm.calendarEvents || [];
+    } else if (sectionKey === 'liveRecordedSessions') {
+      updates.liveRecordedSessions = supplementalForm.liveRecordedSessions || [];
+    } else {
+      return;
+    }
+
+    setSavingSection(sectionKey);
+    setMessage('');
+    try {
+      await adminUpdateSupplementalContent(COURSE_ID, {
+        ...updates,
+        title: 'Course Supplemental Content',
+        description: 'System-managed course-level content',
+        weekNumber: 0,
+        visible: true,
+        youtubeUrl: null,
+        qaLink: null,
+        quiz: { questions: [] },
+        resources: [],
+        docs: [],
+      });
+
+      if (sectionKey === 'assignments') {
+        setSupplementalForm((f) => ({ ...f, assignments: updates.assignments }));
+      }
+
+      const hasCalendarWithoutStartDate = sectionKey === 'calendarEvents'
+        && (updates.calendarEvents || []).some((event) => !event.startDate);
+
+      let successMessage = `${SECTION_META[sectionKey].label} saved.`;
+      successMessage += ' Visible for students immediately.';
+      if (hasCalendarWithoutStartDate) successMessage += ' Add Start Date for each event to make it visible in Calendar.';
+
+      setMessage(successMessage);
+      load();
+    } catch (err) {
+      setMessage(err.response?.data?.message || err.message || `Failed to save ${SECTION_META[sectionKey].label}.`);
+    } finally {
+      setSavingSection('');
+    }
+  }
+
+  async function handleClearSection(sectionKey) {
+    const updates = {};
+    if (sectionKey === 'assignments') {
+      updates.assignments = [];
+    } else if (sectionKey === 'calendarEvents') {
+      updates.calendarEvents = [];
+    } else if (sectionKey === 'liveRecordedSessions') {
+      updates.liveRecordedSessions = [];
+    } else {
+      return;
+    }
+
+    setSavingSection(sectionKey);
+    setMessage('');
+    try {
+      await adminUpdateSupplementalContent(COURSE_ID, {
+        ...updates,
+        title: 'Course Supplemental Content',
+        description: 'System-managed course-level content',
+        weekNumber: 0,
+        visible: true,
+      });
+      setSupplementalForm((f) => ({ ...f, ...updates }));
+      setMessage(`${SECTION_META[sectionKey].label} removed.`);
+      load();
+    } catch (err) {
+      setMessage(err.response?.data?.message || `Failed to remove ${SECTION_META[sectionKey].label}.`);
+    } finally {
+      setSavingSection('');
+    }
+  }
+
+  if (loading) return <p style={{ color: 'var(--muted-foreground)' }}>Loading supplemental content…</p>;
+
+  return (
+    <div>
+      {message && <p style={s.message}>{message}</p>}
+
+      {/* ── Assignments ─────────────────────────────────────────────── */}
+      <div style={s.card}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+          <div style={s.cardTitle}>Assignments</div>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addSupplementalAssignment}>+ Assignment</button>
+            <button type="button" style={s.btn} disabled={!!savingSection} onClick={() => handleSaveSection('assignments')}>
+              {savingSection === 'assignments' ? 'Saving…' : 'Save Assignments'}
+            </button>
+            <button type="button" style={{ ...s.btn, ...s.btnDanger }} disabled={!!savingSection} onClick={() => handleClearSection('assignments')}>
+              Remove All
+            </button>
+          </div>
+        </div>
+        {(supplementalForm.assignments || []).length === 0
+          ? <p style={{ color: 'var(--muted-foreground)', fontSize: '0.85rem' }}>No assignments yet. Click "+ Assignment" to add one.</p>
+          : (supplementalForm.assignments || []).map((assignment, ai) => (
+          <div key={assignment.id || ai} style={s.qPanel}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Assignment {ai + 1}</span>
+              <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeSupplementalAssignment(ai)}>Remove</button>
+            </div>
+            <label style={s.label}>Title</label>
+            <input style={s.input} type="text" placeholder={`Assignment ${ai + 1}`} value={assignment.title} onChange={(e) => updateSupplementalAssignment(ai, 'title', e.target.value)} />
+            <label style={s.label}>Instructions</label>
+            <textarea style={s.textarea} placeholder="Tell students what to upload for this assignment." value={assignment.description} onChange={(e) => updateSupplementalAssignment(ai, 'description', e.target.value)} />
+          </div>
+        ))}
+      </div>
+
+      {/* ── Calendar Events ─────────────────────────────────────────── */}
+      <div style={s.card}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+          <div style={s.cardTitle}>Calendar Events</div>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addSupplementalCalendarEvent}>+ Calendar Event</button>
+            <button type="button" style={s.btn} disabled={!!savingSection} onClick={() => handleSaveSection('calendarEvents')}>
+              {savingSection === 'calendarEvents' ? 'Saving…' : 'Save Calendar'}
+            </button>
+            <button type="button" style={{ ...s.btn, ...s.btnDanger }} disabled={!!savingSection} onClick={() => handleClearSection('calendarEvents')}>
+              Remove All
+            </button>
+          </div>
+        </div>
+        {(supplementalForm.calendarEvents || []).length === 0
+          ? <p style={{ color: 'var(--muted-foreground)', fontSize: '0.85rem' }}>No calendar events yet. Click "+ Calendar Event" to add one.</p>
+          : (supplementalForm.calendarEvents || []).map((event, ci) => (
+          <div key={event.id || ci} style={s.qPanel}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Event {ci + 1}</span>
+              <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeSupplementalCalendarEvent(ci)}>Remove</button>
+            </div>
+            <div style={s.grid2}>
+              <div>
+                <label style={s.label}>Event Type</label>
+                <input style={s.input} type="text" placeholder="e.g. Recorded Video Upload" value={event.kind} onChange={(e) => updateSupplementalCalendarEvent(ci, 'kind', e.target.value)} />
+              </div>
+              <div>
+                <label style={s.label}>Title</label>
+                <input style={s.input} type="text" placeholder="e.g. Product Strategy" value={event.title} onChange={(e) => updateSupplementalCalendarEvent(ci, 'title', e.target.value)} />
+              </div>
+            </div>
+            <div style={s.grid2}>
+              <div>
+                <label style={s.label}>Start Date</label>
+                <input style={s.input} type="date" value={event.startDate} onChange={(e) => updateSupplementalCalendarEvent(ci, 'startDate', e.target.value)} />
+              </div>
+              <div>
+                <label style={s.label}>End Date (Optional)</label>
+                <input style={s.input} type="date" value={event.endDate} onChange={(e) => updateSupplementalCalendarEvent(ci, 'endDate', e.target.value)} />
+              </div>
+            </div>
+            <label style={s.label}>Description</label>
+            <textarea style={s.textarea} placeholder="Short description shown in the student calendar" value={event.description} onChange={(e) => updateSupplementalCalendarEvent(ci, 'description', e.target.value)} />
+          </div>
+        ))}
+      </div>
+
+      {/* ── Live Recorded Sessions ──────────────────────────────────── */}
+      <div style={s.card}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+          <div style={s.cardTitle}>Live Recorded Sessions</div>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addSupplementalRecordedSession}>+ Recorded Session</button>
+            <button type="button" style={s.btn} disabled={!!savingSection} onClick={() => handleSaveSection('liveRecordedSessions')}>
+              {savingSection === 'liveRecordedSessions' ? 'Saving…' : 'Save Live Sessions'}
+            </button>
+            <button type="button" style={{ ...s.btn, ...s.btnDanger }} disabled={!!savingSection} onClick={() => handleClearSection('liveRecordedSessions')}>
+              Remove All
+            </button>
+          </div>
+        </div>
+        {(supplementalForm.liveRecordedSessions || []).length === 0
+          ? <p style={{ color: 'var(--muted-foreground)', fontSize: '0.85rem' }}>No live sessions yet. Click "+ Recorded Session" to add one.</p>
+          : (supplementalForm.liveRecordedSessions || []).map((session, si) => (
+          <div key={session.id || si} style={s.qPanel}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Recording {si + 1}</span>
+              <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeSupplementalRecordedSession(si)}>Remove</button>
+            </div>
+            <label style={s.label}>Title</label>
+            <input style={s.input} type="text" placeholder="e.g. Week 1 Live Session Recording" value={session.title} onChange={(e) => updateSupplementalRecordedSession(si, 'title', e.target.value)} />
+            <label style={s.label}>Description</label>
+            <textarea style={s.textarea} placeholder="Short description shown in the student dashboard" value={session.description} onChange={(e) => updateSupplementalRecordedSession(si, 'description', e.target.value)} />
+            <label style={s.label}>Recording URL</label>
+            <input style={s.input} type="url" placeholder="https://..." value={session.url} onChange={(e) => updateSupplementalRecordedSession(si, 'url', e.target.value)} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
 // Progress Tab
 // ────────────────────────────────────────────────────────────────────────────────
 function ProgressTab() {
@@ -1036,6 +980,7 @@ export default function AdminPage() {
       <div style={s.tabs}>
         {[
           { id: 'weeks', label: 'Manage Weeks' },
+          { id: 'supplemental', label: 'Supplemental Content' },
           { id: 'students', label: 'Students' },
           { id: 'progress', label: 'Progress' },
         ].map((t) => (
@@ -1051,6 +996,7 @@ export default function AdminPage() {
 
       <div style={s.content}>
         {tab === 'weeks' && <WeeksTab />}
+        {tab === 'supplemental' && <SupplementalTab />}
         {tab === 'students' && <StudentsTab />}
         {tab === 'progress' && <ProgressTab />}
       </div>
