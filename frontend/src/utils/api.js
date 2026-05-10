@@ -105,4 +105,50 @@ export const uploadAssignment = (
     transformResponse: [data => { try { return JSON.parse(data); } catch { return {}; } }],
   });
 
+// ─── Mock Data Interceptor for Localhost ──────────────────────────────────────
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+  api.interceptors.request.use(async (config) => {
+    if (config.url.includes('/weeks')) {
+      const mockResponse = {
+        data: {
+          modules: [
+            { weekId: 'm1', weekNumber: 1, title: 'Mock Module 1', visible: true, category: 'module' },
+            { weekId: 'm2', weekNumber: 2, title: 'Mock Module 2', visible: true, category: 'module' },
+          ],
+          liveWeeks: [
+            { weekId: 'l1', weekNumber: 1, title: 'Mock Live Session 1', visible: true, category: 'live', liveRecordedSessions: [{ id: 's1', title: 'Q&A Recording', url: 'https://youtube.com' }] },
+          ],
+          supplementalContent: {
+            assignments: [],
+            liveRecordedSessions: [],
+            calendarEvents: [],
+          },
+          weeks: [
+             { weekId: 'm1', weekNumber: 1, title: 'Mock Module 1', visible: true, category: 'module' },
+             { weekId: 'm2', weekNumber: 2, title: 'Mock Module 2', visible: true, category: 'module' },
+             { weekId: 'l1', weekNumber: 1, title: 'Mock Live Session 1', visible: true, category: 'live', liveRecordedSessions: [{ id: 's1', title: 'Q&A Recording', url: 'https://youtube.com' }] },
+          ]
+        },
+      };
+      config.adapter = async () => ({
+        ...mockResponse,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      });
+    }
+    if (config.url.includes('/courses/my')) {
+       config.adapter = async () => ({
+        data: { courses: [{ courseId: 'course-001', title: 'Mock Course' }] },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      });
+    }
+    return config;
+  });
+}
+
 export default api;

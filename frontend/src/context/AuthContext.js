@@ -46,6 +46,14 @@ export function AuthProvider({ children }) {
   }, []);
 
   async function restoreSession() {
+    // DEV BYPASS: Allow local testing without real Cognito credentials
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      setUser({ userId: 'mock-user-123', email: 'admin@stepsmart.net', profileName: 'Dev Admin' });
+      setIsAdmin(true);
+      setLoading(false);
+      return;
+    }
+
     try {
       await loadAuthenticatedUser();
     } catch {

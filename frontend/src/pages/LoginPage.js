@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -8,10 +8,13 @@ const styles = {
   },
   // Left decorative panel
   panel: {
-    display: 'none',
+    display: 'flex',
     flexDirection: 'column', justifyContent: 'center',
-    padding: '3rem', width: '420px', flexShrink: 0,
-    background: 'var(--primary)',
+    width: '60%', flexShrink: 0,
+    backgroundImage: 'url(/learn/hero_image.png)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    position: 'relative',
   },
   panelHeading: { fontSize: '2rem', fontWeight: 800, color: '#fff', marginBottom: '0.75rem' },
   panelSub: { color: 'rgba(255,255,255,0.8)', fontSize: '1rem', lineHeight: 1.6 },
@@ -104,8 +107,18 @@ export default function LoginPage() {
     navigate('/dashboard', { replace: true });
   }
 
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const showPanel = width > 900;
+
   return (
     <div style={styles.container}>
+      {showPanel && <div style={styles.panel} />}
       <div style={styles.formArea}>
         <div style={styles.card}>
           {/* Brand */}

@@ -7,6 +7,7 @@ import AssignmentUpload from '../components/AssignmentUpload';
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'courses', label: 'My Courses' },
+  { id: 'scheduling', label: '1:1 Scheduling' },
   { id: 'assignments', label: 'Assignments' },
   { id: 'calendar', label: 'Calendar' },
   { id: 'settings', label: 'Settings' },
@@ -2207,6 +2208,28 @@ export default function DashboardPage() {
     );
   }
 
+  function renderSchedulingView() {
+    return (
+      <div style={s.card}>
+        <div style={s.panelHeader}>
+          <div>
+            <div style={s.sectionTitle}>1:1 Scheduling</div>
+            <div style={s.sectionMeta}>Book a private session for personalized feedback and career guidance.</div>
+          </div>
+        </div>
+        <div style={{ height: '700px', width: '100%', overflow: 'hidden', borderRadius: '12px', border: '1px solid var(--border)' }}>
+          <iframe
+            src="https://calendly.com/sanket-stepsmart?hide_landing_page_details=1&hide_gdpr_banner=1"
+            width="100%"
+            height="100%"
+            frameBorder="0"
+            title="Schedule 1:1 Session"
+          />
+        </div>
+      </div>
+    );
+  }
+
   let viewEyebrow = 'Student Dashboard';
   let viewTitle = `Welcome back, ${displayName}`;
   let viewSubtitle = `${activeCourse?.name || 'Your course'} • Track your progress, next actions, and personal performance in one place.`;
@@ -2227,6 +2250,12 @@ export default function DashboardPage() {
     viewEyebrow = 'Assignments';
     viewTitle = activeCourse?.name ? `${activeCourse.name} Assignments` : 'Assignments';
     viewSubtitle = 'Open an assignment card to upload your work from the dashboard sidebar.';
+  }
+
+  if (activeView === 'scheduling') {
+    viewEyebrow = 'Scheduling';
+    viewTitle = 'Book your 1:1 Session';
+    viewSubtitle = 'Select a time that works for you for a personalized mentorship session.';
   }
 
   if (activeView === 'settings') {
@@ -2304,6 +2333,7 @@ export default function DashboardPage() {
 
           {activeView === 'dashboard' && renderDashboardView()}
           {activeView === 'courses' && renderCoursesView()}
+          {activeView === 'scheduling' && renderSchedulingView()}
           {activeView === 'assignments' && renderAssignmentsView()}
           {activeView === 'calendar' && renderCalendarView()}
           {activeView === 'settings' && renderSettingsView()}
