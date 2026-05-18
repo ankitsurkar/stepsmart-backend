@@ -46,17 +46,16 @@ AWS REGION: us-east-1
 ├── API GATEWAY
 │   └── Single HTTPS endpoint — routes requests to Lambda functions
 │
-├── LAMBDA FUNCTIONS (6 of them)
-│   ├── heartbeat.js      — records video watching progress
-│   ├── getProgress.js    — returns how far a student has gotten
-│   ├── submitQuiz.js     — grades quiz answers
-│   ├── getCourseWeeks.js — returns course content for a student
-│   ├── getMyCourses.js   — returns list of courses
-│   └── adminHandler.js   — everything admins can do
+├── LAMBDA FUNCTIONS
+│   ├── studentHandler.js       — student courses, weeks, progress, heartbeat, and quiz routes
+│   ├── uploadAssignment.js     — uploads assignment files to private Supabase Storage
+│   ├── getStudentAssignments.js — returns submissions with fresh Supabase signed URLs when registered
+│   └── adminHandler.js         — everything admins can do
 │
-└── DYNAMODB (2 tables)
+└── DYNAMODB
     ├── lms-courses  — course structure, week data, quiz questions + answers
-    └── lms-progress — per-student video coverage, quiz results
+    ├── lms-progress — per-student video coverage, quiz results
+    └── lms-assignments — assignment upload metadata
 ```
 
 **Why this split?**
@@ -828,7 +827,21 @@ event.pathParameters.weekId    // "week-abc123"
 
 Using one Lambda for all admin routes reduces cold start surface area and keeps admin logic in one place.
 
-### getCourseWeeks.js — the answer-stripping logic
+### studentHandler.js — one Lambda for student routes
+
+`studentHandler.js` uses the same route-switch pattern as `adminHandler.js`, but for student-facing routes:
+
+```js
+if (method === 'GET' && resource === '/courses/my') { ... }
+if (method === 'GET' && resource === '/courses/{courseId}/weeks') { ... }
+if (method === 'GET' && resource === '/progress/{courseId}') { ... }
+if (method === 'POST' && resource === '/progress/heartbeat') { ... }
+if (method === 'POST' && resource === '/quiz/submit') { ... }
+```
+
+This keeps the shared Cognito auth, CORS, DynamoDB clients, and LMS student data access in one deployable unit. After production smoke tests pass, the old per-route student files should be deleted or clearly marked as deprecated so future edits land in `studentHandler.js`.
+
+### studentHandler.js — the answer-stripping logic
 
 This is the most security-sensitive transformation:
 
@@ -868,12 +881,14 @@ Without proxy integration, API Gateway does transformation — you'd configure r
 ### Route matching
 
 ```
-POST /progress/heartbeat      → lms-heartbeat Lambda
-GET  /progress/{courseId}     → lms-getProgress Lambda
-POST /quiz/submit             → lms-submitQuiz Lambda
-GET  /courses/my              → lms-getMyCourses Lambda
-GET  /courses/{courseId}/weeks → lms-getCourseWeeks Lambda
-ALL  /admin/*                 → lms-admin Lambda
+GET  /courses/my                              → lms-student Lambda
+GET  /courses/{courseId}/weeks                → lms-student Lambda
+GET  /progress/{courseId}                     → lms-student Lambda
+POST /progress/heartbeat                      → lms-student Lambda
+POST /quiz/submit                             → lms-student Lambda
+POST /assignments/upload                      → lms-uploadAssignment Lambda
+GET  /courses/{courseId}/weeks/{weekId}/assignments → lms-getStudentAssignments Lambda, when registered
+ALL  /admin/*                                 → lms-admin Lambda
 ```
 
 `{courseId}` in the path is a **path parameter** — API Gateway extracts it and passes it in `event.pathParameters.courseId`.
@@ -1057,7 +1072,14 @@ Permissions:
 
 ### STEP 5 — Create Lambda Functions
 
-**AWS Console → Lambda → Create function** (6 times)
+**AWS Console → Lambda → Create function** for each deployable handler:
+
+```
+lms-student
+lms-admin
+lms-uploadAssignment
+lms-getStudentAssignments, if the submissions route is registered
+```
 
 ```
 Runtime: Node.js 20.x
@@ -1071,9 +1093,26 @@ For each function: paste the code from the corresponding file, click Deploy.
 ```
 PROGRESS_TABLE = lms-progress
 COURSES_TABLE  = lms-courses
+ASSIGNMENTS_TABLE = lms-assignments
 USER_POOL_ID   = us-east-1_XXXXXXXXX
 FRONTEND_URL   = https://stepsmart.net
 ```
+
+Additional assignment upload variables:
+```
+SUPABASE_URL = https://<project-ref>.supabase.co
+SUPABASE_SERVICE_ROLE_KEY = <service-role-key>
+SUPABASE_STORAGE_BUCKET = <private assignment bucket>
+```
+
+Assignment uploads flow directly from Lambda to private Supabase Storage:
+
+```
+Browser → API Gateway → uploadAssignment Lambda → private Supabase Storage
+                                      └────────→ DynamoDB metadata write
+```
+
+The stable file pointer is `storagePath` in `lms-assignments`. Signed URLs are temporary; `getStudentAssignments.js` generates fresh signed URLs from `storagePath` for Supabase-backed submissions.
 
 **Why set FRONTEND_URL?** The CORS `Access-Control-Allow-Origin` header must exactly match the origin making the request. If you set it to `*`, any website can make authenticated requests to your API (bad for security). Setting it to your exact domain ensures only your frontend can read API responses.
 
