@@ -682,7 +682,7 @@ function SupplementalContentTab() {
   return (
     <form onSubmit={handleSave}>
       {message && <p style={s.message}>{message}</p>}
-      
+
       {/* Recordings */}
       <div style={s.card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>

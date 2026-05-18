@@ -1878,8 +1878,8 @@ export default function DashboardPage() {
                 ? Math.round((completedLessons / group.lessons.length) * 100)
                 : 0;
               const isExpanded = !!expandedGroups[group.groupNumber];
-              const groupItemCount = showingVideos 
-                ? group.lessons.length 
+              const groupItemCount = showingVideos
+                ? group.lessons.length
                 : group.sessions?.length || group.lessons?.length || 0;
 
               return (

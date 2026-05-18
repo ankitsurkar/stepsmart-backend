@@ -289,7 +289,7 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     }
     if (item.quizPassed) {
       entry.completedQuizzes += 1;
-      entry.score += 2; 
+      entry.score += 2;
       entry.totalPoints += 2;
     }
     entry.lastActivity = laterDate(entry.lastActivity, toIso(item.videoCompletedAt || item.lastSeen));
@@ -365,7 +365,7 @@ async function getProgressForCourse(courseId, userId, event) {
   }));
 
   if (!includeLeaderboard) return res(200, { progress });
-  
+
   try {
     const leaderboard = await buildLeaderboard(courseId, userId, event);
     return res(200, { progress, leaderboard });

@@ -9,7 +9,7 @@ const ANALYTICS_TABLE = process.env.ANALYTICS_TABLE || 'lms-analytics';
 
 exports.handler = async (event) => {
   console.log('Event:', JSON.stringify(event));
-  
+
   const { httpMethod, path, body } = event;
   const data = body ? JSON.parse(body) : {};
 
