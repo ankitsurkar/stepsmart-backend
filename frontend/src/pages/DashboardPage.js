@@ -7,6 +7,7 @@ import AssignmentUpload from '../components/AssignmentUpload';
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'courses', label: 'My Courses' },
+  { id: 'scheduling', label: '1:1 Scheduling' },
   { id: 'assignments', label: 'Assignments' },
   { id: 'calendar', label: 'Calendar' },
   { id: 'settings', label: 'Settings' },
@@ -1363,6 +1364,7 @@ export default function DashboardPage() {
 
   const [courses, setCourses] = useState([]);
   const [weeks, setWeeks] = useState([]);
+  const [liveWeeks, setLiveWeeks] = useState([]);
   const [supplementalContent, setSupplementalContent] = useState(() => normalizeSupplementalContent());
   const [progressMap, setProgressMap] = useState({});
   const [leaderboard, setLeaderboard] = useState([]);
@@ -1505,7 +1507,8 @@ export default function DashboardPage() {
 
       const [weeksRes, progressRes, adminWeeksRes] = await Promise.all(requests);
 
-      const allWeeks = weeksRes.data.weeks || [];
+      const allWeeks = weeksRes.data.modules || weeksRes.data.weeks || [];
+      const liveWeeksList = weeksRes.data.liveWeeks || [];
       const legacySupplementalWeek = findLegacySupplementalWeek(allWeeks);
       const regularWeeks = allWeeks.filter((week) => week !== legacySupplementalWeek && week.weekId !== '__supplemental__');
       const responseSupplemental = normalizeSupplementalContent(weeksRes.data.supplementalContent);
@@ -1534,6 +1537,7 @@ export default function DashboardPage() {
           : normalizeSupplementalContent(legacySupplementalWeek);
 
       setWeeks(regularWeeks);
+      setLiveWeeks(liveWeeksList);
       setSupplementalContent(normalizeSupplementalContent(supplementalSource));
 
       const nextProgressMap = {};
@@ -1600,9 +1604,11 @@ export default function DashboardPage() {
 
   const normalizedSupplemental = normalizeSupplementalContent(supplementalContent);
   const releasedLessonWeeks = weeks.filter((week) => week.visible === true);
+  const releasedLiveWeeks = liveWeeks.filter((week) => week.visible === true);
+
   const weekGroups = buildWeekGroups(releasedLessonWeeks);
   const recordedSessionGroups = buildRecordedSessionGroups(
-    weeks,
+    releasedLiveWeeks,
     normalizedSupplemental.liveRecordedSessions,
     activeCourse?.courseId || '',
   );
@@ -1872,7 +1878,9 @@ export default function DashboardPage() {
                 ? Math.round((completedLessons / group.lessons.length) * 100)
                 : 0;
               const isExpanded = !!expandedGroups[group.groupNumber];
-              const groupItemCount = showingVideos ? group.lessons.length : group.sessions.length;
+              const groupItemCount = showingVideos
+                ? group.lessons.length
+                : group.sessions?.length || group.lessons?.length || 0;
 
               return (
                 <div key={group.groupNumber} style={s.weekGroupCard}>
@@ -1884,7 +1892,7 @@ export default function DashboardPage() {
                     <div style={s.weekGroupTop}>
                       <div>
                         <div style={s.weekGroupLabel}>
-                          {showingVideos ? `Week ${group.groupNumber}` : (group.groupLabel || `Week ${group.groupNumber}`)}
+                          {showingVideos ? `Week ${group.groupNumber}` : (group.groupLabel || `Session ${group.groupNumber}`)}
                         </div>
                         <div style={s.weekGroupMeta}>
                           {groupItemCount} {showingVideos ? `video${groupItemCount === 1 ? '' : 's'}` : `recording${groupItemCount === 1 ? '' : 's'}`}
@@ -2200,6 +2208,28 @@ export default function DashboardPage() {
     );
   }
 
+  function renderSchedulingView() {
+    return (
+      <div style={s.card}>
+        <div style={s.panelHeader}>
+          <div>
+            <div style={s.sectionTitle}>1:1 Scheduling</div>
+            <div style={s.sectionMeta}>Book a private session for personalized feedback and career guidance.</div>
+          </div>
+        </div>
+        <div style={{ height: '700px', width: '100%', overflow: 'hidden', borderRadius: '12px', border: '1px solid var(--border)' }}>
+          <iframe
+            src="https://calendly.com/sanket-stepsmart?hide_landing_page_details=1&hide_gdpr_banner=1"
+            width="100%"
+            height="100%"
+            frameBorder="0"
+            title="Schedule 1:1 Session"
+          />
+        </div>
+      </div>
+    );
+  }
+
   let viewEyebrow = 'Student Dashboard';
   let viewTitle = `Welcome back, ${displayName}`;
   let viewSubtitle = `${activeCourse?.name || 'Your course'} • Track your progress, next actions, and personal performance in one place.`;
@@ -2220,6 +2250,12 @@ export default function DashboardPage() {
     viewEyebrow = 'Assignments';
     viewTitle = activeCourse?.name ? `${activeCourse.name} Assignments` : 'Assignments';
     viewSubtitle = 'Open an assignment card to upload your work from the dashboard sidebar.';
+  }
+
+  if (activeView === 'scheduling') {
+    viewEyebrow = 'Scheduling';
+    viewTitle = 'Book your 1:1 Session';
+    viewSubtitle = 'Select a time that works for you for a personalized mentorship session.';
   }
 
   if (activeView === 'settings') {
@@ -2297,6 +2333,7 @@ export default function DashboardPage() {
 
           {activeView === 'dashboard' && renderDashboardView()}
           {activeView === 'courses' && renderCoursesView()}
+          {activeView === 'scheduling' && renderSchedulingView()}
           {activeView === 'assignments' && renderAssignmentsView()}
           {activeView === 'calendar' && renderCalendarView()}
           {activeView === 'settings' && renderSettingsView()}

@@ -881,14 +881,14 @@ Without proxy integration, API Gateway does transformation — you'd configure r
 ### Route matching
 
 ```
-GET  /courses/my                              → lms-student Lambda
-GET  /courses/{courseId}/weeks                → lms-student Lambda
-GET  /progress/{courseId}                     → lms-student Lambda
-POST /progress/heartbeat                      → lms-student Lambda
-POST /quiz/submit                             → lms-student Lambda
-POST /assignments/upload                      → lms-uploadAssignment Lambda
-GET  /courses/{courseId}/weeks/{weekId}/assignments → lms-getStudentAssignments Lambda, when registered
-ALL  /admin/*                                 → lms-admin Lambda
+lms-admin                 → all /admin/* routes
+lms-student               → GET /courses/my
+lms-student               → GET /courses/{courseId}/weeks
+lms-student               → GET /progress/{courseId}
+lms-student               → POST /progress/heartbeat
+lms-student               → POST /quiz/submit
+lms-uploadAssignment      → POST /assignments/upload
+lms-getStudentAssignments → GET /courses/{courseId}/weeks/{weekId}/assignments, if registered
 ```
 
 `{courseId}` in the path is a **path parameter** — API Gateway extracts it and passes it in `event.pathParameters.courseId`.
@@ -1105,15 +1105,6 @@ SUPABASE_SERVICE_ROLE_KEY = <service-role-key>
 SUPABASE_STORAGE_BUCKET = <private assignment bucket>
 ```
 
-Assignment uploads flow directly from Lambda to private Supabase Storage:
-
-```
-Browser → API Gateway → uploadAssignment Lambda → private Supabase Storage
-                                      └────────→ DynamoDB metadata write
-```
-
-The stable file pointer is `storagePath` in `lms-assignments`. Signed URLs are temporary; `getStudentAssignments.js` generates fresh signed URLs from `storagePath` for Supabase-backed submissions.
-
 **Why set FRONTEND_URL?** The CORS `Access-Control-Allow-Origin` header must exactly match the origin making the request. If you set it to `*`, any website can make authenticated requests to your API (bad for security). Setting it to your exact domain ensures only your frontend can read API responses.
 
 **Timeout: set to 15 seconds** (default is 3s). Cognito's `ListUsers` call can occasionally take 3–4 seconds. The admin Lambda calls this on every admin request. A 3-second timeout would randomly fail.
@@ -1231,3 +1222,25 @@ Every week:
 | Lambda error logs | CloudWatch → Log groups → /aws/lambda/lms-[name] |
 | API Gateway request logs | API Gateway → Stages → prod → Logs |
 | See all course/week items | DynamoDB → lms-courses → Explore items |
+
+---
+
+## ASSIGNMENT UPLOAD ARCHITECTURE
+
+```
+Browser -> API Gateway -> uploadAssignment Lambda -> private Supabase Storage
+                                          -> DynamoDB metadata write
+```
+
+- **Storage**: Files are uploaded directly to a private Supabase Storage bucket.
+- **Metadata**: Stable metadata (including `storagePath`) is written to the DynamoDB `lms-assignments` table.
+- **Links**: `storagePath` is canonical. The `driveUrl` stored at upload time is a temporary signed URL and should not be relied upon long-term.
+
+---
+
+## KNOWN DEBT
+
+- Remove `correctAnswers` from quiz responses after updating `QuizComponent`.
+- Register `GET /courses/{courseId}/weeks/{weekId}/assignments` in API Gateway when the frontend starts using `getStudentAssignments`.
+- Generate fresh signed URLs in `getStudentAssignments` from `storagePath` once that route is live.
+- Decide whether `getStudentAssignments` should later fold into `lms-student` for a strict two-Lambda backend.

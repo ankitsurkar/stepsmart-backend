@@ -1,26 +1,6 @@
-// Lambda: lms-student
-// Trigger: student-facing LMS routes
-// Auth:    Cognito Authorizer (JWT required)
-//
-// Routes handled:
-//   GET  /courses/my
-//   GET  /courses/{courseId}/weeks
-//   GET  /progress/{courseId}
-//   POST /progress/heartbeat
-//   POST /quiz/submit
-
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const {
-  DynamoDBDocumentClient,
-  QueryCommand,
-  GetCommand,
-  UpdateCommand,
-  ScanCommand,
-} = require('@aws-sdk/lib-dynamodb');
-const {
-  CognitoIdentityProviderClient,
-  ListUsersCommand,
-} = require('@aws-sdk/client-cognito-identity-provider');
+const { DynamoDBDocumentClient, QueryCommand, GetCommand, UpdateCommand, ScanCommand } = require('@aws-sdk/lib-dynamodb');
+const { CognitoIdentityProviderClient, ListUsersCommand } = require('@aws-sdk/client-cognito-identity-provider');
 
 const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const ddb = DynamoDBDocumentClient.from(ddbClient, {
@@ -32,13 +12,10 @@ const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
 const PROGRESS_TABLE = process.env.PROGRESS_TABLE || 'lms-progress';
 const ASSIGNMENTS_TABLE = process.env.ASSIGNMENTS_TABLE || 'lms-assignments';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
-const SUPPLEMENTAL_SK = 'SUPPLEMENTAL#GLOBAL';
 const PASSING_PCT = 70;
 const HEARTBEAT_INTERVAL = 10;
 const COMPLETION_THRESHOLD = 0.9;
-const COURSE_NAME_OVERRIDES = {
-  'course-001': 'PM -X Accelerator',
-};
+const SUPPLEMENTAL_SK = 'SUPPLEMENTAL#GLOBAL';
 
 function corsHeaders() {
   return {
@@ -62,12 +39,116 @@ function normalizeResource(resource = '') {
     .replace('{weekID}', '{weekId}');
 }
 
-function isAdminUser(event) {
+const COURSE_NAME_OVERRIDES = {
+  'course-001': 'PM -X Accelerator',
+};
+
+async function listMyCourses() {
+  const result = await ddb.send(new ScanCommand({
+    TableName: COURSES_TABLE,
+    FilterExpression: 'sk = :meta',
+    ExpressionAttributeValues: { ':meta': 'METADATA' },
+  }));
+
+  const courses = (result.Items || []).map((item) => ({
+    courseId: item.courseId,
+    name: COURSE_NAME_OVERRIDES[item.courseId] || item.name,
+    description: item.description || '',
+  }));
+
+  return res(200, { courses });
+}
+
+async function getSupplementalContent(courseId) {
+  try {
+    const result = await ddb.send(new GetCommand({
+      TableName: COURSES_TABLE,
+      Key: { pk: `COURSE#${courseId}`, sk: SUPPLEMENTAL_SK },
+    }));
+    const item = result.Item || {};
+    return {
+      assignments: Array.isArray(item.assignments) ? item.assignments : [],
+      liveRecordedSessions: Array.isArray(item.liveRecordedSessions) ? item.liveRecordedSessions : [],
+      calendarEvents: Array.isArray(item.calendarEvents) ? item.calendarEvents : [],
+    };
+  } catch (err) {
+    console.error('DynamoDB GetCommand supplemental content error:', err);
+    return {
+      assignments: [],
+      liveRecordedSessions: [],
+      calendarEvents: [],
+    };
+  }
+}
+
+async function listCourseWeeks(courseId, event) {
+  if (!courseId) return res(400, { message: 'Missing courseId path parameter' });
+
   const groupsClaim = event.requestContext?.authorizer?.claims?.['cognito:groups'];
   const groups = Array.isArray(groupsClaim)
     ? groupsClaim
     : typeof groupsClaim === 'string' ? groupsClaim.split(',') : [];
-  return groups.includes('admins');
+  const isAdmin = groups.includes('admins');
+
+  let items;
+  const supplementalContentPromise = getSupplementalContent(courseId);
+  try {
+    const result = await ddb.send(new QueryCommand({
+      TableName: COURSES_TABLE,
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': `COURSE#${courseId}`,
+        ':prefix': 'WEEK#',
+      },
+    }));
+    items = (result.Items || []).filter((item) => item.weekId !== '__supplemental__');
+  } catch (err) {
+    console.error('DynamoDB QueryCommand error:', err);
+    return res(500, { message: 'Failed to load course weeks' });
+  }
+
+  const supplementalContent = await supplementalContentPromise;
+
+  function hasSupplementalStudentContent(week) {
+    return (week.assignments?.length || 0) > 0
+      || (week.liveRecordedSessions?.length || 0) > 0
+      || (week.calendarEvents?.length || 0) > 0;
+  }
+
+  const filtered = items
+    .filter((w) => isAdmin || w.visible === true || hasSupplementalStudentContent(w))
+    .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
+
+  const weeks = filtered.map((w) => ({
+    weekId: w.weekId,
+    courseId: w.courseId || courseId,
+    weekNumber: w.weekNumber,
+    title: w.title,
+    description: w.description,
+    youtubeUrl: w.youtubeUrl || null,
+    qaLink: w.qaLink || null,
+    visible: w.visible || false,
+    resources: w.resources || [],
+    docs: w.docs || [],
+    assignments: w.assignments || [],
+    liveRecordedSessions: w.liveRecordedSessions || [],
+    calendarEvents: w.calendarEvents || [],
+    createdAt: w.createdAt || null,
+    quiz: {
+      questions: (w.quiz?.questions || []).map((q) => ({
+        id: q.id,
+        text: q.text,
+        options: q.options,
+        explanation: q.explanation,
+        ...(isAdmin ? { correctIndex: q.correctIndex } : {}),
+      })),
+    },
+  }));
+
+  const modules = weeks.filter((w) => (w.category || 'module') === 'module');
+  const liveWeeks = weeks.filter((w) => w.category === 'live');
+
+  return res(200, { modules, liveWeeks, supplementalContent });
 }
 
 function deriveUserPoolId(event) {
@@ -80,7 +161,7 @@ function toIso(value) {
   if (!value) return null;
   try {
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? null : date.toISOString();
+    return isNaN(date.getTime()) ? null : date.toISOString();
   } catch {
     return null;
   }
@@ -150,107 +231,20 @@ function getOrCreateEntry(entries, userId, profiles, currentUserId) {
   return entries.get(userId);
 }
 
-async function listMyCourses() {
-  const result = await ddb.send(new ScanCommand({
-    TableName: COURSES_TABLE,
-    FilterExpression: 'sk = :meta',
-    ExpressionAttributeValues: { ':meta': 'METADATA' },
-  }));
-
-  const courses = (result.Items || []).map((item) => ({
-    courseId: item.courseId,
-    name: COURSE_NAME_OVERRIDES[item.courseId] || item.name,
-    description: item.description || '',
-  }));
-
-  return res(200, { courses });
-}
-
-async function getSupplementalContent(courseId) {
-  try {
-    const result = await ddb.send(new GetCommand({
-      TableName: COURSES_TABLE,
-      Key: { pk: `COURSE#${courseId}`, sk: SUPPLEMENTAL_SK },
-    }));
-    const item = result.Item || {};
-    return {
-      assignments: Array.isArray(item.assignments) ? item.assignments : [],
-      liveRecordedSessions: Array.isArray(item.liveRecordedSessions) ? item.liveRecordedSessions : [],
-      calendarEvents: Array.isArray(item.calendarEvents) ? item.calendarEvents : [],
-    };
-  } catch (err) {
-    console.error('DynamoDB GetCommand supplemental content error:', err);
-    return {
-      assignments: [],
-      liveRecordedSessions: [],
-      calendarEvents: [],
-    };
-  }
-}
-
-async function listCourseWeeks(courseId, event) {
-  if (!courseId) return res(400, { message: 'Missing courseId path parameter' });
-
-  const isAdmin = isAdminUser(event);
-  const supplementalContentPromise = getSupplementalContent(courseId);
-  let items;
-
-  try {
-    const result = await ddb.send(new QueryCommand({
+async function buildLeaderboard(courseId, currentUserId, event) {
+  const userPoolId = deriveUserPoolId(event);
+  const [weeksResult, progressResult, assignmentsResult, userProfiles] = await Promise.all([
+    ddb.send(new QueryCommand({
       TableName: COURSES_TABLE,
       KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
       ExpressionAttributeValues: {
         ':pk': `COURSE#${courseId}`,
         ':prefix': 'WEEK#',
       },
-    }));
-    items = (result.Items || []).filter((item) => item.weekId !== '__supplemental__');
-  } catch (err) {
-    console.error('DynamoDB QueryCommand error:', err);
-    return res(500, { message: 'Failed to load course weeks' });
-  }
-
-  const supplementalContent = await supplementalContentPromise;
-  const hasSupplementalStudentContent = (week) =>
-    (week.assignments?.length || 0) > 0
-    || (week.liveRecordedSessions?.length || 0) > 0
-    || (week.calendarEvents?.length || 0) > 0;
-
-  const weeks = items
-    .filter((week) => isAdmin || week.visible === true || hasSupplementalStudentContent(week))
-    .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0))
-    .map((week) => ({
-      weekId: week.weekId,
-      courseId: week.courseId || courseId,
-      weekNumber: week.weekNumber,
-      title: week.title,
-      description: week.description,
-      youtubeUrl: week.youtubeUrl || null,
-      qaLink: week.qaLink || null,
-      visible: week.visible || false,
-      resources: week.resources || [],
-      docs: week.docs || [],
-      assignments: week.assignments || [],
-      liveRecordedSessions: week.liveRecordedSessions || [],
-      calendarEvents: week.calendarEvents || [],
-      createdAt: week.createdAt || null,
-      quiz: {
-        questions: (week.quiz?.questions || []).map((q) => ({
-          id: q.id,
-          text: q.text,
-          options: q.options,
-          explanation: q.explanation,
-          ...(isAdmin ? { correctIndex: q.correctIndex } : {}),
-        })),
-      },
-    }));
-
-  return res(200, { weeks, supplementalContent });
-}
-
-async function buildLeaderboard(courseId, currentUserId, event) {
-  const userPoolId = deriveUserPoolId(event);
-  const [progressResult, assignmentsResult, userProfiles] = await Promise.all([
+    })).catch((err) => {
+      console.error('Course weeks query failed while building leaderboard:', err);
+      return { Items: [] };
+    }),
     ddb.send(new ScanCommand({
       TableName: PROGRESS_TABLE,
       FilterExpression: 'begins_with(sk, :prefix)',
@@ -273,6 +267,10 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     }),
   ]);
 
+  const weekQuizMap = new Map(
+    (weeksResult.Items || []).map((week) => [week.weekId, (week.quiz?.questions || []).length > 0]),
+  );
+
   const leaderboardEntries = new Map();
 
   for (const item of (progressResult.Items || [])) {
@@ -280,6 +278,9 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     const itemWeekId = item.weekId || (item.sk ? item.sk.split('#')[2] : null);
     if (!itemUserId || !itemWeekId) continue;
 
+    const hasQuiz = weekQuizMap.has(itemWeekId)
+      ? weekQuizMap.get(itemWeekId)
+      : item.quizTotal !== null && item.quizTotal !== undefined;
     const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
     if (item.videoComplete) {
       entry.completedLectures += 1;
@@ -322,11 +323,11 @@ async function buildLeaderboard(courseId, currentUserId, event) {
 
   return [...leaderboardEntries.values()]
     .sort((a, b) =>
-      b.score - a.score
-      || b.completedLectures - a.completedLectures
-      || b.assignmentsSubmitted - a.assignmentsSubmitted
-      || (b.lastActivity || '').localeCompare(a.lastActivity || '')
-      || a.displayName.localeCompare(b.displayName)
+      b.score - a.score ||
+      b.completedLectures - a.completedLectures ||
+      b.assignmentsSubmitted - a.assignmentsSubmitted ||
+      (b.lastActivity || '').localeCompare(a.lastActivity || '') ||
+      a.displayName.localeCompare(b.displayName)
     )
     .map((entry, index) => ({
       ...entry,
@@ -339,23 +340,17 @@ async function buildLeaderboard(courseId, currentUserId, event) {
 async function getProgressForCourse(courseId, userId, event) {
   if (!courseId) return res(400, { message: 'Missing courseId path parameter' });
 
-  let items;
-  try {
-    const result = await ddb.send(new QueryCommand({
-      TableName: PROGRESS_TABLE,
-      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
-      ExpressionAttributeValues: {
-        ':pk': `USER#${userId}`,
-        ':prefix': `PROGRESS#${courseId}#`,
-      },
-    }));
-    items = result.Items || [];
-  } catch (err) {
-    console.error('DynamoDB QueryCommand error:', err);
-    return res(500, { message: 'Failed to fetch progress' });
-  }
+  const includeLeaderboard = event.queryStringParameters?.includeLeaderboard === 'true';
+  const result = await ddb.send(new QueryCommand({
+    TableName: PROGRESS_TABLE,
+    KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+    ExpressionAttributeValues: {
+      ':pk': `USER#${userId}`,
+      ':prefix': `PROGRESS#${courseId}#`,
+    },
+  }));
 
-  const progress = items.map((item) => ({
+  const progress = (result.Items || []).map((item) => ({
     weekId: item.weekId,
     courseId: item.courseId,
     videoComplete: item.videoComplete || false,
@@ -369,9 +364,7 @@ async function getProgressForCourse(courseId, userId, event) {
     lastSeen: item.lastSeen || null,
   }));
 
-  if (event.queryStringParameters?.includeLeaderboard !== 'true') {
-    return res(200, { progress });
-  }
+  if (!includeLeaderboard) return res(200, { progress });
 
   try {
     const leaderboard = await buildLeaderboard(courseId, userId, event);
@@ -390,6 +383,7 @@ async function recordHeartbeat(userId, body) {
 
   const segment = Math.floor(currentTime / HEARTBEAT_INTERVAL);
   const totalSegments = Math.ceil(duration / HEARTBEAT_INTERVAL);
+
   const pk = `USER#${userId}`;
   const sk = `PROGRESS#${courseId}#${weekId}`;
 
@@ -436,8 +430,8 @@ async function recordHeartbeat(userId, body) {
         UpdateExpression: 'SET videoComplete = :t, videoCompletedAt = :now',
         ConditionExpression: 'attribute_not_exists(videoComplete) OR videoComplete = :f',
         ExpressionAttributeValues: {
-          ':t': true,
-          ':f': false,
+          ':t':   true,
+          ':f':   false,
           ':now': new Date().toISOString(),
         },
       }));
@@ -464,11 +458,11 @@ async function submitQuizAttempt(userId, body) {
 
   let weekItem;
   try {
-    const result = await ddb.send(new GetCommand({
+    const r = await ddb.send(new GetCommand({
       TableName: COURSES_TABLE,
       Key: { pk: `COURSE#${courseId}`, sk: `WEEK#${weekId}` },
     }));
-    weekItem = result.Item;
+    weekItem = r.Item;
   } catch (err) {
     console.error('getCourseWeek error:', err);
     return res(500, { message: 'Failed to load quiz' });
@@ -483,19 +477,22 @@ async function submitQuizAttempt(userId, body) {
 
   let correct = 0;
   const correctAnswers = {};
-  for (const question of questions) {
-    correctAnswers[question.id] = question.correctIndex;
-    if (answers[question.id] === question.correctIndex) correct++;
+  for (const q of questions) {
+    correctAnswers[q.id] = q.correctIndex;
+    if (answers[q.id] === q.correctIndex) correct++;
   }
 
   const total = questions.length;
   const pct = Math.round((correct / total) * 100);
   const passed = pct >= PASSING_PCT;
 
+  const progressPk = `USER#${userId}`;
+  const progressSk = `PROGRESS#${courseId}#${weekId}`;
+
   try {
     await ddb.send(new UpdateCommand({
       TableName: PROGRESS_TABLE,
-      Key: { pk: `USER#${userId}`, sk: `PROGRESS#${courseId}#${weekId}` },
+      Key: { pk: progressPk, sk: progressSk },
       UpdateExpression: `
         SET quizPassed    = :passed,
             quizScore     = :score,
@@ -539,18 +536,10 @@ exports.handler = async (event) => {
 
   try {
     if (method === 'GET' && resource === '/courses/my') return await listMyCourses();
-    if (method === 'GET' && resource === '/courses/{courseId}/weeks') {
-      return await listCourseWeeks(courseId, event);
-    }
-    if (method === 'GET' && resource === '/progress/{courseId}') {
-      return await getProgressForCourse(courseId, userId, event);
-    }
-    if (method === 'POST' && resource === '/progress/heartbeat') {
-      return await recordHeartbeat(userId, body);
-    }
-    if (method === 'POST' && resource === '/quiz/submit') {
-      return await submitQuizAttempt(userId, body);
-    }
+    if (method === 'GET' && resource === '/courses/{courseId}/weeks') return await listCourseWeeks(courseId, event);
+    if (method === 'GET' && resource === '/progress/{courseId}') return await getProgressForCourse(courseId, userId, event);
+    if (method === 'POST' && resource === '/progress/heartbeat') return await recordHeartbeat(userId, body);
+    if (method === 'POST' && resource === '/quiz/submit') return await submitQuizAttempt(userId, body);
     return res(404, { message: `No handler for ${method} ${resource}` });
   } catch (err) {
     console.error(`Student handler error [${method} ${resource}]:`, err);

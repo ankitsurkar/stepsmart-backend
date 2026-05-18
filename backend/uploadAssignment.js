@@ -1,17 +1,6 @@
 // Lambda: lms-uploadAssignment
 // Trigger: POST /assignments/upload
 // Auth:    Cognito Authorizer (JWT required)
-//
-// Uploads go directly to private Supabase Storage. The browser still sends the
-// base64 payload it already sends today; this Lambda decodes it, uploads the
-// object, and stores stable Supabase metadata in DynamoDB.
-//
-// Required environment variables:
-//   SUPABASE_URL
-//   SUPABASE_SERVICE_ROLE_KEY
-//   SUPABASE_STORAGE_BUCKET
-//   ASSIGNMENTS_TABLE
-//   FRONTEND_URL
 
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, PutCommand } = require('@aws-sdk/lib-dynamodb');
@@ -21,7 +10,7 @@ const ddb = DynamoDBDocumentClient.from(
 );
 
 const ASSIGNMENTS_TABLE = process.env.ASSIGNMENTS_TABLE || 'lms-assignments';
-const FRONTEND_URL      = process.env.FRONTEND_URL      || 'https://stepsmart.net';
+const FRONTEND_URL      = process.env.FRONTEND_URL || 'https://stepsmart.net';
 const MAX_FILE_BYTES    = 7 * 1024 * 1024; // 7 MB original-file limit
 
 const ALLOWED_MIME_TYPES = new Set([
@@ -41,6 +30,7 @@ function corsHeaders() {
     'Access-Control-Allow-Methods': 'POST,OPTIONS',
   };
 }
+
 function res(statusCode, body) {
   return { statusCode, headers: { 'Content-Type': 'application/json', ...corsHeaders() }, body: JSON.stringify(body) };
 }
@@ -63,20 +53,22 @@ exports.handler = async (event) => {
     return res(400, { message: 'Unsupported file type. Upload PDF, Word, or PowerPoint.' });
 
   const fileBuffer = Buffer.from(fileBase64, 'base64');
-  if (fileBuffer.length > MAX_FILE_BYTES)
+  if (fileBuffer.length > MAX_FILE_BYTES) {
     return res(400, { message: 'File exceeds the 7 MB size limit.' });
+  }
 
   const supabaseUrl = process.env.SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const bucket = process.env.SUPABASE_STORAGE_BUCKET;
+
   if (!supabaseUrl || !serviceRoleKey || !bucket) {
     return res(500, { message: 'Upload service not configured.' });
   }
 
-  try {
-    const safeFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
-    const objectPath = `assignments/${courseId}/${weekId}/${userId}/${Date.now()}-${safeFileName}`;
+  const safeFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const objectPath = `assignments/${courseId}/${weekId}/${userId}/${Date.now()}-${safeFileName}`;
 
+  try {
     const uploadRes = await fetch(
       `${supabaseUrl}/storage/v1/object/${bucket}/${objectPath}`,
       {
@@ -97,6 +89,7 @@ exports.handler = async (event) => {
       return res(500, { message: 'Upload failed. Please try again.' });
     }
 
+    const uploadedAt = new Date().toISOString();
     const signedUrlRes = await fetch(
       `${supabaseUrl}/storage/v1/object/sign/${bucket}/${objectPath}`,
       {
@@ -118,13 +111,11 @@ exports.handler = async (event) => {
       return res(500, { message: 'Upload completed, but file link generation failed.' });
     }
 
-    const uploadedAt = new Date().toISOString();
-
     await ddb.send(new PutCommand({
       TableName: ASSIGNMENTS_TABLE,
       Item: {
-        pk:          `COURSE#${courseId}#WEEK#${weekId}`,
-        sk:          `USER#${userId}#${uploadedAt}`,
+        pk: `COURSE#${courseId}#WEEK#${weekId}`,
+        sk: `USER#${userId}#${uploadedAt}`,
         userId,
         courseId,
         weekId,

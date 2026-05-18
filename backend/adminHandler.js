@@ -166,6 +166,7 @@ async function createWeek(courseId, body) {
     sk: `WEEK#${weekId}`,
     weekId,
     courseId,
+    category: body.category || 'module',
     weekNumber: body.weekNumber || 1,
     title: body.title || 'Untitled Week',
     description: body.description || '',
@@ -197,7 +198,11 @@ async function updateWeek(courseId, weekId, body) {
   }
 
   // Build a dynamic UpdateExpression from whatever fields were provided.
-  const fields = ['title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber', 'quiz', 'resources', 'docs', 'assignments', 'liveRecordedSessions', 'calendarEvents'];
+  const fields = [
+    'title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber',
+    'category', 'quiz', 'resources', 'docs', 'assignments', 'liveRecordedSessions',
+    'calendarEvents'
+  ];
   const setClauses = [];
   const exprAttrValues = {};
   const exprAttrNames = {};

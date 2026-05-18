@@ -1,3 +1,5 @@
+// DEPRECATED: This lambda has been consolidated into backend/studentHandler.js.
+// Please make any future edits there to avoid modifying dead code.
 // Lambda: lms-getCourseWeeks
 // Trigger: GET /courses/{courseId}/weeks
 // Auth:    Cognito Authorizer (JWT required)
@@ -138,5 +140,8 @@ exports.handler = async (event) => {
     },
   }));
 
-  return res(200, { weeks, supplementalContent });
+  const modules = weeks.filter((w) => (w.category || 'module') === 'module');
+  const liveWeeks = weeks.filter((w) => w.category === 'live');
+
+  return res(200, { modules, liveWeeks, supplementalContent });
 };

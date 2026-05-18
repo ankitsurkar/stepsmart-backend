@@ -1,3 +1,5 @@
+// DEPRECATED: This lambda has been consolidated into backend/studentHandler.js.
+// Please make any future edits there to avoid modifying dead code.
 // Lambda: lms-submitQuiz
 // Trigger: POST /quiz/submit
 // Auth:    Cognito Authorizer (JWT required)
