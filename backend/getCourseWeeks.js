@@ -1,3 +1,5 @@
+// DEPRECATED: This lambda has been consolidated into backend/studentHandler.js.
+// Please make any future edits there to avoid modifying dead code.
 // Lambda: lms-getCourseWeeks
 // Trigger: GET /courses/{courseId}/weeks
 // Auth:    Cognito Authorizer (JWT required)
@@ -11,15 +13,16 @@
 // Returns: { weeks: [ { weekId, weekNumber, title, description, youtubeUrl, qaLink, assignments, liveRecordedSessions, calendarEvents, quiz: { questions } } ] }
 
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, QueryCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient, QueryCommand, GetCommand } = require('@aws-sdk/lib-dynamodb');
 
-const ddbClient = new DynamoDBClient({ region: 'us-east-1' });
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const ddb = DynamoDBDocumentClient.from(ddbClient, {
   marshallOptions: { convertEmptyValues: true },
 });
 
 const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
+const SUPPLEMENTAL_SK = 'SUPPLEMENTAL#GLOBAL';
 
 function corsHeaders() {
   return {
@@ -37,13 +40,35 @@ function res(statusCode, body) {
   };
 }
 
+async function getSupplementalContent(courseId) {
+  try {
+    const result = await ddb.send(new GetCommand({
+      TableName: COURSES_TABLE,
+      Key: { pk: `COURSE#${courseId}`, sk: SUPPLEMENTAL_SK },
+    }));
+    const item = result.Item || {};
+    return {
+      assignments: Array.isArray(item.assignments) ? item.assignments : [],
+      liveRecordedSessions: Array.isArray(item.liveRecordedSessions) ? item.liveRecordedSessions : [],
+      calendarEvents: Array.isArray(item.calendarEvents) ? item.calendarEvents : [],
+    };
+  } catch (err) {
+    console.error('DynamoDB GetCommand supplemental content error:', err);
+    return {
+      assignments: [],
+      liveRecordedSessions: [],
+      calendarEvents: [],
+    };
+  }
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return res(200, {});
 
   const userId = event.requestContext?.authorizer?.claims?.sub;
   if (!userId) return res(401, { message: 'Unauthorized' });
 
-  const courseId = event.pathParameters?.courseId;
+  const courseId = event.pathParameters?.courseId || event.pathParameters?.courseID;
   if (!courseId) return res(400, { message: 'Missing courseId path parameter' });
 
   // Determine if the caller is an admin so we can conditionally include correctIndex.
@@ -55,6 +80,7 @@ exports.handler = async (event) => {
 
   // Query all WEEK# items for this course in one request.
   let items;
+  const supplementalContentPromise = getSupplementalContent(courseId);
   try {
     const result = await ddb.send(new QueryCommand({
       TableName: COURSES_TABLE,
@@ -64,15 +90,26 @@ exports.handler = async (event) => {
         ':prefix': 'WEEK#',
       },
     }));
-    items = result.Items || [];
+    items = (result.Items || []).filter((item) => item.weekId !== '__supplemental__');
   } catch (err) {
     console.error('DynamoDB QueryCommand error:', err);
     return res(500, { message: 'Failed to load course weeks' });
   }
 
-  // Filter to visible weeks only (unless admin), sort by weekNumber.
+  const supplementalContent = await supplementalContentPromise;
+
+  function hasSupplementalStudentContent(week) {
+    return (week.assignments?.length || 0) > 0
+      || (week.liveRecordedSessions?.length || 0) > 0
+      || (week.calendarEvents?.length || 0) > 0;
+  }
+
+  // Students always see released weeks.
+  // Additionally, if a hidden week has supplemental content (assignments/live sessions/calendar),
+  // include it so those sections update immediately without requiring release.
+  // Hidden video content remains blocked in dashboard lesson metrics/UI.
   const filtered = items
-    .filter((w) => isAdmin || w.visible === true)
+    .filter((w) => isAdmin || w.visible === true || hasSupplementalStudentContent(w))
     .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
 
   const weeks = filtered.map((w) => ({
@@ -103,5 +140,8 @@ exports.handler = async (event) => {
     },
   }));
 
-  return res(200, { weeks });
+  const modules = weeks.filter((w) => (w.category || 'module') === 'module');
+  const liveWeeks = weeks.filter((w) => w.category === 'live');
+
+  return res(200, { modules, liveWeeks, supplementalContent });
 };

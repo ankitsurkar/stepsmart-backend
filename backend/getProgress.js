@@ -1,3 +1,5 @@
+// DEPRECATED: This lambda has been consolidated into backend/studentHandler.js.
+// Please make any future edits there to avoid modifying dead code.
 // Lambda: lms-getProgress
 // Trigger: GET /progress/{courseId}
 // Auth:    Cognito Authorizer (JWT required)
@@ -18,11 +20,11 @@ const {
   ListUsersCommand,
 } = require('@aws-sdk/client-cognito-identity-provider');
 
-const ddbClient = new DynamoDBClient({ region: 'us-east-1' });
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const ddb = DynamoDBDocumentClient.from(ddbClient, {
   marshallOptions: { convertEmptyValues: true },
 });
-const cognito = new CognitoIdentityProviderClient({ region: 'us-east-1' });
+const cognito = new CognitoIdentityProviderClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 
 const PROGRESS_TABLE = process.env.PROGRESS_TABLE || 'lms-progress';
 const COURSES_TABLE  = process.env.COURSES_TABLE  || 'lms-courses';
@@ -36,7 +38,13 @@ function deriveUserPoolId(event) {
 }
 
 function toIso(value) {
-  return value ? new Date(value).toISOString() : null;
+  if (!value) return null;
+  try {
+    const date = new Date(value);
+    return isNaN(date.getTime()) ? null : date.toISOString();
+  } catch {
+    return null;
+  }
 }
 
 function laterDate(a, b) {
@@ -59,7 +67,11 @@ function makeLeaderboardEntry(userId, profile, currentUserId) {
     lecturePoints: 0,
     assignmentPoints: 0,
     completedLectures: 0,
+    completedQuizzes: 0,
     assignmentsSubmitted: 0,
+    // Keep `score` as the canonical leaderboard number while retaining
+    // `totalPoints` for backward compatibility with existing clients.
+    score: 0,
     totalPoints: 0,
     lastActivity: null,
     isCurrentUser: userId === currentUserId,
@@ -121,16 +133,16 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     }),
     ddb.send(new ScanCommand({
       TableName: PROGRESS_TABLE,
-      FilterExpression: 'courseId = :cid',
-      ExpressionAttributeValues: { ':cid': courseId },
+      FilterExpression: 'begins_with(sk, :prefix)',
+      ExpressionAttributeValues: { ':prefix': `PROGRESS#${courseId}#` },
     })).catch((err) => {
       console.error('Progress scan failed while building leaderboard:', err);
       return { Items: [] };
     }),
     ddb.send(new ScanCommand({
       TableName: ASSIGNMENTS_TABLE,
-      FilterExpression: 'courseId = :cid',
-      ExpressionAttributeValues: { ':cid': courseId },
+      FilterExpression: 'begins_with(pk, :prefix)',
+      ExpressionAttributeValues: { ':prefix': `COURSE#${courseId}#` },
     })).catch((err) => {
       console.error('Assignments scan failed while building leaderboard:', err);
       return { Items: [] };
@@ -148,32 +160,42 @@ async function buildLeaderboard(courseId, currentUserId, event) {
   const leaderboardEntries = new Map();
 
   for (const item of (progressResult.Items || [])) {
-    if (!item.userId || !item.weekId) continue;
+    const itemUserId = item.userId || (item.pk ? item.pk.replace('USER#', '') : null);
+    const itemWeekId = item.weekId || (item.sk ? item.sk.split('#')[2] : null);
+    if (!itemUserId || !itemWeekId) continue;
 
-    const hasQuiz = weekQuizMap.has(item.weekId)
-      ? weekQuizMap.get(item.weekId)
+    const hasQuiz = weekQuizMap.has(itemWeekId)
+      ? weekQuizMap.get(itemWeekId)
       : item.quizTotal !== null && item.quizTotal !== undefined;
-    if (!isLectureComplete(item, hasQuiz)) continue;
-
-    const entry = getOrCreateEntry(leaderboardEntries, item.userId, userProfiles, currentUserId);
-    entry.lecturePoints += 1;
-    entry.completedLectures += 1;
-    entry.totalPoints += 1;
+    const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
+    if (item.videoComplete) {
+      entry.completedLectures += 1;
+      entry.score += 1;
+      entry.totalPoints += 1;
+    }
+    if (item.quizPassed) {
+      entry.completedQuizzes += 1;
+      entry.score += 2; // Award points for quizzes too? Let's assume 2 points for quiz
+      entry.totalPoints += 2;
+    }
     entry.lastActivity = laterDate(entry.lastActivity, toIso(item.videoCompletedAt || item.lastSeen));
   }
 
   const awardedAssignments = new Set();
   for (const item of (assignmentsResult.Items || [])) {
-    if (!item.userId || !item.weekId) continue;
+    const itemUserId = item.userId || (item.sk ? item.sk.split('#')[1] : null);
+    const itemWeekId = item.weekId || (item.pk ? item.pk.split('#')[3] : null);
+    if (!itemUserId || !itemWeekId) continue;
 
-    const uniqueAssignmentId = item.assignmentId || item.weekId;
-    const assignmentKey = `${item.userId}#${uniqueAssignmentId}`;
+    const uniqueAssignmentId = item.assignmentId || itemWeekId;
+    const assignmentKey = `${itemUserId}#${uniqueAssignmentId}`;
     if (awardedAssignments.has(assignmentKey)) continue;
     awardedAssignments.add(assignmentKey);
 
-    const entry = getOrCreateEntry(leaderboardEntries, item.userId, userProfiles, currentUserId);
+    const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
     entry.assignmentPoints += 5;
     entry.assignmentsSubmitted += 1;
+    entry.score += 5;
     entry.totalPoints += 5;
     entry.lastActivity = laterDate(entry.lastActivity, toIso(item.uploadedAt));
   }
@@ -187,13 +209,19 @@ async function buildLeaderboard(courseId, currentUserId, event) {
 
   return [...leaderboardEntries.values()]
     .sort((a, b) =>
-      b.totalPoints - a.totalPoints ||
+      b.score - a.score ||
       b.completedLectures - a.completedLectures ||
       b.assignmentsSubmitted - a.assignmentsSubmitted ||
       (b.lastActivity || '').localeCompare(a.lastActivity || '') ||
       a.displayName.localeCompare(b.displayName)
     )
-    .map((entry, index) => ({ ...entry, rank: index + 1 }));
+    .map((entry, index) => ({
+      ...entry,
+      // Ensure old and new clients both see the same value.
+      totalPoints: entry.score,
+      score: entry.score,
+      rank: index + 1,
+    }));
 }
 
 function corsHeaders() {
@@ -218,7 +246,7 @@ exports.handler = async (event) => {
   const userId = event.requestContext?.authorizer?.claims?.sub;
   if (!userId) return res(401, { message: 'Unauthorized' });
 
-  const courseId = event.pathParameters?.courseId;
+  const courseId = event.pathParameters?.courseId || event.pathParameters?.courseID;
   if (!courseId) return res(400, { message: 'Missing courseId path parameter' });
   const includeLeaderboard = event.queryStringParameters?.includeLeaderboard === 'true';
 

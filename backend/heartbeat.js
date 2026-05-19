@@ -1,3 +1,5 @@
+// DEPRECATED: This lambda has been consolidated into backend/studentHandler.js.
+// Please make any future edits there to avoid modifying dead code.
 // Lambda: lms-heartbeat
 // Trigger: POST /progress/heartbeat
 // Auth:    Cognito Authorizer (JWT required)
@@ -15,7 +17,7 @@ const { DynamoDBDocumentClient, UpdateCommand } = require('@aws-sdk/lib-dynamodb
 const HEARTBEAT_INTERVAL = 10;  // seconds per segment — must match the frontend constant
 const COMPLETION_THRESHOLD = 0.9;  // 90 % of segments must be watched
 
-const ddbClient = new DynamoDBClient({ region: 'us-east-1' });
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const ddb = DynamoDBDocumentClient.from(ddbClient, {
   marshallOptions: { convertEmptyValues: true },
 });

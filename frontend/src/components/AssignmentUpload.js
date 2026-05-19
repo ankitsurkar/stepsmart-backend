@@ -234,7 +234,7 @@ export default function AssignmentUpload({
 
       {selectedFile && !uploading && (
         <button style={uploadButtonStyle} onClick={handleUpload}>
-          Upload to Drive
+          Submit Assignment
         </button>
       )}
     </div>
