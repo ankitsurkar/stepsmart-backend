@@ -166,6 +166,7 @@ async function createWeek(courseId, body) {
     sk: `WEEK#${weekId}`,
     weekId,
     courseId,
+    category: body.category || 'module',
     weekNumber: body.weekNumber || 1,
     title: body.title || 'Untitled Week',
     description: body.description || '',
@@ -188,8 +189,20 @@ async function createWeek(courseId, body) {
 // PATCH /admin/courses/{courseId}/weeks/{weekId}
 // Updates any subset of week fields. Commonly used to toggle visibility.
 async function updateWeek(courseId, weekId, body) {
+  console.log('DEPLOY_CHECK_V2: updateWeek called with weekId =', weekId);
+  // Guard: if this is actually a supplemental content update, redirect to the correct handler.
+  // This ensures data is always saved to SUPPLEMENTAL#GLOBAL (not WEEK#__supplemental__).
+  if (weekId === '__supplemental__') {
+    console.log('DEPLOY_CHECK_V2: Redirecting to updateSupplementalContent');
+    return await updateSupplementalContent(courseId, body);
+  }
+
   // Build a dynamic UpdateExpression from whatever fields were provided.
-  const fields = ['title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber', 'quiz', 'resources', 'docs', 'assignments', 'liveRecordedSessions', 'calendarEvents'];
+  const fields = [
+    'title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber',
+    'category', 'quiz', 'resources', 'docs', 'assignments', 'liveRecordedSessions',
+    'calendarEvents'
+  ];
   const setClauses = [];
   const exprAttrValues = {};
   const exprAttrNames = {};
@@ -220,7 +233,7 @@ async function updateWeek(courseId, weekId, body) {
     ExpressionAttributeValues: exprAttrValues,
   }));
 
-  return res(200, { message: 'Week updated', weekId });
+  return res(200, { message: 'Week updated V3', weekId });
 }
 
 async function updateSupplementalContent(courseId, body) {
@@ -251,7 +264,7 @@ async function updateSupplementalContent(courseId, body) {
     },
   }));
 
-  return res(200, { message: 'Supplemental content updated', supplementalContent: nextContent });
+  return res(200, { message: 'Supplemental content updated', version: 'V2', supplementalContent: nextContent });
 }
 
 // DELETE /admin/courses/{courseId}/weeks/{weekId}
