@@ -82,6 +82,9 @@ export const adminDeleteWeek = (courseId, weekId) =>
 export const adminGetAllProgress = (courseId) =>
   api.get(`/admin/courses/${courseId}/progress`);
 
+export const adminGetAllSubmissions = (courseId) =>
+  api.get(`/admin/courses/${courseId}/submissions`);
+
 // ─── Assignments ──────────────────────────────────────────────────────────────
 
 export const uploadAssignment = (

@@ -9,6 +9,7 @@ import {
   adminUpdateSupplementalContent,
   adminDeleteWeek,
   adminGetAllProgress,
+  adminGetAllSubmissions,
 } from '../utils/api';
 
 const COURSE_ID = 'course-001';
@@ -810,6 +811,117 @@ function ProgressTab() {
 }
 
 // ────────────────────────────────────────────────────────────────────────────────
+// Submissions Tab
+// ────────────────────────────────────────────────────────────────────────────────
+function SubmissionsTab() {
+  const [submissions, setSubmissions] = useState([]);
+  const [students, setStudents] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
+
+  useEffect(() => { load(); }, []);
+
+  async function load() {
+    try {
+      const [subRes, stuRes] = await Promise.all([
+        adminGetAllSubmissions(COURSE_ID),
+        adminGetStudents()
+      ]);
+      setSubmissions(subRes.data.submissions || []);
+      
+      const studentMap = {};
+      for (const st of (stuRes.data.students || [])) {
+        studentMap[st.Username] = {
+          name: st.name || st.email || st.Username,
+          email: st.email || ''
+        };
+      }
+      setStudents(studentMap);
+    } catch {
+      setError('Failed to load submissions.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const filtered = submissions.filter(sub => {
+    const term = search.toLowerCase();
+    const studentInfo = students[sub.userId] || {};
+    const stSearchStr = `${studentInfo.name || ''} ${studentInfo.email || ''}`.toLowerCase();
+    const asgnName = (sub.assignmentTitle || sub.fileName || '').toLowerCase();
+    return stSearchStr.includes(term) || asgnName.includes(term);
+  });
+
+  if (loading) return <p style={{ color: 'var(--muted-foreground)' }}>Loading…</p>;
+  if (error) return <p style={{ color: 'var(--destructive)' }}>{error}</p>;
+
+  return (
+    <div style={s.card}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+        <div style={s.cardTitle}>Student Submissions — {COURSE_ID}</div>
+        <input 
+          style={{ ...s.input, width: '250px', marginBottom: 0 }} 
+          placeholder="Search by student or assignment..." 
+          value={search} 
+          onChange={e => setSearch(e.target.value)} 
+        />
+      </div>
+      
+      {submissions.length === 0 ? <p style={{ color: 'var(--muted-foreground)' }}>No submissions recorded yet.</p> : (
+        <table style={s.table}>
+          <thead>
+            <tr>
+              <th style={s.th}>Student</th>
+              <th style={s.th}>Assignment</th>
+              <th style={s.th}>Week</th>
+              <th style={s.th}>Submitted At</th>
+              <th style={s.th}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((sub, i) => (
+              <tr key={i}>
+                <td style={s.td}>
+                  {students[sub.userId] ? (
+                    <>
+                      <div style={{ fontWeight: 600 }}>{students[sub.userId].name}</div>
+                      {students[sub.userId].email && students[sub.userId].name !== students[sub.userId].email && (
+                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{students[sub.userId].email}</div>
+                      )}
+                    </>
+                  ) : (
+                    sub.userId?.slice(0, 8) + '…'
+                  )}
+                </td>
+                <td style={s.td}>
+                  <div style={{ fontWeight: 600 }}>{sub.assignmentTitle || '—'}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{sub.fileName}</div>
+                </td>
+                <td style={s.td}>{sub.weekId}</td>
+                <td style={s.td}>{new Date(sub.uploadedAt).toLocaleString()}</td>
+                <td style={s.td}>
+                  {sub.driveUrl ? (
+                    <a href={sub.driveUrl} target="_blank" rel="noreferrer" style={{ ...s.btn, textDecoration: 'none', display: 'inline-block' }}>Open ↗</a>
+                  ) : 'No Link'}
+                </td>
+              </tr>
+            ))}
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan="5" style={{ ...s.td, textAlign: 'center', color: 'var(--muted-foreground)' }}>
+                  No matches found for "{search}"
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
 // Main Admin Page
 // ────────────────────────────────────────────────────────────────────────────────
 export default function AdminPage() {
@@ -830,6 +942,7 @@ export default function AdminPage() {
           { id: 'supplemental', label: 'Supplemental Content' },
           { id: 'students', label: 'Students' },
           { id: 'progress', label: 'Progress' },
+          { id: 'submissions', label: 'Submissions' },
         ].map((t) => (
           <button
             key={t.id}
@@ -847,6 +960,7 @@ export default function AdminPage() {
         {tab === 'supplemental' && <SupplementalContentTab />}
         {tab === 'students' && <StudentsTab />}
         {tab === 'progress' && <ProgressTab />}
+        {tab === 'submissions' && <SubmissionsTab />}
       </div>
     </div>
   );

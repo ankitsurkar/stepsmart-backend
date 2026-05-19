@@ -302,6 +302,53 @@ async function getCourseProgress(courseId) {
   return res(200, { progress });
 }
 
+// GET /admin/courses/{courseId}/submissions
+async function getSubmissions(courseId) {
+  const result = await ddb.send(new ScanCommand({
+    TableName: process.env.ASSIGNMENTS_TABLE || 'lms-assignments',
+    FilterExpression: 'courseId = :cid',
+    ExpressionAttributeValues: { ':cid': courseId },
+  }));
+
+  const submissions = result.Items || [];
+
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
+
+  if (supabaseUrl && serviceRoleKey && bucket) {
+    for (const sub of submissions) {
+      if (sub.storageProvider === 'supabase' && sub.storagePath) {
+        try {
+          const signedUrlRes = await fetch(
+            `${supabaseUrl}/storage/v1/object/sign/${bucket}/${sub.storagePath}`,
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${serviceRoleKey}`,
+                apikey: serviceRoleKey,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ expiresIn: 60 * 60 * 8 }),
+            }
+          );
+          if (signedUrlRes.ok) {
+            const body = await signedUrlRes.json();
+            const rawSigned = body.signedUrl || body.signedURL || '';
+            sub.driveUrl = rawSigned.startsWith('http') ? rawSigned : `${supabaseUrl}/storage/v1${rawSigned}`;
+          }
+        } catch (err) {
+          console.error('Error generating signed URL for', sub.storagePath, err);
+        }
+      }
+    }
+  }
+
+  submissions.sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
+
+  return res(200, { submissions });
+}
+
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 exports.handler = async (event) => {
@@ -343,6 +390,9 @@ exports.handler = async (event) => {
 
     // ── Progress ──────────────────────────────────────────────────────
     if (method === 'GET' && resource === '/admin/courses/{courseId}/progress') return await getCourseProgress(courseId);
+
+    // ── Assignments ──────────────────────────────────────────────────────
+    if (method === 'GET' && resource === '/admin/courses/{courseId}/submissions') return await getSubmissions(courseId);
 
     return res(404, { message: `No handler for ${method} ${resource}` });
   } catch (err) {
