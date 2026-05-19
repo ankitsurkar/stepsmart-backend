@@ -104,7 +104,10 @@ exports.handler = async (event) => {
     );
 
     const signedUrlBody = await signedUrlRes.json();
-    const signedUrl = signedUrlBody.signedUrl ?? signedUrlBody.signedURL;
+    const rawSigned = signedUrlBody.signedUrl ?? signedUrlBody.signedURL ?? '';
+    const signedUrl = rawSigned.startsWith('http')
+      ? rawSigned
+      : `${supabaseUrl}/storage/v1${rawSigned}`;
 
     if (!signedUrlRes.ok || !signedUrl) {
       console.error('Supabase signed URL error:', signedUrlBody);
