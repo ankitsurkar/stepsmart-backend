@@ -5,11 +5,12 @@ import { getMyCourses, getCourseWeeks, getProgress } from '../utils/api';
 import AssignmentUpload from '../components/AssignmentUpload';
 
 const NAV_ITEMS = [
-  { id: 'dashboard', label: 'Dashboard' },
-  { id: 'courses', label: 'My Courses' },
-  { id: 'assignments', label: 'Assignments' },
-  { id: 'calendar', label: 'Calendar' },
-  { id: 'settings', label: 'Settings' },
+  { id: 'dashboard', label: 'Dashboard', icon: 'home' },
+  { id: 'courses', label: 'My Courses', icon: 'book' },
+  { id: 'scheduling', label: '1:1 Scheduling', icon: 'clock' },
+  { id: 'assignments', label: 'Assignments', icon: 'clipboard' },
+  { id: 'calendar', label: 'Calendar', icon: 'calendar' },
+  { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
 
 function getInitialDashboardView(searchParams) {
@@ -127,23 +128,51 @@ const s = {
     marginBottom: '1.25rem',
   },
   navButton: {
+    position: 'relative',
     border: 'none',
     textAlign: 'left',
     borderRadius: '14px',
-    padding: '0.9rem 1rem',
-    fontSize: '1rem',
+    padding: '0.84rem 1rem',
+    fontSize: '0.96rem',
     fontWeight: 600,
     color: 'rgba(255,255,255,0.78)',
     background: 'transparent',
     cursor: 'pointer',
-    transition: 'background 0.2s, color 0.2s, transform 0.2s',
+    transition: 'background 0.2s, color 0.2s',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.8rem',
   },
   navButtonActive: {
-    background: 'rgba(255,255,255,0.14)',
+    background: 'rgba(255,255,255,0.15)',
     color: '#fff',
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)',
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
+  },
+  navButtonIcon: {
+    width: '24px',
+    height: '24px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'currentColor',
+    opacity: 0.95,
+    flexShrink: 0,
+  },
+  navActiveRail: {
+    position: 'absolute',
+    left: '-1rem',
+    top: '10px',
+    bottom: '10px',
+    width: '4px',
+    borderRadius: '0 6px 6px 0',
+    background: '#fff',
   },
   sidebarSection: { position: 'relative', marginTop: 'auto' },
+  sidebarDivider: {
+    borderTop: '1px solid rgba(255,255,255,0.22)',
+    marginTop: '0.9rem',
+    marginBottom: '1.1rem',
+  },
   sidebarLabel: {
     fontSize: '0.76rem',
     letterSpacing: '0.08em',
@@ -219,6 +248,57 @@ const s = {
     lineHeight: 1.6,
     maxWidth: '780px',
   },
+  profileWrap: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.85rem',
+  },
+  profileAvatar: {
+    width: '72px',
+    height: '72px',
+    borderRadius: '50%',
+    border: '3px solid #2a9abf',
+    background: '#e9f6fb',
+    color: '#2f4657',
+    fontSize: '2rem',
+    fontWeight: 700,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textTransform: 'uppercase',
+  },
+  profileName: {
+    fontSize: '2rem',
+    fontWeight: 700,
+    color: '#111827',
+    lineHeight: 1.1,
+    marginBottom: '0.2rem',
+  },
+  profileDate: {
+    color: '#475569',
+    fontSize: '1.05rem',
+    fontWeight: 500,
+  },
+  bellWrap: {
+    marginLeft: '0.35rem',
+    width: '28px',
+    height: '28px',
+    position: 'relative',
+    color: '#334155',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bellDot: {
+    position: 'absolute',
+    right: '3px',
+    top: '3px',
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    background: '#dc2626',
+    border: '2px solid #f8fafc',
+  },
   courseTabs: { display: 'flex', flexWrap: 'wrap', gap: '0.6rem' },
   courseTab: {
     border: '1px solid var(--border)',
@@ -250,6 +330,293 @@ const s = {
     display: 'flex',
     flexDirection: 'column',
     gap: '1.25rem',
+  },
+  dashboardHero: {
+    display: 'grid',
+    gap: '1.25rem',
+    gridTemplateColumns: 'minmax(0, 1fr) 340px',
+    alignItems: 'start',
+  },
+  dashboardLeft: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.25rem',
+  },
+  dashboardRight: {
+    background: '#ffffff',
+    border: '1px solid rgba(20, 49, 86, 0.08)',
+    borderRadius: '22px',
+    padding: '1.1rem',
+    boxShadow: '0 10px 26px rgba(15, 40, 80, 0.09)',
+    position: 'sticky',
+    top: '1.25rem',
+  },
+  metricCards: {
+    display: 'grid',
+    gap: '1rem',
+    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+  },
+  ringCard: {
+    background: '#fff',
+    border: '1px solid rgba(20, 49, 86, 0.08)',
+    borderRadius: '20px',
+    padding: '1.2rem',
+    minHeight: '172px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    boxShadow: '0 8px 20px rgba(15, 40, 80, 0.06)',
+  },
+  ringCardTop: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.9rem',
+  },
+  ringWrap: {
+    width: '112px',
+    height: '112px',
+    position: 'relative',
+    flexShrink: 0,
+  },
+  ringSvg: {
+    width: '112px',
+    height: '112px',
+    transform: 'rotate(-90deg)',
+  },
+  ringValue: {
+    position: 'absolute',
+    inset: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '2.1rem',
+    fontWeight: 800,
+    letterSpacing: '-0.03em',
+    color: '#0f172a',
+  },
+  ringText: {
+    fontSize: '2rem',
+    lineHeight: 1.1,
+    fontWeight: 800,
+    color: '#0f172a',
+  },
+  ringLabel: {
+    fontSize: '2rem',
+    lineHeight: 1.1,
+    fontWeight: 800,
+    color: '#0f172a',
+  },
+  ringSub: {
+    color: '#334155',
+    fontSize: '0.88rem',
+    fontWeight: 600,
+  },
+  scoreCard: {
+    background: '#fff',
+    border: '1px solid rgba(20, 49, 86, 0.08)',
+    borderRadius: '20px',
+    padding: '1.2rem',
+    minHeight: '172px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    boxShadow: '0 8px 20px rgba(15, 40, 80, 0.06)',
+  },
+  scoreRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.65rem',
+    marginBottom: '0.3rem',
+  },
+  scoreValue: {
+    fontSize: '3rem',
+    fontWeight: 800,
+    lineHeight: 1,
+    color: '#0f172a',
+  },
+  scoreLabel: {
+    textAlign: 'center',
+    color: '#111827',
+    fontSize: '0.9rem',
+    fontWeight: 600,
+  },
+  continueCard: {
+    background: 'linear-gradient(180deg, #f4fbff 0%, #f5fbff 100%)',
+    border: '1px solid rgba(20, 49, 86, 0.11)',
+    borderRadius: '22px',
+    padding: '1.5rem',
+    boxShadow: '0 10px 26px rgba(15, 40, 80, 0.08)',
+  },
+  activeCourse: {
+    color: '#1f2937',
+    fontSize: '0.92rem',
+    fontWeight: 700,
+    letterSpacing: '0.01em',
+    marginBottom: '0.9rem',
+  },
+  continueTitle: {
+    color: '#0f172a',
+    fontSize: '1.8rem',
+    fontWeight: 800,
+    letterSpacing: '-0.02em',
+    marginBottom: '1rem',
+  },
+  segmentedTrack: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+    gap: '0.32rem',
+    marginBottom: '1.1rem',
+  },
+  segmentedBar: {
+    height: '10px',
+    borderRadius: '999px',
+    background: '#d3e2ea',
+    overflow: 'hidden',
+  },
+  segmentedFill: {
+    height: '100%',
+    borderRadius: '999px',
+    background: '#1786ad',
+  },
+  resumeButton: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.55rem',
+    border: 'none',
+    borderRadius: '14px',
+    padding: '0.88rem 1.3rem',
+    background: 'linear-gradient(180deg, #1388b0 0%, #0f789e 100%)',
+    color: '#fff',
+    fontSize: '1.05rem',
+    fontWeight: 800,
+    cursor: 'pointer',
+    textDecoration: 'none',
+    letterSpacing: '0.01em',
+  },
+  upNext: {
+    marginTop: '0.9rem',
+    color: '#334155',
+    fontSize: '0.95rem',
+    fontWeight: 600,
+  },
+  railHeaderTitle: {
+    color: '#111827',
+    fontSize: '1.85rem',
+    fontWeight: 900,
+    letterSpacing: '-0.03em',
+    lineHeight: 1,
+    marginBottom: '0.5rem',
+  },
+  railHeaderSub: {
+    color: '#334155',
+    fontSize: '0.95rem',
+    lineHeight: 1.4,
+    marginBottom: '1rem',
+  },
+  rankCard: {
+    background: '#ecf9ff',
+    border: '1px solid rgba(20, 49, 86, 0.1)',
+    borderRadius: '14px',
+    padding: '0.8rem',
+    marginBottom: '0.9rem',
+  },
+  rankLabel: {
+    color: '#2f4455',
+    fontSize: '0.72rem',
+    fontWeight: 800,
+    letterSpacing: '0.06em',
+    marginBottom: '0.35rem',
+  },
+  rankRow: {
+    display: 'grid',
+    gridTemplateColumns: '52px minmax(0, 1fr) auto',
+    alignItems: 'center',
+    gap: '0.55rem',
+  },
+  rankAvatar: {
+    width: '48px',
+    height: '48px',
+    borderRadius: '50%',
+    border: '2px solid #d4ecf6',
+    background: '#f8fafc',
+    color: '#1f2937',
+    fontWeight: 800,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.05rem',
+  },
+  rankName: {
+    color: '#111827',
+    fontWeight: 800,
+    fontSize: '1rem',
+    lineHeight: 1.2,
+  },
+  rankNoLabel: {
+    color: '#1f2937',
+    fontSize: '0.72rem',
+    fontWeight: 800,
+    letterSpacing: '0.04em',
+    textAlign: 'right',
+  },
+  rankNo: {
+    color: '#0f172a',
+    fontWeight: 900,
+    fontSize: '2.15rem',
+    lineHeight: 1,
+    textAlign: 'right',
+  },
+  railList: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  railRow: {
+    display: 'grid',
+    gridTemplateColumns: '52px minmax(0, 1fr) auto',
+    alignItems: 'center',
+    gap: '0.55rem',
+    padding: '0.8rem 0',
+    borderBottom: '1px solid rgba(20, 49, 86, 0.09)',
+  },
+  railAvatar: {
+    width: '48px',
+    height: '48px',
+    borderRadius: '50%',
+    background: '#e7edf1',
+    border: '3px solid #dbe6ec',
+    color: '#335166',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.15rem',
+    fontWeight: 800,
+  },
+  railName: {
+    fontSize: '0.98rem',
+    fontWeight: 800,
+    color: '#0f172a',
+    marginBottom: '0.08rem',
+    lineHeight: 1.2,
+  },
+  railMeta: {
+    fontSize: '0.82rem',
+    color: '#334155',
+    fontWeight: 600,
+  },
+  railScoreValue: {
+    fontSize: '2.3rem',
+    fontWeight: 900,
+    lineHeight: 1,
+    color: '#0f172a',
+    textAlign: 'right',
+  },
+  railScoreLabel: {
+    fontSize: '0.74rem',
+    fontWeight: 700,
+    color: '#334155',
+    textAlign: 'right',
+    letterSpacing: '0.04em',
   },
   statsGrid: {
     display: 'grid',
@@ -903,12 +1270,20 @@ function formatDateLabel() {
   try {
     return new Intl.DateTimeFormat('en-IN', {
       weekday: 'long',
-      month: 'long',
       day: 'numeric',
+      month: 'short',
     }).format(new Date());
   } catch {
     return 'Today';
   }
+}
+
+function getInitials(name) {
+  const value = (name || '').trim();
+  if (!value) return 'S';
+  const tokens = value.split(/\s+/).filter(Boolean);
+  if (tokens.length === 1) return tokens[0].slice(0, 2).toUpperCase();
+  return `${tokens[0][0] || ''}${tokens[tokens.length - 1][0] || ''}`.toUpperCase();
 }
 
 function toDateKey(date) {
@@ -1095,6 +1470,80 @@ function StatusBadge({ status }) {
   return <span style={{ ...s.badge, background: bg, color }}>{label}</span>;
 }
 
+function SidebarIcon({ kind }) {
+  const common = { width: 21, height: 21, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' };
+
+  if (kind === 'home') {
+    return (
+      <svg {...common}>
+        <path d="M3 10.5 12 3l9 7.5" />
+        <path d="M5.5 9.5V21h13V9.5" />
+        <path d="M9.5 21v-6h5v6" />
+      </svg>
+    );
+  }
+  if (kind === 'book') {
+    return (
+      <svg {...common}>
+        <path d="M3 5.5c0-1.1.9-2 2-2h6v16H5a2 2 0 0 0-2 2z" />
+        <path d="M21 5.5c0-1.1-.9-2-2-2h-6v16h6a2 2 0 0 1 2 2z" />
+      </svg>
+    );
+  }
+  if (kind === 'clock') {
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </svg>
+    );
+  }
+  if (kind === 'clipboard') {
+    return (
+      <svg {...common}>
+        <rect x="5" y="4" width="14" height="17" rx="2" />
+        <path d="M9 4.5h6v3H9z" />
+      </svg>
+    );
+  }
+  if (kind === 'calendar') {
+    return (
+      <svg {...common}>
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <path d="M16 3v4M8 3v4M3 10h18" />
+      </svg>
+    );
+  }
+  return (
+    <svg {...common}>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1 1 0 0 0 .2 1.1l.1.1a1 1 0 0 1 0 1.4l-1.1 1.1a1 1 0 0 1-1.4 0l-.1-.1a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9V20a1 1 0 0 1-1 1h-1.6a1 1 0 0 1-1-1v-.2a1 1 0 0 0-.6-.9 1 1 0 0 0-1.1.2l-.1.1a1 1 0 0 1-1.4 0L4.2 18a1 1 0 0 1 0-1.4l.1-.1a1 1 0 0 0 .2-1.1 1 1 0 0 0-.9-.6H3.4a1 1 0 0 1-1-1v-1.6a1 1 0 0 1 1-1h.2a1 1 0 0 0 .9-.6 1 1 0 0 0-.2-1.1l-.1-.1a1 1 0 0 1 0-1.4l1.1-1.1a1 1 0 0 1 1.4 0l.1.1a1 1 0 0 0 1.1.2 1 1 0 0 0 .6-.9V4a1 1 0 0 1 1-1h1.6a1 1 0 0 1 1 1v.2a1 1 0 0 0 .6.9 1 1 0 0 0 1.1-.2l.1-.1a1 1 0 0 1 1.4 0l1.1 1.1a1 1 0 0 1 0 1.4l-.1.1a1 1 0 0 0-.2 1.1 1 1 0 0 0 .9.6h.2a1 1 0 0 1 1 1v1.6a1 1 0 0 1-1 1h-.2a1 1 0 0 0-.9.6z" />
+    </svg>
+  );
+}
+
+function BellIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 18H5a1 1 0 0 1-.8-1.6c1-1.4 1.8-3.2 1.8-5V9a6 6 0 1 1 12 0v2.8c0 1.8.7 3.6 1.7 5a1 1 0 0 1-.8 1.6h-4" />
+      <path d="M9.5 18a2.5 2.5 0 0 0 5 0" />
+    </svg>
+  );
+}
+
+function TrophyIcon() {
+  return (
+    <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#334155" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 21h8" />
+      <path d="M12 17v4" />
+      <path d="M7 4h10v4a5 5 0 0 1-10 0z" />
+      <path d="M5 6H3v2a3 3 0 0 0 3 3h1" />
+      <path d="M19 6h2v2a3 3 0 0 1-3 3h-1" />
+      <path d="M9.5 11.5a4.7 4.7 0 0 0 5 0" />
+    </svg>
+  );
+}
+
 function ProgressTrack({ percent, color, compact }) {
   return (
     <div style={{ ...s.progressRail, marginTop: compact ? 0 : s.progressRail.marginTop }}>
@@ -1107,6 +1556,81 @@ function ProgressTrack({ percent, color, compact }) {
           transition: 'width 0.35s ease',
         }}
       />
+    </div>
+  );
+}
+
+function RingMetricCard({ value, label, sublabel, percent, ringColor, trackColor }) {
+  const safePercent = Math.max(0, Math.min(percent || 0, 100));
+  const radius = 50;
+  const circumference = 2 * Math.PI * radius;
+  const dashOffset = circumference * (1 - safePercent / 100);
+
+  return (
+    <div style={s.ringCard}>
+      <div style={s.ringCardTop}>
+        <div style={s.ringWrap}>
+          <svg style={s.ringSvg} viewBox="0 0 112 112">
+            <circle cx="56" cy="56" r={radius} stroke={trackColor} strokeWidth="11" fill="none" />
+            <circle
+              cx="56"
+              cy="56"
+              r={radius}
+              stroke={ringColor}
+              strokeWidth="11"
+              fill="none"
+              strokeDasharray={circumference}
+              strokeDashoffset={dashOffset}
+              strokeLinecap="round"
+              style={{ transition: 'stroke-dashoffset 0.35s ease' }}
+            />
+          </svg>
+          <div style={s.ringValue}>{value}</div>
+        </div>
+        <div style={s.ringSub}>{label}</div>
+      </div>
+      <div style={s.ringSub}>{sublabel}</div>
+    </div>
+  );
+}
+
+function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
+  const current = me || null;
+
+  return (
+    <div style={{ ...s.dashboardRight, position: isCompact ? 'static' : s.dashboardRight.position }}>
+      <div style={s.railHeaderTitle}>Cohort Leaderboard</div>
+      <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
+
+      <div style={s.rankCard}>
+        <div style={s.rankLabel}>YOUR RANK</div>
+        <div style={s.rankRow}>
+          <div style={s.rankAvatar}>{getInitials(current?.displayName || displayName)}</div>
+          <div style={s.rankName}>{current?.displayName || displayName}</div>
+          <div>
+            <div style={s.rankNoLabel}>RANK</div>
+            <div style={s.rankNo}>#{current?.rank || '-'}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={s.railList}>
+        {rows.map((entry) => (
+          <div key={entry.userId} style={s.railRow}>
+            <div style={s.railAvatar}>{getInitials(entry.displayName)}</div>
+            <div>
+              <div style={s.railName}>{entry.displayName}</div>
+              <div style={s.railMeta}>
+                {entry.completedLectures} L / {entry.assignmentsSubmitted} A
+              </div>
+            </div>
+            <div>
+              <div style={s.railScoreValue}>{entry.totalPoints}</div>
+              <div style={s.railScoreLabel}>SCORE</div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -1516,21 +2040,6 @@ export default function DashboardPage() {
     gridTemplateColumns: isCompact ? '1fr' : '250px minmax(0, 1fr)',
   };
 
-  const sectionGridStyle = {
-    ...s.sectionGrid,
-    gridTemplateColumns: isCompact ? '1fr' : 'minmax(0, 1.35fr) minmax(280px, 0.95fr)',
-  };
-
-  const dashboardCardsGridStyle = {
-    ...s.sectionGrid,
-    gridTemplateColumns: isCompact ? '1fr' : 'repeat(2, minmax(0, 1fr))',
-  };
-
-  const dashboardLayoutStyle = {
-    ...s.dashboardLayout,
-    gridTemplateColumns: isCompact ? '1fr' : 'minmax(0, 1fr) 320px',
-  };
-
   const sidebarStyle = {
     ...s.sidebar,
     minHeight: isCompact ? 'auto' : '100vh',
@@ -1544,105 +2053,141 @@ export default function DashboardPage() {
   };
 
   function renderDashboardView() {
+    const assignmentsTotal = courseAssignments.length;
+    const courseScore = myLeaderboardEntry?.totalPoints || 0;
+    const continueLesson = activeLesson || upcomingLesson || null;
+    const continueLessonPercent = continueLesson
+      ? getLessonProgressPercent(continueLesson, progressMap[continueLesson.weekId])
+      : 0;
+    const leaderboardList = topLeaderboard.filter((entry) => !entry.isCurrentUser).slice(0, 6);
+    const activeCourseLine = activeCourse?.name
+      ? `ACTIVE COURSE: ${activeCourse.name}${currentGroup ? ` (Week ${currentGroup.groupNumber})` : ''}`
+      : 'ACTIVE COURSE: Not assigned yet';
+
     return (
-      <div style={dashboardLayoutStyle}>
-        <div style={s.dashboardMain}>
-          <div style={s.statsGrid}>
-            <StatCard
-              label="Lessons Completed"
+      <div
+        style={{
+          ...s.dashboardHero,
+          gridTemplateColumns: isCompact ? '1fr' : s.dashboardHero.gridTemplateColumns,
+        }}
+      >
+        <div style={s.dashboardLeft}>
+          <div
+            style={{
+              ...s.metricCards,
+              gridTemplateColumns: isCompact ? '1fr' : s.metricCards.gridTemplateColumns,
+            }}
+          >
+            <RingMetricCard
               value={completedCount}
-              detail={`${weeks.length} lessons available in this course`}
-              accent="var(--primary)"
-              progress={progressPercent}
-              progressColor="var(--primary)"
+              label="lessons completed"
+              sublabel={`${weeks.length} lessons total`}
+              percent={weeks.length > 0 ? (completedCount / weeks.length) * 100 : 0}
+              ringColor="#1f8bb1"
+              trackColor="#d8e9f2"
             />
-            <StatCard
-              label="Assignments Submitted"
+            <RingMetricCard
               value={assignmentsSubmittedCount}
-              detail={`${remainingCount} lesson${remainingCount === 1 ? '' : 's'} still remaining`}
-              accent="hsl(38, 81%, 46%)"
+              label="assignments submitted"
+              sublabel={`${assignmentsTotal} total assignments`}
+              percent={assignmentsTotal > 0 ? (assignmentsSubmittedCount / assignmentsTotal) * 100 : 0}
+              ringColor="#df9718"
+              trackColor="#f3e5cf"
             />
-            <StatCard
-              label="Course Progress"
-              value={`${progressPercent}%`}
-              detail={activeCourse?.name || 'Current course'}
-              accent="var(--success)"
-              progress={progressPercent}
-              progressColor="var(--success)"
-            />
+            <div style={s.scoreCard}>
+              <div style={s.scoreRow}>
+                <TrophyIcon />
+                <div style={s.scoreValue}>{courseScore}</div>
+              </div>
+              <div style={s.scoreLabel}>Course Score</div>
+            </div>
           </div>
 
-          <div style={dashboardCardsGridStyle}>
-            <div style={s.card}>
-              <div style={s.panelHeader}>
-                <div>
-                  <div style={s.sectionTitle}>Today&apos;s Focus</div>
-                  <div style={s.sectionMeta}>{currentDateLabel}</div>
-                </div>
-              </div>
-
-              {focusItems.length === 0 ? (
-                <div style={s.empty}>You&apos;re all caught up for now. New lessons will appear in My Courses.</div>
-              ) : (
-                <div style={s.focusList}>
-                  {focusItems.slice(0, 3).map((item) => (
-                    <FocusItem key={`${item.title}-${item.subtitle}`} item={item} />
-                  ))}
-                </div>
-              )}
+          <div style={s.continueCard}>
+            <div style={s.activeCourse}>{activeCourseLine}</div>
+            <div style={{ ...s.headerEyebrow, marginBottom: '0.5rem', color: '#0f172a' }}>
+              Continue Learning
+            </div>
+            <div style={s.continueTitle}>
+              {continueLesson
+                ? `${continueLesson.displayWeekNumber} • ${continueLesson.title}`
+                : 'No lesson available yet'}
             </div>
 
-            <div style={s.card}>
-              <div style={s.panelHeader}>
-                <div>
-                  <div style={s.sectionTitle}>Course Snapshot</div>
-                </div>
-              </div>
+            <div style={s.segmentedTrack}>
+              {Array.from({ length: 5 }, (_, index) => {
+                const segmentPercent = Math.max(
+                  0,
+                  Math.min(100, (continueLessonPercent - (index * 20)) * 5),
+                );
+                return (
+                  <div key={index} style={s.segmentedBar}>
+                    <div style={{ ...s.segmentedFill, width: `${segmentPercent}%` }} />
+                  </div>
+                );
+              })}
+            </div>
 
-              <div style={s.snapshotRows}>
-                <div style={s.snapshotRow}>
-                  <div style={s.snapshotLabel}>Active course</div>
-                  <div style={s.snapshotValue}>{activeCourse?.name || 'No course assigned'}</div>
-                </div>
-                <div style={s.snapshotRow}>
-                  <div style={s.snapshotLabel}>Current week group</div>
-                  <div style={s.snapshotValue}>{currentGroup ? `Week ${currentGroup.groupNumber}` : 'Not started'}</div>
-                </div>
-                <div style={s.snapshotRow}>
-                  <div style={s.snapshotLabel}>Assignments submitted</div>
-                  <div style={s.snapshotValue}>{assignmentsSubmittedCount}</div>
-                </div>
-                <div style={{ ...s.snapshotRow, borderBottom: 'none', paddingBottom: 0 }}>
-                  <div style={s.snapshotLabel}>Points earned</div>
-                  <div style={s.snapshotValue}>{myLeaderboardEntry?.totalPoints || 0}</div>
-                </div>
-              </div>
-
-              <button type="button" style={s.primaryAction} onClick={() => setActiveView('courses')}>
-                Open My Courses
+            {continueLesson ? (
+              <Link
+                to={`/learn/${continueLesson.courseId}/${continueLesson.weekId}`}
+                style={s.resumeButton}
+              >
+                <span>▶</span>
+                <span>Resume Lesson</span>
+              </Link>
+            ) : (
+              <button type="button" style={{ ...s.resumeButton, opacity: 0.55 }} disabled>
+                <span>▶</span>
+                <span>Resume Lesson</span>
               </button>
+            )}
+
+            <div style={s.upNext}>
+              Up next:{' '}
+              {upcomingLesson
+                ? `${upcomingLesson.displayWeekNumber} • ${upcomingLesson.title}`
+                : continueLesson
+                  ? `${continueLesson.displayWeekNumber} • ${continueLesson.title}`
+                  : 'No upcoming lesson yet'}
             </div>
           </div>
         </div>
 
-        <div style={{ ...s.card, position: isCompact ? 'static' : 'sticky', top: '1.25rem' }}>
-          <div style={s.panelHeader}>
-            <div>
-              <div style={s.sectionTitle}>Leaderboard</div>
-              <div style={s.sectionMeta}>Track how you&apos;re performing against the cohort.</div>
-            </div>
-          </div>
-
-          {topLeaderboard.length === 0 ? (
+        {topLeaderboard.length === 0 ? (
+          <div style={s.dashboardRight}>
+            <div style={s.railHeaderTitle}>Cohort Leaderboard</div>
+            <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
             <div style={s.empty}>Leaderboard points will appear after lessons and assignments are completed.</div>
-          ) : (
-            <div style={s.leaderboardList}>
-              {topLeaderboard.map((entry) => (
-                <LeaderboardRow key={entry.userId} entry={entry} />
-              ))}
-            </div>
-          )}
+          </div>
+        ) : (
+          <DashboardLeaderboard
+            me={myLeaderboardEntry}
+            rows={leaderboardList.length > 0 ? leaderboardList : topLeaderboard.slice(0, 6)}
+            displayName={displayName}
+            isCompact={isCompact}
+          />
+        )}
+      </div>
+    );
+  }
+
+  function renderSchedulingView() {
+    return (
+      <div style={s.card}>
+        <div style={s.panelHeader}>
+          <div>
+            <div style={s.sectionTitle}>1:1 Scheduling</div>
+            <div style={s.sectionMeta}>Schedule links and mentor slots will appear here.</div>
+          </div>
         </div>
+        {qaLesson ? (
+          <a href={qaLesson.qaLink} target="_blank" rel="noopener noreferrer" style={s.primaryAction}>
+            Open Q&amp;A Booking
+          </a>
+        ) : (
+          <div style={s.empty}>No scheduling link is available yet for your completed lessons.</div>
+        )}
       </div>
     );
   }
@@ -2020,7 +2565,7 @@ export default function DashboardPage() {
 
   let viewEyebrow = 'Student Dashboard';
   let viewTitle = `Welcome back, ${displayName}`;
-  let viewSubtitle = `${activeCourse?.name || 'Your course'} • Track your progress, next actions, and personal performance in one place.`;
+  let viewSubtitle = '';
 
   if (activeView === 'courses') {
     viewEyebrow = 'My Courses';
@@ -2032,6 +2577,12 @@ export default function DashboardPage() {
     viewEyebrow = 'Calendar';
     viewTitle = 'Learning Calendar';
     viewSubtitle = 'Find your upcoming lectures.';
+  }
+
+  if (activeView === 'scheduling') {
+    viewEyebrow = '1:1 Scheduling';
+    viewTitle = 'Book Your Mentoring Session';
+    viewSubtitle = 'Access your live booking links and scheduling updates.';
   }
 
   if (activeView === 'assignments') {
@@ -2068,12 +2619,17 @@ export default function DashboardPage() {
                 }}
                 onClick={() => setActiveView(item.id)}
               >
+                {activeView === item.id && <span style={s.navActiveRail} />}
+                <span style={s.navButtonIcon}>
+                  <SidebarIcon kind={item.icon} />
+                </span>
                 {item.label}
               </button>
             ))}
           </div>
 
           <div style={s.sidebarSection}>
+            <div style={s.sidebarDivider} />
             {isAdmin && (
               <Link to="/admin" style={s.adminLink}>
                 Open Admin
@@ -2091,10 +2647,22 @@ export default function DashboardPage() {
             <div>
               <div style={s.headerEyebrow}>{viewEyebrow}</div>
               <div style={s.headerTitle}>{viewTitle}</div>
-              <div style={s.headerSub}>{viewSubtitle}</div>
+              {viewSubtitle && <div style={s.headerSub}>{viewSubtitle}</div>}
             </div>
 
-            {courses.length > 1 && (
+            {activeView === 'dashboard' ? (
+              <div style={s.profileWrap}>
+                <div style={s.profileAvatar}>{getInitials(displayName)}</div>
+                <div>
+                  <div style={s.profileName}>{displayName}</div>
+                  <div style={s.profileDate}>{currentDateLabel}</div>
+                </div>
+                <div style={s.bellWrap}>
+                  <BellIcon />
+                  <span style={s.bellDot} />
+                </div>
+              </div>
+            ) : courses.length > 1 ? (
               <div style={s.courseTabs}>
                 {courses.map((course) => (
                   <button
@@ -2110,11 +2678,12 @@ export default function DashboardPage() {
                   </button>
                 ))}
               </div>
-            )}
+            ) : null}
           </div>
 
           {activeView === 'dashboard' && renderDashboardView()}
           {activeView === 'courses' && renderCoursesView()}
+          {activeView === 'scheduling' && renderSchedulingView()}
           {activeView === 'assignments' && renderAssignmentsView()}
           {activeView === 'calendar' && renderCalendarView()}
           {activeView === 'settings' && renderSettingsView()}
