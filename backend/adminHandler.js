@@ -50,9 +50,11 @@ const USER_POOL_ID = process.env.USER_POOL_ID || '';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
 const SUPPLEMENTAL_SK = 'SUPPLEMENTAL#GLOBAL';
 
+let currentOrigin = FRONTEND_URL;
+
 function corsHeaders() {
   return {
-    'Access-Control-Allow-Origin': FRONTEND_URL,
+    'Access-Control-Allow-Origin': currentOrigin,
     'Access-Control-Allow-Headers': 'Content-Type,Authorization',
     'Access-Control-Allow-Methods': 'GET,POST,PATCH,DELETE,OPTIONS',
   };
@@ -305,7 +307,7 @@ async function getCourseProgress(courseId) {
 // GET /admin/courses/{courseId}/submissions
 async function getSubmissions(courseId) {
   const result = await ddb.send(new ScanCommand({
-    TableName: process.env.ASSIGNMENTS_TABLE || 'lms-assignments',
+    TableName: process.env.ASSIGNMENTS_TABLE || process.env.ASSIGNMENT_TABLE || 'lms-assignments',
     FilterExpression: 'courseId = :cid',
     ExpressionAttributeValues: { ':cid': courseId },
   }));
@@ -352,6 +354,7 @@ async function getSubmissions(courseId) {
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 exports.handler = async (event) => {
+  currentOrigin = event?.headers?.origin || event?.headers?.Origin || FRONTEND_URL;
   if (event.httpMethod === 'OPTIONS') return res(200, {});
 
   // Layer 2 admin check — even if React's AdminRoute is bypassed, this rejects non-admins.
