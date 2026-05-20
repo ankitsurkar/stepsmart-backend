@@ -10,16 +10,18 @@ const cognito = new CognitoIdentityProviderClient({ region: process.env.AWS_REGI
 
 const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
 const PROGRESS_TABLE = process.env.PROGRESS_TABLE || 'lms-progress';
-const ASSIGNMENTS_TABLE = process.env.ASSIGNMENTS_TABLE || 'lms-assignments';
+const ASSIGNMENTS_TABLE = process.env.ASSIGNMENTS_TABLE || process.env.ASSIGNMENT_TABLE || 'lms-assignments';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
 const PASSING_PCT = 70;
 const HEARTBEAT_INTERVAL = 10;
 const COMPLETION_THRESHOLD = 0.9;
 const SUPPLEMENTAL_SK = 'SUPPLEMENTAL#GLOBAL';
 
+let currentOrigin = FRONTEND_URL;
+
 function corsHeaders() {
   return {
-    'Access-Control-Allow-Origin': FRONTEND_URL,
+    'Access-Control-Allow-Origin': currentOrigin,
     'Access-Control-Allow-Headers': 'Content-Type,Authorization',
     'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
   };
@@ -517,6 +519,7 @@ async function submitQuizAttempt(userId, body) {
 }
 
 exports.handler = async (event) => {
+  currentOrigin = event?.headers?.origin || event?.headers?.Origin || FRONTEND_URL;
   if (event.httpMethod === 'OPTIONS') return res(200, {});
 
   const userId = event.requestContext?.authorizer?.claims?.sub;
