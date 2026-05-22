@@ -61,6 +61,57 @@ async function listMyCourses() {
   return res(200, { courses });
 }
 
+async function signRecordedSessions(sessions) {
+  if (!Array.isArray(sessions) || sessions.length === 0) return sessions;
+
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
+
+  if (!supabaseUrl || !serviceRoleKey || !bucket) {
+    console.warn('Supabase storage credentials not fully configured for signing.');
+    return sessions;
+  }
+
+  const signedSessions = [];
+  for (const session of sessions) {
+    if (session.storageProvider === 'supabase' && session.storagePath) {
+      try {
+        const signedUrlRes = await fetch(
+          `${supabaseUrl}/storage/v1/object/sign/${bucket}/${session.storagePath}`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${serviceRoleKey}`,
+              apikey: serviceRoleKey,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ expiresIn: 60 * 60 * 8 }),
+          }
+        );
+        if (signedUrlRes.ok) {
+          const resBody = await signedUrlRes.json();
+          const rawSigned = resBody.signedUrl || resBody.signedURL || '';
+          const fullSignedUrl = rawSigned.startsWith('http')
+            ? rawSigned
+            : `${supabaseUrl}/storage/v1${rawSigned}`;
+          signedSessions.push({
+            ...session,
+            url: fullSignedUrl,
+          });
+          continue;
+        } else {
+          console.error(`Supabase returned status ${signedUrlRes.status} for signing path ${session.storagePath}`);
+        }
+      } catch (err) {
+        console.error('Error generating signed URL for session path:', session.storagePath, err);
+      }
+    }
+    signedSessions.push(session);
+  }
+  return signedSessions;
+}
+
 async function getSupplementalContent(courseId) {
   try {
     const result = await ddb.send(new GetCommand({
@@ -68,9 +119,12 @@ async function getSupplementalContent(courseId) {
       Key: { pk: `COURSE#${courseId}`, sk: SUPPLEMENTAL_SK },
     }));
     const item = result.Item || {};
+    const rawSessions = Array.isArray(item.liveRecordedSessions) ? item.liveRecordedSessions : [];
+    const signedSessions = await signRecordedSessions(rawSessions);
+
     return {
       assignments: Array.isArray(item.assignments) ? item.assignments : [],
-      liveRecordedSessions: Array.isArray(item.liveRecordedSessions) ? item.liveRecordedSessions : [],
+      liveRecordedSessions: signedSessions,
       calendarEvents: Array.isArray(item.calendarEvents) ? item.calendarEvents : [],
     };
   } catch (err) {

@@ -1305,7 +1305,7 @@ function RecordedSessionCard({ session, isCompact }) {
 
       <div style={{ justifySelf: isCompact ? 'start' : 'end' }}>
         <span style={{ ...s.badge, background: 'var(--accent)', color: 'var(--accent-foreground)' }}>
-          {session.url ? 'Open Recording' : 'Coming Soon'}
+          {session.url ? 'Watch Video' : 'Coming Soon'}
         </span>
       </div>
     </>
@@ -1325,17 +1325,15 @@ function RecordedSessionCard({ session, isCompact }) {
   }
 
   return (
-    <a
-      href={session.url}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      to={`/learn/${session.courseId}/${session.id}`}
       style={{
         ...s.lessonCard,
         gridTemplateColumns: isCompact ? '1fr' : s.lessonCard.gridTemplateColumns,
       }}
     >
       {content}
-    </a>
+    </Link>
   );
 }
 

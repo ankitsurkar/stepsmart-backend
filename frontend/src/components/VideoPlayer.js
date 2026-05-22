@@ -130,7 +130,9 @@ const s = {
   },
 };
 
-export default function VideoPlayer({ videoId, courseId, weekId, initialProgress, onVideoComplete, onQuizUnlock }) {
+export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initialProgress, onVideoComplete, onQuizUnlock }) {
+  const isHtml5 = !!videoUrl;
+  const nativeVideoRef = useRef(null);
   const playerRef = useRef(null);
   const playerInstanceRef = useRef(null);
   const wrapperRef = useRef(null);
@@ -138,16 +140,16 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   const watchedSegmentsRef = useRef(new Set());
   const heartbeatTimerRef = useRef(null);
   const uiTimerRef = useRef(null);
-  const lastHeartbeatTimeRef = useRef(0);  // video-time (seconds) at last heartbeat
-  const fireHeartbeatRef   = useRef(null);  // always points to the latest heartbeat logic
-  const onStateChangeRef   = useRef(null);  // always points to the latest state-change handler
-  const quizUnlockedRef    = useRef(false); // fired once when pct hits 50%
+  const lastHeartbeatTimeRef = useRef(0);
+  const fireHeartbeatRef   = useRef(null);
+  const onStateChangeRef   = useRef(null);
+  const quizUnlockedRef    = useRef(false);
   const playbackRateRef    = useRef(1);
   const wasPlayingBeforeScrubRef = useRef(false);
   const activePointerIdRef = useRef(null);
   const playerRecoveryCountRef = useRef(0);
+  const isScrubbingRef = useRef(false);
 
-  // Resume position: last watched segment converted to seconds, computed once at mount.
   const resumeTimeRef = useRef(
     initialProgress?.watchedSegments?.length > 0
       ? Math.max(...initialProgress.watchedSegments) * HEARTBEAT_INTERVAL
@@ -163,10 +165,11 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   const [duration, setDuration] = useState(initialProgress?.duration || 0);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [playerNonce, setPlayerNonce] = useState(0);
-
-  // If the user already completed the video on a previous visit, custom seeking is allowed.
-  // We only set this to true initially, or mid-session when the lesson is marked complete.
   const [seekAllowed, setSeekAllowed] = useState(initialProgress?.videoComplete === true);
+
+  useEffect(() => {
+    isScrubbingRef.current = isScrubbing;
+  }, [isScrubbing]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -180,7 +183,6 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     };
   }, []);
 
-  // Hydrate from server progress on mount
   useEffect(() => {
     if (initialProgress?.watchedSegments) {
       watchedSegmentsRef.current = new Set(initialProgress.watchedSegments);
@@ -201,6 +203,7 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   }, [initialProgress]);
 
   useEffect(() => {
+    if (isHtml5) return undefined;
     let cancelled = false;
     const bootPlayer = () => {
       let startTime = resumeTimeRef.current;
@@ -213,9 +216,7 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
           startTime = existingPlayer.getCurrentTime() || startTime;
           shouldAutoPlay = existingPlayer.getPlayerState() === 1;
           currentRate = existingPlayer.getPlaybackRate?.() || currentRate;
-        } catch {
-          // If the player is not ready yet, fall back to the last known values.
-        }
+        } catch {}
         stopHeartbeat();
         clearInterval(uiTimerRef.current);
         existingPlayer.destroy();
@@ -232,7 +233,87 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     return () => {
       cancelled = true;
     };
-  }, [videoId, playerNonce]);
+  }, [videoId, playerNonce, isHtml5]);
+
+  useEffect(() => {
+    if (!isHtml5) return undefined;
+    const video = nativeVideoRef.current;
+    if (!video) return undefined;
+
+    const onPlay = () => {
+      setIsPlaying(true);
+      lastHeartbeatTimeRef.current = Math.floor(video.currentTime);
+      startHeartbeat();
+      startUiTimer();
+    };
+
+    const onPause = () => {
+      setIsPlaying(false);
+      stopHeartbeat();
+      stopUiTimer();
+      syncTimelineState();
+    };
+
+    const onEnded = () => {
+      setIsPlaying(false);
+      const dur = Math.floor(video.duration);
+      if (dur) {
+        const totalSegments = Math.ceil(dur / HEARTBEAT_INTERVAL);
+        const startSeg = Math.floor(lastHeartbeatTimeRef.current / HEARTBEAT_INTERVAL);
+        for (let seg = startSeg; seg < totalSegments; seg++) {
+          watchedSegmentsRef.current.add(seg);
+        }
+        const pct = Math.min(Math.round((watchedSegmentsRef.current.size / totalSegments) * 100), 100);
+        setCompletionPct(pct);
+        checkAndMarkComplete(pct);
+        syncTimelineState(dur, dur);
+      }
+      stopHeartbeat();
+      stopUiTimer();
+    };
+
+    const onDurationChange = () => {
+      syncTimelineState();
+    };
+
+    const onTimeUpdate = () => {
+      if (!isScrubbingRef.current) {
+        setCurrentTime(video.currentTime);
+      }
+    };
+
+    video.addEventListener('play', onPlay);
+    video.addEventListener('pause', onPause);
+    video.addEventListener('ended', onEnded);
+    video.addEventListener('durationchange', onDurationChange);
+    video.addEventListener('timeupdate', onTimeUpdate);
+
+    if (video.duration) {
+      setDuration(video.duration);
+    }
+    video.playbackRate = playbackRateRef.current;
+
+    const handleLoadedMetadata = () => {
+      if (resumeTimeRef.current > 0) {
+        video.currentTime = resumeTimeRef.current;
+      }
+      setDuration(video.duration);
+    };
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    
+    if (video.readyState >= 1) {
+      handleLoadedMetadata();
+    }
+
+    return () => {
+      video.removeEventListener('play', onPlay);
+      video.removeEventListener('pause', onPause);
+      video.removeEventListener('ended', onEnded);
+      video.removeEventListener('durationchange', onDurationChange);
+      video.removeEventListener('timeupdate', onTimeUpdate);
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+    };
+  }, [videoUrl, isHtml5]);
 
   useEffect(() => () => {
     clearInterval(heartbeatTimerRef.current);
@@ -249,7 +330,7 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
 
   useEffect(() => {
     playerRecoveryCountRef.current = 0;
-  }, [videoId]);
+  }, [videoId, videoUrl]);
 
   useEffect(() => {
     if (!seekAllowed) return undefined;
@@ -283,19 +364,33 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   }
 
   function syncTimelineState(forcedTime = null, forcedDuration = null) {
-    const player = playerInstanceRef.current;
-    const nextDuration = Math.max(
-      0,
-      Math.floor(typeof forcedDuration === 'number' ? forcedDuration : player?.getDuration?.() || 0),
-    );
-    const rawTime = typeof forcedTime === 'number' ? forcedTime : player?.getCurrentTime?.() || 0;
-    const nextTime = Math.max(0, Math.min(rawTime, nextDuration || rawTime));
+    if (isHtml5) {
+      const video = nativeVideoRef.current;
+      const nextDuration = Math.max(
+        0,
+        Math.floor(typeof forcedDuration === 'number' ? forcedDuration : video?.duration || 0),
+      );
+      const rawTime = typeof forcedTime === 'number' ? forcedTime : video?.currentTime || 0;
+      const nextTime = Math.max(0, Math.min(rawTime, nextDuration || rawTime));
 
-    setDuration(nextDuration);
-    setCurrentTime(nextTime);
+      setDuration(nextDuration);
+      setCurrentTime(nextTime);
+    } else {
+      const player = playerInstanceRef.current;
+      const nextDuration = Math.max(
+        0,
+        Math.floor(typeof forcedDuration === 'number' ? forcedDuration : player?.getDuration?.() || 0),
+      );
+      const rawTime = typeof forcedTime === 'number' ? forcedTime : player?.getCurrentTime?.() || 0;
+      const nextTime = Math.max(0, Math.min(rawTime, nextDuration || rawTime));
+
+      setDuration(nextDuration);
+      setCurrentTime(nextTime);
+    }
   }
 
   function startUiTimer() {
+    if (isHtml5) return;
     clearInterval(uiTimerRef.current);
     uiTimerRef.current = setInterval(() => syncTimelineState(), 250);
   }
@@ -305,16 +400,29 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   }
 
   function seekToTime(nextTime) {
-    const player = playerInstanceRef.current;
-    if (!player || !seekAllowed) return;
+    if (isHtml5) {
+      const video = nativeVideoRef.current;
+      if (!video || !seekAllowed) return;
 
-    const nextDuration = Math.max(duration, Math.floor(player.getDuration() || 0));
-    if (!nextDuration) return;
+      const nextDuration = Math.max(duration, Math.floor(video.duration || 0));
+      if (!nextDuration) return;
 
-    const clampedTime = Math.max(0, Math.min(nextTime, nextDuration));
-    player.seekTo(clampedTime, true);
-    lastHeartbeatTimeRef.current = Math.floor(clampedTime);
-    syncTimelineState(clampedTime, nextDuration);
+      const clampedTime = Math.max(0, Math.min(nextTime, nextDuration));
+      video.currentTime = clampedTime;
+      lastHeartbeatTimeRef.current = Math.floor(clampedTime);
+      syncTimelineState(clampedTime, nextDuration);
+    } else {
+      const player = playerInstanceRef.current;
+      if (!player || !seekAllowed) return;
+
+      const nextDuration = Math.max(duration, Math.floor(player.getDuration() || 0));
+      if (!nextDuration) return;
+
+      const clampedTime = Math.max(0, Math.min(nextTime, nextDuration));
+      player.seekTo(clampedTime, true);
+      lastHeartbeatTimeRef.current = Math.floor(clampedTime);
+      syncTimelineState(clampedTime, nextDuration);
+    }
   }
 
   function seekFromClientX(clientX) {
@@ -325,7 +433,12 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     if (!rect.width) return;
 
     const ratio = Math.max(0, Math.min((clientX - rect.left) / rect.width, 1));
-    const nextDuration = Math.max(duration, Math.floor(playerInstanceRef.current?.getDuration?.() || 0));
+    let nextDuration = duration;
+    if (isHtml5) {
+      nextDuration = Math.max(duration, Math.floor(nativeVideoRef.current?.duration || 0));
+    } else {
+      nextDuration = Math.max(duration, Math.floor(playerInstanceRef.current?.getDuration?.() || 0));
+    }
     seekToTime(nextDuration * ratio);
   }
 
@@ -339,7 +452,11 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     setIsScrubbing(false);
 
     if (wasPlayingBeforeScrubRef.current) {
-      playerInstanceRef.current?.playVideo();
+      if (isHtml5) {
+        nativeVideoRef.current?.play().catch(err => console.error("Play failed:", err));
+      } else {
+        playerInstanceRef.current?.playVideo();
+      }
     }
     wasPlayingBeforeScrubRef.current = false;
   }
@@ -378,8 +495,6 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
     });
   }
 
-  // Assign to ref on every render so the interval and YT callbacks always
-  // use the latest values of videoComplete, onVideoComplete, etc.
   function checkAndMarkComplete(pct) {
     if (pct >= 50 && !quizUnlockedRef.current) {
       quizUnlockedRef.current = true;
@@ -393,14 +508,14 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   }
 
   onStateChangeRef.current = function (event) {
-    if (event.data === 1) {          // PLAYING
+    if (event.data === 1) {
       setIsPlaying(true);
       lastHeartbeatTimeRef.current = Math.floor(playerInstanceRef.current?.getCurrentTime() ?? 0);
       startHeartbeat();
       startUiTimer();
     } else {
       setIsPlaying(false);
-      if (event.data === 0) {        // ENDED — fill remaining segments up to video end
+      if (event.data === 0) {
         const player = playerInstanceRef.current;
         if (player) {
           const duration = Math.floor(player.getDuration());
@@ -424,29 +539,36 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   };
 
   fireHeartbeatRef.current = async function () {
-    const player = playerInstanceRef.current;
-    if (!player) return;
-    const currentTime = Math.floor(player.getCurrentTime());
-    const duration = Math.floor(player.getDuration());
-    if (!duration) return;
+    let currentTimeVal = 0;
+    let durationVal = 0;
 
-    // Fill every segment between the previous heartbeat position and now.
-    // At 1.25x or 1.5x the video advances faster than the 10-second interval,
-    // so without this, segments are skipped and completion never reaches 80%.
+    if (isHtml5) {
+      const video = nativeVideoRef.current;
+      if (!video) return;
+      currentTimeVal = Math.floor(video.currentTime);
+      durationVal = Math.floor(video.duration);
+    } else {
+      const player = playerInstanceRef.current;
+      if (!player) return;
+      currentTimeVal = Math.floor(player.getCurrentTime());
+      durationVal = Math.floor(player.getDuration());
+    }
+    if (!durationVal) return;
+
     const prevTime = lastHeartbeatTimeRef.current;
-    lastHeartbeatTimeRef.current = currentTime;
+    lastHeartbeatTimeRef.current = currentTimeVal;
     const startSeg = Math.floor(prevTime / HEARTBEAT_INTERVAL);
-    const endSeg   = Math.floor(currentTime / HEARTBEAT_INTERVAL);
+    const endSeg   = Math.floor(currentTimeVal / HEARTBEAT_INTERVAL);
     for (let seg = startSeg; seg <= endSeg; seg++) {
       watchedSegmentsRef.current.add(seg);
     }
 
-    const totalSegments = Math.ceil(duration / HEARTBEAT_INTERVAL);
+    const totalSegments = Math.ceil(durationVal / HEARTBEAT_INTERVAL);
     const pct = Math.min(Math.round((watchedSegmentsRef.current.size / totalSegments) * 100), 100);
     setCompletionPct(pct);
-    syncTimelineState(currentTime, duration);
+    syncTimelineState(currentTimeVal, durationVal);
 
-    try { await sendHeartbeat(courseId, weekId, currentTime, duration); } catch { /* retry next interval */ }
+    try { await sendHeartbeat(courseId, weekId, currentTimeVal, durationVal); } catch { }
 
     checkAndMarkComplete(pct);
   };
@@ -458,18 +580,34 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   function stopHeartbeat() { clearInterval(heartbeatTimerRef.current); }
 
   function handlePlayPause() {
-    const player = playerInstanceRef.current;
-    if (!player) return;
-    player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo();
+    if (isHtml5) {
+      const video = nativeVideoRef.current;
+      if (!video) return;
+      video.paused ? video.play().catch(err => console.error("Play failed:", err)) : video.pause();
+    } else {
+      const player = playerInstanceRef.current;
+      if (!player) return;
+      player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo();
+    }
   }
 
   function handleRewind() {
-    const liveTime = playerInstanceRef.current?.getCurrentTime?.();
+    let liveTime = 0;
+    if (isHtml5) {
+      liveTime = nativeVideoRef.current?.currentTime;
+    } else {
+      liveTime = playerInstanceRef.current?.getCurrentTime?.();
+    }
     seekToTime((typeof liveTime === 'number' ? liveTime : currentTime) - 10);
   }
 
   function handleForward() {
-    const liveTime = playerInstanceRef.current?.getCurrentTime?.();
+    let liveTime = 0;
+    if (isHtml5) {
+      liveTime = nativeVideoRef.current?.currentTime;
+    } else {
+      liveTime = playerInstanceRef.current?.getCurrentTime?.();
+    }
     seekToTime((typeof liveTime === 'number' ? liveTime : currentTime) + 10);
   }
 
@@ -492,7 +630,11 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
   }
 
   function handleSpeedChange(rate) {
-    playerInstanceRef.current?.setPlaybackRate(rate);
+    if (isHtml5) {
+      if (nativeVideoRef.current) nativeVideoRef.current.playbackRate = rate;
+    } else {
+      playerInstanceRef.current?.setPlaybackRate(rate);
+    }
     setPlaybackRate(rate);
   }
 
@@ -510,8 +652,15 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
 
     event.preventDefault();
     activePointerIdRef.current = event.pointerId;
-    wasPlayingBeforeScrubRef.current = playerInstanceRef.current?.getPlayerState?.() === 1;
-    playerInstanceRef.current?.pauseVideo();
+    let isPlayingVal = false;
+    if (isHtml5) {
+      isPlayingVal = nativeVideoRef.current ? !nativeVideoRef.current.paused : false;
+      nativeVideoRef.current?.pause();
+    } else {
+      isPlayingVal = playerInstanceRef.current?.getPlayerState?.() === 1;
+      playerInstanceRef.current?.pauseVideo();
+    }
+    wasPlayingBeforeScrubRef.current = isPlayingVal;
     progressTrackRef.current?.setPointerCapture?.(event.pointerId);
     setIsScrubbing(true);
     seekFromClientX(event.clientX);
@@ -542,7 +691,17 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
       }}
     >
       <div style={{ ...s.aspectBox, ...(isFullscreen ? { paddingBottom: 0, flex: 1, height: 'auto' } : {}) }}>
-        <div ref={playerRef} style={s.iframe} />
+        {isHtml5 ? (
+          <video
+            ref={nativeVideoRef}
+            src={videoUrl}
+            style={s.iframe}
+            playsInline
+            controls={false}
+          />
+        ) : (
+          <div ref={playerRef} style={s.iframe} />
+        )}
         <div
           style={s.surfaceBlock}
           onMouseDown={handleSurfaceMouseDown}
@@ -552,7 +711,6 @@ export default function VideoPlayer({ videoId, courseId, weekId, initialProgress
         <div style={s.seekbarBlock} />
       </div>
 
-      {/* Controls */}
       <div style={s.controls}>
         <button style={s.btn} onClick={handlePlayPause}>{isPlaying ? '⏸ Pause' : '▶ Play'}</button>
         <button
