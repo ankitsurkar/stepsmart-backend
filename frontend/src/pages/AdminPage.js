@@ -627,6 +627,7 @@ function WeeksTab({ category = 'module' }) {
 }
 
 // ────────────────────────────────────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────────────────────
 // Supplemental Content Tab
 // ────────────────────────────────────────────────────────────────────────────────
 function SupplementalContentTab() {
@@ -661,7 +662,7 @@ function SupplementalContentTab() {
     setSaving(true); setMessage('');
     try {
       await adminUpdateSupplementalContent(COURSE_ID, data);
-      setMessage('Supplemental content saved.');
+      setMessage('Supplemental content saved successfully!');
     } catch (err) {
       setMessage(err.response?.data?.message || 'Save failed.');
     } finally {
@@ -678,54 +679,180 @@ function SupplementalContentTab() {
   });
   const removeItem = (key, idx) => setData(d => ({ ...d, [key]: d[key].filter((_, i) => i !== idx) }));
 
-  if (loading) return <p style={{ color: 'var(--muted-foreground)' }}>Loading…</p>;
+  if (loading) return <p style={{ color: 'var(--muted-foreground)', padding: '2rem 0', textAlign: 'center' }}>Loading supplemental content assets...</p>;
 
   return (
-    <form onSubmit={handleSave}>
-      {message && <p style={s.message}>{message}</p>}
-
-      {/* Recordings */}
-      <div style={s.card}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-          <div style={s.cardTitle}>Global Recorded Sessions</div>
-          <button type="button" style={s.btn} onClick={() => addItem('liveRecordedSessions', EMPTY_RECORDED_SESSION)}>+ Add Session</button>
+    <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      
+      {/* Intro Banner Card */}
+      <div style={{
+        background: 'linear-gradient(135deg, hsl(195, 83%, 98%) 0%, hsl(195, 83%, 95%) 100%)',
+        border: '1px dashed rgba(195, 83%, 38%, 0.3)',
+        borderRadius: '16px',
+        padding: '1.5rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.4rem',
+        boxShadow: 'var(--shadow-sm)'
+      }}>
+        <div style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--primary-dark)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span>📚</span> Course Supplemental Assets
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1rem' }}>
-          {data.liveRecordedSessions.map((rec, i) => (
-            <div key={rec.id || i} style={s.qPanel}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.8rem' }}>Session {i + 1}</span>
-                <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.4rem', fontSize: '0.7rem' }} onClick={() => removeItem('liveRecordedSessions', i)}>✕</button>
-              </div>
-              <input style={s.input} placeholder="Title" value={rec.title} onChange={e => updateItem('liveRecordedSessions', i, 'title', e.target.value)} />
-              <textarea style={{ ...s.textarea, height: '60px' }} placeholder="Description" value={rec.description} onChange={e => updateItem('liveRecordedSessions', i, 'description', e.target.value)} />
-              <input style={{ ...s.input, marginBottom: 0 }} placeholder="Recording URL" value={rec.url} onChange={e => updateItem('liveRecordedSessions', i, 'url', e.target.value)} />
-            </div>
-          ))}
+        <div style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', lineHeight: 1.5 }}>
+          Customize and publish course-wide assets including live recordings, assignments, and calendar events. Changes here are immediately reflected on the student dashboards.
         </div>
       </div>
 
-      {/* Assignments */}
+      {message && (
+        <div style={{
+          padding: '0.85rem 1.25rem',
+          borderRadius: '10px',
+          background: message.includes('failed') || message.includes('Failed') ? 'hsl(0, 84%, 96%)' : 'var(--success-light)',
+          color: message.includes('failed') || message.includes('Failed') ? 'var(--destructive)' : 'var(--success)',
+          border: `1px solid ${message.includes('failed') || message.includes('Failed') ? 'var(--destructive)' : 'var(--success)'}`,
+          fontWeight: 600,
+          fontSize: '0.875rem'
+        }}>
+          {message}
+        </div>
+      )}
+
+      {/* Global Recorded Sessions Card */}
       <div style={s.card}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-          <div style={s.cardTitle}>Global Assignments</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div>
+            <div style={{ ...s.cardTitle, marginBottom: '0.2rem' }}>🎥 Global Recorded Sessions</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Upload live session and recorded lecture videos visible to all students.</div>
+          </div>
+          <button type="button" style={s.btn} onClick={() => addItem('liveRecordedSessions', EMPTY_RECORDED_SESSION)}>+ Add Recorded Session</button>
+        </div>
+
+        {data.liveRecordedSessions.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '2.5rem 1rem', border: '1.5px dashed var(--border)', borderRadius: '12px', background: 'var(--background)' }}>
+            <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>🎥</span>
+            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>No global recorded sessions added yet.</span>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
+            {data.liveRecordedSessions.map((rec, i) => (
+              <div key={rec.id || i} style={{ ...s.qPanel, border: '1px solid var(--border)', background: '#fff', boxShadow: 'var(--shadow-sm)', padding: '1.25rem', borderRadius: '12px', marginBottom: 0 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.55rem' }}>
+                  <span style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)' }}>Session #{i + 1}</span>
+                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.25rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px' }} onClick={() => removeItem('liveRecordedSessions', i)}>✕ Remove</button>
+                </div>
+                <label style={s.label}>Session Title</label>
+                <input style={s.input} placeholder="e.g. Saturday Live Lecture: Prioritization" value={rec.title} onChange={e => updateItem('liveRecordedSessions', i, 'title', e.target.value)} />
+                <label style={s.label}>Description</label>
+                <textarea style={{ ...s.textarea, height: '60px' }} placeholder="What was covered in this session?" value={rec.description} onChange={e => updateItem('liveRecordedSessions', i, 'description', e.target.value)} />
+                <label style={s.label}>Video URL</label>
+                <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. https://youtube.com/... or Vimeo/Zoom link" value={rec.url} onChange={e => updateItem('liveRecordedSessions', i, 'url', e.target.value)} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Global Course Assignments Card */}
+      <div style={s.card}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div>
+            <div style={{ ...s.cardTitle, marginBottom: '0.2rem' }}>📝 Global Course Assignments</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Create capstone assignments or course-wide submissions that all students must submit.</div>
+          </div>
           <button type="button" style={s.btn} onClick={() => addItem('assignments', EMPTY_ASSIGNMENT)}>+ Add Assignment</button>
         </div>
-        {data.assignments.map((asgn, i) => (
-          <div key={asgn.id || i} style={s.qPanel}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <span style={{ fontWeight: 700, fontSize: '0.8rem' }}>Assignment {i + 1}</span>
-              <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.4rem', fontSize: '0.7rem' }} onClick={() => removeItem('assignments', i)}>✕</button>
-            </div>
-            <input style={s.input} placeholder="Title" value={asgn.title} onChange={e => updateItem('assignments', i, 'title', e.target.value)} />
-            <textarea style={{ ...s.textarea, marginBottom: 0 }} placeholder="Description" value={asgn.description} onChange={e => updateItem('assignments', i, 'description', e.target.value)} />
+
+        {data.assignments.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '2.5rem 1rem', border: '1.5px dashed var(--border)', borderRadius: '12px', background: 'var(--background)' }}>
+            <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>📝</span>
+            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>No global assignments added yet.</span>
           </div>
-        ))}
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
+            {data.assignments.map((asgn, i) => (
+              <div key={asgn.id || i} style={{ ...s.qPanel, border: '1px solid var(--border)', background: '#fff', boxShadow: 'var(--shadow-sm)', padding: '1.25rem', borderRadius: '12px', marginBottom: 0 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.55rem' }}>
+                  <span style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)' }}>Assignment #{i + 1}</span>
+                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.25rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px' }} onClick={() => removeItem('assignments', i)}>✕ Remove</button>
+                </div>
+                <label style={s.label}>Assignment Title</label>
+                <input style={s.input} placeholder="e.g. Capstone Project: PRD Draft" value={asgn.title} onChange={e => updateItem('assignments', i, 'title', e.target.value)} />
+                <label style={s.label}>Instructions & Description</label>
+                <textarea style={{ ...s.textarea, marginBottom: 0, minHeight: '100px' }} placeholder="Provide detailed instructions and grading criteria..." value={asgn.description} onChange={e => updateItem('assignments', i, 'description', e.target.value)} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      <button style={{ ...s.btn, padding: '0.8rem 2rem' }} type="submit" disabled={saving}>
-        {saving ? 'Saving...' : 'Save Supplemental Content'}
-      </button>
+      {/* Global Course Calendar Events Card */}
+      <div style={s.card}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div>
+            <div style={{ ...s.cardTitle, marginBottom: '0.2rem' }}>📅 Global Course Calendar Events</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Schedule cohort-wide onboarding bootcamps, Live sessions, and deadlines.</div>
+          </div>
+          <button type="button" style={s.btn} onClick={() => addItem('calendarEvents', EMPTY_CALENDAR_EVENT)}>+ Add Calendar Event</button>
+        </div>
+
+        {data.calendarEvents.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '2.5rem 1rem', border: '1.5px dashed var(--border)', borderRadius: '12px', background: 'var(--background)' }}>
+            <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>📅</span>
+            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>No global calendar events created yet.</span>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))', gap: '1.25rem' }}>
+            {data.calendarEvents.map((evt, i) => (
+              <div key={evt.id || i} style={{ ...s.qPanel, border: '1px solid var(--border)', background: '#fff', boxShadow: 'var(--shadow-sm)', padding: '1.25rem', borderRadius: '12px', marginBottom: 0 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.55rem' }}>
+                  <span style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)' }}>Event #{i + 1}</span>
+                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.25rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px' }} onClick={() => removeItem('calendarEvents', i)}>✕ Remove</button>
+                </div>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                  <div>
+                    <label style={s.label}>Event Category</label>
+                    <select style={{ ...s.input, marginBottom: 0 }} value={evt.kind || ''} onChange={e => updateItem('calendarEvents', i, 'kind', e.target.value)}>
+                      <option value="">Select Kind</option>
+                      <option value="Course Module">Course Module</option>
+                      <option value="Interview Module">Interview Module</option>
+                      <option value="Recorded Video Upload">Recorded Video Upload</option>
+                      <option value="Live Q&A">Live Q&A</option>
+                      <option value="Orientation">Orientation</option>
+                      <option value="Homework Deadline">Homework Deadline</option>
+                      <option value="Other Event">Other Event</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={s.label}>Event Title</label>
+                    <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. Q&A, Bootcamp Kickoff" value={evt.title || ''} onChange={e => updateItem('calendarEvents', i, 'title', e.target.value)} />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                  <div>
+                    <label style={s.label}>Start Date</label>
+                    <input type="date" style={{ ...s.input, marginBottom: 0 }} value={evt.startDate || ''} onChange={e => updateItem('calendarEvents', i, 'startDate', e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={s.label}>End Date (Optional)</label>
+                    <input type="date" style={{ ...s.input, marginBottom: 0 }} value={evt.endDate || ''} onChange={e => updateItem('calendarEvents', i, 'endDate', e.target.value)} />
+                  </div>
+                </div>
+
+                <label style={s.label}>Description</label>
+                <textarea style={{ ...s.textarea, minHeight: '60px', marginBottom: 0 }} placeholder="Provide brief details for the calendar Detail Popover..." value={evt.description || ''} onChange={e => updateItem('calendarEvents', i, 'description', e.target.value)} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+        <button style={{ ...s.btn, padding: '0.85rem 2.5rem', fontSize: '0.9rem', borderRadius: '10px', boxShadow: 'var(--shadow-md)' }} type="submit" disabled={saving}>
+          {saving ? 'Saving changes...' : 'Save Supplemental Content ✓'}
+        </button>
+      </div>
     </form>
   );
 }
