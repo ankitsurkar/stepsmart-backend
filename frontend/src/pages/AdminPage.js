@@ -630,6 +630,192 @@ function WeeksTab({ category = 'module' }) {
 // ────────────────────────────────────────────────────────────────────────────────
 // Supplemental Content Tab
 // ────────────────────────────────────────────────────────────────────────────────
+function RecordedSessionEditor({ rec, i, updateItem, removeItem, courseId }) {
+  const [uploadMode, setUploadMode] = useState(
+    rec.storageProvider === 'supabase' ? 'file' : 'url'
+  );
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [uploadError, setUploadError] = useState('');
+  const fileInputRef = React.useRef(null);
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    setProgress(0);
+    setUploadError('');
+    try {
+      const uploadUrlRes = await adminUpdateSupplementalContent(courseId, {
+        action: 'getUploadUrl',
+        fileName: file.name,
+        mimeType: file.type,
+      });
+      const { signedUrl, storagePath, storageProvider } = uploadUrlRes.data;
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', signedUrl, true);
+      xhr.setRequestHeader('Content-Type', file.type);
+      
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          setProgress(Math.round((event.loaded / event.total) * 100));
+        }
+      };
+      
+      xhr.onload = () => {
+        if (xhr.status === 200 || xhr.status === 201) {
+          updateItem('liveRecordedSessions', i, 'url', signedUrl);
+          updateItem('liveRecordedSessions', i, 'storagePath', storagePath);
+          updateItem('liveRecordedSessions', i, 'storageProvider', storageProvider);
+          setUploading(false);
+          setProgress(100);
+        } else {
+          setUploadError(`Upload failed status: ${xhr.status}`);
+          setUploading(false);
+        }
+      };
+      
+      xhr.onerror = () => {
+        setUploadError('Upload network error.');
+        setUploading(false);
+      };
+      
+      xhr.send(file);
+    } catch (err) {
+      setUploadError(err.response?.data?.message || 'Signed URL generation failed.');
+      setUploading(false);
+    }
+  };
+
+  const getFileName = (path) => {
+    if (!path) return '';
+    return path.split('/').pop().replace(/^\d+-/, '');
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (uploading) return;
+    const files = e.dataTransfer.files;
+    if (files && files[0]) {
+      const file = files[0];
+      const eFake = { target: { files: [file] } };
+      handleFileChange(eFake);
+    }
+  };
+
+  const toggleContainerStyle = {
+    display: 'flex',
+    background: 'hsl(195, 83%, 97%)',
+    borderRadius: '10px',
+    padding: '3px',
+    marginBottom: '1rem',
+    border: '1px solid var(--border)',
+  };
+
+  const toggleButtonStyle = (active) => ({
+    flex: 1,
+    padding: '0.45rem',
+    borderRadius: '8px',
+    fontSize: '0.775rem',
+    fontWeight: 600,
+    border: 'none',
+    cursor: 'pointer',
+    textAlign: 'center',
+    background: active ? '#fff' : 'transparent',
+    color: active ? 'var(--primary)' : 'var(--muted-foreground)',
+    boxShadow: active ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+    transition: 'all 0.2s ease',
+  });
+
+  const dropZoneStyle = {
+    border: '1.5px dashed var(--border)',
+    borderRadius: '12px',
+    padding: '1.25rem',
+    textAlign: 'center',
+    background: 'var(--background)',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.4rem',
+  };
+
+  return (
+    <div style={{ ...s.qPanel, border: '1px solid var(--border)', background: '#fff', boxShadow: 'var(--shadow-sm)', padding: '1.25rem', borderRadius: '12px', marginBottom: 0 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.55rem' }}>
+        <span style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)' }}>Session #{i + 1}</span>
+        <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.25rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px' }} onClick={() => removeItem('liveRecordedSessions', i)}>✕ Remove</button>
+      </div>
+
+      <label style={s.label}>Session Title</label>
+      <input style={s.input} placeholder="e.g. Saturday Live Lecture: Prioritization" value={rec.title} onChange={e => updateItem('liveRecordedSessions', i, 'title', e.target.value)} />
+
+      <label style={s.label}>Description</label>
+      <textarea style={{ ...s.textarea, height: '60px' }} placeholder="What was covered in this session?" value={rec.description} onChange={e => updateItem('liveRecordedSessions', i, 'description', e.target.value)} />
+
+      <label style={s.label}>Video Content Source</label>
+      <div style={toggleContainerStyle}>
+        <button type="button" style={toggleButtonStyle(uploadMode === 'file')} onClick={() => setUploadMode('file')}>📁 Upload Video File</button>
+        <button type="button" style={toggleButtonStyle(uploadMode === 'url')} onClick={() => setUploadMode('url')}>🔗 Video URL</button>
+      </div>
+
+      {uploadMode === 'url' ? (
+        <div>
+          <label style={s.label}>Video URL</label>
+          <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. https://youtube.com/... or Vimeo/Zoom link" value={rec.url || ''} onChange={e => {
+            updateItem('liveRecordedSessions', i, 'url', e.target.value);
+            updateItem('liveRecordedSessions', i, 'storagePath', '');
+            updateItem('liveRecordedSessions', i, 'storageProvider', '');
+          }} />
+        </div>
+      ) : (
+        <div>
+          {uploading ? (
+            <div style={{ padding: '1rem', border: '1px solid var(--border)', borderRadius: '12px', background: 'var(--background)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.775rem', fontWeight: 600, color: 'var(--primary)', marginBottom: '0.5rem' }}>
+                <span>Uploading screen recording...</span>
+                <span>{progress}%</span>
+              </div>
+              <div style={{ height: '8px', background: 'hsl(195, 83%, 94%)', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${progress}%`, background: 'var(--primary)', borderRadius: '4px', transition: 'width 0.1s linear' }} />
+              </div>
+            </div>
+          ) : rec.storagePath ? (
+            <div style={{ padding: '0.85rem 1rem', border: '1px solid hsl(142, 72%, 80%)', borderRadius: '12px', background: 'hsl(142, 72%, 97%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
+                <span style={{ fontSize: '1.2rem' }}>✅</span>
+                <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                  <span style={{ fontSize: '0.775rem', fontWeight: 700, color: 'hsl(142, 72%, 20%)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                    {getFileName(rec.storagePath)}
+                  </span>
+                  <span style={{ fontSize: '0.675rem', color: 'hsl(142, 72%, 30%)' }}>Saved to Supabase Storage</span>
+                </div>
+              </div>
+              <button type="button" style={{ ...s.btn, padding: '0.2rem 0.5rem', fontSize: '0.675rem', borderRadius: '6px', minWidth: 'fit-content' }} onClick={() => fileInputRef.current?.click()}>Replace</button>
+            </div>
+          ) : (
+            <div style={dropZoneStyle} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current?.click()}>
+              <span style={{ fontSize: '1.5rem' }}>☁️</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>Click to browse or drag video here</span>
+              <span style={{ fontSize: '0.625rem', color: 'var(--muted-foreground)' }}>Supports MP4, WebM, MOV</span>
+            </div>
+          )}
+          
+          <input ref={fileInputRef} type="file" accept="video/*" style={{ display: 'none' }} onChange={handleFileChange} />
+          {uploadError && <p style={{ color: 'var(--destructive)', fontSize: '0.7rem', marginTop: '0.4rem', fontWeight: 600 }}>⚠️ {uploadError}</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SupplementalContentTab() {
   const [data, setData] = useState({ assignments: [], liveRecordedSessions: [], calendarEvents: [] });
   const [loading, setLoading] = useState(true);
@@ -671,7 +857,7 @@ function SupplementalContentTab() {
   }
 
   // Helpers
-  const addItem = (key, empty) => setData(d => ({ ...d, [key]: [...d[key], { ...empty, id: makeClientId(key.slice(0, 3)) }] }));
+  const addItem = (key, empty) => setData(d => ({ ...d, [key]: [...d[key], { ...empty, id: makeClientId(key === 'liveRecordedSessions' ? 'rec' : key.slice(0, 3)) }] }));
   const updateItem = (key, idx, field, val) => setData(d => {
     const list = [...d[key]];
     list[idx] = { ...list[idx], [field]: val };
@@ -735,18 +921,14 @@ function SupplementalContentTab() {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
             {data.liveRecordedSessions.map((rec, i) => (
-              <div key={rec.id || i} style={{ ...s.qPanel, border: '1px solid var(--border)', background: '#fff', boxShadow: 'var(--shadow-sm)', padding: '1.25rem', borderRadius: '12px', marginBottom: 0 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.55rem' }}>
-                  <span style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)' }}>Session #{i + 1}</span>
-                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.25rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px' }} onClick={() => removeItem('liveRecordedSessions', i)}>✕ Remove</button>
-                </div>
-                <label style={s.label}>Session Title</label>
-                <input style={s.input} placeholder="e.g. Saturday Live Lecture: Prioritization" value={rec.title} onChange={e => updateItem('liveRecordedSessions', i, 'title', e.target.value)} />
-                <label style={s.label}>Description</label>
-                <textarea style={{ ...s.textarea, height: '60px' }} placeholder="What was covered in this session?" value={rec.description} onChange={e => updateItem('liveRecordedSessions', i, 'description', e.target.value)} />
-                <label style={s.label}>Video URL</label>
-                <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. https://youtube.com/... or Vimeo/Zoom link" value={rec.url} onChange={e => updateItem('liveRecordedSessions', i, 'url', e.target.value)} />
-              </div>
+              <RecordedSessionEditor
+                key={rec.id || i}
+                rec={rec}
+                i={i}
+                updateItem={updateItem}
+                removeItem={removeItem}
+                courseId={COURSE_ID}
+              />
             ))}
           </div>
         )}
