@@ -1,3 +1,5 @@
+// DEPRECATED: This lambda has been consolidated into backend/studentHandler.js.
+// Please make any future edits there to avoid modifying dead code.
 // Lambda: lms-getMyCourses
 // Trigger: GET /courses/my
 // Auth:    Cognito Authorizer (JWT required)
@@ -15,13 +17,16 @@ const {
   ScanCommand,
 } = require('@aws-sdk/lib-dynamodb');
 
-const ddbClient = new DynamoDBClient({ region: 'us-east-1' });
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const ddb = DynamoDBDocumentClient.from(ddbClient, {
   marshallOptions: { convertEmptyValues: true },
 });
 
 const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
 const FRONTEND_URL  = process.env.FRONTEND_URL  || 'https://stepsmart.net';
+const COURSE_NAME_OVERRIDES = {
+  'course-001': 'PM -X Accelerator',
+};
 
 function corsHeaders() {
   return {
@@ -63,7 +68,7 @@ exports.handler = async (event) => {
 
   const courses = items.map((item) => ({
     courseId:    item.courseId,
-    name:        item.name,
+    name:        COURSE_NAME_OVERRIDES[item.courseId] || item.name,
     description: item.description || '',
   }));
 

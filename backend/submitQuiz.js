@@ -1,3 +1,5 @@
+// DEPRECATED: This lambda has been consolidated into backend/studentHandler.js.
+// Please make any future edits there to avoid modifying dead code.
 // Lambda: lms-submitQuiz
 // Trigger: POST /quiz/submit
 // Auth:    Cognito Authorizer (JWT required)
@@ -21,7 +23,7 @@ const {
 
 const PASSING_PCT = 70;  // minimum percentage to pass
 
-const ddbClient = new DynamoDBClient({ region: 'us-east-1' });
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const ddb = DynamoDBDocumentClient.from(ddbClient, {
   marshallOptions: { convertEmptyValues: true },
 });

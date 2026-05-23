@@ -22,6 +22,7 @@ const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const {
   DynamoDBDocumentClient,
   QueryCommand,
+  GetCommand,
   PutCommand,
   UpdateCommand,
   DeleteCommand,
@@ -37,20 +38,23 @@ const {
 
 const { randomUUID } = require('crypto');
 
-const ddbClient = new DynamoDBClient({ region: 'us-east-1' });
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const ddb = DynamoDBDocumentClient.from(ddbClient, {
   marshallOptions: { convertEmptyValues: true },
 });
-const cognito = new CognitoIdentityProviderClient({ region: 'us-east-1' });
+const cognito = new CognitoIdentityProviderClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 
 const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
 const PROGRESS_TABLE = process.env.PROGRESS_TABLE || 'lms-progress';
 const USER_POOL_ID = process.env.USER_POOL_ID || '';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
+const SUPPLEMENTAL_SK = 'SUPPLEMENTAL#GLOBAL';
+
+let currentOrigin = FRONTEND_URL;
 
 function corsHeaders() {
   return {
-    'Access-Control-Allow-Origin': FRONTEND_URL,
+    'Access-Control-Allow-Origin': currentOrigin,
     'Access-Control-Allow-Headers': 'Content-Type,Authorization',
     'Access-Control-Allow-Methods': 'GET,POST,PATCH,DELETE,OPTIONS',
   };
@@ -61,6 +65,76 @@ function res(statusCode, body) {
     statusCode,
     headers: { 'Content-Type': 'application/json', ...corsHeaders() },
     body: JSON.stringify(body),
+  };
+}
+
+async function signRecordedSessions(sessions) {
+  if (!Array.isArray(sessions) || sessions.length === 0) return sessions;
+
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
+
+  if (!supabaseUrl || !serviceRoleKey || !bucket) {
+    console.warn('Supabase storage credentials not fully configured for signing.');
+    return sessions;
+  }
+
+  const signedSessions = [];
+  for (const session of sessions) {
+    if (session.storageProvider === 'supabase' && session.storagePath) {
+      try {
+        const signedUrlRes = await fetch(
+          `${supabaseUrl}/storage/v1/object/sign/${bucket}/${session.storagePath}`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${serviceRoleKey}`,
+              apikey: serviceRoleKey,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ expiresIn: 60 * 60 * 8 }),
+          }
+        );
+        if (signedUrlRes.ok) {
+          const resBody = await signedUrlRes.json();
+          const rawSigned = resBody.signedUrl || resBody.signedURL || '';
+          const fullSignedUrl = rawSigned.startsWith('http')
+            ? rawSigned
+            : `${supabaseUrl}/storage/v1${rawSigned}`;
+          signedSessions.push({
+            ...session,
+            url: fullSignedUrl,
+          });
+          continue;
+        } else {
+          console.error(`Supabase returned status ${signedUrlRes.status} for signing path ${session.storagePath}`);
+        }
+      } catch (err) {
+        console.error('Error generating signed URL for session path:', session.storagePath, err);
+      }
+    }
+    signedSessions.push(session);
+  }
+  return signedSessions;
+}
+
+async function getSupplementalContent(courseId) {
+  const result = await ddb.send(new GetCommand({
+    TableName: COURSES_TABLE,
+    Key: { pk: `COURSE#${courseId}`, sk: SUPPLEMENTAL_SK },
+  }));
+
+  const item = result.Item || {};
+  const rawSessions = Array.isArray(item.liveRecordedSessions) ? item.liveRecordedSessions : [];
+  const signedSessions = await signRecordedSessions(rawSessions);
+
+  return {
+    assignments: Array.isArray(item.assignments) ? item.assignments : [],
+    liveRecordedSessions: signedSessions,
+    calendarEvents: Array.isArray(item.calendarEvents) ? item.calendarEvents : [],
+    updatedAt: item.updatedAt || null,
+    createdAt: item.createdAt || null,
   };
 }
 
@@ -121,16 +195,22 @@ async function createStudent(body) {
 // GET /admin/courses/{courseId}/weeks
 // Returns all weeks (including hidden ones) with full quiz data including correctIndex.
 async function listWeeks(courseId) {
-  const result = await ddb.send(new QueryCommand({
-    TableName: COURSES_TABLE,
-    KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
-    ExpressionAttributeValues: {
-      ':pk': `COURSE#${courseId}`,
-      ':prefix': 'WEEK#',
-    },
-  }));
-  const weeks = (result.Items || []).sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
-  return res(200, { weeks });
+  const [result, supplementalContent] = await Promise.all([
+    ddb.send(new QueryCommand({
+      TableName: COURSES_TABLE,
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': `COURSE#${courseId}`,
+        ':prefix': 'WEEK#',
+      },
+    })),
+    getSupplementalContent(courseId),
+  ]);
+
+  const weeks = (result.Items || [])
+    .filter((item) => item.weekId !== '__supplemental__')
+    .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
+  return res(200, { weeks, supplementalContent });
 }
 
 // POST /admin/courses/{courseId}/weeks
@@ -142,6 +222,7 @@ async function createWeek(courseId, body) {
     sk: `WEEK#${weekId}`,
     weekId,
     courseId,
+    category: body.category || 'module',
     weekNumber: body.weekNumber || 1,
     title: body.title || 'Untitled Week',
     description: body.description || '',
@@ -151,6 +232,9 @@ async function createWeek(courseId, body) {
     quiz: body.quiz || { questions: [] },
     resources: body.resources || [],
     docs: body.docs || [],
+    liveRecordedSessions: body.liveRecordedSessions || [],
+    calendarEvents: body.calendarEvents || [],
+    assignments: body.assignments || [],
     createdAt: new Date().toISOString(),
   };
 
@@ -161,8 +245,20 @@ async function createWeek(courseId, body) {
 // PATCH /admin/courses/{courseId}/weeks/{weekId}
 // Updates any subset of week fields. Commonly used to toggle visibility.
 async function updateWeek(courseId, weekId, body) {
+  console.log('DEPLOY_CHECK_V2: updateWeek called with weekId =', weekId);
+  // Guard: if this is actually a supplemental content update, redirect to the correct handler.
+  // This ensures data is always saved to SUPPLEMENTAL#GLOBAL (not WEEK#__supplemental__).
+  if (weekId === '__supplemental__') {
+    console.log('DEPLOY_CHECK_V2: Redirecting to updateSupplementalContent');
+    return await updateSupplementalContent(courseId, body);
+  }
+
   // Build a dynamic UpdateExpression from whatever fields were provided.
-  const fields = ['title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber', 'quiz', 'resources', 'docs'];
+  const fields = [
+    'title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber',
+    'category', 'quiz', 'resources', 'docs', 'assignments', 'liveRecordedSessions',
+    'calendarEvents'
+  ];
   const setClauses = [];
   const exprAttrValues = {};
   const exprAttrNames = {};
@@ -193,7 +289,92 @@ async function updateWeek(courseId, weekId, body) {
     ExpressionAttributeValues: exprAttrValues,
   }));
 
-  return res(200, { message: 'Week updated', weekId });
+  return res(200, { message: 'Week updated V3', weekId });
+}
+
+async function updateSupplementalContent(courseId, body) {
+  if (body && body.action === 'getUploadUrl') {
+    const { fileName, mimeType } = body;
+    if (!fileName) {
+      return res(400, { message: 'fileName is required for getUploadUrl action' });
+    }
+
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const bucket = process.env.SUPABASE_STORAGE_BUCKET;
+
+    if (!supabaseUrl || !serviceRoleKey || !bucket) {
+      return res(500, { message: 'Supabase credentials not configured on backend' });
+    }
+
+    const safeFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const storagePath = `global-sessions/${Date.now()}-${safeFileName}`;
+
+    try {
+      const uploadSignRes = await fetch(
+        `${supabaseUrl}/storage/v1/object/upload/sign/${bucket}/${storagePath}`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${serviceRoleKey}`,
+            apikey: serviceRoleKey,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+        }
+      );
+
+      if (uploadSignRes.ok) {
+        const signBody = await uploadSignRes.json();
+        const rawUrl = signBody.url || signBody.signedUrl || signBody.signedURL || '';
+        const fullUrl = rawUrl.startsWith('http')
+          ? rawUrl
+          : `${supabaseUrl}/storage/v1${rawUrl}`;
+
+        return res(200, {
+          signedUrl: fullUrl,
+          storagePath,
+          storageProvider: 'supabase',
+        });
+      } else {
+        const errorText = await uploadSignRes.text();
+        console.error('Supabase signed upload URL fetch error:', errorText);
+        return res(500, { message: `Supabase upload signing failed: ${errorText}` });
+      }
+    } catch (err) {
+      console.error('Error fetching signed upload URL from Supabase:', err);
+      return res(500, { message: err.message || 'Internal server error' });
+    }
+  }
+
+  const hasSupportedField = ['assignments', 'liveRecordedSessions', 'calendarEvents']
+    .some((field) => body[field] !== undefined);
+  if (!hasSupportedField) {
+    return res(400, { message: 'No supplemental fields provided' });
+  }
+
+  const existing = await getSupplementalContent(courseId);
+  const now = new Date().toISOString();
+
+  const nextContent = {
+    assignments: body.assignments !== undefined ? body.assignments : existing.assignments,
+    liveRecordedSessions: body.liveRecordedSessions !== undefined ? body.liveRecordedSessions : existing.liveRecordedSessions,
+    calendarEvents: body.calendarEvents !== undefined ? body.calendarEvents : existing.calendarEvents,
+  };
+
+  await ddb.send(new PutCommand({
+    TableName: COURSES_TABLE,
+    Item: {
+      pk: `COURSE#${courseId}`,
+      sk: SUPPLEMENTAL_SK,
+      courseId,
+      ...nextContent,
+      createdAt: existing.createdAt || now,
+      updatedAt: now,
+    },
+  }));
+
+  return res(200, { message: 'Supplemental content updated', version: 'V2', supplementalContent: nextContent });
 }
 
 // DELETE /admin/courses/{courseId}/weeks/{weekId}
@@ -231,9 +412,57 @@ async function getCourseProgress(courseId) {
   return res(200, { progress });
 }
 
+// GET /admin/courses/{courseId}/submissions
+async function getSubmissions(courseId) {
+  const result = await ddb.send(new ScanCommand({
+    TableName: process.env.ASSIGNMENTS_TABLE || process.env.ASSIGNMENT_TABLE || 'lms-assignments',
+    FilterExpression: 'courseId = :cid',
+    ExpressionAttributeValues: { ':cid': courseId },
+  }));
+
+  const submissions = result.Items || [];
+
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
+
+  if (supabaseUrl && serviceRoleKey && bucket) {
+    for (const sub of submissions) {
+      if (sub.storageProvider === 'supabase' && sub.storagePath) {
+        try {
+          const signedUrlRes = await fetch(
+            `${supabaseUrl}/storage/v1/object/sign/${bucket}/${sub.storagePath}`,
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${serviceRoleKey}`,
+                apikey: serviceRoleKey,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ expiresIn: 60 * 60 * 8 }),
+            }
+          );
+          if (signedUrlRes.ok) {
+            const body = await signedUrlRes.json();
+            const rawSigned = body.signedUrl || body.signedURL || '';
+            sub.driveUrl = rawSigned.startsWith('http') ? rawSigned : `${supabaseUrl}/storage/v1${rawSigned}`;
+          }
+        } catch (err) {
+          console.error('Error generating signed URL for', sub.storagePath, err);
+        }
+      }
+    }
+  }
+
+  submissions.sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
+
+  return res(200, { submissions });
+}
+
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 exports.handler = async (event) => {
+  currentOrigin = event?.headers?.origin || event?.headers?.Origin || FRONTEND_URL;
   if (event.httpMethod === 'OPTIONS') return res(200, {});
 
   // Layer 2 admin check — even if React's AdminRoute is bypassed, this rejects non-admins.
@@ -242,10 +471,12 @@ exports.handler = async (event) => {
   }
 
   const method = event.httpMethod;
-  const resource = event.resource;  // API Gateway route template, e.g. '/admin/courses/{courseId}/weeks/{weekId}'
+  const resource = (event.resource || '')
+    .replace('{courseID}', '{courseId}')
+    .replace('{weekID}', '{weekId}');
   const params = event.pathParameters || {};
-  const courseId = params.courseId;
-  const weekId = params.weekId;
+  const courseId = params.courseId || params.courseID;
+  const weekId = params.weekId || params.weekID;
 
   let body = {};
   try {
@@ -262,11 +493,17 @@ exports.handler = async (event) => {
     // ── Weeks ─────────────────────────────────────────────────────────
     if (method === 'GET' && resource === '/admin/courses/{courseId}/weeks') return await listWeeks(courseId);
     if (method === 'POST' && resource === '/admin/courses/{courseId}/weeks') return await createWeek(courseId, body);
+    if (method === 'PATCH' && resource === '/admin/courses/{courseId}/weeks/{weekId}' && weekId === '__supplemental__') {
+      return await updateSupplementalContent(courseId, body);
+    }
     if (method === 'PATCH' && resource === '/admin/courses/{courseId}/weeks/{weekId}') return await updateWeek(courseId, weekId, body);
     if (method === 'DELETE' && resource === '/admin/courses/{courseId}/weeks/{weekId}') return await deleteWeek(courseId, weekId);
 
     // ── Progress ──────────────────────────────────────────────────────
     if (method === 'GET' && resource === '/admin/courses/{courseId}/progress') return await getCourseProgress(courseId);
+
+    // ── Assignments ──────────────────────────────────────────────────────
+    if (method === 'GET' && resource === '/admin/courses/{courseId}/submissions') return await getSubmissions(courseId);
 
     return res(404, { message: `No handler for ${method} ${resource}` });
   } catch (err) {

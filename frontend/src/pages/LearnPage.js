@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { getCourseWeeks, getProgress } from '../utils/api';
 import VideoPlayer from '../components/VideoPlayer';
 import QuizComponent from '../components/QuizComponent';
-import AssignmentUpload from '../components/AssignmentUpload';
 
 const s = {
   page: { minHeight: '100vh', background: 'var(--background)' },
@@ -101,6 +100,28 @@ function extractYouTubeId(url) {
   return match ? match[1] : null;
 }
 
+function getDisplayWeekNumber(allWeeks, targetWeek) {
+  if (!targetWeek) return '';
+
+  const numericWeek = Number(targetWeek.weekNumber);
+  if (!Number.isFinite(numericWeek) || numericWeek <= 0) {
+    return String(targetWeek.weekNumber || '');
+  }
+
+  const groupNumber = Math.floor(numericWeek);
+  const groupWeeks = [...allWeeks]
+    .filter((week) => {
+      const current = Number(week.weekNumber);
+      return Number.isFinite(current) && Math.floor(current) === groupNumber;
+    })
+    .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
+
+  const lessonIndex = groupWeeks.findIndex((week) => week.weekId === targetWeek.weekId);
+  if (lessonIndex === -1) return String(targetWeek.weekNumber || '');
+
+  return `${groupNumber}.${lessonIndex + 1}`;
+}
+
 function ProgressStep({ label, done, active, locked }) {
   let icon = '○';
   let iconColor = 'var(--border)';
@@ -129,6 +150,7 @@ export default function LearnPage() {
   const { courseId, weekId } = useParams();
 
   const [week, setWeek] = useState(null);
+  const [displayWeekNumber, setDisplayWeekNumber] = useState('');
   const [progress, setProgress] = useState(null);
   const [videoComplete, setVideoComplete] = useState(false);
   const [quizUnlocked, setQuizUnlocked] = useState(false);
@@ -145,25 +167,49 @@ export default function LearnPage() {
         getCourseWeeks(courseId),
         getProgress(courseId),
       ]);
-      const allWeeks = weeksRes.data.weeks || [];
-      const found = allWeeks.find((w) => w.weekId === weekId);
-      if (!found) { setError('Week not found or not yet released.'); return; }
+      
+      let found = null;
+      const isRecordedSession = String(weekId).startsWith('rec-');
+
+      if (isRecordedSession) {
+        const supplemental = weeksRes.data.supplementalContent || {};
+        const sessions = supplemental.liveRecordedSessions || [];
+        found = sessions.find((s) => s.id === weekId);
+      } else {
+        const allWeeks = [
+          ...(weeksRes.data.modules || []),
+          ...(weeksRes.data.liveWeeks || []),
+          ...(weeksRes.data.weeks || [])
+        ];
+        found = allWeeks.find((w) => w.weekId === weekId);
+        if (found) {
+          setDisplayWeekNumber(getDisplayWeekNumber(allWeeks, found));
+        }
+      }
+
+      if (!found) { setError('Content not found or not yet released.'); return; }
       setWeek(found);
+
       const weekProgress = (progressRes.data.progress || []).find((p) => p.weekId === weekId) || null;
       setProgress(weekProgress);
       setVideoComplete(weekProgress?.videoComplete || false);
       setQuizPassed(weekProgress?.quizPassed || false);
-      // Quiz unlocks once 50 % of the video has been watched (or if already complete)
       setQuizUnlocked(weekProgress?.videoComplete || false);
-    } catch { setError('Failed to load this week. Please try again.'); }
-    finally { setLoading(false); }
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load this content. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (loading) return <div style={s.loading}>Loading week content…</div>;
   if (error) return <div style={s.error}>{error}</div>;
   if (!week) return null;
 
-  const videoId = extractYouTubeId(week.youtubeUrl);
+  const isRecordedSession = String(weekId).startsWith('rec-');
+  const videoUrl = week.storageProvider === 'supabase' ? week.url : null;
+  const videoId = videoUrl ? null : extractYouTubeId(week.youtubeUrl || week.url);
   const hasQuiz = (week.quiz?.questions || []).length > 0;
   const weekComplete = videoComplete && (!hasQuiz || quizPassed);
 
@@ -171,9 +217,13 @@ export default function LearnPage() {
     <div style={s.page}>
       {/* Nav */}
       <nav style={s.nav}>
-        <Link to="/dashboard" style={s.backLink}>← Dashboard</Link>
+        <Link to="/dashboard?view=courses" style={s.backLink}>← My Courses</Link>
         <span style={s.navBrand}>StepSmart</span>
-        <span style={s.weekBadge}>Week {week.weekNumber}</span>
+        {isRecordedSession ? (
+          <span style={s.weekBadge}>Recorded Session</span>
+        ) : (
+          <span style={s.weekBadge}>Week {displayWeekNumber || week.weekNumber}</span>
+        )}
       </nav>
 
       <div style={s.layout}>
@@ -182,9 +232,10 @@ export default function LearnPage() {
           <div style={s.weekTitle}>{week.title}</div>
           <div style={s.weekDesc}>{week.description}</div>
 
-          {videoId ? (
+          {videoId || videoUrl ? (
             <VideoPlayer
               videoId={videoId}
+              videoUrl={videoUrl}
               courseId={courseId}
               weekId={weekId}
               initialProgress={progress}
@@ -192,7 +243,7 @@ export default function LearnPage() {
               onQuizUnlock={() => setQuizUnlocked(true)}
             />
           ) : (
-            <div style={s.noVideo}>No video has been attached to this week yet.</div>
+            <div style={s.noVideo}>No video has been attached yet.</div>
           )}
 
           {videoComplete && week.qaLink && (
@@ -216,8 +267,6 @@ export default function LearnPage() {
               </div>
             </div>
           )}
-
-          <AssignmentUpload courseId={courseId} weekId={weekId} />
         </div>
 
         {/* Sidebar */}

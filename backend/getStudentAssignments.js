@@ -31,6 +31,42 @@ function res(statusCode, body) {
   };
 }
 
+async function createSupabaseSignedUrl(item) {
+  if (!item.storagePath || item.storageProvider !== 'supabase') {
+    return item.driveUrl || null;
+  }
+
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const bucket = item.storageBucket || process.env.SUPABASE_STORAGE_BUCKET;
+  if (!supabaseUrl || !serviceRoleKey || !bucket) {
+    console.error('Supabase signing is not configured for assignment:', item.storagePath);
+    return item.driveUrl || null;
+  }
+
+  const signedUrlRes = await fetch(
+    `${supabaseUrl}/storage/v1/object/sign/${bucket}/${item.storagePath}`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${serviceRoleKey}`,
+        apikey: serviceRoleKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ expiresIn: 60 * 60 * 24 }),
+    },
+  );
+
+  const signedUrlBody = await signedUrlRes.json();
+  const signedUrl = signedUrlBody.signedUrl ?? signedUrlBody.signedURL;
+  if (!signedUrlRes.ok || !signedUrl) {
+    console.error('Supabase signed URL error:', signedUrlBody);
+    return item.driveUrl || null;
+  }
+
+  return signedUrl;
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return res(200, {});
 
@@ -52,12 +88,17 @@ exports.handler = async (event) => {
       ScanIndexForward: false, // newest first
     }));
 
-    const assignments = (result.Items || []).map((item) => ({
-      fileName:    item.fileName,
-      driveUrl:    item.driveUrl,
+    const assignments = await Promise.all((result.Items || []).map(async (item) => ({
+      assignmentId: item.assignmentId || null,
+      assignmentTitle: item.assignmentTitle || null,
+      fileName: item.fileName,
+      driveUrl: await createSupabaseSignedUrl(item),
       driveFileId: item.driveFileId,
-      uploadedAt:  item.uploadedAt,
-    }));
+      storageProvider: item.storageProvider || null,
+      storageBucket: item.storageBucket || null,
+      storagePath: item.storagePath || null,
+      uploadedAt: item.uploadedAt,
+    })));
 
     return res(200, { assignments });
   } catch (err) {

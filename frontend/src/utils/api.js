@@ -35,8 +35,9 @@ export const sendHeartbeat = (courseId, weekId, currentTime, duration) =>
   api.post('/progress/heartbeat', { courseId, weekId, currentTime, duration });
 
 // Returns all watched-segment data for a student in one course.
-export const getProgress = (courseId) =>
-  api.get(`/progress/${courseId}`);
+// Pass { includeLeaderboard: true } when the dashboard also needs ranking data.
+export const getProgress = (courseId, params = {}) =>
+  api.get(`/progress/${courseId}`, { params });
 
 // ─── Courses ─────────────────────────────────────────────────────────────────
 
@@ -72,16 +73,38 @@ export const adminCreateWeek = (courseId, weekData) =>
 export const adminUpdateWeek = (courseId, weekId, updates) =>
   api.patch(`/admin/courses/${courseId}/weeks/${weekId}`, updates);
 
+export const adminUpdateSupplementalContent = (courseId, updates) =>
+  api.patch(`/admin/courses/${courseId}/weeks/__supplemental__`, updates);
+
 export const adminDeleteWeek = (courseId, weekId) =>
   api.delete(`/admin/courses/${courseId}/weeks/${weekId}`);
 
 export const adminGetAllProgress = (courseId) =>
   api.get(`/admin/courses/${courseId}/progress`);
 
+export const adminGetAllSubmissions = (courseId) =>
+  api.get(`/admin/courses/${courseId}/submissions`);
+
 // ─── Assignments ──────────────────────────────────────────────────────────────
 
-export const uploadAssignment = (courseId, weekId, fileName, mimeType, fileBase64) =>
-  api.post('/assignments/upload', { courseId, weekId, fileName, mimeType, fileBase64 }, {
+export const uploadAssignment = (
+  courseId,
+  weekId,
+  fileName,
+  mimeType,
+  fileBase64,
+  assignmentId,
+  assignmentTitle,
+) =>
+  api.post('/assignments/upload', {
+    courseId,
+    weekId,
+    fileName,
+    mimeType,
+    fileBase64,
+    assignmentId,
+    assignmentTitle,
+  }, {
     transformResponse: [data => { try { return JSON.parse(data); } catch { return {}; } }],
   });
 
