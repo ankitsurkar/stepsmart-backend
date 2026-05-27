@@ -15,7 +15,7 @@ const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
 
 const HEARTBEAT_INTERVAL = 10;  // seconds per segment — must match the frontend constant
-const COMPLETION_THRESHOLD = 0.9;  // 90 % of segments must be watched
+const COMPLETION_THRESHOLD = 0.8;  // 80 % of segments must be watched
 
 const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const ddb = DynamoDBDocumentClient.from(ddbClient, {
@@ -57,14 +57,22 @@ exports.handler = async (event) => {
     return res(400, { message: 'Invalid JSON body' });
   }
 
-  const { courseId, weekId, currentTime, duration } = body;
+  const { courseId, weekId, currentTime, duration, prevTime } = body;
   if (!courseId || !weekId || currentTime === undefined || !duration) {
     return res(400, { message: 'Missing required fields: courseId, weekId, currentTime, duration' });
   }
 
-  // 3. Compute which 10-second segment the student is currently in.
-  //    Math.floor(47 / 10) = 4  → segment 4 covers seconds 40–49.
-  const segment = Math.floor(currentTime / HEARTBEAT_INTERVAL);
+  const startTime = typeof prevTime === 'number' ? prevTime : currentTime;
+  const startSeg = Math.floor(startTime / HEARTBEAT_INTERVAL);
+  const endSeg = Math.floor(currentTime / HEARTBEAT_INTERVAL);
+  
+  const segments = new Set();
+  const minSeg = Math.min(startSeg, endSeg);
+  const maxSeg = Math.max(startSeg, endSeg);
+  for (let seg = minSeg; seg <= maxSeg; seg++) {
+    segments.add(seg);
+  }
+
   const totalSegments = Math.ceil(duration / HEARTBEAT_INTERVAL);
 
   const pk = `USER#${userId}`;
@@ -89,7 +97,7 @@ exports.handler = async (event) => {
       // 'duration' is a DynamoDB reserved word — use an expression attribute name.
       ExpressionAttributeNames: { '#dur': 'duration' },
       ExpressionAttributeValues: {
-        ':seg': new Set([segment]),
+        ':seg': segments,
         ':now': new Date().toISOString(),
         ':dur': duration,
         ':uid': userId,
