@@ -27,37 +27,89 @@ const s = {
 
   // ── Layout ────────────────────────────────────────────────────────────────
   layout: {
-    display: 'grid', gridTemplateColumns: '1fr 340px', minHeight: 'calc(100vh - 56px)',
+    maxWidth: '1000px',
+    margin: '0 auto',
+    padding: '2rem 1.5rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.5rem',
+    minHeight: 'calc(100vh - 56px)',
   },
 
   // ── Main / video area ─────────────────────────────────────────────────────
-  main: { padding: '1.5rem', overflow: 'auto' },
+  main: { display: 'flex', flexDirection: 'column', gap: '1rem' },
   weekTitle: {
-    fontSize: '1.3rem', fontWeight: 800, color: 'var(--foreground)', marginBottom: '0.2rem',
+    fontSize: '1.5rem', fontWeight: 800, color: 'var(--foreground)', marginBottom: '0.2rem',
   },
   weekDesc: {
-    color: 'var(--muted-foreground)', fontSize: '0.875rem', marginBottom: '1.25rem',
+    color: 'var(--muted-foreground)', fontSize: '0.9rem', marginBottom: '1.25rem',
     lineHeight: 1.6,
   },
-  qaSection: { marginTop: '1.25rem' },
+  qaSection: { marginTop: '0.5rem' },
   docLink: {
-    display: 'flex', alignItems: 'center', gap: '0.4rem',
-    padding: '0.45rem 0.75rem', background: 'var(--background)',
-    border: '1px solid var(--border)', borderRadius: '7px',
-    color: 'var(--foreground)', textDecoration: 'none', fontSize: '0.825rem',
-    fontWeight: 500, marginBottom: '0.5rem', transition: 'border-color 0.15s',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.4rem',
+    padding: '0.5rem 0.75rem',
+    background: 'var(--card)',
+    border: '1px solid var(--border)',
+    borderRadius: '7px',
+    color: 'var(--foreground)',
+    textDecoration: 'none',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    marginBottom: '0.5rem',
+    transition: 'border-color 0.15s',
   },
   qaLink: {
-    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-    padding: '0.6rem 1.25rem', background: 'var(--primary)',
-    color: 'var(--primary-foreground)', borderRadius: '8px',
-    textDecoration: 'none', fontSize: '0.875rem', fontWeight: 700,
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.4rem',
+    padding: '0.6rem 1.25rem',
+    background: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+    borderRadius: '8px',
+    textDecoration: 'none',
+    fontSize: '0.875rem',
+    fontWeight: 700,
     boxShadow: 'var(--shadow-sm)',
   },
 
+  // ── Tab Bar Interface ──────────────────────────────────────────────────────
+  tabBar: {
+    display: 'flex',
+    gap: '0.5rem',
+    marginTop: '1.5rem',
+    borderBottom: '1px solid var(--border)',
+    paddingBottom: '0.5rem',
+  },
+  tabBtn: {
+    padding: '0.5rem 1rem',
+    borderRadius: '999px',
+    border: '1px solid transparent',
+    background: 'transparent',
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.15s ease',
+  },
+  tabBtnActive: {
+    background: 'var(--card)',
+    color: 'var(--foreground)',
+    borderColor: 'var(--border)',
+    boxShadow: 'var(--shadow-sm)',
+  },
+  tabContentCard: {
+    background: 'var(--card)',
+    border: '1px solid var(--border)',
+    borderRadius: '12px',
+    padding: '1.5rem',
+    boxShadow: 'var(--shadow-sm)',
+    marginTop: '0.5rem',
+  },
+
   // ── Resources ────────────────────────────────────────────────────────────
-  resourceSection: { marginTop: '2rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' },
-  resourceHeading: { fontSize: '1.05rem', fontWeight: 800, color: 'var(--foreground)', marginBottom: '1rem' },
   resourceList: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
   resourceLink: {
     display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
@@ -66,18 +118,91 @@ const s = {
     fontSize: '0.875rem', fontWeight: 500, transition: 'background 0.15s, border-color 0.15s',
   },
 
-  // ── Sidebar ───────────────────────────────────────────────────────────────
-  sidebar: {
-    borderLeft: '1px solid var(--border)', background: 'var(--card)',
-    padding: '1.5rem', overflow: 'auto',
-    display: 'flex', flexDirection: 'column', gap: '0',
+  // ── Questions & Answers Card ──────────────────────────────────────────────
+  qaCard: {
+    background: 'var(--card)',
+    border: '1px solid var(--border)',
+    borderRadius: '12px',
+    padding: '1.5rem',
+    boxShadow: 'var(--shadow-sm)',
   },
-  sidebarSection: { marginBottom: '1.5rem' },
+  qaInputContainer: {
+    display: 'flex',
+    gap: '0.75rem',
+    marginTop: '0.75rem',
+    marginBottom: '1rem',
+  },
+  qaInput: {
+    flex: 1,
+    padding: '0.6rem 1rem',
+    borderRadius: '8px',
+    border: '1px solid var(--border)',
+    background: 'var(--background)',
+    color: 'var(--foreground)',
+    fontSize: '0.875rem',
+    outline: 'none',
+  },
+  qaPostBtn: {
+    padding: '0.6rem 1.25rem',
+    background: '#0F9D58', // Teal-green matching the screenshot
+    color: '#fff',
+    border: 'none',
+    borderRadius: '8px',
+    fontWeight: 700,
+    fontSize: '0.875rem',
+    cursor: 'pointer',
+    transition: 'background 0.15s',
+  },
+  commentList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    marginTop: '1rem',
+  },
+  commentItem: {
+    borderTop: '1px solid var(--border)',
+    paddingTop: '0.75rem',
+  },
+  commentHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+    fontWeight: 600,
+    marginBottom: '0.25rem',
+  },
+  commentText: {
+    fontSize: '0.875rem',
+    color: 'var(--foreground)',
+    lineHeight: 1.5,
+  },
+
+  // ── Next Lesson Button ───────────────────────────────────────────────────
+  nextBtnContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginTop: '1rem',
+    marginBottom: '2rem',
+  },
+  nextBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    padding: '0.65rem 1.25rem',
+    background: '#9CD3C4', // Soft teal-green from screenshot
+    color: '#FFFFFF',
+    borderRadius: '8px',
+    textDecoration: 'none',
+    fontSize: '0.875rem',
+    fontWeight: 700,
+    boxShadow: 'var(--shadow-sm)',
+    transition: 'background 0.15s',
+  },
+
   sidebarHeading: {
-    fontSize: '0.72rem', fontWeight: 700, color: 'var(--muted-foreground)',
+    fontSize: '0.85rem', fontWeight: 700, color: 'var(--foreground)',
     textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.85rem',
   },
-  divider: { border: 'none', borderTop: '1px solid var(--border)', margin: '1.25rem 0' },
 
   // ── States ────────────────────────────────────────────────────────────────
   loading: {
@@ -150,6 +275,7 @@ export default function LearnPage() {
   const { courseId, weekId } = useParams();
 
   const [week, setWeek] = useState(null);
+  const [allWeeks, setAllWeeks] = useState([]);
   const [displayWeekNumber, setDisplayWeekNumber] = useState('');
   const [progress, setProgress] = useState(null);
   const [videoComplete, setVideoComplete] = useState(false);
@@ -157,6 +283,14 @@ export default function LearnPage() {
   const [quizPassed, setQuizPassed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  // Tabs and Questions state
+  const [activeTab, setActiveTab] = useState('progress');
+  const [newQuestionText, setNewQuestionText] = useState('');
+  const [questionsList, setQuestionsList] = useState([
+    { id: 1, author: 'Student A', text: 'Are we covering advanced metrics in week 3?', date: '2 days ago' },
+    { id: 2, author: 'Parth Randive', text: 'Yes, week 3 focuses heavily on key product-led growth metrics!', date: '1 day ago' },
+  ]);
 
   useEffect(() => { loadWeek(); }, [courseId, weekId]);
 
@@ -171,19 +305,23 @@ export default function LearnPage() {
       let found = null;
       const isRecordedSession = String(weekId).startsWith('rec-');
 
+      const modulesList = weeksRes.data.modules || [];
+      const liveWeeksList = weeksRes.data.liveWeeks || [];
+      const supplementalList = weeksRes.data.supplementalContent?.liveRecordedSessions || [];
+      
+      const weeksList = [
+        ...modulesList,
+        ...liveWeeksList,
+        ...supplementalList
+      ];
+      setAllWeeks(weeksList);
+
       if (isRecordedSession) {
-        const supplemental = weeksRes.data.supplementalContent || {};
-        const sessions = supplemental.liveRecordedSessions || [];
-        found = sessions.find((s) => s.id === weekId);
+        found = supplementalList.find((s) => s.id === weekId);
       } else {
-        const allWeeks = [
-          ...(weeksRes.data.modules || []),
-          ...(weeksRes.data.liveWeeks || []),
-          ...(weeksRes.data.weeks || [])
-        ];
-        found = allWeeks.find((w) => w.weekId === weekId);
+        found = weeksList.find((w) => w.weekId === weekId);
         if (found) {
-          setDisplayWeekNumber(getDisplayWeekNumber(allWeeks, found));
+          setDisplayWeekNumber(getDisplayWeekNumber(weeksList, found));
         }
       }
 
@@ -203,6 +341,18 @@ export default function LearnPage() {
     }
   }
 
+  function handlePostQuestion() {
+    if (!newQuestionText.trim()) return;
+    const newQ = {
+      id: Date.now(),
+      author: 'You',
+      text: newQuestionText.trim(),
+      date: 'Just now',
+    };
+    setQuestionsList([newQ, ...questionsList]);
+    setNewQuestionText('');
+  }
+
   if (loading) return <div style={s.loading}>Loading week content…</div>;
   if (error) return <div style={s.error}>{error}</div>;
   if (!week) return null;
@@ -212,6 +362,10 @@ export default function LearnPage() {
   const videoId = videoUrl ? null : extractYouTubeId(week.youtubeUrl || week.url);
   const hasQuiz = (week.quiz?.questions || []).length > 0;
   const weekComplete = videoComplete && (!hasQuiz || quizPassed);
+
+  // Find next lesson
+  const currentIdx = allWeeks.findIndex((w) => (w.weekId || w.id) === weekId);
+  const nextWeek = currentIdx !== -1 && currentIdx < allWeeks.length - 1 ? allWeeks[currentIdx + 1] : null;
 
   return (
     <div style={s.page}>
@@ -227,7 +381,7 @@ export default function LearnPage() {
       </nav>
 
       <div style={s.layout}>
-        {/* Main content */}
+        {/* Main Content Area */}
         <div style={s.main}>
           <div style={s.weekTitle}>{week.title}</div>
           <div style={s.weekDesc}>{week.description}</div>
@@ -254,45 +408,83 @@ export default function LearnPage() {
             </div>
           )}
 
-          {videoComplete && week.resources && week.resources.length > 0 && (
-            <div style={s.resourceSection}>
-              <div style={s.resourceHeading}>Resources</div>
-              <div style={s.resourceList}>
-                {week.resources.map((r, i) => (
-                  <a key={r.id || i} href={r.url} target="_blank" rel="noopener noreferrer" style={s.resourceLink}>
-                    <span style={{ fontSize: '1.1rem' }}>📄</span>
-                    {r.title}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Sidebar */}
-        <div style={s.sidebar}>
-          <div style={s.sidebarSection}>
-            <div style={s.sidebarHeading}>Your progress</div>
-            <ProgressStep label="Watch video" done={videoComplete} active={!videoComplete} />
-            {hasQuiz ? (
-              <ProgressStep label="Pass quiz" done={quizPassed} active={quizUnlocked && !quizPassed} locked={!quizUnlocked} />
-            ) : (
-              <ProgressStep label="Quiz not required" done={videoComplete} locked={!videoComplete} />
-            )}
-            <ProgressStep label="Week complete" done={weekComplete} locked={!weekComplete} />
+          {/* Pill Tabs Bar */}
+          <div style={s.tabBar}>
+            <button
+              onClick={() => setActiveTab('progress')}
+              style={{ ...s.tabBtn, ...(activeTab === 'progress' ? s.tabBtnActive : {}) }}
+            >
+              Your Progress
+            </button>
+            <button
+              onClick={() => setActiveTab('transcript')}
+              style={{ ...s.tabBtn, ...(activeTab === 'transcript' ? s.tabBtnActive : {}) }}
+            >
+              Transcript
+            </button>
+            <button
+              onClick={() => setActiveTab('resources')}
+              style={{ ...s.tabBtn, ...(activeTab === 'resources' ? s.tabBtnActive : {}) }}
+            >
+              Resources
+            </button>
           </div>
 
-          <hr style={s.divider} />
+          {/* Tab Contents */}
+          {activeTab === 'progress' && (
+            <div style={s.tabContentCard}>
+              <div style={s.sidebarHeading}>Your progress</div>
+              <ProgressStep label="Watch video" done={videoComplete} active={!videoComplete} />
+              {hasQuiz ? (
+                <ProgressStep label="Pass quiz" done={quizPassed} active={quizUnlocked && !quizPassed} locked={!quizUnlocked} />
+              ) : (
+                <ProgressStep label="Quiz not required" done={videoComplete} locked={!videoComplete} />
+              )}
+              <ProgressStep label="Week complete" done={weekComplete} locked={!weekComplete} />
+            </div>
+          )}
 
-          <div style={s.sidebarSection}>
-            <div style={s.sidebarHeading}>Quiz</div>
+          {activeTab === 'transcript' && (
+            <div style={s.tabContentCard}>
+              <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
+                No transcript for this lesson.
+              </p>
+            </div>
+          )}
+
+          {activeTab === 'resources' && (
+            <div style={s.tabContentCard}>
+              <div style={s.sidebarHeading}>Resources</div>
+              {week.resources && week.resources.length > 0 ? (
+                <div style={s.resourceList}>
+                  {week.resources.map((r, i) => (
+                    <a key={r.id || i} href={r.url} target="_blank" rel="noopener noreferrer" style={s.resourceLink}>
+                      <span style={{ fontSize: '1.1rem' }}>📄</span>
+                      {r.title}
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
+                  No resources for this lesson.
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Quiz Card */}
+          <div style={s.tabContentCard}>
+            <div style={{ ...s.sidebarHeading, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>{quizPassed ? '✓' : !quizUnlocked ? '🔒' : '📝'}</span>
+              <span>Quiz</span>
+            </div>
             {!hasQuiz ? (
-              <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5 }}>
+              <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
                 No quiz for this week. This week is complete after finishing the video.
               </p>
             ) : !quizUnlocked ? (
-              <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5 }}>
-                Watch 50% of the video to unlock the quiz.
+              <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
+                Watch at least 80% of the video to unlock the quiz.
               </p>
             ) : (
               <QuizComponent
@@ -305,26 +497,68 @@ export default function LearnPage() {
             )}
           </div>
 
-          {week.docs?.length > 0 && (
-            <>
-              <hr style={s.divider} />
-              <div style={s.sidebarSection}>
-                <div style={s.sidebarHeading}>Reference Documents</div>
-                {week.docs.map((doc) => (
-                  <a
-                    key={doc.id}
-                    href={doc.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={s.docLink}
-                  >
-                    <span style={{ fontSize: '0.9rem' }}>📄</span>
-                    {doc.label}
-                  </a>
-                ))}
-              </div>
-            </>
+          {/* Reference Documents */}
+          {week.docs && week.docs.length > 0 && (
+            <div style={s.tabContentCard}>
+              <div style={s.sidebarHeading}>Reference Documents</div>
+              {week.docs.map((doc) => (
+                <a
+                  key={doc.id}
+                  href={doc.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={s.docLink}
+                >
+                  <span style={{ fontSize: '0.9rem' }}>📄</span>
+                  {doc.label}
+                </a>
+              ))}
+            </div>
           )}
+
+          {/* Questions & Answers Card */}
+          <div style={s.qaCard}>
+            <div style={s.sidebarHeading}>Questions &amp; Answers</div>
+            <div style={s.qaInputContainer}>
+              <input
+                type="text"
+                placeholder="Ask a question..."
+                style={s.qaInput}
+                value={newQuestionText}
+                onChange={(e) => setNewQuestionText(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handlePostQuestion()}
+              />
+              <button style={s.qaPostBtn} onClick={handlePostQuestion}>Post</button>
+            </div>
+
+            <div style={s.commentList}>
+              {questionsList.length > 0 ? (
+                questionsList.map((q) => (
+                  <div key={q.id} style={s.commentItem}>
+                    <div style={s.commentHeader}>
+                      <span>{q.author}</span>
+                      <span>{q.date}</span>
+                    </div>
+                    <div style={s.commentText}>{q.text}</div>
+                  </div>
+                ))
+              ) : (
+                <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', margin: 0 }}>
+                  No questions yet.
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Next Lesson Navigation Button */}
+          {nextWeek && (
+            <div style={s.nextBtnContainer}>
+              <Link to={`/learn/${courseId}/${nextWeek.weekId || nextWeek.id}`} style={s.nextBtn}>
+                Next lesson →
+              </Link>
+            </div>
+          )}
+
         </div>
       </div>
     </div>
