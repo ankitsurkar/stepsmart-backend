@@ -1509,6 +1509,7 @@ export default function AdminPage() {
       <div style={s.tabs}>
         {[
           { id: 'weeks', label: 'Manage Weeks' },
+          { id: 'supplemental', label: 'Supplemental Content' },
           { id: 'students', label: 'Students' },
           { id: 'progress', label: 'Progress' },
           { id: 'submissions', label: 'Submissions' },
@@ -1525,6 +1526,7 @@ export default function AdminPage() {
 
       <div style={s.content}>
         {tab === 'weeks' && <WeeksTab />}
+        {tab === 'supplemental' && <SupplementalContentTab />}
         {tab === 'students' && <StudentsTab />}
         {tab === 'progress' && <ProgressTab />}
         {tab === 'submissions' && <SubmissionsTab />}
