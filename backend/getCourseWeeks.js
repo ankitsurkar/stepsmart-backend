@@ -123,6 +123,7 @@ exports.handler = async (event) => {
     visible: w.visible || false,
     resources: w.resources || [],
     docs: w.docs || [],
+    transcript: w.transcript || null,
     assignments: w.assignments || [],
     liveRecordedSessions: w.liveRecordedSessions || [],
     calendarEvents: w.calendarEvents || [],

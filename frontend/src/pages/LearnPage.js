@@ -446,9 +446,15 @@ export default function LearnPage() {
 
           {activeTab === 'transcript' && (
             <div style={s.tabContentCard}>
-              <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
-                No transcript for this lesson.
-              </p>
+              {week.transcript ? (
+                <div style={{ color: 'var(--foreground)', fontSize: '0.9rem', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                  {week.transcript}
+                </div>
+              ) : (
+                <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
+                  No transcript for this lesson.
+                </p>
+              )}
             </div>
           )}
 
