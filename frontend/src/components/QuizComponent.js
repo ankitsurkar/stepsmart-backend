@@ -90,9 +90,7 @@ export default function QuizComponent({ courseId, weekId, questions, initialPass
   const [submitting, setSubmitting] = useState(false);
   const [error,      setError]      = useState('');
 
-  if (initialPassed) {
-    return <div style={s.alreadyPassed}>✓ Quiz passed — week complete!</div>;
-  }
+
   if (questions.length === 0) {
     return <p style={s.noQuiz}>No quiz for this week.</p>;
   }
@@ -127,6 +125,13 @@ export default function QuizComponent({ courseId, weekId, questions, initialPass
 
   return (
     <div>
+      {/* Already passed banner */}
+      {initialPassed && !submitted && (
+        <div style={{ ...s.resultBanner, ...s.resultPass, textAlign: 'center', marginBottom: '1.5rem' }}>
+          ✓ You have already passed this quiz! Feel free to review or retry the questions below.
+        </div>
+      )}
+
       {/* Result banner */}
       {submitted && result && (
         <div style={{ ...s.resultBanner, ...(result.passed ? s.resultPass : s.resultFail) }}>
