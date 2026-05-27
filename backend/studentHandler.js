@@ -14,7 +14,7 @@ const ASSIGNMENTS_TABLE = process.env.ASSIGNMENTS_TABLE || process.env.ASSIGNMEN
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
 const PASSING_PCT = 70;
 const HEARTBEAT_INTERVAL = 10;
-const COMPLETION_THRESHOLD = 0.9;
+const COMPLETION_THRESHOLD = 0.8;
 const SUPPLEMENTAL_SK = 'SUPPLEMENTAL#GLOBAL';
 
 let currentOrigin = FRONTEND_URL;
@@ -432,12 +432,22 @@ async function getProgressForCourse(courseId, userId, event) {
 }
 
 async function recordHeartbeat(userId, body) {
-  const { courseId, weekId, currentTime, duration } = body;
+  const { courseId, weekId, currentTime, duration, prevTime } = body;
   if (!courseId || !weekId || currentTime === undefined || !duration) {
     return res(400, { message: 'Missing required fields: courseId, weekId, currentTime, duration' });
   }
 
-  const segment = Math.floor(currentTime / HEARTBEAT_INTERVAL);
+  const startTime = typeof prevTime === 'number' ? prevTime : currentTime;
+  const startSeg = Math.floor(startTime / HEARTBEAT_INTERVAL);
+  const endSeg = Math.floor(currentTime / HEARTBEAT_INTERVAL);
+  
+  const segments = new Set();
+  const minSeg = Math.min(startSeg, endSeg);
+  const maxSeg = Math.max(startSeg, endSeg);
+  for (let seg = minSeg; seg <= maxSeg; seg++) {
+    segments.add(seg);
+  }
+
   const totalSegments = Math.ceil(duration / HEARTBEAT_INTERVAL);
 
   const pk = `USER#${userId}`;
@@ -458,7 +468,7 @@ async function recordHeartbeat(userId, body) {
       `,
       ExpressionAttributeNames: { '#dur': 'duration' },
       ExpressionAttributeValues: {
-        ':seg': new Set([segment]),
+        ':seg': segments,
         ':now': new Date().toISOString(),
         ':dur': duration,
         ':uid': userId,
