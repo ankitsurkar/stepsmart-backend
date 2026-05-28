@@ -144,5 +144,22 @@ exports.handler = async (event) => {
   const modules = weeks.filter((w) => (w.category || 'module') === 'module');
   const liveWeeks = weeks.filter((w) => w.category === 'live');
 
-  return res(200, { modules, liveWeeks, supplementalContent });
+  const supplementalWeek = {
+    weekId: '__supplemental__',
+    courseId: courseId,
+    weekNumber: 'Supplemental',
+    title: 'Supplemental Content',
+    description: 'Course-wide supplemental assignments, recorded sessions, and calendar events.',
+    visible: true,
+    assignments: supplementalContent?.assignments || [],
+    liveRecordedSessions: supplementalContent?.liveRecordedSessions || [],
+    calendarEvents: supplementalContent?.calendarEvents || [],
+    resources: [],
+    docs: [],
+    quiz: { questions: [] },
+  };
+
+  const allWeeks = [...weeks, supplementalWeek];
+
+  return res(200, { weeks: allWeeks, modules, liveWeeks, supplementalContent });
 };
