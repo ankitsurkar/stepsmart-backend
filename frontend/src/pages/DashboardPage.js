@@ -1181,36 +1181,44 @@ function getLessonProgressPercent(week, progress) {
 function buildWeekGroups(weeks) {
   const groups = new Map();
 
-  weeks.forEach((week) => {
-    const numericWeek = Number(week.weekNumber);
-    const groupNumber = Number.isFinite(numericWeek) && numericWeek > 0
-      ? Math.floor(numericWeek)
-      : groups.size + 1;
+  weeks
+    .filter((week) => week.weekId !== '__supplemental__')
+    .forEach((week) => {
+      const numericWeek = Number(week.weekNumber);
+      const groupNumber = Number.isFinite(numericWeek) && numericWeek > 0
+        ? Math.floor(numericWeek)
+        : groups.size + 1;
 
-    if (!groups.has(groupNumber)) {
-      groups.set(groupNumber, {
-        groupNumber,
-        lessons: [],
-      });
-    }
+      if (!groups.has(groupNumber)) {
+        groups.set(groupNumber, {
+          groupNumber,
+          lessons: [],
+        });
+      }
 
-    const group = groups.get(groupNumber);
-    const lessonNumber = `${groupNumber}.${group.lessons.length + 1}`;
-    group.lessons.push({ ...week, displayWeekNumber: lessonNumber });
-  });
+      const group = groups.get(groupNumber);
+      const lessonNumber = `${groupNumber}.${group.lessons.length + 1}`;
+      group.lessons.push({ ...week, displayWeekNumber: lessonNumber });
+    });
 
   return [...groups.values()].sort((a, b) => a.groupNumber - b.groupNumber);
 }
 
 function buildRecordedSessionGroups(weeks) {
   const groups = new Map();
-  const sortedWeeks = [...weeks].sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
+  const sortedWeeks = [...weeks].sort((a, b) => {
+    if (a.weekId === '__supplemental__') return 1;
+    if (b.weekId === '__supplemental__') return -1;
+    return (a.weekNumber || 0) - (b.weekNumber || 0);
+  });
 
   sortedWeeks.forEach((week) => {
-    const numericWeek = Number(week.weekNumber);
-    const groupNumber = Number.isFinite(numericWeek) && numericWeek > 0
-      ? Math.floor(numericWeek)
-      : groups.size + 1;
+    const isSupp = week.weekId === '__supplemental__';
+    const groupNumber = isSupp ? 'Supplemental' : (
+      Number.isFinite(Number(week.weekNumber)) && Number(week.weekNumber) > 0
+        ? Math.floor(Number(week.weekNumber))
+        : groups.size + 1
+    );
 
     if (!groups.has(groupNumber)) {
       groups.set(groupNumber, {
@@ -1221,7 +1229,9 @@ function buildRecordedSessionGroups(weeks) {
 
     const group = groups.get(groupNumber);
     (week.liveRecordedSessions || []).forEach((session) => {
-      const sessionNumber = `${groupNumber}.${group.sessions.length + 1}`;
+      const sessionNumber = isSupp 
+        ? `S.${group.sessions.length + 1}` 
+        : `${groupNumber}.${group.sessions.length + 1}`;
       group.sessions.push({
         ...session,
         courseId: week.courseId,
@@ -1232,11 +1242,15 @@ function buildRecordedSessionGroups(weeks) {
     });
   });
 
-  return [...groups.values()].sort((a, b) => a.groupNumber - b.groupNumber);
+  return [...groups.values()].filter((g) => g.sessions.length > 0);
 }
 
 function buildAssignments(weeks) {
-  const sortedWeeks = [...weeks].sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
+  const sortedWeeks = [...weeks].sort((a, b) => {
+    if (a.weekId === '__supplemental__') return 1;
+    if (b.weekId === '__supplemental__') return -1;
+    return (a.weekNumber || 0) - (b.weekNumber || 0);
+  });
   let assignmentNumber = 0;
 
   return sortedWeeks.flatMap((week) =>
@@ -1380,7 +1394,11 @@ function getCalendarKindPalette(kind) {
 
 function buildCalendarEventDefinitions(weeks) {
   const weekEvents = [...weeks]
-    .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0))
+    .sort((a, b) => {
+      if (a.weekId === '__supplemental__') return 1;
+      if (b.weekId === '__supplemental__') return -1;
+      return (a.weekNumber || 0) - (b.weekNumber || 0);
+    })
     .flatMap((week) => {
       const numericWeek = Number(week.weekNumber);
       const weekLabel = Number.isFinite(numericWeek) && numericWeek > 0
@@ -2354,7 +2372,11 @@ export default function DashboardPage() {
                   >
                     <div style={s.weekGroupTop}>
                       <div>
-                        <div style={s.weekGroupLabel}>Week {group.groupNumber}</div>
+                        <div style={s.weekGroupLabel}>
+                          {group.groupNumber === 'Supplemental'
+                            ? 'Supplemental Content'
+                            : `Week ${group.groupNumber}`}
+                        </div>
                         <div style={s.weekGroupMeta}>
                           {groupItemCount} {showingVideos ? `video${groupItemCount === 1 ? '' : 's'}` : `recording${groupItemCount === 1 ? '' : 's'}`}
                           {showingVideos && (
@@ -2551,9 +2573,11 @@ export default function DashboardPage() {
           <div style={s.accordionList}>
             {courseAssignments.map((assignment) => {
               const isExpanded = !!expandedAssignments[assignment.id];
-              const sourceWeekLabel = Number.isFinite(Number(assignment.weekNumber))
-                ? `Week ${Math.floor(Number(assignment.weekNumber))}`
-                : 'Course Module';
+              const sourceWeekLabel = assignment.weekId === '__supplemental__'
+                ? 'Supplemental Content'
+                : Number.isFinite(Number(assignment.weekNumber))
+                  ? `Week ${Math.floor(Number(assignment.weekNumber))}`
+                  : 'Course Module';
               const assignmentLabel = `Assignment ${assignment.assignmentNumber}`;
               const assignmentTitle = assignment.title || assignmentLabel;
 
