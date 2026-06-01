@@ -1179,6 +1179,62 @@ function getLessonProgressPercent(week, progress) {
   return Math.min(Math.round((watched / total) * 100), 100);
 }
 
+function calculateActiveStreak(progressMap) {
+  const progressItems = Object.values(progressMap || {});
+  if (progressItems.length === 0) return { streak: 1, history: [true, false, false, false, false, false, true] };
+
+  // Extract unique active dates in local timezone
+  const activeDates = new Set();
+  progressItems.forEach((item) => {
+    if (item.lastSeen) {
+      const dateStr = item.lastSeen.split('T')[0];
+      activeDates.add(dateStr);
+    }
+    if (item.videoCompletedAt) {
+      const dateStr = item.videoCompletedAt.split('T')[0];
+      activeDates.add(dateStr);
+    }
+  });
+
+  // Always include today since they are logged in right now!
+  const todayStr = new Date().toISOString().split('T')[0];
+  activeDates.add(todayStr);
+
+  let currentStreak = 0;
+  let checkDate = new Date();
+
+  for (let i = 0; i < 30; i++) {
+    const checkDateStr = checkDate.toISOString().split('T')[0];
+    if (activeDates.has(checkDateStr)) {
+      currentStreak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      if (i === 0) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        if (activeDates.has(yesterdayStr)) {
+          checkDate = yesterday;
+          continue;
+        }
+      }
+      break;
+    }
+  }
+
+  const finalStreak = Math.max(1, currentStreak);
+  
+  const history = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dStr = d.toISOString().split('T')[0];
+    history.push(activeDates.has(dStr));
+  }
+
+  return { streak: finalStreak, history };
+}
+
 function buildWeekGroups(weeks) {
   const groups = new Map();
 
@@ -2222,6 +2278,11 @@ export default function DashboardPage() {
       ? `ACTIVE COURSE: ${activeCourse.name}${currentGroup ? ` (Week ${currentGroup.groupNumber})` : ''}`
       : 'ACTIVE COURSE: Not assigned yet';
 
+    // Calculate learning streak and active days history dynamically
+    const streakInfo = calculateActiveStreak(progressMap);
+    const activeStreak = streakInfo.streak;
+    const streakHistory = streakInfo.history;
+
     return (
       <div
         style={{
@@ -2330,17 +2391,17 @@ export default function DashboardPage() {
                   Streak
                 </div>
                 <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>
-                  6 days
+                  {activeStreak} {activeStreak === 1 ? 'day' : 'days'}
                 </div>
               </div>
               <div>
                 <div style={{ display: 'flex', gap: '4px', marginBottom: '0.75rem' }}>
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} style={{ height: '6px', flex: 1, borderRadius: '999px', background: '#198754' }} />
+                  {streakHistory.map((isActive, i) => (
+                    <div key={i} style={{ height: '6px', flex: 1, borderRadius: '999px', background: isActive ? '#198754' : '#e2e8f0', transition: 'background 0.3s ease' }} />
                   ))}
                 </div>
                 <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem' }}>
-                  Log in today to hit 7
+                  Log in tomorrow to hit {activeStreak + 1}
                 </div>
               </div>
             </div>
