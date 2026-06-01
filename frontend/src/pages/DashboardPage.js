@@ -5,12 +5,13 @@ import { getMyCourses, getCourseWeeks, getProgress } from '../utils/api';
 import AssignmentUpload from '../components/AssignmentUpload';
 
 const NAV_ITEMS = [
-  { id: 'dashboard', label: 'Dashboard', icon: 'home' },
-  { id: 'courses', label: 'My Courses', icon: 'book' },
-  { id: 'scheduling', label: '1:1 Scheduling', icon: 'clock' },
+  { id: 'dashboard', label: 'Home', icon: 'home' },
+  { id: 'courses', label: 'Courses', icon: 'book' },
+  { id: 'cohort', label: 'Cohort', icon: 'users' },
+  { id: 'scheduling', label: 'Sessions', icon: 'clock' },
   { id: 'assignments', label: 'Assignments', icon: 'clipboard' },
   { id: 'calendar', label: 'Calendar', icon: 'calendar' },
-  { id: 'settings', label: 'Settings', icon: 'settings' },
+  { id: 'settings', label: 'Profile', icon: 'settings' },
 ];
 
 function getInitialDashboardView(searchParams) {
@@ -1627,6 +1628,16 @@ function SidebarIcon({ kind }) {
       </svg>
     );
   }
+  if (kind === 'users') {
+    return (
+      <svg {...common}>
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    );
+  }
   return (
     <svg {...common}>
       <circle cx="12" cy="12" r="3" />
@@ -1910,6 +1921,19 @@ export default function DashboardPage() {
   const [displayNameInput, setDisplayNameInput] = useState('');
   const [settingsMessage, setSettingsMessage] = useState('');
   const [savingDisplayName, setSavingDisplayName] = useState(false);
+  const [linkedinUrlInput, setLinkedinUrlInput] = useState('');
+  const [timezoneInput, setTimezoneInput] = useState('UTC');
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [whatsappNotifications, setWhatsappNotifications] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setLinkedinUrlInput(localStorage.getItem(`settings_linkedin_${user.username}`) || '');
+      setTimezoneInput(localStorage.getItem(`settings_timezone_${user.username}`) || 'UTC');
+      setEmailNotifications(localStorage.getItem(`settings_email_${user.username}`) !== 'false');
+      setWhatsappNotifications(localStorage.getItem(`settings_whatsapp_${user.username}`) === 'true');
+    }
+  }, [user]);
   const [isCompact, setIsCompact] = useState(
     typeof window !== 'undefined' ? window.innerWidth < 980 : false,
   );
@@ -2053,9 +2077,20 @@ export default function DashboardPage() {
     setSavingDisplayName(true);
     setSettingsMessage('');
 
-    const result = await updateDisplayName(displayNameInput);
-    setSettingsMessage(result.error || 'Display name updated.');
-    setSavingDisplayName(false);
+    try {
+      const result = await updateDisplayName(displayNameInput);
+      if (user) {
+        localStorage.setItem(`settings_linkedin_${user.username}`, linkedinUrlInput);
+        localStorage.setItem(`settings_timezone_${user.username}`, timezoneInput);
+        localStorage.setItem(`settings_email_${user.username}`, emailNotifications ? 'true' : 'false');
+        localStorage.setItem(`settings_whatsapp_${user.username}`, whatsappNotifications ? 'true' : 'false');
+      }
+      setSettingsMessage(result.error || 'Profile settings saved.');
+    } catch (err) {
+      setSettingsMessage('Failed to save profile settings.');
+    } finally {
+      setSavingDisplayName(false);
+    }
   }
 
   function toggleWeekGroup(groupNumber) {
@@ -2638,14 +2673,14 @@ export default function DashboardPage() {
       <div style={s.card}>
         <div style={s.panelHeader}>
           <div>
-            <div style={s.sectionTitle}>Account Settings</div>
-            <div style={s.sectionMeta}>Update how your name appears across your student dashboard.</div>
+            <div style={s.sectionTitle}>Profile Settings</div>
+            <div style={s.sectionMeta}>Update your display name, LinkedIn profile, and notification preferences.</div>
           </div>
         </div>
 
         <form style={s.settingsForm} onSubmit={handleSaveDisplayName}>
           <div style={s.settingsField}>
-            <label htmlFor="display-name" style={s.settingsLabel}>Display Name</label>
+            <label htmlFor="display-name" style={s.settingsLabel}>Display name</label>
             <input
               id="display-name"
               type="text"
@@ -2654,28 +2689,119 @@ export default function DashboardPage() {
               onChange={(e) => setDisplayNameInput(e.target.value)}
               placeholder="Enter your display name"
             />
-            <div style={s.settingsHelp}>
-              This name will show on your dashboard and anywhere your student profile appears.
-            </div>
           </div>
 
-          <div style={s.snapshotRows}>
-            <div style={s.snapshotRow}>
-              <div style={s.snapshotLabel}>Login</div>
-              <div style={s.snapshotValue}>{user?.email || user?.signInDetails?.loginId || user?.username || 'Signed in'}</div>
-            </div>
-            <div style={{ ...s.snapshotRow, borderBottom: 'none', paddingBottom: 0 }}>
-              <div style={s.snapshotLabel}>Role</div>
-              <div style={s.snapshotValue}>{isAdmin ? 'Admin + Student' : 'Student'}</div>
-            </div>
+          <div style={s.settingsField}>
+            <label htmlFor="linkedin-url" style={s.settingsLabel}>LinkedIn URL</label>
+            <input
+              id="linkedin-url"
+              type="text"
+              style={s.settingsInput}
+              value={linkedinUrlInput}
+              onChange={(e) => setLinkedinUrlInput(e.target.value)}
+              placeholder="https://linkedin.com/in/you"
+            />
           </div>
 
-          <div style={s.settingsActions}>
-            <button type="submit" style={s.primaryAction} disabled={savingDisplayName}>
-              {savingDisplayName ? 'Saving…' : 'Save Display Name'}
+          <div style={s.settingsField}>
+            <label htmlFor="timezone" style={s.settingsLabel}>Timezone</label>
+            <input
+              id="timezone"
+              type="text"
+              style={s.settingsInput}
+              value={timezoneInput}
+              onChange={(e) => setTimezoneInput(e.target.value)}
+              placeholder="UTC"
+            />
+          </div>
+
+          <div style={{ ...s.settingsField, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0' }}>
+            <div>
+              <div style={{ ...s.settingsLabel, textTransform: 'none', fontSize: '0.875rem', fontWeight: 600, color: 'var(--foreground)', letterSpacing: 'normal' }}>Email notifications</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setEmailNotifications(!emailNotifications)}
+              style={{
+                width: '46px',
+                height: '24px',
+                borderRadius: '999px',
+                background: emailNotifications ? '#198754' : '#e4e4e7',
+                position: 'relative',
+                cursor: 'pointer',
+                transition: 'background 0.2s',
+                border: 'none',
+                padding: 0,
+              }}
+            >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  background: '#fff',
+                  position: 'absolute',
+                  top: '2px',
+                  left: emailNotifications ? '24px' : '2px',
+                  transition: 'left 0.2s',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+                }}
+              />
+            </button>
+          </div>
+
+          <div style={{ ...s.settingsField, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid rgba(15, 40, 80, 0.08)', paddingBottom: '1rem' }}>
+            <div>
+              <div style={{ ...s.settingsLabel, textTransform: 'none', fontSize: '0.875rem', fontWeight: 600, color: 'var(--foreground)', letterSpacing: 'normal' }}>WhatsApp notifications</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setWhatsappNotifications(!whatsappNotifications)}
+              style={{
+                width: '46px',
+                height: '24px',
+                borderRadius: '999px',
+                background: whatsappNotifications ? '#198754' : '#e4e4e7',
+                position: 'relative',
+                cursor: 'pointer',
+                transition: 'background 0.2s',
+                border: 'none',
+                padding: 0,
+              }}
+            >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  background: '#fff',
+                  position: 'absolute',
+                  top: '2px',
+                  left: whatsappNotifications ? '24px' : '2px',
+                  transition: 'left 0.2s',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+                }}
+              />
+            </button>
+          </div>
+
+          <div style={s.settingsField}>
+            <label htmlFor="login-email" style={s.settingsLabel}>Login email</label>
+            <input
+              id="login-email"
+              type="text"
+              style={{ ...s.settingsInput, background: '#f8fafc', color: 'var(--muted-foreground)', cursor: 'not-allowed' }}
+              value={user?.email || user?.signInDetails?.loginId || user?.username || ''}
+              readOnly
+            />
+          </div>
+
+          <div style={{ ...s.settingsActions, marginTop: '1.25rem' }}>
+            <button type="submit" style={{ ...s.primaryAction, background: '#198754', marginTop: 0 }} disabled={savingDisplayName}>
+              {savingDisplayName ? 'Saving…' : 'Save'}
             </button>
             <button type="button" style={s.mutedAction} onClick={handleSignOut}>
-              Sign Out
+              Sign out
             </button>
           </div>
 
@@ -2683,6 +2809,92 @@ export default function DashboardPage() {
             <div style={s.settingsMessage}>{settingsMessage}</div>
           )}
         </form>
+      </div>
+    );
+  }
+
+  function renderCohortView() {
+    const studentList = leaderboard.length > 0 ? leaderboard : [
+      { userId: '1', displayName: 'Vipul Kohli', completedLectures: 0, totalPoints: 0, isCurrentUser: false },
+      { userId: '2', displayName: displayName, completedLectures: 0, totalPoints: 0, isCurrentUser: true }
+    ];
+
+    return (
+      <div style={{ display: 'grid', gap: '1.5rem' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+            gap: '1.25rem',
+          }}
+        >
+          {studentList.map((student) => {
+            const initials = getInitials(student.displayName);
+            const savedLinkedin = student.isCurrentUser
+              ? linkedinUrlInput
+              : student.linkedinUrl;
+            
+            const linkedinUrl = savedLinkedin || `https://www.linkedin.com/in/${student.displayName.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+
+            return (
+              <div
+                key={student.userId}
+                onClick={() => window.open(linkedinUrl, '_blank')}
+                className="cohort-card-hover"
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid rgba(20, 49, 86, 0.08)',
+                  borderRadius: '22px',
+                  padding: '1.75rem 1.5rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  boxShadow: '0 8px 20px rgba(15, 40, 80, 0.04)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <div
+                  style={{
+                    width: '54px',
+                    height: '54px',
+                    borderRadius: '50%',
+                    background: 'rgba(25, 135, 84, 0.08)',
+                    color: '#198754',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.1rem',
+                    fontWeight: 700,
+                    marginBottom: '1rem',
+                  }}
+                >
+                  {initials}
+                </div>
+                <div
+                  style={{
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color: 'var(--foreground)',
+                    marginBottom: '0.3rem',
+                  }}
+                >
+                  {student.displayName}
+                </div>
+                <div
+                  style={{
+                    fontSize: '0.8125rem',
+                    color: 'var(--muted-foreground)',
+                  }}
+                >
+                  {student.completedLectures} lessons • {student.totalPoints} pts
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -2695,6 +2907,12 @@ export default function DashboardPage() {
     viewEyebrow = 'My Courses';
     viewTitle = activeCourse?.name || 'My Courses';
     viewSubtitle = activeCourse?.description || 'Browse your course videos and live recorded sessions grouped by week.';
+  }
+
+  if (activeView === 'cohort') {
+    viewEyebrow = 'Cohort';
+    viewTitle = 'Cohort';
+    viewSubtitle = '';
   }
 
   if (activeView === 'calendar') {
@@ -2716,9 +2934,9 @@ export default function DashboardPage() {
   }
 
   if (activeView === 'settings') {
-    viewEyebrow = 'Settings';
-    viewTitle = 'Student Settings';
-    viewSubtitle = 'Review account details and profile-level preferences for your learning workspace.';
+    viewEyebrow = 'Profile';
+    viewTitle = 'Settings';
+    viewSubtitle = '';
   }
 
   return (
@@ -2786,6 +3004,33 @@ export default function DashboardPage() {
                   <span style={s.bellDot} />
                 </div>
               </div>
+            ) : activeView === 'cohort' ? (
+              <a
+                href="https://chat.whatsapp.com/mock-invite-code"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.6rem 1.15rem',
+                  borderRadius: '10px',
+                  background: '#198754',
+                  color: '#fff',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  transition: 'opacity 0.2s',
+                  boxShadow: 'var(--shadow-sm)',
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.opacity = 0.9; }}
+                onMouseOut={(e) => { e.currentTarget.style.opacity = 1; }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                </svg>
+                <span>Open WhatsApp Community</span>
+              </a>
             ) : courses.length > 1 ? (
               <div style={s.courseTabs}>
                 {courses.map((course) => (
@@ -2807,6 +3052,7 @@ export default function DashboardPage() {
 
           {activeView === 'dashboard' && renderDashboardView()}
           {activeView === 'courses' && renderCoursesView()}
+          {activeView === 'cohort' && renderCohortView()}
           {activeView === 'scheduling' && renderSchedulingView()}
           {activeView === 'assignments' && renderAssignmentsView()}
           {activeView === 'calendar' && renderCalendarView()}

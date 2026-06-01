@@ -88,3 +88,14 @@ body {
   background-color: rgba(0, 111, 143, 0.04) !important;
 }
 
+/* Sleek hover state for cohort cards */
+.cohort-card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.cohort-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(15, 40, 80, 0.1) !important;
+  border-color: rgba(25, 135, 84, 0.2) !important;
+}
+
+
