@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getCourseWeeks, getProgress, getQAQuestions, postQAQuestion } from '../utils/api';
 import VideoPlayer from '../components/VideoPlayer';
 import QuizComponent from '../components/QuizComponent';
@@ -311,6 +311,85 @@ const s = {
     background: 'var(--muted)', borderRadius: '12px', padding: '2rem',
     color: 'var(--muted-foreground)', fontSize: '0.875rem', textAlign: 'center',
   },
+  modalOverlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(15, 23, 42, 0.45)',
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 9999,
+  },
+  modalCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: '24px',
+    padding: '2.5rem 2rem',
+    width: '90%',
+    maxWidth: '420px',
+    boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15), 0 10px 20px -5px rgba(0, 0, 0, 0.1)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    textAlign: 'center',
+    boxSizing: 'border-box',
+    border: '1px solid rgba(255, 255, 255, 0.8)',
+  },
+  modalIconContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '64px',
+    height: '64px',
+    borderRadius: '50%',
+    backgroundColor: 'rgba(15, 157, 88, 0.1)',
+    marginBottom: '1.25rem',
+  },
+  modalTitle: {
+    fontSize: '1.55rem',
+    fontWeight: 700,
+    color: '#0F172A',
+    margin: '0 0 1.75rem',
+  },
+  modalPrimaryBtn: {
+    backgroundColor: '#0F9D58',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '12px',
+    padding: '0.9rem',
+    fontSize: '1rem',
+    fontWeight: 600,
+    width: '100%',
+    cursor: 'pointer',
+    boxShadow: '0 4px 12px rgba(15, 157, 88, 0.25)',
+  },
+  modalSecondaryBtn: {
+    backgroundColor: '#ffffff',
+    color: '#1e293b',
+    border: '1px solid #e2e8f0',
+    borderRadius: '12px',
+    padding: '0.9rem',
+    fontSize: '1rem',
+    fontWeight: 600,
+    width: '100%',
+    marginTop: '0.75rem',
+    cursor: 'pointer',
+  },
+  modalTextBtn: {
+    backgroundColor: 'transparent',
+    color: '#64748b',
+    border: 'none',
+    padding: '0.9rem 0 0',
+    fontSize: '0.95rem',
+    fontWeight: 600,
+    width: '100%',
+    marginTop: '0.75rem',
+    cursor: 'pointer',
+  },
 };
 
 function extractYouTubeId(url) {
@@ -437,6 +516,9 @@ function SidebarIcon({ kind }) {
 }
 export default function LearnPage() {
   const { courseId, weekId } = useParams();
+  const navigate = useNavigate();
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const quizRef = useRef(null);
 
   const [week, setWeek] = useState(null);
   const [allWeeks, setAllWeeks] = useState([]);
@@ -603,17 +685,6 @@ export default function LearnPage() {
         </aside>
 
         <div>
-          {/* Nav */}
-          <nav style={s.nav}>
-            <Link to="/dashboard?view=courses" style={s.backLink}>← My Courses</Link>
-            <span style={s.navBrand}>StepSmart</span>
-            {isRecordedSession ? (
-              <span style={s.weekBadge}>Recorded Session</span>
-            ) : (
-              <span style={s.weekBadge}>Week {displayWeekNumber || week.weekNumber}</span>
-            )}
-          </nav>
-
           <div style={s.layout}>
             {/* Main Content Area */}
             <div style={s.main}>
@@ -627,7 +698,10 @@ export default function LearnPage() {
                   courseId={courseId}
                   weekId={weekId}
                   initialProgress={progress}
-                  onVideoComplete={() => setVideoComplete(true)}
+                  onVideoComplete={() => {
+                    setVideoComplete(true);
+                    setShowCompletionModal(true);
+                  }}
                   onQuizUnlock={() => setQuizUnlocked(true)}
                 />
               ) : (
@@ -713,7 +787,7 @@ export default function LearnPage() {
               )}
 
               {/* Quiz Card */}
-              <div style={s.tabContentCard}>
+              <div ref={quizRef} style={s.tabContentCard}>
                 <div style={{ ...s.sidebarHeading, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span>{quizPassed ? '✓' : !quizUnlocked ? '🔒' : '📝'}</span>
                   <span>Quiz</span>
@@ -803,6 +877,56 @@ export default function LearnPage() {
           </div>
         </div>
       </div>
+
+      {showCompletionModal && (
+        <div style={s.modalOverlay} className="modal-overlay-animate">
+          <div style={s.modalCard} className="modal-card-animate">
+            <div style={s.modalIconContainer}>
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="#0F9D58" strokeWidth="2.5" fill="none" />
+                <path d="M8 12L11 15L16 9" stroke="#0F9D58" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            
+            <h3 style={s.modalTitle}>Nice work!</h3>
+            
+            <button
+              style={s.modalPrimaryBtn}
+              className="modal-btn-primary"
+              onClick={() => {
+                setShowCompletionModal(false);
+                quizRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              Take the quiz
+            </button>
+            
+            {nextWeek && (
+              <button
+                style={s.modalSecondaryBtn}
+                className="modal-btn-secondary"
+                onClick={() => {
+                  setShowCompletionModal(false);
+                  navigate(`/learn/${courseId}/${nextWeek.weekId || nextWeek.id}`);
+                }}
+              >
+                Next lesson
+              </button>
+            )}
+            
+            <button
+              style={s.modalTextBtn}
+              className="modal-btn-text"
+              onClick={() => {
+                setShowCompletionModal(false);
+                navigate('/dashboard?view=courses');
+              }}
+            >
+              Back to course
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
