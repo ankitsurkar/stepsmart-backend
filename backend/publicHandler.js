@@ -11,6 +11,10 @@ exports.handler = async (event) => {
   console.log('Event:', JSON.stringify(event));
 
   const { httpMethod, path, body } = event;
+  if (httpMethod === 'OPTIONS') {
+    return response(200, {});
+  }
+
   const data = body ? JSON.parse(body) : {};
 
   try {
