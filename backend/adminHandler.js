@@ -258,89 +258,6 @@ async function createStudent(body, event) {
   return res(201, { message: `Student ${email} created successfully and enrolled in ${courseId}` });
 }
 
-// GET /admin/backfill
-async function runBackfill(event) {
-  console.log('Starting backfill operation in Lambda...');
-  
-  // 1. Setup metadata for course-002
-  try {
-    await ddb.send(new PutCommand({
-      TableName: COURSES_TABLE,
-      Item: {
-        pk: 'COURSE#course-002',
-        sk: 'METADATA',
-        courseId: 'course-002',
-        name: 'PM -X Accelerator (Batch 2)',
-        description: 'Product Management Accelerator Cohort 2',
-        createdAt: new Date().toISOString()
-      }
-    }));
-    console.log('course-002 METADATA setup complete.');
-  } catch (err) {
-    console.error('Failed to setup course-002 METADATA:', err);
-    return res(500, { message: `Metadata setup failed: ${err.message}` });
-  }
-
-  // 2. Fetch all Cognito users
-  const userPoolId = deriveUserPoolId(event);
-  let users = [];
-  try {
-    let paginationToken;
-    do {
-      const result = await cognito.send(new ListUsersCommand({
-        UserPoolId: userPoolId,
-        PaginationToken: paginationToken,
-      }));
-      users.push(...(result.Users || []));
-      paginationToken = result.PaginationToken;
-    } while (paginationToken);
-  } catch (err) {
-    console.error('Failed to fetch Cognito users:', err);
-    return res(500, { message: `Cognito listing failed: ${err.message}` });
-  }
-
-  // 3. Backfill enrollments
-  let enrolledCount = 0;
-  for (const user of users) {
-    const attrs = {};
-    for (const attr of (user.Attributes || [])) attrs[attr.Name] = attr.Value;
-    const userId = attrs.sub || user.Username;
-
-    if (!userId) continue;
-
-    // Check if they already have an enrollment record
-    try {
-      const existing = await ddb.send(new GetCommand({
-        TableName: ENROLLMENTS_TABLE,
-        Key: { enrollmentId: userId },
-      }));
-      if (existing.Item) {
-        console.log(`User ${userId} already has enrollment. Skipping.`);
-        continue;
-      }
-    } catch (err) {
-      console.warn(`Failed to check existing enrollment for ${userId}:`, err);
-    }
-
-    try {
-      await ddb.send(new PutCommand({
-        TableName: ENROLLMENTS_TABLE,
-        Item: {
-          enrollmentId: userId,
-          userId,
-          courseId: 'course-001',
-          enrolledAt: new Date().toISOString()
-        }
-      }));
-      enrolledCount++;
-    } catch (err) {
-      console.error(`Failed to enroll user ${userId}:`, err);
-    }
-  }
-
-  return res(200, { message: `Backfill successful. Enrolled ${enrolledCount} users in course-001. course-002 metadata initialized.` });
-}
-
 // GET /admin/courses/{courseId}/weeks
 // Returns all weeks (including hidden ones) with full quiz data including correctIndex.
 async function listWeeks(courseId) {
@@ -656,9 +573,6 @@ exports.handler = async (event) => {
     // ── Students ──────────────────────────────────────────────────────
     if (method === 'GET' && resource === '/admin/students') return await listStudents(courseId, event);
     if (method === 'POST' && resource === '/admin/students') return await createStudent(body, event);
-
-    // ── Backfill ──────────────────────────────────────────────────────
-    if (method === 'GET' && resource === '/admin/backfill') return await runBackfill(event);
 
     // ── Weeks ─────────────────────────────────────────────────────────
     if (method === 'GET' && resource === '/admin/courses/{courseId}/weeks') return await listWeeks(courseId);

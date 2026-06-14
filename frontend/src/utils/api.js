@@ -88,9 +88,6 @@ export const adminGetAllSubmissions = (courseId) =>
 export const adminGetLeads = () =>
   api.get('/admin/leads');
 
-export const adminRunBackfill = () =>
-  api.get('/admin/backfill');
-
 // ─── Assignments ──────────────────────────────────────────────────────────────
 
 export const uploadAssignment = (

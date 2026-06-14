@@ -11,7 +11,6 @@ import {
   adminGetAllSubmissions,
   adminUpdateSupplementalContent,
   adminGetLeads,
-  adminRunBackfill,
 } from '../utils/api';
 
 const COURSE_ID = 'course-001';
@@ -125,8 +124,6 @@ function StudentsTab({ courseId }) {
   const [form, setForm] = useState({ email: '', name: '', tempPassword: '' });
   const [creating, setCreating] = useState(false);
   const [message, setMessage] = useState('');
-  const [backfilling, setBackfilling] = useState(false);
-  const [backfillMsg, setBackfillMsg] = useState('');
 
   useEffect(() => { load(); }, [courseId]);
 
@@ -149,35 +146,8 @@ function StudentsTab({ courseId }) {
     finally { setCreating(false); }
   }
 
-  async function handleBackfill() {
-    if (!window.confirm('This will list all Cognito users and enroll them in Batch 1 if they have no enrollment, and set up Batch 2 metadata. Continue?')) return;
-    setBackfilling(true);
-    setBackfillMsg('');
-    try {
-      const { data } = await adminRunBackfill();
-      setBackfillMsg(`✓ ${data.message}`);
-      load();
-    } catch (err) {
-      setBackfillMsg(`⚠️ ${err.response?.data?.message || 'Backfill failed.'}`);
-    } finally {
-      setBackfilling(false);
-    }
-  }
-
   return (
     <div>
-      <div style={{ ...s.card, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <div style={s.cardTitle}>System Utilities</div>
-          <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Initialize Batch 2 configurations and map existing Cognito users to Batch 1.</div>
-        </div>
-        <div>
-          <button style={{ ...s.btn, ...s.btnSecondary }} onClick={handleBackfill} disabled={backfilling}>
-            {backfilling ? 'Running Backfill...' : 'Run Backfill & Init Batch 2'}
-          </button>
-          {backfillMsg && <p style={{ ...s.message, marginTop: '0.5rem', marginBottom: 0, fontWeight: 600 }}>{backfillMsg}</p>}
-        </div>
-      </div>
 
       <div style={s.card}>
         <div style={s.cardTitle}>Add Student</div>
