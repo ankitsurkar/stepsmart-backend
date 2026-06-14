@@ -84,7 +84,7 @@ async function listMyCourses(userId, event) {
     }));
     const courses = (result.Items || []).map((item) => ({
       courseId: item.courseId,
-      name: COURSE_NAME_OVERRIDES[item.courseId] || item.name,
+      name: item.name || COURSE_NAME_OVERRIDES[item.courseId] || item.courseId,
       description: item.description || '',
     }));
     return res(200, { courses });
@@ -126,7 +126,7 @@ async function listMyCourses(userId, event) {
 
   const courses = [{
     courseId: courseMeta.courseId,
-    name: COURSE_NAME_OVERRIDES[courseMeta.courseId] || courseMeta.name,
+    name: courseMeta.name || COURSE_NAME_OVERRIDES[courseMeta.courseId] || courseMeta.courseId,
     description: courseMeta.description || '',
   }];
 
