@@ -51,6 +51,12 @@ const USER_POOL_ID = process.env.USER_POOL_ID || '';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
 const SUPPLEMENTAL_SK = 'SUPPLEMENTAL#GLOBAL';
 
+function deriveUserPoolId(event) {
+  if (process.env.USER_POOL_ID) return process.env.USER_POOL_ID;
+  const issuer = event?.requestContext?.authorizer?.claims?.iss;
+  return issuer ? issuer.split('/').pop() : '';
+}
+
 let currentOrigin = FRONTEND_URL;
 
 function corsHeaders() {
@@ -153,7 +159,7 @@ function isAdminUser(event) {
 
 // GET /admin/students
 // Lists all Cognito users enrolled in the given courseId and flattens their attributes.
-async function listStudents(courseId) {
+async function listStudents(courseId, event) {
   if (!courseId) {
     return res(400, { message: 'courseId query parameter is required' });
   }
@@ -173,9 +179,10 @@ async function listStudents(courseId) {
   const enrolledUserIds = new Set((enrollmentsResult.Items || []).map(item => item.enrollmentId));
 
   // 2. Get all Cognito users
+  const userPoolId = deriveUserPoolId(event);
   let result;
   try {
-    result = await cognito.send(new ListUsersCommand({ UserPoolId: USER_POOL_ID }));
+    result = await cognito.send(new ListUsersCommand({ UserPoolId: userPoolId }));
   } catch (err) {
     console.error('Failed to list Cognito users:', err);
     return res(500, { message: 'Failed to fetch Cognito users' });
@@ -206,16 +213,17 @@ async function listStudents(courseId) {
 // POST /admin/students
 // Creates a student in Cognito with a temporary password (FORCE_CHANGE_PASSWORD).
 // The student must reset their password on first login. Also enrolls them in the specified courseId.
-async function createStudent(body) {
+async function createStudent(body, event) {
   const { email, name, tempPassword, courseId } = body;
   if (!email || !name || !tempPassword || !courseId) {
     return res(400, { message: 'email, name, tempPassword, and courseId are required' });
   }
 
+  const userPoolId = deriveUserPoolId(event);
   let createRes;
   try {
     createRes = await cognito.send(new AdminCreateUserCommand({
-      UserPoolId: USER_POOL_ID,
+      UserPoolId: userPoolId,
       Username: email,
       TemporaryPassword: tempPassword,
       UserAttributes: [
@@ -251,7 +259,7 @@ async function createStudent(body) {
 }
 
 // GET /admin/backfill
-async function runBackfill() {
+async function runBackfill(event) {
   console.log('Starting backfill operation in Lambda...');
   
   // 1. Setup metadata for course-002
@@ -274,12 +282,13 @@ async function runBackfill() {
   }
 
   // 2. Fetch all Cognito users
+  const userPoolId = deriveUserPoolId(event);
   let users = [];
   try {
     let paginationToken;
     do {
       const result = await cognito.send(new ListUsersCommand({
-        UserPoolId: USER_POOL_ID,
+        UserPoolId: userPoolId,
         PaginationToken: paginationToken,
       }));
       users.push(...(result.Users || []));
@@ -645,11 +654,11 @@ exports.handler = async (event) => {
 
   try {
     // ── Students ──────────────────────────────────────────────────────
-    if (method === 'GET' && resource === '/admin/students') return await listStudents(courseId);
-    if (method === 'POST' && resource === '/admin/students') return await createStudent(body);
+    if (method === 'GET' && resource === '/admin/students') return await listStudents(courseId, event);
+    if (method === 'POST' && resource === '/admin/students') return await createStudent(body, event);
 
     // ── Backfill ──────────────────────────────────────────────────────
-    if (method === 'GET' && resource === '/admin/backfill') return await runBackfill();
+    if (method === 'GET' && resource === '/admin/backfill') return await runBackfill(event);
 
     // ── Weeks ─────────────────────────────────────────────────────────
     if (method === 'GET' && resource === '/admin/courses/{courseId}/weeks') return await listWeeks(courseId);
