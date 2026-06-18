@@ -935,6 +935,8 @@ export default function LearnPage() {
     alignSelf: isCompact ? 'stretch' : 'start',
     overflowX: 'hidden',
     overflowY: isCompact ? 'visible' : 'auto',
+    padding: isCompact ? '1rem' : '1.5rem 0',
+    alignItems: isCompact ? 'stretch' : 'center',
   };
 
   return (
@@ -943,7 +945,13 @@ export default function LearnPage() {
         <aside style={sidebarStyle}>
           <div style={s.sidebarGlow} />
 
-          <Link to="/dashboard" style={{ ...s.brand, justifyContent: 'center', marginBottom: isCompact ? '1rem' : '2.5rem', gap: 0 }}>
+          <Link to="/dashboard" style={{
+            ...s.brand,
+            justifyContent: 'center',
+            marginBottom: isCompact ? '1rem' : '2.5rem',
+            gap: 0,
+            width: isCompact ? 'auto' : '100%'
+          }}>
             <div style={{ ...s.brandMark, margin: 0 }}>S</div>
           </Link>
 
@@ -975,7 +983,7 @@ export default function LearnPage() {
                 {item.id === 'courses' && (
                   <span style={{
                     ...s.navActiveRail,
-                    left: 0,
+                    left: isCompact ? 0 : '-8px',
                     width: '3px',
                     borderRadius: '0 4px 4px 0'
                   }} />
