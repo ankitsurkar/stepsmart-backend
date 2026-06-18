@@ -390,6 +390,34 @@ const s = {
     marginTop: '0.75rem',
     cursor: 'pointer',
   },
+  playlist: {
+    background: 'var(--card)',
+    borderRight: '1px solid var(--border)',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100vh',
+    maxHeight: '100vh',
+    overflowY: 'auto',
+    position: 'sticky',
+    top: 0,
+  },
+  mobilePlaylistOverlay: {
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(15, 23, 42, 0.4)',
+    backdropFilter: 'blur(4px)',
+    zIndex: 1000,
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  mobilePlaylistContent: {
+    width: '280px',
+    background: 'var(--card)',
+    height: '100%',
+    boxShadow: '-4px 0 20px rgba(0,0,0,0.1)',
+    display: 'flex',
+    flexDirection: 'column',
+  },
 };
 
 function extractYouTubeId(url) {
@@ -518,13 +546,13 @@ export default function LearnPage() {
   const { courseId, weekId } = useParams();
   const navigate = useNavigate();
   const [showCompletionModal, setShowCompletionModal] = useState(false);
-  const quizRef = useRef(null);
   const initiallyCompleteRef = useRef(false);
 
   const [week, setWeek] = useState(null);
   const [allWeeks, setAllWeeks] = useState([]);
   const [displayWeekNumber, setDisplayWeekNumber] = useState('');
   const [progress, setProgress] = useState(null);
+  const [allProgress, setAllProgress] = useState([]);
   const [videoComplete, setVideoComplete] = useState(false);
   const [quizUnlocked, setQuizUnlocked] = useState(false);
   const [quizPassed, setQuizPassed] = useState(false);
@@ -533,6 +561,7 @@ export default function LearnPage() {
   const [isCompact, setIsCompact] = useState(
     typeof window !== 'undefined' ? window.innerWidth < 980 : false,
   );
+  const [showPlaylistMobile, setShowPlaylistMobile] = useState(false);
 
   useEffect(() => {
     function handleResize() {
@@ -544,7 +573,7 @@ export default function LearnPage() {
   }, []);
 
   // Tabs and Questions state
-  const [activeTab, setActiveTab] = useState('progress');
+  const [activeTab, setActiveTab] = useState('overview');
   const [newQuestionText, setNewQuestionText] = useState('');
   const [questionsList, setQuestionsList] = useState([
     { id: 1, author: 'Student A', text: 'Are we covering advanced metrics in week 3?', date: '2 days ago' },
@@ -591,8 +620,14 @@ export default function LearnPage() {
       if (!found) { setError('Content not found or not yet released.'); return; }
       setWeek(found);
 
+      const hasQuiz = (found.quiz?.questions || []).length > 0;
+      if (!hasQuiz && activeTab === 'quiz') {
+        setActiveTab('overview');
+      }
+
       const weekProgress = (progressRes.data.progress || []).find((p) => p.weekId === weekId) || null;
       setProgress(weekProgress);
+      setAllProgress(progressRes.data.progress || []);
       const wasAlreadyComplete = weekProgress?.videoComplete || false;
       initiallyCompleteRef.current = wasAlreadyComplete;
       setVideoComplete(wasAlreadyComplete);
@@ -635,13 +670,153 @@ export default function LearnPage() {
   const hasQuiz = (week.quiz?.questions || []).length > 0;
   const weekComplete = videoComplete && (!hasQuiz || quizPassed);
 
-  // Find next lesson
-  const currentIdx = allWeeks.findIndex((w) => (w.weekId || w.id) === weekId);
-  const nextWeek = currentIdx !== -1 && currentIdx < allWeeks.length - 1 ? allWeeks[currentIdx + 1] : null;
+  function PlaylistContent({ isMobile }) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        {/* Playlist Header */}
+        <div style={{
+          padding: '1.25rem 1rem',
+          borderBottom: '1px solid var(--border)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.5rem',
+          background: 'var(--card)'
+        }}>
+          <Link
+            to="/dashboard?view=courses"
+            style={{
+              fontSize: '0.825rem',
+              fontWeight: 700,
+              color: 'var(--primary)',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              transition: 'opacity 0.2s',
+            }}
+            onMouseEnter={(e) => e.target.style.opacity = '0.8'}
+            onMouseLeave={(e) => e.target.style.opacity = '1'}
+          >
+            ← Back to course
+          </Link>
+          <div style={{
+            fontSize: '1rem',
+            fontWeight: 800,
+            color: 'var(--foreground)',
+            marginTop: '0.25rem'
+          }}>
+            Course Contents
+          </div>
+        </div>
+
+        {/* Playlist Item List */}
+        <div style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '0.5rem 0',
+          background: 'var(--background)',
+        }}>
+          {allWeeks.map((item, idx) => {
+            const itemWId = item.weekId || item.id;
+            const isActive = itemWId === weekId;
+            
+            // Check completion state
+            const progressItem = allProgress.find(p => p.weekId === itemWId);
+            const isCompleted = progressItem?.videoComplete && 
+              (!(item.quiz?.questions?.length > 0) || progressItem?.quizPassed);
+
+            let displayNum = item.weekNumber;
+            let displayCat = 'Lecture';
+            if (String(itemWId).startsWith('rec-')) {
+              displayNum = 'R' + (idx + 1);
+              displayCat = 'Live Recording';
+            } else if (item.category === 'live') {
+              displayNum = 'L' + (idx + 1);
+              displayCat = 'Live Session';
+            } else {
+              displayNum = 'W' + item.weekNumber;
+            }
+
+            return (
+              <Link
+                key={itemWId || idx}
+                to={`/learn/${courseId}/${itemWId}`}
+                onClick={() => isMobile && setShowPlaylistMobile(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '0.75rem',
+                  padding: '0.9rem 1rem',
+                  textDecoration: 'none',
+                  borderBottom: '1px solid rgba(0, 0, 0, 0.04)',
+                  position: 'relative',
+                  background: isActive ? 'var(--card)' : 'transparent',
+                  transition: 'background-color 0.2s ease',
+                }}
+                className="lesson-row-hover"
+              >
+                {isActive && (
+                  <div style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: '4px',
+                    background: 'var(--primary)',
+                    borderRadius: '0 4px 4px 0',
+                  }} />
+                )}
+
+                {/* Status Icon */}
+                <div style={{
+                  marginTop: '0.15rem',
+                  fontSize: '0.95rem',
+                  width: '18px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  {isCompleted ? (
+                    <span style={{ color: 'var(--success)', fontWeight: 800 }}>✓</span>
+                  ) : isActive ? (
+                    <span style={{ color: 'var(--primary)' }}>●</span>
+                  ) : (
+                    <span style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}>○</span>
+                  )}
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', minWidth: 0 }}>
+                  <span style={{
+                    fontSize: '0.825rem',
+                    fontWeight: isActive ? 700 : 600,
+                    color: isActive ? 'var(--primary)' : 'var(--foreground)',
+                    lineHeight: 1.3,
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {displayNum}: {item.title}
+                  </span>
+                  <span style={{
+                    fontSize: '0.7rem',
+                    color: 'var(--muted-foreground)',
+                    fontWeight: 500,
+                  }}>
+                    {displayCat}
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   const shellStyle = {
     ...s.shell,
-    gridTemplateColumns: isCompact ? '1fr' : '210px minmax(0, 1fr)',
+    gridTemplateColumns: isCompact ? '1fr' : '64px 260px minmax(0, 1fr)',
   };
 
   const sidebarStyle = {
@@ -662,32 +837,95 @@ export default function LearnPage() {
         <aside style={sidebarStyle}>
           <div style={s.sidebarGlow} />
 
-          <Link to="/dashboard" style={s.brand}>
-            <div style={s.brandMark}>S</div>
-            <span>StepSmart</span>
+          <Link to="/dashboard" style={{ ...s.brand, justifyContent: 'center', marginBottom: isCompact ? '1rem' : '2.5rem', gap: 0 }}>
+            <div style={{ ...s.brandMark, margin: 0 }}>S</div>
           </Link>
 
-          <div style={s.navStack}>
+          <div style={{
+            ...s.navStack,
+            alignItems: 'center',
+            flexDirection: isCompact ? 'row' : 'column',
+            justifyContent: isCompact ? 'center' : 'flex-start',
+            flexWrap: isCompact ? 'wrap' : 'nowrap',
+            gap: isCompact ? '0.75rem' : '0.5rem',
+            width: '100%',
+          }}>
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.id}
                 to={`/dashboard?view=${item.id}`}
                 style={{
                   ...s.navButton,
+                  justifyContent: 'center',
+                  padding: '0.84rem 0',
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  margin: '0 auto',
                   ...(item.id === 'courses' ? s.navButtonActive : {}),
                 }}
+                title={item.label}
               >
-                {item.id === 'courses' && <span style={s.navActiveRail} />}
-                <span style={s.navButtonIcon}>
+                {item.id === 'courses' && (
+                  <span style={{
+                    ...s.navActiveRail,
+                    left: 0,
+                    width: '3px',
+                    borderRadius: '0 4px 4px 0'
+                  }} />
+                )}
+                <span style={{ ...s.navButtonIcon, opacity: 1, margin: 0 }}>
                   <SidebarIcon kind={item.icon} />
                 </span>
-                {item.label}
               </Link>
             ))}
           </div>
         </aside>
 
-        <div>
+        {/* Column 2: Playlist (Desktop only) */}
+        {!isCompact && (
+          <div style={s.playlist}>
+            <PlaylistContent isMobile={false} />
+          </div>
+        )}
+
+        {/* Column 3: Main content */}
+        <div style={{ flex: 1, minWidth: 0, height: isCompact ? 'auto' : '100vh', overflowY: isCompact ? 'visible' : 'auto' }}>
+          {/* Mobile Playlist Toggle Header */}
+          {isCompact && (
+            <div style={{
+              background: 'var(--card)',
+              borderBottom: '1px solid var(--border)',
+              padding: '0.75rem 1.25rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+              <Link to="/dashboard?view=courses" style={{ ...s.backLink, color: 'var(--primary)', fontWeight: 700 }}>
+                ← Back to course
+              </Link>
+              <button
+                onClick={() => setShowPlaylistMobile(true)}
+                style={{
+                  padding: '0.45rem 0.9rem',
+                  fontSize: '0.8rem',
+                  background: 'var(--primary)',
+                  color: '#fff',
+                  borderRadius: '8px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  boxShadow: 'var(--shadow-sm)',
+                }}
+              >
+                📋 Contents ({allWeeks.length})
+              </button>
+            </div>
+          )}
+
           <div style={s.layout}>
             {/* Main Content Area */}
             <div style={s.main}>
@@ -701,7 +939,17 @@ export default function LearnPage() {
                   courseId={courseId}
                   weekId={weekId}
                   initialProgress={progress}
-                  onVideoComplete={() => setVideoComplete(true)}
+                  onVideoComplete={() => {
+                    setVideoComplete(true);
+                    setAllProgress(prev => {
+                      const existing = prev.find(p => p.weekId === weekId);
+                      if (existing) {
+                        return prev.map(p => p.weekId === weekId ? { ...p, videoComplete: true } : p);
+                      } else {
+                        return [...prev, { weekId, videoComplete: true }];
+                      }
+                    });
+                  }}
                   onQuizUnlock={() => setQuizUnlocked(true)}
                   onVideoEnded={() => {
                     if (!initiallyCompleteRef.current) {
@@ -724,11 +972,19 @@ export default function LearnPage() {
               {/* Pill Tabs Bar */}
               <div style={s.tabBar}>
                 <button
-                  onClick={() => setActiveTab('progress')}
-                  style={{ ...s.tabBtn, ...(activeTab === 'progress' ? s.tabBtnActive : {}) }}
+                  onClick={() => setActiveTab('overview')}
+                  style={{ ...s.tabBtn, ...(activeTab === 'overview' ? s.tabBtnActive : {}) }}
                 >
-                  Your Progress
+                  Overview
                 </button>
+                {hasQuiz && (
+                  <button
+                    onClick={() => setActiveTab('quiz')}
+                    style={{ ...s.tabBtn, ...(activeTab === 'quiz' ? s.tabBtnActive : {}) }}
+                  >
+                    Quiz {quizPassed && '✓'}
+                  </button>
+                )}
                 <button
                   onClick={() => setActiveTab('transcript')}
                   style={{ ...s.tabBtn, ...(activeTab === 'transcript' ? s.tabBtnActive : {}) }}
@@ -736,24 +992,90 @@ export default function LearnPage() {
                   Transcript
                 </button>
                 <button
-                  onClick={() => setActiveTab('resources')}
-                  style={{ ...s.tabBtn, ...(activeTab === 'resources' ? s.tabBtnActive : {}) }}
+                  onClick={() => setActiveTab('qa')}
+                  style={{ ...s.tabBtn, ...(activeTab === 'qa' ? s.tabBtnActive : {}) }}
                 >
-                  Resources
+                  Q&amp;A
                 </button>
               </div>
 
               {/* Tab Contents */}
-              {activeTab === 'progress' && (
-                <div style={s.tabContentCard}>
-                  <div style={s.sidebarHeading}>Your progress</div>
-                  <ProgressStep label="Watch video" done={videoComplete} active={!videoComplete} />
-                  {hasQuiz ? (
-                    <ProgressStep label="Pass quiz" done={quizPassed} active={quizUnlocked && !quizPassed} locked={!quizUnlocked} />
-                  ) : (
-                    <ProgressStep label="Quiz not required" done={videoComplete} locked={!videoComplete} />
+              {activeTab === 'overview' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={s.tabContentCard}>
+                    <div style={s.sidebarHeading}>Your progress</div>
+                    <ProgressStep label="Watch video" done={videoComplete} active={!videoComplete} />
+                    {hasQuiz ? (
+                      <ProgressStep label="Pass quiz" done={quizPassed} active={quizUnlocked && !quizPassed} locked={!quizUnlocked} />
+                    ) : (
+                      <ProgressStep label="Quiz not required" done={videoComplete} locked={!videoComplete} />
+                    )}
+                    <ProgressStep label="Week complete" done={weekComplete} locked={!weekComplete} />
+                  </div>
+
+                  {week.resources && week.resources.length > 0 && (
+                    <div style={s.tabContentCard}>
+                      <div style={s.sidebarHeading}>Resources</div>
+                      <div style={s.resourceList}>
+                        {week.resources.map((r, i) => (
+                          <a key={r.id || i} href={r.url} target="_blank" rel="noopener noreferrer" style={s.resourceLink}>
+                            <span style={{ fontSize: '1.1rem' }}>📄</span>
+                            {r.title}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
                   )}
-                  <ProgressStep label="Week complete" done={weekComplete} locked={!weekComplete} />
+
+                  {week.docs && week.docs.length > 0 && (
+                    <div style={s.tabContentCard}>
+                      <div style={s.sidebarHeading}>Reference Documents</div>
+                      {week.docs.map((doc) => (
+                        <a
+                          key={doc.id}
+                          href={doc.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={s.docLink}
+                        >
+                          <span style={{ fontSize: '0.9rem' }}>📄</span>
+                          {doc.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'quiz' && hasQuiz && (
+                <div style={s.tabContentCard}>
+                  <div style={{ ...s.sidebarHeading, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span>{quizPassed ? '✓' : !quizUnlocked ? '🔒' : '📝'}</span>
+                    <span>Quiz</span>
+                  </div>
+                  {!quizUnlocked ? (
+                    <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
+                      Watch at least 80% of the video to unlock the quiz.
+                    </p>
+                  ) : (
+                    <QuizComponent
+                      courseId={courseId}
+                      weekId={weekId}
+                      questions={week.quiz?.questions || []}
+                      initialPassed={quizPassed}
+                      onQuizPassed={() => {
+                        setQuizPassed(true);
+                        setAllProgress(prev => {
+                          const existing = prev.find(p => p.weekId === weekId);
+                          if (existing) {
+                            return prev.map(p => p.weekId === weekId ? { ...p, quizPassed: true, videoComplete: true } : p);
+                          } else {
+                            return [...prev, { weekId, quizPassed: true, videoComplete: true }];
+                          }
+                        });
+                      }}
+                    />
+                  )}
                 </div>
               )}
 
@@ -771,117 +1093,82 @@ export default function LearnPage() {
                 </div>
               )}
 
-              {activeTab === 'resources' && (
-                <div style={s.tabContentCard}>
-                  <div style={s.sidebarHeading}>Resources</div>
-                  {week.resources && week.resources.length > 0 ? (
-                    <div style={s.resourceList}>
-                      {week.resources.map((r, i) => (
-                        <a key={r.id || i} href={r.url} target="_blank" rel="noopener noreferrer" style={s.resourceLink}>
-                          <span style={{ fontSize: '1.1rem' }}>📄</span>
-                          {r.title}
-                        </a>
-                      ))}
-                    </div>
-                  ) : (
-                    <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
-                      No resources for this lesson.
-                    </p>
-                  )}
-                </div>
-              )}
+              {activeTab === 'qa' && (
+                <div style={s.qaCard}>
+                  <div style={s.sidebarHeading}>Questions &amp; Answers</div>
+                  <div style={s.qaInputContainer}>
+                    <input
+                      type="text"
+                      placeholder="Ask a question..."
+                      style={s.qaInput}
+                      value={newQuestionText}
+                      onChange={(e) => setNewQuestionText(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handlePostQuestion()}
+                    />
+                    <button style={s.qaPostBtn} onClick={handlePostQuestion}>Post</button>
+                  </div>
 
-              {/* Quiz Card */}
-              <div ref={quizRef} style={s.tabContentCard}>
-                <div style={{ ...s.sidebarHeading, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span>{quizPassed ? '✓' : !quizUnlocked ? '🔒' : '📝'}</span>
-                  <span>Quiz</span>
-                </div>
-                {!hasQuiz ? (
-                  <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
-                    No quiz for this week. This week is complete after finishing the video.
-                  </p>
-                ) : !quizUnlocked ? (
-                  <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
-                    Watch at least 80% of the video to unlock the quiz.
-                  </p>
-                ) : (
-                  <QuizComponent
-                    courseId={courseId}
-                    weekId={weekId}
-                    questions={week.quiz?.questions || []}
-                    initialPassed={quizPassed}
-                    onQuizPassed={() => setQuizPassed(true)}
-                  />
-                )}
-              </div>
-
-              {/* Reference Documents */}
-              {week.docs && week.docs.length > 0 && (
-                <div style={s.tabContentCard}>
-                  <div style={s.sidebarHeading}>Reference Documents</div>
-                  {week.docs.map((doc) => (
-                    <a
-                      key={doc.id}
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={s.docLink}
-                    >
-                      <span style={{ fontSize: '0.9rem' }}>📄</span>
-                      {doc.label}
-                    </a>
-                  ))}
-                </div>
-              )}
-
-              {/* Questions & Answers Card */}
-              <div style={s.qaCard}>
-                <div style={s.sidebarHeading}>Questions &amp; Answers</div>
-                <div style={s.qaInputContainer}>
-                  <input
-                    type="text"
-                    placeholder="Ask a question..."
-                    style={s.qaInput}
-                    value={newQuestionText}
-                    onChange={(e) => setNewQuestionText(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handlePostQuestion()}
-                  />
-                  <button style={s.qaPostBtn} onClick={handlePostQuestion}>Post</button>
-                </div>
-
-                <div style={s.commentList}>
-                  {questionsList.length > 0 ? (
-                    questionsList.map((q) => (
-                      <div key={q.id} style={s.commentItem}>
-                        <div style={s.commentHeader}>
-                          <span>{q.author}</span>
-                          <span>{q.date}</span>
+                  <div style={s.commentList}>
+                    {questionsList.length > 0 ? (
+                      questionsList.map((q) => (
+                        <div key={q.id} style={s.commentItem}>
+                          <div style={s.commentHeader}>
+                            <span>{q.author}</span>
+                            <span>{q.date}</span>
+                          </div>
+                          <div style={s.commentText}>{q.text}</div>
                         </div>
-                        <div style={s.commentText}>{q.text}</div>
-                      </div>
-                    ))
-                  ) : (
-                    <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', margin: 0 }}>
-                      No questions yet.
-                    </p>
-                  )}
+                      ))
+                    ) : (
+                      <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', margin: 0 }}>
+                        No questions yet.
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Next Lesson Navigation Button */}
-              {nextWeek && (
-                <div style={s.nextBtnContainer}>
-                  <Link to={`/learn/${courseId}/${nextWeek.weekId || nextWeek.id}`} style={s.nextBtn}>
-                    Next lesson →
-                  </Link>
-                </div>
-              )}
+              {(() => {
+                const currentIdx = allWeeks.findIndex((w) => (w.weekId || w.id) === weekId);
+                const nextWeek = currentIdx !== -1 && currentIdx < allWeeks.length - 1 ? allWeeks[currentIdx + 1] : null;
+                if (!nextWeek) return null;
+                return (
+                  <div style={s.nextBtnContainer}>
+                    <Link to={`/learn/${courseId}/${nextWeek.weekId || nextWeek.id}`} style={s.nextBtn}>
+                      Next lesson →
+                    </Link>
+                  </div>
+                );
+              })()}
 
             </div>
           </div>
         </div>
       </div>
+
+      {/* Mobile Playlist Drawer Overlay */}
+      {isCompact && showPlaylistMobile && (
+        <div style={s.mobilePlaylistOverlay} onClick={() => setShowPlaylistMobile(false)}>
+          <div style={s.mobilePlaylistContent} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0.75rem 1rem 0 0' }}>
+              <button
+                onClick={() => setShowPlaylistMobile(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.25rem',
+                  cursor: 'pointer',
+                  color: 'var(--muted-foreground)'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            <PlaylistContent isMobile={true} />
+          </div>
+        </div>
+      )}
 
       {showCompletionModal && (
         <div style={s.modalOverlay} className="modal-overlay-animate">
@@ -895,29 +1182,36 @@ export default function LearnPage() {
             
             <h3 style={s.modalTitle}>Nice work!</h3>
             
-            <button
-              style={s.modalPrimaryBtn}
-              className="modal-btn-primary"
-              onClick={() => {
-                setShowCompletionModal(false);
-                quizRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-            >
-              Take the quiz
-            </button>
-            
-            {nextWeek && (
+            {hasQuiz && (
               <button
-                style={s.modalSecondaryBtn}
-                className="modal-btn-secondary"
+                style={s.modalPrimaryBtn}
+                className="modal-btn-primary"
                 onClick={() => {
                   setShowCompletionModal(false);
-                  navigate(`/learn/${courseId}/${nextWeek.weekId || nextWeek.id}`);
+                  setActiveTab('quiz');
                 }}
               >
-                Next lesson
+                Take the quiz
               </button>
             )}
+            
+            {(() => {
+              const currentIdx = allWeeks.findIndex((w) => (w.weekId || w.id) === weekId);
+              const nextWeek = currentIdx !== -1 && currentIdx < allWeeks.length - 1 ? allWeeks[currentIdx + 1] : null;
+              if (!nextWeek) return null;
+              return (
+                <button
+                  style={s.modalSecondaryBtn}
+                  className="modal-btn-secondary"
+                  onClick={() => {
+                    setShowCompletionModal(false);
+                    navigate(`/learn/${courseId}/${nextWeek.weekId || nextWeek.id}`);
+                  }}
+                >
+                  Next lesson
+                </button>
+              );
+            })()}
             
             <button
               style={s.modalTextBtn}
