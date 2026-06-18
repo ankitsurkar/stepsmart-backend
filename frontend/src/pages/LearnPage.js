@@ -562,6 +562,7 @@ export default function LearnPage() {
     typeof window !== 'undefined' ? window.innerWidth < 980 : false,
   );
   const [showPlaylistMobile, setShowPlaylistMobile] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState({});
 
   useEffect(() => {
     function handleResize() {
@@ -620,6 +621,22 @@ export default function LearnPage() {
       if (!found) { setError('Content not found or not yet released.'); return; }
       setWeek(found);
 
+      // Automatically expand the group containing the active lesson
+      let activeGroupKey = '';
+      if (isRecordedSession) {
+        activeGroupKey = 'recorded';
+      } else if (found.category === 'live') {
+        activeGroupKey = 'live';
+      } else {
+        const num = Number(found.weekNumber);
+        if (Number.isFinite(num)) {
+          activeGroupKey = `module-${Math.floor(num)}`;
+        } else {
+          activeGroupKey = `module-${found.weekNumber}`;
+        }
+      }
+      setExpandedGroups((prev) => ({ ...prev, [activeGroupKey]: true }));
+
       const hasQuiz = (found.quiz?.questions || []).length > 0;
       if (!hasQuiz && activeTab === 'quiz') {
         setActiveTab('overview');
@@ -671,6 +688,37 @@ export default function LearnPage() {
   const weekComplete = videoComplete && (!hasQuiz || quizPassed);
 
   function PlaylistContent({ isMobile }) {
+    function getGroupedPlaylist() {
+      const groups = [];
+      allWeeks.forEach((item, idx) => {
+        const itemWId = item.weekId || item.id;
+        
+        let groupKey = '';
+        let groupTitle = '';
+        
+        if (String(itemWId).startsWith('rec-')) {
+          groupKey = 'recorded';
+          groupTitle = 'Recorded Lectures';
+        } else if (item.category === 'live') {
+          groupKey = 'live';
+          groupTitle = 'Live Sessions';
+        } else {
+          const num = Number(item.weekNumber);
+          const groupNum = Number.isFinite(num) ? Math.floor(num) : 1;
+          groupKey = `module-${groupNum}`;
+          groupTitle = `Week ${groupNum}`;
+        }
+
+        let group = groups.find(g => g.key === groupKey);
+        if (!group) {
+          group = { key: groupKey, title: groupTitle, items: [] };
+          groups.push(group);
+        }
+        group.items.push(item);
+      });
+      return groups;
+    }
+
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {/* Playlist Header */}
@@ -716,97 +764,155 @@ export default function LearnPage() {
           padding: '0.5rem 0',
           background: 'var(--background)',
         }}>
-          {allWeeks.map((item, idx) => {
-            const itemWId = item.weekId || item.id;
-            const isActive = itemWId === weekId;
+          {getGroupedPlaylist().map((group) => {
+            const isExpanded = !!expandedGroups[group.key];
             
-            // Check completion state
-            const progressItem = allProgress.find(p => p.weekId === itemWId);
-            const isCompleted = progressItem?.videoComplete && 
-              (!(item.quiz?.questions?.length > 0) || progressItem?.quizPassed);
-
-            let displayNum = item.weekNumber;
-            let displayCat = 'Lecture';
-            if (String(itemWId).startsWith('rec-')) {
-              displayNum = 'R' + (idx + 1);
-              displayCat = 'Live Recording';
-            } else if (item.category === 'live') {
-              displayNum = 'L' + (idx + 1);
-              displayCat = 'Live Session';
-            } else {
-              displayNum = 'W' + item.weekNumber;
-            }
-
             return (
-              <Link
-                key={itemWId || idx}
-                to={`/learn/${courseId}/${itemWId}`}
-                onClick={() => isMobile && setShowPlaylistMobile(false)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '0.75rem',
-                  padding: '0.9rem 1rem',
-                  textDecoration: 'none',
-                  borderBottom: '1px solid rgba(0, 0, 0, 0.04)',
-                  position: 'relative',
-                  background: isActive ? 'var(--card)' : 'transparent',
-                  transition: 'background-color 0.2s ease',
-                }}
-                className="lesson-row-hover"
-              >
-                {isActive && (
-                  <div style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    width: '4px',
-                    background: 'var(--primary)',
-                    borderRadius: '0 4px 4px 0',
-                  }} />
-                )}
-
-                {/* Status Icon */}
-                <div style={{
-                  marginTop: '0.15rem',
-                  fontSize: '0.95rem',
-                  width: '18px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}>
-                  {isCompleted ? (
-                    <span style={{ color: 'var(--success)', fontWeight: 800 }}>✓</span>
-                  ) : isActive ? (
-                    <span style={{ color: 'var(--primary)' }}>●</span>
-                  ) : (
-                    <span style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}>○</span>
-                  )}
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', minWidth: 0 }}>
-                  <span style={{
-                    fontSize: '0.825rem',
-                    fontWeight: isActive ? 700 : 600,
-                    color: isActive ? 'var(--primary)' : 'var(--foreground)',
-                    lineHeight: 1.3,
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {displayNum}: {item.title}
+              <div key={group.key} style={{ marginBottom: '0.25rem' }}>
+                {/* Group Header Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setExpandedGroups(prev => ({
+                      ...prev,
+                      [group.key]: !prev[group.key]
+                    }));
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '0.8rem 1rem',
+                    background: 'var(--card)',
+                    border: 'none',
+                    borderBottom: '1px solid var(--border)',
+                    textAlign: 'left',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    fontWeight: 750,
+                    fontSize: '0.85rem',
+                    color: 'var(--foreground)',
+                    transition: 'background-color 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 111, 143, 0.04)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--card)'}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <span style={{ fontSize: '0.95rem' }}>📁</span>
+                    {group.title}
                   </span>
                   <span style={{
+                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s ease',
                     fontSize: '0.7rem',
-                    color: 'var(--muted-foreground)',
-                    fontWeight: 500,
+                    color: 'var(--muted-foreground)'
                   }}>
-                    {displayCat}
+                    ▼
                   </span>
+                </button>
+
+                {/* Group Items List */}
+                <div style={{
+                  maxHeight: isExpanded ? '1200px' : '0px',
+                  overflow: 'hidden',
+                  transition: 'max-height 0.25s cubic-bezier(0, 1, 0, 1)',
+                  background: 'rgba(0,0,0,0.015)'
+                }}>
+                  {group.items.map((item, idx) => {
+                    const itemWId = item.weekId || item.id;
+                    const isActive = itemWId === weekId;
+                    
+                    // Check completion state
+                    const progressItem = allProgress.find(p => p.weekId === itemWId);
+                    const isCompleted = progressItem?.videoComplete && 
+                      (!(item.quiz?.questions?.length > 0) || progressItem?.quizPassed);
+
+                    let displayNum = item.weekNumber;
+                    let displayCat = 'Lecture';
+                    if (String(itemWId).startsWith('rec-')) {
+                      displayNum = 'R' + (idx + 1);
+                      displayCat = 'Live Recording';
+                    } else if (item.category === 'live') {
+                      displayNum = 'L' + (idx + 1);
+                      displayCat = 'Live Session';
+                    } else {
+                      displayNum = 'W' + item.weekNumber;
+                    }
+
+                    return (
+                      <Link
+                        key={itemWId}
+                        to={`/learn/${courseId}/${itemWId}`}
+                        onClick={() => isMobile && setShowPlaylistMobile(false)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: '0.75rem',
+                          padding: '0.8rem 1.25rem',
+                          textDecoration: 'none',
+                          borderBottom: '1px solid rgba(0, 0, 0, 0.02)',
+                          position: 'relative',
+                          background: isActive ? 'var(--card)' : 'transparent',
+                          transition: 'background-color 0.2s ease',
+                        }}
+                        className="lesson-row-hover"
+                      >
+                        {isActive && (
+                          <div style={{
+                            position: 'absolute',
+                            left: 0,
+                            top: 0,
+                            bottom: 0,
+                            width: '4px',
+                            background: 'var(--primary)',
+                            borderRadius: '0 4px 4px 0',
+                          }} />
+                        )}
+
+                        {/* Status Icon */}
+                        <div style={{
+                          marginTop: '0.15rem',
+                          fontSize: '0.95rem',
+                          width: '18px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                        }}>
+                          {isCompleted ? (
+                            <span style={{ color: 'var(--success)', fontWeight: 800 }}>✓</span>
+                          ) : isActive ? (
+                            <span style={{ color: 'var(--primary)' }}>●</span>
+                          ) : (
+                            <span style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}>○</span>
+                          )}
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', minWidth: 0 }}>
+                          <span style={{
+                            fontSize: '0.8rem',
+                            fontWeight: isActive ? 700 : 600,
+                            color: isActive ? 'var(--primary)' : 'var(--foreground)',
+                            lineHeight: 1.3,
+                            textOverflow: 'ellipsis',
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                          }}>
+                            {displayNum}: {item.title}
+                          </span>
+                          <span style={{
+                            fontSize: '0.675rem',
+                            color: 'var(--muted-foreground)',
+                            fontWeight: 500,
+                          }}>
+                            {displayCat}
+                          </span>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>
