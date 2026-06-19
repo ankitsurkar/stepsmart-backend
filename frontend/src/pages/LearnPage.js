@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { getCourseWeeks, getProgress, getQAQuestions, postQAQuestion } from '../utils/api';
 import VideoPlayer from '../components/VideoPlayer';
 import QuizComponent from '../components/QuizComponent';
@@ -545,6 +545,8 @@ function SidebarIcon({ kind }) {
 export default function LearnPage() {
   const { courseId, weekId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const queryTab = searchParams.get('tab');
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const initiallyCompleteRef = useRef(false);
 
@@ -574,12 +576,18 @@ export default function LearnPage() {
   }, []);
 
   // Tabs and Questions state
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState(queryTab || 'overview');
   const [newQuestionText, setNewQuestionText] = useState('');
   const [questionsList, setQuestionsList] = useState([
     { id: 1, author: 'Student A', text: 'Are we covering advanced metrics in week 3?', date: '2 days ago' },
     { id: 2, author: 'Parth Randive', text: 'Yes, week 3 focuses heavily on key product-led growth metrics!', date: '1 day ago' },
   ]);
+
+  useEffect(() => {
+    if (queryTab) {
+      setActiveTab(queryTab);
+    }
+  }, [queryTab]);
 
   useEffect(() => { loadWeek(); }, [courseId, weekId]);
 

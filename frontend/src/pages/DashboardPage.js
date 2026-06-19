@@ -1774,42 +1774,181 @@ function RingMetricCard({ value, label, sublabel, percent, ringColor, trackColor
   );
 }
 
+const PM_GYM_QUESTIONS = [
+  {
+    id: 1,
+    text: "What does MVP stand for in product development?",
+    options: [
+      "Most Valued Product",
+      "Minimum Viable Product",
+      "Maximum Velocity Project",
+      "Market Valuation Process"
+    ],
+    correctIndex: 1,
+    explanation: "A Minimum Viable Product (MVP) is the version of a new product which allows a team to collect the maximum amount of validated learning about customers with the least effort."
+  },
+  {
+    id: 2,
+    text: "Which prioritization framework is calculated as (Reach * Impact * Confidence) / Effort?",
+    options: [
+      "MoSCoW",
+      "Kano Model",
+      "RICE",
+      "Value vs. Complexity"
+    ],
+    correctIndex: 2,
+    explanation: "RICE stands for Reach, Impact, Confidence, and Effort, and is a popular scoring system for prioritizing product backlog items."
+  },
+  {
+    id: 3,
+    text: "What measures the percentage of users who continue using your product over a given timeframe?",
+    options: [
+      "Conversion Rate",
+      "Retention Rate",
+      "Net Promoter Score",
+      "Churn Rate"
+    ],
+    correctIndex: 1,
+    explanation: "Retention Rate measures user engagement and product-market fit by tracking how many users return to the product over time."
+  },
+  {
+    id: 4,
+    text: "In the Hook Model (by Nir Eyal), what is the correct order of the user loop?",
+    options: [
+      "Trigger -> Action -> Variable Reward -> Investment",
+      "Action -> Trigger -> Variable Reward -> Investment",
+      "Trigger -> Action -> Investment -> Variable Reward",
+      "Investment -> Trigger -> Action -> Variable Reward"
+    ],
+    correctIndex: 0,
+    explanation: "The Hook Model consists of four phases: Trigger, Action, Variable Reward, and Investment."
+  },
+  {
+    id: 5,
+    text: "What is the term for a major strategic change in a product's direction without changing the overall vision?",
+    options: [
+      "Iteration",
+      "Pivot",
+      "Rollback",
+      "A/B Test"
+    ],
+    correctIndex: 1,
+    explanation: "A Pivot is a structured course correction designed to test a new basic hypothesis about the product, strategy, and engine of growth."
+  }
+];
+
+function calculateGymStreak(username) {
+  if (!username) return 0;
+  let streak = 0;
+  let checkDate = new Date();
+  
+  const toDateKeyHelper = (d) => {
+    const yr = d.getFullYear();
+    const mo = String(d.getMonth() + 1).padStart(2, '0');
+    const dy = String(d.getDate()).padStart(2, '0');
+    return `${yr}-${mo}-${dy}`;
+  };
+
+  let todayStr = toDateKeyHelper(checkDate);
+  let completedToday = localStorage.getItem(`pm_gym_completed_${username}_${todayStr}`) === 'true';
+  
+  if (!completedToday) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = toDateKeyHelper(yesterday);
+    const completedYesterday = localStorage.getItem(`pm_gym_completed_${username}_${yesterdayStr}`) === 'true';
+    if (completedYesterday) {
+      checkDate = yesterday;
+    } else {
+      return 0;
+    }
+  }
+  
+  for (let i = 0; i < 365; i++) {
+    const dStr = toDateKeyHelper(checkDate);
+    if (localStorage.getItem(`pm_gym_completed_${username}_${dStr}`) === 'true') {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
 function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
-  const current = me || null;
+  const AVATAR_GRADIENTS = [
+    'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+    'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
+    'linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)',
+    'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
+    'linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)',
+    'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)'
+  ];
 
   return (
     <div style={{ ...s.dashboardRight, position: isCompact ? 'static' : s.dashboardRight.position }}>
-      <div style={s.railHeaderTitle}>Cohort Leaderboard</div>
+      <div style={s.railHeaderTitle}>Top Peers</div>
       <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
 
-      <div style={s.rankCard}>
-        <div style={s.rankLabel}>YOUR RANK</div>
-        <div style={s.rankRow}>
-          <div style={s.rankAvatar}>{getInitials(current?.displayName || displayName)}</div>
-          <div style={s.rankName}>{current?.displayName || displayName}</div>
-          <div>
-            <div style={s.rankNoLabel}>RANK</div>
-            <div style={s.rankNo}>#{current?.rank || '-'}</div>
-          </div>
-        </div>
-      </div>
-
-      <div style={s.railList}>
-        {rows.map((entry) => (
-          <div key={entry.userId} style={s.railRow}>
-            <div style={s.railAvatar}>{getInitials(entry.displayName)}</div>
-            <div>
-              <div style={s.railName}>{entry.displayName}</div>
-              <div style={s.railMeta}>
-                {entry.completedLectures} L / {entry.assignmentsSubmitted} A
+      <div
+        style={{
+          ...s.railList,
+          maxHeight: '440px',
+          overflowY: 'auto',
+          paddingRight: '6px',
+        }}
+      >
+        {rows.map((entry, idx) => {
+          const gradient = AVATAR_GRADIENTS[idx % AVATAR_GRADIENTS.length];
+          const isMe = entry.isCurrentUser;
+          
+          return (
+            <div
+              key={entry.userId}
+              style={{
+                ...s.railRow,
+                padding: isMe ? '0.65rem 0.75rem' : s.railRow.padding,
+                background: isMe ? 'linear-gradient(135deg, rgba(2, 122, 155, 0.08) 0%, rgba(2, 122, 155, 0.02) 100%)' : 'transparent',
+                border: isMe ? '1.5px solid rgba(2, 122, 155, 0.28)' : s.railRow.borderBottom,
+                borderRadius: isMe ? '16px' : '0',
+                margin: isMe ? '6px 0' : '0',
+                boxShadow: isMe ? '0 4px 12px rgba(2, 122, 155, 0.05)' : 'none',
+              }}
+            >
+              <div style={{ ...s.railAvatar, background: gradient, border: 'none', color: '#1e293b' }}>
+                {getInitials(entry.displayName)}
+              </div>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.25rem' }}>
+                  <span style={{ ...s.railName, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: isMe ? '110px' : '150px' }}>
+                    {entry.displayName}
+                  </span>
+                  {isMe && (
+                    <span style={{
+                      fontSize: '0.7rem',
+                      color: '#027A9B',
+                      fontWeight: 'bold',
+                      background: 'rgba(2, 122, 155, 0.12)',
+                      padding: '1px 6px',
+                      borderRadius: '999px',
+                      display: 'inline-block',
+                      lineHeight: '1.2',
+                    }}>
+                      You
+                    </span>
+                  )}
+                </div>
+                <div style={s.railMeta}>
+                  {entry.completedLectures} L / {entry.assignmentsSubmitted} A
+                </div>
+              </div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 650, color: '#0f172a', minWidth: '24px', textAlign: 'right' }}>
+                {entry.rank}
               </div>
             </div>
-            <div>
-              <div style={s.railScoreValue}>{entry.totalPoints}</div>
-              <div style={s.railScoreLabel}>SCORE</div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -1996,6 +2135,21 @@ export default function DashboardPage() {
     }
     return null;
   });
+  
+  const [supplementalContent, setSupplementalContent] = useState(() => {
+    if (clientDashboardCache && clientDashboardCache.username === user?.username) {
+      return clientDashboardCache.supplementalContent;
+    }
+    return null;
+  });
+
+  // PM Gym Modal States
+  const [showPmGymModal, setShowPmGymModal] = useState(false);
+  const [pmGymAnswers, setPmGymAnswers] = useState({});
+  const [pmGymSubmitted, setPmGymSubmitted] = useState(false);
+  const [pmGymScore, setPmGymScore] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
   const [activeView, setActiveView] = useState(() => getInitialDashboardView(searchParams));
   const [activeCoursesTab, setActiveCoursesTab] = useState('videos');
   const [expandedGroups, setExpandedGroups] = useState({});
@@ -2142,6 +2296,9 @@ export default function DashboardPage() {
       const leaderboardData = progressRes.data.leaderboard || [];
       setLeaderboard(leaderboardData);
 
+      const suppData = weeksRes.data.supplementalContent || null;
+      setSupplementalContent(suppData);
+
       // Save to module cache
       clientDashboardCache = {
         username: user?.username,
@@ -2150,6 +2307,7 @@ export default function DashboardPage() {
         progressMap: nextProgressMap,
         leaderboard: leaderboardData,
         activeCourse: activeCourse || (courseList && courseList[0]) || (courses && courses[0]),
+        supplementalContent: suppData,
       };
 
       setExpandedGroups({});
@@ -2331,230 +2489,758 @@ export default function DashboardPage() {
       ? `ACTIVE COURSE: ${activeCourse.name}${currentGroup ? ` (Week ${currentGroup.groupNumber})` : ''}`
       : 'ACTIVE COURSE: Not assigned yet';
 
-    // Calculate learning streak and active days history dynamically
-    const streakInfo = calculateActiveStreak(progressMap);
-    const activeStreak = streakInfo.streak;
-    const streakHistory = streakInfo.history;
+    const gymStreak = calculateGymStreak(user?.username);
+    const todayStr = toDateKey(new Date());
+    const hasSolvedToday = localStorage.getItem(`pm_gym_completed_${user?.username}_${todayStr}`) === 'true';
 
-    return (
-      <div
-        style={{
-          ...s.dashboardHero,
-          gridTemplateColumns: isCompact ? '1fr' : s.dashboardHero.gridTemplateColumns,
-        }}
-      >
-        <div style={s.dashboardLeft}>
+    // Calculate weekly goal days (Mon to Sun of current week)
+    const weekdaysShort = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const todayDate = new Date();
+    const currentDayOfWeek = todayDate.getDay(); // 0 is Sun, 1 is Mon, etc.
+    const distanceToMon = currentDayOfWeek === 0 ? -6 : 1 - currentDayOfWeek;
+    const monday = new Date(todayDate);
+    monday.setDate(todayDate.getDate() + distanceToMon);
+    
+    const weeklyGoalDays = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      const dStr = toDateKey(d);
+      weeklyGoalDays.push({
+        label: weekdaysShort[i],
+        active: localStorage.getItem(`pm_gym_completed_${user?.username}_${dStr}`) === 'true',
+        isFuture: d > todayDate,
+      });
+    }
+
+    // Weekly Reminder Card
+    const renderWeeklyReminderCard = () => {
+      const reminders = supplementalContent?.reminders || [];
+      return (
+        <div
+          style={{
+            background: '#ffffff',
+            border: '1px solid rgba(20, 49, 86, 0.08)',
+            borderRadius: '20px',
+            padding: '1rem',
+            boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            minHeight: '145px',
+          }}
+        >
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500 }}>
+                Weekly Reminder
+              </span>
+              <span style={{ fontSize: '0.9rem' }}>⏰</span>
+            </div>
+            
+            {reminders.length === 0 ? (
+              <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', padding: '0.25rem 0' }}>
+                No weekly reminders.
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', maxHeight: '68px', overflowY: 'auto', paddingRight: '4px' }}>
+                {reminders.map((rem) => {
+                  const isChecked = localStorage.getItem(`reminder_${user?.username}_${rem.id}`) === 'true';
+                  return (
+                    <div key={rem.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {
+                          localStorage.setItem(`reminder_${user?.username}_${rem.id}`, isChecked ? 'false' : 'true');
+                          setProgressMap(prev => ({ ...prev }));
+                        }}
+                        style={{
+                          marginTop: '0.15rem',
+                          cursor: 'pointer',
+                          accentColor: 'var(--primary)',
+                          width: '13px',
+                          height: '13px',
+                        }}
+                      />
+                      <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, flex: 1 }}>
+                        <span style={{
+                          fontSize: '0.8125rem',
+                          fontWeight: 550,
+                          color: isChecked ? 'var(--muted-foreground)' : 'var(--foreground)',
+                          textDecoration: isChecked ? 'line-through' : 'none',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}>
+                          {rem.title}
+                        </span>
+                        {rem.deadline && !isChecked && (
+                          <span style={{ fontSize: '0.7rem', color: '#dc2626', fontWeight: 500 }}>
+                            {rem.deadline}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          <div style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem', borderTop: '1px solid #f1f5f9', paddingTop: '0.35rem', marginTop: '0.25rem' }}>
+            {reminders.length > 0
+              ? `${reminders.filter(r => localStorage.getItem(`reminder_${user?.username}_${r.id}`) === 'true').length}/${reminders.length} completed`
+              : '0 reminders'}
+          </div>
+        </div>
+      );
+    };
+
+    // Calendar Card
+    const renderMiniCalendarCard = () => {
+      const weekdaysHeader = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      const currentDay = todayDate.getDate();
+      const currentMonth = todayDate.getMonth();
+      const currentYear = todayDate.getFullYear();
+      
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+      
+      const cells = [];
+      for (let i = 0; i < firstDay; i++) {
+        cells.push(null);
+      }
+      for (let d = 1; d <= numDays; d++) {
+        cells.push(d);
+      }
+      
+      return (
+        <div
+          style={{
+            background: '#ffffff',
+            border: '1px solid rgba(20, 49, 86, 0.08)',
+            borderRadius: '20px',
+            padding: '1.35rem 1.5rem',
+            boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            flex: 1,
+            height: '100%',
+            boxSizing: 'border-box',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.1rem', padding: '0 0.2rem' }}>
+            <span style={{ color: 'var(--muted-foreground)', fontSize: '1.05rem', fontWeight: 700 }}>
+              {new Intl.DateTimeFormat('en-IN', { month: 'short', year: 'numeric' }).format(todayDate)}
+            </span>
+            <span style={{ color: 'var(--primary)', fontSize: '1.05rem', fontWeight: 800 }}>Daily Calendar</span>
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', fontWeight: 700, color: 'var(--muted-foreground)', fontSize: '0.85rem', marginBottom: '0.75rem' }}>
+            {weekdaysHeader.map((w, idx) => (
+              <div key={idx} style={{ padding: '0.1rem' }}>{w}</div>
+            ))}
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', rowGap: '6px' }}>
+            {cells.map((d, idx) => {
+              if (d === null) return <div key={idx} />;
+              
+              const cellDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+              const hasCompletedStreak = localStorage.getItem(`pm_gym_completed_${user?.username}_${cellDateStr}`) === 'true';
+              const isTodayCell = d === currentDay;
+              
+              let cellStyle = {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '28px',
+                width: '28px',
+                margin: 'auto',
+                borderRadius: '50%',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                position: 'relative',
+                transition: 'all 0.15s ease',
+              };
+              
+              if (isTodayCell) {
+                cellStyle.background = '#027A9B'; // Highlight today in blue
+                cellStyle.color = '#ffffff';
+                cellStyle.fontWeight = 'bold';
+                cellStyle.boxShadow = '0 4px 10px rgba(2, 122, 155, 0.25)';
+              } else {
+                cellStyle.color = '#334155';
+              }
+              
+              return (
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '32px' }}>
+                  <div style={cellStyle}>
+                    {hasCompletedStreak ? (
+                      <span style={{
+                        color: isTodayCell ? '#ffffff' : '#198754',
+                        fontWeight: 'bold',
+                        fontSize: '1rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>✓</span>
+                    ) : (
+                      d
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    };
+
+    const renderPmGymQuizModal = () => {
+      if (!showPmGymModal) return null;
+      
+      const question = PM_GYM_QUESTIONS[currentQuestionIndex];
+      const isLastQuestion = currentQuestionIndex === PM_GYM_QUESTIONS.length - 1;
+      
+      return (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.45)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 99999,
+            padding: '1rem',
+          }}
+        >
           <div
             style={{
-              ...s.metricCards,
-              gridTemplateColumns: isCompact ? '1fr' : 'repeat(4, minmax(0, 1fr))',
+              background: '#ffffff',
+              borderRadius: '24px',
+              padding: '2rem',
+              width: '90%',
+              maxWidth: '500px',
+              boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
-            {/* Redesigned Card 1: Lessons */}
-            <div
-              style={{
-                background: '#ffffff',
-                border: '1px solid rgba(20, 49, 86, 0.08)',
-                borderRadius: '20px',
-                padding: '1.25rem',
-                boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                minHeight: '145px',
-              }}
-            >
-              <div>
-                <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
-                  Lessons
-                </div>
-                <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'baseline' }}>
-                  <span>{completedCount}</span>
-                  <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{weeks.length}</span>
-                </div>
-              </div>
-              <div>
-                <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
-                  <div style={{ height: '100%', borderRadius: '999px', background: 'var(--primary)', width: `${weeks.length > 0 ? (completedCount / weeks.length) * 100 : 0}%`, transition: 'width 0.3s ease' }} />
-                </div>
-                <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                  <span>{activeLesson ? `1 lesson from ${activeLesson.displayWeekNumber || ('Week ' + (activeLesson.weekNumber || activeLesson.groupNumber || '1'))}` : 'All complete'}</span>
-                </div>
-              </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.75rem' }}>
+              <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#027A9B' }}>
+                🧠 PM Gym Daily Quiz
+              </span>
+              {!pmGymSubmitted && (
+                <button
+                  type="button"
+                  onClick={() => setShowPmGymModal(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '1.2rem',
+                    cursor: 'pointer',
+                    color: 'var(--muted-foreground)',
+                  }}
+                >
+                  ✕
+                </button>
+              )}
             </div>
+            
+            {pmGymSubmitted ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '3rem' }}>
+                  {pmGymScore >= 3 ? '🎉' : '💪'}
+                </div>
+                <h4 style={{ fontSize: '1.35rem', fontWeight: 800, margin: 0, color: '#0f172a' }}>
+                  {pmGymScore >= 3 ? 'Awesome job!' : 'Keep training!'}
+                </h4>
+                <p style={{ fontSize: '0.95rem', color: 'var(--muted-foreground)', margin: 0 }}>
+                  You scored <strong>{pmGymScore} / 5</strong> in today's PM Gym challenge.
+                </p>
+                
+                <div style={{ maxHeight: '200px', overflowY: 'auto', textAlign: 'left', padding: '0.75rem', background: '#f8fafc', borderRadius: '12px', fontSize: '0.85rem' }}>
+                  {PM_GYM_QUESTIONS.map((q, idx) => {
+                    const wasCorrect = pmGymAnswers[q.id] === q.correctIndex;
+                    return (
+                      <div key={q.id} style={{ marginBottom: '1rem', borderBottom: idx < 4 ? '1px solid #e2e8f0' : 'none', paddingBottom: '0.5rem' }}>
+                        <div style={{ fontWeight: 700, marginBottom: '0.25rem' }}>
+                          {idx + 1}. {q.text}
+                        </div>
+                        <div style={{ color: wasCorrect ? '#198754' : '#df3b3b', fontWeight: 600 }}>
+                          Your answer: {q.options[pmGymAnswers[q.id]] || 'No answer'} {wasCorrect ? '✓' : '✗'}
+                        </div>
+                        {!wasCorrect && (
+                          <div style={{ color: '#198754', fontWeight: 600 }}>
+                            Correct answer: {q.options[q.correctIndex]}
+                          </div>
+                        )}
+                        <p style={{ margin: '0.25rem 0 0 0', color: 'var(--muted-foreground)', fontStyle: 'italic' }}>
+                          {q.explanation}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPmGymModal(false);
+                  }}
+                  style={{
+                    background: 'var(--primary)',
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: '12px',
+                    padding: '0.9rem',
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    width: '100%',
+                  }}
+                >
+                  Close Gym
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)' }}>
+                  <span>Question {currentQuestionIndex + 1} of 5</span>
+                  <span>{Math.round(((currentQuestionIndex) / 5) * 100)}% Complete</span>
+                </div>
+                <div style={{ height: '6px', background: '#e2e8f0', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', background: '#027A9B', width: `${((currentQuestionIndex) / 5) * 100}%`, transition: 'width 0.2s ease' }} />
+                </div>
+                
+                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.4 }}>
+                  {question.text}
+                </div>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                  {question.options.map((opt, oIdx) => {
+                    const isSelected = pmGymAnswers[question.id] === oIdx;
+                    return (
+                      <button
+                        key={oIdx}
+                        type="button"
+                        onClick={() => {
+                          setPmGymAnswers(prev => ({ ...prev, [question.id]: oIdx }));
+                        }}
+                        style={{
+                          textAlign: 'left',
+                          padding: '0.85rem 1rem',
+                          borderRadius: '12px',
+                          border: isSelected ? '2px solid #027A9B' : '1px solid var(--border)',
+                          background: isSelected ? 'rgba(2, 122, 155, 0.05)' : '#ffffff',
+                          color: isSelected ? '#027A9B' : 'var(--foreground)',
+                          fontSize: '0.875rem',
+                          fontWeight: isSelected ? 600 : 500,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+                  {currentQuestionIndex > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
+                      style={{
+                        background: 'none',
+                        border: '1px solid var(--border)',
+                        borderRadius: '12px',
+                        padding: '0.9rem 1.5rem',
+                        fontSize: '0.95rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        color: 'var(--foreground)',
+                      }}
+                    >
+                      Back
+                    </button>
+                  )}
+                  
+                  <button
+                    type="button"
+                    disabled={pmGymAnswers[question.id] === undefined}
+                    onClick={() => {
+                      if (isLastQuestion) {
+                        let score = 0;
+                        PM_GYM_QUESTIONS.forEach(q => {
+                          if (pmGymAnswers[q.id] === q.correctIndex) score++;
+                        });
+                        
+                        setPmGymScore(score);
+                        setPmGymSubmitted(true);
+                        
+                        const todayStrLocal = toDateKey(new Date());
+                        localStorage.setItem(`pm_gym_completed_${user?.username}_${todayStrLocal}`, 'true');
+                        
+                        setProgressMap(prev => ({ ...prev }));
+                      } else {
+                        setCurrentQuestionIndex(prev => prev + 1);
+                      }
+                    }}
+                    style={{
+                      background: pmGymAnswers[question.id] === undefined ? 'rgba(2, 122, 155, 0.4)' : '#027A9B',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '12px',
+                      padding: '0.9rem',
+                      fontSize: '0.95rem',
+                      fontWeight: 650,
+                      cursor: pmGymAnswers[question.id] === undefined ? 'not-allowed' : 'pointer',
+                      flex: 1,
+                    }}
+                  >
+                    {isLastQuestion ? 'Submit Quiz' : 'Next'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
 
-            {/* Redesigned Card 2: Assignments */}
-            <div
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
+        {renderPmGymQuizModal()}
+        
+        {/* PM Gym Banner */}
+        <div
+          style={{
+            background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)',
+            borderRadius: '24px',
+            padding: '1.25rem 2rem',
+            color: '#ffffff',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            boxShadow: '0 10px 30px rgba(2, 122, 155, 0.15)',
+            flexWrap: isCompact ? 'wrap' : 'nowrap',
+            gap: '1.5rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: isCompact ? 'wrap' : 'nowrap' }}>
+            <img
+              src={process.env.PUBLIC_URL + '/pm_gym_brain.png'}
+              alt="PM Gym Brain mascot"
               style={{
-                background: '#ffffff',
-                border: '1px solid rgba(20, 49, 86, 0.08)',
-                borderRadius: '20px',
-                padding: '1.25rem',
-                boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                minHeight: '145px',
+                width: '96px',
+                height: '96px',
+                objectFit: 'contain',
               }}
-            >
-              <div>
-                <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
-                  Assignments
-                </div>
-                <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'baseline' }}>
-                  <span>{assignmentsSubmittedCount}</span>
-                  <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{assignmentsTotal}</span>
-                </div>
-              </div>
-              <div>
-                <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
-                  <div style={{ height: '100%', borderRadius: '999px', background: '#df3b3b', width: `${assignmentsTotal > 0 ? (assignmentsSubmittedCount / assignmentsTotal) * 100 : 0}%`, transition: 'width 0.3s ease' }} />
-                </div>
-                <div style={{ color: '#df3b3b', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 500 }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="8" x2="12" y2="12" />
-                    <line x1="12" y1="16" x2="12.01" y2="16" />
-                  </svg>
-                  <span>1 overdue soon</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Redesigned Card 3: Streak */}
-            <div
-              style={{
-                background: '#ffffff',
-                border: '1px solid rgba(20, 49, 86, 0.08)',
-                borderRadius: '20px',
-                padding: '1.25rem',
-                boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                minHeight: '145px',
-              }}
-            >
-              <div>
-                <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
-                  Streak
-                </div>
-                <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>
-                  {activeStreak} {activeStreak === 1 ? 'day' : 'days'}
-                </div>
-              </div>
-              <div>
-                <div style={{ display: 'flex', gap: '4px', marginBottom: '0.75rem' }}>
-                  {streakHistory.map((isActive, i) => (
-                    <div key={i} style={{ height: '6px', flex: 1, borderRadius: '999px', background: isActive ? '#198754' : '#e2e8f0', transition: 'background 0.3s ease' }} />
-                  ))}
-                </div>
-                <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem' }}>
-                  Log in tomorrow to hit {activeStreak + 1}
-                </div>
-              </div>
-            </div>
-
-            {/* Redesigned Card 4: Course Score */}
-            <div
-              style={{
-                background: '#ffffff',
-                border: '1px solid rgba(20, 49, 86, 0.08)',
-                borderRadius: '20px',
-                padding: '1.25rem',
-                boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                minHeight: '145px',
-              }}
-            >
-              <div>
-                <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                  <span>Course score</span>
-                  <span style={{ fontSize: '0.8rem', cursor: 'help', color: '#94a3b8' }} title="Weighted based on 40% lessons, 40% assignments, 20% streak">ⓘ</span>
-                </div>
-                <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>
-                  {courseScore}
-                </div>
-              </div>
-              <div>
-                <div style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1.3' }}>
-                  40% lessons · 40% assignments · 20% streak
-                </div>
-              </div>
+            />
+            <div>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.35rem 0', letterSpacing: '-0.02em', color: '#ffffff' }}>PM Gym</h3>
+              <p style={{ fontSize: '0.9rem', color: '#e0f2fe', margin: 0, opacity: 0.9 }}>
+                Start your engaging times to use daily quiz challenge!
+              </p>
             </div>
           </div>
 
-          <div style={s.continueCard}>
-            <div style={s.activeCourse}>{activeCourseLine}</div>
-            <div style={{ ...s.headerEyebrow, marginBottom: '0.5rem', color: '#0f172a' }}>
-              Continue Learning
-            </div>
-            <div style={s.continueTitle}>
-              {continueLesson
-                ? `${continueLesson.displayWeekNumber} • ${continueLesson.title}`
-                : 'No lesson available yet'}
-            </div>
-
-            <div style={s.segmentedTrack}>
-              {Array.from({ length: 5 }, (_, index) => {
-                const segmentPercent = Math.max(
-                  0,
-                  Math.min(100, (continueLessonPercent - (index * 20)) * 5),
-                );
-                return (
-                  <div key={index} style={s.segmentedBar}>
-                    <div style={{ ...s.segmentedFill, width: `${segmentPercent}%` }} />
-                  </div>
-                );
-              })}
-            </div>
-
-            {continueLesson ? (
-              <Link
-                to={`/learn/${continueLesson.courseId}/${continueLesson.weekId}`}
-                style={s.resumeButton}
+          <div>
+            {hasSolvedToday ? (
+              <button
+                type="button"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '999px',
+                  padding: '0.75rem 2rem',
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  cursor: 'not-allowed',
+                  boxShadow: 'none',
+                }}
+                disabled
               >
-                <span>▶</span>
-                <span>Resume Lesson</span>
-              </Link>
+                Quiz Completed ✓
+              </button>
             ) : (
-              <button type="button" style={{ ...s.resumeButton, opacity: 0.55 }} disabled>
-                <span>▶</span>
-                <span>Resume Lesson</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setPmGymAnswers({});
+                  setPmGymSubmitted(false);
+                  setPmGymScore(0);
+                  setCurrentQuestionIndex(0);
+                  setShowPmGymModal(true);
+                }}
+                style={{
+                  background: '#ffffff',
+                  color: '#027A9B',
+                  border: 'none',
+                  borderRadius: '999px',
+                  padding: '0.75rem 2rem',
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                  transition: 'transform 0.15s ease',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              >
+                Take Quiz
               </button>
             )}
+          </div>
 
-            <div style={s.upNext}>
-              Up next:{' '}
-              {upcomingLesson
-                ? `${upcomingLesson.displayWeekNumber} • ${upcomingLesson.title}`
-                : continueLesson
-                  ? `${continueLesson.displayWeekNumber} • ${continueLesson.title}`
-                  : 'No upcoming lesson yet'}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '180px' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe', opacity: 0.9, textAlign: 'center' }}>
+              Weekly Goal
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.35rem' }}>
+              {weeklyGoalDays.map((day, idx) => (
+                <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem' }}>
+                  <div
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      background: day.active
+                        ? '#ffffff'
+                        : day.isFuture
+                          ? 'rgba(255, 255, 255, 0.2)'
+                          : 'rgba(255, 255, 255, 0.4)',
+                      color: day.active ? '#027A9B' : '#ffffff',
+                      fontSize: '0.65rem',
+                      fontWeight: 700,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {day.active ? '✓' : day.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ height: '4px', background: 'rgba(255, 255, 255, 0.25)', borderRadius: '999px', overflow: 'hidden', marginTop: '0.2rem' }}>
+              <div style={{ height: '100%', background: '#ffffff', width: `${(weeklyGoalDays.filter(d => d.active).length / 7) * 100}%`, transition: 'width 0.3s ease' }} />
             </div>
           </div>
         </div>
 
-        {topLeaderboard.length === 0 ? (
-          <div style={s.dashboardRight}>
-            <div style={s.railHeaderTitle}>Cohort Leaderboard</div>
-            <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
-            <div style={s.empty}>Leaderboard points will appear after lessons and assignments are completed.</div>
+        {/* Hero Section */}
+        <div
+          style={{
+            ...s.dashboardHero,
+            gridTemplateColumns: isCompact ? '1fr' : s.dashboardHero.gridTemplateColumns,
+          }}
+        >
+          <div style={s.dashboardLeft}>
+            <div
+              style={{
+                ...s.metricCards,
+                gridTemplateColumns: isCompact ? '1fr' : 'repeat(4, minmax(0, 1fr))',
+              }}
+            >
+              {/* Redesigned Card 1: Lessons */}
+              <div
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid rgba(20, 49, 86, 0.08)',
+                  borderRadius: '20px',
+                  padding: '1.25rem',
+                  boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  minHeight: '145px',
+                }}
+              >
+                <div>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
+                    Lessons
+                  </div>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'baseline' }}>
+                    <span>{completedCount}</span>
+                    <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{weeks.length}</span>
+                  </div>
+                </div>
+                <div>
+                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
+                    <div style={{ height: '100%', borderRadius: '999px', background: 'var(--primary)', width: `${weeks.length > 0 ? (completedCount / weeks.length) * 100 : 0}%`, transition: 'width 0.3s ease' }} />
+                  </div>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <span>{activeLesson ? `1 lesson from ${activeLesson.displayWeekNumber || ('Week ' + (activeLesson.weekNumber || activeLesson.groupNumber || '1'))}` : 'All complete'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Redesigned Card 2: Assignments */}
+              <div
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid rgba(20, 49, 86, 0.08)',
+                  borderRadius: '20px',
+                  padding: '1.25rem',
+                  boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  minHeight: '145px',
+                }}
+              >
+                <div>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
+                    Assignments
+                  </div>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'baseline' }}>
+                    <span>{assignmentsSubmittedCount}</span>
+                    <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{assignmentsTotal}</span>
+                  </div>
+                </div>
+                <div>
+                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
+                    <div style={{ height: '100%', borderRadius: '999px', background: '#df3b3b', width: `${assignmentsTotal > 0 ? (assignmentsSubmittedCount / assignmentsTotal) * 100 : 0}%`, transition: 'width 0.3s ease' }} />
+                  </div>
+                  <div style={{ color: '#df3b3b', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 500 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <span>1 overdue soon</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Redesigned Card 3: Streak */}
+              <div
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid rgba(20, 49, 86, 0.08)',
+                  borderRadius: '20px',
+                  padding: '1.25rem',
+                  boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  minHeight: '145px',
+                }}
+              >
+                <div>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
+                    Streak
+                  </div>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>
+                    {gymStreak} {gymStreak === 1 ? 'day' : 'days'}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', gap: '4px', marginBottom: '0.75rem' }}>
+                    {Array.from({ length: 7 }, (_, i) => {
+                      const d = new Date();
+                      d.setDate(d.getDate() - (6 - i));
+                      const dStr = toDateKey(d);
+                      const isActive = localStorage.getItem(`pm_gym_completed_${user?.username}_${dStr}`) === 'true';
+                      return (
+                        <div key={i} style={{ height: '6px', flex: 1, borderRadius: '999px', background: isActive ? '#198754' : '#e2e8f0', transition: 'background 0.3s ease' }} />
+                      );
+                    })}
+                  </div>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem' }}>
+                    {hasSolvedToday ? "Today's PM Gym complete!" : "Complete today's PM Gym quiz to keep it up!"}
+                  </div>
+                </div>
+              </div>
+
+              {/* Redesigned Card 4: Weekly Reminder Card */}
+              {renderWeeklyReminderCard()}
+            </div>
+
+            {/* Row 2: Active Course & Daily Reminders side-by-side */}
+            <div style={{ display: 'grid', gridTemplateColumns: isCompact ? '1fr' : '1.6fr 1fr', gap: '1.25rem', alignItems: 'stretch' }}>
+              <div style={s.continueCard}>
+                <div style={s.activeCourse}>{activeCourseLine}</div>
+                <div style={{ ...s.headerEyebrow, marginBottom: '0.5rem', color: '#0f172a' }}>
+                  Continue Learning
+                </div>
+                <div style={s.continueTitle}>
+                  {continueLesson
+                    ? `${continueLesson.displayWeekNumber} • ${continueLesson.title}`
+                    : 'No lesson available yet'}
+                </div>
+
+                <div style={s.segmentedTrack}>
+                  {Array.from({ length: 5 }, (_, index) => {
+                    const segmentPercent = Math.max(
+                      0,
+                      Math.min(100, (continueLessonPercent - (index * 20)) * 5),
+                    );
+                    return (
+                      <div key={index} style={s.segmentedBar}>
+                        <div style={{ ...s.segmentedFill, width: `${segmentPercent}%` }} />
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {continueLesson ? (
+                  <Link
+                    to={`/learn/${continueLesson.courseId}/${continueLesson.weekId}`}
+                    style={s.resumeButton}
+                  >
+                    <span>▶</span>
+                    <span>Resume Lesson</span>
+                  </Link>
+                ) : (
+                  <button type="button" style={{ ...s.resumeButton, opacity: 0.55 }} disabled>
+                    <span>▶</span>
+                    <span>Resume Lesson</span>
+                  </button>
+                )}
+
+                <div style={s.upNext}>
+                  Up next:{' '}
+                  {upcomingLesson
+                    ? `${upcomingLesson.displayWeekNumber} • ${upcomingLesson.title}`
+                    : continueLesson
+                      ? `${continueLesson.displayWeekNumber} • ${continueLesson.title}`
+                      : 'No upcoming lesson yet'}
+                </div>
+              </div>
+
+              {/* Mini Calendar Card */}
+              {renderMiniCalendarCard()}
+            </div>
           </div>
-        ) : (
-          <DashboardLeaderboard
-            me={myLeaderboardEntry}
-            rows={leaderboardList.length > 0 ? leaderboardList : topLeaderboard.slice(0, 6)}
-            displayName={displayName}
-            isCompact={isCompact}
-          />
-        )}
+
+          {topLeaderboard.length === 0 ? (
+            <div style={s.dashboardRight}>
+              <div style={s.railHeaderTitle}>Top Peers</div>
+              <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
+              <div style={s.empty}>Leaderboard points will appear after lessons and assignments are completed.</div>
+            </div>
+          ) : (
+            <DashboardLeaderboard
+              me={myLeaderboardEntry}
+              rows={leaderboardRows}
+              displayName={displayName}
+              isCompact={isCompact}
+            />
+          )}
+        </div>
       </div>
     );
   }

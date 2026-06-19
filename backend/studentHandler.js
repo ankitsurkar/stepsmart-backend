@@ -198,6 +198,7 @@ async function getSupplementalContent(courseId) {
       assignments: Array.isArray(item.assignments) ? item.assignments : [],
       liveRecordedSessions: signedSessions,
       calendarEvents: Array.isArray(item.calendarEvents) ? item.calendarEvents : [],
+      reminders: Array.isArray(item.reminders) ? item.reminders : [],
     };
   } catch (err) {
     console.error('DynamoDB GetCommand supplemental content error:', err);
@@ -205,6 +206,7 @@ async function getSupplementalContent(courseId) {
       assignments: [],
       liveRecordedSessions: [],
       calendarEvents: [],
+      reminders: [],
     };
   }
 }

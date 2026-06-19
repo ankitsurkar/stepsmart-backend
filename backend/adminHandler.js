@@ -140,6 +140,7 @@ async function getSupplementalContent(courseId) {
     assignments: Array.isArray(item.assignments) ? item.assignments : [],
     liveRecordedSessions: signedSessions,
     calendarEvents: Array.isArray(item.calendarEvents) ? item.calendarEvents : [],
+    reminders: Array.isArray(item.reminders) ? item.reminders : [],
     updatedAt: item.updatedAt || null,
     createdAt: item.createdAt || null,
   };
@@ -413,7 +414,7 @@ async function updateSupplementalContent(courseId, body) {
     }
   }
 
-  const hasSupportedField = ['assignments', 'liveRecordedSessions', 'calendarEvents']
+  const hasSupportedField = ['assignments', 'liveRecordedSessions', 'calendarEvents', 'reminders']
     .some((field) => body[field] !== undefined);
   if (!hasSupportedField) {
     return res(400, { message: 'No supplemental fields provided' });
@@ -426,6 +427,7 @@ async function updateSupplementalContent(courseId, body) {
     assignments: body.assignments !== undefined ? body.assignments : existing.assignments,
     liveRecordedSessions: body.liveRecordedSessions !== undefined ? body.liveRecordedSessions : existing.liveRecordedSessions,
     calendarEvents: body.calendarEvents !== undefined ? body.calendarEvents : existing.calendarEvents,
+    reminders: body.reminders !== undefined ? body.reminders : existing.reminders,
   };
 
   await ddb.send(new PutCommand({

@@ -1548,6 +1548,135 @@ function SupplementalContentTab({ courseId }) {
 }
 
 // ────────────────────────────────────────────────────────────────────────────────
+// Daily Reminders Tab
+// ────────────────────────────────────────────────────────────────────────────────
+function RemindersTab({ courseId }) {
+  const [reminders, setReminders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => { load(); }, [courseId]);
+
+  async function load() {
+    setLoading(true);
+    try {
+      const { data: resData } = await adminGetWeeks(courseId);
+      const rawReminders = resData.supplementalContent?.reminders;
+      setReminders(Array.isArray(rawReminders) ? rawReminders : []);
+    } catch {
+      setMessage('Failed to load reminders.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSave(e) {
+    e.preventDefault();
+    setSaving(true);
+    setMessage('');
+    try {
+      await adminUpdateSupplementalContent(courseId, { reminders });
+      setMessage('Reminders saved successfully!');
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Save failed.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const addReminder = () => {
+    setReminders(prev => [...prev, { id: 'rem-' + Date.now(), title: '', deadline: '' }]);
+  };
+
+  const updateReminder = (idx, field, val) => {
+    setReminders(prev => {
+      const list = [...prev];
+      list[idx] = { ...list[idx], [field]: val };
+      return list;
+    });
+  };
+
+  const removeReminder = (idx) => {
+    setReminders(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  if (loading) return <p style={{ color: 'var(--muted-foreground)', padding: '2rem 0', textAlign: 'center' }}>Loading daily reminders...</p>;
+
+  return (
+    <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{
+        background: 'linear-gradient(135deg, hsl(195, 83%, 98%) 0%, hsl(195, 83%, 95%) 100%)',
+        border: '1px dashed rgba(195, 83%, 38%, 0.3)',
+        borderRadius: '16px',
+        padding: '1.5rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.4rem',
+        boxShadow: 'var(--shadow-sm)'
+      }}>
+        <div style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--primary-dark)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span>⏰</span> Weekly Reminder
+        </div>
+        <div style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', lineHeight: 1.5 }}>
+          Set student weekly reminders and deadlines. These reminders will appear on all student dashboards.
+        </div>
+      </div>
+
+      {message && (
+        <div style={{
+          padding: '0.85rem 1.25rem',
+          borderRadius: '10px',
+          background: message.includes('failed') || message.includes('Failed') ? 'hsl(0, 84%, 96%)' : 'var(--success-light)',
+          color: message.includes('failed') || message.includes('Failed') ? 'var(--destructive)' : 'var(--success)',
+          border: `1px solid ${message.includes('failed') || message.includes('Failed') ? 'var(--destructive)' : 'var(--success)'}`,
+          fontWeight: 600,
+          fontSize: '0.875rem'
+        }}>
+          {message}
+        </div>
+      )}
+
+      <div style={s.card}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+          <div style={s.cardTitle}>Configure Reminders</div>
+          <button type="button" style={s.btn} onClick={addReminder}>+ Add Reminder</button>
+        </div>
+
+        {reminders.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '2.5rem 1rem', border: '1.5px dashed var(--border)', borderRadius: '12px', background: 'var(--background)' }}>
+            <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>⏰</span>
+            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>No daily reminders set. Add one above!</span>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {reminders.map((rem, i) => (
+              <div key={rem.id || i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '1rem', alignItems: 'end', background: '#fff', border: '1px solid var(--border)', padding: '1rem', borderRadius: '12px' }}>
+                <div>
+                  <label style={s.label}>Reminder Action / Title</label>
+                  <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. Complete Quiz" value={rem.title} onChange={e => updateReminder(i, 'title', e.target.value)} />
+                </div>
+                <div>
+                  <label style={s.label}>Deadline Text / Subtitle</label>
+                  <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. Deadline: 22mn 22s" value={rem.deadline} onChange={e => updateReminder(i, 'deadline', e.target.value)} />
+                </div>
+                <button type="button" style={{ ...s.btn, ...s.btnDanger, height: '38px', borderRadius: '8px' }} onClick={() => removeReminder(i)}>Remove</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button style={{ ...s.btn, padding: '0.85rem 2.5rem', fontSize: '0.9rem', borderRadius: '10px', boxShadow: 'var(--shadow-md)' }} type="submit" disabled={saving}>
+          {saving ? 'Saving changes...' : 'Save Reminders ✓'}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
 // Progress Tab
 // ────────────────────────────────────────────────────────────────────────────────
 function ProgressTab({ courseId }) {
@@ -1882,6 +2011,7 @@ export default function AdminPage() {
         {[
           { id: 'weeks', label: 'Manage Weeks' },
           { id: 'supplemental', label: 'Supplemental Content' },
+          { id: 'reminders', label: 'Weekly Reminder' },
           { id: 'students', label: 'Students' },
           { id: 'progress', label: 'Progress' },
           { id: 'submissions', label: 'Submissions' },
@@ -1900,6 +2030,7 @@ export default function AdminPage() {
       <div style={s.content}>
         {tab === 'weeks' && <WeeksTab courseId={currentCourseId} />}
         {tab === 'supplemental' && <SupplementalContentTab courseId={currentCourseId} />}
+        {tab === 'reminders' && <RemindersTab courseId={currentCourseId} />}
         {tab === 'students' && <StudentsTab courseId={currentCourseId} />}
         {tab === 'progress' && <ProgressTab courseId={currentCourseId} />}
         {tab === 'submissions' && <SubmissionsTab courseId={currentCourseId} />}
