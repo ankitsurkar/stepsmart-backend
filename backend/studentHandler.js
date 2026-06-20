@@ -333,6 +333,7 @@ function makeLeaderboardEntry(userId, profile, currentUserId) {
     userId,
     displayName: makeDisplayName(profile, userId),
     email: profile?.email || '',
+    linkedinUrl: profile?.website || '',
     lecturePoints: 0,
     assignmentPoints: 0,
     completedLectures: 0,
@@ -364,6 +365,7 @@ async function listUsersBySub(userPoolId) {
       usersBySub.set(attrs.sub, {
         name: attrs.name || '',
         email: attrs.email || '',
+        website: attrs.website || '',
       });
     }
 

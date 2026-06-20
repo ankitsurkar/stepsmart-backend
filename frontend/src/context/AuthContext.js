@@ -32,6 +32,7 @@ export function AuthProvider({ children }) {
       ...currentUser,
       profileName: attributes?.name || '',
       email: attributes?.email || '',
+      website: attributes?.website || '',
     };
 
     setUser(nextUser);
@@ -91,6 +92,10 @@ export function AuthProvider({ children }) {
   }
 
   async function updateDisplayName(name) {
+    return updateProfile(name, user?.website || '');
+  }
+
+  async function updateProfile(name, linkedinUrl) {
     const nextName = name.trim();
     if (!nextName) {
       return { error: 'Display name cannot be empty.' };
@@ -100,12 +105,13 @@ export function AuthProvider({ children }) {
       await updateUserAttributes({
         userAttributes: {
           name: nextName,
+          website: (linkedinUrl || '').trim(),
         },
       });
       await loadAuthenticatedUser();
       return { success: true };
     } catch (err) {
-      return { error: err.message || 'Failed to update display name.' };
+      return { error: err.message || 'Failed to update profile settings.' };
     }
   }
 
@@ -116,7 +122,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, loading, login, completeNewPassword, updateDisplayName, logout }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, login, completeNewPassword, updateDisplayName, updateProfile, logout }}>
       {children}
     </AuthContext.Provider>
   );

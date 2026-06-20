@@ -2106,7 +2106,7 @@ function PlaceholderPanel({ title, body, actionLabel, onAction }) {
 let clientDashboardCache = null;
 
 export default function DashboardPage() {
-  const { isAdmin, logout, updateDisplayName, user } = useAuth();
+  const { isAdmin, logout, updateDisplayName, updateProfile, user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -2171,7 +2171,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (user) {
-      setLinkedinUrlInput(localStorage.getItem(`settings_linkedin_${user.username}`) || '');
+      setLinkedinUrlInput(user.website || localStorage.getItem(`settings_linkedin_${user.username}`) || '');
       setTimezoneInput(localStorage.getItem(`settings_timezone_${user.username}`) || 'UTC');
       setEmailNotifications(localStorage.getItem(`settings_email_${user.username}`) !== 'false');
       setWhatsappNotifications(localStorage.getItem(`settings_whatsapp_${user.username}`) === 'true');
@@ -2350,7 +2350,7 @@ export default function DashboardPage() {
     setSettingsMessage('');
 
     try {
-      const result = await updateDisplayName(displayNameInput);
+      const result = await updateProfile(displayNameInput, linkedinUrlInput);
       if (user) {
         localStorage.setItem(`settings_linkedin_${user.username}`, linkedinUrlInput);
         localStorage.setItem(`settings_timezone_${user.username}`, timezoneInput);
