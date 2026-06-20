@@ -7,7 +7,7 @@ case "$FUNCTION_KEY" in
     LAMBDA_NAME="lms-student"
     ;;
   adminHandler)
-    LAMBDA_NAME="adminHandler"
+    LAMBDA_NAME="lms-admin"
     ;;
   getCourseWeeks)
     LAMBDA_NAME="lms-getCourseWeeks"
