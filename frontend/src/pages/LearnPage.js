@@ -649,6 +649,9 @@ export default function LearnPage() {
       if (!hasQuiz && activeTab === 'quiz') {
         setActiveTab('overview');
       }
+      if (found.textContent && activeTab === 'transcript') {
+        setActiveTab('overview');
+      }
 
       const weekProgress = (progressRes.data.progress || []).find((p) => p.weekId === weekId) || null;
       setProgress(weekProgress);
@@ -858,6 +861,9 @@ export default function LearnPage() {
                     } else if (item.category === 'live') {
                       displayNum = 'L' + (idx + 1);
                       displayCat = 'Live Session';
+                    } else if (item.textContent) {
+                      displayNum = 'W' + item.weekNumber;
+                      displayCat = 'Reading';
                     } else {
                       displayNum = 'W' + item.weekNumber;
                     }
@@ -1150,12 +1156,14 @@ export default function LearnPage() {
                     Quiz {quizPassed && '✓'}
                   </button>
                 )}
-                <button
-                  onClick={() => setActiveTab('transcript')}
-                  style={{ ...s.tabBtn, ...(activeTab === 'transcript' ? s.tabBtnActive : {}) }}
-                >
-                  Transcript
-                </button>
+                {!week.textContent && (
+                  <button
+                    onClick={() => setActiveTab('transcript')}
+                    style={{ ...s.tabBtn, ...(activeTab === 'transcript' ? s.tabBtnActive : {}) }}
+                  >
+                    Transcript
+                  </button>
+                )}
                 <button
                   onClick={() => setActiveTab('qa')}
                   style={{ ...s.tabBtn, ...(activeTab === 'qa' ? s.tabBtnActive : {}) }}
@@ -1169,7 +1177,7 @@ export default function LearnPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div style={s.tabContentCard}>
                     <div style={s.sidebarHeading}>Your progress</div>
-                    <ProgressStep label="Watch video" done={videoComplete} active={!videoComplete} />
+                    <ProgressStep label={week.textContent ? "Read document" : "Watch video"} done={videoComplete} active={!videoComplete} />
                     {hasQuiz ? (
                       <ProgressStep label="Pass quiz" done={quizPassed} active={quizUnlocked && !quizPassed} locked={!quizUnlocked} />
                     ) : (
