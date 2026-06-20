@@ -315,6 +315,7 @@ async function createWeek(courseId, body) {
     calendarEvents: body.calendarEvents || [],
     assignments: body.assignments || [],
     transcript: body.transcript || null,
+    textContent: body.textContent || null,
     createdAt: new Date().toISOString(),
   };
 

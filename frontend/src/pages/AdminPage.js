@@ -488,6 +488,7 @@ function WeeksTab({ courseId }) {
         youtubeUrl: form.youtubeUrl,
         qaLink: form.qaLink,
         transcript: form.transcript,
+        textContent: form.textContent,
       };
       if (editingId) {
         await adminUpdateWeek(courseId, editingId, payload);
