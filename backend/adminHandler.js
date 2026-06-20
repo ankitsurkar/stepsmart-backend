@@ -87,8 +87,7 @@ async function signRecordedSessions(sessions) {
     return sessions;
   }
 
-  const signedSessions = [];
-  for (const session of sessions) {
+  const promises = sessions.map(async (session) => {
     if (session.storageProvider === 'supabase' && session.storagePath) {
       try {
         const signedUrlRes = await fetch(
@@ -109,11 +108,10 @@ async function signRecordedSessions(sessions) {
           const fullSignedUrl = rawSigned.startsWith('http')
             ? rawSigned
             : `${supabaseUrl}/storage/v1${rawSigned}`;
-          signedSessions.push({
+          return {
             ...session,
             url: fullSignedUrl,
-          });
-          continue;
+          };
         } else {
           console.error(`Supabase returned status ${signedUrlRes.status} for signing path ${session.storagePath}`);
         }
@@ -121,9 +119,10 @@ async function signRecordedSessions(sessions) {
         console.error('Error generating signed URL for session path:', session.storagePath, err);
       }
     }
-    signedSessions.push(session);
-  }
-  return signedSessions;
+    return session;
+  });
+
+  return Promise.all(promises);
 }
 
 async function getSupplementalContent(courseId) {
@@ -262,7 +261,7 @@ async function createStudent(body, event) {
 // GET /admin/courses/{courseId}/weeks
 // Returns all weeks (including hidden ones) with full quiz data including correctIndex.
 async function listWeeks(courseId) {
-  const [result, supplementalContent] = await Promise.all([
+  const [result, supplementalContent, gymResult] = await Promise.all([
     ddb.send(new QueryCommand({
       TableName: COURSES_TABLE,
       KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
@@ -272,12 +271,24 @@ async function listWeeks(courseId) {
       },
     })),
     getSupplementalContent(courseId),
+    ddb.send(new QueryCommand({
+      TableName: COURSES_TABLE,
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': `COURSE#${courseId}`,
+        ':prefix': 'GYM#',
+      },
+    })),
   ]);
 
   const weeks = (result.Items || [])
     .filter((item) => item.weekId !== '__supplemental__')
     .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
-  return res(200, { weeks, supplementalContent });
+
+  const gymQuestions = (gymResult.Items || [])
+    .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+
+  return res(200, { weeks, supplementalContent, gymQuestions });
 }
 
 // POST /admin/courses/{courseId}/weeks
@@ -312,9 +323,50 @@ async function createWeek(courseId, body) {
 }
 
 // PATCH /admin/courses/{courseId}/weeks/{weekId}
+async function updateGymQuestion(courseId, body) {
+  const { action } = body;
+  if (action === 'save') {
+    const { question } = body;
+    if (!question || !question.date) {
+      return res(400, { message: 'Question and date are required' });
+    }
+    const sk = `GYM#${question.date}`;
+    const item = {
+      pk: `COURSE#${courseId}`,
+      sk,
+      date: question.date,
+      type: question.type, // 'quiz' | 'text'
+      text: question.text,
+      options: Array.isArray(question.options) ? question.options : null,
+      correctIndex: typeof question.correctIndex === 'number' ? question.correctIndex : null,
+      correctAnswer: question.correctAnswer || null,
+      explanation: question.explanation || '',
+      updatedAt: new Date().toISOString(),
+    };
+    await ddb.send(new PutCommand({
+      TableName: COURSES_TABLE,
+      Item: item,
+    }));
+    return res(200, { message: 'Gym question saved successfully', question: item });
+  } else if (action === 'delete') {
+    const { date } = body;
+    if (!date) return res(400, { message: 'Date is required for delete' });
+    await ddb.send(new DeleteCommand({
+      TableName: COURSES_TABLE,
+      Key: { pk: `COURSE#${courseId}`, sk: `GYM#${date}` },
+    }));
+    return res(200, { message: 'Gym question deleted successfully', date });
+  }
+  return res(400, { message: 'Invalid action for gym content' });
+}
+
 // Updates any subset of week fields. Commonly used to toggle visibility.
 async function updateWeek(courseId, weekId, body) {
   console.log('DEPLOY_CHECK_V2: updateWeek called with weekId =', weekId);
+  if (weekId === '__gym__') {
+    console.log('DEPLOY_CHECK_V2: Redirecting to updateGymQuestion');
+    return await updateGymQuestion(courseId, body);
+  }
   // Guard: if this is actually a supplemental content update, redirect to the correct handler.
   // This ensures data is always saved to SUPPLEMENTAL#GLOBAL (not WEEK#__supplemental__).
   if (weekId === '__supplemental__') {

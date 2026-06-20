@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getMyCourses, getCourseWeeks, getProgress } from '../utils/api';
+import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../utils/api';
 import AssignmentUpload from '../components/AssignmentUpload';
 
 const NAV_ITEMS = [
@@ -2155,6 +2155,15 @@ export default function DashboardPage() {
   const [pmGymScore, setPmGymScore] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
+  // DB Gym States
+  const [gymProgress, setGymProgress] = useState([]);
+  const [gymQuestions, setGymQuestions] = useState([]);
+  const [gymStreak, setGymStreak] = useState(0);
+  const [tempSelectedOption, setTempSelectedOption] = useState(undefined);
+  const [tempTextAnswer, setTempTextAnswer] = useState('');
+  const [showYesterdayModal, setShowYesterdayModal] = useState(false);
+  const [activeTooltipDay, setActiveTooltipDay] = useState(null);
+
   const [activeView, setActiveView] = useState(() => getInitialDashboardView(searchParams));
   const [activeCoursesTab, setActiveCoursesTab] = useState('videos');
   const [expandedGroups, setExpandedGroups] = useState({});
@@ -2284,9 +2293,10 @@ export default function DashboardPage() {
 
   async function loadCourse(courseId, courseList) {
     try {
+      const todayStr = toDateKey(new Date());
       const [weeksRes, progressRes] = await Promise.all([
         getCourseWeeks(courseId),
-        getProgress(courseId, { includeLeaderboard: true }),
+        getProgress(courseId, { includeLeaderboard: true, clientDate: todayStr }),
       ]);
 
       const weeksData = weeksRes.data.weeks || [];
@@ -2303,6 +2313,10 @@ export default function DashboardPage() {
 
       const suppData = weeksRes.data.supplementalContent || null;
       setSupplementalContent(suppData);
+
+      setGymProgress(progressRes.data.gymProgress || []);
+      setGymQuestions(progressRes.data.gymQuestions || []);
+      setGymStreak(progressRes.data.gymStreak || 0);
 
       // Save to module cache
       clientDashboardCache = {
@@ -2494,29 +2508,59 @@ export default function DashboardPage() {
       ? `ACTIVE COURSE: ${activeCourse.name}${currentGroup ? ` (Week ${currentGroup.groupNumber})` : ''}`
       : 'ACTIVE COURSE: Not assigned yet';
 
-    const gymStreak = calculateGymStreak(user?.username);
     const todayStr = toDateKey(new Date());
-    const hasSolvedToday = localStorage.getItem(`pm_gym_completed_${user?.username}_${todayStr}`) === 'true';
+    const todayQuestion = gymQuestions.find(q => q.date === todayStr);
+    const todaySubmission = gymProgress.find(p => p.date === todayStr);
+    const hasSolvedToday = !!todaySubmission;
 
-    // Calculate weekly goal days (Mon to Sun of current week)
-    const weekdaysShort = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const dayOfWeek = new Date().getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+    const isClosedDay = dayOfWeek === 0 || dayOfWeek === 3 || dayOfWeek === 6;
+
+    function getYesterdayGymDate(todayDate) {
+      const d = new Date(todayDate);
+      while (true) {
+        d.setDate(d.getDate() - 1);
+        const day = d.getDay();
+        if (day === 1 || day === 2 || day === 4 || day === 5) {
+          return toDateKey(d);
+        }
+      }
+    }
+    const yesterdayDateStr = getYesterdayGymDate(new Date());
+    const yesterdayQuestion = gymQuestions.find(q => q.date === yesterdayDateStr);
+    const yesterdaySubmission = gymProgress.find(p => p.date === yesterdayDateStr);
+
+    // Calculate weekly goal days (Mon, Tue, Thu, Fri of current week)
     const todayDate = new Date();
     const currentDayOfWeek = todayDate.getDay(); // 0 is Sun, 1 is Mon, etc.
     const distanceToMon = currentDayOfWeek === 0 ? -6 : 1 - currentDayOfWeek;
     const monday = new Date(todayDate);
     monday.setDate(todayDate.getDate() + distanceToMon);
     
-    const weeklyGoalDays = [];
-    for (let i = 0; i < 7; i++) {
+    const activeIndices = [0, 1, 3, 4];
+    const weekdaysLabel = ['M', 'T', 'Th', 'F'];
+    
+    const weeklyGoalDays = activeIndices.map((idx, index) => {
       const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
+      d.setDate(monday.getDate() + idx);
       const dStr = toDateKey(d);
-      weeklyGoalDays.push({
-        label: weekdaysShort[i],
-        active: localStorage.getItem(`pm_gym_completed_${user?.username}_${dStr}`) === 'true',
-        isFuture: d > todayDate,
-      });
-    }
+      
+      const sub = gymProgress.find(p => p.date === dStr);
+      const question = gymQuestions.find(q => q.date === dStr);
+
+      const dMid = new Date(dStr + 'T12:00:00Z');
+      const todayMid = new Date(toDateKey(todayDate) + 'T12:00:00Z');
+
+      return {
+        label: weekdaysLabel[index],
+        dateStr: dStr,
+        active: !!sub,
+        isToday: dStr === toDateKey(todayDate),
+        isFuture: dMid > todayMid,
+        question,
+        submission: sub,
+      };
+    });
 
     // Weekly Reminder Card
     const renderWeeklyReminderCard = () => {
@@ -2653,7 +2697,7 @@ export default function DashboardPage() {
               if (d === null) return <div key={idx} />;
               
               const cellDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-              const hasCompletedStreak = localStorage.getItem(`pm_gym_completed_${user?.username}_${cellDateStr}`) === 'true';
+              const hasCompletedStreak = gymProgress.some(p => p.date === cellDateStr);
               const isTodayCell = d === currentDay;
               
               let cellStyle = {
@@ -2706,222 +2750,437 @@ export default function DashboardPage() {
     const renderPmGymQuizModal = () => {
       if (!showPmGymModal) return null;
       
-      const question = PM_GYM_QUESTIONS[currentQuestionIndex];
-      const isLastQuestion = currentQuestionIndex === PM_GYM_QUESTIONS.length - 1;
+      const todayStr = toDateKey(new Date());
+      const todayQuestion = gymQuestions.find(q => q.date === todayStr);
       
-      return (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(15, 23, 42, 0.45)',
-            backdropFilter: 'blur(8px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 99999,
-            padding: '1rem',
-          }}
-        >
-          <div
-            style={{
-              background: '#ffffff',
-              borderRadius: '24px',
-              padding: '2rem',
-              width: '90%',
-              maxWidth: '500px',
-              boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
-              boxSizing: 'border-box',
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.75rem' }}>
-              <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#027A9B' }}>
-                🧠 PM Gym Daily Quiz
-              </span>
-              {!pmGymSubmitted && (
-                <button
-                  type="button"
-                  onClick={() => setShowPmGymModal(false)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    fontSize: '1.2rem',
-                    cursor: 'pointer',
-                    color: 'var(--muted-foreground)',
-                  }}
-                >
-                  ✕
-                </button>
-              )}
+      const modalOverlayStyle = {
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(15, 23, 42, 0.45)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 99999,
+        padding: '1rem',
+      };
+      const modalContentStyle = {
+        background: '#ffffff',
+        borderRadius: '24px',
+        padding: '2rem',
+        width: '90%',
+        maxWidth: '500px',
+        boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+      };
+      const modalHeaderStyle = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '1.5rem',
+        borderBottom: '1px solid #e2e8f0',
+        paddingBottom: '0.75rem',
+      };
+      const modalCloseBtnStyle = {
+        background: 'none',
+        border: 'none',
+        fontSize: '1.2rem',
+        cursor: 'pointer',
+        color: 'var(--muted-foreground)',
+      };
+
+      if (!todayQuestion) {
+        return (
+          <div style={modalOverlayStyle}>
+            <div style={modalContentStyle}>
+              <div style={modalHeaderStyle}>
+                <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#027A9B' }}>
+                  🧠 PM Gym Daily Challenge
+                </span>
+                <button type="button" onClick={() => setShowPmGymModal(false)} style={modalCloseBtnStyle}>✕</button>
+              </div>
+              <p style={{ fontSize: '0.95rem', color: 'var(--muted-foreground)', textAlign: 'center', margin: '2rem 0' }}>
+                No gym question scheduled for today yet. Check back later!
+              </p>
             </div>
-            
+          </div>
+        );
+      }
+
+      const isQuiz = todayQuestion.type === 'quiz';
+
+      const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        const ans = isQuiz ? tempSelectedOption : tempTextAnswer;
+        if (ans === undefined || ans === '') return;
+        
+        try {
+          await submitGymAnswer(activeCourse.courseId, todayStr, ans);
+          setPmGymSubmitted(true);
+          // Reload course data to get the updated progress and streak
+          loadCourse(activeCourse.courseId);
+        } catch (err) {
+          console.error(err);
+          alert('Failed to submit response.');
+        }
+      };
+
+      return (
+        <div style={modalOverlayStyle}>
+          <div style={modalContentStyle}>
+            <div style={modalHeaderStyle}>
+              <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#027A9B' }}>
+                🧠 PM Gym Daily Challenge
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowPmGymModal(false);
+                  setPmGymSubmitted(false);
+                  setTempSelectedOption(undefined);
+                  setTempTextAnswer('');
+                }}
+                style={modalCloseBtnStyle}
+              >
+                ✕
+              </button>
+            </div>
+
             {pmGymSubmitted ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', textAlign: 'center' }}>
-                <div style={{ fontSize: '3rem' }}>
-                  {pmGymScore >= 3 ? '🎉' : '💪'}
-                </div>
-                <h4 style={{ fontSize: '1.35rem', fontWeight: 800, margin: 0, color: '#0f172a' }}>
-                  {pmGymScore >= 3 ? 'Awesome job!' : 'Keep training!'}
+              <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
+                <span style={{ fontSize: '3rem' }}>💪</span>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--foreground)', margin: '1rem 0 0.5rem' }}>
+                  Response Submitted!
                 </h4>
-                <p style={{ fontSize: '0.95rem', color: 'var(--muted-foreground)', margin: 0 }}>
-                  You scored <strong>{pmGymScore} / 5</strong> in today's PM Gym challenge.
+                <p style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)', lineHeight: '1.4', marginBottom: '1.5rem' }}>
+                  Awesome job completing today's daily challenge. Your streak has been updated!
+                  <br />
+                  <span style={{ fontWeight: 650, color: '#027A9B', marginTop: '0.5rem', display: 'block' }}>
+                    Note: The correct answer and explanation will unlock on the next gym day.
+                  </span>
                 </p>
-                
-                <div style={{ maxHeight: '200px', overflowY: 'auto', textAlign: 'left', padding: '0.75rem', background: '#f8fafc', borderRadius: '12px', fontSize: '0.85rem' }}>
-                  {PM_GYM_QUESTIONS.map((q, idx) => {
-                    const wasCorrect = pmGymAnswers[q.id] === q.correctIndex;
-                    return (
-                      <div key={q.id} style={{ marginBottom: '1rem', borderBottom: idx < 4 ? '1px solid #e2e8f0' : 'none', paddingBottom: '0.5rem' }}>
-                        <div style={{ fontWeight: 700, marginBottom: '0.25rem' }}>
-                          {idx + 1}. {q.text}
-                        </div>
-                        <div style={{ color: wasCorrect ? '#198754' : '#df3b3b', fontWeight: 600 }}>
-                          Your answer: {q.options[pmGymAnswers[q.id]] || 'No answer'} {wasCorrect ? '✓' : '✗'}
-                        </div>
-                        {!wasCorrect && (
-                          <div style={{ color: '#198754', fontWeight: 600 }}>
-                            Correct answer: {q.options[q.correctIndex]}
-                          </div>
-                        )}
-                        <p style={{ margin: '0.25rem 0 0 0', color: 'var(--muted-foreground)', fontStyle: 'italic' }}>
-                          {q.explanation}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-                
                 <button
                   type="button"
+                  style={s.btn}
                   onClick={() => {
                     setShowPmGymModal(false);
-                  }}
-                  style={{
-                    background: 'var(--primary)',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '12px',
-                    padding: '0.9rem',
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    width: '100%',
+                    setPmGymSubmitted(false);
+                    setTempSelectedOption(undefined);
+                    setTempTextAnswer('');
                   }}
                 >
                   Close Gym
                 </button>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)' }}>
-                  <span>Question {currentQuestionIndex + 1} of 5</span>
-                  <span>{Math.round(((currentQuestionIndex) / 5) * 100)}% Complete</span>
+              <form onSubmit={handleFormSubmit}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                  Today's Challenge ({todayQuestion.date})
                 </div>
-                <div style={{ height: '6px', background: '#e2e8f0', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', background: '#027A9B', width: `${((currentQuestionIndex) / 5) * 100}%`, transition: 'width 0.2s ease' }} />
-                </div>
-                
-                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.4 }}>
-                  {question.text}
-                </div>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-                  {question.options.map((opt, oIdx) => {
-                    const isSelected = pmGymAnswers[question.id] === oIdx;
-                    return (
-                      <button
-                        key={oIdx}
-                        type="button"
-                        onClick={() => {
-                          setPmGymAnswers(prev => ({ ...prev, [question.id]: oIdx }));
-                        }}
-                        style={{
-                          textAlign: 'left',
-                          padding: '0.85rem 1rem',
-                          borderRadius: '12px',
-                          border: isSelected ? '2px solid #027A9B' : '1px solid var(--border)',
-                          background: isSelected ? 'rgba(2, 122, 155, 0.05)' : '#ffffff',
-                          color: isSelected ? '#027A9B' : 'var(--foreground)',
-                          fontSize: '0.875rem',
-                          fontWeight: isSelected ? 600 : 500,
-                          cursor: 'pointer',
-                          transition: 'all 0.15s ease',
-                        }}
-                      >
-                        {opt}
-                      </button>
-                    );
-                  })}
-                </div>
-                
-                <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
-                  {currentQuestionIndex > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
-                      style={{
-                        background: 'none',
-                        border: '1px solid var(--border)',
-                        borderRadius: '12px',
-                        padding: '0.9rem 1.5rem',
-                        fontSize: '0.95rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        color: 'var(--foreground)',
-                      }}
-                    >
-                      Back
-                    </button>
-                  )}
-                  
-                  <button
-                    type="button"
-                    disabled={pmGymAnswers[question.id] === undefined}
-                    onClick={() => {
-                      if (isLastQuestion) {
-                        let score = 0;
-                        PM_GYM_QUESTIONS.forEach(q => {
-                          if (pmGymAnswers[q.id] === q.correctIndex) score++;
-                        });
-                        
-                        setPmGymScore(score);
-                        setPmGymSubmitted(true);
-                        
-                        const todayStrLocal = toDateKey(new Date());
-                        localStorage.setItem(`pm_gym_completed_${user?.username}_${todayStrLocal}`, 'true');
-                        
-                        setProgressMap(prev => ({ ...prev }));
-                      } else {
-                        setCurrentQuestionIndex(prev => prev + 1);
-                      }
-                    }}
-                    style={{
-                      background: pmGymAnswers[question.id] === undefined ? 'rgba(2, 122, 155, 0.4)' : '#027A9B',
-                      color: '#ffffff',
-                      border: 'none',
-                      borderRadius: '12px',
-                      padding: '0.9rem',
-                      fontSize: '0.95rem',
-                      fontWeight: 650,
-                      cursor: pmGymAnswers[question.id] === undefined ? 'not-allowed' : 'pointer',
-                      flex: 1,
-                    }}
-                  >
-                    {isLastQuestion ? 'Submit Quiz' : 'Next'}
-                  </button>
-                </div>
-              </div>
+                <p style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--foreground)', margin: '0 0 1.25rem 0', lineHeight: '1.4' }}>
+                  {todayQuestion.text}
+                </p>
+
+                {isQuiz ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                    {(todayQuestion.options || []).map((option, idx) => {
+                      const isSelected = tempSelectedOption === idx;
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setTempSelectedOption(idx)}
+                          style={{
+                            textAlign: 'left',
+                            padding: '0.85rem 1.25rem',
+                            borderRadius: '12px',
+                            border: isSelected ? '2px solid #027A9B' : '1px solid var(--border)',
+                            background: isSelected ? 'rgba(2, 122, 155, 0.08)' : 'var(--card)',
+                            color: isSelected ? '#027A9B' : 'var(--foreground)',
+                            fontWeight: isSelected ? 700 : 500,
+                            fontSize: '0.9rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease',
+                          }}
+                        >
+                          <span style={{ marginRight: '0.75rem', fontWeight: 700 }}>
+                            {String.fromCharCode(65 + idx)}.
+                          </span>
+                          {option}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={s.label}>Your Response</label>
+                    <textarea
+                      style={{ ...s.textarea, minHeight: '120px' }}
+                      value={tempTextAnswer}
+                      onChange={(e) => setTempTextAnswer(e.target.value)}
+                      placeholder="Write your answer details here..."
+                      required
+                    />
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim()}
+                  style={{
+                    ...s.btn,
+                    width: '100%',
+                    padding: '0.85rem',
+                    borderRadius: '12px',
+                    fontSize: '0.95rem',
+                    background: (isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim())
+                      ? 'rgba(2, 122, 155, 0.4)'
+                      : '#027A9B',
+                    cursor: (isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim())
+                      ? 'not-allowed'
+                      : 'pointer',
+                  }}
+                >
+                  Submit Challenge
+                </button>
+              </form>
             )}
           </div>
         </div>
       );
     };
 
+    const renderYesterdayAnswerModal = () => {
+      if (!showYesterdayModal) return null;
+      
+      const yesterdayDateStr = getYesterdayGymDate(new Date());
+      const yesterdayQ = gymQuestions.find(q => q.date === yesterdayDateStr);
+      const yesterdaySub = gymProgress.find(p => p.date === yesterdayDateStr);
+
+      const modalOverlayStyle = {
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(15, 23, 42, 0.45)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 99999,
+        padding: '1rem',
+      };
+      const modalContentStyle = {
+        background: '#ffffff',
+        borderRadius: '24px',
+        padding: '2rem',
+        width: '90%',
+        maxWidth: '500px',
+        boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+      };
+      const modalHeaderStyle = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '1.5rem',
+        borderBottom: '1px solid #e2e8f0',
+        paddingBottom: '0.75rem',
+      };
+      const modalCloseBtnStyle = {
+        background: 'none',
+        border: 'none',
+        fontSize: '1.2rem',
+        cursor: 'pointer',
+        color: 'var(--muted-foreground)',
+      };
+
+      return (
+        <div style={modalOverlayStyle}>
+          <div style={modalContentStyle}>
+            <div style={modalHeaderStyle}>
+              <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#027A9B' }}>
+                Yesterday's Gym Answer
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowYesterdayModal(false)}
+                style={modalCloseBtnStyle}
+              >
+                ✕
+              </button>
+            </div>
+
+            {yesterdayQ ? (
+              <div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                  Question from {yesterdayQ.date}
+                </div>
+                <p style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--foreground)', margin: '0 0 1.25rem 0', lineHeight: '1.4' }}>
+                  {yesterdayQ.text}
+                </p>
+
+                <div style={{ background: 'var(--background)', borderRadius: '12px', padding: '1rem', marginBottom: '1.25rem', border: '1px solid var(--border)' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                    Your Submission
+                  </div>
+                  {yesterdaySub ? (
+                    <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--foreground)', margin: 0 }}>
+                      {yesterdayQ.type === 'quiz'
+                        ? `${String.fromCharCode(65 + Number(yesterdaySub.answer))}. ${yesterdayQ.options?.[Number(yesterdaySub.answer)] || ''}`
+                        : yesterdaySub.answer
+                      }
+                      <span style={{ marginLeft: '0.5rem', fontWeight: 700, color: yesterdaySub.score > 0 ? 'var(--success)' : 'var(--destructive)' }}>
+                        {yesterdayQ.type === 'quiz' ? (yesterdaySub.score > 0 ? '✓ Correct' : '✗ Incorrect') : '✓ Completed'}
+                      </span>
+                    </p>
+                  ) : (
+                    <p style={{ fontSize: '0.9rem', color: 'var(--destructive)', fontWeight: 600, margin: 0 }}>
+                      Not attempted
+                    </p>
+                  )}
+                </div>
+
+                <div style={{ background: 'rgba(2, 122, 155, 0.06)', borderRadius: '12px', padding: '1rem', marginBottom: '1.25rem', border: '1px solid rgba(2, 122, 155, 0.15)' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                    Correct Answer
+                  </div>
+                  <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#027A9B', margin: 0 }}>
+                    {yesterdayQ.type === 'quiz'
+                      ? `${String.fromCharCode(65 + yesterdayQ.correctIndex)}. ${yesterdayQ.options?.[yesterdayQ.correctIndex] || ''}`
+                      : yesterdayQ.correctAnswer
+                    }
+                  </p>
+                </div>
+
+                {yesterdayQ.explanation && (
+                  <div>
+                    <label style={s.label}>Explanation</label>
+                    <p style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)', lineHeight: '1.5', margin: 0 }}>
+                      {yesterdayQ.explanation}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p style={{ fontSize: '0.95rem', color: 'var(--muted-foreground)', textAlign: 'center', margin: '2rem 0' }}>
+                No gym question scheduled for yesterday.
+              </p>
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    const renderWeeklyGoalTooltip = (day) => {
+      if (!day) return null;
+      
+      const isPast = !day.isToday && !day.isFuture;
+      
+      return (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '36px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '280px',
+            background: '#ffffff',
+            borderRadius: '16px',
+            padding: '1rem',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+            border: '1px solid rgba(2,122,155,0.15)',
+            color: '#0f172a',
+            zIndex: 10,
+            textAlign: 'left',
+          }}
+        >
+          {isPast ? (
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+                {day.dateStr}
+              </div>
+              {day.question ? (
+                <div>
+                  <p style={{ fontSize: '0.8rem', fontWeight: 700, margin: '0 0 0.5rem 0', lineHeight: '1.3' }}>
+                    {day.question.text}
+                  </p>
+                  <div style={{ fontSize: '0.75rem', background: '#f8fafc', padding: '0.4rem 0.6rem', borderRadius: '8px', marginBottom: '0.5rem' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--muted-foreground)' }}>Your Answer: </span>
+                    {day.submission ? (
+                      <span style={{ fontWeight: 700, color: day.submission.score > 0 ? 'var(--success)' : 'var(--destructive)' }}>
+                        {day.question.type === 'quiz'
+                          ? (day.question.options?.[Number(day.submission.answer)] || 'Unknown')
+                          : day.submission.answer
+                        }
+                      </span>
+                    ) : (
+                      <span style={{ fontWeight: 700, color: 'var(--destructive)' }}>Not Attempted</span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: '0.75rem', background: 'rgba(2, 122, 155, 0.05)', padding: '0.4rem 0.6rem', borderRadius: '8px', marginBottom: '0.5rem' }}>
+                    <span style={{ fontWeight: 600, color: '#027A9B' }}>Correct Answer: </span>
+                    <span style={{ fontWeight: 700, color: '#027A9B' }}>
+                      {day.question.type === 'quiz'
+                        ? (day.question.options?.[day.question.correctIndex] || 'Unknown')
+                        : day.question.correctAnswer
+                      }
+                    </span>
+                  </div>
+                  {day.question.explanation && (
+                    <p style={{ fontSize: '0.7rem', color: 'var(--muted-foreground)', margin: 0, lineHeight: '1.3' }}>
+                      <strong>Explanation: </strong>{day.question.explanation}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', margin: 0 }}>
+                  No question scheduled for this day.
+                </p>
+              )}
+            </div>
+          ) : day.isToday ? (
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+                Today
+              </div>
+              <p style={{ fontSize: '0.8rem', fontWeight: 600, margin: 0 }}>
+                {day.active ? 'Challenge completed! Correct answer will unlock on the next gym day.' : 'Challenge active! Solve it in the banner below.'}
+              </p>
+            </div>
+          ) : (
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+                Locked Day
+              </div>
+              <p style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', margin: 0 }}>
+                This challenge will unlock on {day.dateStr}.
+              </p>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const getLast7GymDays = () => {
+      const list = [];
+      const d = new Date();
+      while (list.length < 7) {
+        const day = d.getDay();
+        if (day === 1 || day === 2 || day === 4 || day === 5) {
+          list.unshift(toDateKey(d));
+        }
+        d.setDate(d.getDate() - 1);
+      }
+      return list;
+    };
+
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
         {renderPmGymQuizModal()}
+        {renderYesterdayAnswerModal()}
         
         {/* PM Gym Banner */}
         <div
@@ -2938,7 +3197,7 @@ export default function DashboardPage() {
             gap: '1.5rem',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: isCompact ? 'wrap' : 'nowrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: isCompact ? 'wrap' : 'nowrap', flex: 1 }}>
             <img
               src={process.env.PUBLIC_URL + '/pm_gym_brain.png'}
               alt="PM Gym Brain mascot"
@@ -2951,57 +3210,137 @@ export default function DashboardPage() {
             <div>
               <h3 style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.35rem 0', letterSpacing: '-0.02em', color: '#ffffff' }}>PM Gym</h3>
               <p style={{ fontSize: '0.9rem', color: '#e0f2fe', margin: 0, opacity: 0.9 }}>
-                Start your engaging times to use daily quiz challenge!
+                {isClosedDay
+                  ? 'Closed today for resting. Rest up, or review previous answers!'
+                  : todayQuestion
+                    ? todayQuestion.text
+                    : 'No daily question scheduled for today. Check back later!'
+                }
               </p>
             </div>
           </div>
 
-          <div>
-            {hasSolvedToday ? (
-              <button
-                type="button"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  color: '#ffffff',
-                  border: 'none',
-                  borderRadius: '999px',
-                  padding: '0.75rem 2rem',
-                  fontSize: '0.95rem',
-                  fontWeight: 700,
-                  cursor: 'not-allowed',
-                  boxShadow: 'none',
-                }}
-                disabled
-              >
-                Quiz Completed ✓
-              </button>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            {!isClosedDay && todayQuestion ? (
+              hasSolvedToday ? (
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  {yesterdayQuestion && (
+                    <button
+                      type="button"
+                      onClick={() => setShowYesterdayModal(true)}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.15)',
+                        color: '#ffffff',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: '999px',
+                        padding: '0.6rem 1.5rem',
+                        fontSize: '0.85rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'background 0.2s',
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'}
+                    >
+                      View Yesterday's Answer
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '999px',
+                      padding: '0.75rem 2rem',
+                      fontSize: '0.95rem',
+                      fontWeight: 700,
+                      cursor: 'not-allowed',
+                    }}
+                    disabled
+                  >
+                    Completed ✓
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  {yesterdayQuestion && (
+                    <button
+                      type="button"
+                      onClick={() => setShowYesterdayModal(true)}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.15)',
+                        color: '#ffffff',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: '999px',
+                        padding: '0.6rem 1.5rem',
+                        fontSize: '0.85rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'background 0.2s',
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'}
+                    >
+                      View Yesterday's Answer
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTempSelectedOption(undefined);
+                      setTempTextAnswer('');
+                      setPmGymSubmitted(false);
+                      setShowPmGymModal(true);
+                    }}
+                    style={{
+                      background: '#ffffff',
+                      color: '#027A9B',
+                      border: 'none',
+                      borderRadius: '999px',
+                      padding: '0.75rem 2rem',
+                      fontSize: '0.95rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                      transition: 'transform 0.15s ease',
+                      whiteSpace: 'nowrap',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    Solve Challenge
+                  </button>
+                </div>
+              )
             ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  setPmGymAnswers({});
-                  setPmGymSubmitted(false);
-                  setPmGymScore(0);
-                  setCurrentQuestionIndex(0);
-                  setShowPmGymModal(true);
-                }}
-                style={{
-                  background: '#ffffff',
-                  color: '#027A9B',
-                  border: 'none',
-                  borderRadius: '999px',
-                  padding: '0.75rem 2rem',
-                  fontSize: '0.95rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                  transition: 'transform 0.15s ease',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-              >
-                Take Quiz
-              </button>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                {yesterdayQuestion && (
+                  <button
+                    type="button"
+                    onClick={() => setShowYesterdayModal(true)}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.15)',
+                      color: '#ffffff',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '999px',
+                      padding: '0.6rem 1.5rem',
+                      fontSize: '0.85rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      transition: 'background 0.2s',
+                      whiteSpace: 'nowrap',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'}
+                  >
+                    View Yesterday's Answer
+                  </button>
+                )}
+                <span style={{ fontSize: '0.9rem', color: '#e0f2fe', opacity: 0.85, fontWeight: 700, whiteSpace: 'nowrap' }}>
+                  {isClosedDay ? 'Gym Closed Today 💤' : 'No Question Active'}
+                </span>
+              </div>
             )}
           </div>
 
@@ -3011,11 +3350,17 @@ export default function DashboardPage() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.35rem' }}>
               {weeklyGoalDays.map((day, idx) => (
-                <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem' }}>
+                <div
+                  key={idx}
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem', position: 'relative' }}
+                  onMouseEnter={() => setActiveTooltipDay(day)}
+                  onMouseLeave={() => setActiveTooltipDay(null)}
+                  onClick={() => setActiveTooltipDay(prev => prev?.dateStr === day.dateStr ? null : day)}
+                >
                   <div
                     style={{
-                      width: '20px',
-                      height: '20px',
+                      width: '24px',
+                      height: '24px',
                       borderRadius: '50%',
                       background: day.active
                         ? '#ffffff'
@@ -3023,20 +3368,23 @@ export default function DashboardPage() {
                           ? 'rgba(255, 255, 255, 0.2)'
                           : 'rgba(255, 255, 255, 0.4)',
                       color: day.active ? '#027A9B' : '#ffffff',
-                      fontSize: '0.65rem',
+                      fontSize: '0.7rem',
                       fontWeight: 700,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      cursor: 'pointer',
+                      boxShadow: activeTooltipDay?.dateStr === day.dateStr ? '0 0 8px #ffffff' : 'none',
                     }}
                   >
                     {day.active ? '✓' : day.label}
                   </div>
+                  {activeTooltipDay?.dateStr === day.dateStr && renderWeeklyGoalTooltip(day)}
                 </div>
               ))}
             </div>
             <div style={{ height: '4px', background: 'rgba(255, 255, 255, 0.25)', borderRadius: '999px', overflow: 'hidden', marginTop: '0.2rem' }}>
-              <div style={{ height: '100%', background: '#ffffff', width: `${(weeklyGoalDays.filter(d => d.active).length / 7) * 100}%`, transition: 'width 0.3s ease' }} />
+              <div style={{ height: '100%', background: '#ffffff', width: `${(weeklyGoalDays.filter(d => d.active).length / 4) * 100}%`, transition: 'width 0.3s ease' }} />
             </div>
           </div>
         </div>
@@ -3154,11 +3502,8 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div style={{ display: 'flex', gap: '4px', marginBottom: '0.75rem' }}>
-                    {Array.from({ length: 7 }, (_, i) => {
-                      const d = new Date();
-                      d.setDate(d.getDate() - (6 - i));
-                      const dStr = toDateKey(d);
-                      const isActive = localStorage.getItem(`pm_gym_completed_${user?.username}_${dStr}`) === 'true';
+                    {getLast7GymDays().map((dStr, i) => {
+                      const isActive = gymProgress.some(p => p.date === dStr);
                       return (
                         <div key={i} style={{ height: '6px', flex: 1, borderRadius: '999px', background: isActive ? '#198754' : '#e2e8f0', transition: 'background 0.3s ease' }} />
                       );

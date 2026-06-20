@@ -12,6 +12,8 @@ import {
   adminUpdateSupplementalContent,
   adminGetLeads,
   getMyCourses,
+  adminSaveGymQuestion,
+  adminDeleteGymQuestion,
 } from '../utils/api';
 
 const COURSE_ID = 'course-001';
@@ -1970,6 +1972,280 @@ function LeadsTab() {
   );
 }
 
+// PM Gym Tab
+function GymTab({ courseId }) {
+  const [gymQuestions, setGymQuestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  
+  // Form states
+  const [date, setDate] = useState('');
+  const [type, setType] = useState('quiz');
+  const [text, setText] = useState('');
+  const [options, setOptions] = useState(['', '', '', '']);
+  const [correctIndex, setCorrectIndex] = useState(0);
+  const [correctAnswer, setCorrectAnswer] = useState('');
+  const [explanation, setExplanation] = useState('');
+
+  // Editing state
+  const [editingDate, setEditingDate] = useState(null);
+
+  const loadGymQuestions = async () => {
+    setLoading(true);
+    try {
+      const { data } = await adminGetWeeks(courseId);
+      setGymQuestions(data.gymQuestions || []);
+    } catch (err) {
+      console.error(err);
+      setMessage('Failed to load gym questions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadGymQuestions();
+  }, [courseId]);
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    if (!date) {
+      setMessage('Date is required');
+      return;
+    }
+    const questionData = {
+      date,
+      type,
+      text,
+      explanation,
+      options: type === 'quiz' ? options : null,
+      correctIndex: type === 'quiz' ? correctIndex : null,
+      correctAnswer: type === 'text' ? correctAnswer : null,
+    };
+    try {
+      await adminSaveGymQuestion(courseId, questionData);
+      setMessage('Saved question successfully');
+      // Reset form
+      setDate('');
+      setText('');
+      setExplanation('');
+      setOptions(['', '', '', '']);
+      setCorrectIndex(0);
+      setCorrectAnswer('');
+      setEditingDate(null);
+      loadGymQuestions();
+    } catch (err) {
+      console.error(err);
+      setMessage('Failed to save question');
+    }
+  };
+
+  const handleDelete = async (targetDate) => {
+    if (!window.confirm(`Delete question for ${targetDate}?`)) return;
+    try {
+      await adminDeleteGymQuestion(courseId, targetDate);
+      setMessage('Deleted question successfully');
+      loadGymQuestions();
+    } catch (err) {
+      console.error(err);
+      setMessage('Failed to delete question');
+    }
+  };
+
+  const handleEdit = (q) => {
+    setEditingDate(q.date);
+    setDate(q.date);
+    setType(q.type);
+    setText(q.text);
+    setExplanation(q.explanation || '');
+    if (q.type === 'quiz') {
+      setOptions(q.options || ['', '', '', '']);
+      setCorrectIndex(q.correctIndex !== null ? q.correctIndex : 0);
+      setCorrectAnswer('');
+    } else {
+      setOptions(['', '', '', '']);
+      setCorrectIndex(0);
+      setCorrectAnswer(q.correctAnswer || '');
+    }
+  };
+
+  const handleOptionChange = (idx, val) => {
+    const nextOpts = [...options];
+    nextOpts[idx] = val;
+    setOptions(nextOpts);
+  };
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+      <div style={s.card}>
+        <div style={s.cardTitle}>{editingDate ? 'Edit Question' : 'Schedule New Question'}</div>
+        <form onSubmit={handleSave}>
+          <div style={s.grid2}>
+            <div>
+              <label style={s.label}>Date</label>
+              <input
+                type="date"
+                style={s.input}
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                disabled={!!editingDate}
+                required
+              />
+            </div>
+            <div>
+              <label style={s.label}>Question Type</label>
+              <select
+                style={s.input}
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+              >
+                <option value="quiz">Quiz (Multiple Choice)</option>
+                <option value="text">Text Response</option>
+              </select>
+            </div>
+          </div>
+
+          <label style={s.label}>Question Prompt</label>
+          <textarea
+            style={s.textarea}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Type question prompt here..."
+            required
+          />
+
+          {type === 'quiz' && (
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={s.label}>Options & Correct Answer</label>
+              {options.map((opt, idx) => (
+                <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <input
+                    type="radio"
+                    name="correct_option"
+                    checked={correctIndex === idx}
+                    onChange={() => setCorrectIndex(idx)}
+                  />
+                  <input
+                    type="text"
+                    style={{ ...s.input, marginBottom: 0 }}
+                    value={opt}
+                    onChange={(e) => handleOptionChange(idx, e.target.value)}
+                    placeholder={`Option ${String.fromCharCode(65 + idx)}`}
+                    required
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {type === 'text' && (
+            <div>
+              <label style={s.label}>Model / Correct Answer Statement</label>
+              <textarea
+                style={s.textarea}
+                value={correctAnswer}
+                onChange={(e) => setCorrectAnswer(e.target.value)}
+                placeholder="Describe what a correct/ideal answer should contain..."
+                required
+              />
+            </div>
+          )}
+
+          <label style={s.label}>Explanation</label>
+          <textarea
+            style={s.textarea}
+            value={explanation}
+            onChange={(e) => setExplanation(e.target.value)}
+            placeholder="Type answer explanation here..."
+          />
+
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button type="submit" style={s.btn}>
+              {editingDate ? 'Update Question' : 'Save Question'}
+            </button>
+            {editingDate && (
+              <button
+                type="button"
+                style={s.btnSecondary}
+                onClick={() => {
+                  setEditingDate(null);
+                  setDate('');
+                  setText('');
+                  setExplanation('');
+                  setOptions(['', '', '', '']);
+                  setCorrectIndex(0);
+                  setCorrectAnswer('');
+                }}
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+          {message && <div style={s.message}>{message}</div>}
+        </form>
+      </div>
+
+      <div style={s.card}>
+        <div style={s.cardTitle}>Scheduled Daily Questions</div>
+        {loading && <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>Loading questions...</p>}
+        {!loading && gymQuestions.length === 0 && (
+          <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>No daily questions scheduled.</p>
+        )}
+        {!loading && gymQuestions.length > 0 && (
+          <table style={s.table}>
+            <thead>
+              <tr>
+                <th style={{ ...s.th, width: '90px' }}>Date</th>
+                <th style={{ ...s.th, width: '60px' }}>Type</th>
+                <th style={s.th}>Question</th>
+                <th style={{ ...s.th, textAlign: 'right', width: '100px' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {gymQuestions.map((q) => (
+                <tr key={q.date}>
+                  <td style={s.td}>{q.date}</td>
+                  <td style={s.td}>
+                    <span style={{ ...s.badge, ...(q.type === 'quiz' ? s.badgeSuccess : s.badgeInfo) }}>
+                      {q.type}
+                    </span>
+                  </td>
+                  <td style={s.td}>
+                    <div style={{
+                      maxWidth: '220px',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}>
+                      {q.text}
+                    </div>
+                  </td>
+                  <td style={{ ...s.td, textAlign: 'right' }}>
+                    <button
+                      type="button"
+                      style={{ ...s.btn, padding: '0.2rem 0.5rem', fontSize: '0.75rem', marginRight: '0.35rem' }}
+                      onClick={() => handleEdit(q)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}
+                      onClick={() => handleDelete(q.date)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ────────────────────────────────────────────────────────────────────────────────
 // Main Admin Page
 // ────────────────────────────────────────────────────────────────────────────────
@@ -2020,6 +2296,7 @@ export default function AdminPage() {
           { id: 'weeks', label: 'Manage Weeks' },
           { id: 'supplemental', label: 'Supplemental Content' },
           { id: 'reminders', label: 'Weekly Reminder' },
+          { id: 'pm-gym', label: 'PM Gym' },
           { id: 'students', label: 'Students' },
           { id: 'progress', label: 'Progress' },
           { id: 'submissions', label: 'Submissions' },
@@ -2039,6 +2316,7 @@ export default function AdminPage() {
         {tab === 'weeks' && <WeeksTab courseId={currentCourseId} />}
         {tab === 'supplemental' && <SupplementalContentTab courseId={currentCourseId} />}
         {tab === 'reminders' && <RemindersTab courseId={currentCourseId} />}
+        {tab === 'pm-gym' && <GymTab courseId={currentCourseId} />}
         {tab === 'students' && <StudentsTab courseId={currentCourseId} />}
         {tab === 'progress' && <ProgressTab courseId={currentCourseId} />}
         {tab === 'submissions' && <SubmissionsTab courseId={currentCourseId} />}

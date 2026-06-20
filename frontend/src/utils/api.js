@@ -119,4 +119,15 @@ export const getQAQuestions = (courseId, weekId) =>
 export const postQAQuestion = (courseId, weekId, text) =>
   api.post(`/courses/${courseId}/weeks/${weekId}/qa`, { text });
 
+// ─── PM Gym ──────────────────────────────────────────────────────────────────
+
+export const adminSaveGymQuestion = (courseId, question) =>
+  api.patch(`/admin/courses/${courseId}/weeks/__gym__`, { action: 'save', question });
+
+export const adminDeleteGymQuestion = (courseId, date) =>
+  api.patch(`/admin/courses/${courseId}/weeks/__gym__`, { action: 'delete', date });
+
+export const submitGymAnswer = (courseId, date, answer) =>
+  api.post('/quiz/submit', { courseId, weekId: 'gym', answers: { [date]: answer } });
+
 export default api;

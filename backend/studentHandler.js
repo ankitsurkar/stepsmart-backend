@@ -145,8 +145,7 @@ async function signRecordedSessions(sessions) {
     return sessions;
   }
 
-  const signedSessions = [];
-  for (const session of sessions) {
+  const promises = sessions.map(async (session) => {
     if (session.storageProvider === 'supabase' && session.storagePath) {
       try {
         const signedUrlRes = await fetch(
@@ -167,11 +166,10 @@ async function signRecordedSessions(sessions) {
           const fullSignedUrl = rawSigned.startsWith('http')
             ? rawSigned
             : `${supabaseUrl}/storage/v1${rawSigned}`;
-          signedSessions.push({
+          return {
             ...session,
             url: fullSignedUrl,
-          });
-          continue;
+          };
         } else {
           console.error(`Supabase returned status ${signedUrlRes.status} for signing path ${session.storagePath}`);
         }
@@ -179,9 +177,10 @@ async function signRecordedSessions(sessions) {
         console.error('Error generating signed URL for session path:', session.storagePath, err);
       }
     }
-    signedSessions.push(session);
-  }
-  return signedSessions;
+    return session;
+  });
+
+  return Promise.all(promises);
 }
 
 async function getSupplementalContent(courseId) {
@@ -513,18 +512,90 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     }));
 }
 
+function calculateGymStreak(gymProgress, clientDate) {
+  const solvedDates = new Set(gymProgress.map(p => p.date));
+
+  function getPrevGymDayUTC(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00Z');
+    while (true) {
+      d.setUTCDate(d.getUTCDate() - 1);
+      const day = d.getUTCDay();
+      if (day === 1 || day === 2 || day === 4 || day === 5) {
+        const yr = d.getUTCFullYear();
+        const mo = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const dy = String(d.getUTCDate()).padStart(2, '0');
+        return `${yr}-${mo}-${dy}`;
+      }
+    }
+  }
+
+  let streak = 0;
+  let checkDate = clientDate;
+
+  const clientDateObj = new Date(clientDate + 'T00:00:00Z');
+  const dayOfWeek = clientDateObj.getUTCDay();
+  const isTodayGymDay = (dayOfWeek === 1 || dayOfWeek === 2 || dayOfWeek === 4 || dayOfWeek === 5);
+
+  if (isTodayGymDay) {
+    if (solvedDates.has(clientDate)) {
+      streak++;
+      checkDate = getPrevGymDayUTC(clientDate);
+    } else {
+      const prevGym = getPrevGymDayUTC(clientDate);
+      if (solvedDates.has(prevGym)) {
+        checkDate = prevGym;
+      } else {
+        return 0;
+      }
+    }
+  } else {
+    const prevGym = getPrevGymDayUTC(clientDate);
+    if (solvedDates.has(prevGym)) {
+      checkDate = prevGym;
+    } else {
+      return 0;
+    }
+  }
+
+  while (solvedDates.has(checkDate)) {
+    streak++;
+    checkDate = getPrevGymDayUTC(checkDate);
+  }
+
+  return streak;
+}
+
 async function getProgressForCourse(courseId, userId, event) {
   if (!courseId) return res(400, { message: 'Missing courseId path parameter' });
 
   const includeLeaderboard = event.queryStringParameters?.includeLeaderboard === 'true';
-  const result = await ddb.send(new QueryCommand({
-    TableName: PROGRESS_TABLE,
-    KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
-    ExpressionAttributeValues: {
-      ':pk': `USER#${userId}`,
-      ':prefix': `PROGRESS#${courseId}#`,
-    },
-  }));
+  
+  const [result, gymProgressResult, gymQuestionsResult] = await Promise.all([
+    ddb.send(new QueryCommand({
+      TableName: PROGRESS_TABLE,
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': `USER#${userId}`,
+        ':prefix': `PROGRESS#${courseId}#`,
+      },
+    })),
+    ddb.send(new QueryCommand({
+      TableName: PROGRESS_TABLE,
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': `USER#${userId}`,
+        ':prefix': `GYM#${courseId}#`,
+      },
+    })),
+    ddb.send(new QueryCommand({
+      TableName: COURSES_TABLE,
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': `COURSE#${courseId}`,
+        ':prefix': 'GYM#',
+      },
+    })),
+  ]);
 
   const progress = (result.Items || []).map((item) => ({
     weekId: item.weekId,
@@ -540,7 +611,30 @@ async function getProgressForCourse(courseId, userId, event) {
     lastSeen: item.lastSeen || null,
   }));
 
-  if (!includeLeaderboard) return res(200, { progress });
+  const gymProgress = (gymProgressResult.Items || []).map((item) => ({
+    date: item.date,
+    type: item.type,
+    answer: item.answer,
+    score: item.score,
+    submittedAt: item.submittedAt,
+  }));
+
+  const serverDateStr = new Date().toISOString().split('T')[0];
+  const clientDate = event.queryStringParameters?.clientDate || serverDateStr;
+
+  const gymQuestions = (gymQuestionsResult.Items || []).map((q) => {
+    if (q.date >= clientDate) {
+      const { correctIndex, correctAnswer, explanation, ...stripped } = q;
+      return stripped;
+    }
+    return q;
+  });
+
+  const gymStreak = calculateGymStreak(gymProgress, clientDate);
+
+  if (!includeLeaderboard) {
+    return res(200, { progress, gymProgress, gymQuestions, gymStreak });
+  }
 
   try {
     const cacheKey = { pk: `COURSE#${courseId}`, sk: 'LEADERBOARD' };
@@ -562,7 +656,7 @@ async function getProgressForCourse(courseId, userId, event) {
         ...entry,
         isCurrentUser: entry.userId === userId,
       }));
-      return res(200, { progress, leaderboard: personalizedLeaderboard });
+      return res(200, { progress, leaderboard: personalizedLeaderboard, gymProgress, gymQuestions, gymStreak });
     }
 
     // Cache miss or expired: build fresh leaderboard
@@ -586,10 +680,10 @@ async function getProgressForCourse(courseId, userId, event) {
       console.error('Failed to update leaderboard cache:', err);
     });
 
-    return res(200, { progress, leaderboard });
+    return res(200, { progress, leaderboard, gymProgress, gymQuestions, gymStreak });
   } catch (err) {
     console.error('Leaderboard build error:', err);
-    return res(200, { progress, leaderboard: [] });
+    return res(200, { progress, leaderboard: [], gymProgress, gymQuestions, gymStreak });
   }
 }
 
@@ -678,10 +772,72 @@ async function recordHeartbeat(userId, body) {
   });
 }
 
+async function submitGymAttempt(userId, body) {
+  const { courseId, answers } = body;
+  if (!courseId || !answers || typeof answers !== 'object') {
+    return res(400, { message: 'Missing required fields: courseId, answers' });
+  }
+  const date = Object.keys(answers)[0];
+  const answer = answers[date];
+  if (!date || answer === undefined) {
+    return res(400, { message: 'Missing date or answer' });
+  }
+
+  // Get question to verify correct answer if it's a quiz
+  const qRes = await ddb.send(new GetCommand({
+    TableName: COURSES_TABLE,
+    Key: { pk: `COURSE#${courseId}`, sk: `GYM#${date}` },
+  }));
+  const question = qRes.Item;
+  if (!question) {
+    return res(404, { message: 'Daily question not found' });
+  }
+
+  let score = 0;
+  if (question.type === 'quiz') {
+    score = (Number(answer) === question.correctIndex) ? 1 : 0;
+  } else {
+    // Text format question gets 1 for completion
+    score = 1;
+  }
+
+  const pk = `USER#${userId}`;
+  const sk = `GYM#${courseId}#${date}`;
+
+  await ddb.send(new UpdateCommand({
+    TableName: PROGRESS_TABLE,
+    Key: { pk, sk },
+    UpdateExpression: 'SET courseId = :cid, #dt = :dt, #tp = :tp, answer = :ans, score = :score, submittedAt = :now, userId = :uid',
+    ExpressionAttributeNames: {
+      '#dt': 'date',
+      '#tp': 'type',
+    },
+    ExpressionAttributeValues: {
+      ':cid': courseId,
+      ':dt': date,
+      ':tp': question.type,
+      ':ans': answer,
+      ':score': score,
+      ':now': new Date().toISOString(),
+      ':uid': userId,
+    },
+  }));
+
+  return res(200, {
+    message: 'Answer submitted successfully',
+    score,
+    type: question.type,
+  });
+}
+
 async function submitQuizAttempt(userId, body) {
   const { courseId, weekId, answers } = body;
   if (!courseId || !weekId || !answers || typeof answers !== 'object') {
     return res(400, { message: 'Missing required fields: courseId, weekId, answers' });
+  }
+
+  if (weekId === 'gym') {
+    return await submitGymAttempt(userId, body);
   }
 
   let weekItem;
