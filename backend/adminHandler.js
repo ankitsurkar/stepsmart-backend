@@ -378,7 +378,7 @@ async function updateWeek(courseId, weekId, body) {
   const fields = [
     'title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber',
     'category', 'quiz', 'resources', 'docs', 'assignments', 'liveRecordedSessions',
-    'calendarEvents', 'transcript', 'weekTitle'
+    'calendarEvents', 'transcript', 'weekTitle', 'textContent'
   ];
   const setClauses = [];
   const exprAttrValues = {};

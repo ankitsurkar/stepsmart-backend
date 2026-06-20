@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { getCourseWeeks, getProgress, getQAQuestions, postQAQuestion } from '../utils/api';
+import { getCourseWeeks, getProgress, getQAQuestions, postQAQuestion, sendHeartbeat } from '../utils/api';
 import VideoPlayer from '../components/VideoPlayer';
 import QuizComponent from '../components/QuizComponent';
 
@@ -672,6 +672,21 @@ export default function LearnPage() {
     }
   }
 
+  async function handleMarkAsRead() {
+    try {
+      await sendHeartbeat(courseId, weekId, 10, 10, 0);
+      setVideoComplete(true);
+      setQuizUnlocked(true);
+      if (!initiallyCompleteRef.current) {
+        setShowCompletionModal(true);
+      }
+      loadWeek();
+    } catch (err) {
+      console.error('Failed to mark week as read:', err);
+      alert('Failed to save completion progress. Please try again.');
+    }
+  }
+
   async function handlePostQuestion() {
     if (!newQuestionText.trim()) return;
     try {
@@ -1079,6 +1094,34 @@ export default function LearnPage() {
                     }
                   }}
                 />
+              ) : week.textContent ? (
+                <div className="doc-reader-container">
+                  <div className="doc-reader-header">
+                    <div className="doc-reader-meta">
+                      <span>📖</span> Document Week / Reading Material
+                    </div>
+                    <div className="doc-reader-time">
+                      Estimated reading time: {Math.max(1, Math.round(week.textContent.split(/\s+/).length / 200))} min
+                    </div>
+                  </div>
+                  <div className="doc-reader-content">
+                    {week.textContent}
+                  </div>
+                  <div className="doc-reader-footer">
+                    {videoComplete ? (
+                      <span className="doc-reader-badge">
+                        Completed ✓
+                      </span>
+                    ) : (
+                      <button
+                        onClick={handleMarkAsRead}
+                        className="doc-reader-btn"
+                      >
+                        Mark as Read &amp; Complete
+                      </button>
+                    )}
+                  </div>
+                </div>
               ) : (
                 <div style={s.noVideo}>No video has been attached yet.</div>
               )}

@@ -220,6 +220,7 @@ const EMPTY_WEEK = {
   youtubeUrl: '',
   qaLink: '',
   transcript: '',
+  textContent: '',
   quiz: { questions: [] },
   resources: [],
   docs: [],
@@ -260,6 +261,7 @@ function buildDraftBasicPayload(form) {
   if ((form.youtubeUrl || '').trim()) payload.youtubeUrl = form.youtubeUrl.trim();
   if ((form.qaLink || '').trim()) payload.qaLink = form.qaLink.trim();
   if ((form.transcript || '').trim()) payload.transcript = form.transcript.trim();
+  if (form.textContent !== undefined) payload.textContent = form.textContent.trim();
 
   return payload;
 }
@@ -398,6 +400,7 @@ function WeeksTab({ courseId }) {
       youtubeUrl: week.youtubeUrl || '',
       qaLink: week.qaLink || '',
       transcript: week.transcript || '',
+      textContent: week.textContent || '',
       quiz: week.quiz || { questions: [] },
       resources: week.resources || [],
       docs: week.docs || [],
@@ -811,6 +814,10 @@ function WeeksTab({ courseId }) {
             <label style={s.label}>Transcript (Shown in Transcript tab)</label>
             <textarea style={s.textarea} placeholder="Full lecture transcript / notes..."
               value={form.transcript} onChange={(e) => setForm({ ...form, transcript: e.target.value })} />
+
+            <label style={s.label}>Article / Document Content (Used if no YouTube URL is provided)</label>
+            <textarea style={{ ...s.textarea, minHeight: '180px' }} placeholder="Write rich text / reading document content here..."
+              value={form.textContent || ''} onChange={(e) => setForm({ ...form, textContent: e.target.value })} />
 
             <label style={s.label}>Q&amp;A / Calendly Link</label>
             <input style={s.input} type="url" placeholder="https://calendly.com/..."
