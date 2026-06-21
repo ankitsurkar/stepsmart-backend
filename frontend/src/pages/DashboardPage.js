@@ -5,6 +5,10 @@ import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../u
 import AssignmentUpload from '../components/AssignmentUpload';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Book, Clock, ClipboardList, Calendar, Users, Settings, Bell, Trophy } from 'lucide-react';
+import { addDays, subDays, startOfMonth as startOfMonthFn, isSameDay, getDay } from 'date-fns';
+import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
+
+const TIMEZONE_IST = 'Asia/Kolkata';
 
 
 const NAV_ITEMS = [
@@ -1225,22 +1229,21 @@ function calculateActiveStreak(progressMap) {
   });
 
   // Always include today since they are logged in right now!
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = toDateKey(new Date());
   activeDates.add(todayStr);
 
   let currentStreak = 0;
   let checkDate = new Date();
 
   for (let i = 0; i < 30; i++) {
-    const checkDateStr = checkDate.toISOString().split('T')[0];
+    const checkDateStr = toDateKey(checkDate);
     if (activeDates.has(checkDateStr)) {
       currentStreak++;
-      checkDate.setDate(checkDate.getDate() - 1);
+      checkDate = subDays(checkDate, 1);
     } else {
       if (i === 0) {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        const yesterday = subDays(new Date(), 1);
+        const yesterdayStr = toDateKey(yesterday);
         if (activeDates.has(yesterdayStr)) {
           checkDate = yesterday;
           continue;
@@ -1254,9 +1257,8 @@ function calculateActiveStreak(progressMap) {
   
   const history = [];
   for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const dStr = d.toISOString().split('T')[0];
+    const d = subDays(new Date(), i);
+    const dStr = toDateKey(d);
     history.push(activeDates.has(dStr));
   }
 
@@ -1372,11 +1374,7 @@ function getDisplayName(user) {
 
 function formatDateLabel() {
   try {
-    return new Intl.DateTimeFormat('en-IN', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'short',
-    }).format(new Date());
+    return formatInTimeZone(new Date(), TIMEZONE_IST, 'EEEE, d MMM');
   } catch {
     return 'Today';
   }
@@ -1391,31 +1389,35 @@ function getInitials(name) {
 }
 
 function toDateKey(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  try {
+    return formatInTimeZone(date, TIMEZONE_IST, 'yyyy-MM-dd');
+  } catch {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 }
 
 function parseDateKey(value) {
   if (!value) return null;
   const [year, month, day] = value.split('-').map(Number);
   if (!year || !month || !day) return null;
-  return new Date(year, month - 1, day);
+  // Use noon to avoid timezone shift boundaries
+  const localDate = new Date(year, month - 1, day, 12, 0, 0);
+  return toZonedTime(localDate, TIMEZONE_IST);
 }
 
 function addDaysToDate(date, amount) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount);
+  return addDays(date, amount);
 }
 
 function startOfMonth(date) {
-  return new Date(date.getFullYear(), date.getMonth(), 1);
+  return startOfMonthFn(date);
 }
 
 function isSameDate(left, right) {
-  return left.getFullYear() === right.getFullYear()
-    && left.getMonth() === right.getMonth()
-    && left.getDate() === right.getDate();
+  return isSameDay(left, right);
 }
 
 function formatMonthLabel(date) {
@@ -2475,14 +2477,16 @@ export default function DashboardPage() {
     const todaySubmission = gymProgress.find(p => p.date === todayStr);
     const hasSolvedToday = !!todaySubmission;
 
-    const dayOfWeek = new Date().getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+    // Use target timezone to calculate the correct active day of the week
+    const zonedTodayDate = toZonedTime(new Date(), TIMEZONE_IST);
+    const dayOfWeek = getDay(zonedTodayDate); // 0 = Sun, 1 = Mon, ..., 6 = Sat
     const isClosedDay = dayOfWeek === 0 || dayOfWeek === 3 || dayOfWeek === 6;
 
     function getYesterdayGymDate(todayDate) {
-      const d = new Date(todayDate);
+      let d = toZonedTime(todayDate, TIMEZONE_IST);
       while (true) {
-        d.setDate(d.getDate() - 1);
-        const day = d.getDay();
+        d = subDays(d, 1);
+        const day = getDay(d);
         if (day === 1 || day === 2 || day === 4 || day === 5) {
           return toDateKey(d);
         }
@@ -2492,19 +2496,17 @@ export default function DashboardPage() {
     const yesterdayQuestion = gymQuestions.find(q => q.date === yesterdayDateStr);
     const yesterdaySubmission = gymProgress.find(p => p.date === yesterdayDateStr);
 
-    // Calculate weekly goal days (Mon, Tue, Thu, Fri of current week)
+    // Calculate weekly goal days (Mon, Tue, Thu, Fri of current week) in IST
     const todayDate = new Date();
-    const currentDayOfWeek = todayDate.getDay(); // 0 is Sun, 1 is Mon, etc.
+    const currentDayOfWeek = getDay(zonedTodayDate); // 0 is Sun, 1 is Mon, etc.
     const distanceToMon = currentDayOfWeek === 0 ? -6 : 1 - currentDayOfWeek;
-    const monday = new Date(todayDate);
-    monday.setDate(todayDate.getDate() + distanceToMon);
+    const monday = addDays(zonedTodayDate, distanceToMon);
     
     const activeIndices = [0, 1, 3, 4];
     const weekdaysLabel = ['M', 'T', 'Th', 'F'];
     
     const weeklyGoalDays = activeIndices.map((idx, index) => {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + idx);
+      const d = addDays(monday, idx);
       const dStr = toDateKey(d);
       
       const sub = gymProgress.find(p => p.date === dStr);
