@@ -1156,6 +1156,31 @@ const s = {
     fontSize: '0.88rem',
     lineHeight: 1.5,
   },
+  label: {
+    display: 'block',
+    fontSize: '0.75rem',
+    fontWeight: 700,
+    color: 'var(--foreground)',
+    marginBottom: '0.5rem',
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+  },
+  textarea: {
+    width: '100%',
+    padding: '0.75rem 1rem',
+    fontSize: '0.925rem',
+    border: '1.5px solid var(--border)',
+    borderRadius: '12px',
+    background: 'var(--background)',
+    color: 'var(--foreground)',
+    boxSizing: 'border-box',
+    marginBottom: '0.75rem',
+    minHeight: '76px',
+    resize: 'vertical',
+    fontFamily: 'inherit',
+    outline: 'none',
+    transition: 'border-color 0.15s ease',
+  },
 };
 
 function hasQuiz(week) {
