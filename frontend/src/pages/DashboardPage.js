@@ -2851,7 +2851,18 @@ export default function DashboardPage() {
                 </p>
                 <button
                   type="button"
-                  style={s.btn}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '0.85rem',
+                    borderRadius: '12px',
+                    fontSize: '0.95rem',
+                    fontWeight: 'bold',
+                    background: '#027A9B',
+                    color: '#ffffff',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
                   onClick={() => {
                     setShowPmGymModal(false);
                     setPmGymSubmitted(false);
@@ -2918,11 +2929,13 @@ export default function DashboardPage() {
                   type="submit"
                   disabled={isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim()}
                   style={{
-                    ...s.btn,
                     width: '100%',
                     padding: '0.85rem',
                     borderRadius: '12px',
                     fontSize: '0.95rem',
+                    fontWeight: 'bold',
+                    color: '#ffffff',
+                    border: 'none',
                     background: (isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim())
                       ? 'rgba(2, 122, 155, 0.4)'
                       : '#027A9B',
