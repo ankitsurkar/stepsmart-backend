@@ -3085,18 +3085,18 @@ export default function DashboardPage() {
       );
     };
 
-    const renderWeeklyGoalTooltip = (day) => {
+    const renderWeeklyGoalTooltip = (day, idx) => {
       if (!day) return null;
       
       const isPast = !day.isToday && !day.isFuture;
+      const isLast = idx === 3;
+      const isFirst = idx === 0;
       
       return (
         <div
           style={{
             position: 'absolute',
             bottom: '36px',
-            left: '50%',
-            transform: 'translateX(-50%)',
             width: '280px',
             background: '#ffffff',
             borderRadius: '16px',
@@ -3106,6 +3106,12 @@ export default function DashboardPage() {
             color: '#0f172a',
             zIndex: 10,
             textAlign: 'left',
+            ...(isLast
+              ? { right: '-12px', left: 'auto', transform: 'none' }
+              : isFirst
+                ? { left: '-12px', right: 'auto', transform: 'none' }
+                : { left: '50%', transform: 'translateX(-50%)' }
+            ),
           }}
         >
           {isPast ? (
@@ -3394,7 +3400,7 @@ export default function DashboardPage() {
                   >
                     {day.active ? '✓' : day.label}
                   </div>
-                  {activeTooltipDay?.dateStr === day.dateStr && renderWeeklyGoalTooltip(day)}
+                  {activeTooltipDay?.dateStr === day.dateStr && renderWeeklyGoalTooltip(day, idx)}
                 </div>
               ))}
             </div>
