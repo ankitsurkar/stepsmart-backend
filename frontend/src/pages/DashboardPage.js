@@ -5,9 +5,11 @@ import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../u
 import AssignmentUpload from '../components/AssignmentUpload';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Book, Clock, ClipboardList, Calendar, Users, Settings, Bell, Trophy } from 'lucide-react';
-import { addDays, subDays, startOfMonth as startOfMonthFn, isSameDay, getDay } from 'date-fns';
+import { addDays, subDays, startOfMonth as startOfMonthFn, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, getDaysInMonth, getDate, isSameMonth, isSameDay, getDay, addMonths } from 'date-fns';
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import { toast } from 'sonner';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const TIMEZONE_IST = 'Asia/Kolkata';
 
@@ -1571,9 +1573,10 @@ function buildCalendarEntriesByDate(entries) {
 }
 
 function buildCalendarGridDays(monthDate) {
-  const monthStart = startOfMonth(monthDate);
-  const gridStart = addDaysToDate(monthStart, -monthStart.getDay());
-  return Array.from({ length: 42 }, (_, index) => addDaysToDate(gridStart, index));
+  const monthStart = startOfMonthFn(monthDate);
+  const gridStart = startOfWeek(monthStart, { weekStartsOn: 0 });
+  const gridEnd = addDays(gridStart, 41);
+  return eachDayOfInterval({ start: gridStart, end: gridEnd });
 }
 
 function LessonStatusBadge({ status, percent }) {
@@ -2359,7 +2362,7 @@ export default function DashboardPage() {
   }
 
   function changeCalendarMonth(offset) {
-    setCalendarMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + offset, 1));
+    setCalendarMonth((prev) => addMonths(prev, offset));
     setSelectedCalendarDate('');
   }
 
@@ -2368,8 +2371,6 @@ export default function DashboardPage() {
     setCalendarMonth(startOfMonth(todayDate));
     setSelectedCalendarDate(toDateKey(todayDate));
   }
-
-  if (loading) return <div style={s.loading}>Loading your dashboard…</div>;
   if (error) return <div style={s.error}>{error}</div>;
 
   const weekGroups = buildWeekGroups(weeks);
@@ -2499,9 +2500,7 @@ export default function DashboardPage() {
 
     // Calculate weekly goal days (Mon, Tue, Thu, Fri of current week) in IST
     const todayDate = new Date();
-    const currentDayOfWeek = getDay(zonedTodayDate); // 0 is Sun, 1 is Mon, etc.
-    const distanceToMon = currentDayOfWeek === 0 ? -6 : 1 - currentDayOfWeek;
-    const monday = addDays(zonedTodayDate, distanceToMon);
+    const monday = startOfWeek(zonedTodayDate, { weekStartsOn: 1 });
     
     const activeIndices = [0, 1, 3, 4];
     const weekdaysLabel = ['M', 'T', 'Th', 'F'];
@@ -2613,12 +2612,14 @@ export default function DashboardPage() {
     // Calendar Card
     const renderMiniCalendarCard = () => {
       const weekdaysHeader = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-      const currentDay = todayDate.getDate();
-      const currentMonth = todayDate.getMonth();
-      const currentYear = todayDate.getFullYear();
+      const zonedTodayDate = toZonedTime(new Date(), TIMEZONE_IST);
+      const currentDay = getDate(zonedTodayDate);
+      const currentMonth = zonedTodayDate.getMonth();
+      const currentYear = zonedTodayDate.getFullYear();
       
-      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-      const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const monthStart = startOfMonthFn(zonedTodayDate);
+      const firstDay = getDay(monthStart);
+      const numDays = getDaysInMonth(zonedTodayDate);
       
       const cells = [];
       for (let i = 0; i < firstDay; i++) {
@@ -3816,8 +3817,7 @@ export default function DashboardPage() {
               {calendarGridDays.map((date) => {
                 const dateKey = toDateKey(date);
                 const dayEntries = calendarEntriesByDate[dateKey] || [];
-                const isCurrentMonth = date.getMonth() === visibleCalendarMonth.getMonth()
-                  && date.getFullYear() === visibleCalendarMonth.getFullYear();
+                const isCurrentMonth = isSameMonth(date, visibleCalendarMonth);
                 const isToday = isSameDate(date, today);
                 const isSelected = dateKey === activeSelectedDateKey;
                 const dayNumberStyle = {
@@ -4260,6 +4260,256 @@ export default function DashboardPage() {
     viewEyebrow = 'Profile';
     viewTitle = 'Settings';
     viewSubtitle = '';
+  }
+
+  if (loading) {
+    const isSidebarAdmin = user && (user.isAdmin || user.username === 'admin');
+    return (
+      <div style={s.page}>
+        <div style={shellStyle}>
+          <aside style={sidebarStyle}>
+            <div style={s.sidebarGlow} />
+
+            <div style={s.brand}>
+              <div style={s.brandMark}>S</div>
+              <span>StepSmart</span>
+            </div>
+
+            <div style={s.navStack}>
+              {NAV_ITEMS.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  style={{
+                    ...s.navButton,
+                    ...(activeView === item.id ? s.navButtonActive : {}),
+                  }}
+                  onClick={() => {}}
+                  disabled
+                >
+                  {activeView === item.id && <span style={s.navActiveRail} />}
+                  <span style={s.navButtonIcon}>
+                    <SidebarIcon kind={item.icon} />
+                  </span>
+                  {item.label}
+                </button>
+              ))}
+            </div>
+
+            <div style={s.sidebarSection}>
+              <div style={s.sidebarDivider} />
+              {isSidebarAdmin && (
+                <button type="button" style={{ ...s.adminLink, opacity: 0.7 }} disabled>
+                  Open Admin
+                </button>
+              )}
+
+              <button type="button" style={{ ...s.signOutBtn, opacity: 0.7 }} disabled>
+                Sign Out
+              </button>
+            </div>
+          </aside>
+
+          <main style={s.main}>
+            <div style={s.header}>
+              <div>
+                <div style={s.headerEyebrow}>{viewEyebrow}</div>
+                <div style={s.headerTitle}>
+                  <Skeleton width={220} height={28} />
+                </div>
+                {viewSubtitle && <div style={s.headerSub}>{viewSubtitle}</div>}
+              </div>
+            </div>
+
+            {activeView === 'dashboard' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
+                {/* PM Gym Banner Skeleton */}
+                <div style={{ height: '136px', borderRadius: '24px', background: '#e2e8f0', display: 'flex', alignItems: 'center', padding: '1.25rem 2rem', gap: '1.5rem' }}>
+                  <div style={{ width: '96px', height: '96px', borderRadius: '50%', background: '#cbd5e1' }} />
+                  <div style={{ flex: 1 }}>
+                    <Skeleton width={120} height={24} style={{ marginBottom: '0.5rem' }} />
+                    <Skeleton count={2} height={16} />
+                  </div>
+                </div>
+
+                {/* Hero Section Skeleton */}
+                <div style={{ display: 'grid', gridTemplateColumns: isCompact ? '1fr' : '3fr 1.2fr', gap: '1.25rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    {/* Metric Cards Skeleton */}
+                    <div style={{ display: 'grid', gridTemplateColumns: isCompact ? '1fr' : 'repeat(4, 1fr)', gap: '1.25rem' }}>
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '1.25rem', minHeight: '145px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                          <div>
+                            <Skeleton width={80} height={14} style={{ marginBottom: '0.5rem' }} />
+                            <Skeleton width={50} height={28} />
+                          </div>
+                          <div>
+                            <Skeleton height={6} style={{ marginBottom: '0.75rem' }} />
+                            <Skeleton width={100} height={12} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Row 2 side-by-side: Continue Learning & Mini Calendar */}
+                    <div style={{ display: 'grid', gridTemplateColumns: isCompact ? '1fr' : '1.6fr 1fr', gap: '1.25rem' }}>
+                      {/* Continue learning skeleton */}
+                      <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '24px', padding: '1.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '260px' }}>
+                        <div>
+                          <Skeleton width={140} height={14} style={{ marginBottom: '0.75rem' }} />
+                          <Skeleton width={260} height={20} style={{ marginBottom: '1rem' }} />
+                          <div style={{ display: 'flex', gap: '4px', marginBottom: '1.5rem' }}>
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <div key={i} style={{ height: '6px', flex: 1, background: '#e2e8f0', borderRadius: '999px' }} />
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <Skeleton width={150} height={36} borderRadius={999} style={{ marginBottom: '0.75rem' }} />
+                          <Skeleton width={180} height={12} />
+                        </div>
+                      </div>
+
+                      {/* Mini calendar skeleton */}
+                      <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '1.35rem 1.5rem', display: 'flex', flexDirection: 'column', minHeight: '260px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.1rem' }}>
+                          <Skeleton width={100} height={18} />
+                          <Skeleton width={80} height={18} />
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '6px', marginBottom: '0.75rem' }}>
+                          {Array.from({ length: 7 }).map((_, i) => (
+                            <Skeleton key={i} height={14} />
+                          ))}
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '6px' }}>
+                          {Array.from({ length: 31 }).map((_, i) => (
+                            <Skeleton key={i} height={28} circle />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Leaderboard skeleton */}
+                  <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '24px', padding: '1.5rem 1.25rem', minHeight: '440px' }}>
+                    <Skeleton width={100} height={20} style={{ marginBottom: '0.5rem' }} />
+                    <Skeleton width={150} height={14} style={{ marginBottom: '1.5rem' }} />
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                        <Skeleton circle width={32} height={32} />
+                        <div style={{ flex: 1 }}>
+                          <Skeleton width={100} height={14} style={{ marginBottom: '0.25rem' }} />
+                          <Skeleton width={60} height={10} />
+                        </div>
+                        <Skeleton width={40} height={16} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeView === 'courses' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <Skeleton width={80} height={28} borderRadius={14} />
+                  <Skeleton width={120} height={28} borderRadius={14} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '16px', padding: '1.25rem' }}>
+                      <Skeleton width={180} height={20} style={{ marginBottom: '0.5rem' }} />
+                      <Skeleton width={280} height={14} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeView === 'cohort' && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.25rem' }}>
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '22px', padding: '1.75rem 1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <Skeleton circle width={54} height={54} style={{ marginBottom: '1rem' }} />
+                    <Skeleton width={120} height={16} style={{ marginBottom: '0.5rem' }} />
+                    <Skeleton width={140} height={12} style={{ marginBottom: '1rem' }} />
+                    <Skeleton width={100} height={24} borderRadius={12} />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activeView === 'scheduling' && (
+              <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '2rem' }}>
+                <Skeleton width={150} height={20} style={{ marginBottom: '0.5rem' }} />
+                <Skeleton width={250} height={14} style={{ marginBottom: '2rem' }} />
+                <Skeleton width={180} height={40} borderRadius={10} />
+              </div>
+            )}
+
+            {activeView === 'assignments' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '1.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                      <Skeleton width={200} height={18} />
+                      <Skeleton width={80} height={24} borderRadius={12} />
+                    </div>
+                    <Skeleton count={2} height={14} style={{ marginBottom: '1rem' }} />
+                    <Skeleton width={120} height={32} borderRadius={8} />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activeView === 'calendar' && (
+              <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                  <Skeleton width={100} height={24} />
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <Skeleton width={32} height={32} />
+                    <Skeleton width={120} height={32} />
+                    <Skeleton width={32} height={32} />
+                    <Skeleton width={80} height={32} />
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', marginBottom: '0.75rem' }}>
+                  {Array.from({ length: 7 }).map((_, i) => (
+                    <Skeleton key={i} height={16} />
+                  ))}
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', rowGap: '12px' }}>
+                  {Array.from({ length: 35 }).map((_, i) => (
+                    <div key={i} style={{ border: '1px solid #f1f5f9', borderRadius: '8px', padding: '0.5rem', minHeight: '80px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                      <Skeleton width={24} height={16} />
+                      <Skeleton height={14} width="80%" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeView === 'settings' && (
+              <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '2rem', maxWidth: '600px' }}>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <Skeleton width={100} height={14} style={{ marginBottom: '0.5rem' }} />
+                  <Skeleton height={40} borderRadius={8} />
+                </div>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <Skeleton width={120} height={14} style={{ marginBottom: '0.5rem' }} />
+                  <Skeleton height={40} borderRadius={8} />
+                </div>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <Skeleton width={100} height={14} style={{ marginBottom: '0.5rem' }} />
+                  <Skeleton height={40} borderRadius={8} />
+                </div>
+                <Skeleton width={120} height={40} borderRadius={10} />
+              </div>
+            )}
+          </main>
+        </div>
+      </div>
+    );
   }
 
   return (

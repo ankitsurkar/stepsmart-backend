@@ -18,6 +18,8 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { toast } from 'sonner';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const s = {
   page: { minHeight: '100vh', background: 'var(--background)' },
@@ -729,7 +731,7 @@ export default function LearnPage() {
     }
   }
 
-  if (loading) return <div style={s.loading}>Loading week content…</div>;
+
   if (error) return <div style={s.error}>{error}</div>;
   if (!week) return null;
 
@@ -865,12 +867,15 @@ export default function LearnPage() {
                 </button>
 
                 {/* Group Items List */}
-                <div style={{
-                  maxHeight: isExpanded ? '1200px' : '0px',
-                  overflow: 'hidden',
-                  transition: 'max-height 0.25s cubic-bezier(0, 1, 0, 1)',
-                  background: 'rgba(0,0,0,0.015)'
-                }}>
+                <motion.div
+                  initial={false}
+                  animate={{ height: isExpanded ? 'auto' : 0 }}
+                  transition={{ duration: 0.25, ease: 'easeInOut' }}
+                  style={{
+                    overflow: 'hidden',
+                    background: 'rgba(0,0,0,0.015)'
+                  }}
+                >
                   {group.items.map((item, idx) => {
                     const itemWId = item.weekId || item.id;
                     const isActive = itemWId === weekId;
@@ -966,7 +971,7 @@ export default function LearnPage() {
                       </Link>
                     );
                   })}
-                </div>
+                </motion.div>
               </div>
             );
           })}
@@ -993,6 +998,84 @@ export default function LearnPage() {
     padding: isCompact ? '1rem' : '1.5rem 0',
     alignItems: isCompact ? 'stretch' : 'center',
   };
+
+  if (loading) {
+    return (
+      <div style={s.page}>
+        <div style={shellStyle}>
+          {/* Column 1: Sidebar */}
+          <aside style={sidebarStyle}>
+            <div style={s.sidebarGlow} />
+            <div style={{ ...s.brand, justifyContent: 'center', marginBottom: isCompact ? '1rem' : '2.5rem', width: '100%' }}>
+              <div style={{ ...s.brandMark, margin: 0 }}>S</div>
+            </div>
+            <div style={{ ...s.navStack, width: '100%', gap: '0.5rem', alignItems: 'center' }}>
+              {NAV_ITEMS.map((item) => (
+                <div key={item.id} style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.08)' }} />
+              ))}
+            </div>
+          </aside>
+
+          {/* Column 2: Playlist Placeholder */}
+          {!isCompact && (
+            <div style={s.playlist}>
+              <div style={{ padding: '1.25rem 1rem', borderBottom: '1px solid var(--border)' }}>
+                <Skeleton width={120} height={16} />
+                <div style={{ marginTop: '0.5rem' }}>
+                  <Skeleton width={160} height={20} />
+                </div>
+              </div>
+              <div style={{ padding: '1rem' }}>
+                <Skeleton count={8} height={32} style={{ marginBottom: '0.5rem' }} />
+              </div>
+            </div>
+          )}
+
+          {/* Column 3: Content Loader */}
+          <div style={{ flex: 1, minWidth: 0, height: isCompact ? 'auto' : '100vh', overflowY: isCompact ? 'visible' : 'auto' }}>
+            <div style={s.layout}>
+              <div style={s.main}>
+                <div>
+                  <Skeleton width={320} height={28} style={{ marginBottom: '0.5rem' }} />
+                  <Skeleton count={2} height={16} style={{ marginBottom: '1.5rem' }} />
+                </div>
+
+                {/* Aspect ratio video player skeleton placeholder */}
+                <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)' }}>
+                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, background: '#e2e8f0' }}>
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Skeleton circle width={64} height={64} />
+                    </div>
+                  </div>
+                  <div style={{ background: 'var(--foreground)', padding: '0.75rem 1rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                    <Skeleton width={80} height={32} />
+                    <Skeleton width={60} height={32} />
+                    <Skeleton width={60} height={32} />
+                    <div style={{ flex: 1 }}>
+                      <Skeleton height={8} />
+                    </div>
+                    <Skeleton width={70} height={20} />
+                  </div>
+                </div>
+
+                {/* Tabs Bar placeholder */}
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>
+                  <Skeleton width={90} height={28} borderRadius={14} />
+                  <Skeleton width={80} height={28} borderRadius={14} />
+                  <Skeleton width={90} height={28} borderRadius={14} />
+                </div>
+
+                {/* Content Card placeholder */}
+                <div style={s.tabContentCard}>
+                  <Skeleton count={3} height={20} style={{ marginBottom: '0.75rem' }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={s.page}>

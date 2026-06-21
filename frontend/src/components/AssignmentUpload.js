@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { uploadAssignment } from '../utils/api';
+import { toast } from 'sonner';
 
 const ACCEPTED_EXTENSIONS = '.pdf,.doc,.docx,.ppt,.pptx,.odp,.odt';
 const MAX_FILE_MB = 7;
@@ -108,7 +109,11 @@ export default function AssignmentUpload({
     setError('');
     setSuccessMsg('');
     const err = validateFile(file);
-    if (err) { setError(err); return; }
+    if (err) {
+      setError(err);
+      toast.error(err);
+      return;
+    }
     setSelectedFile(file);
   }
 
@@ -128,6 +133,7 @@ export default function AssignmentUpload({
     setError('');
     setSuccessMsg('');
     setUploadPct(10);
+    const toastId = toast.loading(`Uploading "${selectedFile.name}"...`);
 
     try {
       // Read the file as base64
@@ -156,15 +162,19 @@ export default function AssignmentUpload({
 
       setUploadPct(100);
       setSuccessMsg(`"${uploadedName}" uploaded successfully.`);
+      toast.success(`"${uploadedName}" uploaded successfully!`, { id: toastId });
       setSelectedFile(null);
       if (inputRef.current) inputRef.current.value = '';
     } catch (err) {
-      setError(err.response?.data?.message || 'Upload failed. Please try again.');
+      const errMsg = err.response?.data?.message || 'Upload failed. Please try again.';
+      setError(errMsg);
+      toast.error(errMsg, { id: toastId });
     } finally {
       setUploading(false);
       setUploadPct(0);
     }
   }
+
 
   const ext = selectedFile ? fileExt(selectedFile.name) : null;
   const sectionStyle = embedded ? { ...s.section, ...s.embeddedSection } : s.section;
