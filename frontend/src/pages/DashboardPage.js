@@ -3,6 +3,9 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../utils/api';
 import AssignmentUpload from '../components/AssignmentUpload';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Home, Book, Clock, ClipboardList, Calendar, Users, Settings, Bell, Trophy } from 'lucide-react';
+
 
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Home', icon: 'home' },
@@ -1671,87 +1674,21 @@ function StatusBadge({ status }) {
 }
 
 function SidebarIcon({ kind }) {
-  const common = { width: 21, height: 21, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' };
-
-  if (kind === 'home') {
-    return (
-      <svg {...common}>
-        <path d="M3 10.5 12 3l9 7.5" />
-        <path d="M5.5 9.5V21h13V9.5" />
-        <path d="M9.5 21v-6h5v6" />
-      </svg>
-    );
-  }
-  if (kind === 'book') {
-    return (
-      <svg {...common}>
-        <path d="M3 5.5c0-1.1.9-2 2-2h6v16H5a2 2 0 0 0-2 2z" />
-        <path d="M21 5.5c0-1.1-.9-2-2-2h-6v16h6a2 2 0 0 1 2 2z" />
-      </svg>
-    );
-  }
-  if (kind === 'clock') {
-    return (
-      <svg {...common}>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 7v5l3 2" />
-      </svg>
-    );
-  }
-  if (kind === 'clipboard') {
-    return (
-      <svg {...common}>
-        <rect x="5" y="4" width="14" height="17" rx="2" />
-        <path d="M9 4.5h6v3H9z" />
-      </svg>
-    );
-  }
-  if (kind === 'calendar') {
-    return (
-      <svg {...common}>
-        <rect x="3" y="5" width="18" height="16" rx="2" />
-        <path d="M16 3v4M8 3v4M3 10h18" />
-      </svg>
-    );
-  }
-  if (kind === 'users') {
-    return (
-      <svg {...common}>
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    );
-  }
-  return (
-    <svg {...common}>
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1 1 0 0 0 .2 1.1l.1.1a1 1 0 0 1 0 1.4l-1.1 1.1a1 1 0 0 1-1.4 0l-.1-.1a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9V20a1 1 0 0 1-1 1h-1.6a1 1 0 0 1-1-1v-.2a1 1 0 0 0-.6-.9 1 1 0 0 0-1.1.2l-.1.1a1 1 0 0 1-1.4 0L4.2 18a1 1 0 0 1 0-1.4l.1-.1a1 1 0 0 0 .2-1.1 1 1 0 0 0-.9-.6H3.4a1 1 0 0 1-1-1v-1.6a1 1 0 0 1 1-1h.2a1 1 0 0 0 .9-.6 1 1 0 0 0-.2-1.1l-.1-.1a1 1 0 0 1 0-1.4l1.1-1.1a1 1 0 0 1 1.4 0l.1.1a1 1 0 0 0 1.1.2 1 1 0 0 0 .6-.9V4a1 1 0 0 1 1-1h1.6a1 1 0 0 1 1 1v.2a1 1 0 0 0 .6.9 1 1 0 0 0 1.1-.2l.1-.1a1 1 0 0 1 1.4 0l1.1 1.1a1 1 0 0 1 0 1.4l-.1.1a1 1 0 0 0-.2 1.1 1 1 0 0 0 .9.6h.2a1 1 0 0 1 1 1v1.6a1 1 0 0 1-1 1h-.2a1 1 0 0 0-.9.6z" />
-    </svg>
-  );
+  if (kind === 'home') return <Home size={21} strokeWidth={2} />;
+  if (kind === 'book') return <Book size={21} strokeWidth={2} />;
+  if (kind === 'clock') return <Clock size={21} strokeWidth={2} />;
+  if (kind === 'clipboard') return <ClipboardList size={21} strokeWidth={2} />;
+  if (kind === 'calendar') return <Calendar size={21} strokeWidth={2} />;
+  if (kind === 'users') return <Users size={21} strokeWidth={2} />;
+  return <Settings size={21} strokeWidth={2} />;
 }
 
 function BellIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 18H5a1 1 0 0 1-.8-1.6c1-1.4 1.8-3.2 1.8-5V9a6 6 0 1 1 12 0v2.8c0 1.8.7 3.6 1.7 5a1 1 0 0 1-.8 1.6h-4" />
-      <path d="M9.5 18a2.5 2.5 0 0 0 5 0" />
-    </svg>
-  );
+  return <Bell size={24} strokeWidth={2} />;
 }
 
 function TrophyIcon() {
-  return (
-    <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#334155" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M8 21h8" />
-      <path d="M12 17v4" />
-      <path d="M7 4h10v4a5 5 0 0 1-10 0z" />
-      <path d="M5 6H3v2a3 3 0 0 0 3 3h1" />
-      <path d="M19 6h2v2a3 3 0 0 1-3 3h-1" />
-      <path d="M9.5 11.5a4.7 4.7 0 0 0 5 0" />
-    </svg>
-  );
+  return <Trophy size={42} color="#334155" strokeWidth={1.9} />;
 }
 
 function ProgressTrack({ percent, color, compact }) {
@@ -2773,8 +2710,6 @@ export default function DashboardPage() {
     };
 
     const renderPmGymQuizModal = () => {
-      if (!showPmGymModal) return null;
-      
       const todayStr = toDateKey(new Date());
       const todayQuestion = gymQuestions.find(q => q.date === todayStr);
       
@@ -2818,8 +2753,20 @@ export default function DashboardPage() {
 
       if (!todayQuestion) {
         return (
-          <div style={modalOverlayStyle}>
-            <div style={modalContentStyle}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            style={modalOverlayStyle}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+              style={modalContentStyle}
+            >
               <div style={modalHeaderStyle}>
                 <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#027A9B' }}>
                   🧠 PM Gym Daily Challenge
@@ -2829,8 +2776,8 @@ export default function DashboardPage() {
               <p style={{ fontSize: '0.95rem', color: 'var(--muted-foreground)', textAlign: 'center', margin: '2rem 0' }}>
                 No gym question scheduled for today yet. Check back later!
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         );
       }
 
@@ -2853,8 +2800,20 @@ export default function DashboardPage() {
       };
 
       return (
-        <div style={modalOverlayStyle}>
-          <div style={modalContentStyle}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          style={modalOverlayStyle}
+        >
+          <motion.div
+            initial={{ scale: 0.95, y: 15 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.95, y: 15 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+            style={modalContentStyle}
+          >
             <div style={modalHeaderStyle}>
               <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#027A9B' }}>
                 🧠 PM Gym Daily Challenge
@@ -2972,14 +2931,12 @@ export default function DashboardPage() {
                 </button>
               </form>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       );
     };
 
     const renderYesterdayAnswerModal = () => {
-      if (!showYesterdayModal) return null;
-      
       const yesterdayDateStr = getYesterdayGymDate(new Date());
       const yesterdayQ = gymQuestions.find(q => q.date === yesterdayDateStr);
       const yesterdaySub = gymProgress.find(p => p.date === yesterdayDateStr);
@@ -3023,8 +2980,20 @@ export default function DashboardPage() {
       };
 
       return (
-        <div style={modalOverlayStyle}>
-          <div style={modalContentStyle}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          style={modalOverlayStyle}
+        >
+          <motion.div
+            initial={{ scale: 0.95, y: 15 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.95, y: 15 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+            style={modalContentStyle}
+          >
             <div style={modalHeaderStyle}>
               <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#027A9B' }}>
                 Yesterday's Gym Answer
@@ -3094,8 +3063,8 @@ export default function DashboardPage() {
                 No gym question scheduled for yesterday.
               </p>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       );
     };
 
@@ -3204,8 +3173,12 @@ export default function DashboardPage() {
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
-        {renderPmGymQuizModal()}
-        {renderYesterdayAnswerModal()}
+        <AnimatePresence>
+          {showPmGymModal && renderPmGymQuizModal()}
+        </AnimatePresence>
+        <AnimatePresence>
+          {showYesterdayModal && renderYesterdayAnswerModal()}
+        </AnimatePresence>
         
         {/* PM Gym Banner */}
         <div
