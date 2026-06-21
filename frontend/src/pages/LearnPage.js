@@ -3,6 +3,20 @@ import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { getCourseWeeks, getProgress, getQAQuestions, postQAQuestion, sendHeartbeat } from '../utils/api';
 import VideoPlayer from '../components/VideoPlayer';
 import QuizComponent from '../components/QuizComponent';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  CheckCircle2,
+  CircleDot,
+  Circle,
+  Lock,
+  Folder,
+  FolderOpen,
+  ChevronDown,
+  BookOpen,
+  Award,
+  FileText,
+  MessageSquare
+} from 'lucide-react';
 
 const s = {
   page: { minHeight: '100vh', background: 'var(--background)' },
@@ -449,12 +463,21 @@ function getDisplayWeekNumber(allWeeks, targetWeek) {
 }
 
 function ProgressStep({ label, done, active, locked }) {
-  let icon = '○';
+  let iconComponent = <Circle size={15} />;
   let iconColor = 'var(--border)';
   let labelColor = 'var(--muted-foreground)';
 
-  if (done) { icon = '✓'; iconColor = 'var(--success)'; labelColor = 'var(--success)'; }
-  else if (active) { icon = '●'; iconColor = 'var(--primary)'; labelColor = 'var(--foreground)'; }
+  if (done) {
+    iconComponent = <CheckCircle2 size={15} />;
+    iconColor = 'var(--success)';
+    labelColor = 'var(--success)';
+  } else if (active) {
+    iconComponent = <CircleDot size={15} />;
+    iconColor = 'var(--primary)';
+    labelColor = 'var(--foreground)';
+  } else if (locked) {
+    iconComponent = <Lock size={15} />;
+  }
 
   return (
     <div style={{
@@ -462,9 +485,9 @@ function ProgressStep({ label, done, active, locked }) {
       marginBottom: '0.7rem', opacity: locked ? 0.4 : 1,
     }}>
       <span style={{
-        color: iconColor, fontWeight: 700, fontSize: '1rem',
-        width: '18px', textAlign: 'center', flexShrink: 0,
-      }}>{icon}</span>
+        color: iconColor,
+        width: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+      }}>{iconComponent}</span>
       <span style={{ color: labelColor, fontSize: '0.875rem', fontWeight: done || active ? 600 : 400 }}>
         {label}
       </span>
@@ -824,16 +847,17 @@ export default function LearnPage() {
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--card)'}
                 >
                   <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <span style={{ fontSize: '0.95rem' }}>📁</span>
+                    {isExpanded ? <FolderOpen size={15} style={{ color: 'var(--primary)' }} /> : <Folder size={15} style={{ color: 'var(--muted-foreground)' }} />}
                     {group.title}
                   </span>
                   <span style={{
                     transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                     transition: 'transform 0.2s ease',
-                    fontSize: '0.7rem',
-                    color: 'var(--muted-foreground)'
+                    color: 'var(--muted-foreground)',
+                    display: 'flex',
+                    alignItems: 'center'
                   }}>
-                    ▼
+                    <ChevronDown size={14} />
                   </span>
                 </button>
 
@@ -901,7 +925,6 @@ export default function LearnPage() {
                         {/* Status Icon */}
                         <div style={{
                           marginTop: '0.15rem',
-                          fontSize: '0.95rem',
                           width: '18px',
                           display: 'flex',
                           alignItems: 'center',
@@ -909,11 +932,11 @@ export default function LearnPage() {
                           flexShrink: 0,
                         }}>
                           {isCompleted ? (
-                            <span style={{ color: 'var(--success)', fontWeight: 800 }}>✓</span>
+                            <CheckCircle2 size={13} style={{ color: 'var(--success)' }} />
                           ) : isActive ? (
-                            <span style={{ color: 'var(--primary)' }}>●</span>
+                            <CircleDot size={13} style={{ color: 'var(--primary)' }} />
                           ) : (
-                            <span style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}>○</span>
+                            <Circle size={13} style={{ color: 'var(--muted-foreground)', opacity: 0.5 }} />
                           )}
                         </div>
 
@@ -1144,30 +1167,34 @@ export default function LearnPage() {
               <div style={s.tabBar}>
                 <button
                   onClick={() => setActiveTab('overview')}
-                  style={{ ...s.tabBtn, ...(activeTab === 'overview' ? s.tabBtnActive : {}) }}
+                  style={{ ...s.tabBtn, ...(activeTab === 'overview' ? s.tabBtnActive : {}), display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                 >
+                  <BookOpen size={14} />
                   Overview
                 </button>
                 {hasQuiz && (
                   <button
                     onClick={() => setActiveTab('quiz')}
-                    style={{ ...s.tabBtn, ...(activeTab === 'quiz' ? s.tabBtnActive : {}) }}
+                    style={{ ...s.tabBtn, ...(activeTab === 'quiz' ? s.tabBtnActive : {}), display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                   >
+                    <Award size={14} />
                     Quiz {quizPassed && '✓'}
                   </button>
                 )}
                 {!week.textContent && (
                   <button
                     onClick={() => setActiveTab('transcript')}
-                    style={{ ...s.tabBtn, ...(activeTab === 'transcript' ? s.tabBtnActive : {}) }}
+                    style={{ ...s.tabBtn, ...(activeTab === 'transcript' ? s.tabBtnActive : {}), display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                   >
+                    <FileText size={14} />
                     Transcript
                   </button>
                 )}
                 <button
                   onClick={() => setActiveTab('qa')}
-                  style={{ ...s.tabBtn, ...(activeTab === 'qa' ? s.tabBtnActive : {}) }}
+                  style={{ ...s.tabBtn, ...(activeTab === 'qa' ? s.tabBtnActive : {}), display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                 >
+                  <MessageSquare size={14} />
                   Q&amp;A
                 </button>
               </div>
@@ -1343,62 +1370,75 @@ export default function LearnPage() {
         </div>
       )}
 
-      {showCompletionModal && (
-        <div style={s.modalOverlay} className="modal-overlay-animate">
-          <div style={s.modalCard} className="modal-card-animate">
-            <div style={s.modalIconContainer}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="var(--primary)" strokeWidth="2.5" fill="none" />
-                <path d="M8 12L11 15L16 9" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            
-            <h3 style={s.modalTitle}>Nice work!</h3>
-            
-            {hasQuiz && (
-              <button
-                style={s.modalPrimaryBtn}
-                className="modal-btn-primary"
-                onClick={() => {
-                  setShowCompletionModal(false);
-                  setActiveTab('quiz');
-                }}
-              >
-                Take the quiz
-              </button>
-            )}
-            
-            {(() => {
-              const currentIdx = allWeeks.findIndex((w) => (w.weekId || w.id) === weekId);
-              const nextWeek = currentIdx !== -1 && currentIdx < allWeeks.length - 1 ? allWeeks[currentIdx + 1] : null;
-              if (!nextWeek) return null;
-              return (
+      <AnimatePresence>
+        {showCompletionModal && (
+          <motion.div
+            style={s.modalOverlay}
+            className="modal-overlay-animate"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.div
+              style={s.modalCard}
+              className="modal-card-animate"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 22, stiffness: 300 }}
+            >
+              <div style={s.modalIconContainer}>
+                <CheckCircle2 size={36} style={{ color: 'var(--primary)' }} />
+              </div>
+              
+              <h3 style={s.modalTitle}>Nice work!</h3>
+              
+              {hasQuiz && (
                 <button
-                  style={s.modalSecondaryBtn}
-                  className="modal-btn-secondary"
+                  style={s.modalPrimaryBtn}
+                  className="modal-btn-primary"
                   onClick={() => {
                     setShowCompletionModal(false);
-                    navigate(`/learn/${courseId}/${nextWeek.weekId || nextWeek.id}`);
+                    setActiveTab('quiz');
                   }}
                 >
-                  Next lesson
+                  Take the quiz
                 </button>
-              );
-            })()}
-            
-            <button
-              style={s.modalTextBtn}
-              className="modal-btn-text"
-              onClick={() => {
-                setShowCompletionModal(false);
-                navigate('/dashboard?view=courses');
-              }}
-            >
-              Back to course
-            </button>
-          </div>
-        </div>
-      )}
+              )}
+              
+              {(() => {
+                const currentIdx = allWeeks.findIndex((w) => (w.weekId || w.id) === weekId);
+                const nextWeek = currentIdx !== -1 && currentIdx < allWeeks.length - 1 ? allWeeks[currentIdx + 1] : null;
+                if (!nextWeek) return null;
+                return (
+                  <button
+                    style={s.modalSecondaryBtn}
+                    className="modal-btn-secondary"
+                    onClick={() => {
+                      setShowCompletionModal(false);
+                      navigate(`/learn/${courseId}/${nextWeek.weekId || nextWeek.id}`);
+                    }}
+                  >
+                    Next lesson
+                  </button>
+                );
+              })()}
+              
+              <button
+                style={s.modalTextBtn}
+                className="modal-btn-text"
+                onClick={() => {
+                  setShowCompletionModal(false);
+                  navigate('/dashboard?view=courses');
+                }}
+              >
+                Back to course
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

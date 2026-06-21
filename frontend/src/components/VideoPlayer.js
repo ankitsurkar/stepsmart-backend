@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { sendHeartbeat } from '../utils/api';
+import { Play, Pause, RotateCcw, RotateCw, Maximize, Minimize, CheckCircle2, Info } from 'lucide-react';
 
 const HEARTBEAT_INTERVAL = 10;           // seconds per segment
 let youtubeApiReadyPromise = null;
@@ -689,21 +690,26 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
       </div>
 
       <div style={s.controls}>
-        <button style={s.btn} onClick={handlePlayPause}>{isPlaying ? '⏸ Pause' : '▶ Play'}</button>
+        <button style={{ ...s.btn, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }} onClick={handlePlayPause}>
+          {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+          {isPlaying ? 'Pause' : 'Play'}
+        </button>
         <button
-          style={{ ...s.btn, ...s.btnSecondary, ...(seekAllowed ? {} : s.btnDisabled) }}
+          style={{ ...s.btn, ...s.btnSecondary, ...(seekAllowed ? {} : s.btnDisabled), display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
           onClick={handleRewind}
           disabled={!seekAllowed}
           title={seekAllowed ? 'Rewind 10 seconds' : 'Complete the video to unlock rewinding'}
         >
+          <RotateCcw size={13} />
           −10s
         </button>
         <button
-          style={{ ...s.btn, ...s.btnSecondary, ...(seekAllowed ? {} : s.btnDisabled) }}
+          style={{ ...s.btn, ...s.btnSecondary, ...(seekAllowed ? {} : s.btnDisabled), display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
           onClick={handleForward}
           disabled={!seekAllowed}
           title={seekAllowed ? 'Forward 10 seconds' : 'Complete the video to unlock forwarding'}
         >
+          <RotateCw size={13} />
           +10s
         </button>
         <select
@@ -742,20 +748,27 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
           />
         </div>
         <span style={s.timeLabel}>{metaLabel}</span>
-        <button style={{ ...s.btn, ...s.btnSecondary, marginLeft: 'auto' }} onClick={handleFullScreen} title="Fullscreen">
-          {isFullscreen ? '⤓ Exit Fullscreen' : '⛶ Fullscreen'}
+        <button
+          style={{ ...s.btn, ...s.btnSecondary, marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+          onClick={handleFullScreen}
+          title="Fullscreen"
+        >
+          {isFullscreen ? <Minimize size={14} /> : <Maximize size={14} />}
+          {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
         </button>
       </div>
 
       {videoComplete && (
-        <div style={s.completionBanner}>
-          ✓ Video complete — drag the green line or use the arrow keys to move around the lecture.
+        <div style={{ ...s.completionBanner, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.45rem' }}>
+          <CheckCircle2 size={16} />
+          <span>Video complete — drag the green line or use the arrow keys to move around the lecture.</span>
         </div>
       )}
 
       {!seekAllowed && (
-        <div style={s.hintBanner}>
-          Complete the video first to unlock dragging, rewinding, forwarding, and arrow-key seeking.
+        <div style={{ ...s.hintBanner, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.45rem' }}>
+          <Info size={15} />
+          <span>Complete the video first to unlock dragging, rewinding, forwarding, and arrow-key seeking.</span>
         </div>
       )}
     </div>
