@@ -2136,7 +2136,7 @@ export default function DashboardPage() {
   const [activeCoursesTab, setActiveCoursesTab] = useState('videos');
   const [expandedGroups, setExpandedGroups] = useState({});
   const [expandedAssignments, setExpandedAssignments] = useState({});
-  const [calendarMonth, setCalendarMonth] = useState(() => startOfMonth(new Date()));
+  const [calendarMonth, setCalendarMonth] = useState(() => startOfMonthFn(toZonedTime(new Date(), TIMEZONE_IST)));
   const [selectedCalendarDate, setSelectedCalendarDate] = useState('');
   const [displayNameInput, setDisplayNameInput] = useState('');
   const [settingsMessage, setSettingsMessage] = useState('');
@@ -2205,22 +2205,38 @@ export default function DashboardPage() {
     const entries = expandCalendarEntries(buildCalendarEventDefinitions(weeks));
     if (entries.length === 0) return;
 
-    const firstEntryDate = parseDateKey(entries[0].dateKey);
-    if (!firstEntryDate) return;
+    const todayZoned = toZonedTime(new Date(), TIMEZONE_IST);
+    const currentMonthStart = startOfMonthFn(todayZoned);
 
     setCalendarMonth((prev) => {
-      const monthHasEvents = entries.some((entry) => {
+      const prevHasEvents = entries.some((entry) => {
         const entryDate = parseDateKey(entry.dateKey);
-        return entryDate
-          && entryDate.getFullYear() === prev.getFullYear()
-          && entryDate.getMonth() === prev.getMonth();
+        return entryDate && isSameMonth(entryDate, prev);
       });
 
-      return monthHasEvents ? prev : startOfMonth(firstEntryDate);
+      const currentMonthHasEvents = entries.some((entry) => {
+        const entryDate = parseDateKey(entry.dateKey);
+        return entryDate && isSameMonth(entryDate, currentMonthStart);
+      });
+
+      if (isSameMonth(prev, currentMonthStart) || currentMonthHasEvents) {
+        return currentMonthStart;
+      }
+
+      if (prevHasEvents) {
+        return prev;
+      }
+
+      return currentMonthStart;
     });
 
     setSelectedCalendarDate((prev) => {
       if (prev && entries.some((entry) => entry.dateKey === prev)) return prev;
+      
+      const todayKey = toDateKey(todayZoned);
+      const hasTodayEvent = entries.some((entry) => entry.dateKey === todayKey);
+      if (hasTodayEvent) return todayKey;
+
       return entries[0].dateKey;
     });
   }, [weeks]);
@@ -2367,9 +2383,9 @@ export default function DashboardPage() {
   }
 
   function jumpToCurrentMonth() {
-    const todayDate = new Date();
-    setCalendarMonth(startOfMonth(todayDate));
-    setSelectedCalendarDate(toDateKey(todayDate));
+    const todayZoned = toZonedTime(new Date(), TIMEZONE_IST);
+    setCalendarMonth(startOfMonthFn(todayZoned));
+    setSelectedCalendarDate(toDateKey(todayZoned));
   }
   if (error) return <div style={s.error}>{error}</div>;
 
