@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Book, Clock, ClipboardList, Calendar, Users, Settings, Bell, Trophy } from 'lucide-react';
 import { addDays, subDays, startOfMonth as startOfMonthFn, isSameDay, getDay } from 'date-fns';
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
+import { toast } from 'sonner';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
 
 const TIMEZONE_IST = 'Asia/Kolkata';
 
@@ -1855,15 +1857,59 @@ function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
     'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)'
   ];
 
+  const chartData = rows.slice(0, 5).map(r => ({
+    name: r.displayName.split(' ')[0],
+    points: r.totalPoints || 0,
+    isMe: r.isCurrentUser
+  })).reverse();
+
   return (
     <div style={{ ...s.dashboardRight, position: isCompact ? 'static' : s.dashboardRight.position }}>
       <div style={s.railHeaderTitle}>Top Peers</div>
       <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
 
+      {/* Horizontal Bar Chart comparison of Top Peers */}
+      <div style={{ width: '100%', height: '140px', marginTop: '0.8rem', marginBottom: '0.8rem' }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={chartData}
+            layout="vertical"
+            margin={{ top: 0, right: 10, left: -20, bottom: 0 }}
+          >
+            <XAxis type="number" hide />
+            <YAxis
+              dataKey="name"
+              type="category"
+              axisLine={false}
+              tickLine={false}
+              style={{ fontSize: '0.72rem', fontWeight: 600, fill: 'var(--muted-foreground)' }}
+            />
+            <Tooltip
+              cursor={{ fill: 'rgba(0,0,0,0.03)' }}
+              contentStyle={{
+                background: 'var(--card)',
+                border: '1px solid var(--border)',
+                borderRadius: '8px',
+                fontSize: '0.75rem',
+                color: 'var(--foreground)'
+              }}
+            />
+            <Bar dataKey="points" radius={[0, 4, 4, 0]} barSize={10}>
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={entry.isMe ? 'var(--primary)' : 'var(--border)'}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
       <div
         style={{
           ...s.railList,
-          maxHeight: '440px',
+          maxHeight: '260px',
           overflowY: 'auto',
           paddingRight: '6px',
         }}
@@ -2795,9 +2841,10 @@ export default function DashboardPage() {
           setPmGymSubmitted(true);
           // Reload course data to get the updated progress and streak
           loadCourse(activeCourse.courseId);
+          toast.success('PM Gym response submitted successfully!');
         } catch (err) {
           console.error(err);
-          alert('Failed to submit response.');
+          toast.error('Failed to submit response.');
         }
       };
 
@@ -4112,7 +4159,7 @@ export default function DashboardPage() {
                 key={student.userId}
                 onClick={hasLinkedin 
                   ? () => window.open(linkedinUrl, '_blank')
-                  : () => alert(`${student.displayName} has not provided a LinkedIn profile.`)
+                  : () => toast.error(`${student.displayName} has not provided a LinkedIn profile.`)
                 }
                 className={hasLinkedin ? "cohort-card-hover" : ""}
                 style={{
@@ -4340,13 +4387,24 @@ export default function DashboardPage() {
             ) : null}
           </div>
 
-          {activeView === 'dashboard' && renderDashboardView()}
-          {activeView === 'courses' && renderCoursesView()}
-          {activeView === 'cohort' && renderCohortView()}
-          {activeView === 'scheduling' && renderSchedulingView()}
-          {activeView === 'assignments' && renderAssignmentsView()}
-          {activeView === 'calendar' && renderCalendarView()}
-          {activeView === 'settings' && renderSettingsView()}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeView}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.15 }}
+            >
+              {activeView === 'dashboard' && renderDashboardView()}
+              {activeView === 'courses' && renderCoursesView()}
+              {activeView === 'cohort' && renderCohortView()}
+              {activeView === 'scheduling' && renderSchedulingView()}
+              {activeView === 'assignments' && renderAssignmentsView()}
+              {activeView === 'calendar' && renderCalendarView()}
+              {activeView === 'settings' && renderSettingsView()}
+            </motion.div>
+          </AnimatePresence>
+
         </main>
       </div>
     </div>

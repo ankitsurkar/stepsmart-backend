@@ -17,6 +17,7 @@ import {
   FileText,
   MessageSquare
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const s = {
   page: { minHeight: '100vh', background: 'var(--background)' },
@@ -707,9 +708,10 @@ export default function LearnPage() {
         setShowCompletionModal(true);
       }
       loadWeek();
+      toast.success('Lesson marked as completed!');
     } catch (err) {
       console.error('Failed to mark week as read:', err);
-      alert('Failed to save completion progress. Please try again.');
+      toast.error('Failed to save completion progress. Please try again.');
     }
   }
 
@@ -720,9 +722,10 @@ export default function LearnPage() {
       const newQ = res.data.question;
       setQuestionsList([newQ, ...questionsList]);
       setNewQuestionText('');
+      toast.success('Question posted successfully!');
     } catch (err) {
       console.error('Failed to post question:', err);
-      alert('Failed to post question. Please try again.');
+      toast.error('Failed to post question. Please try again.');
     }
   }
 

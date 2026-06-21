@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import LearnPage from './pages/LearnPage';
 import AdminPage from './pages/AdminPage';
+import { Toaster } from 'sonner';
 
 // basename="/learn" strips the /learn prefix from all URLs before React Router processes them.
 // A request to stepsmart.net/learn/dashboard is seen by React Router as /dashboard.
@@ -14,6 +15,7 @@ import AdminPage from './pages/AdminPage';
 export default function App() {
   return (
     <AuthProvider>
+      <Toaster richColors position="top-right" />
       <BrowserRouter basename="/learn">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
