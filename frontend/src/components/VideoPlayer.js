@@ -115,12 +115,7 @@ const s = {
     outline: 'none',
   },
 
-  // ── Completion banner ─────────────────────────────────────────────────────
-  completionBanner: {
-    background: 'var(--success-light)', color: 'var(--success-fg)',
-    padding: '0.65rem 1rem', fontSize: '0.875rem', textAlign: 'center', fontWeight: 600,
-    borderTop: '1px solid var(--border)',
-  },
+
   hintBanner: {
     background: 'rgba(255,255,255,0.06)',
     color: 'rgba(255,255,255,0.72)',
@@ -758,12 +753,7 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
         </button>
       </div>
 
-      {videoComplete && (
-        <div style={{ ...s.completionBanner, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.45rem' }}>
-          <CheckCircle2 size={16} />
-          <span>Video complete — drag the green line or use the arrow keys to move around the lecture.</span>
-        </div>
-      )}
+
 
       {!seekAllowed && (
         <div style={{ ...s.hintBanner, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.45rem' }}>
