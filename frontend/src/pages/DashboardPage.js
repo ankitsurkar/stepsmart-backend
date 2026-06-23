@@ -2748,7 +2748,7 @@ export default function DashboardPage() {
             background: '#ffffff',
             border: '1px solid rgba(20, 49, 86, 0.08)',
             borderRadius: '20px',
-            padding: '0.65rem 0.75rem',
+            padding: '0.5rem 0.6rem',
             boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
             display: 'flex',
             flexDirection: 'column',
@@ -2758,18 +2758,18 @@ export default function DashboardPage() {
           }}
         >
           <div>
-            <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'baseline', marginBottom: '0.5rem', paddingLeft: '0.15rem' }}>
-              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500 }}>
+            <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'baseline', marginBottom: '0.3rem', paddingLeft: '0.05rem', flexWrap: 'nowrap' }}>
+              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
                 {new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(zonedTodayDate)}
               </span>
-              <span style={{ color: '#027A9B', fontSize: '0.875rem', fontWeight: 700 }}>
+              <span style={{ color: '#027A9B', fontSize: '0.75rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
                 Daily Calendar
               </span>
             </div>
             
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', fontWeight: 600, color: 'var(--muted-foreground)', fontSize: '0.65rem', marginBottom: '0.3rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', fontWeight: 600, color: 'var(--muted-foreground)', fontSize: '0.625rem', marginBottom: '0.2rem' }}>
               {weekdaysHeader.map((w, idx) => (
-                <div key={idx} style={{ padding: '0.1rem' }}>{w}</div>
+                <div key={idx} style={{ padding: '0' }}>{w}</div>
               ))}
             </div>
             
