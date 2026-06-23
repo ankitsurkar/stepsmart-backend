@@ -568,6 +568,27 @@ function SidebarIcon({ kind }) {
     </svg>
   );
 }
+function renderTextWithLinks(text) {
+  if (!text) return null;
+  const parts = text.split(/(https?:\/\/[^\s]+)/g);
+  return parts.map((part, i) => {
+    if (part.match(/^https?:\/\/[^\s]+$/)) {
+      return (
+        <a 
+          key={i} 
+          href={part} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          style={{ color: 'var(--primary)', textDecoration: 'underline', wordBreak: 'break-all' }}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 export default function LearnPage() {
   const { courseId, weekId } = useParams();
   const navigate = useNavigate();
@@ -1209,7 +1230,7 @@ export default function LearnPage() {
                     </div>
                   </div>
                   <div className="doc-reader-content">
-                    {week.textContent}
+                    {renderTextWithLinks(week.textContent)}
                   </div>
                   <div className="doc-reader-footer">
                     {videoComplete ? (
@@ -1358,7 +1379,7 @@ export default function LearnPage() {
                 <div style={s.tabContentCard}>
                   {week.transcript ? (
                     <div style={{ color: 'var(--foreground)', fontSize: '0.9rem', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
-                      {week.transcript}
+                      {renderTextWithLinks(week.transcript)}
                     </div>
                   ) : (
                     <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
