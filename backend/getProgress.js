@@ -134,8 +134,8 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     }),
     ddb.send(new ScanCommand({
       TableName: PROGRESS_TABLE,
-      FilterExpression: 'begins_with(sk, :prefix)',
-      ExpressionAttributeValues: { ':prefix': `PROGRESS#${courseId}#` },
+      FilterExpression: 'courseId = :cid',
+      ExpressionAttributeValues: { ':cid': courseId },
     })).catch((err) => {
       console.error('Progress scan failed while building leaderboard:', err);
       return { Items: [] };
@@ -181,27 +181,34 @@ async function buildLeaderboard(courseId, currentUserId, event) {
 
   for (const item of (progressResult.Items || [])) {
     const itemUserId = item.userId || (item.pk ? item.pk.replace('USER#', '') : null);
-    const itemWeekId = item.weekId || (item.sk ? item.sk.split('#')[2] : null);
-    if (!itemUserId || !itemWeekId) continue;
+    if (!itemUserId) continue;
     if (!enrolledUserIds.has(itemUserId)) continue;
 
+    // PM Gym question completion gives 2 points
+    if (item.sk && item.sk.startsWith('GYM#')) {
+      const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
+      entry.score += 2;
+      entry.totalPoints += 2;
+      entry.lastActivity = laterDate(entry.lastActivity, toIso(item.submittedAt));
+      continue;
+    }
+
+    const itemWeekId = item.weekId || (item.sk ? item.sk.split('#')[2] : null);
+    if (!itemWeekId) continue;
     if (!weekQuizMap.has(itemWeekId)) continue;
     const hasQuiz = weekQuizMap.get(itemWeekId);
 
     const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
     
-    // A lecture is considered complete if the week has a quiz and the quiz is passed,
-    // or if the week doesn't have a quiz and the video is complete.
-    const isComplete = hasQuiz ? !!item.quizPassed : !!item.videoComplete;
+    // A lecture is considered complete when the video is complete.
+    const isComplete = !!item.videoComplete;
     if (isComplete) {
       entry.completedLectures += 1;
-      entry.score += 1;
-      entry.totalPoints += 1;
+      entry.score += 2;
+      entry.totalPoints += 2;
     }
     if (item.quizPassed) {
       entry.completedQuizzes += 1;
-      entry.score += 2;
-      entry.totalPoints += 2;
     }
     entry.lastActivity = laterDate(entry.lastActivity, toIso(item.videoCompletedAt || item.lastSeen));
   }
@@ -219,10 +226,10 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     awardedAssignments.add(assignmentKey);
 
     const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
-    entry.assignmentPoints += 5;
+    entry.assignmentPoints += 10;
     entry.assignmentsSubmitted += 1;
-    entry.score += 5;
-    entry.totalPoints += 5;
+    entry.score += 10;
+    entry.totalPoints += 10;
     entry.lastActivity = laterDate(entry.lastActivity, toIso(item.uploadedAt));
   }
 
