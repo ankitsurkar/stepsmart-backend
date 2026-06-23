@@ -3438,7 +3438,7 @@ export default function DashboardPage() {
             <div
               style={{
                 ...s.metricCards,
-                gridTemplateColumns: isCompact ? '1fr' : 'repeat(3, minmax(0, 1fr))',
+                gridTemplateColumns: isCompact ? '1fr' : 'repeat(4, minmax(0, 1fr))',
               }}
             >
               {/* Redesigned Card 1: Lessons */}
