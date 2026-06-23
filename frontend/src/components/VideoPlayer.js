@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { sendHeartbeat } from '../utils/api';
 import { Play, Pause, RotateCcw, RotateCw, Maximize, Minimize, CheckCircle2, Info } from 'lucide-react';
+import hotkeys from 'hotkeys-js';
 
 const HEARTBEAT_INTERVAL = 10;           // seconds per segment
 let youtubeApiReadyPromise = null;
@@ -198,6 +199,50 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
       }
     }
   }, [initialProgress]);
+
+  const actionsRef = useRef(null);
+  actionsRef.current = {
+    handleRewind,
+    handleForward,
+    handlePlayPause,
+    handleFullScreen,
+    isFullscreen
+  };
+
+  useEffect(() => {
+    const keys = 'left,right,f,space,esc,escape';
+    const handler = (event, handlerInfo) => {
+      const target = event.target || event.srcElement;
+      const tagName = target?.tagName;
+      if (tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' || target?.isContentEditable) {
+        return;
+      }
+
+      if (!wrapperRef.current) return;
+
+      event.preventDefault();
+      const key = handlerInfo.shortcut.toLowerCase();
+      if (key === 'left') {
+        actionsRef.current.handleRewind();
+      } else if (key === 'right') {
+        actionsRef.current.handleForward();
+      } else if (key === 'f') {
+        actionsRef.current.handleFullScreen();
+      } else if (key === 'space') {
+        actionsRef.current.handlePlayPause();
+      } else if (key === 'esc' || key === 'escape') {
+        if (actionsRef.current.isFullscreen) {
+          actionsRef.current.handleFullScreen();
+        }
+      }
+    };
+
+    hotkeys(keys, handler);
+
+    return () => {
+      hotkeys.unbind(keys, handler);
+    };
+  }, []);
 
   useEffect(() => {
     if (isHtml5) return undefined;

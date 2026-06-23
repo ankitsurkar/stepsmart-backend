@@ -5,11 +5,13 @@
   "homepage": "/learn",
   "dependencies": {
     "@aws-amplify/auth": "^6.0.0",
+    "@radix-ui/react-tooltip": "^1.2.10",
     "aws-amplify": "^6.0.0",
     "axios": "^1.6.0",
     "date-fns": "^4.4.0",
     "date-fns-tz": "^3.2.0",
     "framer-motion": "^12.40.0",
+    "hotkeys-js": "^4.0.4",
     "lucide-react": "^1.21.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

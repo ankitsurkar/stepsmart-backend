@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import * as Tooltip from '@radix-ui/react-tooltip';
 import { useAuth } from '../context/AuthContext';
 import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../utils/api';
 import AssignmentUpload from '../components/AssignmentUpload';
@@ -3189,35 +3190,13 @@ export default function DashboardPage() {
       );
     };
 
-    const renderWeeklyGoalTooltip = (day, idx) => {
+    const renderWeeklyGoalTooltipContent = (day) => {
       if (!day) return null;
       
       const isPast = !day.isToday && !day.isFuture;
-      const isLast = idx === 3;
-      const isFirst = idx === 0;
       
       return (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '36px',
-            width: '280px',
-            background: '#ffffff',
-            borderRadius: '16px',
-            padding: '1rem',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-            border: '1px solid rgba(2,122,155,0.15)',
-            color: '#0f172a',
-            zIndex: 10,
-            textAlign: 'left',
-            ...(isLast
-              ? { right: '-12px', left: 'auto', transform: 'none' }
-              : isFirst
-                ? { left: '-12px', right: 'auto', transform: 'none' }
-                : { left: '50%', transform: 'translateX(-50%)' }
-            ),
-          }}
-        >
+        <div>
           {isPast ? (
             <div>
               <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
@@ -3474,39 +3453,61 @@ export default function DashboardPage() {
               Weekly Goal
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.35rem' }}>
-              {weeklyGoalDays.map((day, idx) => (
-                <div
-                  key={idx}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem', position: 'relative' }}
-                  onMouseEnter={() => setActiveTooltipDay(day)}
-                  onMouseLeave={() => setActiveTooltipDay(null)}
-                  onClick={() => setActiveTooltipDay(prev => prev?.dateStr === day.dateStr ? null : day)}
-                >
-                  <div
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '50%',
-                      background: day.active
-                        ? '#ffffff'
-                        : day.isFuture
-                          ? 'rgba(255, 255, 255, 0.2)'
-                          : 'rgba(255, 255, 255, 0.4)',
-                      color: day.active ? '#027A9B' : '#ffffff',
-                      fontSize: '0.7rem',
-                      fontWeight: 700,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      boxShadow: activeTooltipDay?.dateStr === day.dateStr ? '0 0 8px #ffffff' : 'none',
-                    }}
-                  >
-                    {day.active ? '✓' : day.label}
-                  </div>
-                  {activeTooltipDay?.dateStr === day.dateStr && renderWeeklyGoalTooltip(day, idx)}
-                </div>
-              ))}
+              <Tooltip.Provider delayDuration={150}>
+                {weeklyGoalDays.map((day, idx) => (
+                  <Tooltip.Root key={idx}>
+                    <Tooltip.Trigger asChild>
+                      <button
+                        style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          background: day.active
+                            ? '#ffffff'
+                            : day.isFuture
+                              ? 'rgba(255, 255, 255, 0.2)'
+                              : 'rgba(255, 255, 255, 0.4)',
+                          color: day.active ? '#027A9B' : '#ffffff',
+                          fontSize: '0.7rem',
+                          fontWeight: 700,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          border: 'none',
+                          padding: 0,
+                          outline: 'none',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        {day.active ? '✓' : day.label}
+                      </button>
+                    </Tooltip.Trigger>
+                    
+                    <Tooltip.Portal>
+                      <Tooltip.Content
+                        side="top"
+                        align="center"
+                        sideOffset={8}
+                        style={{
+                          width: '280px',
+                          background: '#ffffff',
+                          borderRadius: '16px',
+                          padding: '1rem',
+                          boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                          border: '1px solid rgba(2,122,155,0.15)',
+                          color: '#0f172a',
+                          zIndex: 9999,
+                          textAlign: 'left',
+                        }}
+                      >
+                        {renderWeeklyGoalTooltipContent(day)}
+                        <Tooltip.Arrow style={{ fill: '#ffffff' }} />
+                      </Tooltip.Content>
+                    </Tooltip.Portal>
+                  </Tooltip.Root>
+                ))}
+              </Tooltip.Provider>
             </div>
             <div style={{ height: '4px', background: 'rgba(255, 255, 255, 0.25)', borderRadius: '999px', overflow: 'hidden', marginTop: '0.2rem' }}>
               <div style={{ height: '100%', background: '#ffffff', width: `${(weeklyGoalDays.filter(d => d.active).length / 4) * 100}%`, transition: 'width 0.3s ease' }} />
