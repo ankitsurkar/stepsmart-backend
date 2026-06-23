@@ -877,111 +877,116 @@ export default function LearnPage() {
                 </button>
 
                 {/* Group Items List */}
-                <motion.div
-                  initial={false}
-                  animate={{ height: isExpanded ? 'auto' : 0 }}
-                  transition={{ duration: 0.25, ease: 'easeInOut' }}
-                  style={{
-                    overflow: 'hidden',
-                    background: 'rgba(0,0,0,0.015)'
-                  }}
-                >
-                  {group.items.map((item, idx) => {
-                    const itemWId = item.weekId || item.id;
-                    const isActive = itemWId === weekId;
-                    
-                    // Check completion state
-                    const progressItem = allProgress.find(p => p.weekId === itemWId);
-                    const isCompleted = progressItem?.videoComplete && 
-                      (!(item.quiz?.questions?.length > 0) || progressItem?.quizPassed);
+                <AnimatePresence initial={false}>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: 'easeInOut' }}
+                      style={{
+                        overflow: 'hidden',
+                        background: 'rgba(0,0,0,0.015)'
+                      }}
+                    >
+                      {group.items.map((item, idx) => {
+                        const itemWId = item.weekId || item.id;
+                        const isActive = itemWId === weekId;
+                        
+                        // Check completion state
+                        const progressItem = allProgress.find(p => p.weekId === itemWId);
+                        const isCompleted = progressItem?.videoComplete && 
+                          (!(item.quiz?.questions?.length > 0) || progressItem?.quizPassed);
 
-                    let displayNum = item.weekNumber;
-                    let displayCat = 'Lecture';
-                    if (String(itemWId).startsWith('rec-')) {
-                      displayNum = 'R' + (idx + 1);
-                      displayCat = 'Live Recording';
-                    } else if (item.category === 'live') {
-                      displayNum = 'L' + (idx + 1);
-                      displayCat = 'Live Session';
-                    } else if (item.textContent) {
-                      displayNum = 'W' + item.weekNumber;
-                      displayCat = 'Reading';
-                    } else {
-                      displayNum = 'W' + item.weekNumber;
-                    }
+                        let displayNum = item.weekNumber;
+                        let displayCat = 'Lecture';
+                        if (String(itemWId).startsWith('rec-')) {
+                          displayNum = 'R' + (idx + 1);
+                          displayCat = 'Live Recording';
+                        } else if (item.category === 'live') {
+                          displayNum = 'L' + (idx + 1);
+                          displayCat = 'Live Session';
+                        } else if (item.textContent) {
+                          displayNum = 'W' + item.weekNumber;
+                          displayCat = 'Reading';
+                        } else {
+                          displayNum = 'W' + item.weekNumber;
+                        }
 
-                    return (
-                      <Link
-                        key={itemWId}
-                        to={`/learn/${courseId}/${itemWId}`}
-                        onClick={() => isMobile && setShowPlaylistMobile(false)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'flex-start',
-                          gap: '0.75rem',
-                          padding: '0.8rem 1.25rem',
-                          textDecoration: 'none',
-                          borderBottom: '1px solid rgba(0, 0, 0, 0.02)',
-                          position: 'relative',
-                          background: isActive ? 'var(--card)' : 'transparent',
-                          transition: 'background-color 0.2s ease',
-                        }}
-                        className="lesson-row-hover"
-                      >
-                        {isActive && (
-                          <div style={{
-                            position: 'absolute',
-                            left: 0,
-                            top: 0,
-                            bottom: 0,
-                            width: '4px',
-                            background: 'var(--primary)',
-                            borderRadius: '0 4px 4px 0',
-                          }} />
-                        )}
+                        return (
+                          <Link
+                            key={itemWId}
+                            to={`/learn/${courseId}/${itemWId}`}
+                            onClick={() => isMobile && setShowPlaylistMobile(false)}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'flex-start',
+                              gap: '0.75rem',
+                              padding: '0.8rem 1.25rem',
+                              textDecoration: 'none',
+                              borderBottom: '1px solid rgba(0, 0, 0, 0.02)',
+                              position: 'relative',
+                              background: isActive ? 'var(--card)' : 'transparent',
+                              transition: 'background-color 0.2s ease',
+                            }}
+                            className="lesson-row-hover"
+                          >
+                            {isActive && (
+                              <div style={{
+                                position: 'absolute',
+                                left: 0,
+                                top: 0,
+                                bottom: 0,
+                                width: '4px',
+                                background: 'var(--primary)',
+                                borderRadius: '0 4px 4px 0',
+                              }} />
+                            )}
 
-                        {/* Status Icon */}
-                        <div style={{
-                          marginTop: '0.15rem',
-                          width: '18px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                        }}>
-                          {isCompleted ? (
-                            <CheckCircle2 size={13} style={{ color: 'var(--success)' }} />
-                          ) : isActive ? (
-                            <CircleDot size={13} style={{ color: 'var(--primary)' }} />
-                          ) : (
-                            <Circle size={13} style={{ color: 'var(--muted-foreground)', opacity: 0.5 }} />
-                          )}
-                        </div>
+                            {/* Status Icon */}
+                            <div style={{
+                              marginTop: '0.15rem',
+                              width: '18px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              flexShrink: 0,
+                            }}>
+                              {isCompleted ? (
+                                <CheckCircle2 size={13} style={{ color: 'var(--success)' }} />
+                              ) : isActive ? (
+                                <CircleDot size={13} style={{ color: 'var(--primary)' }} />
+                              ) : (
+                                <Circle size={13} style={{ color: 'var(--muted-foreground)', opacity: 0.5 }} />
+                              )}
+                            </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', minWidth: 0 }}>
-                          <span style={{
-                            fontSize: '0.8rem',
-                            fontWeight: isActive ? 700 : 600,
-                            color: isActive ? 'var(--primary)' : 'var(--foreground)',
-                            lineHeight: 1.3,
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                          }}>
-                            {displayNum}: {item.title}
-                          </span>
-                          <span style={{
-                            fontSize: '0.675rem',
-                            color: 'var(--muted-foreground)',
-                            fontWeight: 500,
-                          }}>
-                            {displayCat}
-                          </span>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </motion.div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', minWidth: 0 }}>
+                              <span style={{
+                                fontSize: '0.8rem',
+                                fontWeight: isActive ? 700 : 600,
+                                color: isActive ? 'var(--primary)' : 'var(--foreground)',
+                                lineHeight: 1.3,
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
+                                whiteSpace: 'nowrap',
+                              }}>
+                                {displayNum}: {item.title}
+                              </span>
+                              <span style={{
+                                fontSize: '0.675rem',
+                                color: 'var(--muted-foreground)',
+                                fontWeight: 500,
+                              }}>
+                                {displayCat}
+                              </span>
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}

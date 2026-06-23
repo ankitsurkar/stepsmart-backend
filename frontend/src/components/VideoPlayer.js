@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { sendHeartbeat } from '../utils/api';
 import { Play, Pause, RotateCcw, RotateCw, Maximize, Minimize, CheckCircle2, Info } from 'lucide-react';
 import hotkeys from 'hotkeys-js';
+import { motion } from 'framer-motion';
 
 const HEARTBEAT_INTERVAL = 10;           // seconds per segment
 let youtubeApiReadyPromise = null;
@@ -88,7 +89,7 @@ const s = {
     overflow: 'visible',
     touchAction: 'none',
   },
-  progressFill: { height: '100%', borderRadius: '999px', transition: 'width 0.2s linear', background: 'var(--primary)' },
+  progressFill: { height: '100%', borderRadius: '999px', background: 'var(--primary)' },
   progressFillComplete: { background: 'var(--success)' },
   progressThumb: {
     position: 'absolute',
@@ -99,7 +100,7 @@ const s = {
     border: '2px solid rgba(255,255,255,0.95)',
     boxShadow: '0 0 0 4px rgba(0,0,0,0.16)',
     transform: 'translateY(-50%)',
-    transition: 'left 0.2s linear, opacity 0.2s linear',
+    transition: 'opacity 0.2s linear',
     pointerEvents: 'none',
   },
   timeLabel: {
@@ -161,6 +162,8 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
   const [currentTime, setCurrentTime] = useState(resumeTimeRef.current);
   const [duration, setDuration] = useState(initialProgress?.duration || 0);
   const [isScrubbing, setIsScrubbing] = useState(false);
+  const [isJumping, setIsJumping] = useState(false);
+  const lastPctRef = useRef(0);
   const [playerNonce, setPlayerNonce] = useState(0);
   const seekAllowed = true;
   const setSeekAllowed = () => {};
@@ -168,6 +171,17 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
   useEffect(() => {
     isScrubbingRef.current = isScrubbing;
   }, [isScrubbing]);
+
+  const currentPctForJump = duration > 0 ? (currentTime / duration) * 100 : 0;
+  useEffect(() => {
+    const diff = Math.abs(currentPctForJump - lastPctRef.current);
+    if (diff > 1.5 || isScrubbing) {
+      setIsJumping(true);
+      const timer = setTimeout(() => setIsJumping(false), 400);
+      return () => clearTimeout(timer);
+    }
+    lastPctRef.current = currentPctForJump;
+  }, [currentPctForJump, isScrubbing]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -773,15 +787,25 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
           onPointerUp={(event) => finishScrub(event.pointerId)}
           onPointerCancel={(event) => finishScrub(event.pointerId)}
         >
-          <div style={{
-            ...s.progressFill,
-            width: `${playbackPct}%`,
-            ...(videoComplete ? s.progressFillComplete : {}),
-          }} />
-          <div
+          <motion.div
+            animate={{ width: `${playbackPct}%` }}
+            transition={isJumping
+              ? { type: 'spring', stiffness: 180, damping: 18 }
+              : { duration: 0.15, ease: 'linear' }
+            }
+            style={{
+              ...s.progressFill,
+              ...(videoComplete ? s.progressFillComplete : {}),
+            }}
+          />
+          <motion.div
+            animate={{ left: thumbOffset }}
+            transition={isJumping
+              ? { type: 'spring', stiffness: 180, damping: 18 }
+              : { duration: 0.15, ease: 'linear' }
+            }
             style={{
               ...s.progressThumb,
-              left: thumbOffset,
               background: videoComplete ? 'var(--success)' : 'var(--primary)',
               opacity: duration > 0 ? 1 : 0,
             }}

@@ -1901,8 +1901,10 @@ function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
           const isMe = entry.isCurrentUser;
           
           return (
-            <div
+            <motion.div
               key={entry.userId}
+              layout
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               style={{
                 ...s.railRow,
                 background: isMe ? 'linear-gradient(135deg, rgba(2, 122, 155, 0.08) 0%, rgba(2, 122, 155, 0.02) 100%)' : 'transparent',
@@ -1938,7 +1940,7 @@ function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
               <div style={{ fontSize: '1.5rem', fontWeight: 650, color: '#0f172a', minWidth: '24px', textAlign: 'right' }}>
                 {entry.rank}
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
@@ -1969,7 +1971,11 @@ function StatCard({ label, value, detail, accent, progress, progressColor }) {
 
 function LeaderboardRow({ entry }) {
   return (
-    <div style={{ ...s.leaderboardRow, ...(entry.isCurrentUser ? s.leaderboardCurrent : {}) }}>
+    <motion.div
+      layout
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      style={{ ...s.leaderboardRow, ...(entry.isCurrentUser ? s.leaderboardCurrent : {}) }}
+    >
       <div style={s.leaderboardRank}>#{entry.rank}</div>
 
       <div style={{ minWidth: 0 }}>
@@ -1985,7 +1991,7 @@ function LeaderboardRow({ entry }) {
         <div style={s.leaderboardPointsValue}>{entry.totalPoints}</div>
         <div style={s.leaderboardPointsLabel}>Points</div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
