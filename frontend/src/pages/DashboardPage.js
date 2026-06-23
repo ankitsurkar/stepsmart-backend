@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../utils/api';
@@ -2156,6 +2156,7 @@ export default function DashboardPage() {
   const [expandedAssignments, setExpandedAssignments] = useState({});
   const [hoveredReminderId, setHoveredReminderId] = useState(null);
   const [clickedReminderId, setClickedReminderId] = useState(null);
+  const weeklyReminderCardRef = useRef(null);
   const [calendarMonth, setCalendarMonth] = useState(() => startOfMonthFn(toZonedTime(new Date(), TIMEZONE_IST)));
   const [selectedCalendarDate, setSelectedCalendarDate] = useState('');
   const [displayNameInput, setDisplayNameInput] = useState('');
@@ -2167,7 +2168,10 @@ export default function DashboardPage() {
   const [whatsappNotifications, setWhatsappNotifications] = useState(false);
 
   useEffect(() => {
-    const handleDocumentClick = () => {
+    const handleDocumentClick = (e) => {
+      if (weeklyReminderCardRef.current && weeklyReminderCardRef.current.contains(e.target)) {
+        return;
+      }
       setClickedReminderId(null);
     };
     document.addEventListener('click', handleDocumentClick);
@@ -2578,6 +2582,7 @@ export default function DashboardPage() {
       const reminders = supplementalContent?.reminders || [];
       return (
         <div
+          ref={weeklyReminderCardRef}
           style={{
             background: '#ffffff',
             border: '1px solid rgba(20, 49, 86, 0.08)',
