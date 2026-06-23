@@ -657,9 +657,7 @@ export default function LearnPage() {
 
       // Automatically expand the group containing the active lesson
       let activeGroupKey = '';
-      if (isRecordedSession) {
-        activeGroupKey = 'recorded';
-      } else if (found.category === 'live') {
+      if (isRecordedSession || found.category === 'live') {
         activeGroupKey = 'live';
       } else {
         const num = Number(found.weekNumber);
@@ -750,10 +748,7 @@ export default function LearnPage() {
         let groupKey = '';
         let groupTitle = '';
         
-        if (String(itemWId).startsWith('rec-')) {
-          groupKey = 'recorded';
-          groupTitle = 'Recorded Lectures';
-        } else if (item.category === 'live') {
+        if (String(itemWId).startsWith('rec-') || item.category === 'live') {
           groupKey = 'live';
           groupTitle = 'Live Sessions';
         } else {
