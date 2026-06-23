@@ -132,7 +132,7 @@ function StudentsTab({ courseId }) {
 
   async function load() {
     setLoading(true);
-    try { const { data } = await adminGetStudents(courseId); setStudents(data.students || []); }
+    try { const { data } = await adminGetStudents(courseId); setStudents((data.students || []).filter(st => st.enrolled)); }
     catch { setMessage('Failed to load students.'); }
     finally { setLoading(false); }
   }
@@ -1717,7 +1717,7 @@ function ProgressTab({ courseId }) {
 
       const studentMap = {};
       for (const st of (studentsRes.data.students || [])) {
-        const displayName = st.name || st.email || st.Username;
+        const displayName = (st.name || st.email || st.Username) + (!st.enrolled ? ' (Staff)' : '');
         if (st.Username) studentMap[st.Username] = displayName;
         if (st.email) studentMap[st.email] = displayName;
         if (st.sub) studentMap[st.sub] = displayName;
@@ -1802,7 +1802,7 @@ function SubmissionsTab({ courseId }) {
       const studentMap = {};
       for (const st of (stuRes.data.students || [])) {
         const info = {
-          name: st.name || st.email || st.Username,
+          name: (st.name || st.email || st.Username) + (!st.enrolled ? ' (Staff)' : ''),
           email: st.email || ''
         };
         if (st.Username) studentMap[st.Username] = info;
@@ -1921,7 +1921,8 @@ function GymSubmissionsTab({ courseId }) {
       for (const st of (stuRes.data.students || [])) {
         const info = {
           name: st.name || st.email || st.Username,
-          email: st.email || ''
+          email: st.email || '',
+          enrolled: st.enrolled ?? true
         };
         if (st.Username) studentMap[st.Username] = info;
         if (st.email) studentMap[st.email] = info;
@@ -2032,95 +2033,110 @@ function GymSubmissionsTab({ courseId }) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((sub, i) => {
-              const studentInfo = students[sub.userId] || { name: sub.userId?.slice(0, 8) + '…', email: '' };
-              const question = gymQuestions[sub.date];
-              const isQuiz = sub.type === 'quiz';
-              
-              let answerDisplay = sub.answer;
-              if (isQuiz && question && question.options) {
-                const optIdx = parseInt(sub.answer, 10);
-                if (!isNaN(optIdx) && question.options[optIdx] !== undefined) {
-                  const optLetter = String.fromCharCode(65 + optIdx);
-                  answerDisplay = `Option ${optLetter}: ${question.options[optIdx]}`;
-                }
-              }
-              
-              let isCorrect = false;
-              if (isQuiz) {
-                isCorrect = question ? (parseInt(sub.answer, 10) === question.correctIndex) : (sub.score === 1);
-              } else {
-                isCorrect = question ? (String(sub.answer).trim().toLowerCase() === String(question.correctAnswer).trim().toLowerCase()) : (sub.score === 1);
-              }
+            {(() => {
+              const sorted = [...filtered].sort((a, b) => {
+                const dateA = a.date || '';
+                const dateB = b.date || '';
+                if (dateA !== dateB) return dateA.localeCompare(dateB);
+                return (a.submittedAt || '').localeCompare(b.submittedAt || '');
+              });
 
-              const isLong = answerDisplay && answerDisplay.length > 80;
-              const displayAnswerText = isLong ? `${answerDisplay.slice(0, 80)}...` : answerDisplay;
-              
-              return (
-                <tr key={i}>
-                  <td style={s.td}>
-                    <div style={{ fontWeight: 600 }}>{studentInfo.name}</div>
-                    {studentInfo.email && studentInfo.name !== studentInfo.email && (
-                      <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{studentInfo.email}</div>
-                    )}
-                  </td>
-                  <td style={s.td}>
-                    <div style={{ fontWeight: 600 }}>{sub.date}</div>
-                    {question && (
-                      <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={question.text}>
-                        {question.text}
+              return sorted.map((sub, i) => {
+                const studentInfo = students[sub.userId] || { name: sub.userId?.slice(0, 8) + '…', email: '', enrolled: false };
+                const question = gymQuestions[sub.date];
+                const isQuiz = sub.type === 'quiz';
+                
+                let answerDisplay = sub.answer;
+                if (isQuiz && question && question.options) {
+                  const optIdx = parseInt(sub.answer, 10);
+                  if (!isNaN(optIdx) && question.options[optIdx] !== undefined) {
+                    const optLetter = String.fromCharCode(65 + optIdx);
+                    answerDisplay = `Option ${optLetter}: ${question.options[optIdx]}`;
+                  }
+                }
+                
+                let isCorrect = false;
+                if (isQuiz) {
+                  isCorrect = question ? (parseInt(sub.answer, 10) === question.correctIndex) : (sub.score === 1);
+                } else {
+                  isCorrect = question ? (String(sub.answer).trim().toLowerCase() === String(question.correctAnswer).trim().toLowerCase()) : (sub.score === 1);
+                }
+
+                const isLong = answerDisplay && answerDisplay.length > 80;
+                const displayAnswerText = isLong ? `${answerDisplay.slice(0, 80)}...` : answerDisplay;
+                
+                return (
+                  <tr key={i}>
+                    <td style={s.td}>
+                      <div style={{ fontWeight: 600 }}>
+                        {studentInfo.name}
+                        {studentInfo.enrolled === false && (
+                          <span style={{ ...s.badge, ...s.badgeInfo, fontSize: '0.6rem', marginLeft: '6px', padding: '0.1rem 0.4rem', verticalAlign: 'middle' }}>Staff</span>
+                        )}
                       </div>
-                    )}
-                  </td>
-                  <td style={s.td}>
-                    <span style={{ ...s.badge, ...(isQuiz ? s.badgeSuccess : s.badgeInfo) }}>
-                      {isQuiz ? 'Quiz' : 'Text'}
-                    </span>
-                  </td>
-                  <td style={s.td}>
-                    <div 
-                      onClick={() => setActiveModalAnswer({
-                        studentName: studentInfo.name,
-                        studentEmail: studentInfo.email,
-                        date: sub.date,
-                        questionText: question?.text,
-                        isQuiz,
-                        answerDisplay,
-                        isCorrect,
-                        submittedAt: sub.submittedAt
-                      })}
-                      style={{ 
-                        maxWidth: '350px', 
-                        wordBreak: 'break-word', 
-                        fontSize: '0.875rem',
-                        cursor: 'pointer',
-                        padding: '0.25rem',
-                        borderRadius: '4px',
-                        transition: 'background 0.15s'
-                      }}
-                      title="Click to view full details"
-                      onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted)'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                    >
-                      {displayAnswerText}
-                      {isLong && (
-                        <span style={{ color: 'var(--primary)', fontWeight: 600, marginLeft: '6px', fontSize: '0.75rem', textDecoration: 'underline' }}>
-                          (view)
-                        </span>
+                      {studentInfo.email && studentInfo.name !== studentInfo.email && (
+                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{studentInfo.email}</div>
                       )}
-                    </div>
-                  </td>
-                  <td style={s.td}>
-                    <span style={{ ...s.badge, ...(isCorrect ? s.badgeSuccess : s.badgeWarning) }}>
-                      {isCorrect ? 'Correct' : 'Incorrect'}
-                    </span>
-                  </td>
-                  <td style={s.td}>
-                    {sub.submittedAt ? new Date(sub.submittedAt).toLocaleString() : '—'}
-                  </td>
-                </tr>
-              );
-            })}
+                    </td>
+                    <td style={s.td}>
+                      <div style={{ fontWeight: 600 }}>{sub.date}</div>
+                      {question && (
+                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={question.text}>
+                          {question.text}
+                        </div>
+                      )}
+                    </td>
+                    <td style={s.td}>
+                      <span style={{ ...s.badge, ...(isQuiz ? s.badgeSuccess : s.badgeInfo) }}>
+                        {isQuiz ? 'Quiz' : 'Text'}
+                      </span>
+                    </td>
+                    <td style={s.td}>
+                      <div 
+                        onClick={() => setActiveModalAnswer({
+                          studentName: studentInfo.name,
+                          studentEmail: studentInfo.email,
+                          date: sub.date,
+                          questionText: question?.text,
+                          isQuiz,
+                          answerDisplay,
+                          isCorrect,
+                          submittedAt: sub.submittedAt,
+                          enrolled: studentInfo.enrolled
+                        })}
+                        style={{ 
+                          maxWidth: '350px', 
+                          wordBreak: 'break-word', 
+                          fontSize: '0.875rem',
+                          cursor: 'pointer',
+                          padding: '0.25rem',
+                          borderRadius: '4px',
+                          transition: 'background 0.15s'
+                        }}
+                        title="Click to view full details"
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        {displayAnswerText}
+                        {isLong && (
+                          <span style={{ color: 'var(--primary)', fontWeight: 600, marginLeft: '6px', fontSize: '0.75rem', textDecoration: 'underline' }}>
+                            (view)
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td style={s.td}>
+                      <span style={{ ...s.badge, ...(isCorrect ? s.badgeSuccess : s.badgeWarning) }}>
+                        {isCorrect ? 'Correct' : 'Incorrect'}
+                      </span>
+                    </td>
+                    <td style={s.td}>
+                      {sub.submittedAt ? new Date(sub.submittedAt).toLocaleString() : '—'}
+                    </td>
+                  </tr>
+                );
+              });
+            })()}
             {filtered.length === 0 && (
               <tr>
                 <td colSpan="6" style={{ ...s.td, textAlign: 'center', color: 'var(--muted-foreground)' }}>
@@ -2146,6 +2162,9 @@ function GymSubmissionsTab({ courseId }) {
                 <div style={detailLabelStyle}>Student</div>
                 <div style={detailValueStyle}>
                   <strong>{activeModalAnswer.studentName}</strong> {activeModalAnswer.studentEmail && `(${activeModalAnswer.studentEmail})`}
+                  {activeModalAnswer.enrolled === false && (
+                    <span style={{ ...s.badge, ...s.badgeInfo, fontSize: '0.6rem', marginLeft: '6px', padding: '0.1rem 0.4rem', verticalAlign: 'middle' }}>Staff</span>
+                  )}
                 </div>
               </div>
               <div>

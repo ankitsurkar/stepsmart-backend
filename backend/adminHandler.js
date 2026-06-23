@@ -188,16 +188,12 @@ async function listStudents(courseId, event) {
     return res(500, { message: 'Failed to fetch Cognito users' });
   }
 
-  // 3. Filter users to only enrolled ones
+  // 3. Map all users and append enrollment status
   const students = (result.Users || [])
-    .filter(u => {
-      const attrs = {};
-      for (const a of u.Attributes || []) attrs[a.Name] = a.Value;
-      return enrolledUserIds.has(u.Username) || enrolledUserIds.has(attrs.sub) || (attrs.email && enrolledUserIds.has(attrs.email));
-    })
     .map((u) => {
       const attrs = {};
       for (const a of u.Attributes || []) attrs[a.Name] = a.Value;
+      const enrolled = enrolledUserIds.has(u.Username) || enrolledUserIds.has(attrs.sub) || (attrs.email && enrolledUserIds.has(attrs.email));
       return {
         Username: u.Username,
         UserStatus: u.UserStatus,
@@ -205,6 +201,7 @@ async function listStudents(courseId, event) {
         email: attrs.email || '',
         name: attrs.name || '',
         sub: attrs.sub || '',
+        enrolled,
       };
     });
 
