@@ -2739,7 +2739,7 @@ export default function DashboardPage() {
 
       const totalCells = firstDay + numDays;
       const numRows = Math.ceil(totalCells / 7);
-      const cellHeight = numRows > 5 ? 15 : 17;
+      const cellHeight = numRows > 5 ? 16 : 18;
       const rowGap = numRows > 5 ? '2px' : '4px';
 
       return (
@@ -2753,7 +2753,7 @@ export default function DashboardPage() {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            height: '160px',
+            height: '170px',
             boxSizing: 'border-box',
           }}
         >
@@ -3539,7 +3539,7 @@ export default function DashboardPage() {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  height: '160px',
+                  height: '170px',
                   boxSizing: 'border-box',
                 }}
               >
@@ -3577,7 +3577,7 @@ export default function DashboardPage() {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  height: '160px',
+                  height: '170px',
                   boxSizing: 'border-box',
                 }}
               >
@@ -3616,7 +3616,7 @@ export default function DashboardPage() {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  height: '160px',
+                  height: '170px',
                   boxSizing: 'border-box',
                 }}
               >
@@ -3629,14 +3629,6 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div>
-                  <div style={{ display: 'flex', gap: '4px', marginBottom: '0.75rem' }}>
-                    {getLast7GymDays().map((dStr, i) => {
-                      const isActive = gymProgress.some(p => p.date === dStr);
-                      return (
-                        <div key={i} style={{ height: '6px', flex: 1, borderRadius: '999px', background: isActive ? '#198754' : '#e2e8f0', transition: 'background 0.3s ease' }} />
-                      );
-                    })}
-                  </div>
                   <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem' }}>
                     {hasSolvedToday ? "Today's PM Gym complete!" : "Complete today's PM Gym quiz to keep it up!"}
                   </div>
