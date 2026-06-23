@@ -2629,22 +2629,22 @@ export default function DashboardPage() {
 
     // Calendar Card
     const renderMiniCalendarCard = () => {
-      const weekdaysHeader = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
       const zonedTodayDate = toZonedTime(new Date(), TIMEZONE_IST);
-      const currentDay = getDate(zonedTodayDate);
-      const currentMonth = zonedTodayDate.getMonth();
-      const currentYear = zonedTodayDate.getFullYear();
+      const monday = startOfWeek(zonedTodayDate, { weekStartsOn: 1 });
+      const weekdaysShort = ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su'];
       
-      const monthStart = startOfMonthFn(zonedTodayDate);
-      const firstDay = getDay(monthStart);
-      const numDays = getDaysInMonth(zonedTodayDate);
-      
-      const cells = [];
-      for (let i = 0; i < firstDay; i++) {
-        cells.push(null);
-      }
-      for (let d = 1; d <= numDays; d++) {
-        cells.push(d);
+      const currentWeekDays = [];
+      for (let i = 0; i < 7; i++) {
+        const d = addDays(monday, i);
+        const dStr = toDateKey(d);
+        const hasCompleted = gymProgress.some(p => p.date === dStr);
+        const isToday = dStr === toDateKey(zonedTodayDate);
+        currentWeekDays.push({
+          dayNum: getDate(d),
+          label: weekdaysShort[i],
+          active: hasCompleted,
+          isToday,
+        });
       }
       
       return (
@@ -2660,72 +2660,46 @@ export default function DashboardPage() {
             justifyContent: 'space-between',
             height: '145px',
             boxSizing: 'border-box',
-            overflowY: 'auto',
           }}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.1rem', padding: '0 0.2rem' }}>
-            <span style={{ color: 'var(--muted-foreground)', fontSize: '1.05rem', fontWeight: 700 }}>
-              {new Intl.DateTimeFormat('en-IN', { month: 'short', year: 'numeric' }).format(todayDate)}
-            </span>
-            <span style={{ color: 'var(--primary)', fontSize: '1.05rem', fontWeight: 800 }}>Daily Calendar</span>
-          </div>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', fontWeight: 700, color: 'var(--muted-foreground)', fontSize: '0.85rem', marginBottom: '0.75rem' }}>
-            {weekdaysHeader.map((w, idx) => (
-              <div key={idx} style={{ padding: '0.1rem' }}>{w}</div>
-            ))}
-          </div>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', rowGap: '6px' }}>
-            {cells.map((d, idx) => {
-              if (d === null) return <div key={idx} />;
-              
-              const cellDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-              const hasCompletedStreak = gymProgress.some(p => p.date === cellDateStr);
-              const isTodayCell = d === currentDay;
-              
-              let cellStyle = {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '28px',
-                width: '28px',
-                margin: 'auto',
-                borderRadius: '50%',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                position: 'relative',
-                transition: 'all 0.15s ease',
-              };
-              
-              if (isTodayCell) {
-                cellStyle.background = '#027A9B'; // Highlight today in blue
-                cellStyle.color = '#ffffff';
-                cellStyle.fontWeight = 'bold';
-                cellStyle.boxShadow = '0 4px 10px rgba(2, 122, 155, 0.25)';
-              } else {
-                cellStyle.color = '#334155';
-              }
-              
-              return (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '32px' }}>
-                  <div style={cellStyle}>
-                    {hasCompletedStreak ? (
-                      <span style={{
-                        color: isTodayCell ? '#ffffff' : '#198754',
-                        fontWeight: 'bold',
-                        fontSize: '1rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>✓</span>
-                    ) : (
-                      d
-                    )}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500 }}>
+                Daily Calendar
+              </span>
+              <span style={{ fontSize: '0.8125rem', color: 'var(--muted-foreground)', fontWeight: 550 }}>
+                {new Intl.DateTimeFormat('en-IN', { month: 'short', year: 'numeric' }).format(zonedTodayDate)}
+              </span>
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.35rem', margin: '0.45rem 0 0.5rem' }}>
+              {currentWeekDays.map((day, idx) => (
+                <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem', flex: 1 }}>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>{day.label}</span>
+                  <div
+                    style={{
+                      height: '24px',
+                      width: '24px',
+                      borderRadius: '50%',
+                      background: day.active ? '#198754' : day.isToday ? '#027A9B' : '#e2e8f0',
+                      color: day.active || day.isToday ? '#ffffff' : '#475569',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: day.isToday ? '0 2px 6px rgba(2, 122, 155, 0.25)' : 'none',
+                    }}
+                  >
+                    {day.active ? '✓' : day.dayNum}
                   </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
+          </div>
+
+          <div style={{ color: hasSolvedToday ? '#198754' : 'var(--muted-foreground)', fontSize: '0.8125rem', fontWeight: 500 }}>
+            {hasSolvedToday ? "Today's challenge complete! ✓" : "Complete today's challenge to keep it up!"}
           </div>
         </div>
       );
@@ -3440,7 +3414,7 @@ export default function DashboardPage() {
             <div
               style={{
                 ...s.metricCards,
-                gridTemplateColumns: isCompact ? '1fr' : 'repeat(4, minmax(0, 1fr))',
+                gridTemplateColumns: isCompact ? '1fr' : 'repeat(3, minmax(0, 1fr))',
               }}
             >
               {/* Redesigned Card 1: Lessons */}
