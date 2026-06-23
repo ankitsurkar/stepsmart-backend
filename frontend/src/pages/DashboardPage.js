@@ -1434,6 +1434,29 @@ function formatMonthLabel(date) {
   }
 }
 
+function renderTextWithLinks(text) {
+  if (!text) return '';
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: '#38bdf8', textDecoration: 'underline', pointerEvents: 'auto' }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 function formatCalendarLongDate(date) {
   try {
     return new Intl.DateTimeFormat('en-IN', {
@@ -2132,6 +2155,7 @@ export default function DashboardPage() {
   const [expandedGroups, setExpandedGroups] = useState({});
   const [expandedAssignments, setExpandedAssignments] = useState({});
   const [hoveredReminderId, setHoveredReminderId] = useState(null);
+  const [clickedReminderId, setClickedReminderId] = useState(null);
   const [calendarMonth, setCalendarMonth] = useState(() => startOfMonthFn(toZonedTime(new Date(), TIMEZONE_IST)));
   const [selectedCalendarDate, setSelectedCalendarDate] = useState('');
   const [displayNameInput, setDisplayNameInput] = useState('');
@@ -2141,6 +2165,16 @@ export default function DashboardPage() {
   const [timezoneInput, setTimezoneInput] = useState('UTC');
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [whatsappNotifications, setWhatsappNotifications] = useState(false);
+
+  useEffect(() => {
+    const handleDocumentClick = () => {
+      setClickedReminderId(null);
+    };
+    document.addEventListener('click', handleDocumentClick);
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -2573,7 +2607,7 @@ export default function DashboardPage() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
                 {reminders.map((rem) => {
-                  const isHovered = hoveredReminderId === rem.id;
+                  const isShowing = hoveredReminderId === rem.id || clickedReminderId === rem.id;
                   return (
                     <div
                       key={rem.id}
@@ -2582,12 +2616,18 @@ export default function DashboardPage() {
                         display: 'flex',
                         alignItems: 'flex-start',
                         gap: '0.45rem',
-                        cursor: rem.description ? 'help' : 'default',
+                        cursor: rem.description ? 'pointer' : 'default',
                       }}
                       onMouseEnter={() => {
                         if (rem.description) setHoveredReminderId(rem.id);
                       }}
                       onMouseLeave={() => setHoveredReminderId(null)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (rem.description) {
+                          setClickedReminderId(prev => prev === rem.id ? null : rem.id);
+                        }
+                      }}
                     >
                       <span style={{ color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.8125rem', lineHeight: '1.2' }}>•</span>
                       <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, flex: 1 }}>
@@ -2608,7 +2648,7 @@ export default function DashboardPage() {
                         )}
                       </div>
 
-                      {isHovered && rem.description && (
+                      {isShowing && rem.description && (
                         <div
                           style={{
                             position: 'absolute',
@@ -2625,11 +2665,12 @@ export default function DashboardPage() {
                             maxWidth: '260px',
                             fontSize: '0.75rem',
                             lineHeight: '1.4',
-                            pointerEvents: 'none',
+                            pointerEvents: 'auto',
                           }}
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <div style={{ fontWeight: 600, marginBottom: '0.2rem', color: '#38bdf8' }}>Details</div>
-                          <div style={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>{rem.description}</div>
+                          <div style={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>{renderTextWithLinks(rem.description)}</div>
                           <div
                             style={{
                               position: 'absolute',
