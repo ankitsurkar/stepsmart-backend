@@ -604,10 +604,7 @@ export default function LearnPage() {
   // Tabs and Questions state
   const [activeTab, setActiveTab] = useState(queryTab || 'overview');
   const [newQuestionText, setNewQuestionText] = useState('');
-  const [questionsList, setQuestionsList] = useState([
-    { id: 1, author: 'Student A', text: 'Are we covering advanced metrics in week 3?', date: '2 days ago' },
-    { id: 2, author: 'Parth Randive', text: 'Yes, week 3 focuses heavily on key product-led growth metrics!', date: '1 day ago' },
-  ]);
+  const [questionsList, setQuestionsList] = useState([]);
 
   useEffect(() => {
     if (queryTab) {
@@ -687,10 +684,7 @@ export default function LearnPage() {
       setQuizUnlocked(weekProgress?.videoComplete || false);
 
       const fetchedQuestions = qaRes?.data?.questions || [];
-      setQuestionsList(fetchedQuestions.length > 0 ? fetchedQuestions : [
-        { id: 1, author: 'Student A', text: 'Are we covering advanced metrics in week 3?', date: '2 days ago' },
-        { id: 2, author: 'Parth Randive', text: 'Yes, week 3 focuses heavily on key product-led growth metrics!', date: '1 day ago' },
-      ]);
+      setQuestionsList(fetchedQuestions);
     } catch (err) {
       console.error(err);
       setError('Failed to load this content. Please try again.');
