@@ -2645,7 +2645,7 @@ export default function DashboardPage() {
 
       const totalCells = firstDay + numDays;
       const numRows = Math.ceil(totalCells / 7);
-      const cellHeight = numRows > 5 ? 13 : 15;
+      const cellHeight = numRows > 5 ? 15 : 17;
       const rowGap = numRows > 5 ? '2px' : '4px';
 
       return (
@@ -2659,7 +2659,7 @@ export default function DashboardPage() {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            height: '145px',
+            height: '160px',
             boxSizing: 'border-box',
           }}
         >
@@ -3461,7 +3461,7 @@ export default function DashboardPage() {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  height: '145px',
+                  height: '160px',
                   boxSizing: 'border-box',
                 }}
               >
@@ -3499,7 +3499,7 @@ export default function DashboardPage() {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  height: '145px',
+                  height: '160px',
                   boxSizing: 'border-box',
                 }}
               >
@@ -3513,8 +3513,16 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div>
-                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden' }}>
+                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
                     <div style={{ height: '100%', borderRadius: '999px', background: '#df3b3b', width: `${assignmentsTotal > 0 ? (assignmentsSubmittedCount / assignmentsTotal) * 100 : 0}%`, transition: 'width 0.3s ease' }} />
+                  </div>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <span>Submit soon</span>
                   </div>
                 </div>
               </div>
