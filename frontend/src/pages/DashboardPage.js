@@ -2131,6 +2131,7 @@ export default function DashboardPage() {
   const [activeCoursesTab, setActiveCoursesTab] = useState('videos');
   const [expandedGroups, setExpandedGroups] = useState({});
   const [expandedAssignments, setExpandedAssignments] = useState({});
+  const [hoveredReminderId, setHoveredReminderId] = useState(null);
   const [calendarMonth, setCalendarMonth] = useState(() => startOfMonthFn(toZonedTime(new Date(), TIMEZONE_IST)));
   const [selectedCalendarDate, setSelectedCalendarDate] = useState('');
   const [displayNameInput, setDisplayNameInput] = useState('');
@@ -2572,8 +2573,22 @@ export default function DashboardPage() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
                 {reminders.map((rem) => {
+                  const isHovered = hoveredReminderId === rem.id;
                   return (
-                    <div key={rem.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.45rem' }}>
+                    <div
+                      key={rem.id}
+                      style={{
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '0.45rem',
+                        cursor: rem.description ? 'help' : 'default',
+                      }}
+                      onMouseEnter={() => {
+                        if (rem.description) setHoveredReminderId(rem.id);
+                      }}
+                      onMouseLeave={() => setHoveredReminderId(null)}
+                    >
                       <span style={{ color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.8125rem', lineHeight: '1.2' }}>•</span>
                       <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, flex: 1 }}>
                         <span style={{
@@ -2592,6 +2607,44 @@ export default function DashboardPage() {
                           </span>
                         )}
                       </div>
+
+                      {isHovered && rem.description && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            bottom: '100%',
+                            left: '50%',
+                            transform: 'translateX(-50%) translateY(-8px)',
+                            background: '#1e293b',
+                            color: '#f8fafc',
+                            padding: '0.65rem 0.85rem',
+                            borderRadius: '8px',
+                            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                            zIndex: 100,
+                            minWidth: '180px',
+                            maxWidth: '260px',
+                            fontSize: '0.75rem',
+                            lineHeight: '1.4',
+                            pointerEvents: 'none',
+                          }}
+                        >
+                          <div style={{ fontWeight: 600, marginBottom: '0.2rem', color: '#38bdf8' }}>Details</div>
+                          <div style={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>{rem.description}</div>
+                          <div
+                            style={{
+                              position: 'absolute',
+                              top: '100%',
+                              left: '50%',
+                              transform: 'translateX(-50%)',
+                              width: 0,
+                              height: 0,
+                              borderLeft: '6px solid transparent',
+                              borderRight: '6px solid transparent',
+                              borderTop: '6px solid #1e293b',
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
                   );
                 })}

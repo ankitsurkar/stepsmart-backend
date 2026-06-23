@@ -1604,7 +1604,7 @@ function RemindersTab({ courseId }) {
   }
 
   const addReminder = () => {
-    setReminders(prev => [...prev, { id: 'rem-' + Date.now(), title: '', deadline: '' }]);
+    setReminders(prev => [...prev, { id: 'rem-' + Date.now(), title: '', deadline: '', description: '' }]);
   };
 
   const updateReminder = (idx, field, val) => {
@@ -1669,16 +1669,24 @@ function RemindersTab({ courseId }) {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {reminders.map((rem, i) => (
-              <div key={rem.id || i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '1rem', alignItems: 'end', background: '#fff', border: '1px solid var(--border)', padding: '1rem', borderRadius: '12px' }}>
-                <div>
-                  <label style={s.label}>Reminder Action / Title</label>
-                  <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. Complete Quiz" value={rem.title} onChange={e => updateReminder(i, 'title', e.target.value)} />
+              <div key={rem.id || i} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#fff', border: '1px solid var(--border)', padding: '1rem', borderRadius: '12px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={s.label}>Reminder Action / Title</label>
+                    <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. Complete Quiz" value={rem.title} onChange={e => updateReminder(i, 'title', e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={s.label}>Deadline Text / Subtitle</label>
+                    <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. Deadline: 22mn 22s" value={rem.deadline} onChange={e => updateReminder(i, 'deadline', e.target.value)} />
+                  </div>
                 </div>
                 <div>
-                  <label style={s.label}>Deadline Text / Subtitle</label>
-                  <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. Deadline: 22mn 22s" value={rem.deadline} onChange={e => updateReminder(i, 'deadline', e.target.value)} />
+                  <label style={s.label}>Description (Shown on Hover)</label>
+                  <textarea style={{ ...s.textarea, height: '50px', marginBottom: 0 }} placeholder="Detailed instructions/context for this reminder..." value={rem.description || ''} onChange={e => updateReminder(i, 'description', e.target.value)} />
                 </div>
-                <button type="button" style={{ ...s.btn, ...s.btnDanger, height: '38px', borderRadius: '8px' }} onClick={() => removeReminder(i)}>Remove</button>
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <button type="button" style={{ ...s.btn, ...s.btnDanger, height: '32px', padding: '0.25rem 0.75rem', fontSize: '0.75rem', borderRadius: '6px' }} onClick={() => removeReminder(i)}>Remove</button>
+                </div>
               </div>
             ))}
           </div>
