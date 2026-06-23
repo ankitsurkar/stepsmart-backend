@@ -2551,12 +2551,14 @@ export default function DashboardPage() {
             background: '#ffffff',
             border: '1px solid rgba(20, 49, 86, 0.08)',
             borderRadius: '20px',
-            padding: '1rem',
+            padding: '1.35rem 1.5rem',
             boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            minHeight: '145px',
+            flex: 1,
+            height: '100%',
+            boxSizing: 'border-box',
           }}
         >
           <div>
@@ -2651,14 +2653,12 @@ export default function DashboardPage() {
             background: '#ffffff',
             border: '1px solid rgba(20, 49, 86, 0.08)',
             borderRadius: '20px',
-            padding: '1.35rem 1.5rem',
+            padding: '1rem',
             boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            flex: 1,
-            height: '100%',
-            boxSizing: 'border-box',
+            minHeight: '145px',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.1rem', padding: '0 0.2rem' }}>
@@ -3516,8 +3516,8 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Redesigned Card 4: Weekly Reminder Card */}
-              {renderWeeklyReminderCard()}
+              {/* Mini Calendar Card */}
+              {renderMiniCalendarCard()}
             </div>
 
             {/* Row 2: Active Course & Daily Reminders side-by-side */}
@@ -3572,8 +3572,8 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Mini Calendar Card */}
-              {renderMiniCalendarCard()}
+              {/* Redesigned Card 4: Weekly Reminder Card */}
+              {renderWeeklyReminderCard()}
             </div>
           </div>
 
