@@ -2625,31 +2625,36 @@ export default function DashboardPage() {
 
     // Calendar Card
     const renderMiniCalendarCard = () => {
+      const weekdaysHeader = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
       const zonedTodayDate = toZonedTime(new Date(), TIMEZONE_IST);
-      const monday = startOfWeek(zonedTodayDate, { weekStartsOn: 1 });
-      const weekdaysShort = ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su'];
+      const currentDay = getDate(zonedTodayDate);
+      const currentMonth = zonedTodayDate.getMonth();
+      const currentYear = zonedTodayDate.getFullYear();
       
-      const currentWeekDays = [];
-      for (let i = 0; i < 7; i++) {
-        const d = addDays(monday, i);
-        const dStr = toDateKey(d);
-        const hasCompleted = gymProgress.some(p => p.date === dStr);
-        const isToday = dStr === toDateKey(zonedTodayDate);
-        currentWeekDays.push({
-          dayNum: getDate(d),
-          label: weekdaysShort[i],
-          active: hasCompleted,
-          isToday,
-        });
+      const monthStart = startOfMonthFn(zonedTodayDate);
+      const firstDay = getDay(monthStart);
+      const numDays = getDaysInMonth(zonedTodayDate);
+      
+      const cells = [];
+      for (let i = 0; i < firstDay; i++) {
+        cells.push(null);
       }
-      
+      for (let d = 1; d <= numDays; d++) {
+        cells.push(d);
+      }
+
+      const totalCells = firstDay + numDays;
+      const numRows = Math.ceil(totalCells / 7);
+      const cellHeight = numRows > 5 ? 13 : 15;
+      const rowGap = numRows > 5 ? '2px' : '4px';
+
       return (
         <div
           style={{
             background: '#ffffff',
             border: '1px solid rgba(20, 49, 86, 0.08)',
             borderRadius: '20px',
-            padding: '1.25rem',
+            padding: '0.65rem 0.75rem',
             boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
             display: 'flex',
             flexDirection: 'column',
@@ -2659,47 +2664,79 @@ export default function DashboardPage() {
           }}
         >
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500 }}>
-                Daily Calendar
-              </span>
-              <span style={{ fontSize: '0.8125rem', color: 'var(--muted-foreground)', fontWeight: 550 }}>
+            <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'baseline', marginBottom: '0.35rem', paddingLeft: '0.15rem' }}>
+              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem', fontWeight: 600 }}>
                 {new Intl.DateTimeFormat('en-IN', { month: 'short', year: 'numeric' }).format(zonedTodayDate)}
+              </span>
+              <span style={{ color: '#027A9B', fontSize: '0.75rem', fontWeight: 700 }}>
+                Daily Calendar
               </span>
             </div>
             
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.35rem', margin: '0.45rem 0 0.5rem' }}>
-              {currentWeekDays.map((day, idx) => (
-                <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem', flex: 1 }}>
-                  <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>{day.label}</span>
-                  <div
-                    style={{
-                      height: '24px',
-                      width: '24px',
-                      borderRadius: '50%',
-                      background: day.active ? '#198754' : day.isToday ? '#027A9B' : '#e2e8f0',
-                      color: day.active || day.isToday ? '#ffffff' : '#475569',
-                      fontSize: '0.75rem',
-                      fontWeight: 700,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: day.isToday ? '0 2px 6px rgba(2, 122, 155, 0.25)' : 'none',
-                    }}
-                  >
-                    {day.active ? '✓' : day.dayNum}
-                  </div>
-                </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', fontWeight: 600, color: 'var(--muted-foreground)', fontSize: '0.65rem', marginBottom: '0.3rem' }}>
+              {weekdaysHeader.map((w, idx) => (
+                <div key={idx} style={{ padding: '0.1rem' }}>{w}</div>
               ))}
             </div>
-          </div>
-
-          <div style={{ color: hasSolvedToday ? '#198754' : 'var(--muted-foreground)', fontSize: '0.8125rem', fontWeight: 500 }}>
-            {hasSolvedToday ? "Today's challenge complete! ✓" : "Complete today's challenge to keep it up!"}
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', rowGap: rowGap }}>
+              {cells.map((d, idx) => {
+                if (d === null) return <div key={idx} style={{ height: `${cellHeight}px` }} />;
+                
+                const cellDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const hasCompletedStreak = gymProgress.some(p => p.date === cellDateStr);
+                const isTodayCell = d === currentDay;
+                
+                let cellStyle = {
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: `${cellHeight}px`,
+                  width: `${cellHeight}px`,
+                  margin: 'auto',
+                  borderRadius: '50%',
+                  fontSize: '0.625rem',
+                  fontWeight: 600,
+                  position: 'relative',
+                  transition: 'all 0.15s ease',
+                };
+                
+                if (isTodayCell) {
+                  cellStyle.background = '#027A9B'; // Highlight today in blue
+                  cellStyle.color = '#ffffff';
+                  cellStyle.fontWeight = 'bold';
+                  cellStyle.boxShadow = '0 2px 6px rgba(2, 122, 155, 0.25)';
+                } else if (hasCompletedStreak) {
+                  cellStyle.background = 'rgba(25, 135, 84, 0.12)';
+                  cellStyle.color = '#198754';
+                } else {
+                  cellStyle.color = '#334155';
+                }
+                
+                return (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: `${cellHeight}px` }}>
+                    <div style={cellStyle}>
+                      {hasCompletedStreak ? (
+                        <span style={{
+                          color: isTodayCell ? '#ffffff' : '#198754',
+                          fontWeight: 'bold',
+                          fontSize: '0.65rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>✓</span>
+                      ) : (
+                        d
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       );
-    };
+    };;
 
     const renderPmGymQuizModal = () => {
       const todayStr = toDateKey(new Date());
