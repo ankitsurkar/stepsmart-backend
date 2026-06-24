@@ -2095,11 +2095,40 @@ function PlaceholderPanel({ title, body, actionLabel, onAction }) {
   );
 }
 
+function getPersistedDashboardCache(username) {
+  if (typeof window === 'undefined' || !username) return null;
+  try {
+    const raw = localStorage.getItem(`dashboard_cache_${username}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    console.error("Failed to parse dashboard cache", e);
+    return null;
+  }
+}
+
+function savePersistedDashboardCache(username, cache) {
+  if (typeof window === 'undefined' || !username || !cache) return;
+  try {
+    localStorage.setItem(`dashboard_cache_${username}`, JSON.stringify(cache));
+  } catch (e) {
+    console.error("Failed to save dashboard cache", e);
+  }
+}
+
 // Module-level cache to persist data across client-side SPA navigation
 let clientDashboardCache = null;
 
 export default function DashboardPage() {
   const { isAdmin, logout, updateDisplayName, updateProfile, user } = useAuth();
+
+  // Populate cache from localStorage synchronously on render start
+  if (user?.username && (!clientDashboardCache || clientDashboardCache.username !== user.username)) {
+    const persisted = getPersistedDashboardCache(user.username);
+    if (persisted) {
+      clientDashboardCache = persisted;
+    }
+  }
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -2299,14 +2328,63 @@ export default function DashboardPage() {
     setError('');
 
     try {
-      const { data } = await getMyCourses();
-      const courseList = data.courses || [];
+      const todayStr = toDateKey(new Date());
+      // Guess active course ID from state, cache, or default 'course-001'
+      const activeCourseId = activeCourse?.courseId || clientDashboardCache?.activeCourse?.courseId || 'course-001';
+
+      // Fetch course list, weeks, and progress in parallel to eliminate request waterfalls
+      const [coursesRes, weeksRes, progressRes] = await Promise.all([
+        getMyCourses(),
+        getCourseWeeks(activeCourseId),
+        getProgress(activeCourseId, { includeLeaderboard: true, clientDate: todayStr })
+      ]);
+
+      const courseList = coursesRes.data.courses || [];
       setCourses(courseList);
 
-      if (courseList.length > 0) {
-        const course = activeCourse || courseList[0];
-        setActiveCourse(course);
-        await loadCourse(course.courseId, courseList);
+      const actualCourse = courseList.find(c => c.courseId === activeCourseId) || courseList[0];
+      if (actualCourse) {
+        setActiveCourse(actualCourse);
+
+        // If the guessed activeCourseId was not correct, re-fetch weeks and progress for the correct course.
+        // In 99% of cases this matches, saving a full round-trip.
+        if (actualCourse.courseId !== activeCourseId) {
+          await loadCourse(actualCourse.courseId, courseList);
+        } else {
+          const weeksData = weeksRes.data.weeks || [];
+          setWeeks(weeksData);
+
+          const nextProgressMap = {};
+          for (const progress of (progressRes.data.progress || [])) {
+            nextProgressMap[progress.weekId] = progress;
+          }
+          setProgressMap(nextProgressMap);
+
+          const leaderboardData = progressRes.data.leaderboard || [];
+          setLeaderboard(leaderboardData);
+
+          const suppData = weeksRes.data.supplementalContent || null;
+          setSupplementalContent(suppData);
+
+          setGymProgress(progressRes.data.gymProgress || []);
+          setGymQuestions(progressRes.data.gymQuestions || []);
+          setGymStreak(progressRes.data.gymStreak || 0);
+
+          // Save to local cache & localStorage
+          clientDashboardCache = {
+            username: user?.username,
+            courses: courseList,
+            weeks: weeksData,
+            progressMap: nextProgressMap,
+            leaderboard: leaderboardData,
+            activeCourse: actualCourse,
+            supplementalContent: suppData,
+          };
+          savePersistedDashboardCache(user?.username, clientDashboardCache);
+
+          setExpandedGroups({});
+          setExpandedAssignments({});
+        }
       }
     } catch {
       if (!hasCache) {
@@ -2344,7 +2422,7 @@ export default function DashboardPage() {
       setGymQuestions(progressRes.data.gymQuestions || []);
       setGymStreak(progressRes.data.gymStreak || 0);
 
-      // Save to module cache
+      // Save to module cache & localStorage
       clientDashboardCache = {
         username: user?.username,
         courses: courseList || courses,
@@ -2354,6 +2432,7 @@ export default function DashboardPage() {
         activeCourse: activeCourse || (courseList && courseList[0]) || (courses && courses[0]),
         supplementalContent: suppData,
       };
+      savePersistedDashboardCache(user?.username, clientDashboardCache);
 
       setExpandedGroups({});
       setExpandedAssignments({});
@@ -2379,6 +2458,13 @@ export default function DashboardPage() {
   }
 
   async function handleSignOut() {
+    if (user?.username) {
+      try {
+        localStorage.removeItem(`dashboard_cache_${user.username}`);
+      } catch (e) {
+        console.error("Failed to clear persisted cache", e);
+      }
+    }
     clientDashboardCache = null; // Clear cache on sign out
     await logout();
     navigate('/login', { replace: true });
