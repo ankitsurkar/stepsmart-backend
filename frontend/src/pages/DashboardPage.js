@@ -3460,10 +3460,12 @@ export default function DashboardPage() {
                       color: '#ffffff',
                       border: 'none',
                       borderRadius: '999px',
-                      padding: '0.75rem 2rem',
+                      padding: '0.75rem 1.5rem',
                       fontSize: '0.95rem',
                       fontWeight: 700,
                       cursor: 'not-allowed',
+                      minWidth: '160px',
+                      boxSizing: 'border-box',
                     }}
                     disabled
                   >
@@ -3485,13 +3487,15 @@ export default function DashboardPage() {
                       color: '#027A9B',
                       border: 'none',
                       borderRadius: '999px',
-                      padding: '0.75rem 2rem',
+                      padding: '0.75rem 1.5rem',
                       fontSize: '0.95rem',
                       fontWeight: 700,
                       cursor: 'pointer',
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                       transition: 'transform 0.15s ease',
                       whiteSpace: 'nowrap',
+                      minWidth: '160px',
+                      boxSizing: 'border-box',
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                     onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
@@ -3507,11 +3511,14 @@ export default function DashboardPage() {
                   color: '#ffffff',
                   border: '1px solid rgba(255, 255, 255, 0.25)',
                   borderRadius: '999px',
-                  padding: '0.6rem 1.5rem',
-                  fontSize: '0.85rem',
+                  padding: '0.75rem 1.5rem',
+                  fontSize: '0.95rem',
                   fontWeight: 700,
                   whiteSpace: 'nowrap',
                   display: 'inline-block',
+                  textAlign: 'center',
+                  minWidth: '160px',
+                  boxSizing: 'border-box',
                 }}>
                   {isClosedDay ? 'Closed Today 💤' : 'No Question Active'}
                 </span>
@@ -3519,7 +3526,7 @@ export default function DashboardPage() {
             )}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '180px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '160px' }}>
             <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe', opacity: 0.9, textAlign: 'center' }}>
               Weekly Goal
             </div>
