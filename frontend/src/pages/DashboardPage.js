@@ -2130,7 +2130,7 @@ export default function DashboardPage() {
   }
 
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [courses, setCourses] = useState(() => {
     if (clientDashboardCache && clientDashboardCache.username === user?.username) {
@@ -2188,6 +2188,16 @@ export default function DashboardPage() {
   const [selectedGymDetailDay, setSelectedGymDetailDay] = useState(null);
 
   const [activeView, setActiveView] = useState(() => getInitialDashboardView(searchParams));
+
+  const handleTabClick = (viewId) => {
+    setActiveView(viewId);
+    if (viewId === 'dashboard') {
+      setSearchParams({});
+    } else {
+      setSearchParams({ view: viewId });
+    }
+  };
+
   const [activeCoursesTab, setActiveCoursesTab] = useState('videos');
   const [expandedGroups, setExpandedGroups] = useState({});
   const [expandedAssignments, setExpandedAssignments] = useState({});
@@ -4720,7 +4730,7 @@ export default function DashboardPage() {
                   ...s.navButton,
                   ...(activeView === item.id ? s.navButtonActive : {}),
                 }}
-                onClick={() => setActiveView(item.id)}
+                onClick={() => handleTabClick(item.id)}
               >
                 {activeView === item.id && <span style={s.navActiveRail} />}
                 <span style={s.navButtonIcon}>
