@@ -8,6 +8,8 @@ import {
   fetchAuthSession,
   fetchUserAttributes,
   updateUserAttributes,
+  resetPassword,
+  confirmResetPassword,
 } from 'aws-amplify/auth';
 import awsConfig from '../config/aws-config';
 
@@ -91,6 +93,30 @@ export function AuthProvider({ children }) {
     }
   }
 
+  // Triggers the password reset code sending.
+  async function triggerResetPassword(email) {
+    try {
+      const result = await resetPassword({ username: email });
+      return { success: true, result };
+    } catch (err) {
+      return { error: err.message || 'Failed to trigger password reset.' };
+    }
+  }
+
+  // Completes the password reset using the verification code.
+  async function completeResetPassword(email, code, newPassword) {
+    try {
+      await confirmResetPassword({
+        username: email,
+        confirmationCode: code,
+        newPassword,
+      });
+      return { success: true };
+    } catch (err) {
+      return { error: err.message || 'Failed to confirm new password.' };
+    }
+  }
+
   async function updateDisplayName(name) {
     return updateProfile(name, user?.website || '');
   }
@@ -122,7 +148,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, loading, login, completeNewPassword, updateDisplayName, updateProfile, logout }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, login, completeNewPassword, triggerResetPassword, completeResetPassword, updateDisplayName, updateProfile, logout }}>
       {children}
     </AuthContext.Provider>
   );

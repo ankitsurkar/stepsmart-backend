@@ -107,14 +107,15 @@ const styles = {
 };
 
 export default function LoginPage() {
-  const { login, completeNewPassword } = useAuth();
+  const { login, completeNewPassword, triggerResetPassword, completeResetPassword } = useAuth();
   const navigate = useNavigate();
 
-  const [mode, setMode] = useState('login');
+  const [mode, setMode] = useState('login'); // 'login' | 'newPassword' | 'forgotPassword' | 'confirmReset'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [resetCode, setResetCode] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [signInHovered, setSignInHovered] = useState(false);
@@ -155,6 +156,42 @@ export default function LoginPage() {
     navigate('/dashboard', { replace: true });
   }
 
+  async function handleForgotPasswordTrigger(e) {
+    e.preventDefault();
+    setError('');
+    if (!email) { setError('Please enter your email address.'); return; }
+    setSubmitting(true);
+    const result = await triggerResetPassword(email);
+    setSubmitting(false);
+    if (result.error) { setError(result.error); return; }
+    setMode('confirmReset');
+  }
+
+  async function handleForgotPasswordConfirm(e) {
+    e.preventDefault();
+    setError('');
+    if (!resetCode) { setError('Please enter the verification code.'); return; }
+    if (newPassword !== confirmPassword) { setError('Passwords do not match.'); return; }
+    if (newPassword.length < 8) { setError('Password must be at least 8 characters.'); return; }
+    
+    setSubmitting(true);
+    const result = await completeResetPassword(email, resetCode, newPassword);
+    if (result.error) {
+      setError(result.error);
+      setSubmitting(false);
+      return;
+    }
+    const loginResult = await login(email, newPassword);
+    setSubmitting(false);
+    if (loginResult.error) {
+      setError('Password reset successfully! Please sign in with your new password.');
+      setMode('login');
+      setPassword('');
+      return;
+    }
+    navigate('/dashboard', { replace: true });
+  }
+
   return (
     <div style={styles.container}>
       <div style={styles.formArea}>
@@ -167,7 +204,10 @@ export default function LoginPage() {
             <div style={styles.logo}>StepSmart</div>
           </div>
           <div style={styles.subtitle}>
-            {mode === 'login' ? 'Sign in to your learning portal' : 'Create your permanent password'}
+            {mode === 'login' && 'Sign in to your learning portal'}
+            {mode === 'newPassword' && 'Create your permanent password'}
+            {mode === 'forgotPassword' && 'Reset your password'}
+            {mode === 'confirmReset' && 'Confirm your new password'}
           </div>
 
           {error && <div style={styles.error}>{error}</div>}
@@ -185,7 +225,27 @@ export default function LoginPage() {
                   required
                   autoFocus
                 />
-                <label style={styles.label}>Password</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                  <label style={{ ...styles.label, marginBottom: 0 }}>Password</label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setError('');
+                      setMode('forgotPassword');
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--primary)',
+                      fontSize: '0.78rem',
+                      fontWeight: 650,
+                      cursor: 'pointer',
+                      padding: 0,
+                    }}
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
                 <input
                   style={styles.input}
                   type="password"
@@ -252,6 +312,110 @@ export default function LoginPage() {
                 Sign in with Google
               </button>
             </>
+          ) : mode === 'forgotPassword' ? (
+            <form onSubmit={handleForgotPasswordTrigger}>
+              <div style={styles.info}>
+                Enter your email address below, and we'll send you a verification code to reset your password.
+              </div>
+              <label style={styles.label}>Email address</label>
+              <input
+                style={styles.input}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+                autoFocus
+              />
+              <button
+                style={{ ...styles.button, opacity: submitting ? 0.65 : 1 }}
+                type="submit"
+                disabled={submitting}
+              >
+                {submitting ? 'Sending code…' : 'Send Reset Code →'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setError('');
+                  setMode('login');
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--muted-foreground)',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  width: '100%',
+                  marginTop: '1rem',
+                  textAlign: 'center',
+                }}
+              >
+                Back to Sign In
+              </button>
+            </form>
+          ) : mode === 'confirmReset' ? (
+            <form onSubmit={handleForgotPasswordConfirm}>
+              <div style={styles.info}>
+                A verification code has been sent to your email. Enter it below along with your new password.
+              </div>
+              <label style={styles.label}>Verification Code</label>
+              <input
+                style={styles.input}
+                type="text"
+                value={resetCode}
+                onChange={(e) => setResetCode(e.target.value)}
+                placeholder="Enter 6-digit code"
+                required
+                autoFocus
+              />
+              <label style={styles.label}>New password</label>
+              <input
+                style={styles.input}
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="At least 8 characters"
+                required
+              />
+              <label style={styles.label}>Confirm password</label>
+              <input
+                style={styles.input}
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repeat new password"
+                required
+              />
+              <button
+                style={{ ...styles.button, opacity: submitting ? 0.65 : 1 }}
+                type="submit"
+                disabled={submitting}
+              >
+                {submitting ? 'Resetting password…' : 'Reset Password & Sign In'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setError('');
+                  setMode('forgotPassword');
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--muted-foreground)',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  width: '100%',
+                  marginTop: '1rem',
+                  textAlign: 'center',
+                }}
+              >
+                Resend Code / Change Email
+              </button>
+            </form>
           ) : (
             <form onSubmit={handleNewPassword}>
               <div style={styles.info}>
