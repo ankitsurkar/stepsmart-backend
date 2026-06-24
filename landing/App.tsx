@@ -281,6 +281,7 @@ function LandingPage() {
           <a href="#who-is-it-for" onClick={() => setIsMenuOpen(false)} className="font-bold">Who is it for?</a>
           <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="font-bold">Book 1:1</a>
           <a href="#mentors" onClick={() => setIsMenuOpen(false)} className="font-bold">Mentors</a>
+          <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 rounded-md border border-[#188ab2] text-[#188ab2] hover:bg-[#188ab2] hover:text-white transition-colors font-semibold">Login</a>
           <Button variant="primary" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
         </div>
       )}
