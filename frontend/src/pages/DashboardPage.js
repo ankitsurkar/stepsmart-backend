@@ -2422,6 +2422,9 @@ export default function DashboardPage() {
       setGymQuestions(progressRes.data.gymQuestions || []);
       setGymStreak(progressRes.data.gymStreak || 0);
 
+      // Resolve the selected course correctly using courseId instead of stale activeCourse state
+      const currentSelectedCourse = (courseList || courses || []).find(c => c.courseId === courseId) || activeCourse || (courseList && courseList[0]) || (courses && courses[0]);
+
       // Save to module cache & localStorage
       clientDashboardCache = {
         username: user?.username,
@@ -2429,7 +2432,7 @@ export default function DashboardPage() {
         weeks: weeksData,
         progressMap: nextProgressMap,
         leaderboard: leaderboardData,
-        activeCourse: activeCourse || (courseList && courseList[0]) || (courses && courses[0]),
+        activeCourse: currentSelectedCourse,
         supplementalContent: suppData,
       };
       savePersistedDashboardCache(user?.username, clientDashboardCache);
