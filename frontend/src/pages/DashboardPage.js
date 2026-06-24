@@ -3453,27 +3453,6 @@ export default function DashboardPage() {
             {!isClosedDay && todayQuestion ? (
               hasSolvedToday ? (
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                  {yesterdayQuestion && (
-                    <button
-                      type="button"
-                      onClick={() => setShowYesterdayModal(true)}
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.15)',
-                        color: '#ffffff',
-                        border: '1px solid rgba(255, 255, 255, 0.3)',
-                        borderRadius: '999px',
-                        padding: '0.6rem 1.5rem',
-                        fontSize: '0.85rem',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        transition: 'background 0.2s',
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'}
-                    >
-                      View Yesterday's Answer
-                    </button>
-                  )}
                   <button
                     type="button"
                     style={{
@@ -3493,27 +3472,6 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                  {yesterdayQuestion && (
-                    <button
-                      type="button"
-                      onClick={() => setShowYesterdayModal(true)}
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.15)',
-                        color: '#ffffff',
-                        border: '1px solid rgba(255, 255, 255, 0.3)',
-                        borderRadius: '999px',
-                        padding: '0.6rem 1.5rem',
-                        fontSize: '0.85rem',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        transition: 'background 0.2s',
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'}
-                    >
-                      View Yesterday's Answer
-                    </button>
-                  )}
                   <button
                     type="button"
                     onClick={() => {
@@ -3544,30 +3502,18 @@ export default function DashboardPage() {
               )
             ) : (
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                {yesterdayQuestion && (
-                  <button
-                    type="button"
-                    onClick={() => setShowYesterdayModal(true)}
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.15)',
-                      color: '#ffffff',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
-                      borderRadius: '999px',
-                      padding: '0.6rem 1.5rem',
-                      fontSize: '0.85rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      transition: 'background 0.2s',
-                      whiteSpace: 'nowrap',
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'}
-                  >
-                    View Yesterday's Answer
-                  </button>
-                )}
-                <span style={{ fontSize: '0.9rem', color: '#e0f2fe', opacity: 0.85, fontWeight: 700, whiteSpace: 'nowrap' }}>
-                  {isClosedDay ? 'Gym Closed Today 💤' : 'No Question Active'}
+                <span style={{
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  color: '#ffffff',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  borderRadius: '999px',
+                  padding: '0.6rem 1.5rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  whiteSpace: 'nowrap',
+                  display: 'inline-block',
+                }}>
+                  {isClosedDay ? 'Closed Today 💤' : 'No Question Active'}
                 </span>
               </div>
             )}
