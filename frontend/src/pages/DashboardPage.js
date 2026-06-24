@@ -4363,19 +4363,10 @@ export default function DashboardPage() {
                     fontSize: '0.875rem',
                     fontWeight: 600,
                     color: 'var(--foreground)',
-                    marginBottom: '0.3rem',
+                    marginBottom: '0.75rem',
                   }}
                 >
                   {student.displayName}
-                </div>
-                <div
-                  style={{
-                    fontSize: '0.8125rem',
-                    color: 'var(--muted-foreground)',
-                    marginBottom: '0.5rem',
-                  }}
-                >
-                  {student.completedLectures} lessons • {student.totalPoints} pts
                 </div>
                 {hasLinkedin ? (
                   <div
