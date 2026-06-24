@@ -2156,6 +2156,7 @@ export default function DashboardPage() {
   const [tempTextAnswer, setTempTextAnswer] = useState('');
   const [showYesterdayModal, setShowYesterdayModal] = useState(false);
   const [activeTooltipDay, setActiveTooltipDay] = useState(null);
+  const [selectedGymDetailDay, setSelectedGymDetailDay] = useState(null);
 
   const [activeView, setActiveView] = useState(() => getInitialDashboardView(searchParams));
   const [activeCoursesTab, setActiveCoursesTab] = useState('videos');
@@ -3196,6 +3197,129 @@ export default function DashboardPage() {
       );
     };
 
+    const renderGymDetailModal = () => {
+      if (!selectedGymDetailDay) return null;
+      const { dateStr, question, submission } = selectedGymDetailDay;
+
+      const modalOverlayStyle = {
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(15, 23, 42, 0.45)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 99999,
+        padding: '1rem',
+      };
+      const modalContentStyle = {
+        background: '#ffffff',
+        borderRadius: '24px',
+        padding: '2rem',
+        width: '90%',
+        maxWidth: '500px',
+        boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+      };
+      const modalCloseBtnStyle = {
+        background: 'none',
+        border: 'none',
+        fontSize: '1.2rem',
+        cursor: 'pointer',
+        color: 'var(--muted-foreground)',
+      };
+
+      return (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          style={modalOverlayStyle}
+        >
+          <motion.div
+            initial={{ scale: 0.95, y: 15 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.95, y: 15 }}
+            transition={{ duration: 0.2 }}
+            style={modalContentStyle}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.75rem' }}>
+              <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--foreground)' }}>
+                Gym Answer Details
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedGymDetailDay(null)}
+                style={modalCloseBtnStyle}
+              >
+                ✕
+              </button>
+            </div>
+
+            {question ? (
+              <div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                  Question from {dateStr}
+                </div>
+                <p style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--foreground)', margin: '0 0 1.25rem 0', lineHeight: '1.4' }}>
+                  {question.text}
+                </p>
+
+                <div style={{ background: 'var(--background)', borderRadius: '12px', padding: '1rem', marginBottom: '1.25rem', border: '1px solid var(--border)' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                    Your Submission
+                  </div>
+                  {submission ? (
+                    <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--foreground)', margin: 0 }}>
+                      {question.type === 'quiz'
+                        ? `${String.fromCharCode(65 + Number(submission.answer))}. ${question.options?.[Number(submission.answer)] || ''}`
+                        : submission.answer
+                      }
+                      <span style={{ marginLeft: '0.5rem', fontWeight: 700, color: submission.score > 0 ? 'var(--success)' : 'var(--destructive)' }}>
+                        {question.type === 'quiz' ? (submission.score > 0 ? '✓ Correct' : '✗ Incorrect') : '✓ Completed'}
+                      </span>
+                    </p>
+                  ) : (
+                    <p style={{ fontSize: '0.9rem', color: 'var(--destructive)', fontWeight: 600, margin: 0 }}>
+                      Not attempted
+                    </p>
+                  )}
+                </div>
+
+                <div style={{ background: 'rgba(2, 122, 155, 0.06)', borderRadius: '12px', padding: '1rem', marginBottom: '1.25rem', border: '1px solid rgba(2, 122, 155, 0.15)' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                    Correct Answer
+                  </div>
+                  <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#027A9B', margin: 0 }}>
+                    {question.type === 'quiz'
+                      ? `${String.fromCharCode(65 + question.correctIndex)}. ${question.options?.[question.correctIndex] || ''}`
+                      : question.correctAnswer
+                    }
+                  </p>
+                </div>
+
+                {question.explanation && (
+                  <div>
+                    <label style={s.label}>Explanation</label>
+                    <p style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)', lineHeight: '1.5', margin: 0 }}>
+                      {question.explanation}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p style={{ fontSize: '0.95rem', color: 'var(--muted-foreground)', textAlign: 'center', margin: '2rem 0' }}>
+                No gym question scheduled for this day.
+              </p>
+            )}
+          </motion.div>
+        </motion.div>
+      );
+    };
+
     const renderWeeklyGoalTooltipContent = (day) => {
       if (!day) return null;
       
@@ -3282,6 +3406,9 @@ export default function DashboardPage() {
         </AnimatePresence>
         <AnimatePresence>
           {showYesterdayModal && renderYesterdayAnswerModal()}
+        </AnimatePresence>
+        <AnimatePresence>
+          {selectedGymDetailDay && renderGymDetailModal()}
         </AnimatePresence>
         
         {/* PM Gym Banner */}
@@ -3452,11 +3579,18 @@ export default function DashboardPage() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.35rem' }}>
               <Tooltip.Provider delayDuration={150}>
-                {weeklyGoalDays.map((day, idx) => (
-                  <Tooltip.Root key={idx}>
-                    <Tooltip.Trigger asChild>
-                      <button
-                        style={{
+                {weeklyGoalDays.map((day, idx) => {
+                  const isPast = !day.isToday && !day.isFuture;
+                  return (
+                    <Tooltip.Root key={idx}>
+                      <Tooltip.Trigger asChild>
+                        <button
+                          onClick={() => {
+                            if (isPast && day.question) {
+                              setSelectedGymDetailDay(day);
+                            }
+                          }}
+                          style={{
                           width: '24px',
                           height: '24px',
                           borderRadius: '50%',
@@ -3506,7 +3640,8 @@ export default function DashboardPage() {
                       </Tooltip.Content>
                     </Tooltip.Portal>
                   </Tooltip.Root>
-                ))}
+                  );
+                })}
               </Tooltip.Provider>
             </div>
             <div style={{ height: '4px', background: 'rgba(255, 255, 255, 0.25)', borderRadius: '999px', overflow: 'hidden', marginTop: '0.2rem' }}>
