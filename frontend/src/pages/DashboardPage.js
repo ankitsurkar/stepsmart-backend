@@ -4149,7 +4149,7 @@ export default function DashboardPage() {
         <div style={s.panelHeader}>
           <div>
             <div style={s.sectionTitle}>Profile Settings</div>
-            <div style={s.sectionMeta}>Update your display name, LinkedIn profile, and notification preferences.</div>
+            <div style={s.sectionMeta}>Update your display name and LinkedIn profile.</div>
           </div>
         </div>
 
@@ -4178,89 +4178,7 @@ export default function DashboardPage() {
             />
           </div>
 
-          <div style={s.settingsField}>
-            <label htmlFor="timezone" style={s.settingsLabel}>Timezone</label>
-            <input
-              id="timezone"
-              type="text"
-              style={s.settingsInput}
-              value={timezoneInput}
-              onChange={(e) => setTimezoneInput(e.target.value)}
-              placeholder="UTC"
-            />
-          </div>
-
-          <div style={{ ...s.settingsField, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0' }}>
-            <div>
-              <div style={{ ...s.settingsLabel, textTransform: 'none', fontSize: '0.875rem', fontWeight: 600, color: 'var(--foreground)', letterSpacing: 'normal' }}>Email notifications</div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setEmailNotifications(!emailNotifications)}
-              style={{
-                width: '46px',
-                height: '24px',
-                borderRadius: '999px',
-                background: emailNotifications ? 'var(--primary)' : '#e4e4e7',
-                position: 'relative',
-                cursor: 'pointer',
-                transition: 'background 0.2s',
-                border: 'none',
-                padding: 0,
-              }}
-            >
-              <div
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  background: '#fff',
-                  position: 'absolute',
-                  top: '2px',
-                  left: emailNotifications ? '24px' : '2px',
-                  transition: 'left 0.2s',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
-                }}
-              />
-            </button>
-          </div>
-
-          <div style={{ ...s.settingsField, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid rgba(15, 40, 80, 0.08)', paddingBottom: '1rem' }}>
-            <div>
-              <div style={{ ...s.settingsLabel, textTransform: 'none', fontSize: '0.875rem', fontWeight: 600, color: 'var(--foreground)', letterSpacing: 'normal' }}>WhatsApp notifications</div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setWhatsappNotifications(!whatsappNotifications)}
-              style={{
-                width: '46px',
-                height: '24px',
-                borderRadius: '999px',
-                background: whatsappNotifications ? 'var(--primary)' : '#e4e4e7',
-                position: 'relative',
-                cursor: 'pointer',
-                transition: 'background 0.2s',
-                border: 'none',
-                padding: 0,
-              }}
-            >
-              <div
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  background: '#fff',
-                  position: 'absolute',
-                  top: '2px',
-                  left: whatsappNotifications ? '24px' : '2px',
-                  transition: 'left 0.2s',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
-                }}
-              />
-            </button>
-          </div>
-
-          <div style={s.settingsField}>
+          <div style={{ ...s.settingsField, borderBottom: '1px solid rgba(15, 40, 80, 0.08)', paddingBottom: '1rem' }}>
             <label htmlFor="login-email" style={s.settingsLabel}>Login email</label>
             <input
               id="login-email"
