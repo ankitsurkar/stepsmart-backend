@@ -3684,7 +3684,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
-                    <div style={{ height: '100%', borderRadius: '999px', background: '#df3b3b', width: `${assignmentsTotal > 0 ? (assignmentsSubmittedCount / assignmentsTotal) * 100 : 0}%`, transition: 'width 0.3s ease' }} />
+                    <div style={{ height: '100%', borderRadius: '999px', background: 'var(--primary)', width: `${assignmentsTotal > 0 ? (assignmentsSubmittedCount / assignmentsTotal) * 100 : 0}%`, transition: 'width 0.3s ease' }} />
                   </div>
                   <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
