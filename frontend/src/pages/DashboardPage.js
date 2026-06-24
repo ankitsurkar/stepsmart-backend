@@ -3449,10 +3449,10 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto', justifyContent: isCompact ? 'center' : 'flex-start' }}>
             {!isClosedDay && todayQuestion ? (
               hasSolvedToday ? (
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto' }}>
                   <button
                     type="button"
                     style={{
@@ -3464,7 +3464,8 @@ export default function DashboardPage() {
                       fontSize: '0.95rem',
                       fontWeight: 700,
                       cursor: 'not-allowed',
-                      minWidth: '160px',
+                      width: isCompact ? '100%' : 'auto',
+                      minWidth: isCompact ? '0' : '180px',
                       boxSizing: 'border-box',
                     }}
                     disabled
@@ -3473,7 +3474,7 @@ export default function DashboardPage() {
                   </button>
                 </div>
               ) : (
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto' }}>
                   <button
                     type="button"
                     onClick={() => {
@@ -3494,7 +3495,8 @@ export default function DashboardPage() {
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                       transition: 'transform 0.15s ease',
                       whiteSpace: 'nowrap',
-                      minWidth: '160px',
+                      width: isCompact ? '100%' : 'auto',
+                      minWidth: isCompact ? '0' : '180px',
                       boxSizing: 'border-box',
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
@@ -3505,7 +3507,7 @@ export default function DashboardPage() {
                 </div>
               )
             ) : (
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto' }}>
                 <span style={{
                   background: 'rgba(255, 255, 255, 0.15)',
                   color: '#ffffff',
@@ -3517,7 +3519,8 @@ export default function DashboardPage() {
                   whiteSpace: 'nowrap',
                   display: 'inline-block',
                   textAlign: 'center',
-                  minWidth: '160px',
+                  width: isCompact ? '100%' : 'auto',
+                  minWidth: isCompact ? '0' : '180px',
                   boxSizing: 'border-box',
                 }}>
                   {isClosedDay ? 'Closed Today 💤' : 'No Question Active'}
@@ -3526,11 +3529,11 @@ export default function DashboardPage() {
             )}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '160px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: isCompact ? '100%' : 'auto', minWidth: isCompact ? '0' : '180px', boxSizing: 'border-box' }}>
             <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe', opacity: 0.9, textAlign: 'center' }}>
               Weekly Goal
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.35rem' }}>
+            <div style={{ display: 'flex', justifyContent: isCompact ? 'center' : 'space-between', gap: isCompact ? '0.75rem' : '0.35rem' }}>
               <Tooltip.Provider delayDuration={150}>
                 {weeklyGoalDays.map((day, idx) => {
                   const isPast = !day.isToday && !day.isFuture;
