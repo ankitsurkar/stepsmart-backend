@@ -67,6 +67,27 @@ const DEFAULT_CALENDAR_EVENTS = [
 
 const CALENDAR_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+const DEFAULT_RESOURCES = [
+  {
+    id: 'default-syllabus',
+    title: 'Product Management Roadmap & Syllabus',
+    description: 'Detailed roadmap of the PM-X accelerator course, milestones, assignments, and reading guidelines.',
+    docs: [
+      { id: 'doc-syllabus-1', label: 'PM-X Course Syllabus PDF', url: 'https://example.com/syllabus.pdf' },
+      { id: 'doc-syllabus-2', label: 'Milestones & Reading Guide', url: 'https://example.com/roadmap' }
+    ]
+  },
+  {
+    id: 'default-prd-template',
+    title: 'PRD Templates & Product Frameworks',
+    description: 'A collection of standard templates for writing Product Requirement Documents (PRDs), customer discovery interview scripts, and wireframing checklists.',
+    docs: [
+      { id: 'doc-prd-temp', label: 'Standard PRD Template (Google Doc)', url: 'https://example.com/prd-template' },
+      { id: 'doc-cust-interview', label: 'Customer Discovery Guide', url: 'https://example.com/interview-guide' }
+    ]
+  }
+];
+
 const s = {
   page: {
     minHeight: '100vh',
@@ -2861,7 +2882,9 @@ export default function DashboardPage() {
 
     // Global Resources Card
     const renderMiniResourcesCard = () => {
-      const globalResources = supplementalContent?.resources || [];
+      const globalResources = (supplementalContent?.resources && supplementalContent.resources.length > 0)
+        ? supplementalContent.resources
+        : DEFAULT_RESOURCES;
       return (
         <div
           style={{
@@ -4068,7 +4091,9 @@ export default function DashboardPage() {
   }
 
   function renderResourcesView() {
-    const globalResources = supplementalContent?.resources || [];
+    const globalResources = (supplementalContent?.resources && supplementalContent.resources.length > 0)
+      ? supplementalContent.resources
+      : DEFAULT_RESOURCES;
 
     return (
       <div style={s.card}>
