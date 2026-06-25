@@ -511,10 +511,10 @@ function ProgressStep({ label, done, active, locked }) {
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Home', icon: 'home' },
   { id: 'courses', label: 'Courses', icon: 'book' },
-  { id: 'cohort', label: 'Cohort', icon: 'users' },
-  { id: 'scheduling', label: 'Sessions', icon: 'clock' },
   { id: 'assignments', label: 'Assignments', icon: 'clipboard' },
   { id: 'resources', label: 'Resources', icon: 'folder' },
+  { id: 'scheduling', label: 'Sessions', icon: 'clock' },
+  { id: 'cohort', label: 'Cohort', icon: 'users' },
   { id: 'settings', label: 'Profile', icon: 'settings' },
 ];
 
