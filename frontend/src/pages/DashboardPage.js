@@ -2880,70 +2880,104 @@ export default function DashboardPage() {
       );
     };
 
-    // Global Resources Card
-    const renderMiniResourcesCard = () => {
-      const globalResources = (supplementalContent?.resources && supplementalContent.resources.length > 0)
-        ? supplementalContent.resources
-        : DEFAULT_RESOURCES;
+    // Calendar Card
+    const renderMiniCalendarCard = () => {
+      const weekdaysHeader = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      const zonedTodayDate = toZonedTime(new Date(), TIMEZONE_IST);
+      const currentDay = getDate(zonedTodayDate);
+      const currentMonth = zonedTodayDate.getMonth();
+      const currentYear = zonedTodayDate.getFullYear();
+      
+      const monthStart = startOfMonthFn(zonedTodayDate);
+      const firstDay = getDay(monthStart);
+      const numDays = getDaysInMonth(zonedTodayDate);
+      
+      const cells = [];
+      for (let i = 0; i < firstDay; i++) {
+        cells.push(null);
+      }
+      for (let d = 1; d <= numDays; d++) {
+        cells.push(d);
+      }
+
+      const totalCells = firstDay + numDays;
+      const numRows = Math.ceil(totalCells / 7);
+      const cellHeight = numRows > 5 ? 16 : 18;
+      const rowGap = numRows > 5 ? '2px' : '4px';
+
       return (
         <div
           style={{
             background: '#ffffff',
             border: '1px solid rgba(20, 49, 86, 0.08)',
             borderRadius: '20px',
-            padding: '1.35rem 1.5rem',
+            padding: '0.5rem 0.6rem',
             boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
             height: '170px',
             boxSizing: 'border-box',
-            cursor: 'pointer',
           }}
-          onClick={() => handleTabClick('resources')}
         >
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500 }}>
-                Course Resources
+            <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'baseline', marginBottom: '0.3rem', paddingLeft: '0.05rem', flexWrap: 'nowrap' }}>
+              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
+                {new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(zonedTodayDate)}
               </span>
-              <SidebarIcon kind="folder" />
+              <span style={{ color: '#027A9B', fontSize: '0.75rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                Daily Calendar
+              </span>
             </div>
-
-            {globalResources.length === 0 ? (
-              <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', padding: '0.25rem 0' }}>
-                No resources uploaded yet.
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                {globalResources.slice(0, 3).map((res, idx) => (
-                  <div key={res.id || idx} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>•</span>
-                    <span style={{
-                      fontSize: '0.8125rem',
-                      fontWeight: 550,
-                      color: 'var(--foreground)',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}>
-                      {res.title}
-                    </span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>
-                      ({res.docs?.length || 0})
-                    </span>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', fontWeight: 600, color: 'var(--muted-foreground)', fontSize: '0.625rem', marginBottom: '0.2rem' }}>
+              {weekdaysHeader.map((w, idx) => (
+                <div key={idx} style={{ padding: '0' }}>{w}</div>
+              ))}
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', rowGap: rowGap }}>
+              {cells.map((d, idx) => {
+                if (d === null) return <div key={idx} style={{ height: `${cellHeight}px` }} />;
+                
+                const isTodayCell = d === currentDay;
+                
+                let cellStyle = {
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: `${cellHeight}px`,
+                  width: `${cellHeight}px`,
+                  margin: 'auto',
+                  borderRadius: '50%',
+                  fontSize: '0.625rem',
+                  fontWeight: 600,
+                  position: 'relative',
+                  transition: 'all 0.15s ease',
+                };
+                
+                if (isTodayCell) {
+                  cellStyle.background = '#027A9B'; // Highlight today in blue
+                  cellStyle.color = '#ffffff';
+                  cellStyle.fontWeight = 'bold';
+                  cellStyle.boxShadow = '0 2px 6px rgba(2, 122, 155, 0.25)';
+                } else {
+                  cellStyle.color = '#334155';
+                }
+                
+                return (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: `${cellHeight}px` }}>
+                    <div style={cellStyle}>
+                      {d}
+                    </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div style={{ fontSize: '0.75rem', color: '#027A9B', fontWeight: 600 }}>
-            View all resources →
+                );
+              })}
+            </div>
           </div>
         </div>
       );
-    };;
+    };
 
     const renderPmGymQuizModal = () => {
       const todayStr = toDateKey(new Date());
@@ -3848,8 +3882,8 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Mini Resources Card */}
-              {renderMiniResourcesCard()}
+              {/* Mini Calendar Card */}
+              {renderMiniCalendarCard()}
             </div>
 
             {/* Row 2: Active Course & Daily Reminders side-by-side */}
