@@ -4234,8 +4234,8 @@ export default function DashboardPage() {
                         <div style={s.weekGroupLabel}>{assignmentTitle}</div>
                         <div style={s.weekGroupMeta}>
                           {assignment.weekId === '__supplemental__'
-                            ? `Assignment ${assignment.assignmentNumber} • Supplemental Content`
-                            : `Assignment ${assignment.assignmentNumber} • ${sourceWeekLabel}${assignment.weekTitle ? ` • ${assignment.weekTitle}` : ''}`
+                            ? `Assignment ${assignment.assignmentNumber}`
+                            : `Assignment ${assignment.assignmentNumber} • ${sourceWeekLabel}`
                           }
                         </div>
                       </div>
@@ -4250,10 +4250,11 @@ export default function DashboardPage() {
                   {isExpanded && (
                     <div style={s.weekGroupBody}>
                       <div>
-                        <div style={s.lessonTitle}>{assignmentTitle}</div>
-                        <div style={s.lessonDesc}>
-                          {assignment.description || 'Upload your completed work for this assignment here.'}
-                        </div>
+                        {assignment.description && (
+                          <div style={s.lessonDesc}>
+                            {assignment.description}
+                          </div>
+                        )}
                       </div>
 
                       <AssignmentUpload
