@@ -221,6 +221,9 @@ const EMPTY_WEEK = {
   qaLink: '',
   transcript: '',
   textContent: '',
+  category: 'module',
+  storagePath: '',
+  storageProvider: '',
   quiz: { questions: [] },
   resources: [],
   docs: [],
@@ -262,6 +265,9 @@ function buildDraftBasicPayload(form) {
   if ((form.qaLink || '').trim()) payload.qaLink = form.qaLink.trim();
   if ((form.transcript || '').trim()) payload.transcript = form.transcript.trim();
   if (form.textContent !== undefined) payload.textContent = form.textContent.trim();
+  if (form.category) payload.category = form.category;
+  if (form.storagePath !== undefined) payload.storagePath = form.storagePath;
+  if (form.storageProvider !== undefined) payload.storageProvider = form.storageProvider;
 
   return payload;
 }
@@ -311,6 +317,155 @@ function WeeksTab({ courseId }) {
   });
   const [importMessage, setImportMessage] = useState('');
   const [importWeeksLoading, setImportWeeksLoading] = useState(false);
+
+  const [uploadMode, setUploadMode] = useState('url');
+  const [weekUploading, setWeekUploading] = useState(false);
+  const [weekUploadProgress, setWeekUploadProgress] = useState(0);
+  const [weekUploadError, setWeekUploadError] = useState('');
+  const weekFileInputRef = React.useRef(null);
+
+  const toggleContainerStyle = {
+    display: 'flex',
+    background: 'hsl(195, 83%, 97%)',
+    borderRadius: '10px',
+    padding: '3px',
+    marginBottom: '1rem',
+    border: '1px solid var(--border)',
+  };
+
+  const toggleButtonStyle = (active) => ({
+    flex: 1,
+    padding: '0.45rem',
+    borderRadius: '8px',
+    fontSize: '0.775rem',
+    fontWeight: 600,
+    border: 'none',
+    cursor: 'pointer',
+    textAlign: 'center',
+    background: active ? '#fff' : 'transparent',
+    color: active ? 'var(--primary)' : 'var(--muted-foreground)',
+    boxShadow: active ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+    transition: 'all 0.2s ease',
+  });
+
+  const dropZoneStyle = {
+    border: '1.5px dashed var(--border)',
+    borderRadius: '12px',
+    padding: '1.25rem',
+    textAlign: 'center',
+    background: 'var(--background)',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.4rem',
+  };
+
+  const getFileName = (path) => {
+    if (!path) return '';
+    return path.split('/').pop().replace(/^\d+-/, '');
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (weekUploading) return;
+    const files = e.dataTransfer.files;
+    if (files && files[0]) {
+      const file = files[0];
+      const eFake = { target: { files: [file] } };
+      handleWeekFileChange(eFake);
+    }
+  };
+
+  const handleWeekFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setWeekUploading(true);
+    setWeekUploadProgress(0);
+    setWeekUploadError('');
+    try {
+      let targetWeekId = editingId;
+      if (!targetWeekId) {
+        const draftPayload = {
+          ...buildDraftBasicPayload(form),
+          category: form.category || 'module'
+        };
+        const createResult = await adminCreateWeek(courseId, draftPayload);
+        const createdWeek = createResult?.data?.week || null;
+        targetWeekId = createdWeek?.weekId || null;
+        if (!targetWeekId) {
+          throw new Error('Failed to create a draft week for video upload.');
+        }
+        setEditingId(targetWeekId);
+        setForm((prev) => ({
+          ...prev,
+          weekNumber: prev.weekNumber || String(createdWeek.weekNumber || ''),
+          title: prev.title || createdWeek.title || '',
+          description: prev.description || createdWeek.description || '',
+          youtubeUrl: prev.youtubeUrl || createdWeek.youtubeUrl || '',
+          qaLink: prev.qaLink || createdWeek.qaLink || '',
+          category: prev.category || createdWeek.category || 'module',
+        }));
+      }
+
+      const uploadUrlRes = await adminUpdateWeek(courseId, targetWeekId, {
+        action: 'getUploadUrl',
+        fileName: file.name,
+        mimeType: file.type,
+      });
+      const { signedUrl, storagePath, storageProvider } = uploadUrlRes.data;
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', signedUrl, true);
+      xhr.setRequestHeader('Content-Type', file.type);
+      
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          setWeekUploadProgress(Math.round((event.loaded / event.total) * 100));
+        }
+      };
+      
+      xhr.onload = async () => {
+        if (xhr.status === 200 || xhr.status === 201) {
+          setForm((prev) => ({
+            ...prev,
+            youtubeUrl: '',
+            storagePath,
+            storageProvider,
+          }));
+          
+          await adminUpdateWeek(courseId, targetWeekId, {
+            youtubeUrl: '',
+            storagePath,
+            storageProvider,
+          });
+
+          setWeekUploading(false);
+          setWeekUploadProgress(100);
+          load();
+        } else {
+          setWeekUploadError(`Upload failed status: ${xhr.status}`);
+          setWeekUploading(false);
+        }
+      };
+      
+      xhr.onerror = () => {
+        setWeekUploadError('Upload network error.');
+        setWeekUploading(false);
+      };
+      
+      xhr.send(file);
+    } catch (err) {
+      setWeekUploadError(err.response?.data?.message || 'Signed URL generation failed.');
+      setWeekUploading(false);
+    }
+  };
 
   useEffect(() => { load(); }, [courseId]);
 
@@ -389,6 +544,8 @@ function WeeksTab({ courseId }) {
 
   function startAdd() {
     setForm({ ...EMPTY_WEEK, weekNumber: String(weeks.length + 1) });
+    setUploadMode('url');
+    setWeekUploadError('');
     setEditingId(null); setShowForm(true); setMessage(''); clearSectionMessages();
     setImportMessage('');
   }
@@ -401,6 +558,9 @@ function WeeksTab({ courseId }) {
       qaLink: week.qaLink || '',
       transcript: week.transcript || '',
       textContent: week.textContent || '',
+      category: week.category || 'module',
+      storagePath: week.storagePath || '',
+      storageProvider: week.storageProvider || '',
       quiz: week.quiz || { questions: [] },
       resources: week.resources || [],
       docs: week.docs || [],
@@ -408,6 +568,8 @@ function WeeksTab({ courseId }) {
       liveRecordedSessions: week.liveRecordedSessions || [],
       calendarEvents: week.calendarEvents || [],
     });
+    setUploadMode(week.storageProvider === 'supabase' ? 'file' : 'url');
+    setWeekUploadError('');
     setEditingId(week.weekId); setShowForm(true); setMessage(''); clearSectionMessages();
     setImportMessage('');
   }
@@ -489,6 +651,9 @@ function WeeksTab({ courseId }) {
         qaLink: form.qaLink,
         transcript: form.transcript,
         textContent: form.textContent,
+        category: form.category || 'module',
+        storagePath: form.storagePath || '',
+        storageProvider: form.storageProvider || '',
       };
       if (editingId) {
         await adminUpdateWeek(courseId, editingId, payload);
@@ -791,16 +956,72 @@ function WeeksTab({ courseId }) {
           <form onSubmit={handleSaveBasicInfo}>
             <div style={s.grid2}>
               <div>
-                <label style={s.label}>Module Number</label>
+                <label style={s.label}>Module / Order Number</label>
                 <input style={s.input} type="number" min="0" step="any"
                   value={form.weekNumber} onChange={(e) => setForm({ ...form, weekNumber: e.target.value })} required />
               </div>
               <div>
-                <label style={s.label}>YouTube URL</label>
-                <input style={s.input} type="url" placeholder="https://youtu.be/..."
-                  value={form.youtubeUrl} onChange={(e) => setForm({ ...form, youtubeUrl: e.target.value })} />
+                <label style={s.label}>Content Category</label>
+                <select
+                  style={s.input}
+                  value={form.category || 'module'}
+                  onChange={(e) => setForm({ ...form, category: e.target.value })}
+                >
+                  <option value="module">Standard Week Course (Module)</option>
+                  <option value="live">Live Session / Global Recording</option>
+                </select>
               </div>
             </div>
+
+            <label style={s.label}>Video Content Source</label>
+            <div style={toggleContainerStyle}>
+              <button type="button" style={toggleButtonStyle(uploadMode === 'file')} onClick={() => setUploadMode('file')}>📁 Upload Video File</button>
+              <button type="button" style={toggleButtonStyle(uploadMode === 'url')} onClick={() => setUploadMode('url')}>🔗 Video URL</button>
+            </div>
+
+            {uploadMode === 'url' ? (
+              <div>
+                <label style={s.label}>Video URL / YouTube URL</label>
+                <input style={s.input} type="url" placeholder="https://youtu.be/... or zoom link"
+                  value={form.youtubeUrl} onChange={(e) => setForm({ ...form, youtubeUrl: e.target.value, storagePath: '', storageProvider: '' })} />
+              </div>
+            ) : (
+              <div style={{ marginBottom: '1rem' }}>
+                {weekUploading ? (
+                  <div style={{ padding: '1rem', border: '1px solid var(--border)', borderRadius: '12px', background: 'var(--background)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.775rem', fontWeight: 600, color: 'var(--primary)', marginBottom: '0.5rem' }}>
+                      <span>Uploading video...</span>
+                      <span>{weekUploadProgress}%</span>
+                    </div>
+                    <div style={{ height: '8px', background: 'hsl(195, 83%, 94%)', borderRadius: '4px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${weekUploadProgress}%`, background: 'var(--primary)', borderRadius: '4px', transition: 'width 0.1s linear' }} />
+                    </div>
+                  </div>
+                ) : form.storagePath ? (
+                  <div style={{ padding: '0.85rem 1rem', border: '1px solid hsl(142, 72%, 80%)', borderRadius: '12px', background: 'hsl(142, 72%, 97%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
+                      <span style={{ fontSize: '1.2rem' }}>✅</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                        <span style={{ fontSize: '0.775rem', fontWeight: 700, color: 'hsl(142, 72%, 20%)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                          {getFileName(form.storagePath)}
+                        </span>
+                        <span style={{ fontSize: '0.675rem', color: 'hsl(142, 72%, 30%)' }}>Saved to Supabase Storage</span>
+                      </div>
+                    </div>
+                    <button type="button" style={{ ...s.btn, padding: '0.2rem 0.5rem', fontSize: '0.675rem', borderRadius: '6px', minWidth: 'fit-content' }} onClick={() => weekFileInputRef.current?.click()}>Replace</button>
+                  </div>
+                ) : (
+                  <div style={dropZoneStyle} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => weekFileInputRef.current?.click()}>
+                    <span style={{ fontSize: '1.5rem' }}>☁️</span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>Click to browse or drag video here</span>
+                    <span style={{ fontSize: '0.625rem', color: 'var(--muted-foreground)' }}>Supports MP4, WebM, MOV</span>
+                  </div>
+                )}
+                
+                <input ref={weekFileInputRef} type="file" accept="video/*" style={{ display: 'none' }} onChange={handleWeekFileChange} />
+                {weekUploadError && <p style={{ color: 'var(--destructive)', fontSize: '0.7rem', marginTop: '0.4rem', fontWeight: 600 }}>⚠️ {weekUploadError}</p>}
+              </div>
+            )}
             <label style={s.label}>Week Title / Module Title (Optional)</label>
             <input style={s.input} type="text" placeholder="e.g. Product Foundations (displayed next to 'Week 1')"
               value={form.weekTitle || ''} onChange={(e) => setForm({ ...form, weekTitle: e.target.value })} />
@@ -1112,6 +1333,7 @@ function WeeksTab({ courseId }) {
                   <tr>
                     <th style={s.th}>#</th>
                     <th style={s.th}>Title</th>
+                    <th style={s.th}>Category</th>
                     <th style={s.th}>Calendar</th>
                     <th style={s.th}>Assignments</th>
                     <th style={s.th}>Questions</th>
@@ -1124,6 +1346,16 @@ function WeeksTab({ courseId }) {
                     <tr key={w.weekId}>
                       <td style={s.td}>{w.weekNumber}</td>
                       <td style={s.td}>{w.title}</td>
+                      <td style={s.td}>
+                        <span style={{
+                          ...s.badge,
+                          background: w.category === 'live' ? 'rgba(0, 111, 143, 0.08)' : 'rgba(15, 40, 80, 0.05)',
+                          color: w.category === 'live' ? 'var(--primary)' : 'var(--muted-foreground)',
+                          border: w.category === 'live' ? '1px solid rgba(0, 111, 143, 0.15)' : '1px solid rgba(15, 40, 80, 0.08)',
+                        }}>
+                          {w.category === 'live' ? 'Live Session' : 'Module'}
+                        </span>
+                      </td>
                       <td style={s.td}>{w.calendarEvents?.length || 0}</td>
                       <td style={s.td}>{w.assignments?.length || 0}</td>
                       <td style={s.td}>{w.quiz?.questions?.length || 0}</td>

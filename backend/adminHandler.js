@@ -125,6 +125,53 @@ async function signRecordedSessions(sessions) {
   return Promise.all(promises);
 }
 
+async function signWeekVideos(weeks) {
+  if (!Array.isArray(weeks) || weeks.length === 0) return weeks;
+
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
+
+  if (!supabaseUrl || !serviceRoleKey || !bucket) {
+    return weeks;
+  }
+
+  const promises = weeks.map(async (week) => {
+    if (week.storageProvider === 'supabase' && week.storagePath) {
+      try {
+        const signedUrlRes = await fetch(
+          `${supabaseUrl}/storage/v1/object/sign/${bucket}/${week.storagePath}`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${serviceRoleKey}`,
+              apikey: serviceRoleKey,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ expiresIn: 60 * 60 * 8 }),
+          }
+        );
+        if (signedUrlRes.ok) {
+          const resBody = await signedUrlRes.json();
+          const rawSigned = resBody.signedUrl || resBody.signedURL || '';
+          const fullSignedUrl = rawSigned.startsWith('http')
+            ? rawSigned
+            : `${supabaseUrl}/storage/v1${rawSigned}`;
+          return {
+            ...week,
+            url: fullSignedUrl,
+          };
+        }
+      } catch (err) {
+        console.error('Error generating signed URL for week path:', week.storagePath, err);
+      }
+    }
+    return week;
+  });
+
+  return Promise.all(promises);
+}
+
 async function getSupplementalContent(courseId) {
   const result = await ddb.send(new GetCommand({
     TableName: COURSES_TABLE,
@@ -279,14 +326,16 @@ async function listWeeks(courseId) {
     })),
   ]);
 
-  const weeks = (result.Items || [])
+  const rawWeeks = (result.Items || [])
     .filter((item) => item.weekId !== '__supplemental__')
     .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
+
+  const signedWeeks = await signWeekVideos(rawWeeks);
 
   const gymQuestions = (gymResult.Items || [])
     .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
 
-  return res(200, { weeks, supplementalContent, gymQuestions });
+  return res(200, { weeks: signedWeeks, supplementalContent, gymQuestions });
 }
 
 // POST /admin/courses/{courseId}/weeks
@@ -314,6 +363,8 @@ async function createWeek(courseId, body) {
     assignments: body.assignments || [],
     transcript: body.transcript || null,
     textContent: body.textContent || null,
+    storagePath: body.storagePath || null,
+    storageProvider: body.storageProvider || null,
     createdAt: new Date().toISOString(),
   };
 
@@ -373,11 +424,66 @@ async function updateWeek(courseId, weekId, body) {
     return await updateSupplementalContent(courseId, body);
   }
 
+  // Handle upload URL request for week video
+  if (body && body.action === 'getUploadUrl') {
+    const { fileName } = body;
+    if (!fileName) {
+      return res(400, { message: 'fileName is required for getUploadUrl action' });
+    }
+
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const bucket = process.env.SUPABASE_STORAGE_BUCKET;
+
+    if (!supabaseUrl || !serviceRoleKey || !bucket) {
+      return res(500, { message: 'Supabase credentials not configured on backend' });
+    }
+
+    const safeFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const storagePath = `week-videos/${Date.now()}-${safeFileName}`;
+
+    try {
+      const uploadSignRes = await fetch(
+        `${supabaseUrl}/storage/v1/object/upload/sign/${bucket}/${storagePath}`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${serviceRoleKey}`,
+            apikey: serviceRoleKey,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+        }
+      );
+
+      if (uploadSignRes.ok) {
+        const signBody = await uploadSignRes.json();
+        const rawUrl = signBody.url || signBody.signedUrl || signBody.signedURL || '';
+        const fullUrl = rawUrl.startsWith('http')
+          ? rawUrl
+          : `${supabaseUrl}/storage/v1${rawUrl}`;
+
+        return res(200, {
+          signedUrl: fullUrl,
+          storagePath,
+          storageProvider: 'supabase',
+        });
+      } else {
+        const errorText = await uploadSignRes.text();
+        console.error('Supabase signed upload URL fetch error for week:', errorText);
+        return res(500, { message: `Supabase upload signing failed: ${errorText}` });
+      }
+    } catch (err) {
+      console.error('Error fetching signed upload URL from Supabase for week:', err);
+      return res(500, { message: err.message || 'Internal server error' });
+    }
+  }
+
   // Build a dynamic UpdateExpression from whatever fields were provided.
   const fields = [
     'title', 'description', 'youtubeUrl', 'qaLink', 'visible', 'weekNumber',
     'category', 'quiz', 'resources', 'docs', 'assignments', 'liveRecordedSessions',
-    'calendarEvents', 'transcript', 'weekTitle', 'textContent'
+    'calendarEvents', 'transcript', 'weekTitle', 'textContent', 'storagePath', 'storageProvider'
   ];
   const setClauses = [];
   const exprAttrValues = {};

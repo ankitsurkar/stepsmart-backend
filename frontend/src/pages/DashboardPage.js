@@ -1273,7 +1273,7 @@ function buildWeekGroups(weeks) {
   const groups = new Map();
 
   weeks
-    .filter((week) => week.weekId !== '__supplemental__')
+    .filter((week) => week.weekId !== '__supplemental__' && week.category !== 'live')
     .forEach((week) => {
       const numericWeek = Number(week.weekNumber);
       const groupNumber = Number.isFinite(numericWeek) && numericWeek > 0
@@ -1324,6 +1324,23 @@ function buildRecordedSessionGroups(weeks) {
     }
 
     const group = groups.get(groupNumber);
+
+    if (week.category === 'live') {
+      const sessionNumber = `L.${group.sessions.length + 1}`;
+      group.sessions.push({
+        id: week.weekId,
+        title: week.title,
+        description: week.description,
+        url: week.url || week.youtubeUrl,
+        storagePath: week.storagePath,
+        storageProvider: week.storageProvider,
+        courseId: week.courseId,
+        sourceWeekId: week.weekId,
+        sourceTitle: week.title,
+        displaySessionNumber: sessionNumber,
+      });
+    }
+
     (week.liveRecordedSessions || []).forEach((session) => {
       const sessionNumber = isSupp 
         ? `S.${group.sessions.length + 1}` 
@@ -2019,12 +2036,18 @@ function FocusItem({ item }) {
   );
 }
 
-function RecordedSessionCard({ session, isCompact }) {
+function RecordedSessionCard({ session, isCompact, progressMap }) {
   const isPlayable = !!session.url;
+
+  let status = 'not-started';
+  if (isPlayable) {
+    const progress = progressMap ? progressMap[session.id] : null;
+    status = progress?.videoComplete ? 'complete' : 'in-progress';
+  }
 
   const content = (
     <>
-      <LessonIcon status={isPlayable ? 'in-progress' : 'not-started'} />
+      <LessonIcon status={status} />
 
       <div style={s.lessonInfo}>
         <div style={s.lessonTitle}>
@@ -2039,12 +2062,18 @@ function RecordedSessionCard({ session, isCompact }) {
         <span
           style={{
             ...s.badge,
-            background: isPlayable ? 'var(--accent)' : 'var(--muted)',
-            color: isPlayable ? 'var(--accent-foreground)' : 'var(--muted-foreground)',
-            border: isPlayable ? '1px solid rgba(0, 111, 143, 0.12)' : '1px solid rgba(15, 40, 80, 0.05)',
+            background: status === 'complete'
+              ? 'var(--success-light)'
+              : isPlayable ? 'var(--accent)' : 'var(--muted)',
+            color: status === 'complete'
+              ? 'var(--success)'
+              : isPlayable ? 'var(--accent-foreground)' : 'var(--muted-foreground)',
+            border: status === 'complete'
+              ? '1px solid var(--success)'
+              : isPlayable ? '1px solid rgba(0, 111, 143, 0.12)' : '1px solid rgba(15, 40, 80, 0.05)',
           }}
         >
-          {isPlayable ? 'Watch Video' : 'Coming Soon'}
+          {status === 'complete' ? 'Completed ✓' : isPlayable ? 'Watch Video' : 'Coming Soon'}
         </span>
       </div>
     </>
@@ -4053,6 +4082,7 @@ export default function DashboardPage() {
                             key={session.id || `${session.sourceWeekId}-${session.displaySessionNumber}`}
                             session={session}
                             isCompact={isCompact}
+                            progressMap={progressMap}
                           />
                         ))
                       )}

@@ -183,6 +183,53 @@ async function signRecordedSessions(sessions) {
   return Promise.all(promises);
 }
 
+async function signWeekVideos(weeks) {
+  if (!Array.isArray(weeks) || weeks.length === 0) return weeks;
+
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
+
+  if (!supabaseUrl || !serviceRoleKey || !bucket) {
+    return weeks;
+  }
+
+  const promises = weeks.map(async (week) => {
+    if (week.storageProvider === 'supabase' && week.storagePath) {
+      try {
+        const signedUrlRes = await fetch(
+          `${supabaseUrl}/storage/v1/object/sign/${bucket}/${week.storagePath}`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${serviceRoleKey}`,
+              apikey: serviceRoleKey,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ expiresIn: 60 * 60 * 8 }),
+          }
+        );
+        if (signedUrlRes.ok) {
+          const resBody = await signedUrlRes.json();
+          const rawSigned = resBody.signedUrl || resBody.signedURL || '';
+          const fullSignedUrl = rawSigned.startsWith('http')
+            ? rawSigned
+            : `${supabaseUrl}/storage/v1${rawSigned}`;
+          return {
+            ...week,
+            url: fullSignedUrl,
+          };
+        }
+      } catch (err) {
+        console.error('Error generating signed URL for week path:', week.storagePath, err);
+      }
+    }
+    return week;
+  });
+
+  return Promise.all(promises);
+}
+
 async function getSupplementalContent(courseId) {
   try {
     const result = await ddb.send(new GetCommand({
@@ -248,7 +295,9 @@ async function listCourseWeeks(courseId, event) {
     .filter((w) => isAdmin || w.visible === true || hasSupplementalStudentContent(w))
     .sort((a, b) => (a.weekNumber || 0) - (b.weekNumber || 0));
 
-  const weeks = filtered.map((w) => ({
+  const signedWeeks = await signWeekVideos(filtered);
+
+  const weeks = signedWeeks.map((w) => ({
     weekId: w.weekId,
     courseId: w.courseId || courseId,
     weekNumber: w.weekNumber,
@@ -266,6 +315,10 @@ async function listCourseWeeks(courseId, event) {
     liveRecordedSessions: w.liveRecordedSessions || [],
     calendarEvents: w.calendarEvents || [],
     createdAt: w.createdAt || null,
+    category: w.category || 'module',
+    storagePath: w.storagePath || null,
+    storageProvider: w.storageProvider || null,
+    url: w.url || null,
     quiz: {
       questions: (w.quiz?.questions || []).map((q) => ({
         id: q.id,
@@ -287,6 +340,7 @@ async function listCourseWeeks(courseId, event) {
     title: 'Supplemental Content',
     description: 'Course-wide supplemental assignments, recorded sessions, and calendar events.',
     visible: true,
+    category: 'supplemental',
     assignments: supplementalContent?.assignments || [],
     liveRecordedSessions: supplementalContent?.liveRecordedSessions || [],
     calendarEvents: supplementalContent?.calendarEvents || [],

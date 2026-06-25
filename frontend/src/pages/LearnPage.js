@@ -446,6 +446,16 @@ function extractYouTubeId(url) {
 function getDisplayWeekNumber(allWeeks, targetWeek) {
   if (!targetWeek) return '';
 
+  const isLive = targetWeek.category === 'live' || String(targetWeek.weekId || targetWeek.id || '').startsWith('rec-');
+
+  if (isLive) {
+    const liveItems = [...allWeeks]
+      .filter((week) => week.category === 'live' || String(week.weekId || week.id || '').startsWith('rec-'));
+    const index = liveItems.findIndex((w) => (w.weekId || w.id) === (targetWeek.weekId || targetWeek.id));
+    if (index === -1) return '';
+    return `L.${index + 1}`;
+  }
+
   const numericWeek = Number(targetWeek.weekNumber);
   if (!Number.isFinite(numericWeek) || numericWeek <= 0) {
     return String(targetWeek.weekNumber || '');
@@ -454,6 +464,7 @@ function getDisplayWeekNumber(allWeeks, targetWeek) {
   const groupNumber = Math.floor(numericWeek);
   const groupWeeks = [...allWeeks]
     .filter((week) => {
+      if (week.category === 'live' || String(week.weekId || week.id || '').startsWith('rec-')) return false;
       const current = Number(week.weekNumber);
       return Number.isFinite(current) && Math.floor(current) === groupNumber;
     })
@@ -898,19 +909,14 @@ export default function LearnPage() {
                         const isCompleted = progressItem?.videoComplete && 
                           (!(item.quiz?.questions?.length > 0) || progressItem?.quizPassed);
 
-                        let displayNum = item.weekNumber;
+                        let displayNum = getDisplayWeekNumber(allWeeks, item);
                         let displayCat = 'Lecture';
                         if (String(itemWId).startsWith('rec-')) {
-                          displayNum = 'R' + (idx + 1);
                           displayCat = 'Live Recording';
                         } else if (item.category === 'live') {
-                          displayNum = 'L' + (idx + 1);
                           displayCat = 'Live Session';
                         } else if (item.textContent) {
-                          displayNum = 'W' + item.weekNumber;
                           displayCat = 'Reading';
-                        } else {
-                          displayNum = 'W' + item.weekNumber;
                         }
 
                         return (
