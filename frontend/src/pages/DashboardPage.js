@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../utils/api';
 import AssignmentUpload from '../components/AssignmentUpload';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Book, Clock, ClipboardList, Calendar, Users, Settings, Bell, Trophy } from 'lucide-react';
+import { Home, Book, Clock, ClipboardList, Calendar, Folder, Users, Settings, Bell, Trophy } from 'lucide-react';
 import { addDays, subDays, startOfMonth as startOfMonthFn, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, getDaysInMonth, getDate, isSameMonth, isSameDay, getDay, addMonths } from 'date-fns';
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import { toast } from 'sonner';
@@ -21,7 +21,7 @@ const NAV_ITEMS = [
   { id: 'cohort', label: 'Cohort', icon: 'users' },
   { id: 'scheduling', label: 'Sessions', icon: 'clock' },
   { id: 'assignments', label: 'Assignments', icon: 'clipboard' },
-  { id: 'calendar', label: 'Calendar', icon: 'calendar' },
+  { id: 'resources', label: 'Resources', icon: 'folder' },
   { id: 'settings', label: 'Profile', icon: 'settings' },
 ];
 
@@ -1725,7 +1725,7 @@ function SidebarIcon({ kind }) {
   if (kind === 'book') return <Book size={21} strokeWidth={2} />;
   if (kind === 'clock') return <Clock size={21} strokeWidth={2} />;
   if (kind === 'clipboard') return <ClipboardList size={21} strokeWidth={2} />;
-  if (kind === 'calendar') return <Calendar size={21} strokeWidth={2} />;
+  if (kind === 'folder') return <Folder size={21} strokeWidth={2} />;
   if (kind === 'users') return <Users size={21} strokeWidth={2} />;
   return <Settings size={21} strokeWidth={2} />;
 }
@@ -2217,6 +2217,12 @@ export default function DashboardPage() {
   const [selectedGymDetailDay, setSelectedGymDetailDay] = useState(null);
 
   const [activeView, setActiveView] = useState(() => getInitialDashboardView(searchParams));
+
+  // Global Resources States
+  const [expandedResources, setExpandedResources] = useState({});
+  const toggleResource = (id) => {
+    setExpandedResources(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const handleTabClick = (viewId) => {
     setActiveView(viewId);
@@ -2853,100 +2859,64 @@ export default function DashboardPage() {
       );
     };
 
-    // Calendar Card
-    const renderMiniCalendarCard = () => {
-      const weekdaysHeader = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-      const zonedTodayDate = toZonedTime(new Date(), TIMEZONE_IST);
-      const currentDay = getDate(zonedTodayDate);
-      const currentMonth = zonedTodayDate.getMonth();
-      const currentYear = zonedTodayDate.getFullYear();
-      
-      const monthStart = startOfMonthFn(zonedTodayDate);
-      const firstDay = getDay(monthStart);
-      const numDays = getDaysInMonth(zonedTodayDate);
-      
-      const cells = [];
-      for (let i = 0; i < firstDay; i++) {
-        cells.push(null);
-      }
-      for (let d = 1; d <= numDays; d++) {
-        cells.push(d);
-      }
-
-      const totalCells = firstDay + numDays;
-      const numRows = Math.ceil(totalCells / 7);
-      const cellHeight = numRows > 5 ? 16 : 18;
-      const rowGap = numRows > 5 ? '2px' : '4px';
-
+    // Global Resources Card
+    const renderMiniResourcesCard = () => {
+      const globalResources = supplementalContent?.resources || [];
       return (
         <div
           style={{
             background: '#ffffff',
             border: '1px solid rgba(20, 49, 86, 0.08)',
             borderRadius: '20px',
-            padding: '0.5rem 0.6rem',
+            padding: '1.35rem 1.5rem',
             boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
             height: '170px',
             boxSizing: 'border-box',
+            cursor: 'pointer',
           }}
+          onClick={() => handleTabClick('resources')}
         >
           <div>
-            <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'baseline', marginBottom: '0.3rem', paddingLeft: '0.05rem', flexWrap: 'nowrap' }}>
-              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
-                {new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(zonedTodayDate)}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500 }}>
+                Global Resources
               </span>
-              <span style={{ color: '#027A9B', fontSize: '0.75rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                Daily Calendar
-              </span>
+              <SidebarIcon kind="folder" />
             </div>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', fontWeight: 600, color: 'var(--muted-foreground)', fontSize: '0.625rem', marginBottom: '0.2rem' }}>
-              {weekdaysHeader.map((w, idx) => (
-                <div key={idx} style={{ padding: '0' }}>{w}</div>
-              ))}
-            </div>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', rowGap: rowGap }}>
-              {cells.map((d, idx) => {
-                if (d === null) return <div key={idx} style={{ height: `${cellHeight}px` }} />;
-                
-                const isTodayCell = d === currentDay;
-                
-                let cellStyle = {
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: `${cellHeight}px`,
-                  width: `${cellHeight}px`,
-                  margin: 'auto',
-                  borderRadius: '50%',
-                  fontSize: '0.625rem',
-                  fontWeight: 600,
-                  position: 'relative',
-                  transition: 'all 0.15s ease',
-                };
-                
-                if (isTodayCell) {
-                  cellStyle.background = '#027A9B'; // Highlight today in blue
-                  cellStyle.color = '#ffffff';
-                  cellStyle.fontWeight = 'bold';
-                  cellStyle.boxShadow = '0 2px 6px rgba(2, 122, 155, 0.25)';
-                } else {
-                  cellStyle.color = '#334155';
-                }
-                
-                return (
-                  <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: `${cellHeight}px` }}>
-                    <div style={cellStyle}>
-                      {d}
-                    </div>
+
+            {globalResources.length === 0 ? (
+              <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', padding: '0.25rem 0' }}>
+                No global resources uploaded yet.
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {globalResources.slice(0, 3).map((res, idx) => (
+                  <div key={res.id || idx} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>•</span>
+                    <span style={{
+                      fontSize: '0.8125rem',
+                      fontWeight: 550,
+                      color: 'var(--foreground)',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}>
+                      {res.title}
+                    </span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>
+                      ({res.docs?.length || 0})
+                    </span>
                   </div>
-                );
-              })}
-            </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div style={{ fontSize: '0.75rem', color: '#027A9B', fontWeight: 600 }}>
+            View all resources →
           </div>
         </div>
       );
@@ -3855,8 +3825,8 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Mini Calendar Card */}
-              {renderMiniCalendarCard()}
+              {/* Mini Resources Card */}
+              {renderMiniResourcesCard()}
             </div>
 
             {/* Row 2: Active Course & Daily Reminders side-by-side */}
@@ -4097,101 +4067,108 @@ export default function DashboardPage() {
     );
   }
 
-  function renderCalendarView() {
-    const calendarBoardStyle = {
-      ...s.calendarBoard,
-      minWidth: isCompact ? '720px' : '0',
-    };
+  function renderResourcesView() {
+    const globalResources = supplementalContent?.resources || [];
 
     return (
       <div style={s.card}>
-        <div style={s.calendarToolbar}>
+        <div style={s.panelHeader}>
           <div>
-            <div style={s.sectionTitle}>Calendar</div>
-          </div>
-
-          <div style={s.calendarControls}>
-            <button type="button" style={s.calendarNavButton} onClick={() => changeCalendarMonth(-1)}>
-              ‹
-            </button>
-            <div style={s.calendarMonthLabel}>{formatMonthLabel(visibleCalendarMonth)}</div>
-            <button type="button" style={s.calendarNavButton} onClick={() => changeCalendarMonth(1)}>
-              ›
-            </button>
-            <button type="button" style={s.calendarTodayButton} onClick={jumpToCurrentMonth}>
-              This Month
-            </button>
+            <div style={s.sectionTitle}>Course Resources</div>
+            <div style={s.sectionMeta}>Access global reference documents, templates, and guides.</div>
           </div>
         </div>
 
-        <div style={s.calendarScroller}>
-          <div style={calendarBoardStyle}>
-            <div style={s.calendarWeekdayRow}>
-              {CALENDAR_WEEKDAYS.map((day) => (
-                <div key={day} style={s.calendarWeekday}>{day}</div>
-              ))}
-            </div>
+        {globalResources.length === 0 ? (
+          <div style={s.empty}>No global resources have been uploaded for this course yet.</div>
+        ) : (
+          <div style={s.accordionList}>
+            {globalResources.map((resource, index) => {
+              const isExpanded = !!expandedResources[resource.id || index];
+              const docCount = resource.docs?.length || 0;
 
-            <div style={s.calendarMonthGrid}>
-              {calendarGridDays.map((date) => {
-                const dateKey = toDateKey(date);
-                const dayEntries = calendarEntriesByDate[dateKey] || [];
-                const isCurrentMonth = isSameMonth(date, visibleCalendarMonth);
-                const isToday = isSameDate(date, today);
-                const isSelected = dateKey === activeSelectedDateKey;
-                const dayNumberStyle = {
-                  ...s.calendarDayNumber,
-                  ...(isToday ? s.calendarDayNumberToday : {}),
-                  ...(isSelected ? s.calendarDayNumberSelected : {}),
-                };
-
-                return (
+              return (
+                <div key={resource.id || index} style={s.weekGroupCard}>
                   <button
-                    key={dateKey}
                     type="button"
-                    style={{
-                      ...s.calendarCell,
-                      ...(isCurrentMonth ? {} : s.calendarCellMuted),
-                      ...(isToday ? s.calendarCellToday : {}),
-                      ...(isSelected ? s.calendarCellSelected : {}),
-                      minHeight: isCompact ? '96px' : s.calendarCell.minHeight,
-                    }}
-                    onClick={() => setSelectedCalendarDate(dateKey)}
+                    style={s.weekGroupHeader}
+                    onClick={() => toggleResource(resource.id || index)}
                   >
-                    <div style={s.calendarCellTop}>
-                      <div style={dayNumberStyle}>{date.getDate()}</div>
-                      {dayEntries.length > 0 && (
-                        <div style={s.calendarCellCount}>
-                          {dayEntries.length} item{dayEntries.length === 1 ? '' : 's'}
+                    <div style={s.weekGroupTop}>
+                      <div>
+                        <div style={s.weekGroupLabel}>
+                          {resource.title}
                         </div>
-                      )}
-                    </div>
+                        <div style={s.weekGroupMeta}>
+                          {docCount} reference document{docCount === 1 ? '' : 's'}
+                        </div>
+                      </div>
 
-                    <div style={s.calendarCellEvents}>
-                      {dayEntries.slice(0, 2).map((entry, index) => (
-                        <span
-                          key={`${dateKey}-${entry.title}-${index}`}
-                          style={{
-                            ...s.calendarChip,
-                            background: entry.palette.bg,
-                            color: entry.palette.color,
-                          }}
-                        >
-                          {entry.title}
-                        </span>
-                      ))}
-
-                      {dayEntries.length > 2 && (
-                        <span style={s.calendarChipMore}>+{dayEntries.length - 2} more</span>
-                      )}
+                      <div style={s.weekGroupRight}>
+                        <div style={s.weekGroupCount}>
+                          {docCount} file{docCount === 1 ? '' : 's'} available
+                        </div>
+                        <div style={s.weekGroupToggle}>{isExpanded ? '−' : '+'}</div>
+                      </div>
                     </div>
                   </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
 
+                  {isExpanded && (
+                    <div style={{ ...s.weekGroupBody, display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1.25rem 1.5rem' }}>
+                      {resource.description && (
+                        <div>
+                          <div style={{ ...s.lessonDesc, color: 'var(--foreground)', fontSize: '0.9rem', lineHeight: 1.5, margin: 0 }}>
+                            {renderTextWithLinks(resource.description)}
+                          </div>
+                        </div>
+                      )}
+
+                      {docCount > 0 ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
+                          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>
+                            Reference Documents
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '0.75rem' }}>
+                            {resource.docs.map((doc, di) => (
+                              <a
+                                key={doc.id || di}
+                                href={doc.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '0.5rem',
+                                  padding: '0.75rem 1rem',
+                                  background: '#f8fafc',
+                                  border: '1px solid #e2e8f0',
+                                  borderRadius: '8px',
+                                  color: 'var(--foreground)',
+                                  textDecoration: 'none',
+                                  fontSize: '0.875rem',
+                                  fontWeight: 500,
+                                  transition: 'all 0.15s ease',
+                                }}
+                                className="doc-link-hover"
+                              >
+                                <span style={{ fontSize: '1.1rem' }}>📄</span>
+                                <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                                  {doc.label || 'Unnamed Document'}
+                                </span>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <div style={{ ...s.empty, padding: '1rem 0' }}>No documents attached to this resource.</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   }
@@ -4466,10 +4443,10 @@ export default function DashboardPage() {
     viewSubtitle = '';
   }
 
-  if (activeView === 'calendar') {
-    viewEyebrow = 'Calendar';
-    viewTitle = 'Learning Calendar';
-    viewSubtitle = 'Find your upcoming lectures.';
+  if (activeView === 'resources') {
+    viewEyebrow = 'Resources';
+    viewTitle = 'Global Resources';
+    viewSubtitle = 'Find course-wide guidelines, syllabus sheets, and reference templates.';
   }
 
   if (activeView === 'scheduling') {
@@ -4690,30 +4667,18 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {activeView === 'calendar' && (
-              <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                  <Skeleton width={100} height={24} />
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <Skeleton width={32} height={32} />
-                    <Skeleton width={120} height={32} />
-                    <Skeleton width={32} height={32} />
-                    <Skeleton width={80} height={32} />
-                  </div>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', marginBottom: '0.75rem' }}>
-                  {Array.from({ length: 7 }).map((_, i) => (
-                    <Skeleton key={i} height={16} />
-                  ))}
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', rowGap: '12px' }}>
-                  {Array.from({ length: 35 }).map((_, i) => (
-                    <div key={i} style={{ border: '1px solid #f1f5f9', borderRadius: '8px', padding: '0.5rem', minHeight: '80px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                      <Skeleton width={24} height={16} />
-                      <Skeleton height={14} width="80%" />
+            {activeView === 'resources' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '1.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                      <Skeleton width={200} height={18} />
+                      <Skeleton width={80} height={24} borderRadius={12} />
                     </div>
-                  ))}
-                </div>
+                    <Skeleton count={1} height={14} style={{ marginBottom: '1rem' }} />
+                    <Skeleton width={120} height={32} borderRadius={8} />
+                  </div>
+                ))}
               </div>
             )}
 
@@ -4852,7 +4817,7 @@ export default function DashboardPage() {
               {activeView === 'cohort' && renderCohortView()}
               {activeView === 'scheduling' && renderSchedulingView()}
               {activeView === 'assignments' && renderAssignmentsView()}
-              {activeView === 'calendar' && renderCalendarView()}
+              {activeView === 'resources' && renderResourcesView()}
               {activeView === 'settings' && renderSettingsView()}
             </motion.div>
           </AnimatePresence>

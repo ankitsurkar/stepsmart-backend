@@ -237,6 +237,8 @@ const EMPTY_DOC = { id: '', label: '', url: '' };
 const EMPTY_ASSIGNMENT = { id: '', title: '', description: '' };
 const EMPTY_RECORDED_SESSION = { id: '', title: '', description: '', url: '' };
 const EMPTY_CALENDAR_EVENT = { id: '', kind: '', title: '', description: '', startDate: '', endDate: '' };
+const EMPTY_GLOBAL_RESOURCE = { title: '', description: '', docs: [] };
+const EMPTY_RESOURCE_DOC = { label: '', url: '' };
 
 function makeClientId(prefix) {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -1390,7 +1392,7 @@ function WeeksTab({ courseId }) {
 
 
 function SupplementalContentTab({ courseId }) {
-  const [data, setData] = useState({ assignments: [], liveRecordedSessions: [], calendarEvents: [] });
+  const [data, setData] = useState({ assignments: [], liveRecordedSessions: [], calendarEvents: [], resources: [] });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -1414,6 +1416,7 @@ function SupplementalContentTab({ courseId }) {
       assignments: Array.isArray(raw?.assignments) ? raw.assignments : [],
       liveRecordedSessions: Array.isArray(raw?.liveRecordedSessions) ? raw.liveRecordedSessions : [],
       calendarEvents: Array.isArray(raw?.calendarEvents) ? raw.calendarEvents : [],
+      resources: Array.isArray(raw?.resources) ? raw.resources : [],
     };
   }
 
@@ -1439,6 +1442,35 @@ function SupplementalContentTab({ courseId }) {
   });
   const removeItem = (key, idx) => setData(d => ({ ...d, [key]: d[key].filter((_, i) => i !== idx) }));
 
+  const addResourceDoc = (resIdx) => {
+    setData(d => {
+      const list = [...d.resources];
+      const docs = [...(list[resIdx].docs || [])];
+      docs.push({ ...EMPTY_RESOURCE_DOC, id: makeClientId('doc') });
+      list[resIdx] = { ...list[resIdx], docs };
+      return { ...d, resources: list };
+    });
+  };
+
+  const updateResourceDoc = (resIdx, docIdx, field, val) => {
+    setData(d => {
+      const list = [...d.resources];
+      const docs = [...(list[resIdx].docs || [])];
+      docs[docIdx] = { ...docs[docIdx], [field]: val };
+      list[resIdx] = { ...list[resIdx], docs };
+      return { ...d, resources: list };
+    });
+  };
+
+  const removeResourceDoc = (resIdx, docIdx) => {
+    setData(d => {
+      const list = [...d.resources];
+      const docs = (list[resIdx].docs || []).filter((_, i) => i !== docIdx);
+      list[resIdx] = { ...list[resIdx], docs };
+      return { ...d, resources: list };
+    });
+  };
+
   if (loading) return <p style={{ color: 'var(--muted-foreground)', padding: '2rem 0', textAlign: 'center' }}>Loading supplemental content assets...</p>;
 
   return (
@@ -1459,7 +1491,7 @@ function SupplementalContentTab({ courseId }) {
           <span>📚</span> Course Supplemental Assets
         </div>
         <div style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', lineHeight: 1.5 }}>
-          Customize and publish course-wide assets including assignments and calendar events. Changes here are immediately reflected on the student dashboards.
+          Customize and publish course-wide assets including assignments and resources. Changes here are immediately reflected on the student dashboards.
         </div>
       </div>
 
@@ -1510,63 +1542,70 @@ function SupplementalContentTab({ courseId }) {
         )}
       </div>
 
-      {/* Global Course Calendar Events Card */}
+      {/* Global Course Resources Card */}
       <div style={s.card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
           <div>
-            <div style={{ ...s.cardTitle, marginBottom: '0.2rem' }}>📅 Global Course Calendar Events</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Schedule cohort-wide onboarding bootcamps, Live sessions, and deadlines.</div>
+            <div style={{ ...s.cardTitle, marginBottom: '0.2rem' }}>📂 Global Course Resources</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Create syllabus sheets, templates, references, or general handouts that all students can access.</div>
           </div>
-          <button type="button" style={s.btn} onClick={() => addItem('calendarEvents', EMPTY_CALENDAR_EVENT)}>+ Add Calendar Event</button>
+          <button type="button" style={s.btn} onClick={() => addItem('resources', EMPTY_GLOBAL_RESOURCE)}>+ Add Resource</button>
         </div>
 
-        {data.calendarEvents.length === 0 ? (
+        {data.resources.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '2.5rem 1rem', border: '1.5px dashed var(--border)', borderRadius: '12px', background: 'var(--background)' }}>
-            <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>📅</span>
-            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>No global calendar events created yet.</span>
+            <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>📂</span>
+            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>No global resources created yet.</span>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))', gap: '1.25rem' }}>
-            {data.calendarEvents.map((evt, i) => (
-              <div key={evt.id || i} style={{ ...s.qPanel, border: '1px solid var(--border)', background: '#fff', boxShadow: 'var(--shadow-sm)', padding: '1.25rem', borderRadius: '12px', marginBottom: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {data.resources.map((res, i) => (
+              <div key={res.id || i} style={{ ...s.qPanel, border: '1px solid var(--border)', background: '#fff', boxShadow: 'var(--shadow-sm)', padding: '1.25rem', borderRadius: '12px', marginBottom: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.55rem' }}>
-                  <span style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)' }}>Event #{i + 1}</span>
-                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.25rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px' }} onClick={() => removeItem('calendarEvents', i)}>✕ Remove</button>
-                </div>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                  <div>
-                    <label style={s.label}>Event Category</label>
-                    <select style={{ ...s.input, marginBottom: 0 }} value={evt.kind || ''} onChange={e => updateItem('calendarEvents', i, 'kind', e.target.value)}>
-                      <option value="">Select Kind</option>
-                      <option value="Course Module">Course Module</option>
-                      <option value="Interview Module">Interview Module</option>
-                      <option value="Recorded Video Upload">Recorded Video Upload</option>
-                      <option value="Live Q&A">Live Q&A</option>
-                      <option value="Orientation">Orientation</option>
-                      <option value="Homework Deadline">Homework Deadline</option>
-                      <option value="Other Event">Other Event</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label style={s.label}>Event Title</label>
-                    <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. Q&A, Bootcamp Kickoff" value={evt.title || ''} onChange={e => updateItem('calendarEvents', i, 'title', e.target.value)} />
-                  </div>
+                  <span style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)' }}>Resource #{i + 1}</span>
+                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.25rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px' }} onClick={() => removeItem('resources', i)}>✕ Remove Resource</button>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                  <div>
-                    <label style={s.label}>Start Date</label>
-                    <input type="date" style={{ ...s.input, marginBottom: 0 }} value={evt.startDate || ''} onChange={e => updateItem('calendarEvents', i, 'startDate', e.target.value)} />
-                  </div>
-                  <div>
-                    <label style={s.label}>End Date (Optional)</label>
-                    <input type="date" style={{ ...s.input, marginBottom: 0 }} value={evt.endDate || ''} onChange={e => updateItem('calendarEvents', i, 'endDate', e.target.value)} />
-                  </div>
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={s.label}>Resource Title</label>
+                  <input style={s.input} placeholder="e.g. Course Roadmap & Syllabus" value={res.title || ''} onChange={e => updateItem('resources', i, 'title', e.target.value)} />
                 </div>
 
-                <label style={s.label}>Description</label>
-                <textarea style={{ ...s.textarea, minHeight: '60px', marginBottom: 0 }} placeholder="Provide brief details for the calendar Detail Popover..." value={evt.description || ''} onChange={e => updateItem('calendarEvents', i, 'description', e.target.value)} />
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={s.label}>Description</label>
+                  <textarea style={{ ...s.textarea, minHeight: '80px', marginBottom: 0 }} placeholder="Brief details about the resource or instructions on how to use..." value={res.description || ''} onChange={e => updateItem('resources', i, 'description', e.target.value)} />
+                </div>
+
+                {/* Resource Documents Sub-section */}
+                <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '1rem', marginTop: '1rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Documents & Links</span>
+                    <button type="button" style={{ ...s.btn, ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem', borderRadius: '6px' }} onClick={() => addResourceDoc(i)}>+ Add Doc</button>
+                  </div>
+
+                  {(res.docs || []).length === 0 ? (
+                    <div style={{ fontSize: '0.775rem', color: 'var(--muted-foreground)', padding: '0.5rem', background: '#f8fafc', borderRadius: '6px', textAlign: 'center' }}>
+                      No attachments added yet. Click "+ Add Doc" above to attach templates or files.
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      {(res.docs || []).map((doc, di) => (
+                        <div key={doc.id || di} style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr auto', gap: '0.5rem', alignItems: 'end', background: '#f8fafc', padding: '0.6rem', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
+                          <div>
+                            <label style={{ ...s.label, fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>Label</label>
+                            <input style={{ ...s.input, marginBottom: 0, padding: '0.35rem 0.6rem', fontSize: '0.775rem' }} placeholder="e.g. Syllabus PDF" value={doc.label || ''} onChange={e => updateResourceDoc(i, di, 'label', e.target.value)} />
+                          </div>
+                          <div>
+                            <label style={{ ...s.label, fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>File / Drive Link</label>
+                            <input type="url" style={{ ...s.input, marginBottom: 0, padding: '0.35rem 0.6rem', fontSize: '0.775rem' }} placeholder="https://..." value={doc.url || ''} onChange={e => updateResourceDoc(i, di, 'url', e.target.value)} />
+                          </div>
+                          <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.35rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px', marginBottom: 0 }} onClick={() => removeResourceDoc(i, di)}>✕</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
               </div>
             ))}
           </div>

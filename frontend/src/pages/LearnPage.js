@@ -514,7 +514,7 @@ const NAV_ITEMS = [
   { id: 'cohort', label: 'Cohort', icon: 'users' },
   { id: 'scheduling', label: 'Sessions', icon: 'clock' },
   { id: 'assignments', label: 'Assignments', icon: 'clipboard' },
-  { id: 'calendar', label: 'Calendar', icon: 'calendar' },
+  { id: 'resources', label: 'Resources', icon: 'folder' },
   { id: 'settings', label: 'Profile', icon: 'settings' },
 ];
 
@@ -554,11 +554,10 @@ function SidebarIcon({ kind }) {
       </svg>
     );
   }
-  if (kind === 'calendar') {
+  if (kind === 'folder') {
     return (
       <svg {...common}>
-        <rect x="3" y="5" width="18" height="16" rx="2" />
-        <path d="M16 3v4M8 3v4M3 10h18" />
+        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
       </svg>
     );
   }

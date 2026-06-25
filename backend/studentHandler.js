@@ -245,6 +245,7 @@ async function getSupplementalContent(courseId) {
       liveRecordedSessions: signedSessions,
       calendarEvents: Array.isArray(item.calendarEvents) ? item.calendarEvents : [],
       reminders: Array.isArray(item.reminders) ? item.reminders : [],
+      resources: Array.isArray(item.resources) ? item.resources : [],
     };
   } catch (err) {
     console.error('DynamoDB GetCommand supplemental content error:', err);
@@ -253,6 +254,7 @@ async function getSupplementalContent(courseId) {
       liveRecordedSessions: [],
       calendarEvents: [],
       reminders: [],
+      resources: [],
     };
   }
 }
@@ -344,7 +346,7 @@ async function listCourseWeeks(courseId, event) {
     assignments: supplementalContent?.assignments || [],
     liveRecordedSessions: supplementalContent?.liveRecordedSessions || [],
     calendarEvents: supplementalContent?.calendarEvents || [],
-    resources: [],
+    resources: supplementalContent?.resources || [],
     docs: [],
     quiz: { questions: [] },
   };
