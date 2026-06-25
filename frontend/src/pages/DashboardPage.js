@@ -2905,14 +2905,14 @@ export default function DashboardPage() {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
               <span style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500 }}>
-                Global Resources
+                Course Resources
               </span>
               <SidebarIcon kind="folder" />
             </div>
 
             {globalResources.length === 0 ? (
               <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', padding: '0.25rem 0' }}>
-                No global resources uploaded yet.
+                No resources uploaded yet.
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -4100,12 +4100,12 @@ export default function DashboardPage() {
         <div style={s.panelHeader}>
           <div>
             <div style={s.sectionTitle}>Course Resources</div>
-            <div style={s.sectionMeta}>Access global reference documents, templates, and guides.</div>
+            <div style={s.sectionMeta}>Access reference documents, templates, and guides.</div>
           </div>
         </div>
 
         {globalResources.length === 0 ? (
-          <div style={s.empty}>No global resources have been uploaded for this course yet.</div>
+          <div style={s.empty}>No resources have been uploaded for this course yet.</div>
         ) : (
           <div style={s.accordionList}>
             {globalResources.map((resource, index) => {
@@ -4231,10 +4231,12 @@ export default function DashboardPage() {
                   >
                     <div style={s.weekGroupTop}>
                       <div>
-                        <div style={s.weekGroupLabel}>{assignmentLabel}</div>
+                        <div style={s.weekGroupLabel}>{assignmentTitle}</div>
                         <div style={s.weekGroupMeta}>
-                          {sourceWeekLabel}
-                          {assignment.weekTitle ? ` • ${assignment.weekTitle}` : ''}
+                          {assignment.weekId === '__supplemental__'
+                            ? `Assignment ${assignment.assignmentNumber} • Supplemental Content`
+                            : `Assignment ${assignment.assignmentNumber} • ${sourceWeekLabel}${assignment.weekTitle ? ` • ${assignment.weekTitle}` : ''}`
+                          }
                         </div>
                       </div>
 
@@ -4470,7 +4472,7 @@ export default function DashboardPage() {
 
   if (activeView === 'resources') {
     viewEyebrow = 'Resources';
-    viewTitle = 'Global Resources';
+    viewTitle = 'Course Resources';
     viewSubtitle = 'Find course-wide guidelines, syllabus sheets, and reference templates.';
   }
 

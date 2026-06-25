@@ -1546,7 +1546,7 @@ function SupplementalContentTab({ courseId }) {
       <div style={s.card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
           <div>
-            <div style={{ ...s.cardTitle, marginBottom: '0.2rem' }}>📂 Global Course Resources</div>
+            <div style={{ ...s.cardTitle, marginBottom: '0.2rem' }}>📂 Course Resources</div>
             <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Create syllabus sheets, templates, references, or general handouts that all students can access.</div>
           </div>
           <button type="button" style={s.btn} onClick={() => addItem('resources', EMPTY_GLOBAL_RESOURCE)}>+ Add Resource</button>
@@ -1555,7 +1555,7 @@ function SupplementalContentTab({ courseId }) {
         {data.resources.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '2.5rem 1rem', border: '1.5px dashed var(--border)', borderRadius: '12px', background: 'var(--background)' }}>
             <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>📂</span>
-            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>No global resources created yet.</span>
+            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>No resources created yet.</span>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
