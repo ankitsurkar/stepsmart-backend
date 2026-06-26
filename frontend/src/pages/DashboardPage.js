@@ -356,6 +356,8 @@ const s = {
     alignItems: 'start',
   },
   dashboardLeft: {
+    flex: 1,
+    minWidth: 0,
     display: 'flex',
     flexDirection: 'column',
     gap: '1.25rem',
@@ -368,6 +370,7 @@ const s = {
     boxShadow: '0 10px 26px rgba(15, 40, 80, 0.09)',
     position: 'sticky',
     top: '1.25rem',
+    boxSizing: 'border-box',
   },
   metricCards: {
     display: 'grid',
@@ -1907,7 +1910,12 @@ function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
   ];
 
   return (
-    <div style={{ ...s.dashboardRight, position: isCompact ? 'static' : s.dashboardRight.position }}>
+    <div style={{
+      ...s.dashboardRight,
+      position: isCompact ? 'static' : s.dashboardRight.position,
+      width: isCompact ? '100%' : '320px',
+      flexShrink: 0,
+    }}>
       <div style={s.railHeaderTitle}>Top Peers</div>
       <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
 
@@ -3989,7 +3997,11 @@ export default function DashboardPage() {
           </div>
 
           {topLeaderboard.length === 0 ? (
-            <div style={s.dashboardRight}>
+            <div style={{
+              ...s.dashboardRight,
+              width: isCompact ? '100%' : '320px',
+              flexShrink: 0,
+            }}>
               <div style={s.railHeaderTitle}>Top Peers</div>
               <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
               <div style={s.empty}>Leaderboard points will appear after lessons and assignments are completed.</div>
