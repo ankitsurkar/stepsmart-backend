@@ -2466,7 +2466,9 @@ export default function DashboardPage() {
       setExpandedAssignments({});
     } catch (err) {
       console.error('Dashboard loadData error:', err);
-      if (!hasCache) {
+      if (hasCache) {
+        toast.warning('Could not refresh dashboard. Showing cached data.');
+      } else {
         setError('Failed to load your courses. Please refresh.');
       }
     } finally {

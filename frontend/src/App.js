@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import DashboardErrorBoundary from './components/DashboardErrorBoundary';
 import LearnPage from './pages/LearnPage';
 import AdminPage from './pages/AdminPage';
 import { Toaster } from 'sonner';
@@ -24,7 +25,9 @@ export default function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <DashboardPage />
+                <DashboardErrorBoundary>
+                  <DashboardPage />
+                </DashboardErrorBoundary>
               </ProtectedRoute>
             }
           />
