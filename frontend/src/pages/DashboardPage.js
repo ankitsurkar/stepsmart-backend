@@ -1912,11 +1912,11 @@ function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
       <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
 
       <div
+        className="no-scrollbar"
         style={{
           ...s.railList,
           maxHeight: '440px',
           overflowY: 'auto',
-          paddingRight: '6px',
         }}
       >
         {rows.map((entry, idx) => {
@@ -1957,7 +1957,7 @@ function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
                   )}
                 </div>
                 <div style={s.railMeta}>
-                  {entry.completedLectures} L / {entry.assignmentsSubmitted} A
+                  {entry.totalPoints} pts
                 </div>
               </div>
               <div style={{ fontSize: '1.5rem', fontWeight: 650, color: '#0f172a', minWidth: '24px', textAlign: 'right' }}>
