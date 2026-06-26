@@ -2955,6 +2955,15 @@ export default function DashboardPage() {
               {cells.map((d, idx) => {
                 if (d === null) return <div key={idx} style={{ height: `${cellHeight}px` }} />;
                 
+                const dayOfWeek = idx % 7; // 0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat
+                const isClosed = dayOfWeek === 0 || dayOfWeek === 3 || dayOfWeek === 6;
+                if (isClosed) {
+                  return <div key={idx} style={{ height: `${cellHeight}px` }} />;
+                }
+
+                const dStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const sub = gymProgress.find(p => p.date === dStr);
+                const isCompleted = !!sub;
                 const isTodayCell = d === currentDay;
                 
                 let cellStyle = {
@@ -2976,6 +2985,9 @@ export default function DashboardPage() {
                   cellStyle.color = '#ffffff';
                   cellStyle.fontWeight = 'bold';
                   cellStyle.boxShadow = '0 2px 6px rgba(2, 122, 155, 0.25)';
+                } else if (isCompleted) {
+                  cellStyle.color = '#027A9B'; // Highlight checkmark in blue
+                  cellStyle.fontWeight = 'bold';
                 } else {
                   cellStyle.color = '#334155';
                 }
@@ -2983,7 +2995,7 @@ export default function DashboardPage() {
                 return (
                   <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: `${cellHeight}px` }}>
                     <div style={cellStyle}>
-                      {d}
+                      {isCompleted ? '✓' : d}
                     </div>
                   </div>
                 );
