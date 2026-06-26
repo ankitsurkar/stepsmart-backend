@@ -3914,7 +3914,7 @@ export default function DashboardPage() {
               >
                 <div>
                   <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
-                    Weekly Points
+                    Streak
                   </div>
                   <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>
                     {weeklyGoalDays.filter(d => d.active).length * 2} pts
