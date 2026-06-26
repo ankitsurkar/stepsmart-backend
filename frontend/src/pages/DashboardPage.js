@@ -2957,9 +2957,6 @@ export default function DashboardPage() {
                 
                 const dayOfWeek = idx % 7; // 0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat
                 const isClosed = dayOfWeek === 0 || dayOfWeek === 3 || dayOfWeek === 6;
-                if (isClosed) {
-                  return <div key={idx} style={{ height: `${cellHeight}px` }} />;
-                }
 
                 const dStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 const sub = gymProgress.find(p => p.date === dStr);
@@ -2978,6 +2975,7 @@ export default function DashboardPage() {
                   fontWeight: 600,
                   position: 'relative',
                   transition: 'all 0.15s ease',
+                  opacity: isClosed ? 0.35 : 1,
                 };
                 
                 if (isTodayCell) {
