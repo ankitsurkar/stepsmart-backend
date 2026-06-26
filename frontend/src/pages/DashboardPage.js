@@ -3894,15 +3894,15 @@ export default function DashboardPage() {
               >
                 <div>
                   <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
-                    Streak
+                    Weekly Points
                   </div>
                   <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>
-                    {gymStreak} {gymStreak === 1 ? 'day' : 'days'}
+                    {weeklyGoalDays.filter(d => d.active).length * 2} pts
                   </div>
                 </div>
                 <div>
                   <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem' }}>
-                    {hasSolvedToday ? "Today's PM Gym complete!" : "Complete today's PM Gym quiz to keep it up!"}
+                    Total: {courseScore} pts
                   </div>
                 </div>
               </div>
