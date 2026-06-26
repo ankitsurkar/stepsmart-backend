@@ -3917,7 +3917,7 @@ export default function DashboardPage() {
                     Streak
                   </div>
                   <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>
-                    {weeklyGoalDays.filter(d => d.active).length * 2} pts
+                    {((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak)} {((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak) === 1 ? 'day' : 'days'}
                   </div>
                 </div>
                 <div>
