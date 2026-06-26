@@ -743,33 +743,36 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
         {/* Overlays removed to allow free interaction/seeking */}
       </div>
 
-      <div style={s.controls}>
-        <button style={{ ...s.btn, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }} onClick={handlePlayPause}>
+      <div style={s.controls} className="video-controls">
+        <button style={{ ...s.btn, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }} onClick={handlePlayPause} className="video-control-btn">
           {isPlaying ? <Pause size={14} /> : <Play size={14} />}
-          {isPlaying ? 'Pause' : 'Play'}
+          <span className="btn-text">{isPlaying ? 'Pause' : 'Play'}</span>
         </button>
         <button
           style={{ ...s.btn, ...s.btnSecondary, ...(seekAllowed ? {} : s.btnDisabled), display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
           onClick={handleRewind}
           disabled={!seekAllowed}
           title={seekAllowed ? 'Rewind 10 seconds' : 'Complete the video to unlock rewinding'}
+          className="video-control-btn"
         >
           <RotateCcw size={13} />
-          −10s
+          <span>−10s</span>
         </button>
         <button
           style={{ ...s.btn, ...s.btnSecondary, ...(seekAllowed ? {} : s.btnDisabled), display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
           onClick={handleForward}
           disabled={!seekAllowed}
           title={seekAllowed ? 'Forward 10 seconds' : 'Complete the video to unlock forwarding'}
+          className="video-control-btn"
         >
           <RotateCw size={13} />
-          +10s
+          <span>+10s</span>
         </button>
         <select
           style={s.speedSelect}
           value={playbackRate}
           onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
+          className="video-speed-select"
         >
           {[1, 1.25, 1.5].map((rate) => (
             <option key={rate} value={rate}>{rate}x</option>
@@ -786,6 +789,7 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
           onPointerMove={handleProgressPointerMove}
           onPointerUp={(event) => finishScrub(event.pointerId)}
           onPointerCancel={(event) => finishScrub(event.pointerId)}
+          className="video-progress-track"
         >
           <motion.div
             animate={{ width: `${playbackPct}%` }}
@@ -811,14 +815,15 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
             }}
           />
         </div>
-        <span style={s.timeLabel}>{metaLabel}</span>
+        <span style={s.timeLabel} className="video-time-label">{metaLabel}</span>
         <button
           style={{ ...s.btn, ...s.btnSecondary, marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
           onClick={handleFullScreen}
           title="Fullscreen"
+          className="video-control-btn fullscreen-btn"
         >
           {isFullscreen ? <Minimize size={14} /> : <Maximize size={14} />}
-          {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+          <span className="btn-text">{isFullscreen ? 'Exit' : 'Full'}</span>
         </button>
       </div>
 

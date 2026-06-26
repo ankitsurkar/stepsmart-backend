@@ -617,15 +617,21 @@ export default function LearnPage() {
   const [quizPassed, setQuizPassed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [isCompact, setIsCompact] = useState(
-    typeof window !== 'undefined' ? window.innerWidth < 980 : false,
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < 576 : false
   );
+  const [isTablet, setIsTablet] = useState(
+    typeof window !== 'undefined' ? (window.innerWidth >= 576 && window.innerWidth < 980) : false
+  );
+  const isCompact = isMobile || isTablet;
   const [showPlaylistMobile, setShowPlaylistMobile] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState({});
 
   useEffect(() => {
     function handleResize() {
-      setIsCompact(window.innerWidth < 980);
+      const w = window.innerWidth;
+      setIsMobile(w < 576);
+      setIsTablet(w >= 576 && w < 980);
     }
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -1402,7 +1408,11 @@ export default function LearnPage() {
               {activeTab === 'qa' && (
                 <div style={s.qaCard}>
                   <div style={s.sidebarHeading}>Questions &amp; Answers</div>
-                  <div style={s.qaInputContainer}>
+                  <div style={{
+                    ...s.qaInputContainer,
+                    flexDirection: isMobile ? 'column' : 'row',
+                    alignItems: isMobile ? 'stretch' : 'center',
+                  }}>
                     <input
                       type="text"
                       placeholder="Ask a question..."
@@ -1454,27 +1464,43 @@ export default function LearnPage() {
       </div>
 
       {/* Mobile Playlist Drawer Overlay */}
-      {isCompact && showPlaylistMobile && (
-        <div style={s.mobilePlaylistOverlay} onClick={() => setShowPlaylistMobile(false)}>
-          <div style={s.mobilePlaylistContent} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0.75rem 1rem 0 0' }}>
-              <button
-                onClick={() => setShowPlaylistMobile(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '1.25rem',
-                  cursor: 'pointer',
-                  color: 'var(--muted-foreground)'
-                }}
-              >
-                ✕
-              </button>
-            </div>
-            <PlaylistContent isMobile={true} />
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isCompact && showPlaylistMobile && (
+          <motion.div
+            style={s.mobilePlaylistOverlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setShowPlaylistMobile(false)}
+          >
+            <motion.div
+              style={s.mobilePlaylistContent}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0.75rem 1rem 0 0' }}>
+                <button
+                  onClick={() => setShowPlaylistMobile(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '1.25rem',
+                    cursor: 'pointer',
+                    color: 'var(--muted-foreground)'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+              <PlaylistContent isMobile={true} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {showCompletionModal && (

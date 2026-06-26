@@ -194,8 +194,8 @@ export default function LoginPage() {
 
   return (
     <div style={styles.container}>
-      <div style={styles.formArea}>
-        <div style={styles.card}>
+      <div className="login-form-area">
+        <div className="login-card">
           {/* Brand */}
           <div style={styles.brandRow}>
             <div style={styles.brandDot}>

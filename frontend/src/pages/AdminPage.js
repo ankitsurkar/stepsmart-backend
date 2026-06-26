@@ -34,13 +34,16 @@ const s = {
   // ── Tabs ──────────────────────────────────────────────────────────────────
   tabs: {
     display: 'flex', borderBottom: '2px solid var(--border)',
-    background: 'var(--card)', paddingLeft: '2rem',
+    background: 'var(--card)', paddingLeft: '1rem',
+    overflowX: 'auto',
+    whiteSpace: 'nowrap',
   },
   tab: {
     padding: '0.85rem 1.5rem', cursor: 'pointer', fontWeight: 600,
     fontSize: '0.875rem', color: 'var(--muted-foreground)', background: 'none',
     border: 'none', borderBottom: '2.5px solid transparent', marginBottom: '-2px',
     transition: 'color 0.15s, border-color 0.15s',
+    flexShrink: 0,
   },
   tabActive: { color: 'var(--primary)', borderBottomColor: 'var(--primary)' },
 
@@ -155,7 +158,7 @@ function StudentsTab({ courseId }) {
       <div style={s.card}>
         <div style={s.cardTitle}>Add Student</div>
         <form onSubmit={handleCreate}>
-          <div style={s.grid2}>
+          <div style={s.grid2} className="admin-grid2">
             <div>
               <label style={s.label}>Email</label>
               <input style={s.input} type="email" placeholder="student@example.com"
@@ -179,30 +182,32 @@ function StudentsTab({ courseId }) {
       <div style={s.card}>
         <div style={s.cardTitle}>All Students ({students.length})</div>
         {loading ? <p style={{ color: 'var(--muted-foreground)' }}>Loading…</p> : (
-          <table style={s.table}>
-            <thead>
-              <tr>
-                <th style={s.th}>Email</th>
-                <th style={s.th}>Name</th>
-                <th style={s.th}>Status</th>
-                <th style={s.th}>Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((st) => (
-                <tr key={st.Username}>
-                  <td style={s.td}>{st.email}</td>
-                  <td style={s.td}>{st.name || '—'}</td>
-                  <td style={s.td}>
-                    <span style={{ ...s.badge, ...(st.UserStatus === 'CONFIRMED' ? s.badgeSuccess : s.badgeWarning) }}>
-                      {st.UserStatus}
-                    </span>
-                  </td>
-                  <td style={s.td}>{new Date(st.UserCreateDate).toLocaleDateString()}</td>
+          <div className="responsive-table-container">
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={s.th}>Email</th>
+                  <th style={s.th}>Name</th>
+                  <th style={s.th}>Status</th>
+                  <th style={s.th}>Created</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {students.map((st) => (
+                  <tr key={st.Username}>
+                    <td style={s.td}>{st.email}</td>
+                    <td style={s.td}>{st.name || '—'}</td>
+                    <td style={s.td}>
+                      <span style={{ ...s.badge, ...(st.UserStatus === 'CONFIRMED' ? s.badgeSuccess : s.badgeWarning) }}>
+                        {st.UserStatus}
+                      </span>
+                    </td>
+                    <td style={s.td}>{new Date(st.UserCreateDate).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
@@ -868,7 +873,7 @@ function WeeksTab({ courseId }) {
               <span>📥</span> Import Quiz & Documents from Another Cohort
             </div>
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+            <div className="admin-grid2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
               <div>
                 <label style={{ ...s.label, color: 'hsl(210, 100%, 20%)' }}>Source Batch</label>
                 <select
@@ -956,7 +961,7 @@ function WeeksTab({ courseId }) {
 
           {/* ── Basic Info ──────────────────────────────────────────────── */}
           <form onSubmit={handleSaveBasicInfo}>
-            <div style={s.grid2}>
+            <div style={s.grid2} className="admin-grid2">
               <div>
                 <label style={s.label}>Module / Order Number</label>
                 <input style={s.input} type="number" min="0" step="any"
@@ -1069,7 +1074,7 @@ function WeeksTab({ courseId }) {
                   <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeCalendarEvent(ci)}>Remove</button>
                 </div>
 
-                <div style={s.grid2}>
+                <div style={s.grid2} className="admin-grid2">
                   <div>
                     <label style={s.label}>Event Type</label>
                     <input
@@ -1092,7 +1097,7 @@ function WeeksTab({ courseId }) {
                   </div>
                 </div>
 
-                <div style={s.grid2}>
+                <div style={s.grid2} className="admin-grid2">
                   <div>
                     <label style={s.label}>Start Date</label>
                     <input
@@ -1142,7 +1147,7 @@ function WeeksTab({ courseId }) {
                   <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Resource {ri + 1}</span>
                   <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.72rem' }} onClick={() => removeResource(ri)}>Remove</button>
                 </div>
-                <div style={s.grid2}>
+                <div style={s.grid2} className="admin-grid2">
                   <div>
                     <label style={s.label}>Title</label>
                     <input style={s.input} type="text" placeholder="e.g. Week 1 Slides"
@@ -1171,7 +1176,7 @@ function WeeksTab({ courseId }) {
               <button type="button" style={{ ...s.btn, ...s.btnSecondary }} onClick={addDoc}>+ Document</button>
             </div>
             {(form.docs || []).map((doc, di) => (
-              <div key={doc.id || di} style={{ ...s.qPanel, display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.5rem', alignItems: 'end' }}>
+              <div key={doc.id || di} className="admin-doc-row" style={{ ...s.qPanel, display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.5rem', alignItems: 'end' }}>
                 <div>
                   <label style={s.label}>Label</label>
                   <input style={{ ...s.input, marginBottom: 0 }} type="text" placeholder="e.g. Week 1 Slides"
@@ -1291,7 +1296,7 @@ function WeeksTab({ courseId }) {
                 <label style={s.label}>Question text</label>
                 <input style={s.input} type="text"
                   value={q.text} onChange={(e) => updateQuestion(qi, 'text', e.target.value)} placeholder="What is...?" />
-                <div style={s.grid2}>
+                <div style={s.grid2} className="admin-grid2">
                   {q.options.map((opt, oi) => (
                     <div key={oi}>
                       <label style={s.label}>Option {String.fromCharCode(65 + oi)}</label>
@@ -1300,7 +1305,7 @@ function WeeksTab({ courseId }) {
                     </div>
                   ))}
                 </div>
-                <div style={s.grid2}>
+                <div style={s.grid2} className="admin-grid2">
                   <div>
                     <label style={s.label}>Correct (0=A 1=B 2=C 3=D)</label>
                     <input style={s.input} type="number" min="0" max="3"
@@ -1330,55 +1335,57 @@ function WeeksTab({ courseId }) {
         {loading ? <p style={{ color: 'var(--muted-foreground)' }}>Loading…</p>
           : weeks.length === 0 ? <p style={{ color: 'var(--muted-foreground)' }}>No weeks yet.</p>
             : (
-              <table style={s.table}>
-                <thead>
-                  <tr>
-                    <th style={s.th}>#</th>
-                    <th style={s.th}>Title</th>
-                    <th style={s.th}>Category</th>
-                    <th style={s.th}>Calendar</th>
-                    <th style={s.th}>Assignments</th>
-                    <th style={s.th}>Questions</th>
-                    <th style={s.th}>Status</th>
-                    <th style={s.th}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {weeks.map((w) => (
-                    <tr key={w.weekId}>
-                      <td style={s.td}>{w.weekNumber}</td>
-                      <td style={s.td}>{w.title}</td>
-                      <td style={s.td}>
-                        <span style={{
-                          ...s.badge,
-                          background: w.category === 'live' ? 'rgba(0, 111, 143, 0.08)' : 'rgba(15, 40, 80, 0.05)',
-                          color: w.category === 'live' ? 'var(--primary)' : 'var(--muted-foreground)',
-                          border: w.category === 'live' ? '1px solid rgba(0, 111, 143, 0.15)' : '1px solid rgba(15, 40, 80, 0.08)',
-                        }}>
-                          {w.category === 'live' ? 'Live Session' : 'Module'}
-                        </span>
-                      </td>
-                      <td style={s.td}>{w.calendarEvents?.length || 0}</td>
-                      <td style={s.td}>{w.assignments?.length || 0}</td>
-                      <td style={s.td}>{w.quiz?.questions?.length || 0}</td>
-                      <td style={s.td}>
-                        <span style={{ ...s.badge, ...(w.visible ? s.badgeSuccess : s.badgeMuted) }}>
-                          {w.visible ? 'Released' : 'Hidden'}
-                        </span>
-                      </td>
-                      <td style={s.td}>
-                        <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
-                          <button style={{ ...s.btn, padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => startEdit(w)}>Edit</button>
-                          <button style={{ ...s.btn, ...(w.visible ? s.btnSecondary : s.btnSuccess), padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => handleToggleVisible(w)}>
-                            {w.visible ? 'Hide' : 'Release'}
-                          </button>
-                          <button style={{ ...s.btn, ...s.btnDanger, padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => handleDelete(w.weekId)}>Delete</button>
-                        </div>
-                      </td>
+              <div className="responsive-table-container">
+                <table style={s.table}>
+                  <thead>
+                    <tr>
+                      <th style={s.th}>#</th>
+                      <th style={s.th}>Title</th>
+                      <th style={s.th}>Category</th>
+                      <th style={s.th}>Calendar</th>
+                      <th style={s.th}>Assignments</th>
+                      <th style={s.th}>Questions</th>
+                      <th style={s.th}>Status</th>
+                      <th style={s.th}>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {weeks.map((w) => (
+                      <tr key={w.weekId}>
+                        <td style={s.td}>{w.weekNumber}</td>
+                        <td style={s.td}>{w.title}</td>
+                        <td style={s.td}>
+                          <span style={{
+                            ...s.badge,
+                            background: w.category === 'live' ? 'rgba(0, 111, 143, 0.08)' : 'rgba(15, 40, 80, 0.05)',
+                            color: w.category === 'live' ? 'var(--primary)' : 'var(--muted-foreground)',
+                            border: w.category === 'live' ? '1px solid rgba(0, 111, 143, 0.15)' : '1px solid rgba(15, 40, 80, 0.08)',
+                          }}>
+                            {w.category === 'live' ? 'Live Session' : 'Module'}
+                          </span>
+                        </td>
+                        <td style={s.td}>{w.calendarEvents?.length || 0}</td>
+                        <td style={s.td}>{w.assignments?.length || 0}</td>
+                        <td style={s.td}>{w.quiz?.questions?.length || 0}</td>
+                        <td style={s.td}>
+                          <span style={{ ...s.badge, ...(w.visible ? s.badgeSuccess : s.badgeMuted) }}>
+                            {w.visible ? 'Released' : 'Hidden'}
+                          </span>
+                        </td>
+                        <td style={s.td}>
+                          <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+                            <button style={{ ...s.btn, padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => startEdit(w)}>Edit</button>
+                            <button style={{ ...s.btn, ...(w.visible ? s.btnSecondary : s.btnSuccess), padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => handleToggleVisible(w)}>
+                              {w.visible ? 'Hide' : 'Release'}
+                            </button>
+                            <button style={{ ...s.btn, ...s.btnDanger, padding: '0.3rem 0.65rem', fontSize: '0.75rem' }} onClick={() => handleDelete(w.weekId)}>Delete</button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
       </div>
     </div>
@@ -1590,7 +1597,7 @@ function SupplementalContentTab({ courseId }) {
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       {(res.docs || []).map((doc, di) => (
-                        <div key={doc.id || di} style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr auto', gap: '0.5rem', alignItems: 'end', background: '#f8fafc', padding: '0.6rem', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
+                        <div key={doc.id || di} className="admin-doc-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr auto', gap: '0.5rem', alignItems: 'end', background: '#f8fafc', padding: '0.6rem', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
                           <div>
                             <label style={{ ...s.label, fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>Label</label>
                             <input style={{ ...s.input, marginBottom: 0, padding: '0.35rem 0.6rem', fontSize: '0.775rem' }} placeholder="e.g. Syllabus PDF" value={doc.label || ''} onChange={e => updateResourceDoc(i, di, 'label', e.target.value)} />
@@ -1726,7 +1733,7 @@ function RemindersTab({ courseId }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {reminders.map((rem, i) => (
               <div key={rem.id || i} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#fff', border: '1px solid var(--border)', padding: '1rem', borderRadius: '12px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="admin-grid2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
                     <label style={s.label}>Reminder Action / Title</label>
                     <input style={{ ...s.input, marginBottom: 0 }} placeholder="e.g. Complete Quiz" value={rem.title} onChange={e => updateReminder(i, 'title', e.target.value)} />
@@ -1805,38 +1812,40 @@ function ProgressTab({ courseId }) {
     <div style={s.card}>
       <div style={s.cardTitle}>Student Progress — {courseId}</div>
       {data.length === 0 ? <p style={{ color: 'var(--muted-foreground)' }}>No progress recorded yet.</p> : (
-        <table style={s.table}>
-          <thead>
-            <tr>
-              <th style={s.th}>Student</th>
-              <th style={s.th}>Week</th>
-              <th style={s.th}>Video</th>
-              <th style={s.th}>Quiz</th>
-              <th style={s.th}>Attempts</th>
-              <th style={s.th}>Last Seen</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((p, i) => (
-              <tr key={i}>
-                <td style={s.td}>{students[p.userId] || p.userId?.slice(0, 8) + '…'}</td>
-                <td style={s.td}>{weeks[p.weekId] || p.weekId}</td>
-                <td style={s.td}>
-                  <span style={{ ...s.badge, ...(p.videoComplete ? s.badgeSuccess : s.badgeInfo) }}>
-                    {p.videoComplete ? 'Done' : `${p.watchedSegments?.length || 0} segs`}
-                  </span>
-                </td>
-                <td style={s.td}>
-                  <span style={{ ...s.badge, ...(p.quizPassed ? s.badgeSuccess : p.quizScore !== null ? s.badgeWarning : s.badgeMuted) }}>
-                    {p.quizPassed ? `Passed (${p.quizScore}/${p.quizTotal})` : p.quizScore !== null ? `${p.quizScore}/${p.quizTotal}` : 'Not taken'}
-                  </span>
-                </td>
-                <td style={s.td}>{p.quizAttempts || 0}</td>
-                <td style={s.td}>{p.lastSeen ? new Date(p.lastSeen).toLocaleString() : '—'}</td>
+        <div className="responsive-table-container">
+          <table style={s.table}>
+            <thead>
+              <tr>
+                <th style={s.th}>Student</th>
+                <th style={s.th}>Week</th>
+                <th style={s.th}>Video</th>
+                <th style={s.th}>Quiz</th>
+                <th style={s.th}>Attempts</th>
+                <th style={s.th}>Last Seen</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data.map((p, i) => (
+                <tr key={i}>
+                  <td style={s.td}>{students[p.userId] || p.userId?.slice(0, 8) + '…'}</td>
+                  <td style={s.td}>{weeks[p.weekId] || p.weekId}</td>
+                  <td style={s.td}>
+                    <span style={{ ...s.badge, ...(p.videoComplete ? s.badgeSuccess : s.badgeInfo) }}>
+                      {p.videoComplete ? 'Done' : `${p.watchedSegments?.length || 0} segs`}
+                    </span>
+                  </td>
+                  <td style={s.td}>
+                    <span style={{ ...s.badge, ...(p.quizPassed ? s.badgeSuccess : p.quizScore !== null ? s.badgeWarning : s.badgeMuted) }}>
+                      {p.quizPassed ? `Passed (${p.quizScore}/${p.quizTotal})` : p.quizScore !== null ? `${p.quizScore}/${p.quizTotal}` : 'Not taken'}
+                    </span>
+                  </td>
+                  <td style={s.td}>{p.quizAttempts || 0}</td>
+                  <td style={s.td}>{p.lastSeen ? new Date(p.lastSeen).toLocaleString() : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
@@ -1905,53 +1914,55 @@ function SubmissionsTab({ courseId }) {
       </div>
       
       {submissions.length === 0 ? <p style={{ color: 'var(--muted-foreground)' }}>No submissions recorded yet.</p> : (
-        <table style={s.table}>
-          <thead>
-            <tr>
-              <th style={s.th}>Student</th>
-              <th style={s.th}>Assignment</th>
-              <th style={s.th}>Week</th>
-              <th style={s.th}>Submitted At</th>
-              <th style={s.th}>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((sub, i) => (
-              <tr key={i}>
-                <td style={s.td}>
-                  {students[sub.userId] ? (
-                    <>
-                      <div style={{ fontWeight: 600 }}>{students[sub.userId].name}</div>
-                      {students[sub.userId].email && students[sub.userId].name !== students[sub.userId].email && (
-                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{students[sub.userId].email}</div>
-                      )}
-                    </>
-                  ) : (
-                    sub.userId?.slice(0, 8) + '…'
-                  )}
-                </td>
-                <td style={s.td}>
-                  <div style={{ fontWeight: 600 }}>{sub.assignmentTitle || '—'}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{sub.fileName}</div>
-                </td>
-                <td style={s.td}>{sub.weekId}</td>
-                <td style={s.td}>{new Date(sub.uploadedAt).toLocaleString()}</td>
-                <td style={s.td}>
-                  {sub.driveUrl ? (
-                    <a href={sub.driveUrl} target="_blank" rel="noreferrer" style={{ ...s.btn, textDecoration: 'none', display: 'inline-block' }}>Open ↗</a>
-                  ) : 'No Link'}
-                </td>
-              </tr>
-            ))}
-            {filtered.length === 0 && (
+        <div className="responsive-table-container">
+          <table style={s.table}>
+            <thead>
               <tr>
-                <td colSpan="5" style={{ ...s.td, textAlign: 'center', color: 'var(--muted-foreground)' }}>
-                  No matches found for "{search}"
-                </td>
+                <th style={s.th}>Student</th>
+                <th style={s.th}>Assignment</th>
+                <th style={s.th}>Week</th>
+                <th style={s.th}>Submitted At</th>
+                <th style={s.th}>Action</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filtered.map((sub, i) => (
+                <tr key={i}>
+                  <td style={s.td}>
+                    {students[sub.userId] ? (
+                      <>
+                        <div style={{ fontWeight: 600 }}>{students[sub.userId].name}</div>
+                        {students[sub.userId].email && students[sub.userId].name !== students[sub.userId].email && (
+                          <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{students[sub.userId].email}</div>
+                        )}
+                      </>
+                    ) : (
+                      sub.userId?.slice(0, 8) + '…'
+                    )}
+                  </td>
+                  <td style={s.td}>
+                    <div style={{ fontWeight: 600 }}>{sub.assignmentTitle || '—'}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{sub.fileName}</div>
+                  </td>
+                  <td style={s.td}>{sub.weekId}</td>
+                  <td style={s.td}>{new Date(sub.uploadedAt).toLocaleString()}</td>
+                  <td style={s.td}>
+                    {sub.driveUrl ? (
+                      <a href={sub.driveUrl} target="_blank" rel="noreferrer" style={{ ...s.btn, textDecoration: 'none', display: 'inline-block' }}>Open ↗</a>
+                    ) : 'No Link'}
+                  </td>
+                </tr>
+              ))}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan="5" style={{ ...s.td, textAlign: 'center', color: 'var(--muted-foreground)' }}>
+                    No matches found for "{search}"
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
@@ -2085,131 +2096,133 @@ function GymSubmissionsTab({ courseId }) {
       </div>
       
       {submissions.length === 0 ? <p style={{ color: 'var(--muted-foreground)' }}>No PM Gym responses recorded yet.</p> : (
-        <table style={s.table}>
-          <thead>
-            <tr>
-              <th style={s.th}>Student</th>
-              <th style={s.th}>Date & Question</th>
-              <th style={s.th}>Type</th>
-              <th style={s.th}>Submitted Answer</th>
-              <th style={s.th}>Status</th>
-              <th style={s.th}>Submitted At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(() => {
-              const sorted = [...filtered].sort((a, b) => {
-                const dateA = a.date || '';
-                const dateB = b.date || '';
-                if (dateA !== dateB) return dateA.localeCompare(dateB);
-                return (a.submittedAt || '').localeCompare(b.submittedAt || '');
-              });
-
-              return sorted.map((sub, i) => {
-                const studentInfo = students[sub.userId] || { name: sub.userId?.slice(0, 8) + '…', email: '', enrolled: false };
-                const question = gymQuestions[sub.date];
-                const isQuiz = sub.type === 'quiz';
-                
-                let answerDisplay = sub.answer;
-                if (isQuiz && question && question.options) {
-                  const optIdx = parseInt(sub.answer, 10);
-                  if (!isNaN(optIdx) && question.options[optIdx] !== undefined) {
-                    const optLetter = String.fromCharCode(65 + optIdx);
-                    answerDisplay = `Option ${optLetter}: ${question.options[optIdx]}`;
-                  }
-                }
-                
-                let isCorrect = false;
-                if (isQuiz) {
-                  isCorrect = question ? (parseInt(sub.answer, 10) === question.correctIndex) : (sub.score === 1);
-                } else {
-                  isCorrect = question ? (String(sub.answer).trim().toLowerCase() === String(question.correctAnswer).trim().toLowerCase()) : (sub.score === 1);
-                }
-
-                const isLong = answerDisplay && answerDisplay.length > 80;
-                const displayAnswerText = isLong ? `${answerDisplay.slice(0, 80)}...` : answerDisplay;
-                
-                return (
-                  <tr key={i}>
-                    <td style={s.td}>
-                      <div style={{ fontWeight: 600 }}>
-                        {studentInfo.name}
-                        {studentInfo.enrolled === false && (
-                          <span style={{ ...s.badge, ...s.badgeInfo, fontSize: '0.6rem', marginLeft: '6px', padding: '0.1rem 0.4rem', verticalAlign: 'middle' }}>Staff</span>
-                        )}
-                      </div>
-                      {studentInfo.email && studentInfo.name !== studentInfo.email && (
-                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{studentInfo.email}</div>
-                      )}
-                    </td>
-                    <td style={s.td}>
-                      <div style={{ fontWeight: 600 }}>{sub.date}</div>
-                      {question && (
-                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={question.text}>
-                          {question.text}
-                        </div>
-                      )}
-                    </td>
-                    <td style={s.td}>
-                      <span style={{ ...s.badge, ...(isQuiz ? s.badgeSuccess : s.badgeInfo) }}>
-                        {isQuiz ? 'Quiz' : 'Text'}
-                      </span>
-                    </td>
-                    <td style={s.td}>
-                      <div 
-                        onClick={() => setActiveModalAnswer({
-                          studentName: studentInfo.name,
-                          studentEmail: studentInfo.email,
-                          date: sub.date,
-                          questionText: question?.text,
-                          isQuiz,
-                          answerDisplay,
-                          isCorrect,
-                          submittedAt: sub.submittedAt,
-                          enrolled: studentInfo.enrolled
-                        })}
-                        style={{ 
-                          maxWidth: '350px', 
-                          wordBreak: 'break-word', 
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
-                          padding: '0.25rem',
-                          borderRadius: '4px',
-                          transition: 'background 0.15s'
-                        }}
-                        title="Click to view full details"
-                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted)'}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                      >
-                        {displayAnswerText}
-                        {isLong && (
-                          <span style={{ color: 'var(--primary)', fontWeight: 600, marginLeft: '6px', fontSize: '0.75rem', textDecoration: 'underline' }}>
-                            (view)
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td style={s.td}>
-                      <span style={{ ...s.badge, ...(isCorrect ? s.badgeSuccess : s.badgeWarning) }}>
-                        {isCorrect ? 'Correct' : 'Incorrect'}
-                      </span>
-                    </td>
-                    <td style={s.td}>
-                      {sub.submittedAt ? new Date(sub.submittedAt).toLocaleString() : '—'}
-                    </td>
-                  </tr>
-                );
-              });
-            })()}
-            {filtered.length === 0 && (
+        <div className="responsive-table-container">
+          <table style={s.table}>
+            <thead>
               <tr>
-                <td colSpan="6" style={{ ...s.td, textAlign: 'center', color: 'var(--muted-foreground)' }}>
-                  No matches found for "{search}"
-                </td>
+                <th style={s.th}>Student</th>
+                <th style={s.th}>Date & Question</th>
+                <th style={s.th}>Type</th>
+                <th style={s.th}>Submitted Answer</th>
+                <th style={s.th}>Status</th>
+                <th style={s.th}>Submitted At</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {(() => {
+                const sorted = [...filtered].sort((a, b) => {
+                  const dateA = a.date || '';
+                  const dateB = b.date || '';
+                  if (dateA !== dateB) return dateA.localeCompare(dateB);
+                  return (a.submittedAt || '').localeCompare(b.submittedAt || '');
+                });
+
+                return sorted.map((sub, i) => {
+                  const studentInfo = students[sub.userId] || { name: sub.userId?.slice(0, 8) + '…', email: '', enrolled: false };
+                  const question = gymQuestions[sub.date];
+                  const isQuiz = sub.type === 'quiz';
+                  
+                  let answerDisplay = sub.answer;
+                  if (isQuiz && question && question.options) {
+                    const optIdx = parseInt(sub.answer, 10);
+                    if (!isNaN(optIdx) && question.options[optIdx] !== undefined) {
+                      const optLetter = String.fromCharCode(65 + optIdx);
+                      answerDisplay = `Option ${optLetter}: ${question.options[optIdx]}`;
+                    }
+                  }
+                  
+                  let isCorrect = false;
+                  if (isQuiz) {
+                    isCorrect = question ? (parseInt(sub.answer, 10) === question.correctIndex) : (sub.score === 1);
+                  } else {
+                    isCorrect = question ? (String(sub.answer).trim().toLowerCase() === String(question.correctAnswer).trim().toLowerCase()) : (sub.score === 1);
+                  }
+
+                  const isLong = answerDisplay && answerDisplay.length > 80;
+                  const displayAnswerText = isLong ? `${answerDisplay.slice(0, 80)}...` : answerDisplay;
+                  
+                  return (
+                    <tr key={i}>
+                      <td style={s.td}>
+                        <div style={{ fontWeight: 600 }}>
+                          {studentInfo.name}
+                          {studentInfo.enrolled === false && (
+                            <span style={{ ...s.badge, ...s.badgeInfo, fontSize: '0.6rem', marginLeft: '6px', padding: '0.1rem 0.4rem', verticalAlign: 'middle' }}>Staff</span>
+                          )}
+                        </div>
+                        {studentInfo.email && studentInfo.name !== studentInfo.email && (
+                          <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{studentInfo.email}</div>
+                        )}
+                      </td>
+                      <td style={s.td}>
+                        <div style={{ fontWeight: 600 }}>{sub.date}</div>
+                        {question && (
+                          <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={question.text}>
+                            {question.text}
+                          </div>
+                        )}
+                      </td>
+                      <td style={s.td}>
+                        <span style={{ ...s.badge, ...(isQuiz ? s.badgeSuccess : s.badgeInfo) }}>
+                          {isQuiz ? 'Quiz' : 'Text'}
+                        </span>
+                      </td>
+                      <td style={s.td}>
+                        <div 
+                          onClick={() => setActiveModalAnswer({
+                            studentName: studentInfo.name,
+                            studentEmail: studentInfo.email,
+                            date: sub.date,
+                            questionText: question?.text,
+                            isQuiz,
+                            answerDisplay,
+                            isCorrect,
+                            submittedAt: sub.submittedAt,
+                            enrolled: studentInfo.enrolled
+                          })}
+                          style={{ 
+                            maxWidth: '350px', 
+                            wordBreak: 'break-word', 
+                            fontSize: '0.875rem',
+                            cursor: 'pointer',
+                            padding: '0.25rem',
+                            borderRadius: '4px',
+                            transition: 'background 0.15s'
+                          }}
+                          title="Click to view full details"
+                          onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted)'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                        >
+                          {displayAnswerText}
+                          {isLong && (
+                            <span style={{ color: 'var(--primary)', fontWeight: 600, marginLeft: '6px', fontSize: '0.75rem', textDecoration: 'underline' }}>
+                              (view)
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td style={s.td}>
+                        <span style={{ ...s.badge, ...(isCorrect ? s.badgeSuccess : s.badgeWarning) }}>
+                          {isCorrect ? 'Correct' : 'Incorrect'}
+                        </span>
+                      </td>
+                      <td style={s.td}>
+                        {sub.submittedAt ? new Date(sub.submittedAt).toLocaleString() : '—'}
+                      </td>
+                    </tr>
+                  );
+                });
+              })()}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan="6" style={{ ...s.td, textAlign: 'center', color: 'var(--muted-foreground)' }}>
+                    No matches found for "{search}"
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {activeModalAnswer && (
@@ -2340,43 +2353,45 @@ function LeadsTab() {
         {leads.length === 0 ? (
           <p style={{ color: 'var(--muted-foreground)' }}>No leads submitted yet.</p>
         ) : (
-          <table style={s.table}>
-            <thead>
-              <tr>
-                <th style={s.th}>Name</th>
-                <th style={s.th}>Email</th>
-                <th style={s.th}>Phone</th>
-                <th style={s.th}>Source</th>
-                <th style={s.th}>Submitted</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((lead, i) => (
-                <tr key={lead.enrollmentId || i}>
-                  <td style={s.td}>
-                    <div style={{ fontWeight: 600 }}>{lead.name || '—'}</div>
-                  </td>
-                  <td style={s.td}>{lead.email || '—'}</td>
-                  <td style={s.td}>{lead.phone || '—'}</td>
-                  <td style={s.td}>
-                    <span style={{ ...s.badge, ...s.badgeInfo }}>
-                      {lead.masterclassId || 'default'}
-                    </span>
-                  </td>
-                  <td style={s.td}>
-                    {lead.timestamp ? new Date(lead.timestamp).toLocaleString() : '—'}
-                  </td>
-                </tr>
-              ))}
-              {filtered.length === 0 && (
+          <div className="responsive-table-container">
+            <table style={s.table}>
+              <thead>
                 <tr>
-                  <td colSpan="5" style={{ ...s.td, textAlign: 'center', color: 'var(--muted-foreground)' }}>
-                    No matches found for "{search}"
-                  </td>
+                  <th style={s.th}>Name</th>
+                  <th style={s.th}>Email</th>
+                  <th style={s.th}>Phone</th>
+                  <th style={s.th}>Source</th>
+                  <th style={s.th}>Submitted</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filtered.map((lead, i) => (
+                  <tr key={lead.enrollmentId || i}>
+                    <td style={s.td}>
+                      <div style={{ fontWeight: 600 }}>{lead.name || '—'}</div>
+                    </td>
+                    <td style={s.td}>{lead.email || '—'}</td>
+                    <td style={s.td}>{lead.phone || '—'}</td>
+                    <td style={s.td}>
+                      <span style={{ ...s.badge, ...s.badgeInfo }}>
+                        {lead.masterclassId || 'default'}
+                      </span>
+                    </td>
+                    <td style={s.td}>
+                      {lead.timestamp ? new Date(lead.timestamp).toLocaleString() : '—'}
+                    </td>
+                  </tr>
+                ))}
+                {filtered.length === 0 && (
+                  <tr>
+                    <td colSpan="5" style={{ ...s.td, textAlign: 'center', color: 'var(--muted-foreground)' }}>
+                      No matches found for "{search}"
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
@@ -2487,11 +2502,11 @@ function GymTab({ courseId }) {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+    <div className="admin-gym-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
       <div style={s.card}>
         <div style={s.cardTitle}>{editingDate ? 'Edit Question' : 'Schedule New Question'}</div>
         <form onSubmit={handleSave}>
-          <div style={s.grid2}>
+          <div style={s.grid2} className="admin-grid2">
             <div>
               <label style={s.label}>Date</label>
               <input
@@ -2603,54 +2618,56 @@ function GymTab({ courseId }) {
           <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>No daily questions scheduled.</p>
         )}
         {!loading && gymQuestions.length > 0 && (
-          <table style={s.table}>
-            <thead>
-              <tr>
-                <th style={{ ...s.th, width: '90px' }}>Date</th>
-                <th style={{ ...s.th, width: '60px' }}>Type</th>
-                <th style={s.th}>Question</th>
-                <th style={{ ...s.th, textAlign: 'right', width: '100px' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {gymQuestions.map((q) => (
-                <tr key={q.date}>
-                  <td style={s.td}>{q.date}</td>
-                  <td style={s.td}>
-                    <span style={{ ...s.badge, ...(q.type === 'quiz' ? s.badgeSuccess : s.badgeInfo) }}>
-                      {q.type}
-                    </span>
-                  </td>
-                  <td style={s.td}>
-                    <div style={{
-                      maxWidth: '220px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}>
-                      {q.text}
-                    </div>
-                  </td>
-                  <td style={{ ...s.td, textAlign: 'right' }}>
-                    <button
-                      type="button"
-                      style={{ ...s.btn, padding: '0.2rem 0.5rem', fontSize: '0.75rem', marginRight: '0.35rem' }}
-                      onClick={() => handleEdit(q)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}
-                      onClick={() => handleDelete(q.date)}
-                    >
-                      Delete
-                    </button>
-                  </td>
+          <div className="responsive-table-container">
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={{ ...s.th, width: '90px' }}>Date</th>
+                  <th style={{ ...s.th, width: '60px' }}>Type</th>
+                  <th style={s.th}>Question</th>
+                  <th style={{ ...s.th, textAlign: 'right', width: '100px' }}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {gymQuestions.map((q) => (
+                  <tr key={q.date}>
+                    <td style={s.td}>{q.date}</td>
+                    <td style={s.td}>
+                      <span style={{ ...s.badge, ...(q.type === 'quiz' ? s.badgeSuccess : s.badgeInfo) }}>
+                        {q.type}
+                      </span>
+                    </td>
+                    <td style={s.td}>
+                      <div style={{
+                        maxWidth: '220px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}>
+                        {q.text}
+                      </div>
+                    </td>
+                    <td style={{ ...s.td, textAlign: 'right' }}>
+                      <button
+                        type="button"
+                        style={{ ...s.btn, padding: '0.2rem 0.5rem', fontSize: '0.75rem', marginRight: '0.35rem' }}
+                        onClick={() => handleEdit(q)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}
+                        onClick={() => handleDelete(q.date)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
@@ -2702,7 +2719,7 @@ export default function AdminPage() {
         </div>
       </nav>
 
-      <div style={s.tabs}>
+      <div style={s.tabs} className="mobile-scroll-tabs">
         {[
           { id: 'weeks', label: 'Manage Weeks' },
           { id: 'supplemental', label: 'Supplemental Content' },

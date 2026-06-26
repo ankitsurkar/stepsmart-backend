@@ -2293,9 +2293,13 @@ export default function DashboardPage() {
       setWhatsappNotifications(localStorage.getItem(`settings_whatsapp_${user.username}`) === 'true');
     }
   }, [user]);
-  const [isCompact, setIsCompact] = useState(
-    typeof window !== 'undefined' ? window.innerWidth < 980 : false,
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < 576 : false
   );
+  const [isTablet, setIsTablet] = useState(
+    typeof window !== 'undefined' ? (window.innerWidth >= 576 && window.innerWidth < 980) : false
+  );
+  const isCompact = isMobile || isTablet;
   const [loading, setLoading] = useState(() => {
     const hasCache = clientDashboardCache && clientDashboardCache.username === user?.username;
     return !hasCache;
@@ -2308,7 +2312,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     function handleResize() {
-      setIsCompact(window.innerWidth < 980);
+      const w = window.innerWidth;
+      setIsMobile(w < 576);
+      setIsTablet(w >= 576 && w < 980);
     }
 
     handleResize();
@@ -3624,23 +3630,32 @@ export default function DashboardPage() {
           style={{
             background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)',
             borderRadius: '24px',
-            padding: '1.25rem 2rem',
+            padding: isMobile ? '1.25rem' : '1.25rem 2rem',
             color: '#ffffff',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             boxShadow: '0 10px 30px rgba(2, 122, 155, 0.15)',
-            flexWrap: isCompact ? 'wrap' : 'nowrap',
-            gap: '1.5rem',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: '1.25rem',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: isCompact ? 'wrap' : 'nowrap', flex: 1 }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: isMobile ? '1rem' : '1.5rem',
+            flexDirection: isMobile ? 'column' : 'row',
+            textAlign: isMobile ? 'center' : 'left',
+            flex: 1
+          }}>
             <img
               src={process.env.PUBLIC_URL + '/pm_gym_brain.png'}
               alt="PM Gym Brain mascot"
               style={{
-                width: '96px',
-                height: '96px',
+                width: isMobile ? '80px' : '96px',
+                height: isMobile ? '80px' : '96px',
                 objectFit: 'contain',
               }}
             />
@@ -3657,7 +3672,14 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto', justifyContent: isCompact ? 'center' : 'flex-start' }}>
+          <div style={{
+            display: 'flex',
+            gap: '0.75rem',
+            alignItems: 'center',
+            width: isCompact ? '100%' : 'auto',
+            justifyContent: isCompact ? 'center' : 'flex-start',
+            flexDirection: isMobile ? 'column' : 'row'
+          }}>
             {!isClosedDay && todayQuestion ? (
               hasSolvedToday ? (
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto' }}>
@@ -3825,7 +3847,7 @@ export default function DashboardPage() {
             <div
               style={{
                 ...s.metricCards,
-                gridTemplateColumns: isCompact ? '1fr' : 'repeat(4, minmax(0, 1fr))',
+                gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(4, minmax(0, 1fr))',
               }}
             >
               {/* Redesigned Card 1: Lessons */}
@@ -4414,11 +4436,16 @@ export default function DashboardPage() {
             />
           </div>
 
-          <div style={{ ...s.settingsActions, marginTop: '1.25rem' }}>
-            <button type="submit" style={{ ...s.primaryAction, background: 'var(--primary)', marginTop: 0 }} disabled={savingDisplayName}>
+          <div style={{
+            ...s.settingsActions,
+            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: isMobile ? 'stretch' : 'center',
+            marginTop: '1.25rem',
+          }}>
+            <button type="submit" style={{ ...s.primaryAction, background: 'var(--primary)', marginTop: 0, width: isMobile ? '100%' : 'auto' }} disabled={savingDisplayName}>
               {savingDisplayName ? 'Saving…' : 'Save'}
             </button>
-            <button type="button" style={s.mutedAction} onClick={handleSignOut}>
+            <button type="button" style={{ ...s.mutedAction, width: isMobile ? '100%' : 'auto' }} onClick={handleSignOut}>
               Sign out
             </button>
           </div>
@@ -4591,48 +4618,124 @@ export default function DashboardPage() {
     return (
       <div style={s.page}>
         <div style={shellStyle}>
-          <aside style={sidebarStyle}>
-            <div style={s.sidebarGlow} />
-
-            <div style={s.brand}>
-              <div style={s.brandMark}>S</div>
-              <span>StepSmart</span>
-            </div>
-
-            <div style={s.navStack}>
-              {NAV_ITEMS.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  style={{
-                    ...s.navButton,
-                    ...(activeView === item.id ? s.navButtonActive : {}),
-                  }}
-                  onClick={() => {}}
-                  disabled
-                >
-                  {activeView === item.id && <span style={s.navActiveRail} />}
-                  <span style={s.navButtonIcon}>
-                    <SidebarIcon kind={item.icon} />
+          {isCompact ? (
+            <header style={{
+              background: 'linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)',
+              color: '#fff',
+              padding: '0.85rem 1rem 0.65rem 1rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem',
+              boxShadow: '0 4px 12px rgba(15, 40, 80, 0.08)',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem', fontWeight: 700 }}>
+                  <div style={{
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '10px',
+                    background: 'rgba(255,255,255,0.16)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.9rem',
+                  }}>S</div>
+                  <span>StepSmart</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  {isSidebarAdmin && (
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.78rem', fontWeight: 700, background: 'rgba(255,255,255,0.1)', padding: '0.35rem 0.65rem', borderRadius: '8px' }}>
+                      Admin
+                    </span>
+                  )}
+                  <span
+                    style={{
+                      background: 'rgba(255,255,255,0.05)',
+                      borderRadius: '8px',
+                      color: 'rgba(255,255,255,0.6)',
+                      fontWeight: 700,
+                      fontSize: '0.78rem',
+                      padding: '0.35rem 0.65rem',
+                    }}
+                  >
+                    Sign Out
                   </span>
-                  {item.label}
-                </button>
-              ))}
-            </div>
+                </div>
+              </div>
+              
+              <div className="mobile-scroll-tabs" style={{ margin: '0 -0.5rem -0.25rem -0.5rem', padding: '0.25rem 0.5rem 0.4rem 0.5rem' }}>
+                {NAV_ITEMS.map((item) => {
+                  const isActive = activeView === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      disabled
+                      style={{
+                        border: 'none',
+                        background: isActive ? 'rgba(255, 255, 255, 0.22)' : 'transparent',
+                        color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
+                        padding: '0.4rem 0.85rem',
+                        borderRadius: '999px',
+                        fontSize: '0.8rem',
+                        fontWeight: isActive ? 700 : 500,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.35rem',
+                        cursor: 'default',
+                      }}
+                    >
+                      <SidebarIcon kind={item.icon} />
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </header>
+          ) : (
+            <aside style={sidebarStyle}>
+              <div style={s.sidebarGlow} />
 
-            <div style={s.sidebarSection}>
-              <div style={s.sidebarDivider} />
-              {isSidebarAdmin && (
-                <button type="button" style={{ ...s.adminLink, opacity: 0.7 }} disabled>
-                  Open Admin
-                </button>
-              )}
+              <div style={s.brand}>
+                <div style={s.brandMark}>S</div>
+                <span>StepSmart</span>
+              </div>
 
-              <button type="button" style={{ ...s.signOutBtn, opacity: 0.7 }} disabled>
-                Sign Out
-              </button>
-            </div>
-          </aside>
+              <div style={s.navStack}>
+                {NAV_ITEMS.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    style={{
+                      ...s.navButton,
+                      ...(activeView === item.id ? s.navButtonActive : {}),
+                    }}
+                    onClick={() => {}}
+                    disabled
+                  >
+                    {activeView === item.id && <span style={s.navActiveRail} />}
+                    <span style={s.navButtonIcon}>
+                      <SidebarIcon kind={item.icon} />
+                    </span>
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              <div style={s.sidebarSection}>
+                <div style={s.sidebarDivider} />
+                {isSidebarAdmin && (
+                  <button type="button" style={{ ...s.adminLink, opacity: 0.7 }} disabled>
+                    Open Admin
+                  </button>
+                )}
+
+                <button type="button" style={{ ...s.signOutBtn, opacity: 0.7 }} disabled>
+                  Sign Out
+                </button>
+              </div>
+            </aside>
+          )}
 
           <main style={s.main}>
             <div style={s.header}>
@@ -4827,47 +4930,128 @@ export default function DashboardPage() {
   return (
     <div style={s.page}>
       <div style={shellStyle}>
-        <aside style={sidebarStyle}>
-          <div style={s.sidebarGlow} />
+        {isCompact ? (
+          <header style={{
+            background: 'linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)',
+            color: '#fff',
+            padding: '0.85rem 1rem 0.65rem 1rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+            boxShadow: '0 4px 12px rgba(15, 40, 80, 0.08)',
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem', fontWeight: 700 }}>
+                <div style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '10px',
+                  background: 'rgba(255,255,255,0.16)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '0.9rem',
+                }}>S</div>
+                <span>StepSmart</span>
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                {isAdmin && (
+                  <Link to="/admin" style={{ color: '#fff', fontSize: '0.78rem', fontWeight: 700, textDecoration: 'none', background: 'rgba(255,255,255,0.15)', padding: '0.35rem 0.65rem', borderRadius: '8px' }}>
+                    Admin
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  style={{
+                    background: 'rgba(255,255,255,0.1)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    color: '#fff',
+                    fontWeight: 700,
+                    fontSize: '0.78rem',
+                    padding: '0.35rem 0.65rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+            
+            <div className="mobile-scroll-tabs" style={{ margin: '0 -0.5rem -0.25rem -0.5rem', padding: '0.25rem 0.5rem 0.4rem 0.5rem' }}>
+              {NAV_ITEMS.map((item) => {
+                const isActive = activeView === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => handleTabClick(item.id)}
+                    style={{
+                      border: 'none',
+                      background: isActive ? 'rgba(255, 255, 255, 0.22)' : 'transparent',
+                      color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.78)',
+                      padding: '0.4rem 0.85rem',
+                      borderRadius: '999px',
+                      fontSize: '0.8rem',
+                      fontWeight: isActive ? 700 : 500,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <SidebarIcon kind={item.icon} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </header>
+        ) : (
+          <aside style={sidebarStyle}>
+            <div style={s.sidebarGlow} />
 
-          <div style={s.brand}>
-            <div style={s.brandMark}>S</div>
-            <span>StepSmart</span>
-          </div>
+            <div style={s.brand}>
+              <div style={s.brandMark}>S</div>
+              <span>StepSmart</span>
+            </div>
 
-          <div style={s.navStack}>
-            {NAV_ITEMS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                style={{
-                  ...s.navButton,
-                  ...(activeView === item.id ? s.navButtonActive : {}),
-                }}
-                onClick={() => handleTabClick(item.id)}
-              >
-                {activeView === item.id && <span style={s.navActiveRail} />}
-                <span style={s.navButtonIcon}>
-                  <SidebarIcon kind={item.icon} />
-                </span>
-                {item.label}
+            <div style={s.navStack}>
+              {NAV_ITEMS.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  style={{
+                    ...s.navButton,
+                    ...(activeView === item.id ? s.navButtonActive : {}),
+                  }}
+                  onClick={() => handleTabClick(item.id)}
+                >
+                  {activeView === item.id && <span style={s.navActiveRail} />}
+                  <span style={s.navButtonIcon}>
+                    <SidebarIcon kind={item.icon} />
+                  </span>
+                  {item.label}
+                </button>
+              ))}
+            </div>
+
+            <div style={s.sidebarSection}>
+              <div style={s.sidebarDivider} />
+              {isAdmin && (
+                <Link to="/admin" style={s.adminLink}>
+                  Open Admin
+                </Link>
+              )}
+
+              <button type="button" style={s.signOutBtn} onClick={handleSignOut}>
+                Sign Out
               </button>
-            ))}
-          </div>
-
-          <div style={s.sidebarSection}>
-            <div style={s.sidebarDivider} />
-            {isAdmin && (
-              <Link to="/admin" style={s.adminLink}>
-                Open Admin
-              </Link>
-            )}
-
-            <button type="button" style={s.signOutBtn} onClick={handleSignOut}>
-              Sign Out
-            </button>
-          </div>
-        </aside>
+            </div>
+          </aside>
+        )}
 
         <main style={s.main}>
           <div style={s.header}>

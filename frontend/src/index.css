@@ -254,6 +254,108 @@ body {
   scrollbar-width: none;  /* Firefox */
 }
 
+/* ─── Responsive Utilities ────────────────────────────────────────────────── */
+.responsive-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+}
+
+.mobile-scroll-tabs {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem 0.5rem 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.mobile-scroll-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.login-form-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 480px) {
+  .login-form-area {
+    padding: 1rem;
+  }
+  .login-card {
+    padding: 1.5rem;
+  }
+}
+
+/* ─── Video Control Responsiveness ─── */
+@media (max-width: 576px) {
+  .video-controls {
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    padding: 0.5rem !important;
+  }
+  .video-controls .video-control-btn {
+    padding: 0.4rem 0.6rem !important;
+  }
+  .video-controls .video-control-btn .btn-text {
+    display: none !important;
+  }
+  .video-controls .video-time-label {
+    min-width: auto !important;
+    font-size: 0.72rem !important;
+  }
+  .video-controls .video-progress-track {
+    order: -1; /* Place progress track on its own line above the buttons on small screens */
+    flex: 1 1 100% !important;
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* ─── Quiz Option Touch Targets ─── */
+@media (max-width: 576px) {
+  .quiz-option {
+    padding: 0.85rem 1rem !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+}
+
+/* ─── Admin Page Responsive Grids ─── */
+@media (max-width: 768px) {
+  .admin-grid2 {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-doc-row {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+  .admin-doc-row button {
+    width: 100% !important;
+  }
+}
+@media (max-width: 980px) {
+  .admin-gym-layout {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+}
+
 
 
 

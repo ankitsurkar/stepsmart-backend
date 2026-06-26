@@ -161,6 +161,7 @@ export default function QuizComponent({ courseId, weekId, questions, initialPass
                   style={optionStyle(s.option, isChosen, submitted, isCorrect, isChosen)}
                   onClick={() => handleSelect(q.id, idx)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSelect(q.id, idx)}
+                  className="quiz-option"
                 >
                   <span style={{ fontWeight: 700, flexShrink: 0, color: 'inherit' }}>
                     {String.fromCharCode(65 + idx)}.
