@@ -3922,7 +3922,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem' }}>
-                    Total: {courseScore} pts
+                    Total Streaks: {gymProgress.length} {gymProgress.length === 1 ? 'day' : 'days'}
                   </div>
                 </div>
               </div>
