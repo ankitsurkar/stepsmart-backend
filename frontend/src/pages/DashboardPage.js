@@ -2245,6 +2245,15 @@ export default function DashboardPage() {
   const [hoveredReminderId, setHoveredReminderId] = useState(null);
   const [clickedReminderId, setClickedReminderId] = useState(null);
   const weeklyReminderCardRef = useRef(null);
+  const reminderLeaveTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (reminderLeaveTimeoutRef.current) {
+        clearTimeout(reminderLeaveTimeoutRef.current);
+      }
+    };
+  }, []);
   const [calendarMonth, setCalendarMonth] = useState(() => startOfMonthFn(toZonedTime(new Date(), TIMEZONE_IST)));
   const [selectedCalendarDate, setSelectedCalendarDate] = useState('');
   const [displayNameInput, setDisplayNameInput] = useState('');
@@ -2802,9 +2811,20 @@ export default function DashboardPage() {
                         cursor: rem.description ? 'pointer' : 'default',
                       }}
                       onMouseEnter={() => {
+                        if (reminderLeaveTimeoutRef.current) {
+                          clearTimeout(reminderLeaveTimeoutRef.current);
+                          reminderLeaveTimeoutRef.current = null;
+                        }
                         if (rem.description) setHoveredReminderId(rem.id);
                       }}
-                      onMouseLeave={() => setHoveredReminderId(null)}
+                      onMouseLeave={() => {
+                        if (reminderLeaveTimeoutRef.current) {
+                          clearTimeout(reminderLeaveTimeoutRef.current);
+                        }
+                        reminderLeaveTimeoutRef.current = setTimeout(() => {
+                          setHoveredReminderId(null);
+                        }, 400);
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         if (rem.description) {
