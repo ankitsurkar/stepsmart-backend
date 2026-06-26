@@ -14,6 +14,10 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 const TIMEZONE_IST = 'Asia/Kolkata';
 
+const COURSE_NAME_OVERRIDES = {
+  'course-001': 'PM -X Accelerator',
+};
+
 
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Home', icon: 'home' },
@@ -2376,64 +2380,92 @@ export default function DashboardPage() {
 
     try {
       const todayStr = toDateKey(new Date());
-      // Guess active course ID from state, cache, or default 'course-001'
-      const activeCourseId = activeCourse?.courseId || clientDashboardCache?.activeCourse?.courseId || 'course-001';
 
-      // Fetch course list, weeks, and progress in parallel to eliminate request waterfalls
-      const [coursesRes, weeksRes, progressRes] = await Promise.all([
-        getMyCourses(),
-        getCourseWeeks(activeCourseId),
-        getProgress(activeCourseId, { includeLeaderboard: true, clientDate: todayStr })
-      ]);
+      let courseList = [];
+      let coursesFetchedSuccessfully = false;
 
-      const courseList = coursesRes.data.courses || [];
-      setCourses(courseList);
+      try {
+        const coursesRes = await getMyCourses();
+        courseList = coursesRes.data.courses || [];
+        coursesFetchedSuccessfully = true;
+      } catch (err) {
+        console.error('Failed to fetch courses list, attempting backup course loading:', err);
+      }
 
-      const actualCourse = courseList.find(c => c.courseId === activeCourseId) || courseList[0];
-      if (actualCourse) {
+      let actualCourse = null;
+      let weeksRes = null;
+      let progressRes = null;
+
+      if (coursesFetchedSuccessfully && courseList.length > 0) {
+        // Normal path: courses fetched successfully and list is not empty
+        setCourses(courseList);
+        const preferredCourseId = activeCourse?.courseId || clientDashboardCache?.activeCourse?.courseId;
+        actualCourse = courseList.find(c => c.courseId === preferredCourseId) || courseList[0];
         setActiveCourse(actualCourse);
 
-        // If the guessed activeCourseId was not correct, re-fetch weeks and progress for the correct course.
-        // In 99% of cases this matches, saving a full round-trip.
-        if (actualCourse.courseId !== activeCourseId) {
-          await loadCourse(actualCourse.courseId, courseList);
-        } else {
-          const weeksData = weeksRes.data.weeks || [];
-          setWeeks(weeksData);
+        // Fetch weeks and progress for the selected course
+        [weeksRes, progressRes] = await Promise.all([
+          getCourseWeeks(actualCourse.courseId),
+          getProgress(actualCourse.courseId, { includeLeaderboard: true, clientDate: todayStr })
+        ]);
+      } else {
+        // Fallback/Backup path: courses API failed or returned empty list.
+        // Try loading the preferred/cached course ID or default to 'course-001' as a backup.
+        const fallbackCourseId = activeCourse?.courseId || clientDashboardCache?.activeCourse?.courseId || 'course-001';
+        
+        console.log(`Running backup load path for course: ${fallbackCourseId}`);
+        [weeksRes, progressRes] = await Promise.all([
+          getCourseWeeks(fallbackCourseId),
+          getProgress(fallbackCourseId, { includeLeaderboard: true, clientDate: todayStr })
+        ]);
 
-          const nextProgressMap = {};
-          for (const progress of (progressRes.data.progress || [])) {
-            nextProgressMap[progress.weekId] = progress;
-          }
-          setProgressMap(nextProgressMap);
-
-          const leaderboardData = progressRes.data.leaderboard || [];
-          setLeaderboard(leaderboardData);
-
-          const suppData = weeksRes.data.supplementalContent || null;
-          setSupplementalContent(suppData);
-
-          setGymProgress(progressRes.data.gymProgress || []);
-          setGymQuestions(progressRes.data.gymQuestions || []);
-          setGymStreak(progressRes.data.gymStreak || 0);
-
-          // Save to local cache & localStorage
-          clientDashboardCache = {
-            username: user?.username,
-            courses: courseList,
-            weeks: weeksData,
-            progressMap: nextProgressMap,
-            leaderboard: leaderboardData,
-            activeCourse: actualCourse,
-            supplementalContent: suppData,
-          };
-          savePersistedDashboardCache(user?.username, clientDashboardCache);
-
-          setExpandedGroups({});
-          setExpandedAssignments({});
-        }
+        // If the backup load succeeded, create a synthetic course object so the student can still learn
+        const syntheticCourse = {
+          courseId: fallbackCourseId,
+          name: COURSE_NAME_OVERRIDES[fallbackCourseId] || 'Active Course',
+          description: ''
+        };
+        courseList = [syntheticCourse];
+        setCourses(courseList);
+        actualCourse = syntheticCourse;
+        setActiveCourse(syntheticCourse);
       }
-    } catch {
+
+      const weeksData = weeksRes.data.weeks || [];
+      setWeeks(weeksData);
+
+      const nextProgressMap = {};
+      for (const progress of (progressRes.data.progress || [])) {
+        nextProgressMap[progress.weekId] = progress;
+      }
+      setProgressMap(nextProgressMap);
+
+      const leaderboardData = progressRes.data.leaderboard || [];
+      setLeaderboard(leaderboardData);
+
+      const suppData = weeksRes.data.supplementalContent || null;
+      setSupplementalContent(suppData);
+
+      setGymProgress(progressRes.data.gymProgress || []);
+      setGymQuestions(progressRes.data.gymQuestions || []);
+      setGymStreak(progressRes.data.gymStreak || 0);
+
+      // Save to local cache & localStorage
+      clientDashboardCache = {
+        username: user?.username,
+        courses: courseList,
+        weeks: weeksData,
+        progressMap: nextProgressMap,
+        leaderboard: leaderboardData,
+        activeCourse: actualCourse,
+        supplementalContent: suppData,
+      };
+      savePersistedDashboardCache(user?.username, clientDashboardCache);
+
+      setExpandedGroups({});
+      setExpandedAssignments({});
+    } catch (err) {
+      console.error('Dashboard loadData error:', err);
       if (!hasCache) {
         setError('Failed to load your courses. Please refresh.');
       }
