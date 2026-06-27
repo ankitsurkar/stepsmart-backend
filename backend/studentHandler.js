@@ -402,8 +402,18 @@ function makeLeaderboardEntry(userId, profile, currentUserId) {
   };
 }
 
+// Bolt Optimization⚡: In-memory TTL cache for Cognito User Pool scans to prevent hitting AWS rate limits.
+let userProfilesCache = null;
+let userProfilesCacheTimestamp = 0;
+const USER_PROFILES_CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes TTL
+
 async function listUsersBySub(userPoolId) {
   if (!userPoolId) return new Map();
+
+  const now = Date.now();
+  if (userProfilesCache && (now - userProfilesCacheTimestamp < USER_PROFILES_CACHE_TTL_MS)) {
+    return userProfilesCache;
+  }
 
   const usersBySub = new Map();
   let paginationToken;
@@ -428,6 +438,8 @@ async function listUsersBySub(userPoolId) {
     paginationToken = result.PaginationToken;
   } while (paginationToken);
 
+  userProfilesCache = usersBySub;
+  userProfilesCacheTimestamp = now;
   return usersBySub;
 }
 
@@ -440,7 +452,7 @@ function getOrCreateEntry(entries, userId, profiles, currentUserId) {
 
 async function buildLeaderboard(courseId, currentUserId, event) {
   const userPoolId = deriveUserPoolId(event);
-  const [weeksResult, progressResult, assignmentsResult, userProfiles, enrollmentsResult] = await Promise.all([
+  const [weeksResult, progressResult, userProfiles, enrollmentsResult] = await Promise.all([
     ddb.send(new QueryCommand({
       TableName: COURSES_TABLE,
       KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
@@ -458,14 +470,6 @@ async function buildLeaderboard(courseId, currentUserId, event) {
       ExpressionAttributeValues: { ':cid': courseId },
     })).catch((err) => {
       console.error('Progress scan failed while building leaderboard:', err);
-      return { Items: [] };
-    }),
-    ddb.send(new ScanCommand({
-      TableName: ASSIGNMENTS_TABLE,
-      FilterExpression: 'begins_with(pk, :prefix)',
-      ExpressionAttributeValues: { ':prefix': `COURSE#${courseId}#` },
-    })).catch((err) => {
-      console.error('Assignments scan failed while building leaderboard:', err);
       return { Items: [] };
     }),
     listUsersBySub(userPoolId).catch((err) => {
@@ -492,6 +496,24 @@ async function buildLeaderboard(courseId, currentUserId, event) {
   const validWeeks = (weeksResult.Items || []).filter(
     (w) => w.visible === true || hasSupplementalStudentContent(w)
   );
+
+  // Bolt Optimization⚡: Query targeted partition keys instead of a full table scan on ASSIGNMENTS_TABLE
+  const assignmentQueries = validWeeks.map((w) =>
+    ddb.send(new QueryCommand({
+      TableName: ASSIGNMENTS_TABLE,
+      KeyConditionExpression: 'pk = :pk',
+      ExpressionAttributeValues: { ':pk': `COURSE#${courseId}#WEEK#${w.weekId}` },
+    })).catch(() => ({ Items: [] }))
+  );
+  assignmentQueries.push(
+    ddb.send(new QueryCommand({
+      TableName: ASSIGNMENTS_TABLE,
+      KeyConditionExpression: 'pk = :pk',
+      ExpressionAttributeValues: { ':pk': `COURSE#${courseId}#SUPPLEMENTAL` },
+    })).catch(() => ({ Items: [] }))
+  );
+  const assignmentResults = await Promise.all(assignmentQueries);
+  const assignmentItems = assignmentResults.flatMap((r) => r.Items || []);
 
   const weekQuizMap = new Map(
     validWeeks.map((week) => [week.weekId, (week.quiz?.questions || []).length > 0]),
@@ -534,7 +556,7 @@ async function buildLeaderboard(courseId, currentUserId, event) {
   }
 
   const awardedAssignments = new Set();
-  for (const item of (assignmentsResult.Items || [])) {
+  for (const item of assignmentItems) {
     const itemUserId = item.userId || (item.sk ? item.sk.split('#')[1] : null);
     const itemWeekId = item.weekId || (item.pk ? item.pk.split('#')[3] : null);
     if (!itemUserId || !itemWeekId) continue;
@@ -560,14 +582,26 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     );
   }
 
+  // Bolt Optimization⚡: Fast string comparison operators replacing slow localeCompare in O(N log N) sort comparator
   return [...leaderboardEntries.values()]
-    .sort((a, b) =>
-      b.score - a.score ||
-      b.completedLectures - a.completedLectures ||
-      b.assignmentsSubmitted - a.assignmentsSubmitted ||
-      (b.lastActivity || '').localeCompare(a.lastActivity || '') ||
-      a.displayName.localeCompare(b.displayName)
-    )
+    .sort((a, b) => {
+      const scoreDiff = b.score - a.score;
+      if (scoreDiff !== 0) return scoreDiff;
+
+      const lecturesDiff = b.completedLectures - a.completedLectures;
+      if (lecturesDiff !== 0) return lecturesDiff;
+
+      const assignmentsDiff = b.assignmentsSubmitted - a.assignmentsSubmitted;
+      if (assignmentsDiff !== 0) return assignmentsDiff;
+
+      const actA = a.lastActivity || '';
+      const actB = b.lastActivity || '';
+      if (actB !== actA) return actB > actA ? 1 : -1;
+
+      const nameA = a.displayName || '';
+      const nameB = b.displayName || '';
+      return nameA > nameB ? 1 : (nameA < nameB ? -1 : 0);
+    })
     .map((entry, index) => ({
       ...entry,
       totalPoints: entry.score,

@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import * as Tooltip from '@radix-ui/react-tooltip';
-import { signOut, updateUserAttributes } from 'aws-amplify/auth';
+import { signOut, updateUserAttributes, fetchAuthSession } from 'aws-amplify/auth';
 import { Amplify } from 'aws-amplify';
 import awsConfig from '@/lib/aws-config';
 import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '@/lib/api-client-client';
@@ -2167,6 +2167,10 @@ export default function DashboardClient({
   initialWeeks = [],
   initialProgressMap = {},
   initialLeaderboard = [],
+  initialSupplementalContent = null,
+  initialGymProgress = [],
+  initialGymQuestions = [],
+  initialGymStreak = 0,
 }) {
   const isAdmin = user?.isAdmin || false;
   const router = useRouter();
@@ -2212,10 +2216,10 @@ export default function DashboardClient({
   const [pmGymScore, setPmGymScore] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  // DB Gym States
-  const [gymProgress, setGymProgress] = useState([]);
-  const [gymQuestions, setGymQuestions] = useState([]);
-  const [gymStreak, setGymStreak] = useState(0);
+  // DB Gym States — initialized from SSR props so no client refetch is needed on first load
+  const [gymProgress, setGymProgress] = useState(initialGymProgress);
+  const [gymQuestions, setGymQuestions] = useState(initialGymQuestions);
+  const [gymStreak, setGymStreak] = useState(initialGymStreak);
   const [tempSelectedOption, setTempSelectedOption] = useState(undefined);
   const [tempTextAnswer, setTempTextAnswer] = useState('');
   const [showYesterdayModal, setShowYesterdayModal] = useState(false);
@@ -2294,6 +2298,26 @@ export default function DashboardClient({
   const [error, setError] = useState('');
 
   useEffect(() => {
+    // If SSR already provided complete data, skip the client-side refetch entirely.
+    // This eliminates the double-fetch delay and makes the dashboard feel instant.
+    const ssrDataComplete = initialCourses.length > 0 && initialWeeks.length > 0;
+    if (ssrDataComplete) {
+      // Seed the cache with the SSR data so course-switching still works
+      clientDashboardCache = {
+        username: user?.username,
+        courses: initialCourses,
+        weeks: initialWeeks,
+        progressMap: initialProgressMap,
+        leaderboard: initialLeaderboard,
+        activeCourse: initialActiveCourse,
+        supplementalContent: initialSupplementalContent,
+      };
+      savePersistedDashboardCache(user?.username, clientDashboardCache);
+      setSupplementalContent(initialSupplementalContent);
+      return; // ← skip loadData()
+    }
+
+    // SSR data was incomplete (e.g. Lambda error) — fall back to cache then fresh fetch
     if (user?.username) {
       const persisted = getPersistedDashboardCache(user.username);
       if (persisted) {
@@ -2317,6 +2341,35 @@ export default function DashboardClient({
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Background token refresh — mirrors what the live CRA site does via Amplify automatically.
+  // Cognito id_token expires in 1 hour. We refresh the cookie every 50 minutes so the user
+  // is never logged out as long as they are actively using the app.
+  useEffect(() => {
+    const REFRESH_INTERVAL_MS = 50 * 60 * 1000; // 50 minutes
+
+    async function refreshCookieToken() {
+      try {
+        // forceRefresh=true makes Amplify use its internally-stored refresh token to get
+        // a fresh id_token. We then push that fresh token into the httpOnly cookie.
+        const session = await fetchAuthSession({ forceRefresh: true });
+        const idToken = session.tokens?.idToken?.toString();
+        if (!idToken) return;
+
+        await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken }),
+        });
+      } catch (err) {
+        // Non-fatal: next page navigation will re-check the cookie via middleware
+        console.warn('Background token refresh failed:', err);
+      }
+    }
+
+    const intervalId = setInterval(refreshCookieToken, REFRESH_INTERVAL_MS);
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -2635,20 +2688,41 @@ export default function DashboardClient({
   const assignmentsSubmittedCount = myLeaderboardEntry?.assignmentsSubmitted || 0;
   const currentDateLabel = formatDateLabel();
   const displayName = getDisplayName(user);
-  const calendarEventDefinitions = buildCalendarEventDefinitions(weeks);
-  const calendarEntries = expandCalendarEntries(calendarEventDefinitions);
-  const calendarEntriesByDate = buildCalendarEntriesByDate(calendarEntries);
-  const visibleCalendarMonth = startOfMonth(calendarMonth);
-  const calendarGridDays = buildCalendarGridDays(visibleCalendarMonth);
-  const visibleMonthDateKeys = calendarGridDays.map((date) => toDateKey(date));
-  const today = new Date();
-  const todayKey = toDateKey(today);
-  const firstVisibleEventKey = visibleMonthDateKeys.find((dateKey) => (calendarEntriesByDate[dateKey] || []).length > 0);
-  const visibleToday = calendarGridDays.some((date) => isSameDate(date, today));
-  const defaultSelectedDateKey = firstVisibleEventKey || (visibleToday ? todayKey : toDateKey(visibleCalendarMonth));
-  const activeSelectedDateKey = selectedCalendarDate && visibleMonthDateKeys.includes(selectedCalendarDate)
-    ? selectedCalendarDate
-    : defaultSelectedDateKey;
+  // Bolt Optimization⚡: Memoize calendar event calculations and date grid generation to prevent expensive date-fns computations on unrelated re-renders.
+  const {
+    calendarEventDefinitions,
+    calendarEntries,
+    calendarEntriesByDate,
+    visibleCalendarMonth,
+    calendarGridDays,
+    visibleMonthDateKeys,
+    activeSelectedDateKey,
+  } = useMemo(() => {
+    const eventDefs = buildCalendarEventDefinitions(weeks);
+    const entries = expandCalendarEntries(eventDefs);
+    const entriesByDate = buildCalendarEntriesByDate(entries);
+    const visMonth = startOfMonth(calendarMonth);
+    const gridDays = buildCalendarGridDays(visMonth);
+    const visDateKeys = gridDays.map((date) => toDateKey(date));
+    const tDay = new Date();
+    const tKey = toDateKey(tDay);
+    const firstVisKey = visDateKeys.find((dateKey) => (entriesByDate[dateKey] || []).length > 0);
+    const visToday = gridDays.some((date) => isSameDate(date, tDay));
+    const defSelectedKey = firstVisKey || (visToday ? tKey : toDateKey(visMonth));
+    const actSelectedKey = selectedCalendarDate && visDateKeys.includes(selectedCalendarDate)
+      ? selectedCalendarDate
+      : defSelectedKey;
+
+    return {
+      calendarEventDefinitions: eventDefs,
+      calendarEntries: entries,
+      calendarEntriesByDate: entriesByDate,
+      visibleCalendarMonth: visMonth,
+      calendarGridDays: gridDays,
+      visibleMonthDateKeys: visDateKeys,
+      activeSelectedDateKey: actSelectedKey,
+    };
+  }, [weeks, calendarMonth, selectedCalendarDate]);
 
   const focusItems = [];
   const allLessons = weekGroups.flatMap((group) => group.lessons);

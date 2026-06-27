@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Amplify } from 'aws-amplify';
 import {
   signIn,
+  signOut,
   confirmSignIn,
   resetPassword,
   confirmResetPassword,
@@ -217,6 +218,9 @@ export default function LoginPage() {
     setSubmitting(true);
 
     try {
+      // Clear any stale Amplify session (e.g. from live CRA site or previous login)
+      try { await signOut(); } catch (_) {}
+
       const result = await signIn({ username: email, password });
 
       if (result.nextStep?.signInStep === 'CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED') {
@@ -314,6 +318,7 @@ export default function LoginPage() {
       });
 
       // Automatically sign the user in after password reset
+      try { await signOut(); } catch (_) {}
       await signIn({ username: email, password: newPassword });
       await exchangeTokensForCookies();
 

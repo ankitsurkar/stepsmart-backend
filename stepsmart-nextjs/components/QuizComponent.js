@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { submitQuiz } from '@/lib/api-client-client';
 
 const s = {
@@ -80,7 +80,9 @@ function optionStyle(base, selected, submitted, isCorrect, isChosen) {
   return { ...base, ...s.optionDimmed };
 }
 
-export default function QuizComponent({ courseId, weekId, questions, initialPassed, onQuizPassed }) {
+// Bolt Optimization⚡: Memoize component to prevent unnecessary re-renders
+// during parent state updates (e.g. video playback ticks in LearnClient).
+const QuizComponent = memo(function QuizComponent({ courseId, weekId, questions, initialPassed, onQuizPassed }) {
   const [answers,    setAnswers]    = useState({});
   const [submitted,  setSubmitted]  = useState(false);
   const [result,     setResult]     = useState(null);
@@ -186,4 +188,13 @@ export default function QuizComponent({ courseId, weekId, questions, initialPass
       ) : null}
     </div>
   );
-}
+}, (prevProps, nextProps) => {
+  return (
+    prevProps.courseId === nextProps.courseId &&
+    prevProps.weekId === nextProps.weekId &&
+    prevProps.initialPassed === nextProps.initialPassed &&
+    prevProps.questions === nextProps.questions
+  );
+});
+
+export default QuizComponent;

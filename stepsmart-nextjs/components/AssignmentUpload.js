@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, memo } from 'react';
 import { uploadAssignment } from '@/lib/api-client-client';
 import { toast } from 'sonner';
 
@@ -80,7 +80,8 @@ function fileExt(name) {
   return (name.split('.').pop() || '').toLowerCase();
 }
 
-export default function AssignmentUpload({
+// Bolt Optimization⚡: Memoize component to prevent unnecessary re-renders when parent updates.
+const AssignmentUpload = memo(function AssignmentUpload({
   courseId,
   weekId,
   assignmentId,
@@ -246,4 +247,6 @@ export default function AssignmentUpload({
       )}
     </div>
   );
-}
+});
+
+export default AssignmentUpload;

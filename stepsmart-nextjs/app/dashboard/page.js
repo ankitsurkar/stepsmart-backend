@@ -21,6 +21,10 @@ export default async function DashboardPage() {
   let weeks = [];
   let progressMap = {};
   let leaderboard = [];
+  let supplementalContent = null;
+  let gymProgress = [];
+  let gymQuestions = [];
+  let gymStreak = 0;
 
   try {
     const coursesData = await getMyCourses(token);
@@ -30,7 +34,6 @@ export default async function DashboardPage() {
     console.error('SSR: Failed to fetch courses list:', error);
   }
 
-  // Fallback path: If courses is empty, try default course-001 so student is not blocked
   const activeCourseId = activeCourse?.courseId || 'course-001';
   const today = new Date().toISOString().split('T')[0];
 
@@ -43,7 +46,9 @@ export default async function DashboardPage() {
   ]);
 
   if (weeksRes.status === 'fulfilled') {
-    weeks = weeksRes.value.weeks || [];
+    const weeksData = weeksRes.value || {};
+    weeks = weeksData.weeks || [];
+    supplementalContent = weeksData.supplementalContent || null;
   } else {
     console.error(`SSR: Failed to fetch weeks for ${activeCourseId}:`, weeksRes.reason);
   }
@@ -54,6 +59,9 @@ export default async function DashboardPage() {
       progressMap[p.weekId] = p;
     }
     leaderboard = progressData.leaderboard || [];
+    gymProgress = progressData.gymProgress || [];
+    gymQuestions = progressData.gymQuestions || [];
+    gymStreak = progressData.gymStreak || 0;
   } else {
     console.error(`SSR: Failed to fetch progress for ${activeCourseId}:`, progressRes.reason);
   }
@@ -67,6 +75,10 @@ export default async function DashboardPage() {
         initialWeeks={weeks}
         initialProgressMap={progressMap}
         initialLeaderboard={leaderboard}
+        initialSupplementalContent={supplementalContent}
+        initialGymProgress={gymProgress}
+        initialGymQuestions={gymQuestions}
+        initialGymStreak={gymStreak}
       />
     </Suspense>
   );

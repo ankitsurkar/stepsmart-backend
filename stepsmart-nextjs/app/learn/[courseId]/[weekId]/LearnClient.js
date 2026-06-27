@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getCourseWeeks, getProgress, getQAQuestions, postQAQuestion, sendHeartbeat } from '@/lib/api-client-client';
+import { fetchAuthSession } from 'aws-amplify/auth';
 import VideoPlayer from '@/components/VideoPlayer';
 import QuizComponent from '@/components/QuizComponent';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -637,6 +638,28 @@ export default function LearnClient({
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Refresh the httpOnly id_token cookie every 50 minutes so long video sessions
+  // never trigger an unexpected logout (same as Amplify does automatically in the CRA site).
+  useEffect(() => {
+    const REFRESH_INTERVAL_MS = 50 * 60 * 1000; // 50 minutes
+    async function refreshCookieToken() {
+      try {
+        const session = await fetchAuthSession({ forceRefresh: true });
+        const idToken = session.tokens?.idToken?.toString();
+        if (!idToken) return;
+        await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken }),
+        });
+      } catch (err) {
+        console.warn('LearnClient: background token refresh failed:', err);
+      }
+    }
+    const intervalId = setInterval(refreshCookieToken, REFRESH_INTERVAL_MS);
+    return () => clearInterval(intervalId);
   }, []);
 
   // Tabs and Questions state
