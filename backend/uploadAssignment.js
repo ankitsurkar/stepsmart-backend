@@ -96,6 +96,9 @@ exports.handler = async (event) => {
   const objectPath = `assignments/${courseId}/${weekId}/${userId}/${Date.now()}-${safeFileName}`;
 
   try {
+    // Convert Buffer to Uint8Array for native fetch body compatibility
+    const uint8ArrayBody = new Uint8Array(fileBuffer.buffer, fileBuffer.byteOffset, fileBuffer.byteLength);
+
     const uploadRes = await fetch(
       `${supabaseUrl}/storage/v1/object/${bucket}/${objectPath}`,
       {
@@ -104,16 +107,17 @@ exports.handler = async (event) => {
           Authorization: `Bearer ${serviceRoleKey}`,
           apikey: serviceRoleKey,
           'Content-Type': mimeType,
-          'x-upsert': 'false',
+          'Content-Length': String(fileBuffer.length),
+          'x-upsert': 'true',
         },
-        body: fileBuffer,
+        body: uint8ArrayBody,
       },
     );
 
     if (!uploadRes.ok) {
       const errorText = await uploadRes.text();
-      console.error('Supabase upload error:', errorText);
-      return res(500, { message: 'Upload failed. Please try again.' });
+      console.error('Supabase upload error status:', uploadRes.status, errorText);
+      return res(500, { message: `Upload to storage failed (${uploadRes.status}): ${errorText || 'Storage request rejected.'}` });
     }
 
     const uploadedAt = new Date().toISOString();
@@ -171,6 +175,6 @@ exports.handler = async (event) => {
     });
   } catch (err) {
     console.error('uploadAssignment error:', err);
-    return res(500, { message: 'Upload failed. Please try again.' });
+    return res(500, { message: `Upload failed: ${err.message || 'Internal server error'}` });
   }
 };
