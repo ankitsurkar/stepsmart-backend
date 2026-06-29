@@ -2,6 +2,8 @@
 // Trigger: POST /assignments/upload
 // Auth:    Cognito Authorizer (JWT required)
 
+const https = require('https');
+const { URL } = require('url');
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, PutCommand, GetCommand } = require('@aws-sdk/lib-dynamodb');
 
@@ -36,6 +38,42 @@ function corsHeaders() {
 
 function res(statusCode, body) {
   return { statusCode, headers: { 'Content-Type': 'application/json', ...corsHeaders() }, body: JSON.stringify(body) };
+}
+
+function httpsRequest(urlString, options, bodyData) {
+  return new Promise((resolve, reject) => {
+    const parsedUrl = new URL(urlString);
+    const reqOptions = {
+      hostname: parsedUrl.hostname,
+      port: parsedUrl.port || 443,
+      path: parsedUrl.pathname + parsedUrl.search,
+      method: options.method || 'GET',
+      headers: options.headers || {},
+    };
+
+    const req = https.request(reqOptions, (res) => {
+      const chunks = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('end', () => {
+        const responseBody = Buffer.concat(chunks).toString('utf8');
+        resolve({
+          ok: res.statusCode >= 200 && res.statusCode < 300,
+          status: res.statusCode,
+          text: async () => responseBody,
+          json: async () => {
+            try { return JSON.parse(responseBody); } catch { return {}; }
+          },
+        });
+      });
+    });
+
+    req.on('error', (err) => reject(err));
+
+    if (bodyData) {
+      req.write(bodyData);
+    }
+    req.end();
+  });
 }
 
 exports.handler = async (event) => {
@@ -96,10 +134,7 @@ exports.handler = async (event) => {
   const objectPath = `assignments/${courseId}/${weekId}/${userId}/${Date.now()}-${safeFileName}`;
 
   try {
-    // Convert Buffer to Uint8Array for native fetch body compatibility
-    const uint8ArrayBody = new Uint8Array(fileBuffer.buffer, fileBuffer.byteOffset, fileBuffer.byteLength);
-
-    const uploadRes = await fetch(
+    const uploadRes = await httpsRequest(
       `${supabaseUrl}/storage/v1/object/${bucket}/${objectPath}`,
       {
         method: 'POST',
@@ -110,8 +145,8 @@ exports.handler = async (event) => {
           'Content-Length': String(fileBuffer.length),
           'x-upsert': 'true',
         },
-        body: uint8ArrayBody,
       },
+      fileBuffer,
     );
 
     if (!uploadRes.ok) {
@@ -121,7 +156,7 @@ exports.handler = async (event) => {
     }
 
     const uploadedAt = new Date().toISOString();
-    const signedUrlRes = await fetch(
+    const signedUrlRes = await httpsRequest(
       `${supabaseUrl}/storage/v1/object/sign/${bucket}/${objectPath}`,
       {
         method: 'POST',
@@ -130,8 +165,8 @@ exports.handler = async (event) => {
           apikey: serviceRoleKey,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ expiresIn: 60 * 60 * 24 }),
       },
+      Buffer.from(JSON.stringify({ expiresIn: 60 * 60 * 24 })),
     );
 
     const signedUrlBody = await signedUrlRes.json();
@@ -175,6 +210,7 @@ exports.handler = async (event) => {
     });
   } catch (err) {
     console.error('uploadAssignment error:', err);
-    return res(500, { message: `Upload failed: ${err.message || 'Internal server error'}` });
+    const causeMsg = err.cause ? ` (${err.cause.message || err.cause})` : '';
+    return res(500, { message: `Upload failed: ${err.message || 'Internal server error'}${causeMsg}` });
   }
 };
