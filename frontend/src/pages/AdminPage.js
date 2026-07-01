@@ -1948,7 +1948,22 @@ function SubmissionsTab({ courseId }) {
                   <td style={s.td}>{new Date(sub.uploadedAt).toLocaleString()}</td>
                   <td style={s.td}>
                     {sub.driveUrl ? (
-                      <a href={sub.driveUrl} target="_blank" rel="noreferrer" style={{ ...s.btn, textDecoration: 'none', display: 'inline-block' }}>Open ↗</a>
+                      <a 
+                        href={
+                          (() => {
+                            const ext = (sub.fileName || '').split('.').pop().toLowerCase();
+                            if (['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'odt', 'odp'].includes(ext)) {
+                              return `https://docs.google.com/gview?url=${encodeURIComponent(sub.driveUrl)}&embedded=true`;
+                            }
+                            return sub.driveUrl;
+                          })()
+                        } 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        style={{ ...s.btn, textDecoration: 'none', display: 'inline-block' }}
+                      >
+                        Open ↗
+                      </a>
                     ) : 'No Link'}
                   </td>
                 </tr>
