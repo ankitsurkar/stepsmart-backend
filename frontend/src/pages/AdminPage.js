@@ -1948,22 +1948,33 @@ function SubmissionsTab({ courseId }) {
                   <td style={s.td}>{new Date(sub.uploadedAt).toLocaleString()}</td>
                   <td style={s.td}>
                     {sub.driveUrl ? (
-                      <a 
-                        href={
-                          (() => {
-                            const ext = (sub.fileName || '').split('.').pop().toLowerCase();
-                            if (['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'odt', 'odp'].includes(ext)) {
-                              return `https://docs.google.com/gview?url=${encodeURIComponent(sub.driveUrl)}&embedded=true`;
-                            }
-                            return sub.driveUrl;
-                          })()
-                        } 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        style={{ ...s.btn, textDecoration: 'none', display: 'inline-block' }}
-                      >
-                        Open ↗
-                      </a>
+                      <div style={{ display: 'flex', gap: '0.4rem' }}>
+                        <a 
+                          href={
+                            (() => {
+                              const ext = (sub.fileName || '').split('.').pop().toLowerCase();
+                              if (['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'odt', 'odp'].includes(ext)) {
+                                  return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(sub.driveUrl)}`;
+                              }
+                              return sub.driveUrl;
+                            })()
+                          } 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          style={{ ...s.btn, textDecoration: 'none', display: 'inline-block', padding: '0.35rem 0.75rem' }}
+                        >
+                          👁️ View
+                        </a>
+                        <a 
+                          href={sub.driveUrl} 
+                          download={sub.fileName || 'submission'}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ ...s.btn, ...s.btnSecondary, textDecoration: 'none', display: 'inline-block', padding: '0.35rem 0.75rem' }}
+                        >
+                          ⬇️ Download
+                        </a>
+                      </div>
                     ) : 'No Link'}
                   </td>
                 </tr>
