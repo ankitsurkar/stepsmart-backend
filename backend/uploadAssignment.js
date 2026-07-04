@@ -166,7 +166,7 @@ exports.handler = async (event) => {
           'Content-Type': 'application/json',
         },
       },
-      Buffer.from(JSON.stringify({ expiresIn: 60 * 60 * 24 })),
+      Buffer.from(JSON.stringify({ expiresIn: 60 * 60 * 24 * 365 * 10 })), // 10 years — effectively no expiry
     );
 
     const signedUrlBody = await signedUrlRes.json();

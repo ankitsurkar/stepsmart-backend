@@ -53,7 +53,8 @@ async function createSupabaseSignedUrl(item) {
         apikey: serviceRoleKey,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ expiresIn: 60 * 60 * 24 }),
+      // 10 years — effectively no expiry; students can always revisit old submissions.
+      body: JSON.stringify({ expiresIn: 60 * 60 * 24 * 365 * 10 }),
     },
   );
 

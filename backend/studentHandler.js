@@ -157,7 +157,7 @@ async function signRecordedSessions(sessions) {
               apikey: serviceRoleKey,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ expiresIn: 60 * 60 * 8 }),
+            body: JSON.stringify({ expiresIn: 60 * 60 * 24 * 365 * 10 }), // 10 years — effectively no expiry
           }
         );
         if (signedUrlRes.ok) {
@@ -206,7 +206,7 @@ async function signWeekVideos(weeks) {
               apikey: serviceRoleKey,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ expiresIn: 60 * 60 * 8 }),
+            body: JSON.stringify({ expiresIn: 60 * 60 * 24 * 365 * 10 }), // 10 years — effectively no expiry
           }
         );
         if (signedUrlRes.ok) {

@@ -99,7 +99,7 @@ async function signRecordedSessions(sessions) {
               apikey: serviceRoleKey,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ expiresIn: 60 * 60 * 8 }),
+            body: JSON.stringify({ expiresIn: 60 * 60 * 24 * 365 * 10 }), // 10 years — effectively no expiry
           }
         );
         if (signedUrlRes.ok) {
@@ -148,7 +148,7 @@ async function signWeekVideos(weeks) {
               apikey: serviceRoleKey,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ expiresIn: 60 * 60 * 8 }),
+            body: JSON.stringify({ expiresIn: 60 * 60 * 24 * 365 * 10 }), // 10 years — effectively no expiry
           }
         );
         if (signedUrlRes.ok) {
@@ -673,6 +673,8 @@ async function getSubmissions(courseId) {
 
   if (supabaseUrl && serviceRoleKey && bucket) {
     for (const sub of submissions) {
+      // Use storagePath (preferred) for all supabase items — always regenerate fresh signed URLs
+      // so that old DynamoDB-stored driveUrls (which expire after 24h) are never served stale.
       if (sub.storageProvider === 'supabase' && sub.storagePath) {
         try {
           const signedUrlRes = await fetch(
@@ -684,16 +686,23 @@ async function getSubmissions(courseId) {
                 apikey: serviceRoleKey,
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ expiresIn: 60 * 60 * 8 }),
+              body: JSON.stringify({ expiresIn: 60 * 60 * 24 * 365 * 10 }), // 10 years — effectively no expiry
             }
           );
           if (signedUrlRes.ok) {
             const body = await signedUrlRes.json();
             const rawSigned = body.signedUrl || body.signedURL || '';
             sub.driveUrl = rawSigned.startsWith('http') ? rawSigned : `${supabaseUrl}/storage/v1${rawSigned}`;
+          } else {
+            // Signing failed (e.g. Supabase rate limit) — null out the stale stored URL
+            // so the frontend shows a clear 'unavailable' state rather than an expired JWT error.
+            console.warn('Supabase sign failed for', sub.storagePath, signedUrlRes.status);
+            sub.driveUrl = null;
           }
         } catch (err) {
           console.error('Error generating signed URL for', sub.storagePath, err);
+          // Null out so frontend knows the link is broken, not expired
+          sub.driveUrl = null;
         }
       }
     }
