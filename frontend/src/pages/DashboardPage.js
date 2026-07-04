@@ -2162,7 +2162,7 @@ function savePersistedDashboardCache(username, cache) {
 let clientDashboardCache = null;
 
 export default function DashboardPage() {
-  const { isAdmin, logout, updateDisplayName, updateProfile, user } = useAuth();
+  const { isAdmin, logout, updateDisplayName, updateProfile, user, loading: authLoading } = useAuth();
 
   // Populate cache from localStorage synchronously on render start
   if (user?.username && (!clientDashboardCache || clientDashboardCache.username !== user.username)) {
@@ -2305,10 +2305,19 @@ export default function DashboardPage() {
     return !hasCache;
   });
   const [error, setError] = useState('');
+  // Tracks whether we've done the initial data load so profile updates
+  // don't retrigger a full dashboard reload.
+  const hasLoadedRef = useRef(false);
 
+  // Wait for Amplify to restore the session before fetching data.
+  // Without this, loadData fires before fetchAuthSession() resolves on a hard
+  // refresh, the request goes unsigned, and the user sees "Showing cached data".
   useEffect(() => {
-    loadData();
-  }, []);
+    if (!authLoading && user && !hasLoadedRef.current) {
+      hasLoadedRef.current = true;
+      loadData();
+    }
+  }, [authLoading, user]);
 
   useEffect(() => {
     function handleResize() {
