@@ -76,6 +76,30 @@ function httpsRequest(urlString, options, bodyData) {
   });
 }
 
+const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm');
+const ssm = new SSMClient({ region: process.env.AWS_REGION || 'eu-north-1' });
+
+let cachedSupaUrl = null;
+let cachedSupaKey = null;
+
+async function getSupabaseCreds() {
+  if (cachedSupaUrl && cachedSupaKey) {
+    return { url: cachedSupaUrl, key: cachedSupaKey };
+  }
+  try {
+    const [urlRes, keyRes] = await Promise.all([
+      ssm.send(new GetParameterCommand({ Name: '/stepsmart/supabase/url' })),
+      ssm.send(new GetParameterCommand({ Name: '/stepsmart/supabase/service-role-key', WithDecryption: true })),
+    ]);
+    cachedSupaUrl = urlRes.Parameter.Value;
+    cachedSupaKey = keyRes.Parameter.Value;
+    return { url: cachedSupaUrl, key: cachedSupaKey };
+  } catch (err) {
+    console.error('Error fetching Supabase credentials from SSM Parameter Store:', err);
+    return null;
+  }
+}
+
 exports.handler = async (event) => {
   currentOrigin = event?.headers?.origin || event?.headers?.Origin || FRONTEND_URL;
   if (event.httpMethod === 'OPTIONS') return res(200, {});
@@ -90,6 +114,20 @@ exports.handler = async (event) => {
   const { courseId, weekId, fileName, mimeType, fileBase64, assignmentId, assignmentTitle } = body;
   if (!courseId || !weekId || !fileName || !mimeType || !fileBase64)
     return res(400, { message: 'Missing required fields' });
+
+  // Input Validation
+  if (typeof courseId !== 'string' || !/^[a-zA-Z0-9_-]{3,50}$/.test(courseId)) {
+    return res(400, { message: 'Invalid courseId format.' });
+  }
+  if (typeof weekId !== 'string' || !/^[a-zA-Z0-9_-]{3,50}$/.test(weekId)) {
+    return res(400, { message: 'Invalid weekId format.' });
+  }
+  if (typeof fileName !== 'string' || fileName.length > 200 || fileName.includes('/') || fileName.includes('\\')) {
+    return res(400, { message: 'Invalid fileName format.' });
+  }
+  if (typeof mimeType !== 'string' || !ALLOWED_MIME_TYPES.has(mimeType)) {
+    return res(400, { message: 'Unsupported or invalid MIME type.' });
+  }
 
   // Verify enrollment (admins bypass this check)
   const groupsClaim = event?.requestContext?.authorizer?.claims?.['cognito:groups'];
@@ -114,21 +152,19 @@ exports.handler = async (event) => {
     }
   }
 
-  if (!ALLOWED_MIME_TYPES.has(mimeType))
-    return res(400, { message: 'Unsupported file type. Upload PDF, Word, or PowerPoint.' });
-
   const fileBuffer = Buffer.from(fileBase64, 'base64');
   if (fileBuffer.length > MAX_FILE_BYTES) {
     return res(400, { message: 'File exceeds the 7 MB size limit.' });
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
-
-  if (!supabaseUrl || !serviceRoleKey || !bucket) {
-    return res(500, { message: 'Upload service not configured.' });
+  const creds = await getSupabaseCreds();
+  if (!creds) {
+    return res(500, { message: 'Upload service not configured (missing SSM parameters).' });
   }
+
+  const supabaseUrl = creds.url;
+  const serviceRoleKey = creds.key;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'PMX';
 
   const safeFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
   const objectPath = `assignments/${courseId}/${weekId}/${userId}/${Date.now()}-${safeFileName}`;

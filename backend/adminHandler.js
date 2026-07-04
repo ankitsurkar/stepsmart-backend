@@ -18,6 +18,30 @@
 //   DELETE /admin/courses/{courseId}/weeks/{weekId}      → delete week
 //   GET    /admin/courses/{courseId}/progress            → all student progress for a course
 
+const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm');
+const ssm = new SSMClient({ region: process.env.AWS_REGION || 'eu-north-1' });
+
+let cachedSupaUrl = null;
+let cachedSupaKey = null;
+
+async function getSupabaseCreds() {
+  if (cachedSupaUrl && cachedSupaKey) {
+    return { url: cachedSupaUrl, key: cachedSupaKey };
+  }
+  try {
+    const [urlRes, keyRes] = await Promise.all([
+      ssm.send(new GetParameterCommand({ Name: '/stepsmart/supabase/url' })),
+      ssm.send(new GetParameterCommand({ Name: '/stepsmart/supabase/service-role-key', WithDecryption: true })),
+    ]);
+    cachedSupaUrl = urlRes.Parameter.Value;
+    cachedSupaKey = keyRes.Parameter.Value;
+    return { url: cachedSupaUrl, key: cachedSupaKey };
+  } catch (err) {
+    console.error('Error fetching Supabase credentials from SSM Parameter Store:', err);
+    return null;
+  }
+}
+
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const {
   DynamoDBDocumentClient,
@@ -78,14 +102,15 @@ function res(statusCode, body) {
 async function signRecordedSessions(sessions) {
   if (!Array.isArray(sessions) || sessions.length === 0) return sessions;
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
-
-  if (!supabaseUrl || !serviceRoleKey || !bucket) {
-    console.warn('Supabase storage credentials not fully configured for signing.');
+  const creds = await getSupabaseCreds();
+  if (!creds) {
+    console.error('Supabase credentials could not be loaded from SSM for recorded sessions.');
     return sessions;
   }
+
+  const supabaseUrl = creds.url;
+  const serviceRoleKey = creds.key;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'PMX';
 
   const promises = sessions.map(async (session) => {
     if (session.storageProvider === 'supabase' && session.storagePath) {
@@ -128,13 +153,15 @@ async function signRecordedSessions(sessions) {
 async function signWeekVideos(weeks) {
   if (!Array.isArray(weeks) || weeks.length === 0) return weeks;
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
-
-  if (!supabaseUrl || !serviceRoleKey || !bucket) {
+  const creds = await getSupabaseCreds();
+  if (!creds) {
+    console.error('Supabase credentials could not be loaded from SSM for week videos.');
     return weeks;
   }
+
+  const supabaseUrl = creds.url;
+  const serviceRoleKey = creds.key;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'PMX';
 
   const promises = weeks.map(async (week) => {
     if (week.storageProvider === 'supabase' && week.storagePath) {
@@ -667,11 +694,12 @@ async function getSubmissions(courseId) {
 
   const submissions = result.Items || [];
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
+  const creds = await getSupabaseCreds();
+  if (creds) {
+    const supabaseUrl = creds.url;
+    const serviceRoleKey = creds.key;
+    const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'PMX';
 
-  if (supabaseUrl && serviceRoleKey && bucket) {
     for (const sub of submissions) {
       // Use storagePath (preferred) for all supabase items — always regenerate fresh signed URLs
       // so that old DynamoDB-stored driveUrls (which expire after 24h) are never served stale.

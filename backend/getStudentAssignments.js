@@ -31,18 +31,45 @@ function res(statusCode, body) {
   };
 }
 
+const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm');
+
+const ssm = new SSMClient({ region: process.env.AWS_REGION || 'eu-north-1' });
+
+let cachedSupaUrl = null;
+let cachedSupaKey = null;
+
+async function getSupabaseCreds() {
+  if (cachedSupaUrl && cachedSupaKey) {
+    return { url: cachedSupaUrl, key: cachedSupaKey };
+  }
+  try {
+    const [urlRes, keyRes] = await Promise.all([
+      ssm.send(new GetParameterCommand({ Name: '/stepsmart/supabase/url' })),
+      ssm.send(new GetParameterCommand({ Name: '/stepsmart/supabase/service-role-key', WithDecryption: true })),
+    ]);
+    cachedSupaUrl = urlRes.Parameter.Value;
+    cachedSupaKey = keyRes.Parameter.Value;
+    return { url: cachedSupaUrl, key: cachedSupaKey };
+  } catch (err) {
+    console.error('Error fetching Supabase credentials from SSM Parameter Store:', err);
+    return null;
+  }
+}
+
 async function createSupabaseSignedUrl(item) {
   if (!item.storagePath || item.storageProvider !== 'supabase') {
     return item.driveUrl || null;
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const bucket = item.storageBucket || process.env.SUPABASE_STORAGE_BUCKET;
-  if (!supabaseUrl || !serviceRoleKey || !bucket) {
-    console.error('Supabase signing is not configured for assignment:', item.storagePath);
+  const creds = await getSupabaseCreds();
+  if (!creds) {
+    console.error('Supabase credentials could not be loaded from SSM.');
     return item.driveUrl || null;
   }
+
+  const supabaseUrl = creds.url;
+  const serviceRoleKey = creds.key;
+  const bucket = item.storageBucket || process.env.SUPABASE_STORAGE_BUCKET || 'PMX';
 
   const signedUrlRes = await fetch(
     `${supabaseUrl}/storage/v1/object/sign/${bucket}/${item.storagePath}`,

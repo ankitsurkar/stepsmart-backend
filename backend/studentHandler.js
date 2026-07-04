@@ -1,6 +1,30 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, QueryCommand, GetCommand, UpdateCommand, ScanCommand } = require('@aws-sdk/lib-dynamodb');
 const { CognitoIdentityProviderClient, ListUsersCommand } = require('@aws-sdk/client-cognito-identity-provider');
+const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm');
+
+const ssm = new SSMClient({ region: process.env.AWS_REGION || 'eu-north-1' });
+
+let cachedSupaUrl = null;
+let cachedSupaKey = null;
+
+async function getSupabaseCreds() {
+  if (cachedSupaUrl && cachedSupaKey) {
+    return { url: cachedSupaUrl, key: cachedSupaKey };
+  }
+  try {
+    const [urlRes, keyRes] = await Promise.all([
+      ssm.send(new GetParameterCommand({ Name: '/stepsmart/supabase/url' })),
+      ssm.send(new GetParameterCommand({ Name: '/stepsmart/supabase/service-role-key', WithDecryption: true })),
+    ]);
+    cachedSupaUrl = urlRes.Parameter.Value;
+    cachedSupaKey = keyRes.Parameter.Value;
+    return { url: cachedSupaUrl, key: cachedSupaKey };
+  } catch (err) {
+    console.error('Error fetching Supabase credentials from SSM Parameter Store:', err);
+    return null;
+  }
+}
 
 const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const ddb = DynamoDBDocumentClient.from(ddbClient, {
@@ -136,14 +160,15 @@ async function listMyCourses(userId, event) {
 async function signRecordedSessions(sessions) {
   if (!Array.isArray(sessions) || sessions.length === 0) return sessions;
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
-
-  if (!supabaseUrl || !serviceRoleKey || !bucket) {
-    console.warn('Supabase storage credentials not fully configured for signing.');
+  const creds = await getSupabaseCreds();
+  if (!creds) {
+    console.error('Supabase credentials could not be loaded from SSM for recorded sessions.');
     return sessions;
   }
+
+  const supabaseUrl = creds.url;
+  const serviceRoleKey = creds.key;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'PMX';
 
   const promises = sessions.map(async (session) => {
     if (session.storageProvider === 'supabase' && session.storagePath) {
@@ -186,13 +211,15 @@ async function signRecordedSessions(sessions) {
 async function signWeekVideos(weeks) {
   if (!Array.isArray(weeks) || weeks.length === 0) return weeks;
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
-
-  if (!supabaseUrl || !serviceRoleKey || !bucket) {
+  const creds = await getSupabaseCreds();
+  if (!creds) {
+    console.error('Supabase credentials could not be loaded from SSM for week videos.');
     return weeks;
   }
+
+  const supabaseUrl = creds.url;
+  const serviceRoleKey = creds.key;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'PMX';
 
   const promises = weeks.map(async (week) => {
     if (week.storageProvider === 'supabase' && week.storagePath) {
@@ -791,6 +818,20 @@ async function recordHeartbeat(userId, body) {
     return res(400, { message: 'Missing required fields: courseId, weekId, currentTime, duration' });
   }
 
+  // Parameter Validation
+  if (typeof courseId !== 'string' || !/^[a-zA-Z0-9_-]{3,50}$/.test(courseId)) {
+    return res(400, { message: 'Invalid courseId format.' });
+  }
+  if (typeof weekId !== 'string' || !/^[a-zA-Z0-9_-]{3,50}$/.test(weekId)) {
+    return res(400, { message: 'Invalid weekId format.' });
+  }
+  if (typeof currentTime !== 'number' || currentTime < 0 || typeof duration !== 'number' || duration <= 0) {
+    return res(400, { message: 'Invalid currentTime or duration.' });
+  }
+  if (prevTime !== undefined && (typeof prevTime !== 'number' || prevTime < 0)) {
+    return res(400, { message: 'Invalid prevTime.' });
+  }
+
   const startTime = typeof prevTime === 'number' ? prevTime : currentTime;
   const startSeg = Math.floor(startTime / HEARTBEAT_INTERVAL);
   const endSeg = Math.floor(currentTime / HEARTBEAT_INTERVAL);
@@ -934,6 +975,14 @@ async function submitQuizAttempt(userId, body) {
     return res(400, { message: 'Missing required fields: courseId, weekId, answers' });
   }
 
+  // Parameter Validation
+  if (typeof courseId !== 'string' || !/^[a-zA-Z0-9_-]{3,50}$/.test(courseId)) {
+    return res(400, { message: 'Invalid courseId format.' });
+  }
+  if (typeof weekId !== 'string' || (!/^[a-zA-Z0-9_-]{3,50}$/.test(weekId) && weekId !== 'gym')) {
+    return res(400, { message: 'Invalid weekId format.' });
+  }
+
   if (weekId === 'gym') {
     return await submitGymAttempt(userId, body);
   }
@@ -1032,8 +1081,16 @@ async function postQAQuestion(courseId, weekId, userId, body, event) {
   if (!courseId || !weekId) {
     return res(400, { message: 'Missing courseId or weekId' });
   }
-  if (!body.text || !body.text.trim()) {
-    return res(400, { message: 'Question text is required' });
+  if (!body || typeof body.text !== 'string' || !body.text.trim()) {
+    return res(400, { message: 'Question text must be a non-empty string.' });
+  }
+
+  // Parameter Validation
+  if (!/^[a-zA-Z0-9_-]{3,50}$/.test(courseId)) {
+    return res(400, { message: 'Invalid courseId format.' });
+  }
+  if (!/^[a-zA-Z0-9_-]{3,50}$/.test(weekId)) {
+    return res(400, { message: 'Invalid weekId format.' });
   }
 
   const claimsName = event.requestContext?.authorizer?.claims?.name;
