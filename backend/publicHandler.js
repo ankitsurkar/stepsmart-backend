@@ -21,6 +21,24 @@ exports.handler = async (event) => {
   try {
     // ─── POST /public/enroll ────────────────────────────────────────────────
     if (httpMethod === 'POST' && path === '/public/enroll') {
+      const { page } = data;
+
+      if (page === 'get_blogs') {
+        const blogsResult = await docClient.send(new QueryCommand({
+          TableName: COURSES_TABLE,
+          KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+          ExpressionAttributeValues: {
+            ':pk': 'BLOG#GLOBAL',
+            ':prefix': 'POST#',
+          },
+        }));
+
+        const blogs = (blogsResult.Items || [])
+          .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+        return response(200, { success: true, blogs });
+      }
+
       const { name, email, phone, masterclassId = 'default' } = data;
       if (!name || !email) {
         return response(400, { error: 'Name and email are required.' });

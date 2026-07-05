@@ -846,7 +846,7 @@ function BlogPage() {
     const fetchBlogs = async () => {
       try {
         const res = await fetch(
-          'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/track',
+          'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll',
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
