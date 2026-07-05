@@ -463,6 +463,7 @@ async function updateBlog(courseId, body) {
       id: blog.id,
       title: blog.title,
       description: blog.description,
+      content: blog.content || '',
       imageUrl: blog.imageUrl || '',
       date: blog.date || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
       createdAt: blog.createdAt || new Date().toISOString(),

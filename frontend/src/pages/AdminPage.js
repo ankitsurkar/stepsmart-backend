@@ -2436,6 +2436,8 @@ function BlogsTab({ courseId }) {
   const [id, setId] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [content, setContent] = useState('');
+  const [previewTab, setPreviewTab] = useState(false);
   const [imageType, setImageType] = useState('loops'); // 'loops' | 'collab' | 'editor' | 'custom'
   const [customImageUrl, setCustomImageUrl] = useState('');
   const [date, setDate] = useState('');
@@ -2464,6 +2466,7 @@ function BlogsTab({ courseId }) {
       id: "a-new-generation-studies-ai",
       title: "A New Generation Studies AI, Apple's Recipe for On-Device Models, GLM5.2 Tackles Open-Ended Problems",
       description: "The Batch News & Insights: \"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter...",
+      content: "## Inside Claude Code and Boris Cherney's Design Philosophy\n\n\"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter discussed it recently. Loop engineering focuses on iterating on feedback cycles rapidly.\n\n### Apple's Recipe for On-Device Models\nApple's latest research reveals a highly optimized pipeline for running LLMs on-device, leveraging unified memory and model quantization.\n\n### GLM5.2 Tackles Open-Ended Problems\nThe GLM team released version 5.2, setting a new benchmark for open-ended reasoning and code execution capabilities.",
       imageUrl: "/blog-loops.png",
       date: "Jun 26, 2026",
       createdAt: "2026-06-26T12:00:00.000Z"
@@ -2472,6 +2475,7 @@ function BlogsTab({ courseId }) {
       id: "testing-mythos-and-fable",
       title: "Testing Mythos and Fable, Moving Beyond SWE-bench, Nvidia's Open Contender",
       description: "The Batch AI News and Insights: Over the last two weeks, both the U.S. Government and Anthropic took significant actions that...",
+      content: "## Testing Mythos and Fable: The Path to Evaluation\n\nOver the last two weeks, both the U.S. Government and Anthropic took significant actions that highlight how evaluations are moving from research benchmarks to critical safety gates.\n\n### Moving Beyond SWE-bench\nStandard coding benchmarks are no longer sufficient. New evaluation frameworks are testing agents on multi-file changes and long-context logic.",
       imageUrl: "/blog-collab.png",
       date: "Jun 19, 2026",
       createdAt: "2026-06-19T12:00:00.000Z"
@@ -2480,6 +2484,7 @@ function BlogsTab({ courseId }) {
       id: "mythos-begets-fable",
       title: "Mythos Begets Fable, Cursor's Composer 2.5, Agents Building Agents",
       description: "The Batch AI News and Insights: If you haven't already, I encourage you to experiment with using AI agents not just to chat but to actuall...",
+      content: "## Cursor's Composer 2.5: The Future of IDEs\n\nIf you haven't already, I encourage you to experiment with using AI agents not just to chat but to actually build applications.\n\n### Agents Building Agents\nWith the release of Cursor Composer 2.5, multi-file edits are becoming standard. We are entering an era of software creation where the prompt is the blueprint.",
       imageUrl: "/blog-editor.png",
       date: "Jun 12, 2026",
       createdAt: "2026-06-12T12:00:00.000Z"
@@ -2501,6 +2506,56 @@ function BlogsTab({ courseId }) {
         .replace(/(^-|-$)/g, '');
       setId(slug);
     }
+  };
+
+  const insertTag = (before, after = '') => {
+    const textarea = document.getElementById('blog-content-editor');
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selected = text.substring(start, end);
+    const replacement = before + selected + after;
+    setContent(text.substring(0, start) + replacement + text.substring(end));
+    
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + before.length, start + before.length + selected.length);
+    }, 0);
+  };
+
+  const handleAddPhoto = () => {
+    const url = prompt('Enter photo/image URL:');
+    if (url) {
+      insertTag(`![image](${url})`);
+    }
+  };
+
+  const renderPreview = (text) => {
+    if (!text) return '<p style="color: var(--muted-foreground); font-style: italic;">No content to preview.</p>';
+    
+    let html = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    html = html.replace(/^### (.*?)$/gm, '<h3 style="font-size: 1.15rem; font-weight: 700; margin-top: 1.2rem; margin-bottom: 0.5rem; color: var(--foreground);">$1</h3>');
+    html = html.replace(/^## (.*?)$/gm, '<h2 style="font-size: 1.35rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; color: var(--foreground);">$1</h2>');
+    html = html.replace(/^# (.*?)$/gm, '<h1 style="font-size: 1.6rem; font-weight: 800; margin-top: 1.8rem; margin-bottom: 0.8rem; color: var(--foreground);">$1</h1>');
+
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1rem auto; display: block; box-shadow: var(--shadow-sm);" />');
+
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color: var(--primary); text-decoration: underline;">$1</a>');
+
+    html = html.replace(/\n\n/g, '</p><p style="margin-bottom: 0.85rem; line-height: 1.6; color: var(--foreground);">');
+    html = '<p style="margin-bottom: 0.85rem; line-height: 1.6; color: var(--foreground);">' + html + '</p>';
+
+    html = html.replace(/<p style=".*?"><\/p>/g, '');
+
+    return html;
   };
 
   const handleSave = async (e) => {
@@ -2531,6 +2586,7 @@ function BlogsTab({ courseId }) {
       id: id.trim(),
       title: title.trim(),
       description: description.trim(),
+      content: content.trim(),
       imageUrl,
       date: blogDate,
       createdAt: createdAt || new Date().toISOString()
@@ -2544,6 +2600,8 @@ function BlogsTab({ courseId }) {
       setId('');
       setTitle('');
       setDescription('');
+      setContent('');
+      setPreviewTab(false);
       setImageType('loops');
       setCustomImageUrl('');
       setDate('');
@@ -2564,6 +2622,8 @@ function BlogsTab({ courseId }) {
     setId(blog.id);
     setTitle(blog.title);
     setDescription(blog.description);
+    setContent(blog.content || '');
+    setPreviewTab(false);
     setDate(blog.date || '');
     setCreatedAt(blog.createdAt || '');
     
@@ -2609,6 +2669,130 @@ function BlogsTab({ courseId }) {
             required
           />
 
+          <label style={s.label}>Blog Description / Summary</label>
+          <textarea
+            style={{ ...s.textarea, minHeight: '60px' }}
+            placeholder="Type short summary or content snippet for the preview card..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', marginBottom: '0.3rem' }}>
+            <label style={s.label}>Whole Blog Content</label>
+            <div style={{ display: 'flex', gap: '0.25rem' }}>
+              <button
+                type="button"
+                style={{ 
+                  ...s.tab, 
+                  padding: '0.2rem 0.6rem', 
+                  fontSize: '0.75rem', 
+                  borderBottom: !previewTab ? '2.5px solid var(--primary)' : '2.5px solid transparent', 
+                  color: !previewTab ? 'var(--primary)' : 'var(--muted-foreground)' 
+                }}
+                onClick={() => setPreviewTab(false)}
+              >
+                Write
+              </button>
+              <button
+                type="button"
+                style={{ 
+                  ...s.tab, 
+                  padding: '0.2rem 0.6rem', 
+                  fontSize: '0.75rem', 
+                  borderBottom: previewTab ? '2.5px solid var(--primary)' : '2.5px solid transparent', 
+                  color: previewTab ? 'var(--primary)' : 'var(--muted-foreground)' 
+                }}
+                onClick={() => setPreviewTab(true)}
+              >
+                Preview
+              </button>
+            </div>
+          </div>
+
+          {!previewTab ? (
+            <div style={{ marginBottom: '1rem' }}>
+              <div style={{ 
+                display: 'flex', 
+                gap: '0.35rem', 
+                background: 'var(--muted)', 
+                border: '1.5px solid var(--border)', 
+                borderBottom: 'none', 
+                borderRadius: '8px 8px 0 0', 
+                padding: '0.4rem',
+                flexWrap: 'wrap'
+              }}>
+                <button
+                  type="button"
+                  title="Bold"
+                  style={{ ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem', fontWeight: 'bold' }}
+                  onClick={() => insertTag('**', '**')}
+                >
+                  B
+                </button>
+                <button
+                  type="button"
+                  title="Italic"
+                  style={{ ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem', fontStyle: 'italic' }}
+                  onClick={() => insertTag('*', '*')}
+                >
+                  I
+                </button>
+                <button
+                  type="button"
+                  title="Heading 2"
+                  style={{ ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem', fontWeight: 600 }}
+                  onClick={() => insertTag('## ', '')}
+                >
+                  H2
+                </button>
+                <button
+                  type="button"
+                  title="Link"
+                  style={{ ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
+                  onClick={() => insertTag('[', '](url)')}
+                >
+                  🔗 Link
+                </button>
+                <button
+                  type="button"
+                  title="Add Photo"
+                  style={{ ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
+                  onClick={handleAddPhoto}
+                >
+                  📷 Add Photo
+                </button>
+              </div>
+              
+              <textarea
+                id="blog-content-editor"
+                style={{ 
+                  ...s.textarea, 
+                  minHeight: '200px', 
+                  borderRadius: '0 0 8px 8px', 
+                  marginTop: 0,
+                  borderTop: 'none',
+                  marginBottom: 0
+                }}
+                placeholder="Write the full blog post content here in Markdown..."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                required
+              />
+            </div>
+          ) : (
+            <div style={{
+              border: '1.5px solid var(--border)',
+              borderRadius: '8px',
+              padding: '1rem',
+              minHeight: '240px',
+              maxHeight: '350px',
+              overflowY: 'auto',
+              background: 'var(--background)',
+              marginBottom: '1rem'
+            }} dangerouslySetInnerHTML={{ __html: renderPreview(content) }} />
+          )}
+
           <label style={s.label}>Blog Slug / ID (Unique)</label>
           <input
             type="text"
@@ -2617,15 +2801,6 @@ function BlogsTab({ courseId }) {
             value={id}
             onChange={(e) => setId(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, ''))}
             disabled={!!editingId}
-            required
-          />
-
-          <label style={s.label}>Summary / Description</label>
-          <textarea
-            style={{ ...s.textarea, minHeight: '100px' }}
-            placeholder="Type short summary or content snippet..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
             required
           />
 
@@ -2682,6 +2857,8 @@ function BlogsTab({ courseId }) {
                   setId('');
                   setTitle('');
                   setDescription('');
+                  setContent('');
+                  setPreviewTab(false);
                   setImageType('loops');
                   setCustomImageUrl('');
                   setDate('');

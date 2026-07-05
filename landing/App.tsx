@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { BrowserRouter, Navigate, Route, Routes, useNavigate, Link } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useNavigate, Link, useParams } from 'react-router-dom';
 import {
   CheckCircle2,
   Mail,
@@ -810,6 +810,7 @@ const DEMO_BLOGS = [
     id: "a-new-generation-studies-ai",
     title: "A New Generation Studies AI, Apple's Recipe for On-Device Models, GLM5.2 Tackles Open-Ended Problems",
     description: "The Batch News & Insights: \"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter...",
+    content: "## Inside Claude Code and Boris Cherney's Design Philosophy\n\n\"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter discussed it recently. Loop engineering focuses on iterating on feedback cycles rapidly.\n\n### Apple's Recipe for On-Device Models\nApple's latest research reveals a highly optimized pipeline for running LLMs on-device, leveraging unified memory and model quantization.\n\n### GLM5.2 Tackles Open-Ended Problems\nThe GLM team released version 5.2, setting a new benchmark for open-ended reasoning and code execution capabilities.",
     imageUrl: "/blog-loops.png",
     date: "Jun 26, 2026",
     createdAt: "2026-06-26T12:00:00.000Z"
@@ -818,6 +819,7 @@ const DEMO_BLOGS = [
     id: "testing-mythos-and-fable",
     title: "Testing Mythos and Fable, Moving Beyond SWE-bench, Nvidia's Open Contender",
     description: "The Batch AI News and Insights: Over the last two weeks, both the U.S. Government and Anthropic took significant actions that...",
+    content: "## Testing Mythos and Fable: The Path to Evaluation\n\nOver the last two weeks, both the U.S. Government and Anthropic took significant actions that highlight how evaluations are moving from research benchmarks to critical safety gates.\n\n### Moving Beyond SWE-bench\nStandard coding benchmarks are no longer sufficient. New evaluation frameworks are testing agents on multi-file changes and long-context logic.",
     imageUrl: "/blog-collab.png",
     date: "Jun 19, 2026",
     createdAt: "2026-06-19T12:00:00.000Z"
@@ -826,6 +828,7 @@ const DEMO_BLOGS = [
     id: "mythos-begets-fable",
     title: "Mythos Begets Fable, Cursor's Composer 2.5, Agents Building Agents",
     description: "The Batch AI News and Insights: If you haven't already, I encourage you to experiment with using AI agents not just to chat but to actuall...",
+    content: "## Cursor's Composer 2.5: The Future of IDEs\n\nIf you haven't already, I encourage you to experiment with using AI agents not just to chat but to actually build applications.\n\n### Agents Building Agents\nWith the release of Cursor Composer 2.5, multi-file edits are becoming standard. We are entering an era of software creation where the prompt is the blueprint.",
     imageUrl: "/blog-editor.png",
     date: "Jun 12, 2026",
     createdAt: "2026-06-12T12:00:00.000Z"
@@ -833,6 +836,7 @@ const DEMO_BLOGS = [
 ];
 
 function BlogPage() {
+  const { blogId } = useParams();
   const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -867,6 +871,134 @@ function BlogPage() {
     ...DEMO_BLOGS.filter(demo => !blogs.some(b => b.id === demo.id))
   ];
 
+  const parseMarkdown = (text: string) => {
+    if (!text) return '<p class="text-slate-400 italic">No content written yet for this post.</p>';
+    
+    let html = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    html = html.replace(/^### (.*?)$/gm, '<h3 class="text-xl font-bold mt-6 mb-3 text-slate-800">$1</h3>');
+    html = html.replace(/^## (.*?)$/gm, '<h2 class="text-2xl font-bold mt-8 mb-4 border-b border-slate-100 pb-2 text-slate-900">$1</h2>');
+    html = html.replace(/^# (.*?)$/gm, '<h1 class="text-3xl font-extrabold mt-10 mb-6 text-slate-900 leading-tight">$1</h1>');
+
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<figure class="my-8"><img src="$2" alt="$1" class="max-w-full h-auto rounded-2xl mx-auto shadow-md" /><figcaption class="text-center text-xs text-slate-400 mt-2">$1</figcaption></figure>');
+
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" class="text-[#188ab2] hover:underline font-semibold">$1</a>');
+
+    html = html.replace(/\n\n/g, '</p><p class="mb-5 text-slate-600 leading-relaxed text-base md:text-lg">');
+    html = '<p class="mb-5 text-slate-600 leading-relaxed text-base md:text-lg">' + html + '</p>';
+
+    html = html.replace(/<p class=".*?"><\/p>/g, '');
+
+    return html;
+  };
+
+  const currentPost = blogId ? displayBlogs.find(b => b.id === blogId) : null;
+
+  // Single Post Detailed Reader View
+  if (blogId) {
+    if (loading) {
+      return (
+        <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center pt-20">
+          <div className="h-10 w-10 border-4 border-slate-200 border-t-[#188ab2] rounded-full animate-spin mb-4"></div>
+          <p className="text-slate-400 text-sm">Loading post...</p>
+        </div>
+      );
+    }
+    
+    if (!currentPost) {
+      return (
+        <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
+          <h2 className="text-2xl font-bold mb-4">Blog post not found</h2>
+          <Link to="/blog" className="text-[#188ab2] font-semibold underline">Back to all posts</Link>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-[#188ab2]/10">
+        {/* Immovable Sticky Header */}
+        <nav className="fixed top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-slate-100">
+          <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+            <Link to="/" className="hover:opacity-90 transition-opacity">
+              <Logo className="h-14" />
+            </Link>
+            <div className="hidden md:flex items-center gap-10 text-sm font-semibold text-slate-600">
+              <a href="/#who-is-it-for" className="hover:text-[#188ab2] transition-colors">Who is it for?</a>
+              <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="hover:text-[#188ab2] transition-colors">Book 1:1</a>
+              <a href="/#mentors" className="hover:text-[#188ab2] transition-colors">Mentors</a>
+              <Link to="/blog" className="text-[#188ab2] transition-colors">Blog</Link>
+              <a href="/learn" className="px-5 py-2 rounded-full border border-[#188ab2] text-[#188ab2] hover:bg-[#188ab2] hover:text-white transition-colors">Login</a>
+              <a href="/#enroll" className="inline-flex items-center justify-center rounded-md px-6 py-2.5 font-semibold bg-[#188ab2] text-white hover:bg-[#157a9d] shadow-sm transition-all duration-200 active:scale-95">
+                Apply Now
+              </a>
+            </div>
+            <button className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="h-6 w-6 text-[#188ab2]" /> : <Menu className="h-6 w-6 text-[#188ab2]" />}
+            </button>
+          </div>
+        </nav>
+
+        {/* Mobile Nav */}
+        {isMenuOpen && (
+          <div className="md:hidden fixed top-20 left-0 w-full bg-white border-b border-slate-100 z-40 p-6 flex flex-col gap-4 shadow-xl animate-fade-in">
+            <a href="/#who-is-it-for" onClick={() => setIsMenuOpen(false)} className="font-bold">Who is it for?</a>
+            <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="font-bold">Book 1:1</a>
+            <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-bold">Mentors</a>
+            <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-bold text-[#188ab2]">Blog</Link>
+            <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 rounded-md border border-[#188ab2] text-[#188ab2] hover:bg-[#188ab2] hover:text-white transition-colors font-semibold">Login</a>
+            <a href="/#enroll" onClick={() => setIsMenuOpen(false)} className="w-full text-center inline-flex items-center justify-center rounded-md px-6 py-2.5 font-semibold bg-[#188ab2] text-white hover:bg-[#157a9d] shadow-sm transition-all duration-200 active:scale-95">
+              Apply Now
+            </a>
+          </div>
+        )}
+
+        <main className="pt-32 pb-24 bg-white">
+          <div className="container mx-auto px-6 max-w-3xl">
+            <Link to="/blog" className="inline-flex items-center gap-2 text-[#188ab2] font-semibold hover:underline mb-8">
+              <span className="text-lg">←</span> Back to all posts
+            </Link>
+
+            <article>
+              <header className="mb-10">
+                <span className="inline-block bg-[#188ab2]/5 text-[#188ab2] font-semibold text-sm px-4 py-1.5 rounded-full mb-4">
+                  {currentPost.date}
+                </span>
+                <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
+                  {currentPost.title}
+                </h1>
+                <p className="text-lg text-slate-500 italic leading-relaxed border-l-4 border-slate-200 pl-4 py-1">
+                  {currentPost.description}
+                </p>
+              </header>
+
+              {currentPost.imageUrl && (
+                <div className="w-full h-80 md:h-[28rem] rounded-3xl overflow-hidden mb-12 shadow-md">
+                  <img
+                    src={currentPost.imageUrl}
+                    alt={currentPost.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+
+              <div 
+                className="prose prose-slate max-w-none"
+                dangerouslySetInnerHTML={{ __html: parseMarkdown(currentPost.content) }}
+              />
+            </article>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Blog Listing View
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-[#188ab2]/10">
       {/* Immovable Sticky Header */}
@@ -941,9 +1073,10 @@ function BlogPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {displayBlogs.map((blog) => (
-                <article
+                <Link
                   key={blog.id}
-                  className="bg-white rounded-[1.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col group"
+                  to={`/blog/${blog.id}`}
+                  className="bg-white rounded-[1.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col group text-left"
                 >
                   <div className="relative w-full h-56 overflow-hidden bg-slate-100">
                     <img
@@ -963,7 +1096,7 @@ function BlogPage() {
                       {blog.description}
                     </p>
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           )}
@@ -1028,6 +1161,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:blogId" element={<BlogPage />} />
         {/* Preserved routes for later use */}
         {/* <Route path="/auth" element={<AuthPage />} />
         <Route
