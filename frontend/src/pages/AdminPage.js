@@ -14,6 +14,8 @@ import {
   getMyCourses,
   adminSaveGymQuestion,
   adminDeleteGymQuestion,
+  adminSaveBlogPost,
+  adminDeleteBlogPost,
 } from '../utils/api';
 
 const COURSE_ID = 'course-001';
@@ -2424,6 +2426,329 @@ function LeadsTab() {
   );
 }
 
+// Blogs Tab
+function BlogsTab({ courseId }) {
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState('');
+  
+  // Form states
+  const [id, setId] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [imageType, setImageType] = useState('loops'); // 'loops' | 'collab' | 'editor' | 'custom'
+  const [customImageUrl, setCustomImageUrl] = useState('');
+  const [date, setDate] = useState('');
+  const [createdAt, setCreatedAt] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+
+  useEffect(() => {
+    load();
+  }, [courseId]);
+
+  async function load() {
+    setLoading(true);
+    try {
+      const { data } = await adminGetWeeks(courseId);
+      setBlogs(data.blogs || []);
+    } catch (err) {
+      setMessage('Failed to load blogs.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const DEMO_BLOGS = [
+    {
+      id: "a-new-generation-studies-ai",
+      title: "A New Generation Studies AI, Apple's Recipe for On-Device Models, GLM5.2 Tackles Open-Ended Problems",
+      description: "The Batch News & Insights: \"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter...",
+      imageUrl: "/blog-loops.png",
+      date: "Jun 26, 2026",
+      createdAt: "2026-06-26T12:00:00.000Z"
+    },
+    {
+      id: "testing-mythos-and-fable",
+      title: "Testing Mythos and Fable, Moving Beyond SWE-bench, Nvidia's Open Contender",
+      description: "The Batch AI News and Insights: Over the last two weeks, both the U.S. Government and Anthropic took significant actions that...",
+      imageUrl: "/blog-collab.png",
+      date: "Jun 19, 2026",
+      createdAt: "2026-06-19T12:00:00.000Z"
+    },
+    {
+      id: "mythos-begets-fable",
+      title: "Mythos Begets Fable, Cursor's Composer 2.5, Agents Building Agents",
+      description: "The Batch AI News and Insights: If you haven't already, I encourage you to experiment with using AI agents not just to chat but to actuall...",
+      imageUrl: "/blog-editor.png",
+      date: "Jun 12, 2026",
+      createdAt: "2026-06-12T12:00:00.000Z"
+    }
+  ];
+
+  const displayBlogs = [
+    ...blogs,
+    ...DEMO_BLOGS.filter(demo => !blogs.some(b => b.id === demo.id))
+  ];
+
+  // Handle title change to auto-suggest slug/ID
+  const handleTitleChange = (val) => {
+    setTitle(val);
+    if (!editingId) {
+      const slug = val
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+      setId(slug);
+    }
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    if (!id.trim() || !title.trim() || !description.trim()) {
+      setMessage('❌ Please fill out all required fields.');
+      return;
+    }
+
+    setSaving(true);
+    setMessage('');
+
+    // Determine image URL
+    let imageUrl = '';
+    if (imageType === 'loops') imageUrl = '/blog-loops.png';
+    else if (imageType === 'collab') imageUrl = '/blog-collab.png';
+    else if (imageType === 'editor') imageUrl = '/blog-editor.png';
+    else imageUrl = customImageUrl.trim();
+
+    // Default date to today's date formatted nicely if empty
+    const blogDate = date.trim() || new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+
+    const payload = {
+      id: id.trim(),
+      title: title.trim(),
+      description: description.trim(),
+      imageUrl,
+      date: blogDate,
+      createdAt: createdAt || new Date().toISOString()
+    };
+
+    try {
+      await adminSaveBlogPost(courseId, payload);
+      setMessage('✓ Blog post saved successfully!');
+      
+      // Reset form
+      setId('');
+      setTitle('');
+      setDescription('');
+      setImageType('loops');
+      setCustomImageUrl('');
+      setDate('');
+      setCreatedAt('');
+      setEditingId(null);
+      
+      await load();
+    } catch (err) {
+      console.error(err);
+      setMessage(err.response?.data?.message || '❌ Failed to save blog post.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleEdit = (blog) => {
+    setEditingId(blog.id);
+    setId(blog.id);
+    setTitle(blog.title);
+    setDescription(blog.description);
+    setDate(blog.date || '');
+    setCreatedAt(blog.createdAt || '');
+    
+    if (blog.imageUrl === '/blog-loops.png') {
+      setImageType('loops');
+      setCustomImageUrl('');
+    } else if (blog.imageUrl === '/blog-collab.png') {
+      setImageType('collab');
+      setCustomImageUrl('');
+    } else if (blog.imageUrl === '/blog-editor.png') {
+      setImageType('editor');
+      setCustomImageUrl('');
+    } else {
+      setImageType('custom');
+      setCustomImageUrl(blog.imageUrl || '');
+    }
+  };
+
+  const handleDelete = async (blogId) => {
+    if (!window.confirm('Are you sure you want to delete this blog post?')) return;
+    try {
+      await adminDeleteBlogPost(courseId, blogId);
+      setMessage('✓ Blog post deleted successfully!');
+      await load();
+    } catch (err) {
+      console.error(err);
+      setMessage('❌ Failed to delete blog post.');
+    }
+  };
+
+  return (
+    <div className="admin-blog-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+      <div style={s.card}>
+        <div style={s.cardTitle}>{editingId ? 'Edit Blog Post' : 'Create New Blog Post'}</div>
+        <form onSubmit={handleSave}>
+          <label style={s.label}>Blog Title</label>
+          <input
+            type="text"
+            style={s.input}
+            placeholder="e.g. A New Generation Studies AI"
+            value={title}
+            onChange={(e) => handleTitleChange(e.target.value)}
+            required
+          />
+
+          <label style={s.label}>Blog Slug / ID (Unique)</label>
+          <input
+            type="text"
+            style={s.input}
+            placeholder="e.g. a-new-generation-studies-ai"
+            value={id}
+            onChange={(e) => setId(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, ''))}
+            disabled={!!editingId}
+            required
+          />
+
+          <label style={s.label}>Summary / Description</label>
+          <textarea
+            style={{ ...s.textarea, minHeight: '100px' }}
+            placeholder="Type short summary or content snippet..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+
+          <div style={s.grid2} className="admin-grid2">
+            <div>
+              <label style={s.label}>Card Image</label>
+              <select
+                style={s.input}
+                value={imageType}
+                onChange={(e) => setImageType(e.target.value)}
+              >
+                <option value="loops">3 Key Loops (/blog-loops.png)</option>
+                <option value="collab">Global Collaboration (/blog-collab.png)</option>
+                <option value="editor">AI Code Editor (/blog-editor.png)</option>
+                <option value="custom">Custom Image URL...</option>
+              </select>
+            </div>
+            <div>
+              <label style={s.label}>Publish Date (Optional)</label>
+              <input
+                type="text"
+                style={s.input}
+                placeholder="e.g. Jun 26, 2026 (blank for today)"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {imageType === 'custom' && (
+            <div>
+              <label style={s.label}>Custom Image URL</label>
+              <input
+                type="text"
+                style={s.input}
+                placeholder="https://example.com/image.png"
+                value={customImageUrl}
+                onChange={(e) => setCustomImageUrl(e.target.value)}
+                required
+              />
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+            <button type="submit" style={s.btn} disabled={saving}>
+              {saving ? 'Saving...' : editingId ? 'Update Post' : 'Save Post'}
+            </button>
+            {editingId && (
+              <button
+                type="button"
+                style={s.btnSecondary}
+                onClick={() => {
+                  setEditingId(null);
+                  setId('');
+                  setTitle('');
+                  setDescription('');
+                  setImageType('loops');
+                  setCustomImageUrl('');
+                  setDate('');
+                  setCreatedAt('');
+                  setMessage('');
+                }}
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+          {message && <div style={s.message}>{message}</div>}
+        </form>
+      </div>
+
+      <div style={s.card}>
+        <div style={s.cardTitle}>Created Blog Posts</div>
+        {loading && <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>Loading blogs...</p>}
+        {!loading && displayBlogs.length === 0 && (
+          <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>No blog posts created yet.</p>
+        )}
+        {!loading && displayBlogs.length > 0 && (
+          <div className="responsive-table-container">
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={{ ...s.th, width: '120px' }}>Date</th>
+                  <th style={s.th}>Title</th>
+                  <th style={{ ...s.th, textAlign: 'right', width: '100px' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {displayBlogs.map((blog) => (
+                  <tr key={blog.id}>
+                    <td style={s.td}>{blog.date}</td>
+                    <td style={s.td}>
+                      <div style={{ fontWeight: 600, maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {blog.title}
+                      </div>
+                    </td>
+                    <td style={{ ...s.td, textAlign: 'right' }}>
+                      <button
+                        type="button"
+                        style={{ ...s.btn, padding: '0.2rem 0.5rem', fontSize: '0.75rem', marginRight: '0.35rem' }}
+                        onClick={() => handleEdit(blog)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}
+                        onClick={() => handleDelete(blog.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // PM Gym Tab
 function GymTab({ courseId }) {
   const [gymQuestions, setGymQuestions] = useState([]);
@@ -2756,6 +3081,7 @@ export default function AdminPage() {
           { id: 'submissions', label: 'Submissions' },
           { id: 'gym-submissions', label: 'PM Gym Responses' },
           { id: 'leads', label: 'Leads' },
+          { id: 'blogs', label: 'Blogs' },
         ].map((t) => (
           <button
             key={t.id}
@@ -2777,6 +3103,7 @@ export default function AdminPage() {
         {tab === 'submissions' && <SubmissionsTab courseId={currentCourseId} />}
         {tab === 'gym-submissions' && <GymSubmissionsTab courseId={currentCourseId} />}
         {tab === 'leads' && <LeadsTab />}
+        {tab === 'blogs' && <BlogsTab courseId={currentCourseId} />}
       </div>
     </div>
   );

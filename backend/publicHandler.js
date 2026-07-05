@@ -1,11 +1,12 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, PutCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient, PutCommand, UpdateCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
 
 const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(ddbClient);
 
 const ENROLLMENTS_TABLE = process.env.ENROLLMENTS_TABLE || 'lms-enrollments';
 const ANALYTICS_TABLE = process.env.ANALYTICS_TABLE || 'lms-analytics';
+const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
 
 exports.handler = async (event) => {
   console.log('Event:', JSON.stringify(event));
@@ -43,6 +44,23 @@ exports.handler = async (event) => {
     // ─── POST /public/track ─────────────────────────────────────────────────
     if (httpMethod === 'POST' && path === '/public/track') {
       const { page, visitorId } = data;
+
+      if (page === 'get_blogs') {
+        const blogsResult = await docClient.send(new QueryCommand({
+          TableName: COURSES_TABLE,
+          KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+          ExpressionAttributeValues: {
+            ':pk': 'BLOG#GLOBAL',
+            ':prefix': 'POST#',
+          },
+        }));
+
+        const blogs = (blogsResult.Items || [])
+          .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+        return response(200, { success: true, blogs });
+      }
+
       const today = new Date().toISOString().split('T')[0];
 
       await docClient.send(new UpdateCommand({

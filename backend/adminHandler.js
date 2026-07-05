@@ -334,7 +334,7 @@ async function createStudent(body, event) {
 // GET /admin/courses/{courseId}/weeks
 // Returns all weeks (including hidden ones) with full quiz data including correctIndex.
 async function listWeeks(courseId) {
-  const [result, supplementalContent, gymResult] = await Promise.all([
+  const [result, supplementalContent, gymResult, blogResult] = await Promise.all([
     ddb.send(new QueryCommand({
       TableName: COURSES_TABLE,
       KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
@@ -352,6 +352,14 @@ async function listWeeks(courseId) {
         ':prefix': 'GYM#',
       },
     })),
+    ddb.send(new QueryCommand({
+      TableName: COURSES_TABLE,
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': 'BLOG#GLOBAL',
+        ':prefix': 'POST#',
+      },
+    })),
   ]);
 
   const rawWeeks = (result.Items || [])
@@ -363,7 +371,10 @@ async function listWeeks(courseId) {
   const gymQuestions = (gymResult.Items || [])
     .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
 
-  return res(200, { weeks: signedWeeks, supplementalContent, gymQuestions });
+  const blogs = (blogResult.Items || [])
+    .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+  return res(200, { weeks: signedWeeks, supplementalContent, gymQuestions, blogs });
 }
 
 // POST /admin/courses/{courseId}/weeks
@@ -438,12 +449,52 @@ async function updateGymQuestion(courseId, body) {
   return res(400, { message: 'Invalid action for gym content' });
 }
 
+async function updateBlog(courseId, body) {
+  const { action } = body;
+  if (action === 'save') {
+    const { blog } = body;
+    if (!blog || !blog.id) {
+      return res(400, { message: 'Blog and id are required' });
+    }
+    const sk = `POST#${blog.id}`;
+    const item = {
+      pk: 'BLOG#GLOBAL',
+      sk,
+      id: blog.id,
+      title: blog.title,
+      description: blog.description,
+      imageUrl: blog.imageUrl || '',
+      date: blog.date || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+      createdAt: blog.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    await ddb.send(new PutCommand({
+      TableName: COURSES_TABLE,
+      Item: item,
+    }));
+    return res(200, { message: 'Blog post saved successfully', blog: item });
+  } else if (action === 'delete') {
+    const { id } = body;
+    if (!id) return res(400, { message: 'Id is required for delete' });
+    await ddb.send(new DeleteCommand({
+      TableName: COURSES_TABLE,
+      Key: { pk: 'BLOG#GLOBAL', sk: `POST#${id}` },
+    }));
+    return res(200, { message: 'Blog post deleted successfully', id });
+  }
+  return res(400, { message: 'Invalid action for blog content' });
+}
+
 // Updates any subset of week fields. Commonly used to toggle visibility.
 async function updateWeek(courseId, weekId, body) {
   console.log('DEPLOY_CHECK_V2: updateWeek called with weekId =', weekId);
   if (weekId === '__gym__') {
     console.log('DEPLOY_CHECK_V2: Redirecting to updateGymQuestion');
     return await updateGymQuestion(courseId, body);
+  }
+  if (weekId === '__blog__') {
+    console.log('DEPLOY_CHECK_V2: Redirecting to updateBlog');
+    return await updateBlog(courseId, body);
   }
   // Guard: if this is actually a supplemental content update, redirect to the correct handler.
   // This ensures data is always saved to SUPPLEMENTAL#GLOBAL (not WEEK#__supplemental__).
