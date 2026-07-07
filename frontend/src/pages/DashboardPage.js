@@ -74,6 +74,28 @@ const CALENDAR_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const DEFAULT_RESOURCES = [];
 
 const s = {
+  pillActive: {
+    background: '#188ab2',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '9999px',
+    padding: '0.45rem 1.25rem',
+    fontWeight: 700,
+    fontSize: '0.825rem',
+    cursor: 'pointer',
+    transition: 'all 0.15s ease',
+  },
+  pillInactive: {
+    background: '#ffffff',
+    color: '#475569',
+    border: '1px solid #cbd5e1',
+    borderRadius: '9999px',
+    padding: '0.45rem 1.25rem',
+    fontWeight: 700,
+    fontSize: '0.825rem',
+    cursor: 'pointer',
+    transition: 'all 0.15s ease',
+  },
   page: {
     minHeight: '100vh',
     background: 'linear-gradient(180deg, hsl(214, 100%, 98%) 0%, hsl(205, 78%, 97%) 100%)',
@@ -1387,6 +1409,8 @@ function buildAssignments(weeks) {
         assignmentNumber,
         title: (assignment.title || '').trim(),
         description: (assignment.description || '').trim(),
+        solution: (assignment.solution || '').trim(),
+        solutionUrl: (assignment.solutionUrl || '').trim(),
       };
     }),
   );
@@ -1482,6 +1506,19 @@ function renderTextWithLinks(text) {
     }
     return part;
   });
+}
+
+function parseSolutionText(text) {
+  if (!text) return '';
+  const html = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #188ab2; text-decoration: underline;">$1</a>')
+    .replace(/\n/g, '<br/>');
+  return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 function formatCalendarLongDate(date) {
@@ -2250,6 +2287,10 @@ export default function DashboardPage() {
   const [activeCoursesTab, setActiveCoursesTab] = useState('videos');
   const [expandedGroups, setExpandedGroups] = useState({});
   const [expandedAssignments, setExpandedAssignments] = useState({});
+  const [activeAssignmentTabs, setActiveAssignmentTabs] = useState({});
+  const setAssignmentTab = (assignmentId, tab) => {
+    setActiveAssignmentTabs(prev => ({ ...prev, [assignmentId]: tab }));
+  };
   const [hoveredReminderId, setHoveredReminderId] = useState(null);
   const [clickedReminderId, setClickedReminderId] = useState(null);
   const weeklyReminderCardRef = useRef(null);
@@ -4369,27 +4410,94 @@ export default function DashboardPage() {
                     </div>
                   </button>
 
-                  {isExpanded && (
-                    <div style={s.weekGroupBody}>
-                      <div>
-                        {assignment.description && (
-                          <div style={s.lessonDesc}>
-                            {assignment.description}
+                  {isExpanded && (() => {
+                    const activeTab = activeAssignmentTabs[assignment.id] || 'assignment';
+                    return (
+                      <div style={s.weekGroupBody}>
+                        {/* Tabs Selector */}
+                        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                          <button
+                            type="button"
+                            style={activeTab === 'assignment' ? s.pillActive : s.pillInactive}
+                            onClick={() => setAssignmentTab(assignment.id, 'assignment')}
+                          >
+                            Assignment
+                          </button>
+                          <button
+                            type="button"
+                            style={activeTab === 'solution' ? s.pillActive : s.pillInactive}
+                            onClick={() => setAssignmentTab(assignment.id, 'solution')}
+                          >
+                            Solution
+                          </button>
+                        </div>
+
+                        {activeTab === 'assignment' ? (
+                          <div>
+                            {assignment.description && (
+                              <div style={{ ...s.lessonDesc, marginBottom: '1.25rem' }}>
+                                {assignment.description}
+                              </div>
+                            )}
+                            <AssignmentUpload
+                              courseId={assignment.courseId}
+                              weekId={assignment.weekId}
+                              assignmentId={assignment.id}
+                              assignmentTitle={assignmentTitle}
+                              embedded
+                              title={null}
+                              subtitle={`Drag and drop your file for ${assignmentLabel}, or browse to upload it.`}
+                            />
+                          </div>
+                        ) : (
+                          <div style={{ padding: '0.5rem 0' }}>
+                            {assignment.solution ? (
+                              <div style={{ fontSize: '0.9rem', color: 'var(--foreground)', lineHeight: 1.6 }}>
+                                {parseSolutionText(assignment.solution)}
+                              </div>
+                            ) : (
+                              <div style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', fontStyle: 'italic', marginBottom: '0.5rem' }}>
+                                No solution details have been added by the instructor yet.
+                              </div>
+                            )}
+
+                            {assignment.solutionUrl && (
+                              <div style={{ marginTop: '1.25rem' }}>
+                                <a
+                                  href={assignment.solutionUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    padding: '0.6rem 1.25rem',
+                                    background: '#f1f5f9',
+                                    border: '1px solid #cbd5e1',
+                                    borderRadius: '8px',
+                                    color: '#0f172a',
+                                    textDecoration: 'none',
+                                    fontSize: '0.825rem',
+                                    fontWeight: 600,
+                                    transition: 'all 0.15s ease',
+                                  }}
+                                  onMouseOver={(e) => { e.currentTarget.style.background = '#e2e8f0'; }}
+                                  onMouseOut={(e) => { e.currentTarget.style.background = '#f1f5f9'; }}
+                                >
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                  </svg>
+                                  <span>Download Solution Resource</span>
+                                </a>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
-
-                      <AssignmentUpload
-                        courseId={assignment.courseId}
-                        weekId={assignment.weekId}
-                        assignmentId={assignment.id}
-                        assignmentTitle={assignmentTitle}
-                        embedded
-                        title={null}
-                        subtitle={`Drag and drop your file for ${assignmentLabel}, or browse to upload it.`}
-                      />
-                    </div>
-                  )}
+                    );
+                  })()}
                 </div>
               );
             })}
