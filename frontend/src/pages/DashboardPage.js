@@ -4363,16 +4363,11 @@ export default function DashboardPage() {
 
   function renderAssignmentsView() {
     return (
-      <div style={s.card}>
-        <div style={s.panelHeader}>
-          <div>
-            <div style={s.sectionTitle}>Assignments</div>
-            <div style={s.sectionMeta}>Open an assignment to upload your file with drag and drop.</div>
-          </div>
-        </div>
-
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         {courseAssignments.length === 0 ? (
-          <div style={s.empty}>Assignments will appear here once your admin adds them to a course module.</div>
+          <div style={s.card}>
+            <div style={s.empty}>Assignments will appear here once your admin adds them to a course module.</div>
+          </div>
         ) : (
           <div style={s.accordionList}>
             {courseAssignments.map((assignment) => {
