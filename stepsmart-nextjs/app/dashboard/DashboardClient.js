@@ -4440,17 +4440,17 @@ export default function DashboardClient({
                         <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem' }}>
                           <button
                             type="button"
-                            style={activeTab === 'assignment' ? s.pillActive : s.pillInactive}
-                            onClick={() => setAssignmentTab(assignment.id, 'assignment')}
-                          >
-                            Assignment
-                          </button>
-                          <button
-                            type="button"
                             style={activeTab === 'solution' ? s.pillActive : s.pillInactive}
                             onClick={() => setAssignmentTab(assignment.id, 'solution')}
                           >
                             Solution
+                          </button>
+                          <button
+                            type="button"
+                            style={activeTab === 'assignment' ? s.pillActive : s.pillInactive}
+                            onClick={() => setAssignmentTab(assignment.id, 'assignment')}
+                          >
+                            Assignment
                           </button>
                         </div>
 

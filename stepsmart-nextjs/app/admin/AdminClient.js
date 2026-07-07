@@ -1558,7 +1558,11 @@ function SupplementalContentTab({ courseId }) {
                 <label style={s.label}>Assignment Title</label>
                 <input style={s.input} placeholder="e.g. Capstone Project: PRD Draft" value={asgn.title} onChange={e => updateItem('assignments', i, 'title', e.target.value)} />
                 <label style={s.label}>Instructions & Description</label>
-                <textarea style={{ ...s.textarea, marginBottom: 0, minHeight: '100px' }} placeholder="Provide detailed instructions and grading criteria..." value={asgn.description} onChange={e => updateItem('assignments', i, 'description', e.target.value)} />
+                <textarea style={{ ...s.textarea, minHeight: '100px' }} placeholder="Provide detailed instructions and grading criteria..." value={asgn.description} onChange={e => updateItem('assignments', i, 'description', e.target.value)} />
+                <label style={s.label}>Solution Explanation (Optional)</label>
+                <textarea style={{ ...s.textarea, minHeight: '80px' }} placeholder="Explain the correct solution or reference points..." value={asgn.solution || ''} onChange={e => updateItem('assignments', i, 'solution', e.target.value)} />
+                <label style={s.label}>Solution Document URL (Optional)</label>
+                <input style={{ ...s.input, marginBottom: 0 }} placeholder="https://example.com/solution-doc.pdf" value={asgn.solutionUrl || ''} onChange={e => updateItem('assignments', i, 'solutionUrl', e.target.value)} />
               </div>
             ))}
           </div>
