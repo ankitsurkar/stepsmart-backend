@@ -240,7 +240,7 @@ const EMPTY_WEEK = {
 const EMPTY_Q = { id: '', text: '', options: ['', '', '', ''], correctIndex: 0, explanation: '' };
 const EMPTY_RESOURCE = { id: '', title: '', url: '' };
 const EMPTY_DOC = { id: '', label: '', url: '' };
-const EMPTY_ASSIGNMENT = { id: '', title: '', description: '' };
+const EMPTY_ASSIGNMENT = { id: '', title: '', description: '', solution: '', solutionUrl: '' };
 const EMPTY_RECORDED_SESSION = { id: '', title: '', description: '', url: '' };
 const EMPTY_CALENDAR_EVENT = { id: '', kind: '', title: '', description: '', startDate: '', endDate: '' };
 const EMPTY_GLOBAL_RESOURCE = { title: '', description: '', docs: [] };
@@ -258,6 +258,8 @@ function normalizeAssignments(assignments = []) {
     id: assignment.id || makeClientId('assignment'),
     title: (assignment.title || '').trim() || `Assignment ${index + 1}`,
     description: (assignment.description || '').trim(),
+    solution: (assignment.solution || '').trim(),
+    solutionUrl: (assignment.solutionUrl || '').trim(),
   }));
 }
 
@@ -1226,6 +1228,21 @@ function WeeksTab({ courseId }) {
                   placeholder="Tell students what to upload for this assignment."
                   value={assignment.description}
                   onChange={(e) => updateAssignment(ai, 'description', e.target.value)}
+                />
+                <label style={s.label}>Solution Explanation (Optional)</label>
+                <textarea
+                  style={{ ...s.textarea, minHeight: '80px' }}
+                  placeholder="Explain the correct solution or reference points..."
+                  value={assignment.solution || ''}
+                  onChange={(e) => updateAssignment(ai, 'solution', e.target.value)}
+                />
+                <label style={s.label}>Solution Document URL (Optional)</label>
+                <input
+                  style={s.input}
+                  type="text"
+                  placeholder="https://example.com/solution-doc.pdf"
+                  value={assignment.solutionUrl || ''}
+                  onChange={(e) => updateAssignment(ai, 'solutionUrl', e.target.value)}
                 />
               </div>
             ))}
