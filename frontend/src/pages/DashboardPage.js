@@ -2287,10 +2287,7 @@ export default function DashboardPage() {
   const [activeCoursesTab, setActiveCoursesTab] = useState('videos');
   const [expandedGroups, setExpandedGroups] = useState({});
   const [expandedAssignments, setExpandedAssignments] = useState({});
-  const [activeAssignmentTabs, setActiveAssignmentTabs] = useState({});
-  const setAssignmentTab = (assignmentId, tab) => {
-    setActiveAssignmentTabs(prev => ({ ...prev, [assignmentId]: tab }));
-  };
+  const [activeAssignmentsTab, setActiveAssignmentsTab] = useState('assignment');
   const [hoveredReminderId, setHoveredReminderId] = useState(null);
   const [clickedReminderId, setClickedReminderId] = useState(null);
   const weeklyReminderCardRef = useRef(null);
@@ -4362,8 +4359,36 @@ export default function DashboardPage() {
   }
 
   function renderAssignmentsView() {
+    const showingSolution = activeAssignmentsTab === 'solution';
+
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        {/* Top sub-tabs */}
+        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+          <div style={s.courseTabs}>
+            <button
+              type="button"
+              style={{ ...s.courseTab, ...(showingSolution ? s.courseTabActive : {}) }}
+              onClick={() => {
+                setActiveAssignmentsTab('solution');
+                setExpandedAssignments({});
+              }}
+            >
+              Solutions
+            </button>
+            <button
+              type="button"
+              style={{ ...s.courseTab, ...(!showingSolution ? s.courseTabActive : {}) }}
+              onClick={() => {
+                setActiveAssignmentsTab('assignment');
+                setExpandedAssignments({});
+              }}
+            >
+              Assignments
+            </button>
+          </div>
+        </div>
+
         {courseAssignments.length === 0 ? (
           <div style={s.card}>
             <div style={s.empty}>Assignments will appear here once your admin adds them to a course module.</div>
@@ -4399,100 +4424,81 @@ export default function DashboardPage() {
                       </div>
 
                       <div style={s.weekGroupRight}>
-                        <div style={s.weekGroupCount}>Upload file</div>
+                        <div style={s.weekGroupCount}>
+                          {showingSolution ? 'View Solution' : 'Upload file'}
+                        </div>
                         <div style={s.weekGroupToggle}>{isExpanded ? '−' : '+'}</div>
                       </div>
                     </div>
                   </button>
 
-                  {isExpanded && (() => {
-                    const activeTab = activeAssignmentTabs[assignment.id] || 'assignment';
-                    return (
-                      <div style={s.weekGroupBody}>
-                        {/* Tabs Selector */}
-                        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem' }}>
-                          <button
-                            type="button"
-                            style={activeTab === 'solution' ? s.pillActive : s.pillInactive}
-                            onClick={() => setAssignmentTab(assignment.id, 'solution')}
-                          >
-                            Solution
-                          </button>
-                          <button
-                            type="button"
-                            style={activeTab === 'assignment' ? s.pillActive : s.pillInactive}
-                            onClick={() => setAssignmentTab(assignment.id, 'assignment')}
-                          >
-                            Assignment
-                          </button>
+                  {isExpanded && (
+                    <div style={s.weekGroupBody}>
+                      {showingSolution ? (
+                        <div style={{ padding: '0.5rem 0' }}>
+                          {assignment.solution ? (
+                            <div style={{ fontSize: '0.9rem', color: 'var(--foreground)', lineHeight: 1.6 }}>
+                              {parseSolutionText(assignment.solution)}
+                            </div>
+                          ) : (
+                            <div style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', fontStyle: 'italic', marginBottom: '0.5rem' }}>
+                              No solution details have been added by the instructor yet.
+                            </div>
+                          )}
+
+                          {assignment.solutionUrl && (
+                            <div style={{ marginTop: '1.25rem' }}>
+                              <a
+                                href={assignment.solutionUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '0.5rem',
+                                  padding: '0.6rem 1.25rem',
+                                  background: '#f1f5f9',
+                                  border: '1px solid #cbd5e1',
+                                  borderRadius: '8px',
+                                  color: '#0f172a',
+                                  textDecoration: 'none',
+                                  fontSize: '0.825rem',
+                                  fontWeight: 600,
+                                  transition: 'all 0.15s ease',
+                                }}
+                                onMouseOver={(e) => { e.currentTarget.style.background = '#e2e8f0'; }}
+                                onMouseOut={(e) => { e.currentTarget.style.background = '#f1f5f9'; }}
+                              >
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                  <polyline points="7 10 12 15 17 10" />
+                                  <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                                <span>Download Solution Resource</span>
+                              </a>
+                            </div>
+                          )}
                         </div>
-
-                        {activeTab === 'assignment' ? (
-                          <div>
-                            {assignment.description && (
-                              <div style={{ ...s.lessonDesc, marginBottom: '1.25rem' }}>
-                                {assignment.description}
-                              </div>
-                            )}
-                            <AssignmentUpload
-                              courseId={assignment.courseId}
-                              weekId={assignment.weekId}
-                              assignmentId={assignment.id}
-                              assignmentTitle={assignmentTitle}
-                              embedded
-                              title={null}
-                              subtitle={`Drag and drop your file for ${assignmentLabel}, or browse to upload it.`}
-                            />
-                          </div>
-                        ) : (
-                          <div style={{ padding: '0.5rem 0' }}>
-                            {assignment.solution ? (
-                              <div style={{ fontSize: '0.9rem', color: 'var(--foreground)', lineHeight: 1.6 }}>
-                                {parseSolutionText(assignment.solution)}
-                              </div>
-                            ) : (
-                              <div style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', fontStyle: 'italic', marginBottom: '0.5rem' }}>
-                                No solution details have been added by the instructor yet.
-                              </div>
-                            )}
-
-                            {assignment.solutionUrl && (
-                              <div style={{ marginTop: '1.25rem' }}>
-                                <a
-                                  href={assignment.solutionUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    padding: '0.6rem 1.25rem',
-                                    background: '#f1f5f9',
-                                    border: '1px solid #cbd5e1',
-                                    borderRadius: '8px',
-                                    color: '#0f172a',
-                                    textDecoration: 'none',
-                                    fontSize: '0.825rem',
-                                    fontWeight: 600,
-                                    transition: 'all 0.15s ease',
-                                  }}
-                                  onMouseOver={(e) => { e.currentTarget.style.background = '#e2e8f0'; }}
-                                  onMouseOut={(e) => { e.currentTarget.style.background = '#f1f5f9'; }}
-                                >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                    <polyline points="7 10 12 15 17 10" />
-                                    <line x1="12" y1="15" x2="12" y2="3" />
-                                  </svg>
-                                  <span>Download Solution Resource</span>
-                                </a>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
+                      ) : (
+                        <div>
+                          {assignment.description && (
+                            <div style={{ ...s.lessonDesc, marginBottom: '1.25rem' }}>
+                              {assignment.description}
+                            </div>
+                          )}
+                          <AssignmentUpload
+                            courseId={assignment.courseId}
+                            weekId={assignment.weekId}
+                            assignmentId={assignment.id}
+                            assignmentTitle={assignmentTitle}
+                            embedded
+                            title={null}
+                            subtitle={`Drag and drop your file for ${assignmentLabel}, or browse to upload it.`}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
