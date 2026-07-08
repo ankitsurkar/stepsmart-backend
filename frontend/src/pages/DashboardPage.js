@@ -4368,16 +4368,6 @@ export default function DashboardPage() {
           <div style={s.courseTabs}>
             <button
               type="button"
-              style={{ ...s.courseTab, ...(showingSolution ? s.courseTabActive : {}) }}
-              onClick={() => {
-                setActiveAssignmentsTab('solution');
-                setExpandedAssignments({});
-              }}
-            >
-              Solutions
-            </button>
-            <button
-              type="button"
               style={{ ...s.courseTab, ...(!showingSolution ? s.courseTabActive : {}) }}
               onClick={() => {
                 setActiveAssignmentsTab('assignment');
@@ -4385,6 +4375,16 @@ export default function DashboardPage() {
               }}
             >
               Assignments
+            </button>
+            <button
+              type="button"
+              style={{ ...s.courseTab, ...(showingSolution ? s.courseTabActive : {}) }}
+              onClick={() => {
+                setActiveAssignmentsTab('solution');
+                setExpandedAssignments({});
+              }}
+            >
+              Solutions
             </button>
           </div>
         </div>

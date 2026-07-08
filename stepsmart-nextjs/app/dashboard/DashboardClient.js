@@ -4390,16 +4390,6 @@ export default function DashboardClient({
           <div style={s.courseTabs}>
             <button
               type="button"
-              style={{ ...s.courseTab, ...(showingSolution ? s.courseTabActive : {}) }}
-              onClick={() => {
-                setActiveAssignmentsTab('solution');
-                setExpandedAssignments({});
-              }}
-            >
-              Solutions
-            </button>
-            <button
-              type="button"
               style={{ ...s.courseTab, ...(!showingSolution ? s.courseTabActive : {}) }}
               onClick={() => {
                 setActiveAssignmentsTab('assignment');
@@ -4407,6 +4397,16 @@ export default function DashboardClient({
               }}
             >
               Assignments
+            </button>
+            <button
+              type="button"
+              style={{ ...s.courseTab, ...(showingSolution ? s.courseTabActive : {}) }}
+              onClick={() => {
+                setActiveAssignmentsTab('solution');
+                setExpandedAssignments({});
+              }}
+            >
+              Solutions
             </button>
           </div>
         </div>
