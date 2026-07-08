@@ -4256,16 +4256,11 @@ export default function DashboardPage() {
       : DEFAULT_RESOURCES;
 
     return (
-      <div style={s.card}>
-        <div style={s.panelHeader}>
-          <div>
-            <div style={s.sectionTitle}>Course Resources</div>
-            <div style={s.sectionMeta}>Access reference documents, templates, and guides.</div>
-          </div>
-        </div>
-
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         {globalResources.length === 0 ? (
-          <div style={s.empty}>No resources have been uploaded for this course yet.</div>
+          <div style={s.card}>
+            <div style={s.empty}>No resources have been uploaded for this course yet.</div>
+          </div>
         ) : (
           <div style={s.accordionList}>
             {globalResources.map((resource, index) => {
