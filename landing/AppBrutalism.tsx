@@ -1444,9 +1444,9 @@ function BlogPage() {
           <div className="container mx-auto px-6 h-20 flex items-center justify-between">
             <Logo toHome={true} />
             <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-              <a href="/#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Who is it for?</a>
-              <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Book 1:1</a>
-              <a href="/#mentors" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Mentors</a>
+              <NavLink href="/#who-is-it-for">Who is it for?</NavLink>
+              <NavLink href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer">Book 1:1</NavLink>
+              <NavLink href="/#mentors">Mentors</NavLink>
               <Link to="/blog" className="relative px-3 py-1.5 text-[#111111] font-extrabold text-sm select-none">
                 <span className="relative z-10">Blog</span>
                 <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
@@ -1521,9 +1521,9 @@ function BlogPage() {
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <Logo toHome={true} />
           <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-            <a href="/#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Who is it for?</a>
-            <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Book 1:1</a>
-            <a href="/#mentors" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Mentors</a>
+            <NavLink href="/#who-is-it-for">Who is it for?</NavLink>
+            <NavLink href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer">Book 1:1</NavLink>
+            <NavLink href="/#mentors">Mentors</NavLink>
             <Link to="/blog" className="relative px-3 py-1.5 text-[#111111] font-extrabold text-sm select-none">
               <span className="relative z-10">Blog</span>
               <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
