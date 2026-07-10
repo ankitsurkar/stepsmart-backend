@@ -393,7 +393,7 @@ function LandingPage() {
       <section id="who-is-it-for" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is the Product Management Course for?</h2>
+            <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is this for?</h2>
             <p className="text-lg font-bold text-[#111111]">The PM-X Accelerator is designed for builders ready to take the next step in their career.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -534,7 +534,7 @@ function LandingPage() {
       {/* Mentors */}
       <section id="mentors" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 text-center max-w-5xl">
-          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn Product Management from Industry Experts</h2>
+          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
           <div className="grid md:grid-cols-2 gap-10">
             {/* Sanket */}
             <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
