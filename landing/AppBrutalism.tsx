@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import {
   CheckCircle2,
   Mail,
@@ -101,15 +101,22 @@ type DemoUser = {
 
 type DashboardTab = 'lectures' | 'resources' | 'assignments' | 'calendar';
 
-const Logo = () => {
+const Logo = ({ toHome }: { toHome?: boolean }) => {
+  const navigate = useNavigate();
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (toHome) {
+      e.preventDefault();
+      navigate('/');
+      window.scrollTo({ top: 0 });
+    } else {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
   
   return (
     <a 
-      href="#" 
+      href="/" 
       onClick={handleClick} 
       className="flex items-center gap-3 select-none cursor-pointer"
     >
@@ -328,6 +335,7 @@ function LandingPage() {
             <NavLink href="#who-is-it-for">Who is it for?</NavLink>
             <NavLink href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer">Book 1:1</NavLink>
             <NavLink href="#mentors">Mentors</NavLink>
+            <NavLink href="/blog">Blog</NavLink>
             <a href="/auth" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
             <Button variant="primary" onClick={() => document.getElementById('enroll')?.scrollIntoView({ behavior: 'smooth' })}>
               Apply Now
@@ -345,6 +353,7 @@ function LandingPage() {
           <a href="#who-is-it-for" onClick={(e) => handleMobileLinkClick(e, 'who-is-it-for')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
           <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Book 1:1</a>
           <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+          <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
           <a href="/auth" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
           <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
         </div>
@@ -1058,6 +1067,7 @@ function LandingPage() {
                 <li><a href="#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Who is it for?</a></li>
                 <li><a href="#batch-details" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Batch Details</a></li>
                 <li><a href="#mentors" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Mentors</a></li>
+                <li><Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link></li>
               </ul>
             </div>
             <div>
@@ -1329,6 +1339,347 @@ function DashboardPage() {
   );
 }
 
+const DEMO_BLOGS = [
+  {
+    id: "a-new-generation-studies-ai",
+    title: "A New Generation Studies AI, Apple's Recipe for On-Device Models, GLM5.2 Tackles Open-Ended Problems",
+    description: "The Batch News & Insights: \"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter...",
+    content: "## Inside Claude Code and Boris Cherney's Design Philosophy\n\n\"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter discussed it recently. Loop engineering focuses on iterating on feedback cycles rapidly.\n\n### Apple's Recipe for On-Device Models\nApple's latest research reveals a highly optimized pipeline for running LLMs on-device, leveraging unified memory and model quantization.\n\n### GLM5.2 Tackles Open-Ended Problems\nThe GLM team released version 5.2, setting a new benchmark for open-ended reasoning and code execution capabilities.",
+    imageUrl: "/blog-loops.png",
+    date: "Jun 26, 2026",
+    createdAt: "2026-06-26T12:00:00.000Z"
+  },
+  {
+    id: "testing-mythos-and-fable",
+    title: "Testing Mythos and Fable, Moving Beyond SWE-bench, Nvidia's Open Contender",
+    description: "The Batch AI News and Insights: Over the last two weeks, both the U.S. Government and Anthropic took significant actions that...",
+    content: "## Testing Mythos and Fable: The Path to Evaluation\n\nOver the last two weeks, both the U.S. Government and Anthropic took significant actions that highlight how evaluations are moving from research benchmarks to critical safety gates.\n\n### Moving Beyond SWE-bench\nStandard coding benchmarks are no longer sufficient. New evaluation frameworks are testing agents on multi-file changes and long-context logic.",
+    imageUrl: "/blog-collab.png",
+    date: "Jun 19, 2026",
+    createdAt: "2026-06-19T12:00:00.000Z"
+  },
+  {
+    id: "mythos-begets-fable",
+    title: "Mythos Begets Fable, Cursor's Composer 2.5, Agents Building Agents",
+    description: "The Batch AI News and Insights: If you haven't already, I encourage you to experiment with using AI agents not just to chat but to actuall...",
+    content: "## Cursor's Composer 2.5: The Future of IDEs\n\nIf you haven't already, I encourage you to experiment with using AI agents not just to chat but to actually build applications.\n\n### Agents Building Agents\nWith the release of Cursor Composer 2.5, multi-file edits are becoming standard. We are entering an era of software creation where the prompt is the blueprint.",
+    imageUrl: "/blog-editor.png",
+    date: "Jun 12, 2026",
+    createdAt: "2026-06-12T12:00:00.000Z"
+  }
+];
+
+function BlogPage() {
+  const { blogId } = useParams();
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await fetch(
+          'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ page: 'get_blogs' }),
+          }
+        );
+        if (!res.ok) throw new Error('Failed to fetch blog posts');
+        const data = await res.json();
+        setBlogs(data.blogs || []);
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message || 'Failed to load blog posts.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, []);
+
+  const displayBlogs = [
+    ...blogs,
+    ...DEMO_BLOGS.filter(demo => !blogs.some(b => b.id === demo.id))
+  ];
+
+  const parseMarkdown = (text: string) => {
+    if (!text) return '<p class="text-slate-400 italic">No content written yet for this post.</p>';
+    
+    let html = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    html = html.replace(/^### (.*?)$/gm, '<h3 class="text-xl font-extrabold mt-8 mb-3 text-[#111111]">$1</h3>');
+    html = html.replace(/^## (.*?)$/gm, '<h2 class="text-2xl font-extrabold mt-10 mb-4 border-b-[3px] border-[#111111] pb-2 text-[#111111]">$1</h2>');
+    html = html.replace(/^# (.*?)$/gm, '<h1 class="text-3xl md:text-4xl font-extrabold mt-12 mb-6 text-[#111111] leading-tight">$1</h1>');
+
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold">$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+
+    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<figure class="my-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden bg-white"><img src="$2" alt="$1" class="max-w-full h-auto mx-auto" /><figcaption class="text-center text-xs font-bold text-[#111111] border-t-2 border-[#111111] py-2 bg-[#FFF3A7]">$1</figcaption></figure>');
+
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" class="text-[#188ab2] hover:underline font-extrabold">$1</a>');
+
+    html = html.replace(/\n\n/g, '</p><p class="mb-6 text-[#111111] leading-relaxed text-base font-bold">');
+    html = '<p class="mb-6 text-[#111111] leading-relaxed text-base font-bold">' + html + '</p>';
+
+    html = html.replace(/<p class=".*?"><\/p>/g, '');
+
+    return html;
+  };
+
+  const currentPost = blogId ? displayBlogs.find(b => b.id === blogId) : null;
+
+  // Single Post Detailed Reader View
+  if (blogId) {
+    if (loading) {
+      return (
+        <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center pt-20">
+          <div className="h-10 w-10 border-[3px] border-[#111111] border-t-[#188ab2] animate-spin mb-4"></div>
+          <p className="text-[#111111] font-bold text-sm">Loading post...</p>
+        </div>
+      );
+    }
+    
+    if (!currentPost) {
+      return (
+        <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center p-6 text-center">
+          <h2 className="text-2xl font-extrabold text-[#111111] mb-4">Blog post not found</h2>
+          <Link to="/blog" className="text-[#188ab2] font-extrabold underline underline-offset-4 decoration-2 decoration-[#188ab2]">Back to all posts</Link>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
+        <nav className="fixed top-0 z-50 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+          <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+            <Logo toHome={true} />
+            <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
+              <a href="/#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Who is it for?</a>
+              <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Book 1:1</a>
+              <a href="/#mentors" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Mentors</a>
+              <Link to="/blog" className="relative px-3 py-1.5 text-[#111111] font-extrabold text-sm select-none">
+                <span className="relative z-10">Blog</span>
+                <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
+              </Link>
+              <a href="/auth" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
+              <Button variant="primary" onClick={() => navigate('/#enroll')}>
+                Apply Now
+              </Button>
+            </div>
+            <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
+            </button>
+          </div>
+        </nav>
+
+        {/* Mobile Nav */}
+        {isMenuOpen && (
+          <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+            <a href="/#who-is-it-for" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
+            <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Book 1:1</a>
+            <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+            <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Blog</Link>
+            <a href="/auth" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
+            <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
+          </div>
+        )}
+
+        <main className="pt-36 pb-24 bg-[#FFFFFF]">
+          <div className="container mx-auto px-6 max-w-3xl">
+            <Link to="/blog" className="inline-flex items-center gap-2 text-[#188ab2] font-extrabold hover:underline underline-offset-4 decoration-2 decoration-[#188ab2] mb-8">
+              <span className="text-lg">←</span> Back to all posts
+            </Link>
+
+            <article>
+              <header className="mb-10">
+                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] text-xs font-extrabold px-3 py-1.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none uppercase tracking-wider mb-6">
+                  {currentPost.date}
+                </span>
+                <h1 className="text-3xl md:text-5xl font-extrabold text-[#111111] leading-tight mb-6">
+                  {currentPost.title}
+                </h1>
+                <p className="text-lg text-[#111111] italic leading-relaxed border-l-4 border-[#111111] pl-4 py-1 font-bold">
+                  {currentPost.description}
+                </p>
+              </header>
+
+              {currentPost.imageUrl && (
+                <div className="w-full h-80 md:h-[28rem] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] overflow-hidden mb-12 bg-slate-100">
+                  <img
+                    src={currentPost.imageUrl}
+                    alt={currentPost.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+
+              <div 
+                className="prose prose-slate max-w-none text-[#111111]"
+                dangerouslySetInnerHTML={{ __html: parseMarkdown(currentPost.content) }}
+              />
+            </article>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Blog Listing View
+  return (
+    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
+      <nav className="fixed top-0 z-50 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+          <Logo toHome={true} />
+          <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
+            <a href="/#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Who is it for?</a>
+            <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Book 1:1</a>
+            <a href="/#mentors" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Mentors</a>
+            <Link to="/blog" className="relative px-3 py-1.5 text-[#111111] font-extrabold text-sm select-none">
+              <span className="relative z-10">Blog</span>
+              <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
+            </Link>
+            <a href="/auth" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
+            <Button variant="primary" onClick={() => navigate('/#enroll')}>
+              Apply Now
+            </Button>
+          </div>
+          <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Nav */}
+      {isMenuOpen && (
+        <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+          <a href="/#who-is-it-for" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
+          <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Book 1:1</a>
+          <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+          <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Blog</Link>
+          <a href="/auth" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
+          <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
+        </div>
+      )}
+
+      {/* Blog Hero Section */}
+      <section className="pt-40 pb-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 max-w-6xl text-center">
+          <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-6 py-2 font-extrabold text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none mb-6">
+            The StepSmart Blog
+          </span>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 text-[#111111] leading-tight">
+            Resources & Insights for Aspiring PMs
+          </h1>
+          <p className="text-lg md:text-xl text-[#111111] max-w-2xl mx-auto leading-relaxed font-bold">
+            Guides, case study deep-dives, and actionable frameworks to build your product management career without an MBA.
+          </p>
+        </div>
+      </section>
+
+      {/* Blog Cards Grid */}
+      <section className="py-20 bg-[#FFFFFF]">
+        <div className="container mx-auto px-6 max-w-6xl">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="h-10 w-10 border-[3px] border-[#111111] border-t-[#188ab2] animate-spin mb-4"></div>
+              <p className="text-[#111111] font-bold text-sm">Loading insights...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-20">
+              <p className="text-red-500 font-bold mb-2">{error}</p>
+              <button onClick={() => window.location.reload()} className="text-xs text-[#188ab2] font-extrabold underline decoration-2 decoration-[#188ab2]">Retry</button>
+            </div>
+          ) : displayBlogs.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-slate-400 font-bold mb-2">No blog posts available.</p>
+              <p className="text-slate-400 text-sm font-bold">Check back later for fresh product strategy content.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {displayBlogs.map((blog) => (
+                <Link
+                  key={blog.id}
+                  to={`/blog/${blog.id}`}
+                  className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex flex-col group text-left"
+                >
+                  <div className="relative w-full h-56 border-b-[3px] border-[#111111] overflow-hidden bg-slate-100">
+                    <img
+                      src={blog.imageUrl || "/hero_image.png"}
+                      alt={blog.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-6 md:p-8 flex flex-col flex-1">
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] text-xs font-extrabold px-3 py-1 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] inline-block mb-4 uppercase tracking-wider self-start select-none">
+                      {blog.date}
+                    </span>
+                    <h2 className="font-extrabold text-xl text-[#111111] leading-snug mb-3 group-hover:text-[#188ab2] transition-colors line-clamp-3">
+                      {blog.title}
+                    </h2>
+                    <p className="text-[#111111] text-sm leading-relaxed flex-1 line-clamp-4 font-bold">
+                      {blog.description}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[#FFFFFF] py-20 border-t-[3px] border-[#111111]">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-3 gap-16 mb-16 text-left">
+            <div className="col-span-1">
+              <Logo toHome={true} />
+              <p className="text-[#111111] text-sm leading-relaxed max-w-xs mt-8 font-bold">
+                Helping engineers and non-PMs break into Product Management without an MBA or IIT tag. Expert mentorship and real-world outcomes.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-extrabold text-[#111111] mb-6">Quick Links</h4>
+              <ul className="space-y-4 text-[#111111] text-sm font-bold">
+                <li><a href="/#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Who is it for?</a></li>
+                <li><a href="/#batch-details" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Batch Details</a></li>
+                <li><a href="/#mentors" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Mentors</a></li>
+                <li><Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-extrabold text-[#111111] mb-6">Join Our Community</h4>
+              <p className="text-[#111111] text-sm mb-6 leading-relaxed font-bold">
+                Stay updated with free resources, case study deep-dives, and networking opportunities.
+              </p>
+              <a 
+                href="https://chat.whatsapp.com/BCeLjXhQHrxFxOlxkb7DPc" 
+                target="_blank" 
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-[#188ab2] font-extrabold hover:underline underline-offset-4 decoration-2 decoration-[#188ab2]"
+              >
+                Join the WhatsApp Community <ExternalLink className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+          <div className="pt-12 border-t-[3px] border-[#111111] flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex gap-6 text-[#111111]">
+              <a href="mailto:administrator@stepsmart.net" className="hover:text-[#188ab2] transition-colors"><Mail /></a>
+            </div>
+            <p className="text-[#111111] text-[10px] font-bold uppercase tracking-widest">© 2026 StepSmart. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (!getDemoSession()) {
     return <Navigate to="/auth" replace />;
@@ -1341,6 +1692,8 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:blogId" element={<BlogPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route
           path="/dashboard"
