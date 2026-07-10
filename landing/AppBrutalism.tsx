@@ -390,7 +390,7 @@ function LandingPage() {
 
           <div className="relative w-full max-w-5xl mx-auto border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] bg-white">
             <img 
-              src="/hero_image.png" 
+              src="/hero_image.jpg" 
               alt="PM-X Accelerator — Product Management course outcomes and student success stories" 
               className="w-full h-auto object-cover"
             />
@@ -831,10 +831,7 @@ function LandingPage() {
               { 
                 name: "Nishtha", 
                 role: "Product Management Mentee", 
-                photo: "/student-nishtha.png",
-                altText: "Nishtha, Product Management Course graduate outcome",
                 shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
-                avatarTilt: "rotate-[-3deg]",
                 text: (
                   <span>
                     Ankit helped me break down vague case studies into actionable chunks helping me{' '}
@@ -847,10 +844,7 @@ function LandingPage() {
               { 
                 name: "Gauri", 
                 role: "PM-X Accelerator Student", 
-                photo: "/student-gauri.png",
-                altText: "Gauri, Product Management Course graduate outcome",
                 shadow: "shadow-[8px_4px_0px_0px_rgba(17,17,17,1)]",
-                avatarTilt: "rotate-[4deg]",
                 text: (
                   <span>
                     The PM-X course helped me to{' '}
@@ -864,10 +858,7 @@ function LandingPage() {
               { 
                 name: "Riya", 
                 role: "Product Strategy Mentee", 
-                photo: "/student-riya.png",
-                altText: "Riya, Product Management Course graduate outcome",
                 shadow: "shadow-[4px_8px_0px_0px_rgba(17,17,17,1)]",
-                avatarTilt: "rotate-[-2deg]",
                 text: (
                   <span>
                     Sanket has helped me in structure my thoughts, such that now I am prepared for any interview{' '}
@@ -888,14 +879,6 @@ function LandingPage() {
                   <p className="text-[#111111] leading-relaxed text-lg font-bold">"{t.text}"</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  {/* Real headshot instead of initials */}
-                  <div className={`w-10 h-10 rounded-full border-2 border-[#111111] overflow-hidden shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] shrink-0 bg-white ${t.avatarTilt}`}>
-                    <img 
-                      src={t.photo} 
-                      alt={t.altText} 
-                      className="w-full h-full object-cover" 
-                    />
-                  </div>
                   <div className="font-extrabold text-[#111111]">{t.name}</div>
                 </div>
               </div>
@@ -1345,7 +1328,7 @@ const DEMO_BLOGS = [
     title: "A New Generation Studies AI, Apple's Recipe for On-Device Models, GLM5.2 Tackles Open-Ended Problems",
     description: "The Batch News & Insights: \"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter...",
     content: "## Inside Claude Code and Boris Cherney's Design Philosophy\n\n\"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter discussed it recently. Loop engineering focuses on iterating on feedback cycles rapidly.\n\n### Apple's Recipe for On-Device Models\nApple's latest research reveals a highly optimized pipeline for running LLMs on-device, leveraging unified memory and model quantization.\n\n### GLM5.2 Tackles Open-Ended Problems\nThe GLM team released version 5.2, setting a new benchmark for open-ended reasoning and code execution capabilities.",
-    imageUrl: "/blog-loops.png",
+    imageUrl: "/blog-loops.jpg",
     date: "Jun 26, 2026",
     createdAt: "2026-06-26T12:00:00.000Z"
   },
@@ -1354,7 +1337,7 @@ const DEMO_BLOGS = [
     title: "Testing Mythos and Fable, Moving Beyond SWE-bench, Nvidia's Open Contender",
     description: "The Batch AI News and Insights: Over the last two weeks, both the U.S. Government and Anthropic took significant actions that...",
     content: "## Testing Mythos and Fable: The Path to Evaluation\n\nOver the last two weeks, both the U.S. Government and Anthropic took significant actions that highlight how evaluations are moving from research benchmarks to critical safety gates.\n\n### Moving Beyond SWE-bench\nStandard coding benchmarks are no longer sufficient. New evaluation frameworks are testing agents on multi-file changes and long-context logic.",
-    imageUrl: "/blog-collab.png",
+    imageUrl: "/blog-collab.jpg",
     date: "Jun 19, 2026",
     createdAt: "2026-06-19T12:00:00.000Z"
   },
@@ -1363,7 +1346,7 @@ const DEMO_BLOGS = [
     title: "Mythos Begets Fable, Cursor's Composer 2.5, Agents Building Agents",
     description: "The Batch AI News and Insights: If you haven't already, I encourage you to experiment with using AI agents not just to chat but to actuall...",
     content: "## Cursor's Composer 2.5: The Future of IDEs\n\nIf you haven't already, I encourage you to experiment with using AI agents not just to chat but to actually build applications.\n\n### Agents Building Agents\nWith the release of Cursor Composer 2.5, multi-file edits are becoming standard. We are entering an era of software creation where the prompt is the blueprint.",
-    imageUrl: "/blog-editor.png",
+    imageUrl: "/blog-editor.jpg",
     date: "Jun 12, 2026",
     createdAt: "2026-06-12T12:00:00.000Z"
   }
