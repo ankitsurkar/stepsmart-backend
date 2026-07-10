@@ -382,9 +382,28 @@ function LandingPage() {
           <div className="relative w-full max-w-5xl mx-auto border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] bg-white">
             <img 
               src="/hero_image.png" 
-              alt="PM-X Accelerator Outcomes" 
+              alt="PM-X Accelerator — Product Management course outcomes and student success stories" 
               className="w-full h-auto object-cover"
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Why Product Management? Section */}
+      <section className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] select-none">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-[#111111] mb-6">
+              Why Product Management?
+            </h2>
+            <div className="space-y-6 text-[#111111] text-sm md:text-base font-bold leading-relaxed">
+              <p>
+                Product Managers are among the highest-paid roles in tech — with average salaries of <strong>₹20L–₹50L+ in India</strong>. But most PMs aren't MBA graduates or IIT alumni. The best product managers come from engineering, analytics, and consulting — people who understand user problems deeply and can translate them into product decisions.
+              </p>
+              <p>
+                The PM-X Accelerator teaches a 12-week structured product management curriculum covering product discovery, metrics frameworks, user research, roadmapping, and behavioral interview preparation. Unlike generic MBA programs, every session is taught by practicing PMs from Mastercard and Microsoft.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -393,7 +412,7 @@ function LandingPage() {
       <section id="who-is-it-for" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is this for?</h2>
+            <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is the Product Management Course for?</h2>
             <p className="text-lg font-bold text-[#111111]">The PM-X Accelerator is designed for builders ready to take the next step in their career.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -534,7 +553,7 @@ function LandingPage() {
       {/* Mentors */}
       <section id="mentors" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 text-center max-w-5xl">
-          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
+          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn Product Management from Industry Experts</h2>
           <div className="grid md:grid-cols-2 gap-10">
             {/* Sanket */}
             <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
@@ -542,7 +561,7 @@ function LandingPage() {
               <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                 <img
                   src={sanketPhotoSrc}
-                  alt="Sanket"
+                  alt="Sanket, Senior Product Manager at Mastercard, PM mentor at StepSmart"
                   className="w-full h-full object-cover object-top"
                 />
               </div>
@@ -572,7 +591,7 @@ function LandingPage() {
               <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                 <img
                   src={ankitPhotoSrc}
-                  alt="Ankit"
+                  alt="Ankit, Product Manager at Microsoft, PM mentor at StepSmart"
                   className="w-full h-full object-cover object-top"
                 />
               </div>
@@ -823,6 +842,7 @@ function LandingPage() {
                 name: "Nishtha", 
                 role: "Product Management Mentee", 
                 photo: "/student-nishtha.png",
+                altText: "Nishtha, Product Management Course graduate outcome",
                 shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
                 avatarTilt: "rotate-[-3deg]",
                 text: (
@@ -838,6 +858,7 @@ function LandingPage() {
                 name: "Gauri", 
                 role: "PM-X Accelerator Student", 
                 photo: "/student-gauri.png",
+                altText: "Gauri, Product Management Course graduate outcome",
                 shadow: "shadow-[8px_4px_0px_0px_rgba(17,17,17,1)]",
                 avatarTilt: "rotate-[4deg]",
                 text: (
@@ -854,6 +875,7 @@ function LandingPage() {
                 name: "Riya", 
                 role: "Product Strategy Mentee", 
                 photo: "/student-riya.png",
+                altText: "Riya, Product Management Course graduate outcome",
                 shadow: "shadow-[4px_8px_0px_0px_rgba(17,17,17,1)]",
                 avatarTilt: "rotate-[-2deg]",
                 text: (
@@ -880,13 +902,70 @@ function LandingPage() {
                   <div className={`w-10 h-10 rounded-full border-2 border-[#111111] overflow-hidden shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] shrink-0 bg-white ${t.avatarTilt}`}>
                     <img 
                       src={t.photo} 
-                      alt={t.name} 
+                      alt={t.altText} 
                       className="w-full h-full object-cover" 
                     />
                   </div>
                   <div className="font-extrabold text-[#111111]">{t.name}</div>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
+              Frequently Asked{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                Questions
+              </span>
+            </h2>
+            <p className="text-lg font-bold text-[#111111] mt-4">Got questions? We've got answers.</p>
+          </div>
+
+          <div className="space-y-6">
+            {[
+              {
+                q: "Do I need an MBA or an IIT degree to join or break into PM?",
+                a: "Absolutely not. The best product managers come from diverse backgrounds like software engineering, analytics, marketing, or design. We screen for logic, user empathy, and problem-solving, not pedigree."
+              },
+              {
+                q: "How is the PM-X Accelerator different from other product management courses?",
+                a: "Most courses are passive video modules. StepSmart is a live career accelerator. Every session is taught live by PMs from Microsoft and Mastercard. You build real product specifications (PRDs) and do live mock interviews."
+              },
+              {
+                q: "What is the commitment required for this course?",
+                a: "You'll need to dedicate 4-6 hours per week for live sessions and hands-on case studies. The curriculum is structured to fit around your working hours."
+              },
+              {
+                q: "Do we get lifetime access to the resources and community?",
+                a: "Yes! Once you enroll, you join our WhatsApp Inner Circle and get lifetime access to our PM interview banks, toolstacks, templates, and active alumni network."
+              },
+              {
+                q: "Is there job placement assistance?",
+                a: "We offer complete resume transformation workshops, case study portfolio construction, and direct referrals to top-tier companies through our mentors and alumni network."
+              }
+            ].map((faq, i) => (
+              <details 
+                key={i} 
+                className="group border-[3px] border-[#111111] bg-white p-6 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] [&_summary::-webkit-details-marker]:hidden open:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] open:translate-x-[2px] open:translate-y-[2px] transition-all duration-100 rounded-none select-none"
+              >
+                <summary className="flex items-center justify-between font-extrabold text-base md:text-lg cursor-pointer text-[#111111] list-none">
+                  <span>{faq.q}</span>
+                  <span className="transition group-open:rotate-180 font-bold text-xl shrink-0 ml-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </span>
+                </summary>
+                <p className="mt-4 text-xs md:text-sm font-bold leading-relaxed text-[#111111] border-t-2 border-[#111111]/10 pt-4">
+                  {faq.a}
+                </p>
+              </details>
             ))}
           </div>
         </div>

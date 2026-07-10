@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://www.stepsmart.net/sitemap.xml
