@@ -458,63 +458,74 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Batch Details - The Next Cohort - Small by Design */}
+      {/* Batch Details Section */}
       <section id="batch-details" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 max-w-5xl">
-          <div className="grid md:grid-cols-3 gap-8 items-start mb-12">
-            <div className="md:col-span-2">
-              <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight text-[#111111] mb-4">
-                The{' '}
-                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[-1deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                  Next Cohort
-                </span>{' '}
-                - Small by Design
-              </h2>
+        <div className="container mx-auto px-6 max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
+              Every batch is{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                one more step
+              </span>
+            </h2>
+            <p className="text-lg font-bold text-slate-500 mt-4">Small by design. Personally vetted, every time.</p>
+          </div>
+
+          {/* Chart Section */}
+          <div className="grid grid-cols-4 max-w-2xl mx-auto gap-3 md:gap-6 items-end mt-12 mb-8">
+            {/* Batch 1 */}
+            <div className="flex flex-col items-center">
+              <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 1</span>
+              <div className="w-full bg-[#10b981] border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] h-24 md:h-28 flex items-center justify-center rounded-none select-none">
+                <span className="text-white text-xl md:text-2xl font-extrabold">✓</span>
+              </div>
             </div>
-            <div className="md:col-span-1">
-              <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                12 to 18 PMs per cohort. <span className="underline decoration-[3px] decoration-[#188ab2] font-extrabold">Personally vetted on a 20-30 minute call.</span> The day you enroll, you're in the Tribe - alumni across 90 companies, for life.
-              </p>
+
+            {/* Batch 2 */}
+            <div className="flex flex-col items-center">
+              <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 2</span>
+              <div className="w-full bg-[#10b981] border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] h-32 md:h-36 flex items-center justify-center rounded-none select-none">
+                <span className="text-white text-xl md:text-2xl font-extrabold">✓</span>
+              </div>
+            </div>
+
+            {/* Batch 3 */}
+            <div className="flex flex-col items-center relative">
+              <div className="absolute -top-7 bg-[#111111] text-[#FFF3A7] border-[2px] border-[#111111] px-1.5 py-0.5 font-extrabold text-[8px] md:text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none whitespace-nowrap">
+                OPEN NOW
+              </div>
+              <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 3</span>
+              <div className="w-full bg-[#188ab2] border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] h-40 md:h-44 flex flex-col items-center justify-center rounded-none select-none relative">
+                <div className="text-center text-white">
+                  <div className="text-xl md:text-2xl font-extrabold">03</div>
+                  <div className="text-[8px] md:text-[10px] font-extrabold tracking-wider uppercase">BATCH 3</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Batch 4 */}
+            <div className="flex flex-col items-center">
+              <span className="text-[10px] md:text-xs font-extrabold text-slate-400 mb-2 uppercase tracking-wider">Batch 4</span>
+              <div className="w-full border-[3px] border-dashed border-slate-300 h-48 md:h-52 flex items-center justify-center rounded-none select-none">
+                <span className="text-slate-400 font-extrabold text-xs md:text-sm uppercase tracking-wider">TBD</span>
+              </div>
             </div>
           </div>
 
+          <hr className="border-t-[3px] border-[#111111] my-12" />
+
+          {/* Callouts */}
           <div className="grid md:grid-cols-2 gap-8">
-            {/* Card 1: Completed Cohorts */}
-            <div className="bg-white border-[3px] border-[#111111] p-10 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full relative">
-              <div className="absolute top-4 right-4">
-                <span className="inline-flex items-center gap-1.5 bg-[#FFFFFF] border-2 border-[#111111] text-xs font-extrabold px-3 py-1 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  <span className="w-2 h-2 rounded-full bg-[#188ab2]"></span>
-                  Completed
-                </span>
-              </div>
-              <div className="mt-8">
-                <h3 className="text-5xl font-extrabold text-[#111111] leading-none mb-4">6</h3>
-                <p className="text-2xl font-extrabold text-[#111111] mb-6">Cohorts Completed</p>
-                <p className="text-sm text-[#111111] font-bold leading-relaxed">
-                  Over 100+ working professionals successfully transition and grow in masterclass-focused settings.
-                </p>
-              </div>
+            <div className="bg-white border-[3px] border-[#111111] p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none">
+              <p className="text-base font-bold text-[#111111] leading-relaxed">
+                <strong>1 batch completed, 1 batch ongoing.</strong> 50+ professionals transitioned into PM roles.
+              </p>
             </div>
 
-            {/* Card 2: Current June Cohort */}
-            <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-10 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full relative text-[#111111]">
-              <div className="absolute top-4 right-4">
-                <span className="inline-flex items-center gap-1.5 bg-[#FFFFFF] border-2 border-[#111111] text-xs font-extrabold px-3 py-1 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                  Closed
-                </span>
-              </div>
-              <div className="mt-8">
-                <h3 className="text-4xl font-extrabold text-[#111111] leading-none mb-4">2026 June Cohort</h3>
-                <p className="text-lg font-extrabold text-[#111111] mb-6">Registration Closed</p>
-                
-                <div className="flex gap-4 items-start bg-white border-2 border-[#111111] p-4 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
-                  <div className="text-2xl shrink-0 mt-0.5">⌛</div>
-                  <p className="text-xs font-bold leading-relaxed">
-                    This cohort has started, so <strong>registration is closed</strong>. We haven't decided if or when we'll open enrollment again - message us and we'll reach out first if it does.
-                  </p>
-                </div>
-              </div>
+            <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none">
+              <p className="text-base font-bold text-[#111111] leading-relaxed">
+                <strong>Batch 3 is open</strong> — 12-18 seats, personally vetted on a 30 min call.
+              </p>
             </div>
           </div>
         </div>
