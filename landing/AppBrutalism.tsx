@@ -879,6 +879,12 @@ function LandingPage() {
                   <p className="text-[#111111] leading-relaxed text-lg font-bold">"{t.text}"</p>
                 </div>
                 <div className="flex items-center gap-3">
+                  {/* Avatar placeholder – swap src once images are ready */}
+                  <div className="w-12 h-12 rounded-full border-[3px] border-[#111111] bg-[#F5F5F0] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex-shrink-0 overflow-hidden flex items-center justify-center">
+                    <span className="text-[#111111] font-extrabold text-base select-none">
+                      {t.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
+                    </span>
+                  </div>
                   <div className="font-extrabold text-[#111111]">{t.name}</div>
                 </div>
               </div>
