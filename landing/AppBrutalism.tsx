@@ -389,25 +389,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Why Product Management? Section */}
-      <section className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] select-none">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#111111] mb-6">
-              Why Product Management?
-            </h2>
-            <div className="space-y-6 text-[#111111] text-sm md:text-base font-bold leading-relaxed">
-              <p>
-                Product Managers are among the highest-paid roles in tech — with average salaries of <strong>₹20L–₹50L+ in India</strong>. But most PMs aren't MBA graduates or IIT alumni. The best product managers come from engineering, analytics, and consulting — people who understand user problems deeply and can translate them into product decisions.
-              </p>
-              <p>
-                The PM-X Accelerator teaches a 12-week structured product management curriculum covering product discovery, metrics frameworks, user research, roadmapping, and behavioral interview preparation. Unlike generic MBA programs, every session is taught by practicing PMs from Mastercard and Microsoft.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Who is it for */}
       <section id="who-is-it-for" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6">
