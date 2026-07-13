@@ -1,0 +1,727 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  CheckCircle2,
+  Mail,
+  Loader2,
+  Menu,
+  X,
+  Calendar,
+  Briefcase,
+  Users,
+  ExternalLink,
+  FileText,
+  FolderArchive,
+  Wrench,
+  MessageSquare,
+  BookOpen,
+  GraduationCap,
+  Trophy,
+  Sparkles,
+  TrendingUp,
+  Compass,
+  Lightbulb,
+  Laptop,
+  Target,
+  Cpu
+} from 'lucide-react';
+import {
+  Logo,
+  Button,
+  NavLink,
+  db,
+  appId,
+  enrollmentSchema,
+  saveLeadToDemoDB,
+  sanketPhotoSrc,
+  ankitPhotoSrc,
+  nidhiPhotoSrc,
+  brochurePdfSrc,
+  startBrochureDownload
+} from './AppBrutalism';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
+const roadmapSteps = [
+  {
+    title: "PM Intro & Skills Mapping",
+    desc: "Week in Life of a PM, Intro to Mentors, PM Interviews",
+    Icon: Sparkles
+  },
+  {
+    title: "Product Fundamentals",
+    desc: "Systems Thinking, Context Understanding, Tech Stack Basics",
+    Icon: BookOpen
+  },
+  {
+    title: "Business & Market Viability",
+    desc: "Unit Economics, Market Research, Guesstimate frameworks",
+    Icon: TrendingUp
+  },
+  {
+    title: "User Research & Segmentation",
+    desc: "Segmentation, User Value, Root Cause Analysis (RCA)",
+    Icon: Users
+  },
+  {
+    title: "Personas & Customer Journeys",
+    desc: "Customer Journeys, Research Synthesis, Product Design",
+    Icon: Compass
+  },
+  {
+    title: "Solution Space & Ideation",
+    desc: "Prioritization matrices, Solution Space, Product Strategy",
+    Icon: Lightbulb
+  },
+  {
+    title: "Tech Architectures & UX/UI",
+    desc: "Go-To-Market (GTM) Strategy, UX/UI layouts, Prototyping",
+    Icon: Laptop
+  },
+  {
+    title: "Metrics & Data Analytics",
+    desc: "Data Driven Decisions, A/B Testing, Product Metrics",
+    Icon: Target
+  },
+  {
+    title: "AI PM Fundamentals",
+    desc: "Prompt Engineering, RAG architectures, LLM fine-tuning",
+    Icon: Cpu
+  },
+  {
+    title: "Portfolio & Placement Prep",
+    desc: "Resume / PRD Portfolio reviews, Mock Interviews, Referrals",
+    Icon: Trophy,
+    bg: "bg-[#FFF3A7]"
+  }
+];
+
+export function StudentsLandingPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [enrollmentStatus, setEnrollmentStatus] = useState('idle');
+  const [formIntent, setFormIntent] = useState('enroll');
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const trackVisit = async () => {
+      try {
+        if (db) {
+          const analyticsRef = collection(db, 'artifacts', appId, 'public', 'data', 'analytics');
+          await addDoc(analyticsRef, {
+            page: 'students_landing_page',
+            timestamp: serverTimestamp(),
+            userAgent: navigator.userAgent
+          });
+        }
+      } catch (e) {
+        console.error("Analytics failed", e);
+      }
+    };
+    trackVisit();
+  }, []);
+
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm({
+    resolver: zodResolver(enrollmentSchema),
+    defaultValues: { intent: 'enroll' }
+  });
+
+  const completeLeadSubmission = (intent: string) => {
+    setEnrollmentStatus('success');
+    if (intent === 'brochure') {
+      setTimeout(() => {
+        startBrochureDownload();
+      }, 1000);
+      return;
+    }
+  };
+
+  const onSubmit = async (data: any) => {
+    setEnrollmentStatus('loading');
+    saveLeadToDemoDB(data);
+
+    try {
+      const res = await fetch(
+        'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: data.fullName,
+            email: data.email,
+            phone: data.phone,
+            masterclassId: 'pm-x-speedup-students',
+          }),
+        }
+      );
+
+      if (!res.ok) throw new Error('Enrollment failed');
+      completeLeadSubmission(data.intent);
+    } catch (err) {
+      setEnrollmentStatus('error');
+    }
+  };
+
+  const handleActionClick = (intent: string) => {
+    setFormIntent(intent);
+    setValue('intent', intent as any);
+    const element = document.getElementById('student-form-container');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleMobileLinkClick = (e: React.MouseEvent, targetId: string) => {
+    e.preventDefault();
+    setIsMenuOpen(false);
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
+      {/* Navbar */}
+      <nav className="fixed top-0 z-50 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+          <Logo toHome={true} />
+          <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
+            <NavLink href="#why-speedup">Why SpeedUp?</NavLink>
+            <NavLink href="#student-benefits">Cohort Perks</NavLink>
+            <Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link>
+            <a href="/auth" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
+            <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => document.getElementById('enroll-student')?.scrollIntoView({ behavior: 'smooth' })}>
+              Apply Now
+            </Button>
+          </div>
+          <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Nav */}
+      {isMenuOpen && (
+        <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+          <a href="#why-speedup" onClick={(e) => handleMobileLinkClick(e, 'why-speedup')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Why SpeedUp?</a>
+          <a href="#student-benefits" onClick={(e) => handleMobileLinkClick(e, 'student-benefits')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
+          <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
+          <a href="/auth" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
+          <Button variant="primary" className="w-full px-5 py-2 text-sm" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
+        </div>
+      )}
+
+      {/* Hero Section */}
+      <section className="pt-40 pb-20 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 text-center max-w-5xl">
+          {/* Badge for Student Edition */}
+          <div className="mb-6 inline-block">
+            <span className="bg-[#FFF3A7] text-[#111111] border-[3px] border-[#111111] px-4 py-1.5 font-extrabold text-xs md:text-sm uppercase tracking-widest shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] rotate-[-1deg] inline-flex items-center gap-2 select-none">
+              <GraduationCap className="h-4 w-4" /> PM-X SpeedUp: Student Cohort Edition
+            </span>
+          </div>
+
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-8 leading-[1.2] text-[#111111]">
+            Get your first{' '}
+            <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-1 rotate-[1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
+              PM Role
+            </span>{' '}
+            straight out of college
+          </h1>
+          <p className="text-lg md:text-xl text-[#111111] mb-12 max-w-3xl mx-auto leading-relaxed font-bold">
+            No work experience? No problem. Skip the "experience trap". Learn frameworks, build live product specs, and crack APM / Internship rounds.
+          </p>
+          <div className="flex flex-col items-center gap-6 mb-16">
+            <Button 
+              variant="primary" 
+              className="px-12 py-5 text-xl font-extrabold shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]"
+              onClick={() => handleActionClick('enroll')}
+            >
+              Apply for PM-X SpeedUp
+            </Button>
+            <button 
+              onClick={() => handleActionClick('brochure')}
+              className="text-[#111111] text-sm font-extrabold underline underline-offset-4 decoration-[#188ab2] decoration-[3px] hover:text-[#188ab2] transition-colors"
+            >
+              Want to see the student roadmap? Download curriculum.
+            </button>
+          </div>
+
+          <div className="relative w-full max-w-5xl mx-auto border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] bg-white">
+            <img 
+              src="/hero_image.jpg" 
+              alt="PM-X SpeedUp Student Cohort Roadmap & Placements" 
+              className="w-full h-auto object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Why SpeedUp / Who is it for */}
+      <section id="why-speedup" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is PM-X SpeedUp for?</h2>
+            <p className="text-lg font-bold text-[#111111]">Tailored exclusively for ambitious college students seeking non-engineering roles.</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { 
+                label: "Final-Year Students", 
+                desc: "Secure high-paying APM offers before graduation.", 
+                icon: <GraduationCap className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[3deg]",
+                tag: "Placement Prep",
+                tagTilt: "rotate-[-1.5deg]"
+              },
+              { 
+                label: "Pre-Final Year Students", 
+                desc: "Crack elite summer product management internships.", 
+                icon: <Calendar className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[-2deg]",
+                tag: "Internship Prep",
+                tagTilt: "rotate-[2deg]"
+              },
+              { 
+                label: "Non-CS Students", 
+                desc: "Switch from core engineering, design, or commerce to tech roles.", 
+                icon: <BookOpen className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[4deg]",
+                tag: "Stream Agnostic",
+                tagTilt: "rotate-[-2deg]"
+              },
+              { 
+                label: "Recent Graduates", 
+                desc: "Bypass the 'need experience to get experience' loop.", 
+                icon: <Trophy className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[-3deg]",
+                tag: "Zero Experience",
+                tagTilt: "rotate-[1.5deg]"
+              }
+            ].map((box, i) => (
+              <div 
+                key={i} 
+                className="bg-[#FFFFFF] p-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between transition-all duration-100 select-none group cursor-pointer"
+              >
+                <div>
+                  <div className={`w-14 h-14 bg-[#188ab2] border-[3px] border-[#111111] flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] mb-6 transition-transform duration-100 ${box.iconTilt}`}>
+                    {box.icon}
+                  </div>
+                  
+                  <h3 className="font-extrabold text-xl text-[#111111] mb-1">{box.label}</h3>
+                  
+                  <div className="mb-4 inline-block">
+                    <span className={`inline-block bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none ${box.tagTilt}`}>
+                      {box.tag}
+                    </span>
+                  </div>
+
+                  <p className="text-[#111111] text-xs leading-relaxed font-bold mt-2">{box.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Cohort Perks / Student Benefits */}
+      <section id="student-benefits" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="mb-16 text-center md:text-left">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
+              Student{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                Exclusive Perks
+              </span>
+            </h2>
+            <p className="text-lg font-bold text-[#111111]">Everything you need to compete with MBA candidates as a college student.</p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-6">
+            {[
+              {
+                title: "Portfolio Building",
+                desc: "Build 3 industry-grade PRDs to prove your product thinking on your resume.",
+                icon: <FileText className="h-5 w-5 text-white" />
+              },
+              {
+                title: "Mock Placement Drives",
+                desc: "Live mock rounds simulating startup APM tests & case interviews.",
+                icon: <FolderArchive className="h-5 w-5 text-white" />
+              },
+              {
+                title: "Tool Mastery",
+                desc: "Hands-on experience with Jira, Figma, Mixpanel, and AI prototyping tools.",
+                icon: <Wrench className="h-5 w-5 text-white" />
+              },
+              {
+                title: "Referrals & Network",
+                desc: "Get referred by our mentors directly into startups hiring freshers.",
+                icon: <MessageSquare className="h-5 w-5 text-white" />
+              }
+            ].map((item, idx) => (
+              <div 
+                key={idx} 
+                className="bg-white border-[3px] border-[#111111] p-6 pt-12 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex flex-col justify-between rounded-none relative select-none h-64"
+              >
+                <div className="absolute -top-5 left-6 bg-[#188ab2] text-white border-[3px] border-[#111111] w-10 h-10 flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                  {item.icon}
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-[#111111] mb-3">{item.title}</h3>
+                  <p className="text-xs font-bold leading-relaxed text-[#111111]">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 text-center max-w-5xl">
+          <h2 className="text-4xl font-extrabold mb-4 text-[#111111]">Student Success Stories</h2>
+          <p className="text-lg font-bold text-slate-500 mb-16">How college freshers broke into PM roles right out of campus.</p>
+          <div className="grid md:grid-cols-2 gap-10">
+            {/* Student 1 */}
+            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
+                A
+              </div>
+              <div className="flex-1">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    APM @ Razorpay
+                  </span>
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    Ex-Intern @ Groww
+                  </span>
+                </div>
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Aditya</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Razorpay</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  "I had zero corporate experience. PM-X SpeedUp helped me design a PRD portfolio that stood out in APM selection rounds. The structured case mock sessions were an absolute lifesaver!"
+                </p>
+              </div>
+            </div>
+
+            {/* Student 2 */}
+            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
+                N
+              </div>
+              <div className="flex-1">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    APM @ Zepto
+                  </span>
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    B.Tech Graduate
+                  </span>
+                </div>
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Neha</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Zepto</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  "I was confused between standard coding placements and PM roles. This cohort gave me the exact frameworks I needed to build product strategy and transition directly after graduation."
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Roadmap */}
+      <section id="roadmap" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <style>{`
+          .roadmap-scrollbar::-webkit-scrollbar {
+            height: 12px;
+          }
+          .roadmap-scrollbar::-webkit-scrollbar-track {
+            background: #FFFFFF;
+            border: 3px solid #111111;
+          }
+          .roadmap-scrollbar::-webkit-scrollbar-thumb {
+            background: #188ab2;
+            border: 3px solid #111111;
+          }
+        `}</style>
+
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16 max-w-2xl mx-auto relative">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
+              Your{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                10-Week PM Roadmap
+              </span>
+            </h2>
+            <p className="text-lg font-bold text-[#111111] mb-6">A step-by-step journey to become a confident and interview-ready Product Manager.</p>
+          </div>
+
+          {/* Desktop Scrollable Winding Roadmap */}
+          <div className="hidden lg:block overflow-x-auto pb-12 pt-6 roadmap-scrollbar">
+            <div className="relative w-[1540px] h-[600px] mx-auto select-none">
+              {/* SVG Winding Road Background */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+                {/* Road Shadow */}
+                <path
+                  d="M 50,290 C 80,290 100,200 130,200 C 200,200 210,380 270,380 C 330,380 350,200 410,200 C 470,200 490,380 550,380 C 610,380 630,200 690,200 C 750,200 770,380 830,380 C 890,380 910,200 970,200 C 1030,200 1050,380 1110,380 C 1170,380 1190,200 1250,200 C 1310,200 1330,380 1390,380 C 1440,380 1460,290 1510,290"
+                  fill="none"
+                  stroke="#111111"
+                  strokeWidth="28"
+                  strokeLinecap="round"
+                />
+                {/* Road Fill */}
+                <path
+                  d="M 50,290 C 80,290 100,200 130,200 C 200,200 210,380 270,380 C 330,380 350,200 410,200 C 470,200 490,380 550,380 C 610,380 630,200 690,200 C 750,200 770,380 830,380 C 890,380 910,200 970,200 C 1030,200 1050,380 1110,380 C 1170,380 1190,200 1250,200 C 1310,200 1330,380 1390,380 C 1440,380 1460,290 1510,290"
+                  fill="none"
+                  stroke="#188ab2"
+                  strokeWidth="16"
+                  strokeLinecap="round"
+                />
+                {/* Dashed Center Stripe */}
+                <path
+                  d="M 50,290 C 80,290 100,200 130,200 C 200,200 210,380 270,380 C 330,380 350,200 410,200 C 470,200 490,380 550,380 C 610,380 630,200 690,200 C 750,200 770,380 830,380 C 890,380 910,200 970,200 C 1030,200 1050,380 1110,380 C 1170,380 1190,200 1250,200 C 1310,200 1330,380 1390,380 C 1440,380 1460,290 1510,290"
+                  fill="none"
+                  stroke="#FFFFFF"
+                  strokeWidth="4"
+                  strokeDasharray="10,12"
+                  strokeLinecap="round"
+                />
+              </svg>
+
+              {/* Steps rendering */}
+              {roadmapSteps.map((step, idx) => {
+                const isTop = idx % 2 === 0;
+                const x = 130 + idx * 140;
+                const yRoad = isTop ? 200 : 380;
+                
+                // Connecting lines from card to road
+                const lineStyle = isTop 
+                  ? { left: `${x}px`, top: `160px`, height: `40px` }
+                  : { left: `${x}px`, top: `380px`, height: `60px` };
+
+                return (
+                  <React.Fragment key={idx}>
+                    {/* Vertical Connector Line */}
+                    <div 
+                      className="absolute border-l-[3px] border-dashed border-[#111111] w-0 -translate-x-1/2 pointer-events-none"
+                      style={lineStyle}
+                    />
+                    
+                    {/* Map Pin on the road */}
+                    <div 
+                      className="absolute -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center bg-white border-[3px] border-[#111111] rounded-full w-8 h-8 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]"
+                      style={{ left: `${x}px`, top: `${yRoad}px` }}
+                    >
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#188ab2]" />
+                    </div>
+
+                    {/* Step Card */}
+                    <div 
+                      className={`absolute -translate-x-1/2 w-[220px] h-[160px] bg-white border-[3px] border-[#111111] p-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-50%] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex flex-col justify-between ${step.bg || ''}`}
+                      style={{ 
+                        left: `${x}px`, 
+                        top: isTop ? '0px' : '440px'
+                      }}
+                    >
+                      {/* Week Badge */}
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-black uppercase text-[#188ab2] tracking-wider">WEEK {idx.toString().padStart(2, '0')}</span>
+                        {step.Icon && <step.Icon className="h-4.5 w-4.5 text-[#111111]" />}
+                      </div>
+                      
+                      <h3 className="font-extrabold text-[13px] text-[#111111] border-b-2 border-[#111111]/10 pb-1.5 mb-1.5 leading-tight">{step.title}</h3>
+                      <p className="text-[10px] font-bold text-[#111111]/70 leading-relaxed line-clamp-3">{step.desc}</p>
+                    </div>
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Mobile/Tablet: Vertical timeline */}
+          <div className="lg:hidden flex flex-col gap-12 max-w-md mx-auto pt-6">
+            {roadmapSteps.map((step, idx) => (
+              <div key={idx} className="flex gap-6 relative select-none">
+                {/* Timeline connector and node */}
+                <div className="flex flex-col items-center shrink-0">
+                  <div className="bg-white border-[3px] border-[#111111] rounded-full w-10 h-10 flex items-center justify-center font-extrabold text-sm shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] z-10">
+                    {idx.toString().padStart(2, '0')}
+                  </div>
+                  {idx < roadmapSteps.length - 1 && (
+                    <div className="w-0 border-l-[3px] border-dashed border-[#111111] grow mt-2 min-h-[60px]" />
+                  )}
+                </div>
+
+                {/* Content Card */}
+                <div className={`grow bg-white border-[3px] border-[#111111] p-5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] rotate-[-0.5deg] ${step.bg || ''}`}>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-black uppercase text-[#188ab2] tracking-wider">WEEK {idx.toString().padStart(2, '0')}</span>
+                    {step.Icon && <step.Icon className="h-5 w-5 text-[#111111]" />}
+                  </div>
+                  <h3 className="font-extrabold text-base text-[#111111] border-b-2 border-[#111111]/10 pb-2 mb-2 leading-tight">{step.title}</h3>
+                  <p className="text-xs font-bold text-[#111111]/70 leading-relaxed">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Registration Form / Call to action */}
+      <section id="enroll-student" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div id="student-form-container" className="container mx-auto px-6 max-w-xl">
+          <div className="bg-[#FFFFFF] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)]">
+            <h2 className="text-3xl font-extrabold mb-2 text-[#111111] text-center">Join Student Cohort</h2>
+            <p className="text-sm font-bold text-slate-500 mb-8 text-center uppercase tracking-wider">PM-X SpeedUp Registration</p>
+            
+            {enrollmentStatus === 'success' ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-[#10b981] border-[3px] border-[#111111] rounded-full flex items-center justify-center mx-auto shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] mb-6">
+                  <CheckCircle2 className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-4">Application Submitted!</h3>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed mb-6">
+                  {formIntent === 'brochure' 
+                    ? "Thank you! Your roadmap brochure download will start automatically in a second."
+                    : "We have received your application. Expect a response on your vetting call status within 24 hours."
+                  }
+                </p>
+                {formIntent === 'brochure' && (
+                  <Button variant="outline" className="w-full" onClick={startBrochureDownload}>
+                    Click here if download didn't start
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-extrabold uppercase mb-2">Full Name</label>
+                  <input
+                    type="text"
+                    {...register('fullName')}
+                    className="w-full px-4 py-3 border-[3px] border-[#111111] text-sm font-extrabold shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all"
+                    placeholder="Enter your name"
+                  />
+                  {errors.fullName && <p className="text-red-500 text-xs font-extrabold mt-1.5 uppercase">{errors.fullName.message as string}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-extrabold uppercase mb-2">Email Address</label>
+                  <input
+                    type="email"
+                    {...register('email')}
+                    className="w-full px-4 py-3 border-[3px] border-[#111111] text-sm font-extrabold shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all"
+                    placeholder="Enter your email"
+                  />
+                  {errors.email && <p className="text-red-500 text-xs font-extrabold mt-1.5 uppercase">{errors.email.message as string}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-extrabold uppercase mb-2">Phone Number</label>
+                  <input
+                    type="text"
+                    {...register('phone')}
+                    className="w-full px-4 py-3 border-[3px] border-[#111111] text-sm font-extrabold shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all"
+                    placeholder="Enter your phone number"
+                  />
+                  {errors.phone && <p className="text-red-500 text-xs font-extrabold mt-1.5 uppercase">{errors.phone.message as string}</p>}
+                </div>
+
+                {enrollmentStatus === 'error' && (
+                  <p className="text-red-500 text-xs font-extrabold uppercase text-center">Submission failed. Please try again.</p>
+                )}
+
+                <Button 
+                  type="submit" 
+                  variant={formIntent === 'enroll' ? 'primary' : 'secondary'}
+                  className="w-full py-4 text-base shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
+                  isLoading={enrollmentStatus === 'loading'}
+                >
+                  {formIntent === 'enroll' ? 'Submit Enrollment Application' : 'Download PM-X Brochure'}
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="student-faq" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <h2 className="text-4xl font-extrabold text-center mb-16 text-[#111111]">Frequently Asked Questions</h2>
+          <div className="space-y-6">
+            {[
+              {
+                q: "I have 0 corporate experience. Can I realistically become a PM?",
+                a: "Absolutely. Tech giants and startups run specific Associate Product Manager (APM) cohorts and internships for fresh grads. The key is proving you can think like a PM, which you do by building a portfolio of live Product Requirement Documents (PRDs)."
+              },
+              {
+                q: "How does PM-X SpeedUp help with campus or off-campus placements?",
+                a: "Instead of a generic resume, you'll finish the program with 3 live product case studies. Adding links to real specifications you designed separates you from 99% of other engineering/business students."
+              },
+              {
+                q: "What is the weekly commitment?",
+                a: "Around 4-6 hours. Live sessions are held on weekends, and assignments are structured around your college class hours to avoid interference with midterms or final exams."
+              },
+              {
+                q: "Do you offer placement or internship referrals?",
+                a: "Yes. Our active inner circle features mentors and alumni working in top-tier companies. Verified graduates who finish all 3 PRD specifications get direct referrals to startups hiring APM interns."
+              }
+            ].map((faq, i) => (
+              <div key={i} className="bg-white border-[3px] border-[#111111] p-6 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+                <h3 className="text-lg font-extrabold text-[#111111] mb-2">{faq.q}</h3>
+                <p className="text-xs font-bold leading-relaxed text-slate-600">{faq.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[#FFFFFF] py-20 border-t-[3px] border-[#111111]">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-3 gap-16 mb-16 text-left">
+            <div className="col-span-1">
+              <Logo toHome={true} />
+              <p className="text-[#111111] text-sm leading-relaxed max-w-xs mt-8 font-bold">
+                PM-X SpeedUp Cohort for college students. Learn from Microsoft and Mastercard mentors.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-extrabold text-[#111111] mb-6">Quick Links</h4>
+              <ul className="space-y-4 text-[#111111] text-sm font-bold">
+                <li><a href="/#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Professional Page</a></li>
+                <li><a href="#why-speedup" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Why SpeedUp?</a></li>
+                <li><a href="#student-benefits" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Cohort Perks</a></li>
+                <li><Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-extrabold text-[#111111] mb-6">Join Our Community</h4>
+              <p className="text-[#111111] text-sm mb-6 leading-relaxed font-bold">
+                Stay updated with free resources, case study deep-dives, and networking opportunities.
+              </p>
+              <a 
+                href="https://chat.whatsapp.com/BCeLjXhQHrxFxOlxkb7DPc" 
+                target="_blank" 
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-[#188ab2] font-extrabold hover:underline underline-offset-4 decoration-2 decoration-[#188ab2]"
+              >
+                Join the WhatsApp Community <ExternalLink className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+          <div className="pt-12 border-t-[3px] border-[#111111] flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex gap-6 text-[#111111]">
+              <a href="mailto:administrator@stepsmart.net" className="hover:text-[#188ab2] transition-colors"><Mail /></a>
+            </div>
+            <p className="text-[#111111] text-[10px] font-bold uppercase tracking-widest">© 2026 StepSmart. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
