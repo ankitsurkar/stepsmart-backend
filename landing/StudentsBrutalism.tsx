@@ -190,8 +190,9 @@ export function StudentsLandingPage() {
           <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
             <NavLink href="#why-speedup">Why SpeedUp?</NavLink>
             <NavLink href="#student-benefits">Cohort Perks</NavLink>
+            <NavLink href="#mentors">Mentors</NavLink>
             <Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link>
-            <a href="/auth" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
+            <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
             <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => document.getElementById('enroll-student')?.scrollIntoView({ behavior: 'smooth' })}>
               Apply Now
             </Button>
@@ -207,8 +208,9 @@ export function StudentsLandingPage() {
         <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
           <a href="#why-speedup" onClick={(e) => handleMobileLinkClick(e, 'why-speedup')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Why SpeedUp?</a>
           <a href="#student-benefits" onClick={(e) => handleMobileLinkClick(e, 'student-benefits')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
+          <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
           <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
-          <a href="/auth" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
+          <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
           <Button variant="primary" className="w-full px-5 py-2 text-sm" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
         </div>
       )}
@@ -566,6 +568,74 @@ export function StudentsLandingPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Mentors / Learn from Professionals */}
+      <section id="mentors" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 text-center max-w-5xl">
+          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
+          <div className="grid md:grid-cols-2 gap-10">
+            {/* Sanket */}
+            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+              {/* Headshot in circle with black border */}
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                <img
+                  src={sanketPhotoSrc}
+                  alt="Sanket, Senior Product Manager at Mastercard, PM mentor at StepSmart"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              
+              <div className="flex-1">
+                {/* Rotated tags */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    PM @ Mastercard
+                  </span>
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    100+ Mentored
+                  </span>
+                </div>
+                
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Sanket</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Senior PM - Mastercard</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  Successfully mentored 100+ professionals into high-growth PM roles. Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
+                </p>
+              </div>
+            </div>
+
+            {/* Ankit */}
+            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+              {/* Headshot in circle with black border */}
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                <img
+                  src={ankitPhotoSrc}
+                  alt="Ankit, Product Manager at Microsoft, PM mentor at StepSmart"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              
+              <div className="flex-1">
+                {/* Rotated tags */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    PM 2 @ Microsoft
+                  </span>
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    AI Specialist
+                  </span>
+                </div>
+                
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Ankit</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Product Manager 2 - Microsoft</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
