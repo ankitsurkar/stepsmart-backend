@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { StudentsLandingPage } from './StudentsBrutalism';
 import * as z from 'zod';
-import { BrowserRouter, Link, Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Route, Routes, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   CheckCircle2,
   Mail,
@@ -22,7 +23,10 @@ import {
   LogOut,
   Wrench,
   FolderArchive,
-  MessageSquare
+  MessageSquare,
+  GraduationCap,
+  BookOpen,
+  Trophy
 } from 'lucide-react';
 
 // Firebase Imports
@@ -73,12 +77,12 @@ const initialConfig = getInitialConfig();
 const firebaseEnabled = hasFirebaseKeys(initialConfig);
 const app = firebaseEnabled ? initializeApp(initialConfig) : null;
 const auth = app ? getAuth(app) : null;
-const db = app ? getFirestore(app) : null;
+export const db = app ? getFirestore(app) : null;
 // @ts-ignore
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'stepsmart-prod';
+export const appId = typeof __app_id !== 'undefined' ? __app_id : 'stepsmart-prod';
 
 // --- Form Validation Schema ---
-const enrollmentSchema = z.object({
+export const enrollmentSchema = z.object({
   fullName: z.string().min(2, { message: "Name is required." }),
   email: z.string().email({ message: "Invalid email address." }),
   phone: z.string().min(10, { message: "Invalid phone number." }),
@@ -86,9 +90,10 @@ const enrollmentSchema = z.object({
 });
 
 const logoSrc = "/stepsmart-logo.png";
-const sanketPhotoSrc = "/mentor-sanket.jpg";
-const ankitPhotoSrc = "/mentor-ankit.jpg";
-const brochurePdfSrc = "/PM-X-Accelerator-Brochure.pdf";
+export const sanketPhotoSrc = "/mentor-sanket.jpg";
+export const ankitPhotoSrc = "/mentor-ankit.jpg";
+export const nidhiPhotoSrc = "/mentor-nidhi.jpg";
+export const brochurePdfSrc = "/PM-X-Accelerator-Brochure.pdf";
 const demoLeadsKey = "pmx_demo_leads";
 const demoUsersKey = "pmx_demo_users";
 const demoSessionKey = "pmx_demo_auth_session";
@@ -101,7 +106,7 @@ type DemoUser = {
 
 type DashboardTab = 'lectures' | 'resources' | 'assignments' | 'calendar';
 
-const Logo = ({ toHome }: { toHome?: boolean }) => {
+export const Logo = ({ toHome }: { toHome?: boolean }) => {
   const navigate = useNavigate();
   const handleClick = (e: React.MouseEvent) => {
     if (toHome) {
@@ -127,7 +132,8 @@ const Logo = ({ toHome }: { toHome?: boolean }) => {
   );
 };
 
-const startBrochureDownload = () => {
+
+export const startBrochureDownload = () => {
   const link = document.createElement('a');
   link.href = brochurePdfSrc;
   link.download = 'PM-X-Accelerator-Brochure.pdf';
@@ -138,7 +144,7 @@ const startBrochureDownload = () => {
   document.body.removeChild(link);
 };
 
-const saveLeadToDemoDB = (lead: any) => {
+export const saveLeadToDemoDB = (lead: any) => {
   try {
     const existing = JSON.parse(localStorage.getItem(demoLeadsKey) || "[]");
     const next = [
@@ -156,7 +162,7 @@ const saveLeadToDemoDB = (lead: any) => {
   }
 };
 
-const getDemoUsers = (): DemoUser[] => {
+export const getDemoUsers = (): DemoUser[] => {
   try {
     return JSON.parse(localStorage.getItem(demoUsersKey) || "[]");
   } catch (e) {
@@ -164,13 +170,13 @@ const getDemoUsers = (): DemoUser[] => {
   }
 };
 
-const saveDemoUsers = (users: DemoUser[]) => {
+export const saveDemoUsers = (users: DemoUser[]) => {
   localStorage.setItem(demoUsersKey, JSON.stringify(users));
 };
 
-const getDemoSession = () => localStorage.getItem(demoSessionKey);
+export const getDemoSession = () => localStorage.getItem(demoSessionKey);
 
-const setDemoSession = (email: string | null) => {
+export const setDemoSession = (email: string | null) => {
   if (email) {
     localStorage.setItem(demoSessionKey, email);
     return;
@@ -178,7 +184,7 @@ const setDemoSession = (email: string | null) => {
   localStorage.removeItem(demoSessionKey);
 };
 
-const NavLink = ({ href, children, target, rel }: any) => {
+export const NavLink = ({ href, children, target, rel }: any) => {
   const [isHovered, setIsHovered] = useState(false);
   
   const handleClick = (e: React.MouseEvent) => {
@@ -226,7 +232,7 @@ const NavLink = ({ href, children, target, rel }: any) => {
   );
 };
 
-const Button = ({ children, className, variant = "primary", isLoading, ...props }: any) => {
+export const Button = ({ children, className, variant = "primary", isLoading, ...props }: any) => {
   const baseStyles = "inline-flex items-center justify-center px-6 py-2.5 font-extrabold border-[3px] border-[#111111] focus:outline-none disabled:opacity-50 transition-all duration-100 select-none cursor-pointer";
   const variants: any = {
     primary: "bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]",
@@ -242,12 +248,13 @@ const Button = ({ children, className, variant = "primary", isLoading, ...props 
   );
 };
 
-function LandingPage() {
+function ProfessionalsLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [enrollmentStatus, setEnrollmentStatus] = useState('idle');
   const [formIntent, setFormIntent] = useState('enroll');
   const navigate = useNavigate();
+  const userType = 'professional';
 
   useEffect(() => {
     const trackVisit = async () => {
@@ -296,7 +303,7 @@ function LandingPage() {
             name: data.fullName,
             email: data.email,
             phone: data.phone,
-            masterclassId: 'pm-x-accelerator',
+            masterclassId: userType === 'professional' ? 'pm-x-accelerator' : 'pm-x-speedup-students',
           }),
         }
       );
@@ -330,14 +337,13 @@ function LandingPage() {
     <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
       <nav className="fixed top-0 z-50 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <Logo />
+          <Logo toHome={true} />
           <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
             <NavLink href="#who-is-it-for">Who is it for?</NavLink>
-            <NavLink href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer">Book 1:1</NavLink>
-            <NavLink href="#mentors">Mentors</NavLink>
+            <NavLink href="#curriculum">Cohort Perks</NavLink>
             <NavLink href="/blog">Blog</NavLink>
             <a href="/auth" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
-            <Button variant="primary" onClick={() => document.getElementById('enroll')?.scrollIntoView({ behavior: 'smooth' })}>
+            <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => document.getElementById('enroll')?.scrollIntoView({ behavior: 'smooth' })}>
               Apply Now
             </Button>
           </div>
@@ -351,42 +357,42 @@ function LandingPage() {
       {isMenuOpen && (
         <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
           <a href="#who-is-it-for" onClick={(e) => handleMobileLinkClick(e, 'who-is-it-for')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
-          <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Book 1:1</a>
-          <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+          <a href="#curriculum" onClick={(e) => handleMobileLinkClick(e, 'curriculum')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
           <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
           <a href="/auth" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
-          <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
+          <Button variant="primary" className="w-full px-5 py-2 text-sm" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
         </div>
       )}
 
       {/* Hero Section */}
       <section className="pt-40 pb-20 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 text-center max-w-5xl">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-8 leading-[1.2] text-[#111111]">
-            Break into{' '}
-            <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-1 rotate-[-1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
-              Product Management
-            </span>{' '}
-            without an MBA or IIT tag
-          </h1>
-          <p className="text-lg md:text-xl text-[#111111] mb-12 max-w-3xl mx-auto leading-relaxed font-bold">
-            For engineers and professionals who are ready to make the switch. Lead with identity and outcome, not just a certificate.
-          </p>
-          <div className="flex flex-col items-center gap-6 mb-16">
-            <Button 
-              variant="primary" 
-              className="px-12 py-5 text-xl font-extrabold shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]"
-              onClick={() => handleActionClick('enroll')}
-            >
-              Apply for PM-X accelerator
-            </Button>
-            <button 
-              onClick={() => handleActionClick('brochure')}
-              className="text-[#111111] text-sm font-extrabold underline underline-offset-4 decoration-[#188ab2] decoration-[3px] hover:text-[#188ab2] transition-colors"
-            >
-              Not sure yet? Download the curriculum first.
-            </button>
-          </div>
+              <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-8 leading-[1.2] text-[#111111]">
+                Break into{' '}
+                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-1 rotate-[-1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
+                  Product Management
+                </span>{' '}
+                without an MBA or IIT tag
+              </h1>
+              <p className="text-lg md:text-xl text-[#111111] mb-12 max-w-3xl mx-auto leading-relaxed font-bold">
+                For engineers and professionals who are ready to make the switch. Lead with identity and outcome, not just a certificate.
+              </p>
+
+              <div className="flex flex-col items-center gap-6 mb-16">
+                <Button 
+                  variant="primary" 
+                  className="px-12 py-5 text-xl font-extrabold shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]"
+                  onClick={() => handleActionClick('enroll')}
+                >
+                  Apply for PM-X accelerator
+                </Button>
+                <button 
+                  onClick={() => handleActionClick('brochure')}
+                  className="text-[#111111] text-sm font-extrabold underline underline-offset-4 decoration-[#188ab2] decoration-[3px] hover:text-[#188ab2] transition-colors"
+                >
+                  Not sure yet? Download the curriculum first.
+                </button>
+              </div>
 
           <div className="relative w-full max-w-5xl mx-auto border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] bg-white">
             <img 
@@ -402,11 +408,17 @@ function LandingPage() {
       <section id="who-is-it-for" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is this for?</h2>
-            <p className="text-lg font-bold text-[#111111]">The PM-X Accelerator is designed for builders ready to take the next step in their career.</p>
+            <h2 className="text-4xl font-extrabold text-[#111111] mb-4">
+              {userType === 'professional' ? "Who is this for?" : "Who is PM-X SpeedUp for?"}
+            </h2>
+            <p className="text-lg font-bold text-[#111111]">
+              {userType === 'professional' 
+                ? "The PM-X Accelerator is designed for builders ready to take the next step in their career." 
+                : "Tailored exclusively for ambitious college students seeking non-engineering roles."}
+            </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
+            {(userType === 'professional' ? [
               { 
                 label: "Software Engineers", 
                 desc: "Technical minds wanting to move from 'how to build' to 'what to build'.", 
@@ -439,7 +451,40 @@ function LandingPage() {
                 tag: "Entry-level",
                 tagTilt: "rotate-[1.5deg]"
               }
-            ].map((box, i) => (
+            ] : [
+              { 
+                label: "Final-Year Students", 
+                desc: "Secure high-paying APM offers before graduation.", 
+                icon: <GraduationCap className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[3deg]",
+                tag: "Placement Prep",
+                tagTilt: "rotate-[-1.5deg]"
+              },
+              { 
+                label: "Pre-Final Year Students", 
+                desc: "Crack elite summer product management internships.", 
+                icon: <Calendar className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[-2deg]",
+                tag: "Internship Prep",
+                tagTilt: "rotate-[2deg]"
+              },
+              { 
+                label: "Non-CS Students", 
+                desc: "Switch from core engineering, design, or commerce to tech roles.", 
+                icon: <BookOpen className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[4deg]",
+                tag: "Stream Agnostic",
+                tagTilt: "rotate-[-2deg]"
+              },
+              { 
+                label: "Recent Graduates", 
+                desc: "Bypass the 'need experience to get experience' loop.", 
+                icon: <Trophy className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[-3deg]",
+                tag: "Zero Experience",
+                tagTilt: "rotate-[1.5deg]"
+              }
+            ]).map((box, i) => (
               <div 
                 key={i} 
                 className="bg-[#FFFFFF] p-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between transition-all duration-100 select-none group cursor-pointer"
@@ -467,144 +512,337 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Batch Details Section */}
-      <section id="batch-details" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
-              Every batch is{' '}
-              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                one more step
-              </span>
-            </h2>
-            <p className="text-lg font-bold text-slate-500 mt-4">Small by design. Personally vetted, every time.</p>
-          </div>
-
-          {/* Chart Section */}
-          <div className="grid grid-cols-4 max-w-2xl mx-auto gap-3 md:gap-6 items-end mt-12 mb-8">
-            {/* Batch 1 */}
-            <div className="flex flex-col items-center">
-              <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 1</span>
-              <div className="w-full bg-[#10b981] border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] h-24 md:h-28 flex items-center justify-center rounded-none select-none">
-                <span className="text-white text-xl md:text-2xl font-extrabold">✓</span>
-              </div>
+      {userType === 'professional' ? (
+        /* Batch Details Section */
+        <section id="batch-details" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+          <div className="container mx-auto px-6 max-w-4xl">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
+                Every batch is{' '}
+                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                  one more step
+                </span>
+              </h2>
+              <p className="text-lg font-bold text-slate-500 mt-4">Small by design. Personally vetted, every time.</p>
             </div>
 
-            {/* Batch 2 */}
-            <div className="flex flex-col items-center">
-              <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 2</span>
-              <div className="w-full bg-[#10b981] border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] h-32 md:h-36 flex items-center justify-center rounded-none select-none">
-                <span className="text-white text-xl md:text-2xl font-extrabold">✓</span>
+            {/* Chart Section */}
+            <div className="grid grid-cols-4 max-w-2xl mx-auto gap-3 md:gap-6 items-end mt-12 mb-8">
+              {/* Batch 1 */}
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 1</span>
+                <div className="w-full bg-[#10b981] border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] h-24 md:h-28 flex items-center justify-center rounded-none select-none">
+                  <span className="text-white text-xl md:text-2xl font-extrabold">✓</span>
+                </div>
               </div>
-            </div>
 
-            {/* Batch 3 */}
-            <div className="flex flex-col items-center relative">
-              <div className="absolute -top-7 bg-[#111111] text-[#FFF3A7] border-[2px] border-[#111111] px-1.5 py-0.5 font-extrabold text-[8px] md:text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none whitespace-nowrap">
-                OPEN NOW
+              {/* Batch 2 */}
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 2</span>
+                <div className="w-full bg-[#10b981] border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] h-32 md:h-36 flex items-center justify-center rounded-none select-none">
+                  <span className="text-white text-xl md:text-2xl font-extrabold">✓</span>
+                </div>
               </div>
-              <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 3</span>
-              <div className="w-full bg-[#188ab2] border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] h-40 md:h-44 flex flex-col items-center justify-center rounded-none select-none relative">
-                <div className="text-center text-white">
-                  <div className="text-xl md:text-2xl font-extrabold">03</div>
-                  <div className="text-[8px] md:text-[10px] font-extrabold tracking-wider uppercase">BATCH 3</div>
+
+              {/* Batch 3 */}
+              <div className="flex flex-col items-center relative">
+                <div className="absolute -top-7 bg-[#111111] text-[#FFF3A7] border-[2px] border-[#111111] px-1.5 py-0.5 font-extrabold text-[8px] md:text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none whitespace-nowrap">
+                  OPEN NOW
+                </div>
+                <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 3</span>
+                <div className="w-full bg-[#188ab2] border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] h-40 md:h-44 flex flex-col items-center justify-center rounded-none select-none relative">
+                  <div className="text-center text-white">
+                    <div className="text-xl md:text-2xl font-extrabold">03</div>
+                    <div className="text-[8px] md:text-[10px] font-extrabold tracking-wider uppercase">BATCH 3</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Batch 4 */}
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] md:text-xs font-extrabold text-slate-400 mb-2 uppercase tracking-wider">Batch 4</span>
+                <div className="w-full border-[3px] border-dashed border-slate-300 h-48 md:h-52 flex items-center justify-center rounded-none select-none">
+                  <span className="text-slate-400 font-extrabold text-xs md:text-sm uppercase tracking-wider">TBD</span>
                 </div>
               </div>
             </div>
 
-            {/* Batch 4 */}
-            <div className="flex flex-col items-center">
-              <span className="text-[10px] md:text-xs font-extrabold text-slate-400 mb-2 uppercase tracking-wider">Batch 4</span>
-              <div className="w-full border-[3px] border-dashed border-slate-300 h-48 md:h-52 flex items-center justify-center rounded-none select-none">
-                <span className="text-slate-400 font-extrabold text-xs md:text-sm uppercase tracking-wider">TBD</span>
+            <hr className="border-t-[3px] border-[#111111] my-12" />
+
+            {/* Callouts */}
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-white border-[3px] border-[#111111] p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none">
+                <p className="text-base font-bold text-[#111111] leading-relaxed">
+                  <strong>1 batch completed, 1 batch ongoing.</strong> 50+ professionals transitioned into PM roles.
+                </p>
+              </div>
+
+              <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none">
+                <p className="text-base font-bold text-[#111111] leading-relaxed">
+                  <strong>Batch 3 is open</strong> — 12-18 seats, personally vetted on a 30 min call.
+                </p>
               </div>
             </div>
           </div>
+        </section>
+      ) : (
+        <>
+          {/* Cohort Perks / Student Benefits */}
+          <section id="student-benefits" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+            <div className="container mx-auto px-6 max-w-6xl">
+              <div className="mb-16 text-center md:text-left">
+                <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
+                  Student{' '}
+                  <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                    Exclusive Perks
+                  </span>
+                </h2>
+                <p className="text-lg font-bold text-[#111111]">Everything you need to compete with MBA candidates as a college student.</p>
+              </div>
 
-          <hr className="border-t-[3px] border-[#111111] my-12" />
-
-          {/* Callouts */}
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white border-[3px] border-[#111111] p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none">
-              <p className="text-base font-bold text-[#111111] leading-relaxed">
-                <strong>1 batch completed, 1 batch ongoing.</strong> 50+ professionals transitioned into PM roles.
-              </p>
+              <div className="grid md:grid-cols-4 gap-6">
+                {[
+                  {
+                    title: "Portfolio Building",
+                    desc: "Build 3 industry-grade PRDs to prove your product thinking on your resume.",
+                    icon: <FileText className="h-5 w-5 text-white" />
+                  },
+                  {
+                    title: "Mock Placement Drives",
+                    desc: "Live mock rounds simulating startup APM tests & case interviews.",
+                    icon: <FolderArchive className="h-5 w-5 text-white" />
+                  },
+                  {
+                    title: "Tool Mastery",
+                    desc: "Hands-on experience with Jira, Figma, Mixpanel, and AI prototyping tools.",
+                    icon: <Wrench className="h-5 w-5 text-white" />
+                  },
+                  {
+                    title: "Referrals & Network",
+                    desc: "Get referred by our mentors directly into startups hiring freshers.",
+                    icon: <MessageSquare className="h-5 w-5 text-white" />
+                  }
+                ].map((item, idx) => (
+                  <div 
+                    key={idx} 
+                    className="bg-white border-[3px] border-[#111111] p-6 pt-12 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex flex-col justify-between rounded-none relative select-none h-64"
+                  >
+                    <div className="absolute -top-5 left-6 bg-[#188ab2] text-white border-[3px] border-[#111111] w-10 h-10 flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                      {item.icon}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-extrabold text-[#111111] mb-3">{item.title}</h3>
+                      <p className="text-xs font-bold leading-relaxed text-[#111111]">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
+          </section>
 
-            <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none">
-              <p className="text-base font-bold text-[#111111] leading-relaxed">
-                <strong>Batch 3 is open</strong> — 12-18 seats, personally vetted on a 30 min call.
-              </p>
+          {/* Testimonials */}
+          <section className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+            <div className="container mx-auto px-6 text-center max-w-5xl">
+              <h2 className="text-4xl font-extrabold mb-4 text-[#111111]">Student Success Stories</h2>
+              <p className="text-lg font-bold text-slate-500 mb-16">How college freshers broke into PM roles right out of campus.</p>
+              <div className="grid md:grid-cols-2 gap-10">
+                {/* Student 1 */}
+                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+                  <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
+                    A
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        APM @ Razorpay
+                      </span>
+                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        Ex-Intern @ Groww
+                      </span>
+                    </div>
+                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Aditya</h3>
+                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Razorpay</p>
+                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                      "I had zero corporate experience. PM-X SpeedUp helped me design a PRD portfolio that stood out in APM selection rounds. The structured case mock sessions were an absolute lifesaver!"
+                    </p>
+                  </div>
+                </div>
+
+                {/* Student 2 */}
+                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+                  <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
+                    N
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        APM @ Zepto
+                      </span>
+                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        B.Tech Graduate
+                      </span>
+                    </div>
+                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Neha</h3>
+                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Zepto</p>
+                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                      "I was confused between standard coding placements and PM roles. This cohort gave me the exact frameworks I needed to build product strategy and transition directly after graduation."
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
+        </>
+      )}
 
       {/* Mentors */}
       <section id="mentors" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 text-center max-w-5xl">
-          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
-          <div className="grid md:grid-cols-2 gap-10">
-            {/* Sanket */}
-            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
-              {/* Headshot in circle with black border */}
-              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
-                <img
-                  src={sanketPhotoSrc}
-                  alt="Sanket, Senior Product Manager at Mastercard, PM mentor at StepSmart"
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
-              
-              <div className="flex-1">
-                {/* Rotated tags */}
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    PM @ Mastercard
-                  </span>
-                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    100+ Mentored
-                  </span>
+          {userType === 'professional' ? (
+            <>
+              <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
+              <div className="grid md:grid-cols-2 gap-10">
+                {/* Sanket */}
+                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+                  {/* Headshot in circle with black border */}
+                  <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                    <img
+                      src={sanketPhotoSrc}
+                      alt="Sanket, Senior Product Manager at Mastercard, PM mentor at StepSmart"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  
+                  <div className="flex-1">
+                    {/* Rotated tags */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        PM @ Mastercard
+                      </span>
+                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        100+ Mentored
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Sanket</h3>
+                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Senior PM - Mastercard</p>
+                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                      Successfully mentored 100+ professionals into high-growth PM roles. Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
+                    </p>
+                  </div>
                 </div>
-                
-                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Sanket</h3>
-                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Senior PM - Mastercard</p>
-                <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                  Successfully mentored 100+ professionals into high-growth PM roles. Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
-                </p>
-              </div>
-            </div>
 
-            {/* Ankit */}
-            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
-              {/* Headshot in circle with black border */}
-              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
-                <img
-                  src={ankitPhotoSrc}
-                  alt="Ankit, Product Manager at Microsoft, PM mentor at StepSmart"
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
-              
-              <div className="flex-1">
-                {/* Rotated tags */}
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    PM 2 @ Microsoft
-                  </span>
-                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    AI Specialist
-                  </span>
+                {/* Ankit */}
+                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+                  {/* Headshot in circle with black border */}
+                  <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                    <img
+                      src={ankitPhotoSrc}
+                      alt="Ankit, Product Manager at Microsoft, PM mentor at StepSmart"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  
+                  <div className="flex-1">
+                    {/* Rotated tags */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        PM 2 @ Microsoft
+                      </span>
+                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        AI Specialist
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Ankit</h3>
+                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Product Manager 2 - Microsoft</p>
+                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                      Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
+                    </p>
+                  </div>
                 </div>
-                
-                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Ankit</h3>
-                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Product Manager 2 - Microsoft</p>
-                <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                  Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
-                </p>
               </div>
-            </div>
-          </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-4xl font-extrabold mb-16 text-center text-[#111111]">Meet the Founders & Mentors</h2>
+              <div className="flex flex-col gap-16 relative text-left">
+                {/* Card 1: Sanket */}
+                <div className="sticky top-28 bg-[#FFF3A7] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
+                  <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                    <img
+                      src={sanketPhotoSrc}
+                      alt="Sanket, Senior PM at Mastercard"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        PM @ Mastercard
+                      </span>
+                      <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        IIT Kanpur Alum
+                      </span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation."</h3>
+                    <p className="text-base font-bold text-[#111111] leading-relaxed">
+                      PM-X is the structured path I wish existed when I was making the switch — behavioural interviews, product sense, and prioritisation frameworks built for career switchers.
+                    </p>
+                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Sanket, Co-founder & Senior PM @ Mastercard</p>
+                  </div>
+                </div>
+
+                {/* Card 2: Ankit */}
+                <div className="sticky top-36 bg-[#e0f2fe] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
+                  <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                    <img
+                      src={ankitPhotoSrc}
+                      alt="Ankit, PM 2 @ Microsoft"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        PM 2 @ Microsoft
+                      </span>
+                      <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        IIM B Alum
+                      </span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I build enterprise AI products at Microsoft. Let me show you how to build real products, not just certificates."</h3>
+                    <p className="text-base font-bold text-[#111111] leading-relaxed">
+                      An alumnus of IIT Kanpur and IIM Bangalore, I've mentored 500+ aspiring PMs. In PM-X, we focus on technical depth, metrics, PRD portfolios, and systems thinking that hiring managers actually look for.
+                    </p>
+                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Ankit, Founder & PM 2 @ Microsoft</p>
+                  </div>
+                </div>
+
+                {/* Card 3: Nidhi */}
+                <div className="sticky top-44 bg-[#fed7aa] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-0.5deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px] mb-12">
+                  <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-[#FFFFFF] flex items-center justify-center font-extrabold text-4xl text-[#111111]">
+                    N
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        PM @ Google
+                      </span>
+                      <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        BITS Pilani Alum
+                      </span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I crack Google PM interviews and lead core teams. Let me help you master design & analytical rounds."</h3>
+                    <p className="text-base font-bold text-[#111111] leading-relaxed">
+                      Having coached hundreds of freshers and professionals into APM/PM roles, I know the exact gaps in college placements and off-campus pipelines. We'll bridge that gap together.
+                    </p>
+                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Nidhi, Mentor & PM @ Google</p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -618,7 +856,11 @@ function LandingPage() {
                 Curriculum
               </span>
             </h2>
-            <p className="text-lg font-bold text-[#111111] mt-4">Three core phases focused on hands-on PM skills.</p>
+            <p className="text-lg font-bold text-[#111111] mt-4">
+              {userType === 'professional' 
+                ? "Three core phases focused on hands-on PM skills." 
+                : "Three core phases focused on cracking APM roles, mock cases, and portfolio design."}
+            </p>
           </div>
 
           <div className="flex flex-col gap-8">
@@ -907,7 +1149,7 @@ function LandingPage() {
           </div>
 
           <div className="space-y-6">
-            {[
+            {(userType === 'professional' ? [
               {
                 q: "Do I need an MBA or an IIT degree to join or break into PM?",
                 a: "Absolutely not. The best product managers come from diverse backgrounds like software engineering, analytics, marketing, or design. We screen for logic, user empathy, and problem-solving, not pedigree."
@@ -928,7 +1170,24 @@ function LandingPage() {
                 q: "Is there job placement assistance?",
                 a: "We offer complete resume transformation workshops, case study portfolio construction, and direct referrals to top-tier companies through our mentors and alumni network."
               }
-            ].map((faq, i) => (
+            ] : [
+              {
+                q: "I have zero corporate experience. Can I still join this student program?",
+                a: "Yes, this program is specifically built for students with zero experience. We help you design real PRDs, build tools hands-on, and simulate placements to bridge that gap."
+              },
+              {
+                q: "What roles will this program prepare me for?",
+                a: "It prepares you for APM (Associate Product Manager) roles, Product Analyst roles, and Product Management internships at tech companies."
+              },
+              {
+                q: "What is the duration of the student cohort?",
+                a: "The program runs for 8 weeks, with structured weekend live sessions, mid-week case evaluations, and interactive placement mock runs."
+              },
+              {
+                q: "How does the referral system work?",
+                a: "Our founders and mentors reference top-performing students directly to companies hiring fresh APMs. We also run resume-matching and referral workshops."
+              }
+            ]).map((faq, i) => (
               <details 
                 key={i} 
                 className="group border-[3px] border-[#111111] bg-white p-6 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] [&_summary::-webkit-details-marker]:hidden open:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] open:translate-x-[2px] open:translate-y-[2px] transition-all duration-100 rounded-none select-none"
@@ -964,7 +1223,7 @@ function LandingPage() {
               }`}
             >
               <Download className={`h-10 w-10 mb-4 ${formIntent === 'brochure' ? 'text-[#188ab2]' : 'text-[#111111]'}`} />
-              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">Download Accelerator Brochure</h3>
+              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">{userType === 'professional' ? "Download Accelerator Brochure" : "Download SpeedUp Brochure"}</h3>
               <p className="text-[#111111] text-sm font-bold">Get the curriculum and roadmap details.</p>
             </button>
             <button
@@ -976,7 +1235,7 @@ function LandingPage() {
               }`}
             >
               <Briefcase className={`h-10 w-10 mb-4 ${formIntent === 'enroll' ? 'text-[#188ab2]' : 'text-[#111111]'}`} />
-              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">Enroll for PM-X Accelerator</h3>
+              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">{userType === 'professional' ? "Enroll for PM-X Accelerator" : "Enroll for PM-X SpeedUp"}</h3>
               <p className="text-[#111111] text-sm font-bold">Register for the next batch or masterclass.</p>
             </button>
           </div>
@@ -1032,7 +1291,7 @@ function LandingPage() {
                   </div>
                 </div>
                 <Button type="submit" className="w-full py-5 text-xl font-extrabold" isLoading={enrollmentStatus === 'loading'}>
-                  {formIntent === 'brochure' ? 'Get Brochure Now' : 'Join Accelerator Batch'}
+                  {formIntent === 'brochure' ? 'Get Brochure Now' : (userType === 'professional' ? 'Join Accelerator Batch' : 'Join SpeedUp Student Batch')}
                 </Button>
               </form>
             )}
@@ -1457,6 +1716,12 @@ function BlogPage() {
                 <span className="relative z-10">Blog</span>
                 <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
               </Link>
+              <Link 
+                to="/students" 
+                className="px-3.5 py-1 bg-[#FFF3A7] border-2 border-[#111111] text-xs font-extrabold hover:bg-white transition-colors rotate-[-1.5deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] inline-block select-none"
+              >
+                For Students 🎓
+              </Link>
               <a href="/auth" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
               <Button variant="primary" onClick={() => navigate('/#enroll')}>
                 Apply Now
@@ -1475,6 +1740,7 @@ function BlogPage() {
             <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Book 1:1</a>
             <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
             <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Blog</Link>
+            <Link to="/students" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">For Students 🎓</Link>
             <a href="/auth" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
             <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
           </div>
@@ -1534,6 +1800,12 @@ function BlogPage() {
               <span className="relative z-10">Blog</span>
               <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
             </Link>
+            <Link 
+              to="/students" 
+              className="px-3.5 py-1 bg-[#FFF3A7] border-2 border-[#111111] text-xs font-extrabold hover:bg-white transition-colors rotate-[-1.5deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] inline-block select-none"
+            >
+              For Students 🎓
+            </Link>
             <a href="/auth" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
             <Button variant="primary" onClick={() => navigate('/#enroll')}>
               Apply Now
@@ -1552,6 +1824,7 @@ function BlogPage() {
           <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Book 1:1</a>
           <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
           <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Blog</Link>
+          <Link to="/students" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">For Students 🎓</Link>
           <a href="/auth" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
           <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
         </div>
@@ -1669,6 +1942,510 @@ function BlogPage() {
   );
 }
 
+const HeroCarousel = () => {
+  const slides = [
+    "/hero_image.jpg",
+    "/blog-loops.jpg",
+    "/blog-collab.jpg"
+  ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % slides.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="relative w-full max-w-5xl mx-auto h-[240px] md:h-[400px] overflow-hidden select-none flex items-center justify-center">
+      {/* Slides Container */}
+      <div className="relative w-full h-full flex items-center justify-center">
+        {slides.map((image, i) => {
+          let offset = i - activeIndex;
+          if (offset < -1) offset += slides.length;
+          if (offset > 1) offset -= slides.length;
+
+          const isActive = offset === 0;
+          const isLeft = offset === -1;
+          const isRight = offset === 1;
+
+          if (Math.abs(offset) > 1) return null;
+
+          return (
+            <div
+              key={i}
+              className={`absolute transition-all duration-700 ease-in-out w-[75%] md:w-[65%] aspect-video border-[3px] border-[#111111] bg-white shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] md:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] overflow-hidden ${
+                isActive
+                  ? "z-30 scale-100 opacity-100 translate-x-0"
+                  : isLeft
+                  ? "z-10 scale-75 md:scale-80 opacity-30 -translate-x-[42%] md:-translate-x-[45%] pointer-events-none filter brightness-50"
+                  : isRight
+                  ? "z-10 scale-75 md:scale-80 opacity-30 translate-x-[42%] md:translate-x-[45%] pointer-events-none filter brightness-50"
+                  : "opacity-0"
+              }`}
+            >
+              <img
+                src={image}
+                alt={`Outcome slide ${i + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+function PortalPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleMobileLinkClick = (e: React.MouseEvent, targetId: string) => {
+    e.preventDefault();
+    setIsMenuOpen(false);
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleShareTrack = (trackPath: string, e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const btn = e.currentTarget;
+    const fullUrl = window.location.origin + trackPath;
+    navigator.clipboard.writeText(fullUrl).then(() => {
+      const originalContent = btn.innerHTML;
+      btn.innerHTML = `<span class="text-green-600 font-extrabold text-[10px] uppercase">Copied!</span>`;
+      setTimeout(() => {
+        btn.innerHTML = originalContent;
+      }, 2000);
+    }).catch((err) => {
+      console.error("Failed to copy url: ", err);
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
+      {/* Header */}
+      <nav className="fixed top-0 z-50 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+          <Logo />
+          <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
+            <NavLink href="#mentors">Mentors</NavLink>
+            <NavLink href="/blog">Blog</NavLink>
+            <a href="/auth" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
+            <Button variant="primary" onClick={() => document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' })}>
+              Explore Cohorts
+            </Button>
+          </div>
+          <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Nav */}
+      {isMenuOpen && (
+        <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+          <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+          <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
+          <a href="/auth" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
+          <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' }); }}>Explore Cohorts</Button>
+        </div>
+      )}
+
+      {/* Hero Section */}
+      <section className="pt-40 pb-20 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 text-center max-w-5xl">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-8 leading-[1.2] text-[#111111]">
+            Build Your PM Career under{' '}
+            <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-1 rotate-[-1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
+              Elite Mentors
+            </span>{' '}
+            from Tech Giants
+          </h1>
+          <p className="text-lg md:text-xl text-[#111111] mb-12 max-w-3xl mx-auto leading-relaxed font-bold">
+            No MBA? No IIT Tag? No Problem. Choose your career stage track and break into Product Management with practical templates, PRDs, and direct mentor referrals.
+          </p>
+
+          <div className="flex justify-center mb-16">
+            <Button 
+              variant="primary" 
+              className="px-12 py-5 text-xl font-extrabold shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]"
+              onClick={() => document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Explore Cohort Programs ➜
+            </Button>
+          </div>
+
+          {/* Hero Carousel */}
+          <HeroCarousel />
+        </div>
+      </section>
+
+      {/* Program Tracks Section */}
+      <section id="programs" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
+              Select Your{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                Cohort Track
+              </span>
+            </h2>
+            <p className="text-lg font-bold text-[#111111] mt-4">We offer two distinct, highly specialized tracks tailored to your career stage.</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-10 text-left">
+            {/* Card 1: Accelerator (Professionals) */}
+            <div className="bg-white border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between min-h-[440px]">
+              <div>
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b-2 border-slate-100">
+                  <span className="bg-[#e0f2fe] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                    12 Weeks Course
+                  </span>
+                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">PM-X ACCELERATOR // PROFESSIONAL TRACK</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-black text-[#111111] mb-4 leading-tight">Management Fellowship</h3>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed mb-6">
+                  The structured path built for career switchers. Transition into high-growth PM roles without an MBA or CS degree.
+                </p>
+                <div className="flex flex-wrap gap-2.5 mb-8">
+                  {[
+                    "1:1 Mentor Access",
+                    "Build Real-World Projects",
+                    "Master Product Skills",
+                    "AI Enabled PM Strategies",
+                    "Salary Negotiation Prep"
+                  ].map((tag, idx) => (
+                    <span key={idx} className="inline-flex items-center gap-1 bg-[#e0f2fe]/40 text-[#111111] border border-[#111111]/30 px-2 py-0.5 text-xs font-bold shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
+                      ✓ {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end border-t-2 border-slate-100 pt-6">
+                <div className="flex items-center gap-3">
+                  <Link
+                    to="/professionals"
+                    className="inline-flex items-center justify-center px-6 py-2.5 font-extrabold border-[3px] border-[#111111] bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 select-none cursor-pointer text-sm"
+                  >
+                    EXPLORE PROGRAM ↗
+                  </Link>
+                  <button
+                    onClick={(e) => handleShareTrack("/professionals", e)}
+                    className="border-[3px] border-[#111111] bg-white px-4 py-2.5 hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex items-center justify-center cursor-pointer select-none"
+                    title="Share Track Link"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-4 h-4 text-[#111111]">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186l5.302-3.088m-5.302 3.088l5.302 3.088m1.51-6.176a2.25 2.25 0 11-3.536 2.519M16.5 19.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: SpeedUp (Students) */}
+            <div className="bg-white border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between min-h-[440px]">
+              <div>
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b-2 border-slate-100">
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                    8 Weeks Course
+                  </span>
+                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">PM-X SPEEDUP // STUDENT COHORT</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-black text-[#111111] mb-4 leading-tight">Management Track</h3>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed mb-8">
+                  For final-year students prepping for PM roles who feel lost in scattered casebooks and YouTube playlists, PM - X First step is the fast-track PM prep program that gives them a structured 8-12 week path — not more content, but the sequence to use the content they already have — so they walk into placement season with a plan, not panic.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-end border-t-2 border-slate-100 pt-6">
+                <div className="flex items-center gap-3">
+                  <Link
+                    to="/students"
+                    className="inline-flex items-center justify-center px-6 py-2.5 font-extrabold border-[3px] border-[#111111] bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 select-none cursor-pointer text-sm"
+                  >
+                    EXPLORE PROGRAM ↗
+                  </Link>
+                  <button
+                    onClick={(e) => handleShareTrack("/students", e)}
+                    className="border-[3px] border-[#111111] bg-white px-4 py-2.5 hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex items-center justify-center cursor-pointer select-none"
+                    title="Share Track Link"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-4 h-4 text-[#111111]">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186l5.302-3.088m-5.302 3.088l5.302 3.088m1.51-6.176a2.25 2.25 0 11-3.536 2.519M16.5 19.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mentors Section */}
+      <section id="mentors" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 text-center max-w-5xl">
+          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
+          <div className="grid md:grid-cols-2 gap-10">
+            {/* Sanket */}
+            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                <img
+                  src={sanketPhotoSrc}
+                  alt="Sanket, Senior Product Manager at Mastercard"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div className="flex-1">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    PM @ Mastercard
+                  </span>
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    100+ Mentored
+                  </span>
+                </div>
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Sanket</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Senior PM - Mastercard</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  Successfully mentored 100+ professionals into high-growth PM roles. Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
+                </p>
+              </div>
+            </div>
+
+            {/* Ankit */}
+            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                <img
+                  src={ankitPhotoSrc}
+                  alt="Ankit, Product Manager at Microsoft"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div className="flex-1">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    PM 2 @ Microsoft
+                  </span>
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    AI Specialist
+                  </span>
+                </div>
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Ankit</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Product Manager 2 - Microsoft</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How to Join Section */}
+      <section id="how-to-join" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
+              How to{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                Join the Tribe
+              </span>
+            </h2>
+            <p className="text-lg font-bold text-[#111111] mt-4">No automated gateways, no automated rejections. We screen for alignment at every step.</p>
+          </div>
+          
+          <div className="grid md:grid-cols-5 gap-8 items-stretch text-left mt-8">
+            {[
+              {
+                num: "01",
+                title: "Apply Online",
+                desc: "Choose a cohort track and complete your application form.",
+                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
+                tilt: "rotate-[-1deg]"
+              },
+              {
+                num: "02",
+                title: "Book Vetting 1:1",
+                desc: "Schedule a talk with the mentors to align goals and ensure fit.",
+                shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
+                tilt: "rotate-[2deg]",
+                action: (
+                  <div className="mt-4">
+                    <a
+                      href="https://calendly.com/sanket-stepsmart"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-block bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-1 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer select-none"
+                    >
+                      Book Call ➜
+                    </a>
+                    <div className="mt-3 inline-block bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 font-extrabold text-[9px] uppercase rotate-[-2deg] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
+                      ⚡ 30 min / no commitment
+                    </div>
+                  </div>
+                )
+              },
+              {
+                num: "03",
+                title: "Get Decision",
+                desc: "Get an email confirmation on application status and next steps.",
+                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
+                tilt: "rotate-[-1.5deg]"
+              },
+              {
+                num: "04",
+                title: "Batch Starts",
+                desc: "Secure your slot. Class onboarding details are sent prior to start.",
+                shadow: "shadow-[6px_4px_0px_0px_rgba(17,17,17,1)]",
+                tilt: "rotate-[1deg]"
+              },
+              {
+                num: "05",
+                title: "Lifetime Access",
+                desc: "Join our active alumni network across 90+ global companies.",
+                shadow: "shadow-[4px_6px_0px_0px_rgba(17,17,17,1)]",
+                tilt: "rotate-[-2deg]"
+              }
+            ].map((step, i) => (
+              <div 
+                key={i} 
+                className={`bg-white border-[3px] border-[#111111] p-6 pt-10 ${step.shadow} flex flex-col justify-between h-full relative hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 select-none`}
+              >
+                {/* Number Badge */}
+                <div className={`absolute -top-4 -left-4 bg-[#188ab2] text-white border-[3px] border-[#111111] w-9 h-9 flex items-center justify-center font-extrabold text-sm shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] ${step.tilt}`}>
+                  {step.num}
+                </div>
+                
+                <div>
+                  <h3 className="font-extrabold text-lg text-[#111111] mb-2">{step.title}</h3>
+                  <p className="text-xs text-[#111111] leading-relaxed font-bold">{step.desc}</p>
+                </div>
+                
+                {step.action && step.action}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Proof of Progress */}
+      <section className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">
+            Proof of{' '}
+            <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+              Progress
+            </span>
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8 text-left max-w-5xl mx-auto">
+            {[
+              { 
+                name: "Nishtha", 
+                role: "Product Management Mentee", 
+                shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
+                text: (
+                  <span>
+                    Ankit helped me break down vague case studies into actionable chunks helping me{' '}
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1.5deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                      land the PM job
+                    </span>
+                  </span>
+                )
+              },
+              { 
+                name: "Gauri", 
+                role: "PM-X Accelerator Student", 
+                shadow: "shadow-[8px_4px_0px_0px_rgba(17,17,17,1)]",
+                text: (
+                  <span>
+                    The PM-X course helped me to{' '}
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[2deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                      land the PM job
+                    </span>
+                    . A must take course for aspiring PM's. It is well structured and curated.
+                  </span>
+                )
+              },
+              { 
+                name: "Riya", 
+                role: "Product Strategy Mentee", 
+                shadow: "shadow-[4px_8px_0px_0px_rgba(17,17,17,1)]",
+                text: (
+                  <span>
+                    Sanket has helped me in structure my thoughts, such that now I am prepared for any interview{' '}
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                      confidently
+                    </span>
+                  </span>
+                )
+              }
+            ].map((t, i) => (
+              <div 
+                key={i} 
+                className={`bg-[#FFFFFF] p-10 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100`}
+              >
+                <Quote className="text-[#188ab2]/15 h-16 w-16 absolute top-4 right-4" />
+                <div className="mb-8 relative z-10">
+                  <div className="text-xs font-extrabold text-[#188ab2] uppercase tracking-widest mb-3">{t.role}</div>
+                  <p className="text-[#111111] leading-relaxed text-lg font-bold">"{t.text}"</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full border-[3px] border-[#111111] bg-[#F5F5F0] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex-shrink-0 overflow-hidden flex items-center justify-center">
+                    <span className="text-[#111111] font-extrabold text-base select-none">
+                      {t.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
+                    </span>
+                  </div>
+                  <div className="font-extrabold text-[#111111]">{t.name}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[#FFFFFF] py-20 border-t-[3px] border-[#111111]">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-3 gap-16 mb-16 text-left">
+            <div className="col-span-1">
+              <Logo />
+              <p className="text-[#111111] text-sm leading-relaxed max-w-xs mt-8 font-bold">
+                Helping engineers and college grads launch PM careers. Experienced mentorship and real-world outcomes.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-extrabold text-[#111111] mb-6">Quick Links</h4>
+              <ul className="space-y-4 text-[#111111] text-sm font-bold">
+                <li><Link to="/professionals" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">For Professionals 💼</Link></li>
+                <li><Link to="/students" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">For Students 🎓</Link></li>
+                <li><a href="#mentors" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Mentors</a></li>
+                <li><Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-extrabold text-[#111111] mb-6">Join Our Community</h4>
+              <p className="text-[#111111] text-sm mb-6 leading-relaxed font-bold">
+                Stay updated with free resources, case study deep-dives, and networking opportunities.
+              </p>
+            </div>
+          </div>
+          <hr className="border-t-[3px] border-[#111111] mb-8" />
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-[#111111] text-[10px] font-bold uppercase tracking-widest">© 2026 StepSmart. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (!getDemoSession()) {
     return <Navigate to="/auth" replace />;
@@ -1680,7 +2457,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<PortalPage />} />
+        <Route path="/professionals" element={<ProfessionalsLandingPage />} />
+        <Route path="/students" element={<StudentsLandingPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:blogId" element={<BlogPage />} />
         <Route path="/auth" element={<AuthPage />} />
