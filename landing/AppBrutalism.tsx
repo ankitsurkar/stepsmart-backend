@@ -2180,76 +2180,76 @@ function PortalPage() {
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
           <div className="flex flex-col gap-16 relative text-left">
             {/* Card 1: Sanket */}
-            <div className="sticky top-28 bg-[#FFF3A7] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
-              <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+            <div className="sticky top-28 bg-[#FFF3A7] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-1deg] transition-all duration-100">
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                 <img
                   src={sanketPhotoSrc}
-                  alt="Sanket, Senior PM at Mastercard"
+                  alt="Sanket, Senior Product Manager at Mastercard"
                   className="w-full h-full object-cover object-top"
                 />
               </div>
               <div className="flex-1">
                 <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                     PM @ Mastercard
                   </span>
-                  <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                    IIT Kanpur Alum
+                  <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    100+ Mentored
                   </span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation."</h3>
-                <p className="text-base font-bold text-[#111111] leading-relaxed">
-                  PM-X is the structured path I wish existed when I was making the switch — behavioural interviews, product sense, and prioritisation frameworks built for career switchers.
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Sanket</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Senior PM - Mastercard</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  Successfully mentored 100+ professionals into high-growth PM roles. Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
                 </p>
-                <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Sanket, Co-founder & Senior PM @ Mastercard</p>
               </div>
             </div>
 
             {/* Card 2: Ankit */}
-            <div className="sticky top-36 bg-[#e0f2fe] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
-              <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+            <div className="sticky top-36 bg-[#e0f2fe] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[1deg] transition-all duration-100">
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                 <img
                   src={ankitPhotoSrc}
-                  alt="Ankit, PM 2 @ Microsoft"
+                  alt="Ankit, Product Manager at Microsoft"
                   className="w-full h-full object-cover object-top"
                 />
               </div>
               <div className="flex-1">
                 <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                     PM 2 @ Microsoft
                   </span>
-                  <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                    IIM B Alum
+                  <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    AI Specialist
                   </span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I build enterprise AI products at Microsoft. Let me show you how to build real products, not just certificates."</h3>
-                <p className="text-base font-bold text-[#111111] leading-relaxed">
-                  An alumnus of IIT Kanpur and IIM Bangalore, I've mentored 500+ aspiring PMs. In PM-X, we focus on technical depth, metrics, PRD portfolios, and systems thinking that hiring managers actually look for.
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Ankit</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Product Manager 2 - Microsoft</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
                 </p>
-                <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Ankit, Founder & PM 2 @ Microsoft</p>
               </div>
             </div>
 
             {/* Card 3: Nidhi */}
-            <div className="sticky top-44 bg-[#fed7aa] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-0.5deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px] mb-12">
-              <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-[#FFFFFF] flex items-center justify-center font-extrabold text-4xl text-[#111111]">
+            <div className="sticky top-44 bg-[#fed7aa] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-0.5deg] transition-all duration-100 mb-12">
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white flex items-center justify-center font-extrabold text-4xl text-[#111111]">
                 N
               </div>
               <div className="flex-1">
                 <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                     PM @ Google
                   </span>
-                  <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                    BITS Pilani Alum
+                  <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    Interview Expert
                   </span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I crack Google PM interviews and lead core teams. Let me help you master design & analytical rounds."</h3>
-                <p className="text-base font-bold text-[#111111] leading-relaxed">
-                  Having coached hundreds of freshers and professionals into APM/PM roles, I know the exact gaps in college placements and off-campus pipelines. We'll bridge that gap together.
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Nidhi</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Product Manager - Google</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  Coaches freshers and professionals into APM/PM roles at Google. Specialist in cracking Google PM interviews, mastering product design, analytical rounds, and product execution frameworks.
                 </p>
-                <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Nidhi, Mentor & PM @ Google</p>
               </div>
             </div>
           </div>
