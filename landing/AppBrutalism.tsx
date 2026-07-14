@@ -2100,7 +2100,7 @@ function PortalPage() {
               <div>
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b-2 border-slate-100">
                   <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                    6 Weeks Course
+                    PM-X FIRST STEP
                   </span>
                   <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">PM-X FIRST STEP // THE PLACEMENT EDITION</span>
                 </div>
@@ -2136,7 +2136,7 @@ function PortalPage() {
               <div>
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b-2 border-slate-100">
                   <span className="bg-[#e0f2fe] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                    12 Weeks Course
+                    PM-X ACCELERATOR
                   </span>
                   <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">PM-X ACCELERATOR // PROFESSIONAL TRACK</span>
                 </div>
