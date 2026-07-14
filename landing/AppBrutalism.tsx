@@ -2408,7 +2408,6 @@ function PortalPage() {
                 key={i} 
                 className={`bg-[#FFFFFF] p-10 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100`}
               >
-                <Quote className="text-[#188ab2]/15 h-16 w-16 absolute top-4 right-4" />
                 <div className="mb-8 relative z-10">
                   <p className="text-[#111111] leading-relaxed text-lg font-bold">"{t.text}"</p>
                 </div>
