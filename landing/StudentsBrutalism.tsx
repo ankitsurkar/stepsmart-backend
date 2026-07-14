@@ -654,6 +654,59 @@ export function StudentsLandingPage() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section id="student-faq" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
+              Frequently Asked{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                Questions
+              </span>
+            </h2>
+            <p className="text-lg font-bold text-[#111111] mt-4">Got questions? We've got answers.</p>
+          </div>
+
+          <div className="space-y-6">
+            {[
+              {
+                q: "I have 0 corporate experience. Can I realistically become a PM?",
+                a: "Absolutely. Tech giants and startups run specific Associate Product Manager (APM) cohorts and internships for fresh grads. The key is proving you can think like a PM, which you do by building a portfolio of live Product Requirement Documents (PRDs)."
+              },
+              {
+                q: "How does PM-X SpeedUp help with campus or off-campus placements?",
+                a: "Instead of a generic resume, you'll finish the program with 3 live product case studies. Adding links to real specifications you designed separates you from 99% of other engineering/business students."
+              },
+              {
+                q: "What is the weekly commitment?",
+                a: "Around 4-6 hours. Live sessions are held on weekends, and assignments are structured around your college class hours to avoid interference with midterms or final exams."
+              },
+              {
+                q: "Do you offer placement or internship referrals?",
+                a: "Yes. Our active inner circle features mentors and alumni working in top-tier companies. Verified graduates who finish all 3 PRD specifications get direct referrals to startups hiring APM interns."
+              }
+            ].map((faq, i) => (
+              <details 
+                key={i} 
+                className="group border-[3px] border-[#111111] bg-white p-6 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] [&_summary::-webkit-details-marker]:hidden open:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] open:translate-x-[2px] open:translate-y-[2px] transition-all duration-100 rounded-none select-none"
+              >
+                <summary className="flex items-center justify-between font-extrabold text-base md:text-lg cursor-pointer text-[#111111] list-none">
+                  <span>{faq.q}</span>
+                  <span className="transition group-open:rotate-180 font-bold text-xl shrink-0 ml-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </span>
+                </summary>
+                <p className="mt-4 text-xs md:text-sm font-bold leading-relaxed text-[#111111] border-t-2 border-[#111111]/10 pt-4">
+                  {faq.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Registration Form / Call to action */}
       <section id="enroll-student" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div id="student-form-container" className="container mx-auto px-6 max-w-xl">
@@ -728,38 +781,6 @@ export function StudentsLandingPage() {
                 </Button>
               </form>
             )}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section id="student-faq" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <h2 className="text-4xl font-extrabold text-center mb-16 text-[#111111]">Frequently Asked Questions</h2>
-          <div className="space-y-6">
-            {[
-              {
-                q: "I have 0 corporate experience. Can I realistically become a PM?",
-                a: "Absolutely. Tech giants and startups run specific Associate Product Manager (APM) cohorts and internships for fresh grads. The key is proving you can think like a PM, which you do by building a portfolio of live Product Requirement Documents (PRDs)."
-              },
-              {
-                q: "How does PM-X SpeedUp help with campus or off-campus placements?",
-                a: "Instead of a generic resume, you'll finish the program with 3 live product case studies. Adding links to real specifications you designed separates you from 99% of other engineering/business students."
-              },
-              {
-                q: "What is the weekly commitment?",
-                a: "Around 4-6 hours. Live sessions are held on weekends, and assignments are structured around your college class hours to avoid interference with midterms or final exams."
-              },
-              {
-                q: "Do you offer placement or internship referrals?",
-                a: "Yes. Our active inner circle features mentors and alumni working in top-tier companies. Verified graduates who finish all 3 PRD specifications get direct referrals to startups hiring APM interns."
-              }
-            ].map((faq, i) => (
-              <div key={i} className="bg-white border-[3px] border-[#111111] p-6 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-                <h3 className="text-lg font-extrabold text-[#111111] mb-2">{faq.q}</h3>
-                <p className="text-xs font-bold leading-relaxed text-slate-600">{faq.a}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
