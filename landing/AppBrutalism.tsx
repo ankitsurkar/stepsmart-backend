@@ -2365,12 +2365,12 @@ function PortalPage() {
             {[
               { 
                 name: "Nishtha", 
-                role: "Product Management Mentee", 
+                cohort: "PM-X FIRST STEP", 
                 shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
                     Ankit helped me break down vague case studies into actionable chunks helping me{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1.5deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
                       land the PM job
                     </span>
                   </span>
@@ -2378,7 +2378,7 @@ function PortalPage() {
               },
               { 
                 name: "Gauri", 
-                role: "PM-X Accelerator Student", 
+                cohort: "PM-X ACCELERATOR", 
                 shadow: "shadow-[8px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
@@ -2392,7 +2392,7 @@ function PortalPage() {
               },
               { 
                 name: "Riya", 
-                role: "Product Strategy Mentee", 
+                cohort: "PM-X FIRST STEP", 
                 shadow: "shadow-[4px_8px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
@@ -2410,7 +2410,6 @@ function PortalPage() {
               >
                 <Quote className="text-[#188ab2]/15 h-16 w-16 absolute top-4 right-4" />
                 <div className="mb-8 relative z-10">
-                  <div className="text-xs font-extrabold text-[#188ab2] uppercase tracking-widest mb-3">{t.role}</div>
                   <p className="text-[#111111] leading-relaxed text-lg font-bold">"{t.text}"</p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -2419,7 +2418,10 @@ function PortalPage() {
                       {t.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
                     </span>
                   </div>
-                  <div className="font-extrabold text-[#111111]">{t.name}</div>
+                  <div>
+                    <div className="font-extrabold text-[#111111]">{t.name}</div>
+                    <div className="text-[10px] font-black uppercase text-[#188ab2] tracking-wider mt-0.5">{t.cohort}</div>
+                  </div>
                 </div>
               </div>
             ))}
