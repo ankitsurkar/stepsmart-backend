@@ -2102,7 +2102,7 @@ function PortalPage() {
                   <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
                     PM-X FIRST STEP
                   </span>
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">PM-X FIRST STEP // THE PLACEMENT EDITION</span>
+                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">6 WEEK COURSE</span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-black text-[#111111] mb-4 leading-tight">Go From "will I even get shortlisted" to PM placement-ready</h3>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed mb-8">
@@ -2138,7 +2138,7 @@ function PortalPage() {
                   <span className="bg-[#e0f2fe] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
                     PM-X ACCELERATOR
                   </span>
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">PM-X ACCELERATOR // PROFESSIONAL TRACK</span>
+                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">12 WEEK COURSE</span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-black text-[#111111] mb-4 leading-tight">Management Fellowship</h3>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed mb-6">
