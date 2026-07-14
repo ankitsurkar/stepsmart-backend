@@ -27,7 +27,9 @@ import {
   GraduationCap,
   BookOpen,
   Trophy,
-  Share
+  Share,
+  Brain,
+  HeartHandshake
 } from 'lucide-react';
 
 // Firebase Imports
@@ -2077,8 +2079,41 @@ function PortalPage() {
             </Button>
           </div>
 
-          {/* Hero Carousel */}
-          <HeroCarousel />
+          {/* Hero Cards */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mt-12 text-center">
+            {/* Card 1: Yellow */}
+            <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-3xl flex flex-col items-center justify-between min-h-[340px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all duration-100">
+              <div className="w-16 h-16 rounded-full bg-white border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center mb-6">
+                <Users className="w-8 h-8 text-[#111111]" />
+              </div>
+              <p className="text-[#111111] font-extrabold text-base md:text-lg leading-relaxed mb-6">
+                "I switched into PM with zero product experience, no CS degree, no MBA, just the right preparation."
+              </p>
+              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Curated Cohort</div>
+            </div>
+
+            {/* Card 2: Green */}
+            <div className="bg-[#C6F6D5] border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-3xl flex flex-col items-center justify-between min-h-[340px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all duration-100">
+              <div className="w-16 h-16 rounded-full bg-white border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center mb-6">
+                <HeartHandshake className="w-8 h-8 text-[#111111]" />
+              </div>
+              <p className="text-[#111111] font-extrabold text-base md:text-lg leading-relaxed mb-6">
+                "I took the conventional but not so conventional path from an SDE to MBA to PM."
+              </p>
+              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Community at Core</div>
+            </div>
+
+            {/* Card 3: Purple */}
+            <div className="bg-[#E9D8FD] border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-3xl flex flex-col items-center justify-between min-h-[340px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all duration-100">
+              <div className="w-16 h-16 rounded-full bg-white border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center mb-6">
+                <Brain className="w-8 h-8 text-[#111111]" />
+              </div>
+              <p className="text-[#111111] font-extrabold text-base md:text-lg leading-relaxed mb-6">
+                "I became a PM directly from college without any prior experience."
+              </p>
+              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Builder's Brain</div>
+            </div>
+          </div>
         </div>
       </section>
 
