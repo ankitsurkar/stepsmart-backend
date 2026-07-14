@@ -393,58 +393,7 @@ export function StudentsLandingPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 text-center max-w-5xl">
-          <h2 className="text-4xl font-extrabold mb-4 text-[#111111]">Student Success Stories</h2>
-          <p className="text-lg font-bold text-slate-500 mb-16">How college freshers broke into PM roles right out of campus.</p>
-          <div className="grid md:grid-cols-2 gap-10">
-            {/* Student 1 */}
-            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
-              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
-                A
-              </div>
-              <div className="flex-1">
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    APM @ Razorpay
-                  </span>
-                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    Ex-Intern @ Groww
-                  </span>
-                </div>
-                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Aditya</h3>
-                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Razorpay</p>
-                <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                  "I had zero corporate experience. PM-X SpeedUp helped me design a PRD portfolio that stood out in APM selection rounds. The structured case mock sessions were an absolute lifesaver!"
-                </p>
-              </div>
-            </div>
 
-            {/* Student 2 */}
-            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
-              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
-                N
-              </div>
-              <div className="flex-1">
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    APM @ Zepto
-                  </span>
-                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    B.Tech Graduate
-                  </span>
-                </div>
-                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Neha</h3>
-                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Zepto</p>
-                <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                  "I was confused between standard coding placements and PM roles. This cohort gave me the exact frameworks I needed to build product strategy and transition directly after graduation."
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Roadmap */}
       <section id="roadmap" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
@@ -580,6 +529,59 @@ export function StudentsLandingPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 text-center max-w-5xl">
+          <h2 className="text-4xl font-extrabold mb-4 text-[#111111]">Student Testimonials</h2>
+          <p className="text-lg font-bold text-slate-500 mb-16">How college freshers broke into PM roles right out of campus.</p>
+          <div className="grid md:grid-cols-2 gap-10">
+            {/* Student 1 */}
+            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
+                A
+              </div>
+              <div className="flex-1">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    APM @ Razorpay
+                  </span>
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    Ex-Intern @ Groww
+                  </span>
+                </div>
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Aditya</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Razorpay</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  "I had zero corporate experience. PM-X SpeedUp helped me design a PRD portfolio that stood out in APM selection rounds. The structured case mock sessions were an absolute lifesaver!"
+                </p>
+              </div>
+            </div>
+
+            {/* Student 2 */}
+            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
+                N
+              </div>
+              <div className="flex-1">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    APM @ Zepto
+                  </span>
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    B.Tech Graduate
+                  </span>
+                </div>
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Neha</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Zepto</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  "I was confused between standard coding placements and PM roles. This cohort gave me the exact frameworks I needed to build product strategy and transition directly after graduation."
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

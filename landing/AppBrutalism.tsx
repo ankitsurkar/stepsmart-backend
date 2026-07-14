@@ -1073,10 +1073,10 @@ function ProfessionalsLandingPage() {
         </div>
       </section>
 
-      {/* Proof of Progress */}
+      {/* Testimonials */}
       <section className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Proof of Progress</h2>
+          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Testimonials</h2>
           <div className="grid md:grid-cols-3 gap-8 text-left max-w-5xl mx-auto">
             {[
               { 
@@ -2352,13 +2352,13 @@ function PortalPage() {
         </div>
       </section>
 
-      {/* Proof of Progress */}
+      {/* Testimonials */}
       <section className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">
-            Proof of{' '}
+            Our Mentees'{' '}
             <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-              Progress
+              Testimonials
             </span>
           </h2>
           <div className="grid md:grid-cols-3 gap-8 text-left max-w-5xl mx-auto">
