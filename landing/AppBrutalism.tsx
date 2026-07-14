@@ -409,7 +409,7 @@ function ProfessionalsLandingPage() {
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-extrabold text-[#111111] mb-4">
-              {userType === 'professional' ? "Who is this for?" : "Who is PM-X SpeedUp for?"}
+              {userType === 'professional' ? "Who is this for?" : "Who is PM-X First Step for?"}
             </h2>
             <p className="text-lg font-bold text-[#111111]">
               {userType === 'professional' 
@@ -663,7 +663,7 @@ function ProfessionalsLandingPage() {
                     <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Aditya</h3>
                     <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Razorpay</p>
                     <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                      "I had zero corporate experience. PM-X SpeedUp helped me design a PRD portfolio that stood out in APM selection rounds. The structured case mock sessions were an absolute lifesaver!"
+                      "I had zero corporate experience. PM-X First Step helped me design a PRD portfolio that stood out in APM selection rounds. The structured case mock sessions were an absolute lifesaver!"
                     </p>
                   </div>
                 </div>
@@ -1232,7 +1232,7 @@ function ProfessionalsLandingPage() {
               }`}
             >
               <Download className={`h-10 w-10 mb-4 ${formIntent === 'brochure' ? 'text-[#188ab2]' : 'text-[#111111]'}`} />
-              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">{userType === 'professional' ? "Download Accelerator Brochure" : "Download SpeedUp Brochure"}</h3>
+              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">{userType === 'professional' ? "Download Accelerator Brochure" : "Download First Step Brochure"}</h3>
               <p className="text-[#111111] text-sm font-bold">Get the curriculum and roadmap details.</p>
             </button>
             <button
@@ -1244,7 +1244,7 @@ function ProfessionalsLandingPage() {
               }`}
             >
               <Briefcase className={`h-10 w-10 mb-4 ${formIntent === 'enroll' ? 'text-[#188ab2]' : 'text-[#111111]'}`} />
-              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">{userType === 'professional' ? "Enroll for PM-X Accelerator" : "Enroll for PM-X SpeedUp"}</h3>
+              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">{userType === 'professional' ? "Enroll for PM-X Accelerator" : "Enroll for PM-X First Step"}</h3>
               <p className="text-[#111111] text-sm font-bold">Register for the next batch or masterclass.</p>
             </button>
           </div>
@@ -1300,7 +1300,7 @@ function ProfessionalsLandingPage() {
                   </div>
                 </div>
                 <Button type="submit" className="w-full py-5 text-xl font-extrabold" isLoading={enrollmentStatus === 'loading'}>
-                  {formIntent === 'brochure' ? 'Get Brochure Now' : (userType === 'professional' ? 'Join Accelerator Batch' : 'Join SpeedUp Student Batch')}
+                  {formIntent === 'brochure' ? 'Get Brochure Now' : (userType === 'professional' ? 'Join Accelerator Batch' : 'Join First Step Student Batch')}
                 </Button>
               </form>
             )}

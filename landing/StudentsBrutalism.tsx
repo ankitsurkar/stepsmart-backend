@@ -188,7 +188,7 @@ export function StudentsLandingPage() {
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <Logo toHome={true} />
           <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-            <NavLink href="#why-speedup">Why SpeedUp?</NavLink>
+            <NavLink href="#why-speedup">Why First Step?</NavLink>
             <NavLink href="#student-benefits">Cohort Perks</NavLink>
             <NavLink href="#mentors">Mentors</NavLink>
             <Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link>
@@ -206,7 +206,7 @@ export function StudentsLandingPage() {
       {/* Mobile Nav */}
       {isMenuOpen && (
         <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-          <a href="#why-speedup" onClick={(e) => handleMobileLinkClick(e, 'why-speedup')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Why SpeedUp?</a>
+          <a href="#why-speedup" onClick={(e) => handleMobileLinkClick(e, 'why-speedup')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Why First Step?</a>
           <a href="#student-benefits" onClick={(e) => handleMobileLinkClick(e, 'student-benefits')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
           <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
           <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
@@ -273,7 +273,7 @@ export function StudentsLandingPage() {
       <section id="why-speedup" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is PM-X SpeedUp for?</h2>
+            <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is PM-X First Step for?</h2>
             <p className="text-lg font-bold text-[#111111]">Tailored exclusively for ambitious college students seeking non-engineering roles.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -556,7 +556,7 @@ export function StudentsLandingPage() {
                 <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Aditya</h3>
                 <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Razorpay</p>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                  "I had zero corporate experience. PM-X SpeedUp helped me design a PRD portfolio that stood out in APM selection rounds. The structured case mock sessions were an absolute lifesaver!"
+                  "I had zero corporate experience. PM-X First Step helped me design a PRD portfolio that stood out in APM selection rounds. The structured case mock sessions were an absolute lifesaver!"
                 </p>
               </div>
             </div>
@@ -674,7 +674,7 @@ export function StudentsLandingPage() {
                 a: "Absolutely. Tech giants and startups run specific Associate Product Manager (APM) cohorts and internships for fresh grads. The key is proving you can think like a PM, which you do by building a portfolio of live Product Requirement Documents (PRDs)."
               },
               {
-                q: "How does PM-X SpeedUp help with campus or off-campus placements?",
+                q: "How does PM-X First Step help with campus or off-campus placements?",
                 a: "Instead of a generic resume, you'll finish the program with 3 live product case studies. Adding links to real specifications you designed separates you from 99% of other engineering/business students."
               },
               {
@@ -712,7 +712,7 @@ export function StudentsLandingPage() {
         <div id="student-form-container" className="container mx-auto px-6 max-w-xl">
           <div className="bg-[#FFFFFF] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)]">
             <h2 className="text-3xl font-extrabold mb-2 text-[#111111] text-center">Join Student Cohort</h2>
-            <p className="text-sm font-bold text-slate-500 mb-8 text-center uppercase tracking-wider">PM-X SpeedUp Registration</p>
+            <p className="text-sm font-bold text-slate-500 mb-8 text-center uppercase tracking-wider">PM-X First Step Registration</p>
             
             {enrollmentStatus === 'success' ? (
               <div className="text-center py-8">
@@ -792,14 +792,14 @@ export function StudentsLandingPage() {
             <div className="col-span-1">
               <Logo toHome={true} />
               <p className="text-[#111111] text-sm leading-relaxed max-w-xs mt-8 font-bold">
-                PM-X SpeedUp Cohort for college students. Learn from Microsoft and Mastercard mentors.
+                PM-X First Step Cohort for college students. Learn from Microsoft and Mastercard mentors.
               </p>
             </div>
             <div>
               <h4 className="font-extrabold text-[#111111] mb-6">Quick Links</h4>
               <ul className="space-y-4 text-[#111111] text-sm font-bold">
                 <li><a href="/#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Professional Page</a></li>
-                <li><a href="#why-speedup" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Why SpeedUp?</a></li>
+                <li><a href="#why-speedup" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Why First Step?</a></li>
                 <li><a href="#student-benefits" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Cohort Perks</a></li>
                 <li><Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link></li>
               </ul>
