@@ -26,7 +26,8 @@ import {
   MessageSquare,
   GraduationCap,
   BookOpen,
-  Trophy
+  Trophy,
+  Share
 } from 'lucide-react';
 
 // Firebase Imports
@@ -2123,9 +2124,7 @@ function PortalPage() {
                     className="border-[3px] border-[#111111] bg-white px-4 py-2.5 hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex items-center justify-center cursor-pointer select-none"
                     title="Share Track Link"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-4 h-4 text-[#111111]">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186l5.302-3.088m-5.302 3.088l5.302 3.088m1.51-6.176a2.25 2.25 0 11-3.536 2.519M16.5 19.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" />
-                    </svg>
+                    <Share className="w-4 h-4 text-[#111111] stroke-[2.5]" />
                   </button>
                 </div>
               </div>
@@ -2172,9 +2171,7 @@ function PortalPage() {
                     className="border-[3px] border-[#111111] bg-white px-4 py-2.5 hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex items-center justify-center cursor-pointer select-none"
                     title="Share Track Link"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-4 h-4 text-[#111111]">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186l5.302-3.088m-5.302 3.088l5.302 3.088m1.51-6.176a2.25 2.25 0 11-3.536 2.519M16.5 19.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" />
-                    </svg>
+                    <Share className="w-4 h-4 text-[#111111] stroke-[2.5]" />
                   </button>
                 </div>
               </div>
