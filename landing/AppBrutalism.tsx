@@ -2095,7 +2095,43 @@ function PortalPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-10 text-left">
-            {/* Card 1: Accelerator (Professionals) */}
+            {/* Card 1: PM-X First Step (Students) */}
+            <div className="bg-white border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between min-h-[440px]">
+              <div>
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b-2 border-slate-100">
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                    6 Weeks Course
+                  </span>
+                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">PM-X FIRST STEP // THE PLACEMENT EDITION</span>
+                </div>
+                <h3 className="text-xl md:text-2xl font-black text-[#111111] mb-4 leading-tight">Go From "will I even get shortlisted" to PM placement-ready</h3>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed mb-8">
+                  A cohort for final-year students who feel lost switching between random case books and YouTube videos, PM-X First Step is the structured 6-week path from "will I even get shortlisted" to placement-ready built around this season's actual interview process with guidance from expert mentors across industry.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-end border-t-2 border-slate-100 pt-6">
+                <div className="flex items-center gap-3">
+                  <Link
+                    to="/students"
+                    className="inline-flex items-center justify-center px-6 py-2.5 font-extrabold border-[3px] border-[#111111] bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 select-none cursor-pointer text-sm"
+                  >
+                    EXPLORE PROGRAM ↗
+                  </Link>
+                  <button
+                    onClick={(e) => handleShareTrack("/students", e)}
+                    className="border-[3px] border-[#111111] bg-white px-4 py-2.5 hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex items-center justify-center cursor-pointer select-none"
+                    title="Share Track Link"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-4 h-4 text-[#111111]">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186l5.302-3.088m-5.302 3.088l5.302 3.088m1.51-6.176a2.25 2.25 0 11-3.536 2.519M16.5 19.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: Accelerator (Professionals) */}
             <div className="bg-white border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between min-h-[440px]">
               <div>
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b-2 border-slate-100">
@@ -2133,42 +2169,6 @@ function PortalPage() {
                   </Link>
                   <button
                     onClick={(e) => handleShareTrack("/professionals", e)}
-                    className="border-[3px] border-[#111111] bg-white px-4 py-2.5 hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex items-center justify-center cursor-pointer select-none"
-                    title="Share Track Link"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-4 h-4 text-[#111111]">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186l5.302-3.088m-5.302 3.088l5.302 3.088m1.51-6.176a2.25 2.25 0 11-3.536 2.519M16.5 19.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2: PM-X First Step (Students) */}
-            <div className="bg-white border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between min-h-[440px]">
-              <div>
-                <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b-2 border-slate-100">
-                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                    6 Weeks Course
-                  </span>
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">PM-X FIRST STEP // THE PLACEMENT EDITION</span>
-                </div>
-                <h3 className="text-xl md:text-2xl font-black text-[#111111] mb-4 leading-tight">Go From "will I even get shortlisted" to PM placement-ready</h3>
-                <p className="text-sm font-bold text-[#111111] leading-relaxed mb-8">
-                  A cohort for final-year students who feel lost switching between random case books and YouTube videos, PM-X First Step is the structured 6-week path from "will I even get shortlisted" to placement-ready built around this season's actual interview process with guidance from expert mentors across industry.
-                </p>
-              </div>
-
-              <div className="flex items-center justify-end border-t-2 border-slate-100 pt-6">
-                <div className="flex items-center gap-3">
-                  <Link
-                    to="/students"
-                    className="inline-flex items-center justify-center px-6 py-2.5 font-extrabold border-[3px] border-[#111111] bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 select-none cursor-pointer text-sm"
-                  >
-                    EXPLORE PROGRAM ↗
-                  </Link>
-                  <button
-                    onClick={(e) => handleShareTrack("/students", e)}
                     className="border-[3px] border-[#111111] bg-white px-4 py-2.5 hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex items-center justify-center cursor-pointer select-none"
                     title="Share Track Link"
                   >
