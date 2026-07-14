@@ -221,19 +221,18 @@ export function StudentsLandingPage() {
           {/* Badge for Student Edition */}
           <div className="mb-6 inline-block">
             <span className="bg-[#FFF3A7] text-[#111111] border-[3px] border-[#111111] px-4 py-1.5 font-extrabold text-xs md:text-sm uppercase tracking-widest shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] rotate-[-1deg] inline-flex items-center gap-2 select-none">
-              <GraduationCap className="h-4 w-4" /> PM-X SpeedUp: Student Cohort Edition
+              <GraduationCap className="h-4 w-4" /> PM-X First Step - The placement edition
             </span>
           </div>
 
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-8 leading-[1.2] text-[#111111]">
-            Get your first{' '}
+            Go From "will I even get shortlisted" to{' '}
             <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-1 rotate-[1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
-              PM Role
-            </span>{' '}
-            straight out of college
+              PM placement-ready
+            </span>
           </h1>
           <p className="text-lg md:text-xl text-[#111111] mb-12 max-w-3xl mx-auto leading-relaxed font-bold">
-            No work experience? No problem. Skip the "experience trap". Learn frameworks, build live product specs, and crack APM / Internship rounds.
+            A cohort for final-year students who feel lost switching between random case books and YouTube videos, PM-X First Step is the structured 6-week path from "will I even get shortlisted" to placement-ready built around this season's actual interview process with guidance from expert mentors across industry.
           </p>
           <div className="flex flex-col items-center gap-6 mb-16">
             <Button 
@@ -241,7 +240,7 @@ export function StudentsLandingPage() {
               className="px-12 py-5 text-xl font-extrabold shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]"
               onClick={() => handleActionClick('enroll')}
             >
-              Apply for PM-X SpeedUp
+              Apply for PM-X First Step
             </Button>
             <button 
               onClick={() => handleActionClick('brochure')}
@@ -251,12 +250,23 @@ export function StudentsLandingPage() {
             </button>
           </div>
 
-          <div className="relative w-full max-w-5xl mx-auto border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] bg-white">
-            <img 
-              src="/hero_image.jpg" 
-              alt="PM-X SpeedUp Student Cohort Roadmap & Placements" 
-              className="w-full h-auto object-cover"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mx-auto select-none mb-12">
+            {[
+              { src: "/student-comic-1.jpg", alt: "Placement prep confusion" },
+              { src: "/student-comic-2.jpg", alt: "Mock interviews & case books" },
+              { src: "/student-comic-3.jpg", alt: "Discovering PM-X First Step masterclass" }
+            ].map((img, idx) => (
+              <div 
+                key={idx} 
+                className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 overflow-hidden"
+              >
+                <img 
+                  src={img.src} 
+                  alt={img.alt} 
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -331,52 +341,56 @@ export function StudentsLandingPage() {
       {/* Cohort Perks / Student Benefits */}
       <section id="student-benefits" className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 max-w-6xl">
-          <div className="mb-16 text-center md:text-left">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
-              Student{' '}
-              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                Exclusive Perks
-              </span>
-            </h2>
-            <p className="text-lg font-bold text-[#111111]">Everything you need to compete with MBA candidates as a college student.</p>
-          </div>
+          <div className="flex flex-col md:flex-row gap-12 items-start text-left">
+            {/* Left Sticky Column */}
+            <div className="md:w-1/3 md:sticky md:top-28">
+              <h2 className="text-4xl md:text-5xl font-black text-[#111111] mb-6 leading-tight">
+                Student{' '}
+                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                  Exclusive Perks
+                </span>
+              </h2>
+              <p className="text-lg font-bold text-slate-500">Everything you need to compete with MBA candidates as a college student.</p>
+            </div>
 
-          <div className="grid md:grid-cols-4 gap-6">
-            {[
-              {
-                title: "Portfolio Building",
-                desc: "Build 3 industry-grade PRDs to prove your product thinking on your resume.",
-                icon: <FileText className="h-5 w-5 text-white" />
-              },
-              {
-                title: "Mock Placement Drives",
-                desc: "Live mock rounds simulating startup APM tests & case interviews.",
-                icon: <FolderArchive className="h-5 w-5 text-white" />
-              },
-              {
-                title: "Tool Mastery",
-                desc: "Hands-on experience with Jira, Figma, Mixpanel, and AI prototyping tools.",
-                icon: <Wrench className="h-5 w-5 text-white" />
-              },
-              {
-                title: "Referrals & Network",
-                desc: "Get referred by our mentors directly into startups hiring freshers.",
-                icon: <MessageSquare className="h-5 w-5 text-white" />
-              }
-            ].map((item, idx) => (
-              <div 
-                key={idx} 
-                className="bg-white border-[3px] border-[#111111] p-6 pt-12 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex flex-col justify-between rounded-none relative select-none h-64"
-              >
-                <div className="absolute -top-5 left-6 bg-[#188ab2] text-white border-[3px] border-[#111111] w-10 h-10 flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  {item.icon}
+            {/* Right List Column (No outer boxes) */}
+            <div className="md:w-2/3 flex flex-col gap-10 select-none">
+              {[
+                {
+                  title: "Portfolio Building",
+                  desc: "Build 3 industry-grade PRDs to prove your hands-on product thinking, design loops, and analysis on your resume.",
+                  icon: <FileText className="h-6 w-6 text-[#188ab2]" />
+                },
+                {
+                  title: "Mock Placement Drives",
+                  desc: "Live mock interview case rounds simulating startup APM qualification tests, guesstimates, and case assignments.",
+                  icon: <FolderArchive className="h-6 w-6 text-[#188ab2]" />
+                },
+                {
+                  title: "Tool Mastery",
+                  desc: "Hands-on experience with industry-standard product management tools including Jira, Figma, Mixpanel, and AI prototyping tools.",
+                  icon: <Wrench className="h-6 w-6 text-[#188ab2]" />
+                },
+                {
+                  title: "Referrals & Network",
+                  desc: "Get referred by our founding mentors directly into startups hiring fresh Associate Product Managers.",
+                  icon: <MessageSquare className="h-6 w-6 text-[#188ab2]" />
+                }
+              ].map((item, idx) => (
+                <div 
+                  key={idx} 
+                  className="flex gap-6 items-start pb-8 border-b-2 border-[#111111]/10 last:border-b-0"
+                >
+                  <div className="shrink-0 w-12 h-12 bg-[#FFF3A7] border-[3px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
+                    {item.icon}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black text-[#111111] mb-2">{item.title}</h3>
+                    <p className="text-sm font-bold text-slate-600 leading-relaxed">{item.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-extrabold text-[#111111] mb-3">{item.title}</h3>
-                  <p className="text-xs font-bold leading-relaxed text-[#111111]">{item.desc}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

@@ -863,7 +863,7 @@ function ProfessionalsLandingPage() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col border-t-[3px] border-[#111111] select-none text-left">
             {[
               {
                 title: "Product Fundamentals, Systems Thinking",
@@ -886,24 +886,30 @@ function ProfessionalsLandingPage() {
             ].map((topic, i) => (
               <div 
                 key={i} 
-                className="bg-white border-[3px] border-[#111111] p-8 md:p-10 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex flex-col justify-between relative rounded-[16px] select-none"
+                className="py-12 border-b-[3px] border-[#111111] flex flex-col md:flex-row gap-6 md:gap-16 items-start relative overflow-hidden"
               >
-                {/* Header Row */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <h3 className="text-xl md:text-2xl font-extrabold text-[#111111]">
-                    {topic.title}
-                  </h3>
-                  {/* Tag Pill with dot */}
-                  <div className="inline-flex items-center gap-2 border-2 border-[#111111] bg-white px-3.5 py-1 rounded-full text-xs font-extrabold shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] shrink-0 self-start md:self-center">
-                    <span className={`w-2.5 h-2.5 rounded-full ${topic.dotColor} border border-[#111111]`}></span>
-                    <span className="text-[#111111]">{topic.tag}</span>
-                  </div>
+                {/* Large Background / Foreground Staggered Phase Number */}
+                <div className="shrink-0 flex md:flex-col items-baseline md:items-start gap-2">
+                  <span className="font-black text-6xl md:text-8xl tracking-tighter text-[#111111]/10 leading-none">0{i+1}</span>
+                  <span className="font-extrabold text-xs tracking-widest text-[#188ab2] uppercase leading-none md:mt-2">PHASE 0{i+1}</span>
                 </div>
 
-                {/* Description One-Liner */}
-                <p className="text-xs md:text-sm font-bold text-[#111111] leading-relaxed mt-4">
-                  {topic.desc}
-                </p>
+                {/* Content Area */}
+                <div className="grow">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <h3 className="text-xl md:text-2xl font-black text-[#111111] leading-tight">
+                      {topic.title}
+                    </h3>
+                    <div className="inline-flex items-center gap-2 border-2 border-[#111111] bg-white px-3 py-0.5 rounded-full text-[10px] font-extrabold shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] shrink-0 self-start sm:self-center">
+                      <span className={`w-2 h-2 rounded-full ${topic.dotColor} border border-[#111111]`}></span>
+                      <span className="text-[#111111] uppercase tracking-wider">{topic.tag}</span>
+                    </div>
+                  </div>
+
+                  <p className="text-sm font-bold text-slate-600 leading-relaxed mt-4">
+                    {topic.desc}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
@@ -926,53 +932,56 @@ function ProfessionalsLandingPage() {
       {/* Beyond the Curriculum Section */}
       <section className="py-24 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 max-w-6xl">
-          <div className="mb-16 text-center md:text-left">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
-              Beyond the{' '}
-              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                Curriculum
-              </span>
-            </h2>
-            <p className="text-lg font-bold text-[#111111]">What else is included — no extra cost, no fine print.</p>
-          </div>
+          <div className="flex flex-col md:flex-row gap-12 items-start text-left">
+            {/* Left Sticky Column */}
+            <div className="md:w-1/3 md:sticky md:top-28">
+              <h2 className="text-4xl md:text-5xl font-black text-[#111111] mb-6 leading-tight">
+                Beyond the{' '}
+                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                  Curriculum
+                </span>
+              </h2>
+              <p className="text-lg font-bold text-slate-500">What else is included in your fellowship — zero extra cost, zero fine print.</p>
+            </div>
 
-          <div className="grid md:grid-cols-4 gap-6">
-            {[
-              {
-                title: "Resume Transformation",
-                desc: "Live sessions to translate your previous experience into PM terms.",
-                icon: <FileText className="h-5 w-5 text-white" />
-              },
-              {
-                title: "Mock Interview Bank",
-                desc: "Access to a library of 50+ real cases from top tech firms.",
-                icon: <FolderArchive className="h-5 w-5 text-white" />
-              },
-              {
-                title: "The PM Toolstack",
-                desc: "Master industry-standard tools like Figma, Mixpanel, Jira, and OpenAI APIs.",
-                icon: <Wrench className="h-5 w-5 text-white" />
-              },
-              {
-                title: "Community for Life",
-                desc: "Permanent access to the StepSmart WhatsApp inner circle and alumni.",
-                icon: <MessageSquare className="h-5 w-5 text-white" />
-              }
-            ].map((item, idx) => (
-              <div 
-                key={idx} 
-                className="bg-white border-[3px] border-[#111111] p-6 pt-12 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex flex-col justify-between rounded-none relative select-none h-64"
-              >
-                {/* Icon Badge */}
-                <div className="absolute -top-5 left-6 bg-[#188ab2] text-white border-[3px] border-[#111111] w-10 h-10 flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  {item.icon}
+            {/* Right List Column (No outer boxes) */}
+            <div className="md:w-2/3 flex flex-col gap-10 select-none">
+              {[
+                {
+                  title: "Resume Transformation",
+                  desc: "Live workshops to translate your engineering, design, or analytics background into impact-driven product outcomes. We rewrite your bullets to show ownership.",
+                  icon: <FileText className="h-6 w-6 text-[#188ab2]" />
+                },
+                {
+                  title: "Mock Interview Bank",
+                  desc: "Access an exhaustive collection of 50+ real PM interview questions and structured model answers from elite tier-1 tech product teams.",
+                  icon: <FolderArchive className="h-6 w-6 text-[#188ab2]" />
+                },
+                {
+                  title: "The PM Toolstack",
+                  desc: "Master industry-standard design, metrics, tracking, and prototyping tool suites including Figma, Mixpanel, Amplitude, Jira, and AI integration loops.",
+                  icon: <Wrench className="h-6 w-6 text-[#188ab2]" />
+                },
+                {
+                  title: "Community for Life",
+                  desc: "Permanent access to the private StepSmart Slack channels, networking circles, mock matches, and direct alumni pipeline hubs.",
+                  icon: <MessageSquare className="h-6 w-6 text-[#188ab2]" />
+                }
+              ].map((item, idx) => (
+                <div 
+                  key={idx} 
+                  className="flex gap-6 items-start pb-8 border-b-2 border-[#111111]/10 last:border-b-0"
+                >
+                  <div className="shrink-0 w-12 h-12 bg-[#FFF3A7] border-[3px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
+                    {item.icon}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black text-[#111111] mb-2">{item.title}</h3>
+                    <p className="text-sm font-bold text-slate-600 leading-relaxed">{item.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-extrabold text-[#111111] mb-3">{item.title}</h3>
-                  <p className="text-xs font-bold leading-relaxed text-[#111111]">{item.desc}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -2135,18 +2144,18 @@ function PortalPage() {
               </div>
             </div>
 
-            {/* Card 2: SpeedUp (Students) */}
+            {/* Card 2: PM-X First Step (Students) */}
             <div className="bg-white border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between min-h-[440px]">
               <div>
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b-2 border-slate-100">
                   <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                    8 Weeks Course
+                    6 Weeks Course
                   </span>
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">PM-X SPEEDUP // STUDENT COHORT</span>
+                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">PM-X FIRST STEP // THE PLACEMENT EDITION</span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-black text-[#111111] mb-4 leading-tight">Management Track</h3>
+                <h3 className="text-xl md:text-2xl font-black text-[#111111] mb-4 leading-tight">Go From "will I even get shortlisted" to PM placement-ready</h3>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed mb-8">
-                  For final-year students prepping for PM roles who feel lost in scattered casebooks and YouTube playlists, PM - X First step is the fast-track PM prep program that gives them a structured 8-12 week path — not more content, but the sequence to use the content they already have — so they walk into placement season with a plan, not panic.
+                  A cohort for final-year students who feel lost switching between random case books and YouTube videos, PM-X First Step is the structured 6-week path from "will I even get shortlisted" to placement-ready built around this season's actual interview process with guidance from expert mentors across industry.
                 </p>
               </div>
 
