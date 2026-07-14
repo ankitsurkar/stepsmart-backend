@@ -225,30 +225,12 @@ export function StudentsLandingPage() {
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-8 leading-[1.2] text-[#111111]">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-12 leading-[1.2] text-[#111111]">
             Go From "will I even get shortlisted" to{' '}
             <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-1 rotate-[1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
               PM placement-ready
             </span>
           </h1>
-          <p className="text-lg md:text-xl text-[#111111] mb-12 max-w-3xl mx-auto leading-relaxed font-bold">
-            A cohort for final-year students who feel lost switching between random case books and YouTube videos, PM-X First Step is the structured 6-week path from "will I even get shortlisted" to placement-ready built around this season's actual interview process with guidance from expert mentors across industry.
-          </p>
-          <div className="flex flex-col items-center gap-6 mb-16">
-            <Button 
-              variant="primary" 
-              className="px-12 py-5 text-xl font-extrabold shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]"
-              onClick={() => handleActionClick('enroll')}
-            >
-              Apply for PM-X First Step
-            </Button>
-            <button 
-              onClick={() => handleActionClick('brochure')}
-              className="text-[#111111] text-sm font-extrabold underline underline-offset-4 decoration-[#188ab2] decoration-[3px] hover:text-[#188ab2] transition-colors"
-            >
-              Want to see the student roadmap? Download curriculum.
-            </button>
-          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mx-auto select-none mb-12">
             {[
@@ -267,6 +249,22 @@ export function StudentsLandingPage() {
                 />
               </div>
             ))}
+          </div>
+
+          <div className="flex flex-col items-center gap-6 mb-16">
+            <Button 
+              variant="primary" 
+              className="px-12 py-5 text-xl font-extrabold shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]"
+              onClick={() => handleActionClick('enroll')}
+            >
+              Apply for PM-X First Step
+            </Button>
+            <button 
+              onClick={() => handleActionClick('brochure')}
+              className="text-[#111111] text-sm font-extrabold underline underline-offset-4 decoration-[#188ab2] decoration-[3px] hover:text-[#188ab2] transition-colors"
+            >
+              Want to see the student roadmap? Download curriculum.
+            </button>
           </div>
         </div>
       </section>
