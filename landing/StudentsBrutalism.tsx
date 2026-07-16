@@ -588,13 +588,13 @@ export function StudentsLandingPage() {
 
       {/* Mentors / Learn from Professionals */}
       <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 text-center max-w-5xl">
+        <div className="container mx-auto px-6 text-center max-w-6xl">
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
-          <div className="grid md:grid-cols-2 gap-10">
+          <div className="grid md:grid-cols-3 gap-8 text-left">
             {/* Sanket */}
-            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
               {/* Headshot in circle with black border */}
-              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+              <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                 <img
                   src={sanketPhotoSrc}
                   alt="Sanket, Senior Product Manager at Mastercard, PM mentor at StepSmart"
@@ -622,9 +622,9 @@ export function StudentsLandingPage() {
             </div>
 
             {/* Ankit */}
-            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
               {/* Headshot in circle with black border */}
-              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+              <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                 <img
                   src={ankitPhotoSrc}
                   alt="Ankit, Product Manager at Microsoft, PM mentor at StepSmart"
@@ -647,6 +647,36 @@ export function StudentsLandingPage() {
                 <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Product Manager 2 - Microsoft</p>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed">
                   Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
+                </p>
+              </div>
+            </div>
+
+            {/* Pankaj */}
+            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
+              {/* Headshot in circle with black border */}
+              <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                <img
+                  src={pankajPhotoSrc}
+                  alt="Pankaj, Senior Product Manager at ShopDeck, PM mentor at StepSmart"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              
+              <div className="flex-1">
+                {/* Rotated tags */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    SENIOR PM @ SHOPDECK
+                  </span>
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                    B2B + B2C
+                  </span>
+                </div>
+                
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Pankaj</h3>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">SENIOR PRODUCT MANAGER - SHOPDECK</p>
+                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                  Owns merchant-experience, profitability, and logistics at ShopDeck, with 5+ years across SaaS, e-commerce, and mobility. Expert at turning business challenges into revenue-generating solutions for both B2B and B2C.
                 </p>
               </div>
             </div>
