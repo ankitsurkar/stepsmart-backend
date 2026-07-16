@@ -2093,7 +2093,7 @@ function PortalPage() {
               <p className="text-[#111111] font-extrabold text-base md:text-lg leading-relaxed mb-6">
                 "I switched into PM with zero product experience, no CS degree, no MBA, just the right preparation."
               </p>
-              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Curated Cohort</div>
+              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Sanket</div>
             </div>
 
             {/* Card 2: Green */}
@@ -2104,7 +2104,7 @@ function PortalPage() {
               <p className="text-[#111111] font-extrabold text-base md:text-lg leading-relaxed mb-6">
                 "I took the conventional but not so conventional path from an SDE to MBA to PM."
               </p>
-              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Community at Core</div>
+              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Ankit</div>
             </div>
 
             {/* Card 3: Purple */}
@@ -2115,7 +2115,7 @@ function PortalPage() {
               <p className="text-[#111111] font-extrabold text-base md:text-lg leading-relaxed mb-6">
                 "I became a PM directly from college without any prior experience."
               </p>
-              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Builder's Brain</div>
+              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Pankaj</div>
             </div>
           </div>
         </div>
