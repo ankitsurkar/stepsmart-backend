@@ -827,24 +827,24 @@ function ProfessionalsLandingPage() {
                   <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                     <img
                       src={pankajPhotoSrc}
-                      alt="Pankaj, PM at Google"
+                      alt="Pankaj, Senior PM at ShopDeck"
                       className="w-full h-full object-cover object-top"
                     />
                   </div>
                   <div className="flex-1">
                     <div className="flex flex-wrap gap-2 mb-3">
                       <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                        PM @ Google
+                        SENIOR PM @ SHOPDECK
                       </span>
                       <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                        BITS Pilani Alum
+                        B2B + B2C
                       </span>
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I crack Google PM interviews and lead core teams. Let me help you master design & analytical rounds."</h3>
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I own merchant experience, profitability, and logistics. Let me help you turn business challenges into revenue-generating solutions."</h3>
                     <p className="text-base font-bold text-[#111111] leading-relaxed">
-                      Having coached hundreds of freshers and professionals into APM/PM roles, I know the exact gaps in college placements and off-campus pipelines. We'll bridge that gap together.
+                      Owns merchant-experience, profitability, and logistics at ShopDeck, with 5+ years across SaaS, e-commerce, and mobility. Expert at turning business challenges into revenue-generating solutions for both B2B and B2C.
                     </p>
-                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Pankaj, Mentor & PM @ Google</p>
+                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Pankaj, Mentor & Senior PM @ ShopDeck</p>
                   </div>
                 </div>
               </div>
@@ -2281,23 +2281,23 @@ function PortalPage() {
               <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                 <img
                   src={pankajPhotoSrc}
-                  alt="Pankaj, Product Manager at Google"
+                  alt="Pankaj, Senior Product Manager at ShopDeck"
                   className="w-full h-full object-cover object-top"
                 />
               </div>
               <div className="flex-1">
                 <div className="flex flex-wrap gap-2 mb-3">
                   <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    PM @ Google
+                    SENIOR PM @ SHOPDECK
                   </span>
                   <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    Interview Expert
+                    B2B + B2C
                   </span>
                 </div>
                 <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Pankaj</h3>
-                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Product Manager - Google</p>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">SENIOR PRODUCT MANAGER - SHOPDECK</p>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                  Coaches freshers and professionals into APM/PM roles at Google. Specialist in cracking Google PM interviews, mastering product design, analytical rounds, and product execution frameworks.
+                  Owns merchant-experience, profitability, and logistics at ShopDeck, with 5+ years across SaaS, e-commerce, and mobility. Expert at turning business challenges into revenue-generating solutions for both B2B and B2C.
                 </p>
               </div>
             </div>
