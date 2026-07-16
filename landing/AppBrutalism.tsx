@@ -95,7 +95,7 @@ export const enrollmentSchema = z.object({
 const logoSrc = "/stepsmart-logo.png";
 export const sanketPhotoSrc = "/mentor-sanket.jpg";
 export const ankitPhotoSrc = "/mentor-ankit.jpg";
-export const nidhiPhotoSrc = "/mentor-nidhi.jpg";
+export const pankajPhotoSrc = "/mentor-pankaj.jpg";
 export const brochurePdfSrc = "/PM-X-Accelerator-Brochure.pdf";
 const demoLeadsKey = "pmx_demo_leads";
 const demoUsersKey = "pmx_demo_users";
@@ -822,10 +822,14 @@ function ProfessionalsLandingPage() {
                   </div>
                 </div>
 
-                {/* Card 3: Nidhi */}
+                {/* Card 3: Pankaj */}
                 <div className="sticky top-44 bg-[#fed7aa] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-0.5deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px] mb-12">
-                  <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-[#FFFFFF] flex items-center justify-center font-extrabold text-4xl text-[#111111]">
-                    N
+                  <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                    <img
+                      src={pankajPhotoSrc}
+                      alt="Pankaj, PM at Google"
+                      className="w-full h-full object-cover object-top"
+                    />
                   </div>
                   <div className="flex-1">
                     <div className="flex flex-wrap gap-2 mb-3">
@@ -840,7 +844,7 @@ function ProfessionalsLandingPage() {
                     <p className="text-base font-bold text-[#111111] leading-relaxed">
                       Having coached hundreds of freshers and professionals into APM/PM roles, I know the exact gaps in college placements and off-campus pipelines. We'll bridge that gap together.
                     </p>
-                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Nidhi, Mentor & PM @ Google</p>
+                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Pankaj, Mentor & PM @ Google</p>
                   </div>
                 </div>
               </div>
@@ -2272,10 +2276,14 @@ function PortalPage() {
               </div>
             </div>
 
-            {/* Card 3: Nidhi */}
+            {/* Card 3: Pankaj */}
             <div className="sticky top-44 bg-[#fed7aa] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-0.5deg] transition-all duration-100 mb-12">
-              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white flex items-center justify-center font-extrabold text-4xl text-[#111111]">
-                N
+              <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                <img
+                  src={pankajPhotoSrc}
+                  alt="Pankaj, Product Manager at Google"
+                  className="w-full h-full object-cover object-top"
+                />
               </div>
               <div className="flex-1">
                 <div className="flex flex-wrap gap-2 mb-3">
@@ -2286,7 +2294,7 @@ function PortalPage() {
                     Interview Expert
                   </span>
                 </div>
-                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Nidhi</h3>
+                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Pankaj</h3>
                 <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Product Manager - Google</p>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed">
                   Coaches freshers and professionals into APM/PM roles at Google. Specialist in cracking Google PM interviews, mastering product design, analytical rounds, and product execution frameworks.

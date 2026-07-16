@@ -37,7 +37,7 @@ import {
   saveLeadToDemoDB,
   sanketPhotoSrc,
   ankitPhotoSrc,
-  nidhiPhotoSrc,
+  pankajPhotoSrc,
   brochurePdfSrc,
   startBrochureDownload
 } from './AppBrutalism';
