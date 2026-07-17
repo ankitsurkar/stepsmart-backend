@@ -9,7 +9,7 @@ import { BrowserRouter, Link, Navigate, Route, Routes, useNavigate, useParams, u
 // Banner Configuration (Set enabled: true to display banner at top of all pages)
 export const BANNER_CONFIG = {
   enabled: true,
-  text: "📅 Next Live Event: 'What it Takes to Break into Product Management in 2026' on Friday, July 17 at 4:30 AM IST",
+  text: "📅 Next Live Event: 'Product Masterclass' on Monday, July 27 at 8:00 PM IST",
   ctaText: "Register Now ➜"
 };
 
