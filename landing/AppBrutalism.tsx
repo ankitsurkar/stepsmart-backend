@@ -2208,7 +2208,7 @@ function PortalPage() {
                   </span>
                   <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">12 WEEK COURSE</span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-black text-[#111111] mb-4 leading-tight">Go from "I don't have a PM background" to "how to become PM ready"</h3>
+                <h3 className="text-xl md:text-2xl font-black text-[#111111] mb-4 leading-tight">Go from "I don't have a PM background" to "how to become PM ready"</h3>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed mb-8">
                   A structured path for working professionals looking to break into Product Management built by people who made that switch themselves from data engineering, from unconventional paths and breaks down exactly how to translate your existing experience into a PM story that works.
                 </p>
