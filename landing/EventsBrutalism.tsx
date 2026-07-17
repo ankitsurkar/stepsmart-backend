@@ -71,7 +71,8 @@ const DEMO_EVENTS: EventItem[] = [
         name: "Pankaj Sharma",
         rating: 5.0,
         reviews: 28,
-        role: "Product Manager at Shopdeck | Ex - OLA"
+        role: "Product Manager at Shopdeck | Ex - OLA",
+        avatar: "/mentor-pankaj.jpg"
       },
       {
         name: "Ankit Surkar",
