@@ -1113,17 +1113,12 @@ function ProfessionalsLandingPage() {
       {/* Testimonials */}
       <section className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">
-            Our Mentees'{' '}
-            <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-              Testimonials
-            </span>
-          </h2>
+          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Testimonials</h2>
           <div className="grid md:grid-cols-3 gap-8 text-left max-w-5xl mx-auto">
             {[
               { 
                 name: "Nishtha", 
-                cohort: "PM-X FIRST STEP", 
+                role: "Product Management Mentee", 
                 shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
@@ -1136,7 +1131,7 @@ function ProfessionalsLandingPage() {
               },
               { 
                 name: "Gauri", 
-                cohort: "PM-X ACCELERATOR", 
+                role: "PM-X Accelerator Student", 
                 shadow: "shadow-[8px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
@@ -1150,7 +1145,7 @@ function ProfessionalsLandingPage() {
               },
               { 
                 name: "Riya", 
-                cohort: "PM-X FIRST STEP", 
+                role: "Product Strategy Mentee", 
                 shadow: "shadow-[4px_8px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
@@ -1166,19 +1161,19 @@ function ProfessionalsLandingPage() {
                 key={i} 
                 className={`bg-[#FFFFFF] p-10 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100`}
               >
+                <Quote className="text-[#188ab2]/15 h-16 w-16 absolute top-4 right-4" />
                 <div className="mb-8 relative z-10">
+                  <div className="text-xs font-extrabold text-[#188ab2] uppercase tracking-widest mb-3">{t.role}</div>
                   <p className="text-[#111111] leading-relaxed text-lg font-bold">"{t.text}"</p>
                 </div>
                 <div className="flex items-center gap-3">
+                  {/* Avatar placeholder – swap src once images are ready */}
                   <div className="w-12 h-12 rounded-full border-[3px] border-[#111111] bg-[#F5F5F0] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex-shrink-0 overflow-hidden flex items-center justify-center">
                     <span className="text-[#111111] font-extrabold text-base select-none">
                       {t.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
                     </span>
                   </div>
-                  <div>
-                    <div className="font-extrabold text-[#111111]">{t.name}</div>
-                    <div className="text-[10px] font-black uppercase text-[#188ab2] tracking-wider mt-0.5">{t.cohort}</div>
-                  </div>
+                  <div className="font-extrabold text-[#111111]">{t.name}</div>
                 </div>
               </div>
             ))}
