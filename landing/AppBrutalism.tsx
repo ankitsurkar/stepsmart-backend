@@ -2209,22 +2209,9 @@ function PortalPage() {
                   <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">12 WEEK COURSE</span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-black text-[#111111] mb-4 leading-tight">Go from "I don't have a PM background" to "how to become PM ready"</h3>
-                <p className="text-sm font-bold text-[#111111] leading-relaxed mb-6">
+                <p className="text-sm font-bold text-[#111111] leading-relaxed mb-8">
                   A structured path for working professionals looking to break into Product Management built by people who made that switch themselves from data engineering, from unconventional paths and breaks down exactly how to translate your existing experience into a PM story that works.
                 </p>
-                <div className="flex flex-wrap gap-2.5 mb-8">
-                  {[
-                    "1:1 Mentor Access",
-                    "Build Real-World Projects",
-                    "Master Product Skills",
-                    "AI Enabled PM Strategies",
-                    "Salary Negotiation Prep"
-                  ].map((tag, idx) => (
-                    <span key={idx} className="inline-flex items-center gap-1 bg-[#e0f2fe]/40 text-[#111111] border border-[#111111]/30 px-2 py-0.5 text-xs font-bold shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
-                      ✓ {tag}
-                    </span>
-                  ))}
-                </div>
               </div>
 
               <div className="flex items-center justify-end border-t-2 border-slate-100 pt-6">
