@@ -2,8 +2,54 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { StudentsLandingPage } from './StudentsBrutalism';
+import { EventsPage } from './EventsBrutalism';
 import * as z from 'zod';
 import { BrowserRouter, Link, Navigate, Route, Routes, useNavigate, useParams, useSearchParams, useLocation } from 'react-router-dom';
+
+// Banner Configuration (Set enabled: true to display banner at top of all pages)
+export const BANNER_CONFIG = {
+  enabled: true,
+  text: "📅 Next Live Event: 'What it Takes to Break into Product Management in 2026' on Friday, July 17 at 4:30 AM IST",
+  ctaText: "Register Now ➜"
+};
+
+export function AnnouncementBanner() {
+  const [visible, setVisible] = useState(() => {
+    if (!BANNER_CONFIG.enabled) return false;
+    return localStorage.getItem('stepsmart_banner_dismissed') !== 'true';
+  });
+  const navigate = useNavigate();
+
+  if (!visible) return null;
+
+  const handleDismiss = () => {
+    localStorage.setItem('stepsmart_banner_dismissed', 'true');
+    setVisible(false);
+  };
+
+  return (
+    <div className="w-full bg-[#FFF3A7] border-b-[3px] border-[#111111] py-2 px-6 flex items-center justify-between text-[#111111] z-50 select-none relative font-bold text-xs sm:text-sm">
+      <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center">
+        <span>{BANNER_CONFIG.text}</span>
+        <button 
+          onClick={() => {
+            navigate('/events');
+          }}
+          className="bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer inline-block"
+        >
+          {BANNER_CONFIG.ctaText}
+        </button>
+      </div>
+      <button 
+        onClick={handleDismiss}
+        className="p-1 hover:bg-[#111111]/10 rounded border-2 border-transparent active:border-[#111111] transition-all ml-4"
+        aria-label="Dismiss Banner"
+      >
+        <X className="h-4 w-4 text-[#111111]" />
+      </button>
+    </div>
+  );
+}
 import {
   CheckCircle2,
   Mail,
@@ -236,9 +282,9 @@ export const NavLink = ({ href, children, target, rel }: any) => {
 };
 
 export const Button = ({ children, className, variant = "primary", isLoading, ...props }: any) => {
-  const baseStyles = "inline-flex items-center justify-center px-6 py-2.5 font-extrabold border-[3px] border-[#111111] focus:outline-none disabled:opacity-50 transition-all duration-100 select-none cursor-pointer";
+  const baseStyles = "inline-flex items-center justify-center px-6 py-2.5 font-extrabold border-[3px] border-[#111111] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#0f6f8f]/40 disabled:opacity-50 transition-all duration-100 select-none cursor-pointer";
   const variants: any = {
-    primary: "bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]",
+    primary: "bg-[#0f6f8f] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:bg-[#188ab2] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]",
     secondary: "bg-[#FFF3A7] text-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]",
     outline: "bg-[#FFFFFF] text-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]"
   };
@@ -338,34 +384,39 @@ function ProfessionalsLandingPage() {
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
-      <nav className="fixed top-0 z-50 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <Logo toHome={true} />
-          <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-            <NavLink href="#who-is-it-for">Who is it for?</NavLink>
-            <NavLink href="#curriculum">Cohort Perks</NavLink>
-            <NavLink href="/blog">Blog</NavLink>
-            <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
-            <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => document.getElementById('enroll')?.scrollIntoView({ behavior: 'smooth' })}>
-              Apply Now
-            </Button>
+      <div className="fixed top-0 z-50 w-full flex flex-col">
+        <AnnouncementBanner />
+        <nav className="w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+          <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+            <Logo toHome={true} />
+            <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
+              <NavLink href="#who-is-it-for">Who is it for?</NavLink>
+              <NavLink href="#curriculum">Cohort Perks</NavLink>
+              <Link to="/events" className="font-extrabold text-sm text-[#111111] hover:text-[#188ab2] transition-colors">Events</Link>
+              <NavLink href="/blog">Blog</NavLink>
+              <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
+              <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => document.getElementById('enroll')?.scrollIntoView({ behavior: 'smooth' })}>
+                Apply Now
+              </Button>
+            </div>
+            <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
+            </button>
           </div>
-          <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
-          </button>
-        </div>
-      </nav>
+        </nav>
 
-      {/* Mobile Nav */}
-      {isMenuOpen && (
-        <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-          <a href="#who-is-it-for" onClick={(e) => handleMobileLinkClick(e, 'who-is-it-for')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
-          <a href="#curriculum" onClick={(e) => handleMobileLinkClick(e, 'curriculum')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
-          <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
-          <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
-          <Button variant="primary" className="w-full px-5 py-2 text-sm" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
-        </div>
-      )}
+        {/* Mobile Nav */}
+        {isMenuOpen && (
+          <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+            <a href="#who-is-it-for" onClick={(e) => handleMobileLinkClick(e, 'who-is-it-for')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
+            <a href="#curriculum" onClick={(e) => handleMobileLinkClick(e, 'curriculum')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
+            <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
+            <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
+            <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
+            <Button variant="primary" className="w-full px-5 py-2 text-sm" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
+          </div>
+        )}
+      </div>
 
       {/* Hero Section */}
       <section className="pt-32 pb-8 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
@@ -490,7 +541,7 @@ function ProfessionalsLandingPage() {
             ]).map((box, i) => (
               <div 
                 key={i} 
-                className="bg-[#FFFFFF] p-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between transition-all duration-100 select-none group cursor-pointer"
+                className={`p-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between transition-all duration-100 select-none group cursor-pointer ${['bg-white', 'bg-[var(--surface-blue)]', 'bg-[var(--surface-mint)]', 'bg-[var(--surface-lavender)]'][i]}`}
               >
                 <div>
                   {/* Icon wrapper with custom alternating tilt */}
@@ -650,7 +701,7 @@ function ProfessionalsLandingPage() {
               <p className="text-lg font-bold text-slate-500 mb-16">How college freshers broke into PM roles right out of campus.</p>
               <div className="grid md:grid-cols-2 gap-10">
                 {/* Student 1 */}
-                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+                <div className="bg-[var(--surface-peach)] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
                   <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
                     A
                   </div>
@@ -672,7 +723,7 @@ function ProfessionalsLandingPage() {
                 </div>
 
                 {/* Student 2 */}
-                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
+                <div className="bg-[var(--surface-lavender)] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
                   <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
                     N
                   </div>
@@ -1047,22 +1098,22 @@ function ProfessionalsLandingPage() {
               },
               {
                 num: "02",
-                title: "Book Vetting 1:1",
-                desc: "Schedule a talk with the mentors to align goals and ensure fit.",
+                title: "Message Us on WhatsApp",
+                desc: "Drop us a message with your background and goals.",
                 shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
                 tilt: "rotate-[2deg]",
                 action: (
                   <div className="mt-4">
                     <a
-                      href="https://calendly.com/sanket-stepsmart"
+                      href="https://wa.me/919920803517?text=Hi%2C%20I%27m%20interested%20in%20PM-X%20%E2%80%94%20here%27s%20my%20background%3A"
                       target="_blank"
                       rel="noreferrer"
                       className="inline-block bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-1 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer select-none"
                     >
-                      Book Call ➜
+                      CHAT WITH US →
                     </a>
-                    <div className="mt-3 inline-block bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 font-extrabold text-[9px] uppercase rotate-[-2deg] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
-                      ⚡ 30 min / no commitment
+                    <div className="mt-3 inline-block bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 font-extrabold text-[8px] uppercase rotate-[-2deg] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
+                      REPLIES WITHIN A FEW HOURS / NO COMMITMENT
                     </div>
                   </div>
                 )
@@ -1070,14 +1121,14 @@ function ProfessionalsLandingPage() {
               {
                 num: "03",
                 title: "Get Decision",
-                desc: "Get an email confirmation on application status and next steps.",
+                desc: "We confirm fit over WhatsApp and follow up with your application status and next steps.",
                 shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 tilt: "rotate-[-1.5deg]"
               },
               {
                 num: "04",
                 title: "Batch Starts",
-                desc: "Secure your cohort slot. Onboarding starts on June 1st.",
+                desc: "Secure your slot. Onboarding details are shared over WhatsApp before the cohort begins.",
                 shadow: "shadow-[6px_4px_0px_0px_rgba(17,17,17,1)]",
                 tilt: "rotate-[1deg]"
               },
@@ -1752,39 +1803,44 @@ function BlogPage() {
 
     return (
       <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
-        <nav className="fixed top-0 z-50 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-          <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-            <Logo toHome={true} />
-            <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-              <NavLink href="/#who-is-it-for">Who is it for?</NavLink>
-              <NavLink href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer">Book 1:1</NavLink>
-              <NavLink href="/#mentors">Mentors</NavLink>
-              <Link to="/blog" className="relative px-3 py-1.5 text-[#111111] font-extrabold text-sm select-none">
-                <span className="relative z-10">Blog</span>
-                <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
-              </Link>
-              <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
-              <Button variant="primary" onClick={() => navigate('/#enroll')}>
-                Apply Now
-              </Button>
+        <div className="fixed top-0 z-50 w-full flex flex-col">
+          <AnnouncementBanner />
+          <nav className="w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+            <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+              <Logo toHome={true} />
+              <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
+                <NavLink href="/#who-is-it-for">Who is it for?</NavLink>
+                <NavLink href="https://wa.me/919920803517?text=Hi%2C%20I%27m%20interested%20in%20PM-X%20%E2%80%94%20here%27s%20my%20background%3A" target="_blank" rel="noreferrer">Chat 1:1</NavLink>
+                <NavLink href="/#mentors">Mentors</NavLink>
+                <Link to="/events" className="font-extrabold text-sm text-[#111111] hover:text-[#188ab2] transition-colors">Events</Link>
+                <Link to="/blog" className="relative px-3 py-1.5 text-[#111111] font-extrabold text-sm select-none">
+                  <span className="relative z-10">Blog</span>
+                  <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
+                </Link>
+                <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
+                <Button variant="primary" onClick={() => navigate('/#enroll')}>
+                  Apply Now
+                </Button>
+              </div>
+              <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
+              </button>
             </div>
-            <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
-            </button>
-          </div>
-        </nav>
+          </nav>
 
-        {/* Mobile Nav */}
-        {isMenuOpen && (
-          <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-            <a href="/#who-is-it-for" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
-            <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Book 1:1</a>
-            <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
-            <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Blog</Link>
-            <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
-            <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
-          </div>
-        )}
+          {/* Mobile Nav */}
+          {isMenuOpen && (
+            <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+              <a href="/#who-is-it-for" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
+              <a href="https://wa.me/919920803517?text=Hi%2C%20I%27m%20interested%20in%20PM-X%20%E2%80%94%20here%27s%20my%20background%3A" target="_blank" rel="noreferrer" className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Chat 1:1</a>
+              <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+              <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
+              <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Blog</Link>
+              <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
+              <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
+            </div>
+          )}
+        </div>
 
         <main className="pt-36 pb-24 bg-[#FFFFFF]">
           <div className="container mx-auto px-6 max-w-3xl">
@@ -1829,39 +1885,44 @@ function BlogPage() {
   // Blog Listing View
   return (
     <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
-      <nav className="fixed top-0 z-50 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <Logo toHome={true} />
-          <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-            <NavLink href="/#who-is-it-for">Who is it for?</NavLink>
-            <NavLink href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer">Book 1:1</NavLink>
-            <NavLink href="/#mentors">Mentors</NavLink>
-            <Link to="/blog" className="relative px-3 py-1.5 text-[#111111] font-extrabold text-sm select-none">
-              <span className="relative z-10">Blog</span>
-              <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
-            </Link>
-            <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
-            <Button variant="primary" onClick={() => navigate('/#enroll')}>
-              Apply Now
-            </Button>
+      <div className="fixed top-0 z-50 w-full flex flex-col">
+        <AnnouncementBanner />
+        <nav className="w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+          <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+            <Logo toHome={true} />
+            <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
+              <NavLink href="/#who-is-it-for">Who is it for?</NavLink>
+              <NavLink href="https://wa.me/919920803517?text=Hi%2C%20I%27m%20interested%20in%20PM-X%20%E2%80%94%20here%27s%20my%20background%3A" target="_blank" rel="noreferrer">Chat 1:1</NavLink>
+              <NavLink href="/#mentors">Mentors</NavLink>
+              <Link to="/events" className="font-extrabold text-sm text-[#111111] hover:text-[#188ab2] transition-colors">Events</Link>
+              <Link to="/blog" className="relative px-3 py-1.5 text-[#111111] font-extrabold text-sm select-none">
+                <span className="relative z-10">Blog</span>
+                <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
+              </Link>
+              <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
+              <Button variant="primary" onClick={() => navigate('/#enroll')}>
+                Apply Now
+              </Button>
+            </div>
+            <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
+            </button>
           </div>
-          <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
-          </button>
-        </div>
-      </nav>
+        </nav>
 
-      {/* Mobile Nav */}
-      {isMenuOpen && (
-        <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-          <a href="/#who-is-it-for" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
-          <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Book 1:1</a>
-          <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
-          <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Blog</Link>
-          <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
-          <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
-        </div>
-      )}
+        {/* Mobile Nav */}
+        {isMenuOpen && (
+          <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+            <a href="/#who-is-it-for" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
+            <a href="https://wa.me/919920803517?text=Hi%2C%20I%27m%20interested%20in%20PM-X%20%E2%80%94%20here%27s%20my%20background%3A" target="_blank" rel="noreferrer" className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Chat 1:1</a>
+            <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+            <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
+            <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Blog</Link>
+            <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
+            <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
+          </div>
+        )}
+      </div>
 
       {/* Blog Hero Section */}
       <section className="pt-40 pb-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
@@ -1977,9 +2038,9 @@ function BlogPage() {
 
 const HeroCarousel = () => {
   const slides = [
-    "/hero_image.jpg",
-    "/blog-loops.jpg",
-    "/blog-collab.jpg"
+    "/hero-slide-1.jpg",
+    "/hero-slide-2.jpg",
+    "/hero-slide-3.jpg"
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -2063,32 +2124,37 @@ function PortalPage() {
   return (
     <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
       {/* Header */}
-      <nav className="fixed top-0 z-50 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <Logo />
-          <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-            <NavLink href="#mentors">Mentors</NavLink>
-            <NavLink href="/blog">Blog</NavLink>
-            <a href="/auth" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
-            <Button variant="primary" onClick={() => document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' })}>
-              Explore Cohorts
-            </Button>
+      <div className="fixed top-0 z-50 w-full flex flex-col">
+        <AnnouncementBanner />
+        <nav className="w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+          <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+            <Logo />
+            <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
+              <NavLink href="#mentors">Mentors</NavLink>
+              <Link to="/events" className="font-extrabold text-sm text-[#111111] hover:text-[#188ab2] transition-colors">Events</Link>
+              <NavLink href="/blog">Blog</NavLink>
+              <a href="/auth" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
+              <Button variant="primary" onClick={() => document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' })}>
+                Explore Cohorts
+              </Button>
+            </div>
+            <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
+            </button>
           </div>
-          <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
-          </button>
-        </div>
-      </nav>
+        </nav>
 
-      {/* Mobile Nav */}
-      {isMenuOpen && (
-        <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-          <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
-          <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
-          <a href="/auth" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
-          <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' }); }}>Explore Cohorts</Button>
-        </div>
-      )}
+        {/* Mobile Nav */}
+        {isMenuOpen && (
+          <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+            <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+            <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
+            <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
+            <a href="/auth" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
+            <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' }); }}>Explore Cohorts</Button>
+          </div>
+        )}
+      </div>
 
       {/* Hero Section */}
       <section className="pt-32 pb-8 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
@@ -2114,41 +2180,8 @@ function PortalPage() {
             </Button>
           </div>
 
-          {/* Hero Cards */}
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mt-12 text-center">
-            {/* Card 1: Yellow */}
-            <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-3xl flex flex-col items-center justify-between min-h-[340px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all duration-100">
-              <div className="w-16 h-16 rounded-full bg-white border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center mb-6">
-                <Users className="w-8 h-8 text-[#111111]" />
-              </div>
-              <p className="text-[#111111] font-extrabold text-base md:text-lg leading-relaxed mb-6">
-                "I switched into PM with zero product experience, no CS degree, no MBA, just the right preparation."
-              </p>
-              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Sanket</div>
-            </div>
-
-            {/* Card 2: Green */}
-            <div className="bg-[#C6F6D5] border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-3xl flex flex-col items-center justify-between min-h-[340px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all duration-100">
-              <div className="w-16 h-16 rounded-full bg-white border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center mb-6">
-                <HeartHandshake className="w-8 h-8 text-[#111111]" />
-              </div>
-              <p className="text-[#111111] font-extrabold text-base md:text-lg leading-relaxed mb-6">
-                "I took the conventional but not so conventional path from an SDE to MBA to PM."
-              </p>
-              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Ankit</div>
-            </div>
-
-            {/* Card 3: Purple */}
-            <div className="bg-[#E9D8FD] border-[3px] border-[#111111] p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-3xl flex flex-col items-center justify-between min-h-[340px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all duration-100">
-              <div className="w-16 h-16 rounded-full bg-white border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center mb-6">
-                <Brain className="w-8 h-8 text-[#111111]" />
-              </div>
-              <p className="text-[#111111] font-extrabold text-base md:text-lg leading-relaxed mb-6">
-                "I became a PM directly from college without any prior experience."
-              </p>
-              <div className="text-sm font-black uppercase text-[#111111] tracking-wider">Pankaj</div>
-            </div>
-          </div>
+          {/* Hero Carousel */}
+          <HeroCarousel />
         </div>
       </section>
 
@@ -2181,7 +2214,16 @@ function PortalPage() {
                 </p>
               </div>
 
-              <div className="flex items-center justify-end border-t-2 border-slate-100 pt-6">
+              <div className="flex items-center justify-between border-t-2 border-slate-100 pt-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-[#FFF3A7] border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center rotate-[-3deg] select-none shrink-0">
+                    <GraduationCap className="w-6 h-6 text-[#111111] stroke-[2.5]" />
+                  </div>
+                  <div className="hidden sm:block text-left">
+                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">For Ambitious</div>
+                    <div className="text-xs font-black text-[#111111] uppercase tracking-wider mt-0.5">Students</div>
+                  </div>
+                </div>
                 <div className="flex items-center gap-3">
                   <Link
                     to="/students"
@@ -2215,7 +2257,16 @@ function PortalPage() {
                 </p>
               </div>
 
-              <div className="flex items-center justify-end border-t-2 border-slate-100 pt-6">
+              <div className="flex items-center justify-between border-t-2 border-slate-100 pt-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-[#e0f2fe] border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center rotate-[3deg] select-none shrink-0">
+                    <Briefcase className="w-6 h-6 text-[#111111] stroke-[2.5]" />
+                  </div>
+                  <div className="hidden sm:block text-left">
+                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">For Working</div>
+                    <div className="text-xs font-black text-[#111111] uppercase tracking-wider mt-0.5">Professionals</div>
+                  </div>
+                </div>
                 <div className="flex items-center gap-3">
                   <Link
                     to="/professionals"
@@ -2347,22 +2398,22 @@ function PortalPage() {
               },
               {
                 num: "02",
-                title: "Book Vetting 1:1",
-                desc: "Schedule a talk with the mentors to align goals and ensure fit.",
+                title: "Message Us on WhatsApp",
+                desc: "Drop us a message with your background and goals.",
                 shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
                 tilt: "rotate-[2deg]",
                 action: (
                   <div className="mt-4">
                     <a
-                      href="https://calendly.com/sanket-stepsmart"
+                      href="https://wa.me/919920803517?text=Hi%2C%20I%27m%20interested%20in%20PM-X%20%E2%80%94%20here%27s%20my%20background%3A"
                       target="_blank"
                       rel="noreferrer"
                       className="inline-block bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-1 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer select-none"
                     >
-                      Book Call ➜
+                      CHAT WITH US →
                     </a>
-                    <div className="mt-3 inline-block bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 font-extrabold text-[9px] uppercase rotate-[-2deg] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
-                      ⚡ 30 min / no commitment
+                    <div className="mt-3 inline-block bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 font-extrabold text-[8px] uppercase rotate-[-2deg] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
+                      REPLIES WITHIN A FEW HOURS / NO COMMITMENT
                     </div>
                   </div>
                 )
@@ -2370,14 +2421,14 @@ function PortalPage() {
               {
                 num: "03",
                 title: "Get Decision",
-                desc: "Get an email confirmation on application status and next steps.",
+                desc: "We confirm fit over WhatsApp and follow up with your application status and next steps.",
                 shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 tilt: "rotate-[-1.5deg]"
               },
               {
                 num: "04",
                 title: "Batch Starts",
-                desc: "Secure your slot. Class onboarding details are sent prior to start.",
+                desc: "Secure your slot. Onboarding details are shared over WhatsApp before the cohort begins.",
                 shadow: "shadow-[6px_4px_0px_0px_rgba(17,17,17,1)]",
                 tilt: "rotate-[1deg]"
               },
@@ -2411,7 +2462,7 @@ function PortalPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+      <section className="py-16 bg-[var(--surface-peach)] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">
             Our Mentees'{' '}
@@ -2547,6 +2598,7 @@ export default function App() {
         <Route path="/" element={<PortalPage />} />
         <Route path="/professionals" element={<ProfessionalsLandingPage />} />
         <Route path="/students" element={<StudentsLandingPage />} />
+        <Route path="/events" element={<EventsPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:blogId" element={<BlogPage />} />
         <Route path="/auth" element={<AuthPage />} />

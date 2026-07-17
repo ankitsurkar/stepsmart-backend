@@ -39,7 +39,8 @@ import {
   ankitPhotoSrc,
   pankajPhotoSrc,
   brochurePdfSrc,
-  startBrochureDownload
+  startBrochureDownload,
+  AnnouncementBanner
 } from './AppBrutalism';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -183,37 +184,42 @@ export function StudentsLandingPage() {
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
-      {/* Navbar */}
-      <nav className="fixed top-0 z-50 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <Logo toHome={true} />
-          <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-            <NavLink href="#why-speedup">Why First Step?</NavLink>
-            <NavLink href="#student-benefits">Cohort Perks</NavLink>
-            <NavLink href="#mentors">Mentors</NavLink>
-            <Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link>
-            <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
-            <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => document.getElementById('enroll-student')?.scrollIntoView({ behavior: 'smooth' })}>
-              Apply Now
-            </Button>
+      {/* Navbar Wrapper */}
+      <div className="fixed top-0 z-50 w-full flex flex-col">
+        <AnnouncementBanner />
+        <nav className="w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+          <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+            <Logo toHome={true} />
+            <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
+              <NavLink href="#why-speedup">Why First Step?</NavLink>
+              <NavLink href="#student-benefits">Cohort Perks</NavLink>
+              <NavLink href="#mentors">Mentors</NavLink>
+              <Link to="/events" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Events</Link>
+              <Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link>
+              <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
+              <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => document.getElementById('enroll-student')?.scrollIntoView({ behavior: 'smooth' })}>
+                Apply Now
+              </Button>
+            </div>
+            <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
+            </button>
           </div>
-          <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
-          </button>
-        </div>
-      </nav>
+        </nav>
 
-      {/* Mobile Nav */}
-      {isMenuOpen && (
-        <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-          <a href="#why-speedup" onClick={(e) => handleMobileLinkClick(e, 'why-speedup')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Why First Step?</a>
-          <a href="#student-benefits" onClick={(e) => handleMobileLinkClick(e, 'student-benefits')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
-          <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
-          <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
-          <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
-          <Button variant="primary" className="w-full px-5 py-2 text-sm" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
-        </div>
-      )}
+        {/* Mobile Nav */}
+        {isMenuOpen && (
+          <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+            <a href="#why-speedup" onClick={(e) => handleMobileLinkClick(e, 'why-speedup')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Why First Step?</a>
+            <a href="#student-benefits" onClick={(e) => handleMobileLinkClick(e, 'student-benefits')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
+            <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+            <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
+            <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
+            <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
+            <Button variant="primary" className="w-full px-5 py-2 text-sm" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
+          </div>
+        )}
+      </div>
 
       {/* Hero Section */}
       <section className="pt-32 pb-8 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
@@ -232,7 +238,7 @@ export function StudentsLandingPage() {
             </span>
           </h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mx-auto select-none mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl mx-auto select-none mb-12">
             {[
               { src: "/student-comic-1.jpg", alt: "Placement prep confusion" },
               { src: "/student-comic-2.jpg", alt: "Mock interviews & case books" },
@@ -343,36 +349,52 @@ export function StudentsLandingPage() {
             {/* Left Sticky Column */}
             <div className="md:w-1/3 md:sticky md:top-28">
               <h2 className="text-4xl md:text-5xl font-black text-[#111111] mb-6 leading-tight">
-                Student{' '}
                 <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                  Exclusive Perks
+                  Offerings
                 </span>
               </h2>
-              <p className="text-lg font-bold text-slate-500">Everything you need to compete with MBA candidates as a college student.</p>
+              <p className="text-lg font-bold text-slate-500 leading-relaxed">
+                "PM is a competitive path we won't pretend otherwise. What we can do is make sure you're prepping the right way, so when your shot comes, you're actually ready for it."
+              </p>
             </div>
 
             {/* Right List Column (No outer boxes) */}
             <div className="md:w-2/3 flex flex-col gap-10 select-none">
               {[
                 {
-                  title: "Portfolio Building",
-                  desc: "Build 3 industry-grade PRDs to prove your hands-on product thinking, design loops, and analysis on your resume.",
+                  title: "Product Sense",
+                  desc: "Build the underlying thinking — RCA, product design, guesstimates — that every case, deck, and interview round is actually testing. Not frameworks to memorize, but a way of thinking you can apply to anything thrown at you.",
+                  icon: <Lightbulb className="h-6 w-6 text-[#188ab2]" />
+                },
+                {
+                  title: "Resume Crafting",
+                  desc: "Map your existing skills — technical, analytical, whatever your background — to what PM recruiters are actually screening for. No generic templates, no overloading with things you don't understand.",
                   icon: <FileText className="h-6 w-6 text-[#188ab2]" />
                 },
                 {
-                  title: "Mock Placement Drives",
-                  desc: "Live mock interview case rounds simulating startup APM qualification tests, guesstimates, and case assignments.",
-                  icon: <FolderArchive className="h-6 w-6 text-[#188ab2]" />
+                  title: "Portfolio Building",
+                  desc: "Turn \"I have no real experience\" into a credible portfolio of product artifacts — case studies, project breakdowns, decks — that give you something concrete to point to in interviews and PORs.",
+                  icon: <BookOpen className="h-6 w-6 text-[#188ab2]" />
                 },
                 {
-                  title: "Tool Mastery",
-                  desc: "Hands-on experience with industry-standard product management tools including Jira, Figma, Mixpanel, and AI prototyping tools.",
-                  icon: <Wrench className="h-6 w-6 text-[#188ab2]" />
+                  title: "Interview Preparation",
+                  desc: "Go in with an approach, not just a framework. We work through your reasoning process across RCA, product design, and guesstimates until it's second nature — not a script you recite.",
+                  icon: <Target className="h-6 w-6 text-[#188ab2]" />
                 },
                 {
-                  title: "Referrals & Network",
-                  desc: "Get referred by our founding mentors directly into startups hiring fresh Associate Product Managers.",
-                  icon: <MessageSquare className="h-6 w-6 text-[#188ab2]" />
+                  title: "Mock & Mentor Interviews",
+                  desc: "Practice the actual placement process, not a watered-down version of it. Real mocks, real feedback, from people who've been on both sides of the table.",
+                  icon: <Trophy className="h-6 w-6 text-[#188ab2]" />
+                },
+                {
+                  title: "Peer Community",
+                  desc: "Case-ing alone is hard. Get matched with a peer group across IITs and IIMs to practice with, get real-time feedback from, and stay accountable through placement season.",
+                  icon: <Users className="h-6 w-6 text-[#188ab2]" />
+                },
+                {
+                  title: "Ongoing Support Through the Season",
+                  desc: "Not just prep before placements start — direct access to mentors when a surprise round hits, an application question comes up, or you just need a gut-check mid-season.",
+                  icon: <Calendar className="h-6 w-6 text-[#188ab2]" />
                 }
               ].map((item, idx) => (
                 <div 
