@@ -1116,7 +1116,7 @@ function ProfessionalsLandingPage() {
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
               How to{' '}
               <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                Join the Tribe
+                join?
               </span>
             </h2>
             <p className="text-lg font-bold text-[#111111] mt-4">No automated gateways, no automated rejections. We screen for alignment at every step.</p>
@@ -2438,7 +2438,7 @@ function PortalPage() {
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
               How to{' '}
               <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                Join the Tribe
+                join?
               </span>
             </h2>
             <p className="text-lg font-bold text-[#111111] mt-4">No automated gateways, no automated rejections. We screen for alignment at every step.</p>
