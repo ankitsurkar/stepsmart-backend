@@ -282,7 +282,7 @@ export function StudentsLandingPage() {
             <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is PM-X First Step for?</h2>
             <p className="text-lg font-bold text-[#111111]">Tailored exclusively for ambitious college students seeking non-engineering roles.</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             {[
               { 
                 label: "Final-Year Students", 
@@ -299,14 +299,6 @@ export function StudentsLandingPage() {
                 iconTilt: "rotate-[-2deg]",
                 tag: "Internship Prep",
                 tagTilt: "rotate-[2deg]"
-              },
-              { 
-                label: "Non-CS Students", 
-                desc: "Switch from core engineering, design, or commerce to tech roles.", 
-                icon: <BookOpen className="h-8 w-8 text-[#111111]" />,
-                iconTilt: "rotate-[4deg]",
-                tag: "Stream Agnostic",
-                tagTilt: "rotate-[-2deg]"
               },
               { 
                 label: "Recent Graduates", 
