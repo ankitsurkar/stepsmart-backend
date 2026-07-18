@@ -2204,26 +2204,16 @@ function PortalPage() {
               <div>
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b-2 border-slate-100">
                   <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                    PM-X FIRST STEP
+                    6 Weeks
                   </span>
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">6 WEEK COURSE</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-black text-[#111111] mb-4 leading-tight">Go From "will I even get shortlisted" to PM placement-ready</h3>
+                <h3 className="text-xl md:text-2xl font-black text-[#111111] mb-4 leading-tight">PM-X FIRST STEP</h3>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed mb-8">
                   A cohort for final-year students who feel lost switching between random case books and YouTube videos, PM-X First Step is the structured 6-week path from "will I even get shortlisted" to placement-ready built around this season's actual interview process with guidance from expert mentors across industry.
                 </p>
               </div>
 
-              <div className="flex items-center justify-between border-t-2 border-slate-100 pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-[#FFF3A7] border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center rotate-[-3deg] select-none shrink-0">
-                    <GraduationCap className="w-6 h-6 text-[#111111] stroke-[2.5]" />
-                  </div>
-                  <div className="hidden sm:block text-left">
-                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">For Ambitious</div>
-                    <div className="text-xs font-black text-[#111111] uppercase tracking-wider mt-0.5">Students</div>
-                  </div>
-                </div>
+              <div className="flex items-center justify-end border-t-2 border-slate-100 pt-6">
                 <div className="flex items-center gap-3">
                   <Link
                     to="/students"
@@ -2247,26 +2237,16 @@ function PortalPage() {
               <div>
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b-2 border-slate-100">
                   <span className="bg-[#e0f2fe] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                    PM-X ACCELERATOR
+                    12 Weeks
                   </span>
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">12 WEEK COURSE</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-black text-[#111111] mb-4 leading-tight">Go from "I don't have a PM background" to "how to become PM ready"</h3>
+                <h3 className="text-xl md:text-2xl font-black text-[#111111] mb-4 leading-tight">PM-X ACCELERATOR</h3>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed mb-8">
                   A structured path for working professionals looking to break into Product Management built by people who made that switch themselves from data engineering, from unconventional paths and breaks down exactly how to translate your existing experience into a PM story that works.
                 </p>
               </div>
 
-              <div className="flex items-center justify-between border-t-2 border-slate-100 pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-[#e0f2fe] border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center rotate-[3deg] select-none shrink-0">
-                    <Briefcase className="w-6 h-6 text-[#111111] stroke-[2.5]" />
-                  </div>
-                  <div className="hidden sm:block text-left">
-                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">For Working</div>
-                    <div className="text-xs font-black text-[#111111] uppercase tracking-wider mt-0.5">Professionals</div>
-                  </div>
-                </div>
+              <div className="flex items-center justify-end border-t-2 border-slate-100 pt-6">
                 <div className="flex items-center gap-3">
                   <Link
                     to="/professionals"
