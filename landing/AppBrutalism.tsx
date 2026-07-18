@@ -779,19 +779,19 @@ function ProfessionalsLandingPage() {
                     </div>
                     
                     <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Sanket</h3>
-                    <div className="mb-4">
+                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
                       <a 
                         href="https://www.linkedin.com/in/sanketkumar-katore/" 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest hover:underline inline-flex items-center gap-1.5"
+                        className="hover:underline inline-flex items-center gap-1.5"
                       >
                         Senior PM - Mastercard
                         <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
                           <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
                         </svg>
                       </a>
-                    </div>
+                    </p>
                     <p className="text-sm font-bold text-[#111111] leading-relaxed">
                       Successfully mentored 100+ professionals into high-growth PM roles. Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
                     </p>
@@ -821,19 +821,19 @@ function ProfessionalsLandingPage() {
                     </div>
                     
                     <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Ankit</h3>
-                    <div className="mb-4">
+                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
                       <a 
                         href="https://www.linkedin.com/in/ankit-surkar/" 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest hover:underline inline-flex items-center gap-1.5"
+                        className="hover:underline inline-flex items-center gap-1.5"
                       >
                         Product Manager 2 - Microsoft
                         <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
                           <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
                         </svg>
                       </a>
-                    </div>
+                    </p>
                     <p className="text-sm font-bold text-[#111111] leading-relaxed">
                       Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
                     </p>
@@ -863,19 +863,19 @@ function ProfessionalsLandingPage() {
                     </div>
                     
                     <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Pankaj</h3>
-                    <div className="mb-4">
+                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
                       <a 
                         href="https://www.linkedin.com/in/pancage/" 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest hover:underline inline-flex items-center gap-1.5"
+                        className="hover:underline inline-flex items-center gap-1.5"
                       >
                         SENIOR PRODUCT MANAGER - SHOPDECK
                         <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
                           <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
                         </svg>
                       </a>
-                    </div>
+                    </p>
                     <p className="text-sm font-bold text-[#111111] leading-relaxed">
                       Owns merchant-experience, profitability, and logistics at ShopDeck, with 5+ years across SaaS, e-commerce, and mobility. Expert at turning business challenges into revenue-generating solutions for both B2B and B2C.
                     </p>
@@ -2334,7 +2334,19 @@ function PortalPage() {
                   </span>
                 </div>
                 <h3 className="text-2xl font-extrabold text-white mb-1">Sanket</h3>
-                <p className="text-[#FFF3A7] text-xs font-extrabold uppercase tracking-widest mb-4">Senior PM - Mastercard</p>
+                <p className="text-[#FFF3A7] text-xs font-extrabold uppercase tracking-widest mb-4">
+                  <a 
+                    href="https://www.linkedin.com/in/sanketkumar-katore/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="hover:underline inline-flex items-center gap-1.5"
+                  >
+                    Senior PM - Mastercard
+                    <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                    </svg>
+                  </a>
+                </p>
                 <p className="text-sm font-bold text-slate-100 leading-relaxed">
                   Successfully mentored 100+ professionals into high-growth PM roles. Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
                 </p>
@@ -2360,7 +2372,19 @@ function PortalPage() {
                   </span>
                 </div>
                 <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Ankit</h3>
-                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Product Manager 2 - Microsoft</p>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
+                  <a 
+                    href="https://www.linkedin.com/in/ankit-surkar/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="hover:underline inline-flex items-center gap-1.5"
+                  >
+                    Product Manager 2 - Microsoft
+                    <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                    </svg>
+                  </a>
+                </p>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed">
                   Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
                 </p>
@@ -2386,7 +2410,19 @@ function PortalPage() {
                   </span>
                 </div>
                 <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Pankaj</h3>
-                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">SENIOR PRODUCT MANAGER - SHOPDECK</p>
+                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
+                  <a 
+                    href="https://www.linkedin.com/in/pancage/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="hover:underline inline-flex items-center gap-1.5"
+                  >
+                    SENIOR PRODUCT MANAGER - SHOPDECK
+                    <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                    </svg>
+                  </a>
+                </p>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed">
                   Owns merchant-experience, profitability, and logistics at ShopDeck, with 5+ years across SaaS, e-commerce, and mobility. Expert at turning business challenges into revenue-generating solutions for both B2B and B2C.
                 </p>
