@@ -774,7 +774,7 @@ function ProfessionalsLandingPage() {
                         PM @ Mastercard
                       </span>
                       <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                        100+ Mentored
+                        50+ Mentored
                       </span>
                     </div>
                     
@@ -793,7 +793,7 @@ function ProfessionalsLandingPage() {
                       </a>
                     </p>
                     <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                      Successfully mentored 100+ professionals into high-growth PM roles. Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
+                      Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
                     </p>
                   </div>
                 </div>
@@ -2330,7 +2330,7 @@ function PortalPage() {
                     PM @ Mastercard
                   </span>
                   <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    100+ Mentored
+                    50+ Mentored
                   </span>
                 </div>
                 <h3 className="text-2xl font-extrabold text-white mb-1">Sanket</h3>
@@ -2348,7 +2348,7 @@ function PortalPage() {
                   </a>
                 </p>
                 <p className="text-sm font-bold text-slate-100 leading-relaxed">
-                  Successfully mentored 100+ professionals into high-growth PM roles. Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
+                  Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
                 </p>
               </div>
             </div>
@@ -2493,7 +2493,7 @@ function PortalPage() {
               {
                 num: "05",
                 title: "Lifetime Access",
-                desc: "Join our active alumni network across 90+ global companies.",
+                desc: "Join our active alumni network",
                 shadow: "shadow-[4px_6px_0px_0px_rgba(17,17,17,1)]",
                 tilt: "rotate-[-2deg]"
               }

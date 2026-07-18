@@ -571,7 +571,7 @@ export function StudentsLandingPage() {
                     PM @ Mastercard
                   </span>
                   <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    100+ Mentored
+                    50+ Mentored
                   </span>
                 </div>
                 
@@ -590,7 +590,7 @@ export function StudentsLandingPage() {
                   </a>
                 </p>
                 <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                  Successfully mentored 100+ professionals into high-growth PM roles. Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
+                  Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
                 </p>
               </div>
             </div>
