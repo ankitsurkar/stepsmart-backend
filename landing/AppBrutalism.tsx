@@ -2316,7 +2316,7 @@ function PortalPage() {
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
           <div className="flex flex-col gap-16 relative text-left">
             {/* Card 1: Sanket */}
-            <div className="sticky top-28 bg-[#e0f2fe] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-1deg] transition-all duration-100">
+            <div className="sticky top-28 bg-[#188ab2] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-1deg] transition-all duration-100">
               <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                 <img
                   src={sanketPhotoSrc}
@@ -2326,16 +2326,16 @@ function PortalPage() {
               </div>
               <div className="flex-1">
                 <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                     PM @ Mastercard
                   </span>
                   <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                     100+ Mentored
                   </span>
                 </div>
-                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Sanket</h3>
-                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">Senior PM - Mastercard</p>
-                <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                <h3 className="text-2xl font-extrabold text-white mb-1">Sanket</h3>
+                <p className="text-[#FFF3A7] text-xs font-extrabold uppercase tracking-widest mb-4">Senior PM - Mastercard</p>
+                <p className="text-sm font-bold text-slate-100 leading-relaxed">
                   Successfully mentored 100+ professionals into high-growth PM roles. Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
                 </p>
               </div>
