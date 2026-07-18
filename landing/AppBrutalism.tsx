@@ -174,8 +174,7 @@ export const Logo = ({ toHome }: { toHome?: boolean }) => {
       onClick={handleClick} 
       className="flex items-center gap-3 select-none cursor-pointer"
     >
-      {/* Blue tilted square matching the stepsmarter branding with Neobrutalism shadow */}
-      <div className="w-8 h-8 bg-[#188ab2] border-[3px] border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] rotate-[-6deg]"></div>
+      <img src="/stepsmart-logo.png" alt="StepSmart Logo" className="w-8 h-8 object-contain" />
       <span className="font-extrabold text-2xl tracking-tight text-[#111111]">StepSmart</span>
     </a>
   );
