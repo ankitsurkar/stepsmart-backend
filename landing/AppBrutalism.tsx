@@ -2213,7 +2213,10 @@ function PortalPage() {
                 </p>
               </div>
 
-              <div className="flex items-center justify-end border-t-2 border-slate-100 pt-6">
+              <div className="flex items-center justify-between border-t-2 border-slate-100 pt-6">
+                <div className="w-12 h-12 rounded-full bg-[#FFF3A7] border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center rotate-[-3deg] select-none shrink-0">
+                  <GraduationCap className="w-6 h-6 text-[#111111] stroke-[2.5]" />
+                </div>
                 <div className="flex items-center gap-3">
                   <Link
                     to="/students"
@@ -2246,7 +2249,10 @@ function PortalPage() {
                 </p>
               </div>
 
-              <div className="flex items-center justify-end border-t-2 border-slate-100 pt-6">
+              <div className="flex items-center justify-between border-t-2 border-slate-100 pt-6">
+                <div className="w-12 h-12 rounded-full bg-[#e0f2fe] border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center rotate-[3deg] select-none shrink-0">
+                  <Briefcase className="w-6 h-6 text-[#111111] stroke-[2.5]" />
+                </div>
                 <div className="flex items-center gap-3">
                   <Link
                     to="/professionals"
