@@ -4,6 +4,8 @@ import {
   signIn,
   signOut,
   confirmSignIn,
+  signUp,
+  confirmSignUp,
   getCurrentUser,
   fetchAuthSession,
   fetchUserAttributes,
@@ -147,8 +149,40 @@ export function AuthProvider({ children }) {
     setIsAdmin(false);
   }
 
+  // Registers a new user with Cognito
+  async function register(email, password, fullName) {
+    try {
+      const result = await signUp({
+        username: email,
+        password: password,
+        options: {
+          userAttributes: {
+            email: email,
+            name: fullName,
+          },
+        },
+      });
+      return { success: true, isSignUpComplete: result.isSignUpComplete, nextStep: result.nextStep };
+    } catch (err) {
+      return { error: err.message || 'Sign up failed.' };
+    }
+  }
+
+  // Confirms user registration with confirmation code
+  async function confirmRegister(email, code) {
+    try {
+      await confirmSignUp({
+        username: email,
+        confirmationCode: code,
+      });
+      return { success: true };
+    } catch (err) {
+      return { error: err.message || 'Account verification failed.' };
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isAdmin, loading, login, completeNewPassword, triggerResetPassword, completeResetPassword, updateDisplayName, updateProfile, logout }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, login, completeNewPassword, triggerResetPassword, completeResetPassword, register, confirmRegister, updateDisplayName, updateProfile, logout }}>
       {children}
     </AuthContext.Provider>
   );
