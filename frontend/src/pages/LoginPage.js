@@ -4,17 +4,15 @@ import { useAuth } from '../context/AuthContext';
 import { signInWithRedirect } from 'aws-amplify/auth';
 
 export default function LoginPage() {
-  const { login, completeNewPassword, triggerResetPassword, completeResetPassword, register, confirmRegister } = useAuth();
+  const { login, completeNewPassword, triggerResetPassword, completeResetPassword } = useAuth();
   const navigate = useNavigate();
 
-  const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'confirmSignup' | 'newPassword' | 'forgotPassword' | 'confirmReset'
-  const [fullName, setFullName] = useState('');
+  const [mode, setMode] = useState('login'); // 'login' | 'newPassword' | 'forgotPassword' | 'confirmReset'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [resetCode, setResetCode] = useState('');
-  const [signUpCode, setSignUpCode] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -47,53 +45,6 @@ export default function LoginPage() {
     setSubmitting(false);
     if (result.requiresNewPassword) { setMode('newPassword'); return; }
     if (result.error) { setError(result.error); return; }
-    navigate('/dashboard', { replace: true });
-  }
-
-  async function handleSignUp(e) {
-    e.preventDefault();
-    setError('');
-    if (!fullName.trim()) { setError('Please enter your full name.'); return; }
-    if (password.length < 8) { setError('Password must be at least 8 characters.'); return; }
-
-    setSubmitting(true);
-    const result = await register(email, password, fullName.trim());
-    setSubmitting(false);
-    if (result.error) { setError(result.error); return; }
-
-    if (result.isSignUpComplete) {
-      // Auto login if no verification needed
-      setSubmitting(true);
-      const loginRes = await login(email, password);
-      setSubmitting(false);
-      if (!loginRes.error) {
-        navigate('/dashboard', { replace: true });
-        return;
-      }
-    }
-    setMode('confirmSignup');
-  }
-
-  async function handleConfirmSignUp(e) {
-    e.preventDefault();
-    setError('');
-    if (!signUpCode.trim()) { setError('Please enter the verification code.'); return; }
-
-    setSubmitting(true);
-    const confirmRes = await confirmRegister(email, signUpCode.trim());
-    if (confirmRes.error) {
-      setError(confirmRes.error);
-      setSubmitting(false);
-      return;
-    }
-
-    const loginRes = await login(email, password);
-    setSubmitting(false);
-    if (loginRes.error) {
-      setError('Account verified! Please sign in with your credentials.');
-      setMode('login');
-      return;
-    }
     navigate('/dashboard', { replace: true });
   }
 
@@ -209,29 +160,14 @@ export default function LoginPage() {
               }}>Back</span>
             </>
           )}
-          {mode === 'signup' && (
-            <>
-              Create Your <span style={{
-                backgroundColor: '#FFF3A7',
-                border: '2.5px solid #111111',
-                padding: '0.1rem 0.5rem',
-                display: 'inline-block',
-                transform: 'rotate(-1.5deg)',
-                boxShadow: '3px 3px 0px 0px #111111',
-              }}>Account</span>
-            </>
-          )}
-          {mode === 'confirmSignup' && 'Verify Email'}
-          {mode === 'newPassword' && 'Set New Password'}
+          {mode === 'newPassword' && 'Set Permanent Password'}
           {mode === 'forgotPassword' && 'Reset Password'}
           {mode === 'confirmReset' && 'Confirm Password'}
         </h1>
 
         <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#111111', textAlign: 'center', marginBottom: '1.75rem', lineHeight: 1.5 }}>
           {mode === 'login' && 'Sign in to access your PM-X learning portal.'}
-          {mode === 'signup' && 'Sign up for access to the PM-X learner dashboard.'}
-          {mode === 'confirmSignup' && 'Enter the verification code sent to your email.'}
-          {mode === 'newPassword' && 'Create your permanent account password.'}
+          {mode === 'newPassword' && 'First time logging in? Create your permanent account password below.'}
           {mode === 'forgotPassword' && "Enter your email to receive a verification code."}
           {mode === 'confirmReset' && 'Enter your verification code and new password.'}
         </p>
@@ -378,173 +314,7 @@ export default function LoginPage() {
               </svg>
               Sign in with Google
             </button>
-
-            {/* Toggle to Sign Up */}
-            <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.85rem', fontWeight: 800, color: '#111111' }}>
-              Don't have an account?{' '}
-              <button
-                type="button"
-                onClick={() => { setError(''); setMode('signup'); }}
-                style={{ background: 'none', border: 'none', color: '#188ab2', fontWeight: 900, cursor: 'pointer', textDecoration: 'underline' }}
-              >
-                Sign Up
-              </button>
-            </div>
           </>
-        ) : mode === 'signup' ? (
-          <>
-            <form onSubmit={handleSignUp}>
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 900, color: '#111111', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Full Name
-              </label>
-              <input
-                style={getInputStyle('fullName')}
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                onFocus={() => setFocusedInput('fullName')}
-                onBlur={() => setFocusedInput(null)}
-                placeholder="Alex Morgan"
-                required
-                autoFocus
-              />
-
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 900, color: '#111111', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Email Address
-              </label>
-              <input
-                style={getInputStyle('email')}
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setFocusedInput('email')}
-                onBlur={() => setFocusedInput(null)}
-                placeholder="you@example.com"
-                required
-              />
-
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 900, color: '#111111', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Password
-              </label>
-              <input
-                style={getInputStyle('password')}
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={() => setFocusedInput('password')}
-                onBlur={() => setFocusedInput(null)}
-                placeholder="At least 8 characters"
-                required
-              />
-
-              <button
-                type="submit"
-                disabled={submitting}
-                onMouseEnter={() => setBtnHover(true)}
-                onMouseLeave={() => { setBtnHover(false); setBtnActive(false); }}
-                onMouseDown={() => setBtnActive(true)}
-                onMouseUp={() => setBtnActive(false)}
-                style={{
-                  width: '100%',
-                  padding: '0.9rem',
-                  fontSize: '1rem',
-                  fontWeight: 900,
-                  backgroundColor: btnHover ? '#188ab2' : '#0f6f8f',
-                  color: '#FFFFFF',
-                  border: '3px solid #111111',
-                  boxShadow: btnActive ? '2px 2px 0px 0px #111111' : (btnHover ? '6px 6px 0px 0px #111111' : '4px 4px 0px 0px #111111'),
-                  transform: btnActive ? 'translate(2px, 2px)' : (btnHover ? 'translate(-2px, -2px)' : 'none'),
-                  cursor: submitting ? 'not-allowed' : 'pointer',
-                  opacity: submitting ? 0.65 : 1,
-                  transition: 'all 0.15s ease',
-                  marginTop: '0.25rem',
-                }}
-              >
-                {submitting ? 'Creating account…' : 'Create Account →'}
-              </button>
-            </form>
-
-            {/* Toggle to Login */}
-            <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.85rem', fontWeight: 800, color: '#111111' }}>
-              Already have an account?{' '}
-              <button
-                type="button"
-                onClick={() => { setError(''); setMode('login'); }}
-                style={{ background: 'none', border: 'none', color: '#188ab2', fontWeight: 900, cursor: 'pointer', textDecoration: 'underline' }}
-              >
-                Sign In
-              </button>
-            </div>
-          </>
-        ) : mode === 'confirmSignup' ? (
-          <form onSubmit={handleConfirmSignUp}>
-            <div style={{
-              backgroundColor: '#FFF3A7',
-              border: '3px solid #111111',
-              boxShadow: '4px 4px 0px 0px #111111',
-              padding: '0.85rem 1rem',
-              fontSize: '0.875rem',
-              fontWeight: 800,
-              color: '#111111',
-              marginBottom: '1.25rem',
-              lineHeight: 1.4,
-            }}>
-              ✉️ A 6-digit confirmation code was sent to <span style={{ textDecoration: 'underline' }}>{email}</span>. Please enter it below.
-            </div>
-
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 900, color: '#111111', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Verification Code
-            </label>
-            <input
-              style={getInputStyle('signUpCode')}
-              type="text"
-              value={signUpCode}
-              onChange={(e) => setSignUpCode(e.target.value)}
-              onFocus={() => setFocusedInput('signUpCode')}
-              onBlur={() => setFocusedInput(null)}
-              placeholder="Enter 6-digit code"
-              required
-              autoFocus
-            />
-
-            <button
-              type="submit"
-              disabled={submitting}
-              style={{
-                width: '100%',
-                padding: '0.9rem',
-                fontSize: '1rem',
-                fontWeight: 900,
-                backgroundColor: '#0f6f8f',
-                color: '#FFFFFF',
-                border: '3px solid #111111',
-                boxShadow: '4px 4px 0px 0px #111111',
-                cursor: submitting ? 'not-allowed' : 'pointer',
-                opacity: submitting ? 0.65 : 1,
-              }}
-            >
-              {submitting ? 'Verifying…' : 'Verify Code & Sign In →'}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => { setError(''); setMode('signup'); }}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#111111',
-                fontSize: '0.85rem',
-                fontWeight: 800,
-                cursor: 'pointer',
-                width: '100%',
-                marginTop: '1.25rem',
-                textAlign: 'center',
-                textDecoration: 'underline',
-              }}
-            >
-              ← Back to Sign Up
-            </button>
-          </form>
         ) : mode === 'forgotPassword' ? (
           <form onSubmit={handleForgotPasswordTrigger}>
             <div style={{
@@ -724,11 +494,11 @@ export default function LoginPage() {
               marginBottom: '1.25rem',
               lineHeight: 1.4,
             }}>
-              🔒 Your account requires a new password before you can access the portal.
+              🔒 Welcome! As a new student created by the admin, please set your permanent password to complete your first login.
             </div>
 
             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 900, color: '#111111', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              New Password
+              New Permanent Password
             </label>
             <input
               style={getInputStyle('newPassword')}
@@ -772,7 +542,7 @@ export default function LoginPage() {
                 opacity: submitting ? 0.65 : 1,
               }}
             >
-              {submitting ? 'Setting password…' : 'Set Password & Continue →'}
+              {submitting ? 'Setting password…' : 'Set Password & Access Portal →'}
             </button>
           </form>
         )}
