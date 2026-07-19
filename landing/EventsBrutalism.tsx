@@ -54,7 +54,7 @@ const DEMO_EVENTS: EventItem[] = [
     dateStr: "2026-07-24",
     dateDisplay: "Friday, Jul 24",
     time: "8:00 PM IST",
-    format: "Virtual event (Google Meet)",
+    format: "IIT Roorkee",
     description: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
     aboutText: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews. This session is designed for aspiring PMs looking to switch from non-tech, engineering, or MBA roles without needing prior product management credentials. Learn directly from PMs currently at Microsoft, Mastercard, and Shopdeck.\n\n### What We Cover:\n- **Skills & Frameworks**: Building product sense, RCA, design thinking, and guesstimates that companies actually test.\n- **Resume Mapping**: Translating existing analytical/technical experience to catch PM recruiter eyes.\n- **Interview Strategies**: Practical frameworks vs real thinking approaches.\n- **Q&A Round**: Open floor to ask speakers questions.",
     attendeeCount: 124,
