@@ -212,7 +212,24 @@ export const saveLeadToDemoDB = (lead: any) => {
 
 export const getDemoUsers = (): DemoUser[] => {
   try {
-    return JSON.parse(localStorage.getItem(demoUsersKey) || "[]");
+    const stored = localStorage.getItem(demoUsersKey);
+    if (!stored) {
+      const defaultUsers = [
+        {
+          fullName: "Demo Admin",
+          email: "admin@stepsmart.net",
+          password: "password"
+        },
+        {
+          fullName: "Demo Student",
+          email: "student@stepsmart.net",
+          password: "password"
+        }
+      ];
+      localStorage.setItem(demoUsersKey, JSON.stringify(defaultUsers));
+      return defaultUsers;
+    }
+    return JSON.parse(stored);
   } catch (e) {
     return [];
   }
@@ -1577,7 +1594,18 @@ function AuthPage() {
             className="w-full px-4 py-3 border-[3px] border-[#111111] bg-[#FFFFFF] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_rgba(24,138,178,1)] transition-all placeholder-[#111111]/60"
           />
 
-          {error && <p className="text-red-500 text-sm font-bold">{error}</p>}
+          {error && (
+            <div className="space-y-2">
+              <p className="text-red-500 text-sm font-bold">{error}</p>
+              {error === 'Invalid email or password.' && (
+                <div className="text-xs font-bold bg-[#FFF3A7] border-[3px] border-[#111111] p-3 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] text-[#111111] leading-relaxed">
+                  💡 <span className="underline">Tip</span>: You can Sign Up for a new local account, or log in with these seeded credentials:<br/>
+                  • Email: <span className="font-mono bg-white px-1 border border-slate-300">admin@stepsmart.net</span><br/>
+                  • Password: <span className="font-mono bg-white px-1 border border-slate-300">password</span>
+                </div>
+              )}
+            </div>
+          )}
 
           <Button type="submit" className="w-full py-3" variant="primary">
             {mode === 'signup' ? 'Sign Up' : 'Login'}
