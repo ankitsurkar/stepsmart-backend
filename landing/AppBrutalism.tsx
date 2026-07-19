@@ -2223,11 +2223,10 @@ function PortalPage() {
       <section className="pt-32 pb-8 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 text-center max-w-5xl">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-8 leading-[1.2] text-[#111111]">
-            Stepsmart - Your path to{' '}
+            Stepsmart - your step to{' '}
             <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-1 rotate-[-1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
-              Product Management
-            </span>{' '}
-            guided by people who walked through it
+              product management
+            </span>
           </h1>
           <p className="text-lg md:text-xl text-[#111111] mb-12 max-w-3xl mx-auto leading-relaxed font-bold">
             A live, cohort-based programmes where you learn through real case practice, structured feedback, and 1:1 guidance, not another casebook you read alone. Built for students prepping for placements and professionals ready to switch, from any background.
