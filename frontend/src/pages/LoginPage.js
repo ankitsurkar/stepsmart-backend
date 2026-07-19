@@ -141,7 +141,7 @@ export default function LoginPage() {
             style={{ height: '38px', width: 'auto', display: 'block' }}
             onError={(e) => { e.target.style.display = 'none'; }}
           />
-          <span style={{ fontSize: '1.6rem', fontWeight: 900, color: '#111111', letterSpacing: '-0.03em' }}>
+          <span style={{ fontSize: '1.6rem', fontWeight: 900, color: '#188ab2', letterSpacing: '-0.03em' }}>
             StepSmart
           </span>
         </div>

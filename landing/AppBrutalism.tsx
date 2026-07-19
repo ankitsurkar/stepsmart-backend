@@ -175,7 +175,7 @@ export const Logo = ({ toHome }: { toHome?: boolean }) => {
       className="flex items-center gap-3 select-none cursor-pointer"
     >
       <img src="/stepsmart-logo.png" alt="StepSmart Logo" className="w-8 h-8 object-contain" />
-      <span className="font-extrabold text-2xl tracking-tight text-[#111111]">StepSmart</span>
+      <span className="font-extrabold text-2xl tracking-tight text-[#188ab2]">StepSmart</span>
     </a>
   );
 };
