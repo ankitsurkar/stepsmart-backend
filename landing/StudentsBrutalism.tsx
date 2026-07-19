@@ -223,7 +223,7 @@ export function StudentsLandingPage() {
 
       {/* Hero Section */}
       <section className="pt-32 pb-8 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 text-center max-w-7xl">
+        <div className="container mx-auto px-6 text-center max-w-[1600px]">
           {/* Badge for Student Edition */}
           <div className="mb-6 inline-block">
             <span className="bg-[#FFF3A7] text-[#111111] border-[3px] border-[#111111] px-4 py-1.5 font-extrabold text-xs md:text-sm uppercase tracking-widest shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] rotate-[-1deg] inline-flex items-center gap-2 select-none">
@@ -238,7 +238,7 @@ export function StudentsLandingPage() {
             </span>
           </h1>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 w-full max-w-7xl mx-auto select-none mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 w-full max-w-[1500px] mx-auto select-none mb-12">
             {[
               { src: "/student-comic-1.jpg", alt: "Placement season anxiety" },
               { src: "/student-comic-2.jpg", alt: "Conflicting advice from peers" },
