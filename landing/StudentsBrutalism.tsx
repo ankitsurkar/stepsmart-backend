@@ -278,7 +278,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Why SpeedUp / Who is it for */}
-      <section id="why-speedup" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+      <section id="why-speedup" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is PM-X First Step for?</h2>
@@ -337,7 +337,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Cohort Perks / Student Benefits */}
-      <section id="student-benefits" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+      <section id="student-benefits" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="flex flex-col md:flex-row gap-12 items-start text-left">
             {/* Left Sticky Column */}
@@ -412,7 +412,7 @@ export function StudentsLandingPage() {
 
 
       {/* Roadmap */}
-      <section id="roadmap" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+      <section id="roadmap" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
         <style>{`
           .roadmap-scrollbar::-webkit-scrollbar {
             height: 12px;
@@ -551,7 +551,7 @@ export function StudentsLandingPage() {
 
 
       {/* Mentors / Learn from Professionals */}
-      <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+      <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
         <div className="container mx-auto px-6 text-center max-w-6xl">
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
           <div className="grid md:grid-cols-3 gap-8 text-left">
@@ -685,7 +685,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section id="student-faq" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+      <section id="student-faq" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
         <div className="container mx-auto px-6 max-w-4xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -738,8 +738,8 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Registration Form / Call to action */}
-      <section id="enroll-student" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div id="student-form-container" className="container mx-auto px-6 max-w-xl">
+      <section id="enroll-student" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+        <div id="student-form-container" className="container mx-auto px-6 max-w-xl scroll-mt-32">
           <div className="bg-[#FFFFFF] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)]">
             <h2 className="text-3xl font-extrabold mb-2 text-[#111111] text-center">Join Student Cohort</h2>
             <p className="text-sm font-bold text-slate-500 mb-8 text-center uppercase tracking-wider">PM-X First Step Registration</p>
