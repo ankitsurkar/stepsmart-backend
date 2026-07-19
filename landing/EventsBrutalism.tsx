@@ -50,9 +50,9 @@ export type EventItem = {
 const DEMO_EVENTS: EventItem[] = [
   {
     id: "product-masterclass-2026",
-    title: "Product Masterclass",
-    dateStr: "2026-07-27",
-    dateDisplay: "Monday, Jul 27",
+    title: "Product Masterclass for Students",
+    dateStr: "2026-07-24",
+    dateDisplay: "Friday, Jul 24",
     time: "8:00 PM IST",
     format: "Virtual event (Google Meet)",
     description: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
@@ -82,7 +82,7 @@ const DEMO_EVENTS: EventItem[] = [
         avatar: "/mentor-ankit.jpg"
       }
     ],
-    tags: ["PRODUCT MASTERCLASS", "VIRTUAL", "FREE"]
+    tags: ["PRODUCT MASTERCLASS FOR STUDENTS", "VIRTUAL", "FREE"]
   }
 ];
 
@@ -315,7 +315,7 @@ export function EventsPage() {
                     {activeEvent.title}
                   </h2>
                   <p className="text-xs font-bold uppercase tracking-wider text-slate-200">
-                    Live from IIT Roorkee Alumni Mentors
+                    Live from IIT Roorkee
                   </p>
                 </div>
 
