@@ -1157,7 +1157,7 @@ function ProfessionalsLandingPage() {
                 action: (
                   <div className="mt-4">
                     <a
-                      href="https://wa.me/919920803517?text=Hi%2C%20I%27m%20interested%20in%20PM-X%20%E2%80%94%20here%27s%20my%20background%3A"
+                      href="https://wa.me/message/GH5C7YLAYIEHN1"
                       target="_blank"
                       rel="noreferrer"
                       className="inline-block bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-1 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer select-none"
@@ -2489,7 +2489,7 @@ function PortalPage() {
                 action: (
                   <div className="mt-4">
                     <a
-                      href="https://wa.me/919920803517?text=Hi%2C%20I%27m%20interested%20in%20PM-X%20%E2%80%94%20here%27s%20my%20background%3A"
+                      href="https://wa.me/message/GH5C7YLAYIEHN1"
                       target="_blank"
                       rel="noreferrer"
                       className="inline-block bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-1 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer select-none"
