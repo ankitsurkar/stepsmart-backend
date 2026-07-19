@@ -238,11 +238,13 @@ export function StudentsLandingPage() {
             </span>
           </h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl mx-auto select-none mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 w-full max-w-6xl mx-auto select-none mb-12">
             {[
-              { src: "/student-comic-1.jpg", alt: "Placement prep confusion" },
-              { src: "/student-comic-2.jpg", alt: "Mock interviews & case books" },
-              { src: "/student-comic-3.jpg", alt: "Discovering PM-X First Step masterclass" }
+              { src: "/student-comic-1.jpg", alt: "Placement season anxiety" },
+              { src: "/student-comic-2.jpg", alt: "Conflicting advice from peers" },
+              { src: "/student-comic-3.jpg", alt: "Unstructured prep confusion" },
+              { src: "/student-comic-4.jpg", alt: "Discovering structured PM-X path" },
+              { src: "/student-comic-5.jpg", alt: "Placement ready success" }
             ].map((img, idx) => (
               <div 
                 key={idx} 
