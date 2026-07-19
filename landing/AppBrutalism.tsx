@@ -2229,7 +2229,7 @@ function PortalPage() {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-[#111111] mb-12 max-w-3xl mx-auto leading-relaxed font-bold">
-            A live cohort based programmer where you learn through people who have made the transition to pm, and 1:1 guidance, not another casebook you read alone. Built for students prepping for placements and professionals ready to switch, from any background.
+            A live cohort based program where you learn through people who have made the transition to pm and get 1:1 guidance, not another casebook you read alone. Built for students prepping for placements and professionals ready to switch, from any background.
           </p>
 
           <div className="flex justify-center mb-16">
