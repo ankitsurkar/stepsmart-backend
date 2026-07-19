@@ -341,7 +341,7 @@ export function StudentsLandingPage() {
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="flex flex-col md:flex-row gap-12 items-start text-left">
             {/* Left Sticky Column */}
-            <div className="md:w-1/3 md:sticky md:top-28">
+            <div className="md:w-1/3 md:sticky md:top-36">
               <h2 className="text-4xl md:text-5xl font-black text-[#111111] mb-6 leading-tight">
                 <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
                   Offerings

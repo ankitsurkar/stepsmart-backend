@@ -904,7 +904,7 @@ function ProfessionalsLandingPage() {
               <h2 className="text-4xl font-extrabold mb-16 text-center text-[#111111]">Meet the Founders & Mentors</h2>
               <div className="flex flex-col gap-16 relative text-left">
                 {/* Card 1: Sanket */}
-                <div className="sticky top-28 bg-[#FFF3A7] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
+                <div className="sticky top-36 bg-[#FFF3A7] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
                   <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                     <img
                       src={sanketPhotoSrc}
@@ -930,7 +930,7 @@ function ProfessionalsLandingPage() {
                 </div>
 
                 {/* Card 2: Ankit */}
-                <div className="sticky top-36 bg-[#e0f2fe] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
+                <div className="sticky top-44 bg-[#e0f2fe] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
                   <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                     <img
                       src={ankitPhotoSrc}
@@ -956,7 +956,7 @@ function ProfessionalsLandingPage() {
                 </div>
 
                 {/* Card 3: Pankaj */}
-                <div className="sticky top-44 bg-[#fed7aa] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-0.5deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px] mb-12">
+                <div className="sticky top-52 bg-[#fed7aa] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-0.5deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px] mb-12">
                   <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                     <img
                       src={pankajPhotoSrc}
@@ -1074,7 +1074,7 @@ function ProfessionalsLandingPage() {
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="flex flex-col md:flex-row gap-12 items-start text-left">
             {/* Left Sticky Column */}
-            <div className="md:w-1/3 md:sticky md:top-28">
+            <div className="md:w-1/3 md:sticky md:top-36">
               <h2 className="text-4xl md:text-5xl font-black text-[#111111] mb-6 leading-tight">
                 Beyond the{' '}
                 <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
@@ -2342,7 +2342,7 @@ function PortalPage() {
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
           <div className="flex flex-col gap-16 relative text-left">
             {/* Card 1: Sanket */}
-            <div className="sticky top-28 bg-[#188ab2] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-1deg] transition-all duration-100">
+            <div className="sticky top-36 bg-[#188ab2] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-1deg] transition-all duration-100">
               <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                 <img
                   src={sanketPhotoSrc}
@@ -2380,7 +2380,7 @@ function PortalPage() {
             </div>
 
             {/* Card 2: Ankit */}
-            <div className="sticky top-36 bg-[#FFF3A7] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[1deg] transition-all duration-100">
+            <div className="sticky top-44 bg-[#FFF3A7] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[1deg] transition-all duration-100">
               <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                 <img
                   src={ankitPhotoSrc}
@@ -2418,7 +2418,7 @@ function PortalPage() {
             </div>
 
             {/* Card 3: Pankaj */}
-            <div className="sticky top-44 bg-[#fed7aa] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-0.5deg] transition-all duration-100 mb-12">
+            <div className="sticky top-52 bg-[#fed7aa] border-[3px] border-[#111111] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-0.5deg] transition-all duration-100 mb-12">
               <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
                 <img
                   src={pankajPhotoSrc}
