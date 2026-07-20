@@ -25,7 +25,9 @@ import {
   Lightbulb,
   Laptop,
   Target,
-  Cpu
+  Cpu,
+  Flag,
+  UserCheck
 } from 'lucide-react';
 import {
   Logo,
@@ -46,55 +48,65 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const roadmapSteps = [
   {
-    title: "PM Intro & Skills Mapping",
-    desc: "Week in Life of a PM, Intro to Mentors, PM Interviews",
-    Icon: Sparkles
+    step: "01",
+    phase: "shortlisted",
+    title: "Optimizing your Student background as PM",
+    bullets: [
+      "Craft your resume for getting shortlisted",
+      "Create a compelling Portfolio"
+    ],
+    Icon: FileText
   },
   {
-    title: "Product Fundamentals",
-    desc: "Systems Thinking, Context Understanding, Tech Stack Basics",
+    step: "02",
+    phase: "shortlisted",
+    title: "Understanding PM",
+    bullets: [
+      "Learn fundamentals",
+      "Build your PM skills through live classes"
+    ],
     Icon: BookOpen
   },
   {
-    title: "Business & Market Viability",
-    desc: "Unit Economics, Market Research, Guesstimate frameworks",
-    Icon: TrendingUp
-  },
-  {
-    title: "User Research & Segmentation",
-    desc: "Segmentation, User Value, Root Cause Analysis (RCA)",
-    Icon: Users
-  },
-  {
-    title: "Personas & Customer Journeys",
-    desc: "Customer Journeys, Research Synthesis, Product Design",
-    Icon: Compass
-  },
-  {
-    title: "Solution Space & Ideation",
-    desc: "Prioritization matrices, Solution Space, Product Strategy",
-    Icon: Lightbulb
-  },
-  {
-    title: "Tech Architectures & UX/UI",
-    desc: "Go-To-Market (GTM) Strategy, UX/UI layouts, Prototyping",
-    Icon: Laptop
-  },
-  {
-    title: "Metrics & Data Analytics",
-    desc: "Data Driven Decisions, A/B Testing, Product Metrics",
-    Icon: Target
-  },
-  {
-    title: "AI PM Fundamentals",
-    desc: "Prompt Engineering, RAG architectures, LLM fine-tuning",
+    step: "03",
+    phase: "shortlisted",
+    title: "Build Tech Understanding",
+    bullets: [
+      "Tech Basics",
+      "AI fluency"
+    ],
     Icon: Cpu
   },
   {
-    title: "Portfolio & Placement Prep",
-    desc: "Resume / PRD Portfolio reviews, Mock Interviews, Referrals",
-    Icon: Trophy,
-    bg: "bg-[#FFF3A7]"
+    step: "04",
+    phase: "shortlisted",
+    title: "Create compelling Stories",
+    bullets: [
+      "Case Practice with Deck Creation",
+      "Behavioural Interview Story crafting"
+    ],
+    Icon: MessageSquare
+  },
+  {
+    step: "05",
+    phase: "interview",
+    title: "Ace your interviews",
+    bullets: [
+      "Developing Product Sense",
+      "Product Interview Preparation"
+    ],
+    Icon: Target
+  },
+  {
+    step: "06",
+    phase: "interview",
+    title: "Practice. Practice. Practice",
+    bullets: [
+      "Doubt Solving Sessions",
+      "Continuous Feedback",
+      "Mock interview with Peers"
+    ],
+    Icon: Users
   }
 ];
 
@@ -440,136 +452,172 @@ export function StudentsLandingPage() {
 
       {/* Roadmap */}
       <section id="roadmap" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
-        <style>{`
-          .roadmap-scrollbar::-webkit-scrollbar {
-            height: 12px;
-          }
-          .roadmap-scrollbar::-webkit-scrollbar-track {
-            background: #FFFFFF;
-            border: 3px solid #111111;
-          }
-          .roadmap-scrollbar::-webkit-scrollbar-thumb {
-            background: #188ab2;
-            border: 3px solid #111111;
-          }
-        `}</style>
-
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16 max-w-2xl mx-auto relative">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="text-center mb-16 max-w-3xl mx-auto relative">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
-              Your{' '}
+              Your Step-by-Step{' '}
               <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                10-Week PM Roadmap
+                PM Placement Roadmap
               </span>
             </h2>
-            <p className="text-lg font-bold text-[#111111] mb-6">A step-by-step journey to become a confident and interview-ready Product Manager.</p>
+            <p className="text-lg font-bold text-[#111111] mb-2">From optimizing your student background to cracking final product interviews.</p>
           </div>
 
-          {/* Desktop Scrollable Winding Roadmap */}
-          <div className="hidden lg:block overflow-x-auto pb-12 pt-6 roadmap-scrollbar">
-            <div className="relative w-[1540px] h-[600px] mx-auto select-none">
-              {/* SVG Winding Road Background */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-                {/* Road Shadow */}
-                <path
-                  d="M 50,290 C 80,290 100,200 130,200 C 200,200 210,380 270,380 C 330,380 350,200 410,200 C 470,200 490,380 550,380 C 610,380 630,200 690,200 C 750,200 770,380 830,380 C 890,380 910,200 970,200 C 1030,200 1050,380 1110,380 C 1170,380 1190,200 1250,200 C 1310,200 1330,380 1390,380 C 1440,380 1460,290 1510,290"
-                  fill="none"
-                  stroke="#111111"
-                  strokeWidth="28"
-                  strokeLinecap="round"
-                />
-                {/* Road Fill */}
-                <path
-                  d="M 50,290 C 80,290 100,200 130,200 C 200,200 210,380 270,380 C 330,380 350,200 410,200 C 470,200 490,380 550,380 C 610,380 630,200 690,200 C 750,200 770,380 830,380 C 890,380 910,200 970,200 C 1030,200 1050,380 1110,380 C 1170,380 1190,200 1250,200 C 1310,200 1330,380 1390,380 C 1440,380 1460,290 1510,290"
-                  fill="none"
-                  stroke="#188ab2"
-                  strokeWidth="16"
-                  strokeLinecap="round"
-                />
-                {/* Dashed Center Stripe */}
-                <path
-                  d="M 50,290 C 80,290 100,200 130,200 C 200,200 210,380 270,380 C 330,380 350,200 410,200 C 470,200 490,380 550,380 C 610,380 630,200 690,200 C 750,200 770,380 830,380 C 890,380 910,200 970,200 C 1030,200 1050,380 1110,380 C 1170,380 1190,200 1250,200 C 1310,200 1330,380 1390,380 C 1440,380 1460,290 1510,290"
-                  fill="none"
-                  stroke="#FFFFFF"
-                  strokeWidth="4"
-                  strokeDasharray="10,12"
-                  strokeLinecap="round"
-                />
-              </svg>
-
-              {/* Steps rendering */}
+          {/* Desktop Staircase Roadmap View */}
+          <div className="hidden lg:block pt-14 pb-6">
+            <div className="grid grid-cols-6 gap-4 items-end relative">
               {roadmapSteps.map((step, idx) => {
-                const isTop = idx % 2 === 0;
-                const x = 130 + idx * 140;
-                const yRoad = isTop ? 200 : 380;
-                
-                // Connecting lines from card to road
-                const lineStyle = isTop 
-                  ? { left: `${x}px`, top: `160px`, height: `40px` }
-                  : { left: `${x}px`, top: `380px`, height: `60px` };
+                const stepOffsets = ['mt-28', 'mt-22', 'mt-16', 'mt-10', 'mt-4', 'mt-0'];
+                const stepOffsetClass = stepOffsets[idx] || 'mt-0';
 
                 return (
-                  <React.Fragment key={idx}>
-                    {/* Vertical Connector Line */}
-                    <div 
-                      className="absolute border-l-[3px] border-dashed border-[#111111] w-0 -translate-x-1/2 pointer-events-none"
-                      style={lineStyle}
-                    />
-                    
-                    {/* Map Pin on the road */}
-                    <div 
-                      className="absolute -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center bg-white border-[3px] border-[#111111] rounded-full w-8 h-8 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]"
-                      style={{ left: `${x}px`, top: `${yRoad}px` }}
-                    >
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#188ab2]" />
+                  <div key={idx} className={`flex flex-col justify-end ${stepOffsetClass} relative group`}>
+                    {/* Top Badges / Markers */}
+                    {idx === 0 && (
+                      <div className="absolute -top-12 left-0 right-0 flex justify-center">
+                        <span className="bg-[#FFF3A7] text-[#111111] border-[2.5px] border-[#111111] px-2.5 py-1 font-black text-[10px] uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 rotate-[-2deg] select-none">
+                          <GraduationCap className="h-3.5 w-3.5 text-[#111111]" />
+                          <span>Start Here</span>
+                        </span>
+                      </div>
+                    )}
+
+                    {idx === 5 && (
+                      <div className="absolute -top-14 left-0 right-0 flex justify-center z-20">
+                        <span className="bg-[#188ab2] text-white border-[2.5px] border-[#111111] px-3 py-1 font-black text-xs uppercase shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 rotate-[3deg] select-none animate-bounce">
+                          <Flag className="h-4 w-4 fill-white" />
+                          <span>PM OFFER 🚩</span>
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Step Cap / Header Block */}
+                    <div className="bg-[#188ab2] text-white border-[3px] border-[#111111] py-2 px-3 text-center shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] relative z-10 flex items-center justify-center gap-1.5 select-none">
+                      <span className="font-black text-xl tracking-wider">{step.step}</span>
                     </div>
 
-                    {/* Step Card */}
-                    <div 
-                      className={`absolute -translate-x-1/2 w-[220px] h-[160px] bg-white border-[3px] border-[#111111] p-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-50%] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex flex-col justify-between ${step.bg || ''}`}
-                      style={{ 
-                        left: `${x}px`, 
-                        top: isTop ? '0px' : '440px'
-                      }}
-                    >
-                      {/* Week Badge */}
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-black uppercase text-[#188ab2] tracking-wider">WEEK {idx.toString().padStart(2, '0')}</span>
-                        {step.Icon && <step.Icon className="h-4.5 w-4.5 text-[#111111]" />}
+                    {/* Step Card Body */}
+                    <div className="bg-white border-[3px] border-[#111111] border-t-0 p-4 min-h-[310px] flex flex-col justify-between shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] group-hover:translate-y-[-2px] transition-all duration-150">
+                      <div>
+                        {/* Step Icon */}
+                        <div className="w-11 h-11 mx-auto bg-[#FFF3A7] border-[2px] border-[#111111] flex items-center justify-center rounded-lg mb-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-transform duration-150 group-hover:rotate-[-4deg]">
+                          <step.Icon className="h-5 w-5 text-[#111111]" />
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="font-extrabold text-[13px] text-[#111111] text-center mb-3 leading-snug min-h-[38px] flex items-center justify-center border-b-2 border-[#111111]/10 pb-2">
+                          {step.title}
+                        </h3>
+
+                        {/* Bullet points */}
+                        <ul className="space-y-2 text-[#111111]">
+                          {step.bullets.map((bullet, bIdx) => (
+                            <li key={bIdx} className="flex items-start gap-1.5 text-[11px] font-bold leading-tight">
+                              <span className="text-[#188ab2] font-black select-none">•</span>
+                              <span>{bullet}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                      
-                      <h3 className="font-extrabold text-[13px] text-[#111111] border-b-2 border-[#111111]/10 pb-1.5 mb-1.5 leading-tight">{step.title}</h3>
-                      <p className="text-[10px] font-bold text-[#111111]/70 leading-relaxed line-clamp-3">{step.desc}</p>
                     </div>
-                  </React.Fragment>
+                  </div>
                 );
               })}
             </div>
+
+            {/* Bottom Phase Brackets Row */}
+            <div className="grid grid-cols-6 gap-4 mt-6">
+              {/* Bracket 1: Steps 01 to 04 */}
+              <div className="col-span-4">
+                <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-3 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center gap-2 select-none">
+                  <div className="w-6 h-6 rounded-full bg-[#111111] text-white flex items-center justify-center shrink-0">
+                    <UserCheck className="h-3.5 w-3.5" />
+                  </div>
+                  <span className="font-extrabold text-xs md:text-sm text-[#111111] tracking-widest uppercase">
+                    GETTING SHORTLISTED (STEPS 01–04)
+                  </span>
+                </div>
+              </div>
+
+              {/* Bracket 2: Steps 05 to 06 */}
+              <div className="col-span-2">
+                <div className="bg-[#188ab2] text-white border-[3px] border-[#111111] p-3 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center gap-2 select-none">
+                  <div className="w-6 h-6 rounded-full bg-white text-[#188ab2] flex items-center justify-center shrink-0">
+                    <Trophy className="h-3.5 w-3.5" />
+                  </div>
+                  <span className="font-extrabold text-xs md:text-sm text-white tracking-widest uppercase">
+                    GETTING INTERVIEW READY (STEPS 05–06)
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Mobile/Tablet: Vertical timeline */}
-          <div className="lg:hidden flex flex-col gap-12 max-w-md mx-auto pt-6">
-            {roadmapSteps.map((step, idx) => (
-              <div key={idx} className="flex gap-6 relative select-none">
-                {/* Timeline connector and node */}
-                <div className="flex flex-col items-center shrink-0">
-                  <div className="bg-white border-[3px] border-[#111111] rounded-full w-10 h-10 flex items-center justify-center font-extrabold text-sm shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] z-10">
-                    {idx.toString().padStart(2, '0')}
-                  </div>
-                  {idx < roadmapSteps.length - 1 && (
-                    <div className="w-0 border-l-[3px] border-dashed border-[#111111] grow mt-2 min-h-[60px]" />
-                  )}
-                </div>
+          {/* Mobile & Tablet View */}
+          <div className="lg:hidden flex flex-col gap-8 max-w-lg mx-auto pt-4">
+            {/* Phase 1 Mobile Banner */}
+            <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-3 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center gap-2 select-none">
+              <UserCheck className="h-4 w-4 text-[#111111]" />
+              <span className="font-extrabold text-xs uppercase tracking-wider text-[#111111]">
+                PHASE 1: GETTING SHORTLISTED (STEPS 01–04)
+              </span>
+            </div>
 
-                {/* Content Card */}
-                <div className={`grow bg-white border-[3px] border-[#111111] p-5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] rotate-[-0.5deg] ${step.bg || ''}`}>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-black uppercase text-[#188ab2] tracking-wider">WEEK {idx.toString().padStart(2, '0')}</span>
-                    {step.Icon && <step.Icon className="h-5 w-5 text-[#111111]" />}
+            {roadmapSteps.slice(0, 4).map((step, idx) => (
+              <div key={idx} className="bg-white border-[3px] border-[#111111] p-5 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] relative">
+                <div className="flex items-center justify-between border-b-2 border-[#111111]/10 pb-3 mb-3">
+                  <div className="flex items-center gap-3">
+                    <span className="bg-[#188ab2] text-white font-black text-sm px-2.5 py-0.5 border-[2px] border-[#111111]">
+                      {step.step}
+                    </span>
+                    <h3 className="font-extrabold text-base text-[#111111]">{step.title}</h3>
                   </div>
-                  <h3 className="font-extrabold text-base text-[#111111] border-b-2 border-[#111111]/10 pb-2 mb-2 leading-tight">{step.title}</h3>
-                  <p className="text-xs font-bold text-[#111111]/70 leading-relaxed">{step.desc}</p>
+                  <step.Icon className="h-5 w-5 text-[#188ab2] shrink-0" />
                 </div>
+                <ul className="space-y-2">
+                  {step.bullets.map((bullet, bIdx) => (
+                    <li key={bIdx} className="flex items-start gap-2 text-xs font-bold text-[#111111]">
+                      <span className="text-[#188ab2] font-black">•</span>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+
+            {/* Phase 2 Mobile Banner */}
+            <div className="bg-[#188ab2] text-white border-[3px] border-[#111111] p-3 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center gap-2 select-none mt-4">
+              <Trophy className="h-4 w-4 text-white" />
+              <span className="font-extrabold text-xs uppercase tracking-wider text-white">
+                PHASE 2: GETTING INTERVIEW READY (STEPS 05–06)
+              </span>
+            </div>
+
+            {roadmapSteps.slice(4, 6).map((step, idx) => (
+              <div key={idx} className="bg-white border-[3px] border-[#111111] p-5 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] relative">
+                {idx === 1 && (
+                  <div className="absolute -top-4 right-4 bg-[#188ab2] text-white border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none">
+                    <Flag className="h-3 w-3 fill-white" />
+                    <span>PM OFFER</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between border-b-2 border-[#111111]/10 pb-3 mb-3">
+                  <div className="flex items-center gap-3">
+                    <span className="bg-[#188ab2] text-white font-black text-sm px-2.5 py-0.5 border-[2px] border-[#111111]">
+                      {step.step}
+                    </span>
+                    <h3 className="font-extrabold text-base text-[#111111]">{step.title}</h3>
+                  </div>
+                  <step.Icon className="h-5 w-5 text-[#188ab2] shrink-0" />
+                </div>
+                <ul className="space-y-2">
+                  {step.bullets.map((bullet, bIdx) => (
+                    <li key={bIdx} className="flex items-start gap-2 text-xs font-bold text-[#111111]">
+                      <span className="text-[#188ab2] font-black">•</span>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
