@@ -467,25 +467,25 @@ export function StudentsLandingPage() {
           <div className="hidden lg:block pt-20 pb-2">
             <div className="relative">
               
-              {/* Individual Step Cards Grid with Increasing Column Heights (No Scrollbars) */}
+              {/* Individual Step Cards Grid with Increasing Column Heights */}
               <div className="grid grid-cols-6 gap-3 lg:gap-4 items-end relative">
                 {roadmapSteps.map((step, idx) => {
-                  // Increased heights so Step 01 and all step cards display all content cleanly without internal scrollbars
-                  const stepHeights = ['h-[250px]', 'h-[280px]', 'h-[310px]', 'h-[340px]', 'h-[370px]', 'h-[400px]'];
+                  // Ascending heights for rising staircase columns with comfortable bullet spacing
+                  const stepHeights = ['h-[260px]', 'h-[290px]', 'h-[320px]', 'h-[350px]', 'h-[380px]', 'h-[410px]'];
                   const cardHeightClass = stepHeights[idx] || 'h-[300px]';
 
                   return (
                     <div key={idx} className="flex flex-col justify-end relative group select-none">
                       {/* Top Start Student Mascot Image & Badge */}
                       {idx === 0 && (
-                        <div className="absolute -top-20 left-0 right-0 flex flex-col items-center justify-center z-20 pointer-events-none">
+                        <div className="absolute -top-32 left-0 right-0 flex flex-col items-center justify-center z-20 pointer-events-none">
                           <img 
                             src="/student-mascot.png" 
                             alt="Student mascot" 
-                            className="h-16 w-auto object-contain"
+                            className="h-28 w-auto object-contain"
                           />
-                          <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2 py-0.5 font-black text-[9px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none mt-0.5">
-                            <GraduationCap className="h-3 w-3 text-[#111111]" />
+                          <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none mt-1">
+                            <GraduationCap className="h-3.5 w-3.5 text-[#111111]" />
                             <span>Start Here</span>
                           </span>
                         </div>
@@ -508,7 +508,7 @@ export function StudentsLandingPage() {
                           <span className="font-black text-lg tracking-wider">{step.step}</span>
                         </div>
 
-                        {/* Step Card Body (overflow-hidden to ensure clean border-box fit without scrollbars) */}
+                        {/* Step Card Body */}
                         <div className="p-3 flex-1 flex flex-col justify-between bg-white overflow-hidden">
                           <div>
                             {/* Step Icon */}
@@ -517,14 +517,14 @@ export function StudentsLandingPage() {
                             </div>
 
                             {/* Title */}
-                            <h3 className="font-extrabold text-[11px] md:text-[12px] text-[#188ab2] text-center mb-2 leading-snug min-h-[30px] flex items-center justify-center border-b-2 border-[#111111]/10 pb-1.5">
+                            <h3 className="font-extrabold text-[11px] md:text-[12px] text-[#188ab2] text-center mb-2.5 leading-snug min-h-[30px] flex items-center justify-center border-b-2 border-[#111111]/10 pb-1.5">
                               {step.title}
                             </h3>
 
-                            {/* Bullets */}
-                            <ul className="space-y-1 text-[#111111]">
+                            {/* Bullets with Comfortable Vertical Spacing */}
+                            <ul className="space-y-2.5 text-[#111111]">
                               {step.bullets.map((bullet, bIdx) => (
-                                <li key={bIdx} className="flex items-start gap-1 text-[10px] md:text-[10.5px] font-bold leading-tight">
+                                <li key={bIdx} className="flex items-start gap-1.5 text-[10.5px] md:text-[11px] font-bold leading-tight">
                                   <span className="text-[#188ab2] font-black select-none">•</span>
                                   <span>{bullet}</span>
                                 </li>
