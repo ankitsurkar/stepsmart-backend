@@ -451,41 +451,41 @@ export function StudentsLandingPage() {
 
 
       {/* Roadmap */}
-      <section id="roadmap" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="roadmap" className="py-10 md:py-12 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="text-center mb-16 max-w-3xl mx-auto relative">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
-            Your Step-by-Step{' '}
-              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+          <div className="text-center mb-8 max-w-3xl mx-auto relative">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-[#111111] mb-2">
+              Your Step-by-Step{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-3 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
                 PM Placement Roadmap
               </span>
             </h2>
-            <p className="text-lg font-bold text-[#111111] mb-2">From optimizing your student background to cracking final product interviews.</p>
+            <p className="text-sm md:text-base font-bold text-[#111111]">From optimizing your student background to cracking final product interviews.</p>
           </div>
 
           {/* Desktop Staircase Roadmap View */}
-          <div className="hidden lg:block pt-24 pb-6">
+          <div className="hidden lg:block pt-20 pb-2">
             <div className="relative">
               
-              {/* Individual Step Cards Grid with Increasing Column Heights */}
+              {/* Individual Step Cards Grid with Compact Increasing Column Heights */}
               <div className="grid grid-cols-6 gap-3 lg:gap-4 items-end relative">
                 {roadmapSteps.map((step, idx) => {
-                  // Explicit increasing heights for rising staircase columns
-                  const stepHeights = ['h-[260px]', 'h-[295px]', 'h-[330px]', 'h-[365px]', 'h-[400px]', 'h-[435px]'];
-                  const cardHeightClass = stepHeights[idx] || 'h-[300px]';
+                  // Compact increasing heights for rising staircase columns to fit cleanly in one screen
+                  const stepHeights = ['h-[200px]', 'h-[225px]', 'h-[250px]', 'h-[275px]', 'h-[300px]', 'h-[325px]'];
+                  const cardHeightClass = stepHeights[idx] || 'h-[250px]';
 
                   return (
                     <div key={idx} className="flex flex-col justify-end relative group select-none">
-                      {/* Top Start Student Mascot Image & Badge */}
+                      {/* Top Start Student Mascot Image & Badge (Clean mascot graphic without any border or box shadow) */}
                       {idx === 0 && (
-                        <div className="absolute -top-32 left-0 right-0 flex flex-col items-center justify-center z-20 pointer-events-none">
+                        <div className="absolute -top-20 left-0 right-0 flex flex-col items-center justify-center z-20 pointer-events-none">
                           <img 
                             src="/student-mascot.png" 
                             alt="Student mascot" 
-                            className="h-24 w-auto object-contain drop-shadow-[2px_2px_0px_rgba(17,17,17,1)]"
+                            className="h-16 w-auto object-contain"
                           />
-                          <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none mt-1">
-                            <GraduationCap className="h-3.5 w-3.5 text-[#111111]" />
+                          <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2 py-0.5 font-black text-[9px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none mt-0.5">
+                            <GraduationCap className="h-3 w-3 text-[#111111]" />
                             <span>Start Here</span>
                           </span>
                         </div>
@@ -493,38 +493,38 @@ export function StudentsLandingPage() {
 
                       {/* Single Top PM Offer Flag for Step 06 */}
                       {idx === 5 && (
-                        <div className="absolute -top-10 left-0 right-0 flex justify-center z-20">
-                          <span className="bg-[#188ab2] text-white border-[2px] border-[#111111] px-3 py-1 font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 select-none">
-                            <Flag className="h-4 w-4 fill-white" />
+                        <div className="absolute -top-9 left-0 right-0 flex justify-center z-20">
+                          <span className="bg-[#188ab2] text-white border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[11px] uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 select-none">
+                            <Flag className="h-3.5 w-3.5 fill-white" />
                             <span>PM OFFER 🚩</span>
                           </span>
                         </div>
                       )}
 
-                      {/* Individual Step Card with Increasing Height */}
-                      <div className={`w-full ${cardHeightClass} bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] transition-all duration-150 flex flex-col overflow-hidden`}>
+                      {/* Individual Step Card with Compact Height */}
+                      <div className={`w-full ${cardHeightClass} bg-white border-[3px] border-[#111111] shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0px_0px_rgba(17,17,17,1)] transition-all duration-150 flex flex-col overflow-hidden`}>
                         {/* Step Cap Header */}
-                        <div className="bg-[#188ab2] text-white border-b-[3px] border-[#111111] py-2 px-3 text-center shrink-0 flex items-center justify-center">
-                          <span className="font-black text-xl tracking-wider">{step.step}</span>
+                        <div className="bg-[#188ab2] text-white border-b-[3px] border-[#111111] py-1.5 px-2 text-center shrink-0 flex items-center justify-center">
+                          <span className="font-black text-lg tracking-wider">{step.step}</span>
                         </div>
 
                         {/* Step Card Body */}
-                        <div className="p-3.5 md:p-4 flex-1 flex flex-col justify-between bg-white overflow-y-auto">
+                        <div className="p-3 flex-1 flex flex-col justify-between bg-white overflow-y-auto">
                           <div>
                             {/* Step Icon */}
-                            <div className="w-10 h-10 md:w-11 md:h-11 mx-auto bg-[#FFF3A7] border-[2px] border-[#111111] flex items-center justify-center rounded-lg mb-2.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-transform group-hover:rotate-[-4deg]">
-                              <step.Icon className="h-5 w-5 text-[#111111]" />
+                            <div className="w-9 h-9 mx-auto bg-[#FFF3A7] border-[2px] border-[#111111] flex items-center justify-center rounded-lg mb-2 shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] transition-transform group-hover:rotate-[-4deg]">
+                              <step.Icon className="h-4.5 w-4.5 text-[#111111]" />
                             </div>
 
                             {/* Title */}
-                            <h3 className="font-extrabold text-[12px] md:text-[13px] text-[#188ab2] text-center mb-2.5 leading-snug min-h-[36px] flex items-center justify-center border-b-2 border-[#111111]/10 pb-2">
+                            <h3 className="font-extrabold text-[11px] md:text-[12px] text-[#188ab2] text-center mb-2 leading-snug min-h-[30px] flex items-center justify-center border-b-2 border-[#111111]/10 pb-1.5">
                               {step.title}
                             </h3>
 
                             {/* Bullets */}
-                            <ul className="space-y-1.5 text-[#111111]">
+                            <ul className="space-y-1 text-[#111111]">
                               {step.bullets.map((bullet, bIdx) => (
-                                <li key={bIdx} className="flex items-start gap-1.5 text-[10.5px] md:text-[11px] font-bold leading-tight">
+                                <li key={bIdx} className="flex items-start gap-1 text-[10px] md:text-[10.5px] font-bold leading-tight">
                                   <span className="text-[#188ab2] font-black select-none">•</span>
                                   <span>{bullet}</span>
                                 </li>
