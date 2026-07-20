@@ -29,6 +29,8 @@ function getFriendlyErrorMessage(err) {
       return 'Incorrect username or password.';
     case 'UserNotFoundException':
       return 'User does not exist.';
+    case 'ResourceNotFoundException':
+      return 'Authentication service configuration error (User Pool not found). Please verify your User Pool and Client configuration.';
     case 'PasswordResetRequiredException':
       return 'Your password must be reset before you can sign in.';
     case 'UserNotConfirmedException':
@@ -55,8 +57,8 @@ function getFriendlyErrorMessage(err) {
   }
   
   if (message) {
-    if (message === 'An unknown error has occurred') {
-      return 'A connection or configuration error occurred. Please check your internet connection and try again.';
+    if (message === 'An unknown error has occurred' || message === 'Unknown error') {
+      return 'A connection or configuration error occurred. Please check your internet connection or user pool configuration and try again.';
     }
     return message;
   }
