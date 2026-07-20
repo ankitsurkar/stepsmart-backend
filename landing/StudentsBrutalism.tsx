@@ -467,14 +467,6 @@ export function StudentsLandingPage() {
           <div className="hidden lg:block pt-16 pb-6">
             <div className="relative">
               
-              {/* PM Flag Banner on Step 06 */}
-              <div className="absolute -top-14 right-4 z-20 flex justify-center select-none">
-                <span className="bg-[#188ab2] text-white border-[2.5px] border-[#111111] px-3 py-1 font-black text-xs uppercase shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 rotate-[3deg] animate-bounce">
-                  <Flag className="h-4 w-4 fill-white" />
-                  <span>PM OFFER 🚩</span>
-                </span>
-              </div>
-
               {/* Individual Step Cards Grid with Increasing Column Heights */}
               <div className="grid grid-cols-6 gap-3 lg:gap-4 items-end relative">
                 {roadmapSteps.map((step, idx) => {
@@ -487,17 +479,17 @@ export function StudentsLandingPage() {
                       {/* Top Start Badge */}
                       {idx === 0 && (
                         <div className="absolute -top-9 left-0 right-0 flex justify-center">
-                          <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 rotate-[-2deg]">
+                          <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none">
                             <GraduationCap className="h-3.5 w-3.5 text-[#111111]" />
                             <span>Start Here</span>
                           </span>
                         </div>
                       )}
 
-                      {/* Top PM Offer Flag for Step 06 */}
+                      {/* Single Top PM Offer Flag for Step 06 (steady, no bounce) */}
                       {idx === 5 && (
-                        <div className="absolute -top-11 left-0 right-0 flex justify-center z-20">
-                          <span className="bg-[#188ab2] text-white border-[2px] border-[#111111] px-3 py-1 font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 rotate-[3deg] animate-bounce">
+                        <div className="absolute -top-10 left-0 right-0 flex justify-center z-20">
+                          <span className="bg-[#188ab2] text-white border-[2px] border-[#111111] px-3 py-1 font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 select-none">
                             <Flag className="h-4 w-4 fill-white" />
                             <span>PM OFFER 🚩</span>
                           </span>
