@@ -467,16 +467,16 @@ export function StudentsLandingPage() {
           <div className="hidden lg:block pt-20 pb-2">
             <div className="relative">
               
-              {/* Individual Step Cards Grid with Compact Increasing Column Heights */}
+              {/* Individual Step Cards Grid with Increasing Column Heights (No Scrollbars) */}
               <div className="grid grid-cols-6 gap-3 lg:gap-4 items-end relative">
                 {roadmapSteps.map((step, idx) => {
-                  // Compact increasing heights for rising staircase columns to fit cleanly in one screen
-                  const stepHeights = ['h-[200px]', 'h-[225px]', 'h-[250px]', 'h-[275px]', 'h-[300px]', 'h-[325px]'];
-                  const cardHeightClass = stepHeights[idx] || 'h-[250px]';
+                  // Increased heights so Step 01 and all step cards display all content cleanly without internal scrollbars
+                  const stepHeights = ['h-[250px]', 'h-[280px]', 'h-[310px]', 'h-[340px]', 'h-[370px]', 'h-[400px]'];
+                  const cardHeightClass = stepHeights[idx] || 'h-[300px]';
 
                   return (
                     <div key={idx} className="flex flex-col justify-end relative group select-none">
-                      {/* Top Start Student Mascot Image & Badge (Clean mascot graphic without any border or box shadow) */}
+                      {/* Top Start Student Mascot Image & Badge */}
                       {idx === 0 && (
                         <div className="absolute -top-20 left-0 right-0 flex flex-col items-center justify-center z-20 pointer-events-none">
                           <img 
@@ -501,15 +501,15 @@ export function StudentsLandingPage() {
                         </div>
                       )}
 
-                      {/* Individual Step Card with Compact Height */}
+                      {/* Individual Step Card */}
                       <div className={`w-full ${cardHeightClass} bg-white border-[3px] border-[#111111] shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0px_0px_rgba(17,17,17,1)] transition-all duration-150 flex flex-col overflow-hidden`}>
                         {/* Step Cap Header */}
                         <div className="bg-[#188ab2] text-white border-b-[3px] border-[#111111] py-1.5 px-2 text-center shrink-0 flex items-center justify-center">
                           <span className="font-black text-lg tracking-wider">{step.step}</span>
                         </div>
 
-                        {/* Step Card Body */}
-                        <div className="p-3 flex-1 flex flex-col justify-between bg-white overflow-y-auto">
+                        {/* Step Card Body (overflow-hidden to ensure clean border-box fit without scrollbars) */}
+                        <div className="p-3 flex-1 flex flex-col justify-between bg-white overflow-hidden">
                           <div>
                             {/* Step Icon */}
                             <div className="w-9 h-9 mx-auto bg-[#FFF3A7] border-[2px] border-[#111111] flex items-center justify-center rounded-lg mb-2 shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] transition-transform group-hover:rotate-[-4deg]">
