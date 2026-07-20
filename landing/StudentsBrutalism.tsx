@@ -475,18 +475,18 @@ export function StudentsLandingPage() {
                 </span>
               </div>
 
-              {/* Individual Step Cards Grid */}
+              {/* Individual Step Cards Grid with Increasing Column Heights */}
               <div className="grid grid-cols-6 gap-3 lg:gap-4 items-end relative">
                 {roadmapSteps.map((step, idx) => {
-                  // Step height offsets to create ascending staircase visual
-                  const stepOffsets = ['mt-28', 'mt-22', 'mt-16', 'mt-10', 'mt-4', 'mt-0'];
-                  const stepOffsetClass = stepOffsets[idx] || 'mt-0';
+                  // Explicit increasing heights for rising staircase columns
+                  const stepHeights = ['h-[260px]', 'h-[295px]', 'h-[330px]', 'h-[365px]', 'h-[400px]', 'h-[435px]'];
+                  const cardHeightClass = stepHeights[idx] || 'h-[300px]';
 
                   return (
-                    <div key={idx} className={`flex flex-col justify-end ${stepOffsetClass} relative group select-none`}>
+                    <div key={idx} className="flex flex-col justify-end relative group select-none">
                       {/* Top Start Badge */}
                       {idx === 0 && (
-                        <div className="absolute -top-10 left-0 right-0 flex justify-center">
+                        <div className="absolute -top-9 left-0 right-0 flex justify-center">
                           <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 rotate-[-2deg]">
                             <GraduationCap className="h-3.5 w-3.5 text-[#111111]" />
                             <span>Start Here</span>
@@ -494,30 +494,40 @@ export function StudentsLandingPage() {
                         </div>
                       )}
 
-                      {/* Individual Step Card */}
-                      <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] transition-all duration-150 flex flex-col overflow-hidden">
+                      {/* Top PM Offer Flag for Step 06 */}
+                      {idx === 5 && (
+                        <div className="absolute -top-11 left-0 right-0 flex justify-center z-20">
+                          <span className="bg-[#188ab2] text-white border-[2px] border-[#111111] px-3 py-1 font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 rotate-[3deg] animate-bounce">
+                            <Flag className="h-4 w-4 fill-white" />
+                            <span>PM OFFER 🚩</span>
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Individual Step Card with Increasing Height */}
+                      <div className={`w-full ${cardHeightClass} bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] transition-all duration-150 flex flex-col overflow-hidden`}>
                         {/* Step Cap Header */}
-                        <div className="bg-[#188ab2] text-white border-b-[3px] border-[#111111] py-2 px-3 text-center flex items-center justify-center">
+                        <div className="bg-[#188ab2] text-white border-b-[3px] border-[#111111] py-2 px-3 text-center shrink-0 flex items-center justify-center">
                           <span className="font-black text-xl tracking-wider">{step.step}</span>
                         </div>
 
                         {/* Step Card Body */}
-                        <div className="p-4 flex-1 flex flex-col justify-between min-h-[300px] bg-white">
+                        <div className="p-3.5 md:p-4 flex-1 flex flex-col justify-between bg-white overflow-y-auto">
                           <div>
                             {/* Step Icon */}
-                            <div className="w-11 h-11 mx-auto bg-[#FFF3A7] border-[2px] border-[#111111] flex items-center justify-center rounded-lg mb-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-transform group-hover:rotate-[-4deg]">
+                            <div className="w-10 h-10 md:w-11 md:h-11 mx-auto bg-[#FFF3A7] border-[2px] border-[#111111] flex items-center justify-center rounded-lg mb-2.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-transform group-hover:rotate-[-4deg]">
                               <step.Icon className="h-5 w-5 text-[#111111]" />
                             </div>
 
                             {/* Title */}
-                            <h3 className="font-extrabold text-[13px] text-[#188ab2] text-center mb-3 leading-snug min-h-[38px] flex items-center justify-center border-b-2 border-[#111111]/10 pb-2">
+                            <h3 className="font-extrabold text-[12px] md:text-[13px] text-[#188ab2] text-center mb-2.5 leading-snug min-h-[36px] flex items-center justify-center border-b-2 border-[#111111]/10 pb-2">
                               {step.title}
                             </h3>
 
                             {/* Bullets */}
-                            <ul className="space-y-2 text-[#111111]">
+                            <ul className="space-y-1.5 text-[#111111]">
                               {step.bullets.map((bullet, bIdx) => (
-                                <li key={bIdx} className="flex items-start gap-1.5 text-[11px] font-bold leading-tight">
+                                <li key={bIdx} className="flex items-start gap-1.5 text-[10.5px] md:text-[11px] font-bold leading-tight">
                                   <span className="text-[#188ab2] font-black select-none">•</span>
                                   <span>{bullet}</span>
                                 </li>
