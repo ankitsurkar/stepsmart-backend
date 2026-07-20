@@ -328,19 +328,19 @@ export function StudentsLandingPage() {
                 className="bg-[#FFFFFF] p-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between transition-all duration-100 select-none group cursor-pointer"
               >
                 <div>
-                  <div className={`w-14 h-14 bg-[#188ab2] border-[3px] border-[#111111] flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] mb-6 transition-transform duration-100 ${box.iconTilt}`}>
-                    {box.icon}
-                  </div>
-                  
-                  <h3 className="font-extrabold text-xl text-[#111111] mb-1">{box.label}</h3>
-                  
-                  <div className="mb-4 inline-block">
-                    <span className={`inline-block bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none ${box.tagTilt}`}>
+                  <div className="flex items-start justify-between mb-5">
+                    <div className={`w-14 h-14 bg-[#188ab2] border-[3px] border-[#111111] flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-transform duration-100 ${box.iconTilt}`}>
+                      {box.icon}
+                    </div>
+                    
+                    <span className={`inline-block bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-1 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none ${box.tagTilt}`}>
                       {box.tag}
                     </span>
                   </div>
+                  
+                  <h3 className="font-extrabold text-xl text-[#111111] mb-2">{box.label}</h3>
 
-                  <p className="text-[#111111] text-xs leading-relaxed font-bold mt-2">{box.desc}</p>
+                  <p className="text-[#111111] text-xs leading-relaxed font-bold">{box.desc}</p>
                 </div>
               </div>
             ))}
