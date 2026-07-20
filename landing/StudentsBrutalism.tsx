@@ -476,13 +476,13 @@ export function StudentsLandingPage() {
 
                   return (
                     <div key={idx} className="flex flex-col justify-end relative group select-none">
-                      {/* Top Start Student Image & Badge */}
+                      {/* Top Start Student Mascot Image & Badge */}
                       {idx === 0 && (
-                        <div className="absolute -top-28 left-0 right-0 flex flex-col items-center justify-center z-20 pointer-events-none">
+                        <div className="absolute -top-32 left-0 right-0 flex flex-col items-center justify-center z-20 pointer-events-none">
                           <img 
-                            src="/student-walking.png" 
-                            alt="Student stepping forward towards PM career" 
-                            className="h-20 w-auto object-contain drop-shadow-[3px_3px_0px_rgba(17,17,17,1)]"
+                            src="/student-mascot.png" 
+                            alt="Student mascot" 
+                            className="h-24 w-auto object-contain drop-shadow-[2px_2px_0px_rgba(17,17,17,1)]"
                           />
                           <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none mt-1">
                             <GraduationCap className="h-3.5 w-3.5 text-[#111111]" />
@@ -536,33 +536,6 @@ export function StudentsLandingPage() {
                     </div>
                   );
                 })}
-              </div>
-
-              {/* Bottom Phase Brackets */}
-              <div className="grid grid-cols-6 gap-3 lg:gap-4 mt-6">
-                {/* Phase 1 Bracket: Steps 01 to 04 */}
-                <div className="col-span-4">
-                  <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-3 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center gap-2 select-none">
-                    <div className="w-6 h-6 rounded-full bg-[#111111] text-white flex items-center justify-center shrink-0">
-                      <UserCheck className="h-3.5 w-3.5" />
-                    </div>
-                    <span className="font-extrabold text-xs md:text-sm text-[#111111] tracking-widest uppercase">
-                      GETTING SHORTLISTED (STEPS 01–04)
-                    </span>
-                  </div>
-                </div>
-
-                {/* Phase 2 Bracket: Steps 05 to 06 */}
-                <div className="col-span-2">
-                  <div className="bg-[#188ab2] text-white border-[3px] border-[#111111] p-3 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center gap-2 select-none">
-                    <div className="w-6 h-6 rounded-full bg-white text-[#188ab2] flex items-center justify-center shrink-0">
-                      <Trophy className="h-3.5 w-3.5 text-[#188ab2]" />
-                    </div>
-                    <span className="font-extrabold text-xs md:text-sm text-white tracking-widest uppercase">
-                      GETTING INTERVIEW READY (STEPS 05–06)
-                    </span>
-                  </div>
-                </div>
               </div>
 
             </div>
