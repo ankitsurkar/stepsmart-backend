@@ -455,7 +455,7 @@ export function StudentsLandingPage() {
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="text-center mb-16 max-w-3xl mx-auto relative">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
-              Your Step-by-Step{' '}
+            Your Step-by-Step{' '}
               <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
                 PM Placement Roadmap
               </span>
@@ -464,7 +464,7 @@ export function StudentsLandingPage() {
           </div>
 
           {/* Desktop Staircase Roadmap View */}
-          <div className="hidden lg:block pt-16 pb-6">
+          <div className="hidden lg:block pt-24 pb-6">
             <div className="relative">
               
               {/* Individual Step Cards Grid with Increasing Column Heights */}
@@ -476,17 +476,22 @@ export function StudentsLandingPage() {
 
                   return (
                     <div key={idx} className="flex flex-col justify-end relative group select-none">
-                      {/* Top Start Badge */}
+                      {/* Top Start Student Image & Badge */}
                       {idx === 0 && (
-                        <div className="absolute -top-9 left-0 right-0 flex justify-center">
-                          <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none">
+                        <div className="absolute -top-28 left-0 right-0 flex flex-col items-center justify-center z-20 pointer-events-none">
+                          <img 
+                            src="/student-walking.png" 
+                            alt="Student stepping forward towards PM career" 
+                            className="h-20 w-auto object-contain drop-shadow-[3px_3px_0px_rgba(17,17,17,1)]"
+                          />
+                          <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none mt-1">
                             <GraduationCap className="h-3.5 w-3.5 text-[#111111]" />
                             <span>Start Here</span>
                           </span>
                         </div>
                       )}
 
-                      {/* Single Top PM Offer Flag for Step 06 (steady, no bounce) */}
+                      {/* Single Top PM Offer Flag for Step 06 */}
                       {idx === 5 && (
                         <div className="absolute -top-10 left-0 right-0 flex justify-center z-20">
                           <span className="bg-[#188ab2] text-white border-[2px] border-[#111111] px-3 py-1 font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 select-none">
@@ -564,48 +569,10 @@ export function StudentsLandingPage() {
           </div>
 
           {/* Mobile & Tablet View */}
-          <div className="lg:hidden flex flex-col gap-8 max-w-lg mx-auto pt-4">
-            {/* Phase 1 Mobile Banner */}
-            <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-3 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center gap-2 select-none">
-              <UserCheck className="h-4 w-4 text-[#111111]" />
-              <span className="font-extrabold text-xs uppercase tracking-wider text-[#111111]">
-                PHASE 1: GETTING SHORTLISTED (STEPS 01–04)
-              </span>
-            </div>
-
-            {roadmapSteps.slice(0, 4).map((step, idx) => (
+          <div className="lg:hidden flex flex-col gap-6 max-w-lg mx-auto pt-4">
+            {roadmapSteps.map((step, idx) => (
               <div key={idx} className="bg-white border-[3px] border-[#111111] p-5 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] relative">
-                <div className="flex items-center justify-between border-b-2 border-[#111111]/10 pb-3 mb-3">
-                  <div className="flex items-center gap-3">
-                    <span className="bg-[#188ab2] text-white font-black text-sm px-2.5 py-0.5 border-[2px] border-[#111111]">
-                      {step.step}
-                    </span>
-                    <h3 className="font-extrabold text-base text-[#188ab2]">{step.title}</h3>
-                  </div>
-                  <step.Icon className="h-5 w-5 text-[#188ab2] shrink-0" />
-                </div>
-                <ul className="space-y-2">
-                  {step.bullets.map((bullet, bIdx) => (
-                    <li key={bIdx} className="flex items-start gap-2 text-xs font-bold text-[#111111]">
-                      <span className="text-[#188ab2] font-black">•</span>
-                      <span>{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-
-            {/* Phase 2 Mobile Banner */}
-            <div className="bg-[#188ab2] text-white border-[3px] border-[#111111] p-3 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center gap-2 select-none mt-4">
-              <Trophy className="h-4 w-4 text-white" />
-              <span className="font-extrabold text-xs uppercase tracking-wider text-white">
-                PHASE 2: GETTING INTERVIEW READY (STEPS 05–06)
-              </span>
-            </div>
-
-            {roadmapSteps.slice(4, 6).map((step, idx) => (
-              <div key={idx} className="bg-white border-[3px] border-[#111111] p-5 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] relative">
-                {idx === 1 && (
+                {idx === 5 && (
                   <div className="absolute -top-4 right-4 bg-[#188ab2] text-white border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none">
                     <Flag className="h-3 w-3 fill-white" />
                     <span>PM OFFER</span>
@@ -633,7 +600,6 @@ export function StudentsLandingPage() {
           </div>
         </div>
       </section>
-
 
       {/* Mentors / Learn from Professionals */}
       <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
