@@ -464,89 +464,66 @@ export function StudentsLandingPage() {
           </div>
 
           {/* Desktop Staircase Roadmap View */}
-          <div className="hidden lg:block pt-24 pb-12">
+          <div className="hidden lg:block pt-16 pb-6">
             <div className="relative">
               
-              {/* Walking Student Illustration on Step 01 */}
-              <div className="absolute -top-24 left-6 z-30 flex flex-col items-center select-none">
-                <svg width="60" height="75" viewBox="0 0 60 75" fill="none">
-                  {/* Head & Hair */}
-                  <circle cx="30" cy="14" r="8" fill="#111111" />
-                  {/* Face */}
-                  <circle cx="32" cy="15" r="6" fill="#FAD0C4" />
-                  {/* Hair cap */}
-                  <path d="M24 14C24 9 28 7 34 8C36 10 36 13 36 14Z" fill="#111111" />
-                  {/* Jacket Body */}
-                  <path d="M22 22C22 20.8954 22.8954 20 24 20H36C37.1046 20 38 20.8954 38 22V40H22V22Z" fill="#188ab2" stroke="#111111" strokeWidth="2" />
-                  {/* Backpack */}
-                  <path d="M16 24C16 22.8954 16.8954 22 18 22H23V38H18C16.8954 38 16 37.1046 16 36V24Z" fill="#111111" stroke="#111111" strokeWidth="1.5" />
-                  {/* Arm holding Notebook */}
-                  <path d="M38 24L48 32L44 36L34 28V24H38Z" fill="#FFF3A7" stroke="#111111" strokeWidth="2" />
-                  {/* Pants */}
-                  <path d="M24 40L17 62H23L28 47L33 62H39L31 40H24Z" fill="#111111" />
-                  {/* Shoes stepping forward */}
-                  <path d="M12 62H20V67H12V62Z" fill="#188ab2" stroke="#111111" strokeWidth="1.5" />
-                  <path d="M34 62H42V67H34V62Z" fill="#188ab2" stroke="#111111" strokeWidth="1.5" />
-                </svg>
-              </div>
-
               {/* PM Flag Banner on Step 06 */}
-              <div className="absolute -top-28 right-4 z-30 flex flex-col items-center select-none">
-                <div className="flex items-start gap-1">
-                  <div className="bg-[#188ab2] text-white border-[3px] border-[#111111] px-4 py-2.5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] relative select-none">
-                    <span className="font-black text-2xl tracking-wider">PM</span>
-                    {/* Waving rays */}
-                    <div className="absolute -top-3 -right-3 text-[#188ab2] font-black text-sm">✨</div>
-                  </div>
-                  {/* Flag Pole */}
-                  <div className="w-2 h-32 bg-[#111111] rounded-t-sm shadow-[2px_0px_0px_0px_rgba(17,17,17,0.2)]" />
-                </div>
+              <div className="absolute -top-14 right-4 z-20 flex justify-center select-none">
+                <span className="bg-[#188ab2] text-white border-[2.5px] border-[#111111] px-3 py-1 font-black text-xs uppercase shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 rotate-[3deg] animate-bounce">
+                  <Flag className="h-4 w-4 fill-white" />
+                  <span>PM OFFER 🚩</span>
+                </span>
               </div>
 
-              {/* Seamless Connected 3D Staircase Columns */}
-              <div className="grid grid-cols-6 border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] bg-white">
+              {/* Individual Step Cards Grid */}
+              <div className="grid grid-cols-6 gap-3 lg:gap-4 items-end relative">
                 {roadmapSteps.map((step, idx) => {
-                  // Step height offsets: Step 01 lowest (top: 160px), Step 06 highest (top: 0px)
-                  const topOffsets = ['mt-[160px]', 'mt-[128px]', 'mt-[96px]', 'mt-[64px]', 'mt-[32px]', 'mt-0'];
-                  const offsetClass = topOffsets[idx];
+                  // Step height offsets to create ascending staircase visual
+                  const stepOffsets = ['mt-28', 'mt-22', 'mt-16', 'mt-10', 'mt-4', 'mt-0'];
+                  const stepOffsetClass = stepOffsets[idx] || 'mt-0';
 
                   return (
-                    <div 
-                      key={idx} 
-                      className={`flex flex-col ${offsetClass} border-r-[2px] border-[#111111]/20 last:border-r-0 relative group bg-white transition-all`}
-                    >
-                      {/* 3D Top Cap Block */}
-                      <div className="relative z-10 select-none">
-                        {/* Isometric Top Bevel */}
-                        <div className="h-4 bg-[#0f6f8f] border-b-[2px] border-[#111111] w-full" />
-                        {/* Front Cap with Step Number */}
-                        <div className="bg-[#188ab2] text-white border-b-[3px] border-[#111111] py-2 text-center">
+                    <div key={idx} className={`flex flex-col justify-end ${stepOffsetClass} relative group select-none`}>
+                      {/* Top Start Badge */}
+                      {idx === 0 && (
+                        <div className="absolute -top-10 left-0 right-0 flex justify-center">
+                          <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 rotate-[-2deg]">
+                            <GraduationCap className="h-3.5 w-3.5 text-[#111111]" />
+                            <span>Start Here</span>
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Individual Step Card */}
+                      <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] transition-all duration-150 flex flex-col overflow-hidden">
+                        {/* Step Cap Header */}
+                        <div className="bg-[#188ab2] text-white border-b-[3px] border-[#111111] py-2 px-3 text-center flex items-center justify-center">
                           <span className="font-black text-xl tracking-wider">{step.step}</span>
                         </div>
-                      </div>
 
-                      {/* Step Content Body */}
-                      <div className="p-4 flex-1 flex flex-col justify-between min-h-[300px] bg-white group-hover:bg-[#F9FBFD] transition-colors">
-                        <div>
-                          {/* Step Icon */}
-                          <div className="w-12 h-12 mx-auto bg-white border-[2px] border-[#111111] flex items-center justify-center rounded-lg mb-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-transform group-hover:scale-105">
-                            <step.Icon className="h-6 w-6 text-[#188ab2]" />
+                        {/* Step Card Body */}
+                        <div className="p-4 flex-1 flex flex-col justify-between min-h-[300px] bg-white">
+                          <div>
+                            {/* Step Icon */}
+                            <div className="w-11 h-11 mx-auto bg-[#FFF3A7] border-[2px] border-[#111111] flex items-center justify-center rounded-lg mb-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-transform group-hover:rotate-[-4deg]">
+                              <step.Icon className="h-5 w-5 text-[#111111]" />
+                            </div>
+
+                            {/* Title */}
+                            <h3 className="font-extrabold text-[13px] text-[#188ab2] text-center mb-3 leading-snug min-h-[38px] flex items-center justify-center border-b-2 border-[#111111]/10 pb-2">
+                              {step.title}
+                            </h3>
+
+                            {/* Bullets */}
+                            <ul className="space-y-2 text-[#111111]">
+                              {step.bullets.map((bullet, bIdx) => (
+                                <li key={bIdx} className="flex items-start gap-1.5 text-[11px] font-bold leading-tight">
+                                  <span className="text-[#188ab2] font-black select-none">•</span>
+                                  <span>{bullet}</span>
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-
-                          {/* Title */}
-                          <h3 className="font-extrabold text-[13px] text-[#188ab2] text-center mb-3 leading-snug min-h-[38px] flex items-center justify-center border-b-2 border-[#111111]/10 pb-2">
-                            {step.title}
-                          </h3>
-
-                          {/* Bullet list */}
-                          <ul className="space-y-2 text-[#111111]">
-                            {step.bullets.map((bullet, bIdx) => (
-                              <li key={bIdx} className="flex items-start gap-1.5 text-[11px] font-bold leading-tight">
-                                <span className="text-[#188ab2] font-black select-none">•</span>
-                                <span>{bullet}</span>
-                              </li>
-                            ))}
-                          </ul>
                         </div>
                       </div>
                     </div>
@@ -554,25 +531,29 @@ export function StudentsLandingPage() {
                 })}
               </div>
 
-              {/* Bottom Phase Underline Brackets */}
-              <div className="grid grid-cols-6 gap-4 mt-8">
+              {/* Bottom Phase Brackets */}
+              <div className="grid grid-cols-6 gap-3 lg:gap-4 mt-6">
                 {/* Phase 1 Bracket: Steps 01 to 04 */}
-                <div className="col-span-4 relative pt-2">
-                  <div className="h-5 border-l-[3px] border-r-[3px] border-b-[3px] border-[#188ab2] relative flex items-center justify-center">
-                    <div className="absolute -bottom-4 bg-white border-[2.5px] border-[#188ab2] text-[#188ab2] px-4 py-1 rounded-full font-extrabold text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(24,138,178,0.2)] flex items-center gap-2 select-none">
-                      <UserCheck className="h-4 w-4" />
-                      <span>GETTING SHORTLISTED</span>
+                <div className="col-span-4">
+                  <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-3 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center gap-2 select-none">
+                    <div className="w-6 h-6 rounded-full bg-[#111111] text-white flex items-center justify-center shrink-0">
+                      <UserCheck className="h-3.5 w-3.5" />
                     </div>
+                    <span className="font-extrabold text-xs md:text-sm text-[#111111] tracking-widest uppercase">
+                      GETTING SHORTLISTED (STEPS 01–04)
+                    </span>
                   </div>
                 </div>
 
                 {/* Phase 2 Bracket: Steps 05 to 06 */}
-                <div className="col-span-2 relative pt-2">
-                  <div className="h-5 border-l-[3px] border-r-[3px] border-b-[3px] border-[#188ab2] relative flex items-center justify-center">
-                    <div className="absolute -bottom-4 bg-[#188ab2] text-white border-[2.5px] border-[#111111] px-4 py-1 rounded-full font-extrabold text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center gap-2 select-none">
-                      <Trophy className="h-4 w-4 text-white" />
-                      <span>GETTING INTERVIEW READY</span>
+                <div className="col-span-2">
+                  <div className="bg-[#188ab2] text-white border-[3px] border-[#111111] p-3 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-center gap-2 select-none">
+                    <div className="w-6 h-6 rounded-full bg-white text-[#188ab2] flex items-center justify-center shrink-0">
+                      <Trophy className="h-3.5 w-3.5 text-[#188ab2]" />
                     </div>
+                    <span className="font-extrabold text-xs md:text-sm text-white tracking-widest uppercase">
+                      GETTING INTERVIEW READY (STEPS 05–06)
+                    </span>
                   </div>
                 </div>
               </div>
