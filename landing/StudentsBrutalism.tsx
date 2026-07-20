@@ -358,10 +358,6 @@ export function StudentsLandingPage() {
               </span>
             </div>
 
-            <h3 className="text-xl md:text-2xl font-extrabold text-[#111111] mb-2">
-              "Why we built this cohort for students"
-            </h3>
-
             <p className="text-[#111111] text-sm md:text-base font-bold leading-relaxed">
               "We've each been through the exact confusion students face when trying to break into PM — no structured starting point, unclear resources, and no easy way to validate if they're even on the right track. As alumni who've made that transition ourselves, we wanted to bring back what we wish we'd had — a clear, structured session before placement season hits, rather than students piecing it together last-minute from scattered YouTube videos and casebooks."
             </p>
