@@ -18,6 +18,52 @@ import awsConfig from '../config/aws-config';
 // Configure Amplify once at module load time.
 Amplify.configure(awsConfig);
 
+function getFriendlyErrorMessage(err) {
+  if (!err) return 'An unexpected error occurred.';
+  
+  const name = err.name || err.code || '';
+  const message = err.message || '';
+  
+  switch (name) {
+    case 'NotAuthorizedException':
+      return 'Incorrect username or password.';
+    case 'UserNotFoundException':
+      return 'User does not exist.';
+    case 'PasswordResetRequiredException':
+      return 'Your password must be reset before you can sign in.';
+    case 'UserNotConfirmedException':
+      return 'Your account is not confirmed yet. Please verify your email.';
+    case 'LimitExceededException':
+      return 'Too many failed login attempts. Please try again later.';
+    case 'InvalidPasswordException':
+      return 'The password does not meet the security requirements.';
+    case 'UsernameExistsException':
+      return 'An account with this email already exists.';
+    case 'CodeMismatchException':
+      return 'The verification code is incorrect or has expired.';
+    case 'ExpiredCodeException':
+      return 'The verification code has expired. Please request a new one.';
+    case 'TooManyFailedAttemptsException':
+      return 'Too many failed attempts. Please try again later.';
+    case 'InvalidParameterException':
+      if (message.includes('validation constraints')) {
+        return 'Please ensure all fields are filled out correctly.';
+      }
+      break;
+    default:
+      break;
+  }
+  
+  if (message) {
+    if (message === 'An unknown error has occurred') {
+      return 'A connection or configuration error occurred. Please check your internet connection and try again.';
+    }
+    return message;
+  }
+  
+  return 'Authentication failed. Please try again.';
+}
+
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -79,7 +125,7 @@ export function AuthProvider({ children }) {
       await loadAuthenticatedUser();
       return { success: true };
     } catch (err) {
-      return { error: err.message || 'Login failed' };
+      return { error: getFriendlyErrorMessage(err) };
     }
   }
 
@@ -91,7 +137,7 @@ export function AuthProvider({ children }) {
       await loadAuthenticatedUser();
       return { success: true };
     } catch (err) {
-      return { error: err.message || 'Password reset failed' };
+      return { error: getFriendlyErrorMessage(err) };
     }
   }
 
@@ -101,7 +147,7 @@ export function AuthProvider({ children }) {
       const result = await resetPassword({ username: email });
       return { success: true, result };
     } catch (err) {
-      return { error: err.message || 'Failed to trigger password reset.' };
+      return { error: getFriendlyErrorMessage(err) };
     }
   }
 
@@ -115,7 +161,7 @@ export function AuthProvider({ children }) {
       });
       return { success: true };
     } catch (err) {
-      return { error: err.message || 'Failed to confirm new password.' };
+      return { error: getFriendlyErrorMessage(err) };
     }
   }
 
@@ -139,7 +185,7 @@ export function AuthProvider({ children }) {
       await loadAuthenticatedUser();
       return { success: true };
     } catch (err) {
-      return { error: err.message || 'Failed to update profile settings.' };
+      return { error: getFriendlyErrorMessage(err) };
     }
   }
 
@@ -164,7 +210,7 @@ export function AuthProvider({ children }) {
       });
       return { success: true, isSignUpComplete: result.isSignUpComplete, nextStep: result.nextStep };
     } catch (err) {
-      return { error: err.message || 'Sign up failed.' };
+      return { error: getFriendlyErrorMessage(err) };
     }
   }
 
@@ -177,7 +223,7 @@ export function AuthProvider({ children }) {
       });
       return { success: true };
     } catch (err) {
-      return { error: err.message || 'Account verification failed.' };
+      return { error: getFriendlyErrorMessage(err) };
     }
   }
 

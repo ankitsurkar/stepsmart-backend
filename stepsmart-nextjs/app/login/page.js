@@ -170,6 +170,52 @@ const styles = {
   },
 };
 
+function getFriendlyErrorMessage(err) {
+  if (!err) return 'An unexpected error occurred.';
+  
+  const name = err.name || err.code || '';
+  const message = err.message || '';
+  
+  switch (name) {
+    case 'NotAuthorizedException':
+      return 'Incorrect username or password.';
+    case 'UserNotFoundException':
+      return 'User does not exist.';
+    case 'PasswordResetRequiredException':
+      return 'Your password must be reset before you can sign in.';
+    case 'UserNotConfirmedException':
+      return 'Your account is not confirmed yet. Please verify your email.';
+    case 'LimitExceededException':
+      return 'Too many failed login attempts. Please try again later.';
+    case 'InvalidPasswordException':
+      return 'The password does not meet the security requirements.';
+    case 'UsernameExistsException':
+      return 'An account with this email already exists.';
+    case 'CodeMismatchException':
+      return 'The verification code is incorrect or has expired.';
+    case 'ExpiredCodeException':
+      return 'The verification code has expired. Please request a new one.';
+    case 'TooManyFailedAttemptsException':
+      return 'Too many failed attempts. Please try again later.';
+    case 'InvalidParameterException':
+      if (message.includes('validation constraints')) {
+        return 'Please ensure all fields are filled out correctly.';
+      }
+      break;
+    default:
+      break;
+  }
+  
+  if (message) {
+    if (message === 'An unknown error has occurred') {
+      return 'A connection or configuration error occurred. Please check your internet connection and try again.';
+    }
+    return message;
+  }
+  
+  return 'Authentication failed. Please try again.';
+}
+
 export default function LoginPage() {
   const router = useRouter();
 
@@ -235,7 +281,7 @@ export default function LoginPage() {
       router.refresh();
     } catch (err) {
       console.error('Amplify login error:', err);
-      setError(err.message || 'Login failed');
+      setError(getFriendlyErrorMessage(err));
       setSubmitting(false);
     }
   }
@@ -263,7 +309,7 @@ export default function LoginPage() {
       router.refresh();
     } catch (err) {
       console.error('Amplify confirmSignIn error:', err);
-      setError(err.message || 'Failed to set new password.');
+      setError(getFriendlyErrorMessage(err));
       setSubmitting(false);
     }
   }
@@ -286,7 +332,7 @@ export default function LoginPage() {
       setMode('confirmReset');
     } catch (err) {
       console.error('Amplify resetPassword error:', err);
-      setError(err.message || 'Failed to send reset code.');
+      setError(getFriendlyErrorMessage(err));
       setSubmitting(false);
     }
   }
@@ -328,7 +374,7 @@ export default function LoginPage() {
       router.refresh();
     } catch (err) {
       console.error('Amplify confirmResetPassword error:', err);
-      setError(err.message || 'Failed to reset password.');
+      setError(getFriendlyErrorMessage(err));
       setSubmitting(false);
     }
   }
@@ -456,7 +502,7 @@ export default function LoginPage() {
           ) : mode === 'forgotPassword' ? (
             <form onSubmit={handleForgotPasswordTrigger}>
               <div style={styles.info}>
-                Enter your email address below, and we'll send you a verification code to reset your password.
+                Enter your email address below, and we&apos;ll send you a verification code to reset your password.
               </div>
               <label style={styles.label}>Email address</label>
               <input
