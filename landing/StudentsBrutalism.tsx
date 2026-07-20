@@ -335,52 +335,29 @@ export function StudentsLandingPage() {
           </div>
 
           {/* Founder's Message Card */}
-          <div className="mt-12 bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-center text-left">
-            {/* Overlapping Founders Headshots */}
-            <div className="flex items-center -space-x-4 shrink-0">
-              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden bg-white z-10">
-                <img
-                  src={ankitPhotoSrc}
-                  alt="Ankit, Founder & PM at Microsoft"
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
-              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden bg-white z-0">
-                <img
-                  src={sanketPhotoSrc}
-                  alt="Sanket, Founder & Senior PM at Mastercard"
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
+          <div className="mt-12 bg-[#FFF3A7] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 md:p-8 text-left">
+            {/* Rotated tags */}
+            <div className="flex flex-wrap gap-2 mb-3">
+              <span className="bg-[#FFFFFF] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                A Note From Our Founders
+              </span>
+              <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[1.5deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                Why We Built PM-X First Step
+              </span>
             </div>
 
-            <div className="flex-1">
-              {/* Rotated tags */}
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                  A Note From Our Founders
-                </span>
-                <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[1.5deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                  Why We Built PM-X First Step
-                </span>
-              </div>
+            <h3 className="text-xl md:text-2xl font-extrabold text-[#111111] mb-2">
+              "Why we built this cohort for students"
+            </h3>
 
-              <h3 className="text-xl md:text-2xl font-extrabold text-[#111111] mb-2">
-                "Why we built this cohort for students"
-              </h3>
+            <p className="text-[#111111] text-sm md:text-base font-bold leading-relaxed">
+              "We've each been through the exact confusion students face when trying to break into PM — no structured starting point, unclear resources, and no easy way to validate if they're even on the right track. As alumni who've made that transition ourselves, we wanted to bring back what we wish we'd had — a clear, structured session before placement season hits, rather than students piecing it together last-minute from scattered YouTube videos and casebooks."
+            </p>
 
-              <p className="text-[#111111] text-sm md:text-base font-bold leading-relaxed">
-                "We've each been through the exact confusion students face when trying to break into PM — no structured starting point, unclear resources, and no easy way to validate if they're even on the right track. As alumni who've made that transition ourselves, we wanted to bring back what we wish we'd had — a clear, structured session before placement season hits, rather than students piecing it together last-minute from scattered YouTube videos and casebooks."
-              </p>
-
-              <div className="mt-4 pt-3 border-t-2 border-[#111111]/10 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-xs font-extrabold text-[#111111] uppercase tracking-wider">
-                  — StepSmart Founders & PM Mentors
-                </span>
-                <span className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest">
-                  PMs @ Microsoft & Mastercard
-                </span>
-              </div>
+            <div className="mt-4 pt-3 border-t-2 border-[#111111]/20 flex items-center justify-between">
+              <span className="text-xs font-extrabold text-[#111111] uppercase tracking-wider">
+                — StepSmart Founders & PM Mentors
+              </span>
             </div>
           </div>
         </div>
