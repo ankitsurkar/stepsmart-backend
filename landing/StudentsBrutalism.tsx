@@ -708,8 +708,8 @@ export function StudentsLandingPage() {
 
       {/* Student Curriculum Section */}
       <section id="curriculum" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <div className="text-center mb-16">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
               Student{' '}
               <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
@@ -721,12 +721,12 @@ export function StudentsLandingPage() {
             </p>
           </div>
 
-          <div className="flex flex-col border-t-[3px] border-[#111111] select-none text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch select-none text-left">
             {[
               {
+                week: "WEEK 1",
                 title: "Product Thinking",
                 tag: "Foundations",
-                dotColor: "bg-[#188ab2]",
                 modules: [
                   {
                     heading: "Product Lifecycle",
@@ -739,9 +739,9 @@ export function StudentsLandingPage() {
                 ]
               },
               {
+                week: "WEEK 2",
                 title: "Problem Space",
-                tag: "User & Research",
-                dotColor: "bg-amber-500",
+                tag: "User Research",
                 modules: [
                   {
                     heading: "Building User Empathy",
@@ -754,9 +754,9 @@ export function StudentsLandingPage() {
                 ]
               },
               {
+                week: "WEEK 3",
                 title: "Solution Space",
                 tag: "Execution & MVP",
-                dotColor: "bg-red-500",
                 modules: [
                   {
                     heading: "Exploring Solutions",
@@ -771,36 +771,34 @@ export function StudentsLandingPage() {
             ].map((topic, i) => (
               <div 
                 key={i} 
-                className="py-12 border-b-[3px] border-[#111111] flex flex-col md:flex-row gap-6 md:gap-16 items-start relative overflow-hidden"
+                className="bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] transition-all duration-150 flex flex-col justify-between"
               >
-                {/* Large Background / Foreground Staggered Phase Number */}
-                <div className="shrink-0 flex md:flex-col items-baseline md:items-start gap-2">
-                  <span className="font-black text-6xl md:text-8xl tracking-tighter text-[#111111]/10 leading-none">0{i+1}</span>
-                  <span className="font-extrabold text-xs tracking-widest text-[#188ab2] uppercase leading-none md:mt-2">WEEK 0{i+1}</span>
-                </div>
-
-                {/* Content Area */}
-                <div className="grow w-full">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                    <h3 className="text-xl md:text-2xl font-black text-[#111111] leading-tight">
-                      {topic.title}
-                    </h3>
-                    <div className="inline-flex items-center gap-2 border-2 border-[#111111] bg-white px-3 py-0.5 rounded-full text-[10px] font-extrabold shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] shrink-0 self-start sm:self-center">
-                      <span className={`w-2 h-2 rounded-full ${topic.dotColor} border border-[#111111]`}></span>
-                      <span className="text-[#111111] uppercase tracking-wider">{topic.tag}</span>
-                    </div>
+                <div>
+                  {/* Top Week Pill & Header */}
+                  <div className="flex items-center justify-between gap-2 mb-4 pb-4 border-b-[3px] border-[#111111]">
+                    <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-1 font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                      {topic.week}
+                    </span>
+                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                      {topic.tag}
+                    </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <h3 className="text-2xl font-black text-[#111111] mb-6">
+                    {topic.title}
+                  </h3>
+
+                  {/* Modules Content */}
+                  <div className="space-y-6">
                     {topic.modules.map((mod, mIdx) => (
-                      <div key={mIdx} className="bg-[#FFF3A7]/30 border-[2.5px] border-[#111111] p-5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-                        <h4 className="font-black text-base text-[#111111] mb-3 pb-2 border-b-2 border-[#111111]/15">
+                      <div key={mIdx} className="bg-[#FFF3A7]/20 border-2 border-[#111111] p-4 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
+                        <h4 className="font-extrabold text-sm text-[#111111] mb-3 pb-1.5 border-b-2 border-[#111111]/15">
                           {mod.heading}
                         </h4>
                         <ul className="space-y-2 text-xs font-extrabold text-[#111111]">
                           {mod.bullets.map((bullet, bIdx) => (
-                            <li key={bIdx} className="flex items-center gap-2">
-                              <span className="text-[#188ab2] font-black">•</span>
+                            <li key={bIdx} className="flex items-start gap-2 leading-snug">
+                              <span className="text-[#188ab2] font-black select-none">•</span>
                               <span>{bullet}</span>
                             </li>
                           ))}
@@ -811,19 +809,55 @@ export function StudentsLandingPage() {
                 </div>
               </div>
             ))}
-          </div>
 
-          {/* Download Brochure callout */}
-          <div className="text-center mt-12 bg-white border-[3px] border-[#111111] p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] rounded-[16px] select-none">
-            <p className="text-sm md:text-base font-extrabold text-[#111111] mb-6">
-              There are more than three weeks in the full curriculum. We only show the first 3 weeks here.
-            </p>
-            <Button 
-              variant="secondary" 
-              onClick={() => handleActionClick('brochure')}
-            >
-              Download Full Curriculum Brochure ➜
-            </Button>
+            {/* 4th Card: Download Full Curriculum Brochure */}
+            <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] transition-all duration-150 flex flex-col justify-between">
+              <div>
+                {/* Top Badge */}
+                <div className="flex items-center justify-between gap-2 mb-4 pb-4 border-b-[3px] border-[#111111]">
+                  <span className="bg-[#111111] text-[#FFF3A7] border-2 border-[#111111] px-3 py-1 font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                    FULL ROADMAP
+                  </span>
+                  <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                    6+ WEEKS
+                  </span>
+                </div>
+
+                <h3 className="text-2xl font-black text-[#111111] mb-4">
+                  Full Curriculum
+                </h3>
+
+                <p className="text-xs md:text-sm font-extrabold text-[#111111] leading-relaxed mb-6">
+                  There are more than three weeks in the full curriculum. Get the complete student roadmap with advanced case studies, portfolio projects, and mock interviews.
+                </p>
+
+                <div className="bg-white border-2 border-[#111111] p-4 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] mb-6">
+                  <p className="text-xs font-black text-[#188ab2] uppercase tracking-wider mb-2">What's Inside:</p>
+                  <ul className="space-y-1.5 text-xs font-extrabold text-[#111111]">
+                    <li className="flex items-center gap-1.5">
+                      <span className="text-[#188ab2] font-black">✓</span>
+                      <span>Full 6-Week Placement Plan</span>
+                    </li>
+                    <li className="flex items-center gap-1.5">
+                      <span className="text-[#188ab2] font-black">✓</span>
+                      <span>3 Live PRD Specifications</span>
+                    </li>
+                    <li className="flex items-center gap-1.5">
+                      <span className="text-[#188ab2] font-black">✓</span>
+                      <span>50+ PM Case Bank & Templates</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <Button 
+                variant="primary" 
+                className="w-full text-sm font-extrabold py-3.5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
+                onClick={() => handleActionClick('brochure')}
+              >
+                Download Full Curriculum ➜
+              </Button>
+            </div>
           </div>
         </div>
       </section>
