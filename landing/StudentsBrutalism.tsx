@@ -27,7 +27,9 @@ import {
   Target,
   Cpu,
   Flag,
-  UserCheck
+  UserCheck,
+  Clock,
+  Dumbbell
 } from 'lucide-react';
 import {
   Logo,
@@ -205,7 +207,6 @@ export function StudentsLandingPage() {
             <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
               <NavLink href="#why-speedup">Why First Step?</NavLink>
               <NavLink href="#student-benefits">Cohort Perks</NavLink>
-              <NavLink href="#mentors">Mentors</NavLink>
               <NavLink href="#curriculum">Curriculum</NavLink>
               <Link to="/events" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Events</Link>
               <Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link>
@@ -225,7 +226,6 @@ export function StudentsLandingPage() {
           <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
             <a href="#why-speedup" onClick={(e) => handleMobileLinkClick(e, 'why-speedup')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Why First Step?</a>
             <a href="#student-benefits" onClick={(e) => handleMobileLinkClick(e, 'student-benefits')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
-            <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
             <a href="#curriculum" onClick={(e) => handleMobileLinkClick(e, 'curriculum')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Curriculum</a>
             <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
             <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
@@ -376,72 +376,71 @@ export function StudentsLandingPage() {
       {/* Cohort Perks / Student Benefits */}
       <section id="student-benefits" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
         <div className="container mx-auto px-6 max-w-6xl">
-          <div className="flex flex-col md:flex-row gap-12 items-start text-left">
-            {/* Left Sticky Column */}
-            <div className="md:w-1/3 md:sticky md:top-36">
-              <h2 className="text-4xl md:text-5xl font-black text-[#111111] mb-6 leading-tight">
-                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                  Offerings
-                </span>
-              </h2>
-              <p className="text-lg font-bold text-slate-500 leading-relaxed">
-                "PM is a competitive path we won't pretend otherwise. What we can do is make sure you're prepping the right way, so when your shot comes, you're actually ready for it."
-              </p>
-            </div>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-[#111111] uppercase">
+              Our{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                Offerings
+              </span>
+            </h2>
+          </div>
 
-            {/* Right List Column (No outer boxes) */}
-            <div className="md:w-2/3 flex flex-col gap-10 select-none">
-              {[
-                {
-                  title: "Product Sense",
-                  desc: "Build the underlying thinking — RCA, product design, guesstimates — that every case, deck, and interview round is actually testing. Not frameworks to memorize, but a way of thinking you can apply to anything thrown at you.",
-                  icon: <Lightbulb className="h-6 w-6 text-[#188ab2]" />
-                },
-                {
-                  title: "Resume Crafting",
-                  desc: "Map your existing skills — technical, analytical, whatever your background — to what PM recruiters are actually screening for. No generic templates, no overloading with things you don't understand.",
-                  icon: <FileText className="h-6 w-6 text-[#188ab2]" />
-                },
-                {
-                  title: "Portfolio Building",
-                  desc: "Turn \"I have no real experience\" into a credible portfolio of product artifacts — case studies, project breakdowns, decks — that give you something concrete to point to in interviews and PORs.",
-                  icon: <BookOpen className="h-6 w-6 text-[#188ab2]" />
-                },
-                {
-                  title: "Interview Preparation",
-                  desc: "Go in with an approach, not just a framework. We work through your reasoning process across RCA, product design, and guesstimates until it's second nature — not a script you recite.",
-                  icon: <Target className="h-6 w-6 text-[#188ab2]" />
-                },
-                {
-                  title: "Mock & Mentor Interviews",
-                  desc: "Practice the actual placement process, not a watered-down version of it. Real mocks, real feedback, from people who've been on both sides of the table.",
-                  icon: <Trophy className="h-6 w-6 text-[#188ab2]" />
-                },
-                {
-                  title: "Peer Community",
-                  desc: "Case-ing alone is hard. Get matched with a peer group across IITs and IIMs to practice with, get real-time feedback from, and stay accountable through placement season.",
-                  icon: <Users className="h-6 w-6 text-[#188ab2]" />
-                },
-                {
-                  title: "Ongoing Support Through the Season",
-                  desc: "Not just prep before placements start — direct access to mentors when a surprise round hits, an application question comes up, or you just need a gut-check mid-season.",
-                  icon: <Calendar className="h-6 w-6 text-[#188ab2]" />
-                }
-              ].map((item, idx) => (
-                <div 
-                  key={idx} 
-                  className="flex gap-6 items-start pb-8 border-b-2 border-[#111111]/10 last:border-b-0"
-                >
-                  <div className="shrink-0 w-12 h-12 bg-[#FFF3A7] border-[3px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
-                    {item.icon}
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black text-[#111111] mb-2">{item.title}</h3>
-                    <p className="text-sm font-bold text-slate-600 leading-relaxed">{item.desc}</p>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 select-none">
+            {[
+              {
+                title: "Product Sense",
+                desc: "Build core PM thinking for RCA, design, and guesstimates. Master logic and problem-solving without memorizing frameworks.",
+                icon: <Lightbulb className="h-6 w-6 text-[#127193]" />
+              },
+              {
+                title: "Your Structured Roadmap",
+                desc: "Get a week-by-week plan mapped to your placement timeline. Know exactly what to focus on from August to final shortlists.",
+                icon: <Compass className="h-6 w-6 text-[#127193]" />
+              },
+              {
+                title: "Resume Crafting",
+                desc: "Translate your technical or analytical background into a resume that PM recruiters and screeners actually want to shortlist.",
+                icon: <FileText className="h-6 w-6 text-[#127193]" />
+              },
+              {
+                title: "Portfolio Building",
+                desc: "Build a credible portfolio of product artifacts, case studies, and PRDs to prove your hands-on PM skills to recruiters.",
+                icon: <BookOpen className="h-6 w-6 text-[#127193]" />
+              },
+              {
+                title: "Interview Preparation",
+                desc: "Develop a natural problem-solving approach. Practice interactive case-solving until reasoning is second nature.",
+                icon: <Target className="h-6 w-6 text-[#127193]" />
+              },
+              {
+                title: "Mock & Mentor Interviews",
+                desc: "Conduct realistic mock interviews with seasoned PMs from Microsoft and Mastercard to get direct, actionable feedback.",
+                icon: <Trophy className="h-6 w-6 text-[#127193]" />
+              },
+              {
+                title: "Peer Community",
+                desc: "Get matched with motivated peers across top IITs and IIMs to practice case interviews and stay accountable.",
+                icon: <Users className="h-6 w-6 text-[#127193]" />
+              },
+              {
+                title: "Ongoing Support Through the Season",
+                desc: "Enjoy direct, active support from mentors for surprise interview rounds and last-minute placement application checks.",
+                icon: <Calendar className="h-6 w-6 text-[#127193]" />
+              }
+            ].map((item, idx) => (
+              <div 
+                key={idx} 
+                className="flex gap-5 items-start text-left"
+              >
+                <div className="shrink-0 w-12 h-12 rounded-full border-2 border-[#111111] bg-[#FFF3A7] flex items-center justify-center">
+                  {item.icon}
                 </div>
-              ))}
-            </div>
+                <div>
+                  <h3 className="text-xl font-black text-[#111111] mb-2">{item.title}</h3>
+                  <p className="text-sm font-bold text-slate-600 leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -572,139 +571,7 @@ export function StudentsLandingPage() {
         </div>
       </section>
 
-      {/* Mentors / Learn from Professionals */}
-      <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
-        <div className="container mx-auto px-6 text-center max-w-6xl">
-          <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
-          <div className="grid md:grid-cols-3 gap-8 text-left">
-            {/* Sanket */}
-            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
-              {/* Headshot in circle with black border */}
-              <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
-                <img
-                  src={sanketPhotoSrc}
-                  alt="Sanket, Senior Product Manager at Mastercard, PM mentor at StepSmart"
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
-              
-              <div className="flex-1">
-                {/* Rotated tags */}
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    PM @ Mastercard
-                  </span>
-                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    50+ Mentored
-                  </span>
-                </div>
-                
-                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Sanket</h3>
-                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
-                  <a 
-                    href="https://www.linkedin.com/in/sanketkumar-katore/" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="hover:underline inline-flex items-center gap-1.5"
-                  >
-                    Senior PM - Mastercard
-                    <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
-                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
-                    </svg>
-                  </a>
-                </p>
-                <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                  Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
-                </p>
-              </div>
-            </div>
 
-            {/* Ankit */}
-            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
-              {/* Headshot in circle with black border */}
-              <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
-                <img
-                  src={ankitPhotoSrc}
-                  alt="Ankit, Product Manager at Microsoft, PM mentor at StepSmart"
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
-              
-              <div className="flex-1">
-                {/* Rotated tags */}
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    PM 2 @ Microsoft
-                  </span>
-                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    AI Specialist
-                  </span>
-                </div>
-                
-                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Ankit</h3>
-                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
-                  <a 
-                    href="https://www.linkedin.com/in/ankit-surkar/" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="hover:underline inline-flex items-center gap-1.5"
-                  >
-                    Product Manager 2 - Microsoft
-                    <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
-                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
-                    </svg>
-                  </a>
-                </p>
-                <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                  Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
-                </p>
-              </div>
-            </div>
-
-            {/* Pankaj */}
-            <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
-              {/* Headshot in circle with black border */}
-              <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
-                <img
-                  src={pankajPhotoSrc}
-                  alt="Pankaj, Senior Product Manager at ShopDeck, PM mentor at StepSmart"
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
-              
-              <div className="flex-1">
-                {/* Rotated tags */}
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    SENIOR PM @ SHOPDECK
-                  </span>
-                  <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                    B2B + B2C
-                  </span>
-                </div>
-                
-                <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Pankaj</h3>
-                <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
-                  <a 
-                    href="https://www.linkedin.com/in/pancage/" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="hover:underline inline-flex items-center gap-1.5"
-                  >
-                    SENIOR PM - SHOPDECK
-                    <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
-                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
-                    </svg>
-                  </a>
-                </p>
-                <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                  Owns merchant-experience, profitability, and logistics at ShopDeck, with 5+ years across SaaS, e-commerce, and mobility. Expert at turning business challenges into revenue-generating solutions for both B2B and B2C.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Student Curriculum Section */}
       <section id="curriculum" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
@@ -858,6 +725,83 @@ export function StudentsLandingPage() {
                 Download Full Curriculum ➜
               </Button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Weekly Schedule Section */}
+      <section id="weekly-schedule" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-[#111111] uppercase">
+              Weekly{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                Schedule
+              </span>
+            </h2>
+            <p className="text-lg font-bold text-slate-500 mt-4 max-w-2xl mx-auto">A structured path to building consistent PM skills.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 select-none">
+            {[
+              {
+                day: "WED",
+                type: "Live Class",
+                time: "1.5 Hours",
+                sub: "Instructor led",
+                icon: <Laptop className="h-6 w-6 text-[#127193]" />
+              },
+              {
+                day: "SAT",
+                type: "Activity Class",
+                time: "1.5 Hours",
+                sub: "Instructor led",
+                icon: <Users className="h-6 w-6 text-[#127193]" />
+              },
+              {
+                day: "SUN",
+                type: "Live Class",
+                time: "1.5 Hours",
+                sub: "Instructor led",
+                icon: <Laptop className="h-6 w-6 text-[#127193]" />
+              },
+              {
+                day: "TUE",
+                type: "Doubt Hours",
+                time: "1 Hour",
+                sub: "Mentor led",
+                icon: <UserCheck className="h-6 w-6 text-[#127193]" />
+              },
+              {
+                day: "DAILY",
+                type: "PM Gym",
+                time: "5 min",
+                sub: "Self paced",
+                icon: <Dumbbell className="h-6 w-6 text-[#127193]" />
+              }
+            ].map((item, idx) => (
+              <div 
+                key={idx} 
+                className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] p-6 flex flex-col justify-between items-start text-left relative overflow-hidden"
+              >
+                <div className="w-full">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="text-sm font-black uppercase text-[#127193] border-b-[3px] border-[#FFF3A7] pb-0.5">
+                      {item.day}
+                    </span>
+                    <div className="w-10 h-10 rounded-full border-[2.5px] border-[#111111] bg-[#FFF3A7] flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                      {item.icon}
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-black text-[#111111] mb-1">{item.type}</h3>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">{item.sub}</p>
+                </div>
+                <div className="bg-[#e0f2fe] border-2 border-[#111111] px-2.5 py-1 flex items-center gap-1.5 w-full justify-center">
+                  <Clock className="h-3.5 w-3.5 text-[#111111]" />
+                  <span className="text-xs font-extrabold text-[#111111] uppercase tracking-wide">{item.time}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
