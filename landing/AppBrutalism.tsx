@@ -1255,7 +1255,6 @@ function ProfessionalsLandingPage() {
                 name: "Triya", 
                 initials: "T",
                 cohort: "PM (Acko)", 
-                tag: "REAL IMPACT",
                 shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
@@ -1271,7 +1270,6 @@ function ProfessionalsLandingPage() {
                 name: "Nishtha", 
                 initials: "N",
                 cohort: "PM (Amex)", 
-                tag: "INTERVIEW PREP",
                 shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
@@ -1286,23 +1284,11 @@ function ProfessionalsLandingPage() {
             ].map((t, idx) => (
               <div 
                 key={idx} 
-                className={`bg-[#FFFFFF] p-5 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 min-h-[300px]`}
+                className={`bg-[#FFFFFF] p-5 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 min-h-[220px]`}
               >
-                {/* Quote icon backdrop */}
-                <div className="absolute top-4 right-4 text-slate-200 pointer-events-none">
-                  <svg className="h-10 w-10 fill-current text-[#127193]/10" viewBox="0 0 24 24">
-                    <path d="M14 17h3l2-5V7h-6v5h3l-2 5M3 12h3l-2 5h3l2-5V7H3v5h3l-2 5z"/>
-                  </svg>
-                </div>
-
-                <div className="mb-6 relative z-10">
-                  {t.tag && (
-                    <div className="inline-flex items-center gap-1.5 border-2 border-[#111111] bg-[#127193] text-white text-[9px] font-black uppercase px-2 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] mb-3 rotate-[-1deg]">
-                      {t.tag}
-                    </div>
-                  )}
+                <div className="mb-4 relative z-10">
                   <p className="text-[#111111] leading-relaxed text-xs md:text-sm font-bold">
-                    "{t.text}"
+                    {t.text}
                   </p>
                 </div>
 
@@ -2629,7 +2615,6 @@ function PortalPage() {
                 name: "Triya", 
                 initials: "T",
                 cohort: "PM (Acko)", 
-                tag: "REAL IMPACT",
                 shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
@@ -2645,7 +2630,6 @@ function PortalPage() {
                 name: "Nishtha", 
                 initials: "N",
                 cohort: "PM (Amex)", 
-                tag: "INTERVIEW PREP",
                 shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
@@ -2660,23 +2644,11 @@ function PortalPage() {
             ].map((t, idx) => (
               <div 
                 key={idx} 
-                className={`bg-[#FFFFFF] p-5 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 min-h-[300px]`}
+                className={`bg-[#FFFFFF] p-5 border-[3px] border-[#111111] ${t.shadow} flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 min-h-[220px]`}
               >
-                {/* Quote icon backdrop */}
-                <div className="absolute top-4 right-4 text-slate-200 pointer-events-none">
-                  <svg className="h-10 w-10 fill-current text-[#127193]/10" viewBox="0 0 24 24">
-                    <path d="M14 17h3l2-5V7h-6v5h3l-2 5M3 12h3l-2 5h3l2-5V7H3v5h3l-2 5z"/>
-                  </svg>
-                </div>
-
-                <div className="mb-6 relative z-10">
-                  {t.tag && (
-                    <div className="inline-flex items-center gap-1.5 border-2 border-[#111111] bg-[#127193] text-white text-[9px] font-black uppercase px-2 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] mb-3 rotate-[-1deg]">
-                      {t.tag}
-                    </div>
-                  )}
+                <div className="mb-4">
                   <p className="text-[#111111] leading-relaxed text-xs md:text-sm font-bold">
-                    "{t.text}"
+                    {t.text}
                   </p>
                 </div>
 
