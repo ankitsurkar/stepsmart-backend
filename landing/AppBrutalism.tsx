@@ -1216,20 +1216,20 @@ function ProfessionalsLandingPage() {
 
       {/* Testimonials */}
       <section className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 text-center max-w-5xl">
+        <div className="container mx-auto px-6 text-center max-w-7xl">
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Testimonials</h2>
           
-          <div className="grid md:grid-cols-2 gap-10 text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
             {[
               { 
                 name: "Gauri T.", 
                 initials: "GT",
                 cohort: "PM", 
-                shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
+                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
                     The moment live sessions shifted from mentors to mentees was the real turning point. Watching peers articulate product thinking out loud and realising I could do the same was when I{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1deg] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                       genuinely believed
                     </span>{' '}
                     I could become a PM.
@@ -1240,11 +1240,11 @@ function ProfessionalsLandingPage() {
                 name: "Riya", 
                 initials: "R",
                 cohort: "PM (Bajaj)", 
-                shadow: "shadow-[8px_4px_0px_0px_rgba(17,17,17,1)]",
+                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
                     After learning the frameworks, I started applying them to my actual work not just in theory. I now think in{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[1.5deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1 py-0.5 text-[#111111] font-extrabold inline-block rotate-[1.5deg] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                       complete systems
                     </span>
                     : how each team connects, how business goals tie to product decisions. That shift in thinking has changed how I show up at work every day.
@@ -1256,11 +1256,11 @@ function ProfessionalsLandingPage() {
                 initials: "T",
                 cohort: "PM (Acko)", 
                 tag: "REAL IMPACT",
-                shadow: "shadow-[6px_8px_0px_0px_rgba(17,17,17,1)]",
+                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
                     PM-X gave me the clarity and confidence I needed to make a{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1.5deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1.5deg] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                       successful transition
                     </span>
                     . The resume repositioning, mock interviews, and mentor feedback were invaluable. I went from a Business Analyst to PM at Acko - dream I wasn't sure was possible.
@@ -1272,11 +1272,11 @@ function ProfessionalsLandingPage() {
                 initials: "N",
                 cohort: "PM (Amex)", 
                 tag: "INTERVIEW PREP",
-                shadow: "shadow-[4px_8px_0px_0px_rgba(17,17,17,1)]",
+                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
                     Before PM-X, case studies felt overwhelming I didn't know where to start. PM-X helped me break them down into{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[1deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1 py-0.5 text-[#111111] font-extrabold inline-block rotate-[1deg] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                       clear, actionable chunks
                     </span>
                     . That structure is what helped me land my first PM role.
@@ -1286,33 +1286,33 @@ function ProfessionalsLandingPage() {
             ].map((t, idx) => (
               <div 
                 key={idx} 
-                className={`bg-[#FFFFFF] p-8 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 min-h-[300px]`}
+                className={`bg-[#FFFFFF] p-5 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 min-h-[300px]`}
               >
                 {/* Quote icon backdrop */}
-                <div className="absolute top-6 right-8 text-slate-200 pointer-events-none">
-                  <svg className="h-16 w-16 fill-current text-[#127193]/10" viewBox="0 0 24 24">
+                <div className="absolute top-4 right-4 text-slate-200 pointer-events-none">
+                  <svg className="h-10 w-10 fill-current text-[#127193]/10" viewBox="0 0 24 24">
                     <path d="M14 17h3l2-5V7h-6v5h3l-2 5M3 12h3l-2 5h3l2-5V7H3v5h3l-2 5z"/>
                   </svg>
                 </div>
 
-                <div className="mb-8 relative z-10">
+                <div className="mb-6 relative z-10">
                   {t.tag && (
-                    <div className="inline-flex items-center gap-1.5 border-2 border-[#111111] bg-[#127193] text-white text-[10px] font-black uppercase px-2.5 py-0.5 shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] mb-4 rotate-[-1deg]">
+                    <div className="inline-flex items-center gap-1.5 border-2 border-[#111111] bg-[#127193] text-white text-[9px] font-black uppercase px-2 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] mb-3 rotate-[-1deg]">
                       {t.tag}
                     </div>
                   )}
-                  <p className="text-[#111111] leading-relaxed text-base font-bold">
+                  <p className="text-[#111111] leading-relaxed text-xs md:text-sm font-bold">
                     "{t.text}"
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3 pt-6 border-t-2 border-[#111111]/10 mt-auto">
-                  <div className="w-12 h-12 rounded-full border-[3px] border-[#111111] bg-[#127193] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex-shrink-0 flex items-center justify-center text-white font-extrabold text-base">
+                <div className="flex items-center gap-3 pt-4 border-t-2 border-[#111111]/10 mt-auto">
+                  <div className="w-10 h-10 rounded-full border-[3px] border-[#111111] bg-[#127193] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex-shrink-0 flex items-center justify-center text-white font-extrabold text-sm">
                     {t.initials}
                   </div>
                   <div>
-                    <div className="font-extrabold text-base text-[#111111]">{t.name}</div>
-                    <div className="text-[10px] font-black uppercase text-[#188ab2] tracking-wider mt-0.5 whitespace-pre-line leading-tight">
+                    <div className="font-extrabold text-sm text-[#111111]">{t.name}</div>
+                    <div className="text-[9px] font-black uppercase text-[#188ab2] tracking-wider mt-0.5 whitespace-pre-line leading-tight">
                       {t.cohort}
                     </div>
                   </div>
@@ -2585,7 +2585,7 @@ function PortalPage() {
 
       {/* Testimonials */}
       <section className="py-16 bg-[var(--surface-peach)] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 text-center max-w-5xl">
+        <div className="container mx-auto px-6 text-center max-w-7xl">
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">
             Our Mentees'{' '}
             <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
@@ -2593,17 +2593,17 @@ function PortalPage() {
             </span>
           </h2>
           
-          <div className="grid md:grid-cols-2 gap-10 text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
             {[
               { 
                 name: "Gauri T.", 
                 initials: "GT",
                 cohort: "PM", 
-                shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
+                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
                     The moment live sessions shifted from mentors to mentees was the real turning point. Watching peers articulate product thinking out loud and realising I could do the same was when I{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1deg] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                       genuinely believed
                     </span>{' '}
                     I could become a PM.
@@ -2614,11 +2614,11 @@ function PortalPage() {
                 name: "Riya", 
                 initials: "R",
                 cohort: "PM (Bajaj)", 
-                shadow: "shadow-[8px_4px_0px_0px_rgba(17,17,17,1)]",
+                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
                     After learning the frameworks, I started applying them to my actual work not just in theory. I now think in{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[1.5deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1 py-0.5 text-[#111111] font-extrabold inline-block rotate-[1.5deg] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                       complete systems
                     </span>
                     : how each team connects, how business goals tie to product decisions. That shift in thinking has changed how I show up at work every day.
@@ -2630,11 +2630,11 @@ function PortalPage() {
                 initials: "T",
                 cohort: "PM (Acko)", 
                 tag: "REAL IMPACT",
-                shadow: "shadow-[6px_8px_0px_0px_rgba(17,17,17,1)]",
+                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
                     PM-X gave me the clarity and confidence I needed to make a{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1.5deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1.5deg] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                       successful transition
                     </span>
                     . The resume repositioning, mock interviews, and mentor feedback were invaluable. I went from a Business Analyst to PM at Acko - dream I wasn't sure was possible.
@@ -2646,11 +2646,11 @@ function PortalPage() {
                 initials: "N",
                 cohort: "PM (Amex)", 
                 tag: "INTERVIEW PREP",
-                shadow: "shadow-[4px_8px_0px_0px_rgba(17,17,17,1)]",
+                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
                 text: (
                   <span>
                     Before PM-X, case studies felt overwhelming I didn't know where to start. PM-X helped me break them down into{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[1deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1 py-0.5 text-[#111111] font-extrabold inline-block rotate-[1deg] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
                       clear, actionable chunks
                     </span>
                     . That structure is what helped me land my first PM role.
@@ -2660,33 +2660,33 @@ function PortalPage() {
             ].map((t, idx) => (
               <div 
                 key={idx} 
-                className={`bg-[#FFFFFF] p-8 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 min-h-[300px]`}
+                className={`bg-[#FFFFFF] p-5 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 min-h-[300px]`}
               >
                 {/* Quote icon backdrop */}
-                <div className="absolute top-6 right-8 text-slate-200 pointer-events-none">
-                  <svg className="h-16 w-16 fill-current text-[#127193]/10" viewBox="0 0 24 24">
+                <div className="absolute top-4 right-4 text-slate-200 pointer-events-none">
+                  <svg className="h-10 w-10 fill-current text-[#127193]/10" viewBox="0 0 24 24">
                     <path d="M14 17h3l2-5V7h-6v5h3l-2 5M3 12h3l-2 5h3l2-5V7H3v5h3l-2 5z"/>
                   </svg>
                 </div>
 
-                <div className="mb-8 relative z-10">
+                <div className="mb-6 relative z-10">
                   {t.tag && (
-                    <div className="inline-flex items-center gap-1.5 border-2 border-[#111111] bg-[#127193] text-white text-[10px] font-black uppercase px-2.5 py-0.5 shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] mb-4 rotate-[-1deg]">
+                    <div className="inline-flex items-center gap-1.5 border-2 border-[#111111] bg-[#127193] text-white text-[9px] font-black uppercase px-2 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] mb-3 rotate-[-1deg]">
                       {t.tag}
                     </div>
                   )}
-                  <p className="text-[#111111] leading-relaxed text-base font-bold">
+                  <p className="text-[#111111] leading-relaxed text-xs md:text-sm font-bold">
                     "{t.text}"
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3 pt-6 border-t-2 border-[#111111]/10 mt-auto">
-                  <div className="w-12 h-12 rounded-full border-[3px] border-[#111111] bg-[#127193] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex-shrink-0 flex items-center justify-center text-white font-extrabold text-base">
+                <div className="flex items-center gap-3 pt-4 border-t-2 border-[#111111]/10 mt-auto">
+                  <div className="w-10 h-10 rounded-full border-[3px] border-[#111111] bg-[#127193] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex-shrink-0 flex items-center justify-center text-white font-extrabold text-sm">
                     {t.initials}
                   </div>
                   <div>
-                    <div className="font-extrabold text-base text-[#111111]">{t.name}</div>
-                    <div className="text-[10px] font-black uppercase text-[#188ab2] tracking-wider mt-0.5 whitespace-pre-line leading-tight">
+                    <div className="font-extrabold text-sm text-[#111111]">{t.name}</div>
+                    <div className="text-[9px] font-black uppercase text-[#188ab2] tracking-wider mt-0.5 whitespace-pre-line leading-tight">
                       {t.cohort}
                     </div>
                   </div>
