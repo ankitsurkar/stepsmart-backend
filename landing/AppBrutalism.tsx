@@ -1214,73 +1214,162 @@ function ProfessionalsLandingPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+      <section className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] overflow-hidden">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Testimonials</h2>
-          <div className="grid md:grid-cols-3 gap-8 text-left max-w-5xl mx-auto">
-            {[
-              { 
-                name: "Nishtha", 
-                cohort: "PM-X FIRST STEP", 
-                shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
-                text: (
-                  <span>
-                    Ankit helped me break down vague case studies into actionable chunks helping me{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1.5deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
-                      land the PM job
-                    </span>
-                  </span>
-                )
-              },
-              { 
-                name: "Gauri", 
-                cohort: "PM-X ACCELERATOR", 
-                shadow: "shadow-[8px_4px_0px_0px_rgba(17,17,17,1)]",
-                text: (
-                  <span>
-                    The PM-X course helped me to{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[2deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
-                      land the PM job
-                    </span>
-                    . A must take course for aspiring PM's. It is well structured and curated.
-                  </span>
-                )
-              },
-              { 
-                name: "Riya", 
-                cohort: "PM-X FIRST STEP", 
-                shadow: "shadow-[4px_8px_0px_0px_rgba(17,17,17,1)]",
-                text: (
-                  <span>
-                    Sanket has helped me in structure my thoughts, such that now I am prepared for any interview{' '}
-                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
-                      confidently
-                    </span>
-                  </span>
-                )
+          
+          <div className="w-full overflow-hidden py-4 relative">
+            {/* Inject style for marquee animation */}
+            <style>{`
+              @keyframes marquee {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
               }
-            ].map((t, i) => (
-              <div 
-                key={i} 
-                className={`bg-[#FFFFFF] p-10 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100`}
-              >
-                <div className="mb-8 relative z-10">
-                  <p className="text-[#111111] leading-relaxed text-lg font-bold">"{t.text}"</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  {/* Avatar placeholder – swap src once images are ready */}
-                  <div className="w-12 h-12 rounded-full border-[3px] border-[#111111] bg-[#F5F5F0] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex-shrink-0 overflow-hidden flex items-center justify-center">
-                    <span className="text-[#111111] font-extrabold text-base select-none">
-                      {t.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
+              .animate-marquee {
+                animation: marquee 35s linear infinite;
+              }
+              .animate-marquee:hover {
+                animation-play-state: paused;
+              }
+            `}</style>
+            
+            <div className="flex gap-8 w-max animate-marquee text-left">
+              {[
+                { 
+                  name: "Nishtha", 
+                  cohort: "PM-X FIRST STEP", 
+                  shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
+                  text: (
+                    <span>
+                      Ankit helped me break down vague case studies into actionable chunks helping me{' '}
+                      <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1.5deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                        land the PM job
+                      </span>
                     </span>
+                  )
+                },
+                { 
+                  name: "Gauri", 
+                  cohort: "PM-X ACCELERATOR", 
+                  shadow: "shadow-[8px_4px_0px_0px_rgba(17,17,17,1)]",
+                  text: (
+                    <span>
+                      The PM-X course helped me to{' '}
+                      <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[2deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                        land the PM job
+                      </span>
+                      . A must take course for aspiring PM's. It is well structured and curated.
+                    </span>
+                  )
+                },
+                { 
+                  name: "Riya", 
+                  cohort: "PM-X FIRST STEP", 
+                  shadow: "shadow-[4px_8px_0px_0px_rgba(17,17,17,1)]",
+                  text: (
+                    <span>
+                      Sanket has helped me in structure my thoughts, such that now I am prepared for any interview{' '}
+                      <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                        confidently
+                      </span>
+                    </span>
+                  )
+                },
+                { 
+                  name: "Triya", 
+                  cohort: "BA (Barclays) →\nPM (Acko)", 
+                  shadow: "shadow-[6px_8px_0px_0px_rgba(17,17,17,1)]",
+                  avatarBg: "bg-[#127193]",
+                  avatarColor: "text-white",
+                  text: (
+                    <span>
+                      PM-X gave me the clarity and confidence I needed to make a{' '}
+                      <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                        successful transition
+                      </span>
+                      . The resume repositioning, mock interviews, and mentor feedback were invaluable. I went from a Business Analyst to PM at Acko - dream I wasn't sure was possible.
+                    </span>
+                  )
+                }
+              ].concat([
+                { 
+                  name: "Nishtha", 
+                  cohort: "PM-X FIRST STEP", 
+                  shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
+                  text: (
+                    <span>
+                      Ankit helped me break down vague case studies into actionable chunks helping me{' '}
+                      <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1.5deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                        land the PM job
+                      </span>
+                    </span>
+                  )
+                },
+                { 
+                  name: "Gauri", 
+                  cohort: "PM-X ACCELERATOR", 
+                  shadow: "shadow-[8px_4px_0px_0px_rgba(17,17,17,1)]",
+                  text: (
+                    <span>
+                      The PM-X course helped me to{' '}
+                      <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[2deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                        land the PM job
+                      </span>
+                      . A must take course for aspiring PM's. It is well structured and curated.
+                    </span>
+                  )
+                },
+                { 
+                  name: "Riya", 
+                  cohort: "PM-X FIRST STEP", 
+                  shadow: "shadow-[4px_8px_0px_0px_rgba(17,17,17,1)]",
+                  text: (
+                    <span>
+                      Sanket has helped me in structure my thoughts, such that now I am prepared for any interview{' '}
+                      <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                        confidently
+                      </span>
+                    </span>
+                  )
+                },
+                { 
+                  name: "Triya", 
+                  cohort: "BA (Barclays) →\nPM (Acko)", 
+                  shadow: "shadow-[6px_8px_0px_0px_rgba(17,17,17,1)]",
+                  avatarBg: "bg-[#127193]",
+                  avatarColor: "text-white",
+                  text: (
+                    <span>
+                      PM-X gave me the clarity and confidence I needed to make a{' '}
+                      <span className="bg-[#FFF3A7] border-2 border-[#111111] px-1.5 py-0.5 text-[#111111] font-extrabold inline-block rotate-[-1deg] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
+                        successful transition
+                      </span>
+                      . The resume repositioning, mock interviews, and mentor feedback were invaluable. I went from a Business Analyst to PM at Acko - dream I wasn't sure was possible.
+                    </span>
+                  )
+                }
+              ]).map((t, i) => (
+                <div 
+                  key={i} 
+                  className={`w-[320px] md:w-[400px] shrink-0 bg-[#FFFFFF] p-8 border-[3px] border-[#111111] ${t.shadow} relative flex flex-col justify-between select-none hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100`}
+                >
+                  <div className="mb-8 relative z-10">
+                    <p className="text-[#111111] leading-relaxed text-base font-bold">"{t.text}"</p>
                   </div>
-                  <div>
-                    <div className="font-extrabold text-[#111111]">{t.name}</div>
-                    <div className="text-[10px] font-black uppercase text-[#188ab2] tracking-wider mt-0.5">{t.cohort}</div>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-12 h-12 rounded-full border-[3px] border-[#111111] ${t.avatarBg || 'bg-[#F5F5F0]'} shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex-shrink-0 overflow-hidden flex items-center justify-center`}>
+                      <span className={`${t.avatarColor || 'text-[#111111]'} font-extrabold text-base select-none`}>
+                        {t.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
+                      </span>
+                    </div>
+                    <div>
+                      <div className="font-extrabold text-[#111111]">{t.name}</div>
+                      <div className="text-[10px] font-black uppercase text-[#188ab2] tracking-wider mt-0.5 whitespace-pre-line leading-tight">{t.cohort}</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
