@@ -206,6 +206,7 @@ export function StudentsLandingPage() {
               <NavLink href="#why-speedup">Why First Step?</NavLink>
               <NavLink href="#student-benefits">Cohort Perks</NavLink>
               <NavLink href="#mentors">Mentors</NavLink>
+              <NavLink href="#curriculum">Curriculum</NavLink>
               <Link to="/events" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Events</Link>
               <Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
@@ -225,6 +226,7 @@ export function StudentsLandingPage() {
             <a href="#why-speedup" onClick={(e) => handleMobileLinkClick(e, 'why-speedup')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Why First Step?</a>
             <a href="#student-benefits" onClick={(e) => handleMobileLinkClick(e, 'student-benefits')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
             <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+            <a href="#curriculum" onClick={(e) => handleMobileLinkClick(e, 'curriculum')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Curriculum</a>
             <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
             <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
             <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
@@ -704,6 +706,128 @@ export function StudentsLandingPage() {
         </div>
       </section>
 
+      {/* Student Curriculum Section */}
+      <section id="curriculum" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
+              Student{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                Curriculum
+              </span>
+            </h2>
+            <p className="text-lg font-bold text-[#111111] mt-4">
+              Three core weeks focused on product thinking, problem space, and solution space.
+            </p>
+          </div>
+
+          <div className="flex flex-col border-t-[3px] border-[#111111] select-none text-left">
+            {[
+              {
+                title: "Product Thinking",
+                tag: "Foundations",
+                dotColor: "bg-[#188ab2]",
+                modules: [
+                  {
+                    heading: "Product Lifecycle",
+                    bullets: ["Systems Thinking", "Problem Space vs Solution Space"]
+                  },
+                  {
+                    heading: "Business Models",
+                    bullets: ["KPI Tree", "Segmentation", "Impact Mapping"]
+                  }
+                ]
+              },
+              {
+                title: "Problem Space",
+                tag: "User & Research",
+                dotColor: "bg-amber-500",
+                modules: [
+                  {
+                    heading: "Building User Empathy",
+                    bullets: ["User Personas", "Customer Journey Maps", "Hypothesis Building"]
+                  },
+                  {
+                    heading: "User Research",
+                    bullets: ["Surveys", "Interviews", "Framing your problem"]
+                  }
+                ]
+              },
+              {
+                title: "Solution Space",
+                tag: "Execution & MVP",
+                dotColor: "bg-red-500",
+                modules: [
+                  {
+                    heading: "Exploring Solutions",
+                    bullets: ["Brainstorming Solutions", "Product Validation", "Risks"]
+                  },
+                  {
+                    heading: "Building Solutions",
+                    bullets: ["Prioritization", "MVP", "Metrics"]
+                  }
+                ]
+              }
+            ].map((topic, i) => (
+              <div 
+                key={i} 
+                className="py-12 border-b-[3px] border-[#111111] flex flex-col md:flex-row gap-6 md:gap-16 items-start relative overflow-hidden"
+              >
+                {/* Large Background / Foreground Staggered Phase Number */}
+                <div className="shrink-0 flex md:flex-col items-baseline md:items-start gap-2">
+                  <span className="font-black text-6xl md:text-8xl tracking-tighter text-[#111111]/10 leading-none">0{i+1}</span>
+                  <span className="font-extrabold text-xs tracking-widest text-[#188ab2] uppercase leading-none md:mt-2">WEEK 0{i+1}</span>
+                </div>
+
+                {/* Content Area */}
+                <div className="grow w-full">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <h3 className="text-xl md:text-2xl font-black text-[#111111] leading-tight">
+                      {topic.title}
+                    </h3>
+                    <div className="inline-flex items-center gap-2 border-2 border-[#111111] bg-white px-3 py-0.5 rounded-full text-[10px] font-extrabold shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] shrink-0 self-start sm:self-center">
+                      <span className={`w-2 h-2 rounded-full ${topic.dotColor} border border-[#111111]`}></span>
+                      <span className="text-[#111111] uppercase tracking-wider">{topic.tag}</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {topic.modules.map((mod, mIdx) => (
+                      <div key={mIdx} className="bg-[#FFF3A7]/30 border-[2.5px] border-[#111111] p-5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+                        <h4 className="font-black text-base text-[#111111] mb-3 pb-2 border-b-2 border-[#111111]/15">
+                          {mod.heading}
+                        </h4>
+                        <ul className="space-y-2 text-xs font-extrabold text-[#111111]">
+                          {mod.bullets.map((bullet, bIdx) => (
+                            <li key={bIdx} className="flex items-center gap-2">
+                              <span className="text-[#188ab2] font-black">•</span>
+                              <span>{bullet}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Download Brochure callout */}
+          <div className="text-center mt-12 bg-white border-[3px] border-[#111111] p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] rounded-[16px] select-none">
+            <p className="text-sm md:text-base font-extrabold text-[#111111] mb-6">
+              There are more than three weeks in the full curriculum. We only show the first 3 weeks here.
+            </p>
+            <Button 
+              variant="secondary" 
+              onClick={() => handleActionClick('brochure')}
+            >
+              Download Full Curriculum Brochure ➜
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section id="student-faq" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -851,6 +975,8 @@ export function StudentsLandingPage() {
                 <li><a href="/#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Professional Page</a></li>
                 <li><a href="#why-speedup" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Why First Step?</a></li>
                 <li><a href="#student-benefits" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Cohort Perks</a></li>
+                <li><a href="#mentors" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Mentors</a></li>
+                <li><a href="#curriculum" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Curriculum</a></li>
                 <li><Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link></li>
               </ul>
             </div>
