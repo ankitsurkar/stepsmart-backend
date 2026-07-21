@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import {
+  Download,
   CheckCircle2,
   Mail,
   Loader2,
@@ -43,6 +44,7 @@ import {
   ankitPhotoSrc,
   pankajPhotoSrc,
   brochurePdfSrc,
+  studentBrochurePdfSrc,
   startBrochureDownload,
   AnnouncementBanner
 } from './AppBrutalism';
@@ -146,7 +148,7 @@ export function StudentsLandingPage() {
     setEnrollmentStatus('success');
     if (intent === 'brochure') {
       setTimeout(() => {
-        startBrochureDownload();
+        startBrochureDownload(true);
       }, 1000);
       return;
     }
@@ -154,7 +156,7 @@ export function StudentsLandingPage() {
 
   const onSubmit = async (data: any) => {
     setEnrollmentStatus('loading');
-    saveLeadToDemoDB(data);
+    saveLeadToDemoDB({ ...data, cohortTrack: 'PM-X First Step (Students)' });
 
     try {
       const res = await fetch(
@@ -166,7 +168,7 @@ export function StudentsLandingPage() {
             name: data.fullName,
             email: data.email,
             phone: data.phone,
-            masterclassId: 'pm-x-speedup-students',
+            masterclassId: data.intent === 'brochure' ? 'pm-x-brochure-student' : 'pm-x-first-step-student',
           }),
         }
       );
@@ -860,76 +862,103 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Registration Form / Call to action */}
-      <section id="enroll-student" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
-        <div id="student-form-container" className="container mx-auto px-6 max-w-xl scroll-mt-32">
-          <div className="bg-[#FFFFFF] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)]">
-            <h2 className="text-3xl font-extrabold mb-2 text-[#111111] text-center">Join Student Cohort</h2>
-            <p className="text-sm font-bold text-slate-500 mb-8 text-center uppercase tracking-wider">PM-X First Step Registration</p>
-            
+      <section id="enroll-student" className="py-16 bg-[#FFFFFF] relative border-b-[3px] border-[#111111] scroll-mt-32">
+        <div className="container mx-auto px-6 max-w-6xl text-center">
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-12 text-[#111111]">Ready to Start Your Journey?</h2>
+          
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+            <button
+              onClick={() => handleActionClick('brochure')}
+              className={`flex flex-col items-center p-10 bg-white border-[3px] transition-all duration-100 ${
+                formIntent === 'brochure'
+                  ? 'border-[#188ab2] shadow-[6px_6px_0px_0px_rgba(24,138,178,1)] translate-x-[-2px] translate-y-[-2px]'
+                  : 'border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]'
+              }`}
+            >
+              <Download className={`h-10 w-10 mb-4 ${formIntent === 'brochure' ? 'text-[#188ab2]' : 'text-[#111111]'}`} />
+              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">Download First Step Brochure</h3>
+              <p className="text-[#111111] text-sm font-bold">Get the student curriculum and roadmap details.</p>
+            </button>
+            <button
+              onClick={() => handleActionClick('enroll')}
+              className={`flex flex-col items-center p-10 bg-white border-[3px] transition-all duration-100 ${
+                formIntent === 'enroll'
+                  ? 'border-[#188ab2] shadow-[6px_6px_0px_0px_rgba(24,138,178,1)] translate-x-[-2px] translate-y-[-2px]'
+                  : 'border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]'
+              }`}
+            >
+              <Briefcase className={`h-10 w-10 mb-4 ${formIntent === 'enroll' ? 'text-[#188ab2]' : 'text-[#111111]'}`} />
+              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">Enroll for PM-X First Step</h3>
+              <p className="text-[#111111] text-sm font-bold">Register for the next student batch or masterclass.</p>
+            </button>
+          </div>
+
+          <div id="student-form-container" className="max-w-xl mx-auto bg-white border-[3px] border-[#111111] p-8 md:p-12 text-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] scroll-mt-32">
             {enrollmentStatus === 'success' ? (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 bg-[#10b981] border-[3px] border-[#111111] rounded-full flex items-center justify-center mx-auto shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] mb-6">
-                  <CheckCircle2 className="h-8 w-8 text-white" />
+              <div className="text-center py-12">
+                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] text-green-600 w-16 h-16 flex items-center justify-center mx-auto mb-8 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+                  <CheckCircle2 className="h-8 w-8 text-[#188ab2]" />
                 </div>
-                <h3 className="text-2xl font-extrabold text-[#111111] mb-4">Application Submitted!</h3>
-                <p className="text-sm font-bold text-[#111111] leading-relaxed mb-6">
-                  {formIntent === 'brochure' 
-                    ? "Thank you! Your roadmap brochure download will start automatically in a second."
-                    : "We have received your application. Expect a response on your vetting call status within 24 hours."
-                  }
+                <h3 className="text-3xl font-extrabold mb-4">{formIntent === 'brochure' ? "Brochure Ready!" : "Enrollment Submitted!"}</h3>
+                <p className="text-[#111111] mb-8 font-bold">
+                  {formIntent === 'brochure'
+                    ? "Your PM-X First Step Brochure download has started automatically."
+                    : "We have received your application. Expect a response on your vetting call status within 24 hours."}
                 </p>
                 {formIntent === 'brochure' && (
-                  <Button variant="outline" className="w-full" onClick={startBrochureDownload}>
-                    Click here if download didn't start
+                  <Button
+                    variant="outline"
+                    className="w-full mb-4 font-extrabold"
+                    onClick={() => startBrochureDownload(true)}
+                  >
+                    Click here if download didn't start ➜
                   </Button>
                 )}
+                <Button
+                  variant="outline"
+                  className="w-full font-extrabold"
+                  onClick={() => setEnrollmentStatus('idle')}
+                >
+                  Back
+                </Button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-extrabold uppercase mb-2">Full Name</label>
-                  <input
-                    type="text"
-                    {...register('fullName')}
-                    className="w-full px-4 py-3 border-[3px] border-[#111111] text-sm font-extrabold shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all"
-                    placeholder="Enter your name"
-                  />
-                  {errors.fullName && <p className="text-red-500 text-xs font-extrabold mt-1.5 uppercase">{errors.fullName.message as string}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-extrabold uppercase mb-2">Email Address</label>
-                  <input
-                    type="email"
-                    {...register('email')}
-                    className="w-full px-4 py-3 border-[3px] border-[#111111] text-sm font-extrabold shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all"
-                    placeholder="Enter your email"
-                  />
-                  {errors.email && <p className="text-red-500 text-xs font-extrabold mt-1.5 uppercase">{errors.email.message as string}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-extrabold uppercase mb-2">Phone Number</label>
-                  <input
-                    type="text"
-                    {...register('phone')}
-                    className="w-full px-4 py-3 border-[3px] border-[#111111] text-sm font-extrabold shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all"
-                    placeholder="Enter your phone number"
-                  />
-                  {errors.phone && <p className="text-red-500 text-xs font-extrabold mt-1.5 uppercase">{errors.phone.message as string}</p>}
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-left">
+                <input type="hidden" {...register("intent")} />
+                <div className="space-y-4">
+                  <div>
+                    <input 
+                      {...register("fullName")} 
+                      placeholder="Full Name" 
+                      className="w-full px-5 py-4 border-[3px] border-[#111111] bg-[#FFFFFF] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_rgba(24,138,178,1)] transition-all placeholder-[#111111]/60 text-sm" 
+                    />
+                    {errors.fullName && <p className="text-red-500 text-xs font-bold mt-1 uppercase">{errors.fullName.message as string}</p>}
+                  </div>
+                  <div>
+                    <input 
+                      {...register("email")} 
+                      type="email" 
+                      placeholder="Email Address" 
+                      className="w-full px-5 py-4 border-[3px] border-[#111111] bg-[#FFFFFF] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_rgba(24,138,178,1)] transition-all placeholder-[#111111]/60 text-sm" 
+                    />
+                    {errors.email && <p className="text-red-500 text-xs font-bold mt-1 uppercase">{errors.email.message as string}</p>}
+                  </div>
+                  <div>
+                    <input 
+                      {...register("phone")} 
+                      placeholder="WhatsApp Number" 
+                      className="w-full px-5 py-4 border-[3px] border-[#111111] bg-[#FFFFFF] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_rgba(24,138,178,1)] transition-all placeholder-[#111111]/60 text-sm" 
+                    />
+                    {errors.phone && <p className="text-red-500 text-xs font-bold mt-1 uppercase">{errors.phone.message as string}</p>}
+                  </div>
                 </div>
 
                 {enrollmentStatus === 'error' && (
                   <p className="text-red-500 text-xs font-extrabold uppercase text-center">Submission failed. Please try again.</p>
                 )}
 
-                <Button 
-                  type="submit" 
-                  variant={formIntent === 'enroll' ? 'primary' : 'secondary'}
-                  className="w-full py-4 text-base shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
-                  isLoading={enrollmentStatus === 'loading'}
-                >
-                  {formIntent === 'enroll' ? 'Submit Enrollment Application' : 'Download PM-X Brochure'}
+                <Button type="submit" className="w-full py-5 text-xl font-extrabold shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]" isLoading={enrollmentStatus === 'loading'}>
+                  {formIntent === 'brochure' ? 'Get Brochure Now' : 'Join First Step Student Batch'}
                 </Button>
               </form>
             )}

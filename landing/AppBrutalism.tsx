@@ -143,6 +143,7 @@ export const sanketPhotoSrc = "/mentor-sanket.jpg";
 export const ankitPhotoSrc = "/mentor-ankit.jpg";
 export const pankajPhotoSrc = "/mentor-pankaj.jpg";
 export const brochurePdfSrc = "/PM-X-Accelerator-Brochure.pdf";
+export const studentBrochurePdfSrc = "/PM-X-FirstStep-Brochure.pdf";
 const demoLeadsKey = "pmx_demo_leads";
 const demoUsersKey = "pmx_demo_users";
 const demoSessionKey = "pmx_demo_auth_session";
@@ -181,10 +182,10 @@ export const Logo = ({ toHome }: { toHome?: boolean }) => {
 };
 
 
-export const startBrochureDownload = () => {
+export const startBrochureDownload = (isStudent: boolean = false) => {
   const link = document.createElement('a');
-  link.href = brochurePdfSrc;
-  link.download = 'PM-X-Accelerator-Brochure.pdf';
+  link.href = isStudent ? studentBrochurePdfSrc : brochurePdfSrc;
+  link.download = isStudent ? 'PM-X-FirstStep-Brochure.pdf' : 'PM-X-Accelerator-Brochure.pdf';
   link.target = '_blank';
   link.rel = 'noopener noreferrer';
   document.body.appendChild(link);
