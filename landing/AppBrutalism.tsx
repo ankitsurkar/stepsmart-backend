@@ -33,7 +33,7 @@ export function AnnouncementBanner() {
         <span>{BANNER_CONFIG.text}</span>
         <button 
           onClick={() => {
-            navigate('/events');
+            navigate('/events?id=product-masterclass-2026');
           }}
           className="bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer inline-block"
         >
