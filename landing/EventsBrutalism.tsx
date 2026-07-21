@@ -437,10 +437,18 @@ export function EventsPage() {
                       ) : (
                         <div className="space-y-3">
                           <a 
-                            href={activeEvent.registerUrl || EVENT_COMMUNITY_URL}
+                            href={EVENT_REGISTER_FORM_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-full block text-center bg-[#188ab2] text-white border-[3px] border-[#111111] py-3.5 px-6 font-extrabold text-sm uppercase shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#157a9e] transition-all select-none cursor-pointer"
+                          >
+                            Register Now ➜
+                          </a>
+                          <a 
+                            href={EVENT_COMMUNITY_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full block text-center bg-white text-[#111111] border-[3px] border-[#111111] py-3.5 px-6 font-extrabold text-sm uppercase shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-slate-50 transition-all select-none cursor-pointer"
                           >
                             Join Community ➜
                           </a>
