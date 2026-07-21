@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Logo, Button, NavLink, saveLeadToDemoDB } from './AppBrutalism';
 
+export const EVENT_COMMUNITY_URL = "https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD";
 export const EVENT_REGISTER_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSehtxnp9DEFbvtsFz879lZyaMyiVT9y0mAa98lRpinn6STxUw/viewform?usp=publish-editor";
 
 // Type Definitions
@@ -60,7 +61,7 @@ const DEMO_EVENTS: EventItem[] = [
     format: "IIT Roorkee",
     description: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
     aboutText: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews. This session is designed for aspiring PMs looking to switch from non-tech, engineering, or MBA roles without needing prior product management credentials. Learn directly from PMs currently at Microsoft, Mastercard, and Shopdeck.\n\n### What We Cover:\n- **Skills & Frameworks**: Building product sense, RCA, design thinking, and guesstimates that companies actually test.\n- **Resume Mapping**: Translating existing analytical/technical experience to catch PM recruiter eyes.\n- **Interview Strategies**: Practical frameworks vs real thinking approaches.\n- **Q&A Round**: Open floor to ask speakers questions.",
-    registerUrl: EVENT_REGISTER_FORM_URL,
+    registerUrl: EVENT_COMMUNITY_URL,
     attendeeCount: 124,
     bannerBg: "linear-gradient(135deg, #188ab2 0%, #1e40af 100%)",
     hosts: [
@@ -436,12 +437,12 @@ export function EventsPage() {
                       ) : (
                         <div className="space-y-3">
                           <a 
-                            href={activeEvent.registerUrl || EVENT_REGISTER_FORM_URL}
+                            href={activeEvent.registerUrl || EVENT_COMMUNITY_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-full block text-center bg-[#188ab2] text-white border-[3px] border-[#111111] py-3.5 px-6 font-extrabold text-sm uppercase shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#157a9e] transition-all select-none cursor-pointer"
                           >
-                            Register Now ➜
+                            Join Community ➜
                           </a>
                         </div>
                       )}
@@ -529,20 +530,11 @@ export function EventsPage() {
                           </div>
                         </div>
 
-                        <div className="shrink-0 w-full md:w-auto flex flex-col sm:flex-row md:flex-col gap-3 self-stretch justify-center items-center md:items-end">
-                          <a 
-                            href={event.registerUrl || EVENT_REGISTER_FORM_URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                            className="w-full md:w-auto px-6 py-3.5 bg-[#188ab2] text-white border-[3px] border-[#111111] font-extrabold text-sm uppercase shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#157a9e] transition-all text-center select-none cursor-pointer"
-                          >
-                            Register Now ➜
-                          </a>
+                        <div className="shrink-0 w-full md:w-auto flex flex-col gap-4 self-stretch justify-center items-center md:items-end">
                           <Button 
-                            variant="outline" 
+                            variant="primary" 
                             onClick={(e: React.MouseEvent) => { e.stopPropagation(); handleOpenEvent(event.id); }}
-                            className="w-full md:w-auto px-6 py-3.5 font-extrabold text-sm uppercase shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]"
+                            className="w-full md:w-auto px-8 py-3.5 font-extrabold text-sm uppercase shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]"
                           >
                             View Details ➜
                           </Button>
