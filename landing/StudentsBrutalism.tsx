@@ -586,11 +586,11 @@ export function StudentsLandingPage() {
               </span>
             </h2>
             <p className="text-lg font-bold text-[#111111] mt-4">
-              Three core weeks focused on product thinking, problem space, and solution space.
+              Core curriculum focused on product thinking and problem space.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch select-none text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch select-none text-left">
             {[
               {
                 week: "WEEK 1",
@@ -619,21 +619,6 @@ export function StudentsLandingPage() {
                   {
                     heading: "User Research",
                     bullets: ["Surveys", "Interviews", "Framing your problem"]
-                  }
-                ]
-              },
-              {
-                week: "WEEK 3",
-                title: "Solution Space",
-                tag: "Execution & MVP",
-                modules: [
-                  {
-                    heading: "Exploring Solutions",
-                    bullets: ["Brainstorming Solutions", "Product Validation", "Risks"]
-                  },
-                  {
-                    heading: "Building Solutions",
-                    bullets: ["Prioritization", "MVP", "Metrics"]
                   }
                 ]
               }
@@ -679,7 +664,7 @@ export function StudentsLandingPage() {
               </div>
             ))}
 
-            {/* 4th Card: Download Full Curriculum Brochure */}
+            {/* 3rd Card: Download Full Curriculum Brochure */}
             <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] transition-all duration-150 flex flex-col justify-between">
               <div>
                 {/* Top Badge */}
@@ -697,26 +682,8 @@ export function StudentsLandingPage() {
                 </h3>
 
                 <p className="text-xs md:text-sm font-extrabold text-[#111111] leading-relaxed mb-6">
-                  There are more than three weeks in the full curriculum. Get the complete student roadmap with advanced case studies, portfolio projects, and mock interviews.
+                  Get the complete student roadmap with advanced case studies, portfolio projects, live PRD specifications, and mock interviews.
                 </p>
-
-                <div className="bg-white border-2 border-[#111111] p-4 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] mb-6">
-                  <p className="text-xs font-black text-[#188ab2] uppercase tracking-wider mb-2">What's Inside:</p>
-                  <ul className="space-y-1.5 text-xs font-extrabold text-[#111111]">
-                    <li className="flex items-center gap-1.5">
-                      <span className="text-[#188ab2] font-black">✓</span>
-                      <span>Full 6-Week Placement Plan</span>
-                    </li>
-                    <li className="flex items-center gap-1.5">
-                      <span className="text-[#188ab2] font-black">✓</span>
-                      <span>3 Live PRD Specifications</span>
-                    </li>
-                    <li className="flex items-center gap-1.5">
-                      <span className="text-[#188ab2] font-black">✓</span>
-                      <span>50+ PM Case Bank & Templates</span>
-                    </li>
-                  </ul>
-                </div>
               </div>
 
               <Button 
