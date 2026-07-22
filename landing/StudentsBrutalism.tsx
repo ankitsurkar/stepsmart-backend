@@ -242,12 +242,16 @@ export function StudentsLandingPage() {
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-12 leading-[1.2] text-[#111111]">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-[1.2] text-[#111111]">
             Go From "will I even get shortlisted" to{' '}
             <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-1 rotate-[1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
               PM placement-ready
             </span>
           </h1>
+
+          <p className="text-base md:text-lg font-bold text-slate-700 max-w-3xl mx-auto leading-relaxed mb-10">
+            PM-X FirstStep is a 6-week structured program that takes final-year students from zero product experience to interview-ready — covering resume repositioning, product sense, and mock interviews with mentors currently working as PMs at Mastercard, Microsoft, and ShopDeck — built for students with limited time before placement season.
+          </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 w-full max-w-[1500px] mx-auto select-none mb-12">
             {[
