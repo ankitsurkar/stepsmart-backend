@@ -250,16 +250,34 @@ export const setDemoSession = (email: string | null) => {
   localStorage.removeItem(demoSessionKey);
 };
 
+export const scrollToSection = (targetId: string) => {
+  const element = document.getElementById(targetId);
+  if (element) {
+    const fixedHeader = document.querySelector('.fixed.top-0') || document.querySelector('nav');
+    const navHeight = fixedHeader ? fixedHeader.getBoundingClientRect().height : 80;
+    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+    const offsetPosition = elementPosition - navHeight + 3;
+
+    window.scrollTo({
+      top: Math.max(0, offsetPosition),
+      behavior: 'smooth'
+    });
+  }
+};
+
 export const NavLink = ({ href, children, target, rel }: any) => {
   const [isHovered, setIsHovered] = useState(false);
   
   const handleClick = (e: React.MouseEvent) => {
     if (href && href.startsWith('#')) {
       e.preventDefault();
-      const targetId = href.substring(1);
+      scrollToSection(href.substring(1));
+    } else if (href && href.startsWith('/#')) {
+      const targetId = href.substring(2);
       const element = document.getElementById(targetId);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        e.preventDefault();
+        scrollToSection(targetId);
       }
     }
   };
@@ -384,19 +402,13 @@ function ProfessionalsLandingPage() {
   const handleActionClick = (intent: string) => {
     setFormIntent(intent);
     setValue('intent', intent as any);
-    const element = document.getElementById('form-container');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSection('form-container');
   };
 
   const handleMobileLinkClick = (e: React.MouseEvent, targetId: string) => {
     e.preventDefault();
     setIsMenuOpen(false);
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSection(targetId);
   };
 
   return (
@@ -412,7 +424,7 @@ function ProfessionalsLandingPage() {
               <Link to="/events" className="font-extrabold text-sm text-[#111111] hover:text-[#188ab2] transition-colors">Events</Link>
               <NavLink href="/blog">Blog</NavLink>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
-              <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => document.getElementById('enroll')?.scrollIntoView({ behavior: 'smooth' })}>
+              <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => scrollToSection('enroll')}>
                 Apply Now
               </Button>
             </div>
@@ -476,7 +488,7 @@ function ProfessionalsLandingPage() {
       </section>
 
       {/* Who is it for */}
-      <section id="who-is-it-for" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="who-is-it-for" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-extrabold text-[#111111] mb-4">
@@ -585,7 +597,7 @@ function ProfessionalsLandingPage() {
 
       {userType === 'professional' ? (
         /* Batch Details Section */
-        <section id="batch-details" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+        <section id="batch-details" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
           <div className="container mx-auto px-6 max-w-4xl">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -659,7 +671,7 @@ function ProfessionalsLandingPage() {
       ) : (
         <>
           {/* Cohort Perks / Student Benefits */}
-          <section id="student-benefits" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+          <section id="student-benefits" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
             <div className="container mx-auto px-6 max-w-6xl">
               <div className="mb-16 text-center md:text-left">
                 <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -767,7 +779,7 @@ function ProfessionalsLandingPage() {
       )}
 
       {/* Mentors */}
-      <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 text-center max-w-6xl">
           {userType === 'professional' ? (
             <>
@@ -1384,7 +1396,7 @@ function ProfessionalsLandingPage() {
       </section>
 
       {/* Enroll Form Section */}
-      <section id="enroll" className="py-16 bg-[#FFFFFF] relative border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="enroll" className="py-16 bg-[#FFFFFF] relative border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl text-center">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-12 text-[#111111]">Ready to Start Your Journey?</h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
@@ -1414,7 +1426,7 @@ function ProfessionalsLandingPage() {
             </button>
           </div>
 
-          <div id="form-container" className="max-w-xl mx-auto bg-white border-[3px] border-[#111111] p-8 md:p-12 text-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] scroll-mt-32">
+          <div id="form-container" className="max-w-xl mx-auto bg-white border-[3px] border-[#111111] p-8 md:p-12 text-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] scroll-mt-[77px]">
             {enrollmentStatus === 'success' ? (
               <div className="text-center py-12">
                 <div className="bg-[#FFFFFF] border-[3px] border-[#111111] text-green-600 w-16 h-16 flex items-center justify-center mx-auto mb-8 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
@@ -2187,10 +2199,7 @@ function PortalPage() {
   const handleMobileLinkClick = (e: React.MouseEvent, targetId: string) => {
     e.preventDefault();
     setIsMenuOpen(false);
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSection(targetId);
   };
 
   const handleShareTrack = (trackPath: string, e: React.MouseEvent<HTMLButtonElement>) => {
@@ -2221,7 +2230,7 @@ function PortalPage() {
               <Link to="/events" className="font-extrabold text-sm text-[#111111] hover:text-[#188ab2] transition-colors">Events</Link>
               <NavLink href="/blog">Blog</NavLink>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
-              <Button variant="primary" onClick={() => document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' })}>
+              <Button variant="primary" onClick={() => scrollToSection('programs')}>
                 Explore Cohorts
               </Button>
             </div>
@@ -2238,7 +2247,7 @@ function PortalPage() {
             <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
             <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
             <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
-            <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' }); }}>Explore Cohorts</Button>
+            <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); scrollToSection('programs'); }}>Explore Cohorts</Button>
           </div>
         )}
       </div>
@@ -2272,7 +2281,7 @@ function PortalPage() {
       </section>
 
       {/* Program Tracks Section */}
-      <section id="programs" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="programs" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -2361,7 +2370,7 @@ function PortalPage() {
       </section>
 
       {/* Mentors Section */}
-      <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 text-center max-w-5xl">
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
           <div className="flex flex-col gap-16 relative text-left">
@@ -2483,7 +2492,7 @@ function PortalPage() {
       </section>
 
       {/* How to Join Section */}
-      <section id="how-to-join" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="how-to-join" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">

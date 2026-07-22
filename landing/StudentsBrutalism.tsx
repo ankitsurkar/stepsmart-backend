@@ -36,6 +36,7 @@ import {
   Logo,
   Button,
   NavLink,
+  scrollToSection,
   db,
   appId,
   enrollmentSchema,
@@ -183,19 +184,13 @@ export function StudentsLandingPage() {
   const handleActionClick = (intent: string) => {
     setFormIntent(intent);
     setValue('intent', intent as any);
-    const element = document.getElementById('student-form-container');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSection('student-form-container');
   };
 
   const handleMobileLinkClick = (e: React.MouseEvent, targetId: string) => {
     e.preventDefault();
     setIsMenuOpen(false);
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSection(targetId);
   };
 
   return (
@@ -213,7 +208,7 @@ export function StudentsLandingPage() {
               <Link to="/events" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Events</Link>
               <Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
-              <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => document.getElementById('enroll-student')?.scrollIntoView({ behavior: 'smooth' })}>
+              <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => scrollToSection('enroll-student')}>
                 Apply Now
               </Button>
             </div>
@@ -294,7 +289,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Why SpeedUp / Who is it for */}
-      <section id="why-speedup" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="why-speedup" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is PM-X First Step for?</h2>
@@ -376,7 +371,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Cohort Perks / Student Benefits */}
-      <section id="student-benefits" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="student-benefits" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-[#111111] uppercase">
@@ -450,7 +445,7 @@ export function StudentsLandingPage() {
 
 
       {/* Roadmap */}
-      <section id="roadmap" className="py-10 md:py-12 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="roadmap" className="py-10 md:py-12 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="text-center mb-8 max-w-3xl mx-auto relative">
             <h2 className="text-3xl md:text-4xl font-extrabold text-[#111111] mb-2">
@@ -576,7 +571,7 @@ export function StudentsLandingPage() {
 
 
       {/* Student Curriculum Section */}
-      <section id="curriculum" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="curriculum" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="text-center mb-16 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -699,7 +694,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Weekly Schedule Section */}
-      <section id="weekly-schedule" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="weekly-schedule" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-[#111111] uppercase">
@@ -776,7 +771,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section id="student-faq" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="student-faq" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-4xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -829,7 +824,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Registration Form / Call to action */}
-      <section id="enroll-student" className="py-16 bg-[#FFFFFF] relative border-b-[3px] border-[#111111] scroll-mt-32">
+      <section id="enroll-student" className="py-16 bg-[#FFFFFF] relative border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl text-center">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-12 text-[#111111]">Ready to Start Your Journey?</h2>
           
@@ -860,7 +855,7 @@ export function StudentsLandingPage() {
             </button>
           </div>
 
-          <div id="student-form-container" className="max-w-xl mx-auto bg-white border-[3px] border-[#111111] p-8 md:p-12 text-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] scroll-mt-32">
+          <div id="student-form-container" className="max-w-xl mx-auto bg-white border-[3px] border-[#111111] p-8 md:p-12 text-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] scroll-mt-[77px]">
             {enrollmentStatus === 'success' ? (
               <div className="text-center py-12">
                 <div className="bg-[#FFFFFF] border-[3px] border-[#111111] text-green-600 w-16 h-16 flex items-center justify-center mx-auto mb-8 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
