@@ -239,9 +239,9 @@ export function EventsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
+    <div className="min-h-screen bg-[#FAF9F6] font-sans text-[#111111] selection:bg-[#188ab2]/30">
       {/* Header */}
-      <nav className="fixed top-0 z-50 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+      <nav className="fixed top-0 z-50 w-full bg-[#FAF9F6] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <Logo toHome={true} />
           <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
@@ -263,7 +263,7 @@ export function EventsPage() {
 
       {/* Mobile Nav */}
       {isMenuOpen && (
-        <div className="md:hidden fixed top-20 left-0 w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+        <div className="md:hidden fixed top-20 left-0 w-full bg-[#FAF9F6] border-b-[3px] border-[#111111] z-40 p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
           <a href="/#who-is-it-for" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
           <a href="https://wa.me/919920803517?text=Hi%2C%20I%27m%20interested%20in%20PM-X%20%E2%80%94%20here%27s%20my%20background%3A" target="_blank" rel="noreferrer" className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Chat 1:1</a>
           <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
@@ -276,7 +276,7 @@ export function EventsPage() {
 
       {/* Meetup-Style Detail View */}
       {activeEvent ? (
-        <div className="pt-28 pb-20 bg-[#FFFFFF]">
+        <div className="pt-28 pb-20 bg-[#FAF9F6]">
           <div className="container mx-auto px-6 max-w-5xl">
             {/* Breadcrumbs */}
             <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-6 select-none">
@@ -462,7 +462,7 @@ export function EventsPage() {
         /* Regular Events Listing Page */
         <>
           {/* Hero Section */}
-          <section className="pt-40 pb-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+          <section className="pt-40 pb-16 bg-[#FAF9F6] border-b-[3px] border-[#111111]">
             <div className="container mx-auto px-6 max-w-5xl text-center">
               <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-6 py-2 font-extrabold text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none mb-6">
                 Masterclasses & Workshops
@@ -477,7 +477,7 @@ export function EventsPage() {
           </section>
 
           {/* Main Content Area */}
-          <main className="py-16 bg-[#FFFFFF]">
+          <main className="py-16 bg-[#FAF9F6]">
             <div className="container mx-auto px-6 max-w-5xl">
               {/* Upcoming Section */}
               <div className="mb-20">
