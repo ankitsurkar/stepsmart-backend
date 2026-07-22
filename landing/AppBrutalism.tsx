@@ -265,15 +265,16 @@ export const scrollToSection = (targetId: string) => {
   }
 };
 
-export const NavLink = ({ href, children, target, rel }: any) => {
+export const NavLink = ({ href, to, children, target, rel, className }: any) => {
   const [isHovered, setIsHovered] = useState(false);
+  const linkPath = to || href || '';
   
   const handleClick = (e: React.MouseEvent) => {
-    if (href && href.startsWith('#')) {
+    if (linkPath && linkPath.startsWith('#')) {
       e.preventDefault();
-      scrollToSection(href.substring(1));
-    } else if (href && href.startsWith('/#')) {
-      const targetId = href.substring(2);
+      scrollToSection(linkPath.substring(1));
+    } else if (linkPath && linkPath.startsWith('/#')) {
+      const targetId = linkPath.substring(2);
       const element = document.getElementById(targetId);
       if (element) {
         e.preventDefault();
@@ -281,37 +282,58 @@ export const NavLink = ({ href, children, target, rel }: any) => {
       }
     }
   };
-  
+
+  const markerSvg = (
+    <svg
+      viewBox="0 0 100 20"
+      preserveAspectRatio="none"
+      className="absolute left-0 right-0 bottom-[-2px] w-full h-3 pointer-events-none"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M 5,10 C 35,14 65,14 95,10"
+        stroke="#FACC15"
+        strokeWidth="5"
+        strokeLinecap="round"
+        style={{
+          strokeDasharray: 100,
+          strokeDashoffset: isHovered ? 0 : 100,
+          transition: 'stroke-dashoffset 0.25s ease-in-out',
+        }}
+      />
+    </svg>
+  );
+
+  const baseClasses = `relative px-3 py-1.5 text-[#111111] font-extrabold text-sm select-none cursor-pointer inline-block ${className || ''}`;
+
+  if (linkPath && !linkPath.startsWith('#') && !linkPath.startsWith('http')) {
+    return (
+      <Link
+        to={linkPath}
+        onClick={handleClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={baseClasses}
+      >
+        <span className="relative z-10">{children}</span>
+        {markerSvg}
+      </Link>
+    );
+  }
+
   return (
     <a
-      href={href}
+      href={linkPath}
       target={target}
       rel={rel}
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative px-3 py-1.5 text-[#111111] font-extrabold text-sm select-none cursor-pointer"
+      className={baseClasses}
     >
       <span className="relative z-10">{children}</span>
-      <svg
-        viewBox="0 0 100 20"
-        preserveAspectRatio="none"
-        className="absolute left-0 right-0 bottom-[-2px] w-full h-3 pointer-events-none"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M 5,10 C 35,14 65,14 95,10"
-          stroke="#FFF3A7"
-          strokeWidth="4.5"
-          strokeLinecap="round"
-          style={{
-            strokeDasharray: 100,
-            strokeDashoffset: isHovered ? 0 : 100,
-            transition: 'stroke-dashoffset 0.25s ease-in-out',
-          }}
-        />
-      </svg>
+      {markerSvg}
     </a>
   );
 };
@@ -421,7 +443,7 @@ function ProfessionalsLandingPage() {
             <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
               <NavLink href="#who-is-it-for">Who is it for?</NavLink>
               <NavLink href="#curriculum">Cohort Perks</NavLink>
-              <Link to="/events" className="font-extrabold text-sm text-[#111111] hover:text-[#188ab2] transition-colors">Events</Link>
+              <NavLink to="/events">Events</NavLink>
               <NavLink href="/blog">Blog</NavLink>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
               <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => scrollToSection('enroll')}>
@@ -2227,7 +2249,7 @@ function PortalPage() {
             <Logo />
             <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
               <NavLink href="#mentors">Mentors</NavLink>
-              <Link to="/events" className="font-extrabold text-sm text-[#111111] hover:text-[#188ab2] transition-colors">Events</Link>
+              <NavLink to="/events">Events</NavLink>
               <NavLink href="/blog">Blog</NavLink>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
               <Button variant="primary" onClick={() => scrollToSection('programs')}>

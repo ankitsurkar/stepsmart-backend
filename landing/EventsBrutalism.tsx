@@ -248,11 +248,8 @@ export function EventsPage() {
             <NavLink href="/#who-is-it-for">Who is it for?</NavLink>
             <NavLink href="https://wa.me/919920803517?text=Hi%2C%20I%27m%20interested%20in%20PM-X%20%E2%80%94%20here%27s%20my%20background%3A" target="_blank" rel="noreferrer">Chat 1:1</NavLink>
             <NavLink href="/#mentors">Mentors</NavLink>
-            <Link to="/events" className="relative px-3 py-1.5 text-[#111111] font-extrabold text-sm select-none">
-              <span className="relative z-10">Events</span>
-              <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
-            </Link>
-            <NavLink href="/blog">Blog</NavLink>
+            <NavLink to="/events">Events</NavLink>
+            <NavLink to="/blog">Blog</NavLink>
             <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
             <Button variant="primary" onClick={() => navigate('/#enroll')}>
               Apply Now

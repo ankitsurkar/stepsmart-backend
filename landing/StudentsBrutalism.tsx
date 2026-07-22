@@ -205,8 +205,8 @@ export function StudentsLandingPage() {
               <NavLink href="#why-speedup">Why First Step?</NavLink>
               <NavLink href="#student-benefits">Cohort Perks</NavLink>
               <NavLink href="#curriculum">Curriculum</NavLink>
-              <Link to="/events" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Events</Link>
-              <Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link>
+              <NavLink to="/events">Events</NavLink>
+              <NavLink to="/blog">Blog</NavLink>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
               <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => scrollToSection('enroll-student')}>
                 Apply Now
