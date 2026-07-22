@@ -434,10 +434,10 @@ function ProfessionalsLandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] font-sans text-[#111111] selection:bg-[#188ab2]/30">
+    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
       <div className="fixed top-0 z-50 w-full flex flex-col">
         <AnnouncementBanner />
-        <nav className="w-full bg-[#FAF9F6] border-b-[3px] border-[#111111]">
+        <nav className="w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
           <div className="container mx-auto px-6 h-20 flex items-center justify-between">
             <Logo toHome={true} />
             <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
@@ -458,7 +458,7 @@ function ProfessionalsLandingPage() {
 
         {/* Mobile Nav */}
         {isMenuOpen && (
-          <div className="md:hidden w-full bg-[#FAF9F6] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+          <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
             <a href="#who-is-it-for" onClick={(e) => handleMobileLinkClick(e, 'who-is-it-for')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
             <a href="#curriculum" onClick={(e) => handleMobileLinkClick(e, 'curriculum')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
             <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
@@ -470,7 +470,7 @@ function ProfessionalsLandingPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-8 bg-[#FAF9F6] border-b-[3px] border-[#111111]">
+      <section className="pt-32 pb-8 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 text-center max-w-5xl">
               <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-8 leading-[1.2] text-[#111111]">
                 Break into{' '}
@@ -510,7 +510,7 @@ function ProfessionalsLandingPage() {
       </section>
 
       {/* Who is it for */}
-      <section id="who-is-it-for" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="who-is-it-for" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-extrabold text-[#111111] mb-4">
@@ -619,7 +619,7 @@ function ProfessionalsLandingPage() {
 
       {userType === 'professional' ? (
         /* Batch Details Section */
-        <section id="batch-details" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+        <section id="batch-details" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
           <div className="container mx-auto px-6 max-w-4xl">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -693,7 +693,7 @@ function ProfessionalsLandingPage() {
       ) : (
         <>
           {/* Cohort Perks / Student Benefits */}
-          <section id="student-benefits" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+          <section id="student-benefits" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
             <div className="container mx-auto px-6 max-w-6xl">
               <div className="mb-16 text-center md:text-left">
                 <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -746,7 +746,7 @@ function ProfessionalsLandingPage() {
           </section>
 
           {/* Testimonials */}
-          <section className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111]">
+          <section className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
             <div className="container mx-auto px-6 text-center max-w-5xl">
               <h2 className="text-4xl font-extrabold mb-4 text-[#111111]">Student Success Stories</h2>
               <p className="text-lg font-bold text-slate-500 mb-16">How college freshers broke into PM roles right out of campus.</p>
@@ -801,7 +801,7 @@ function ProfessionalsLandingPage() {
       )}
 
       {/* Mentors */}
-      <section id="mentors" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 text-center max-w-6xl">
           {userType === 'professional' ? (
             <>
@@ -1418,7 +1418,7 @@ function ProfessionalsLandingPage() {
       </section>
 
       {/* Enroll Form Section */}
-      <section id="enroll" className="py-16 bg-[#FAF9F6] relative border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="enroll" className="py-16 bg-[#FFFFFF] relative border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl text-center">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-12 text-[#111111]">Ready to Start Your Journey?</h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
@@ -2303,7 +2303,7 @@ function PortalPage() {
       </section>
 
       {/* Program Tracks Section */}
-      <section id="programs" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="programs" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -2392,7 +2392,7 @@ function PortalPage() {
       </section>
 
       {/* Mentors Section */}
-      <section id="mentors" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 text-center max-w-5xl">
           <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
           <div className="flex flex-col gap-16 relative text-left">
@@ -2514,7 +2514,7 @@ function PortalPage() {
       </section>
 
       {/* How to Join Section */}
-      <section id="how-to-join" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="how-to-join" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -2701,7 +2701,7 @@ function PortalPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#FAF9F6] py-12 border-t-[3px] border-[#111111]">
+      <footer className="bg-[#FFFFFF] py-12 border-t-[3px] border-[#111111]">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-3 gap-16 mb-16 text-left">
             <div className="col-span-1">

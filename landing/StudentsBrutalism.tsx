@@ -194,11 +194,11 @@ export function StudentsLandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] font-sans text-[#111111] selection:bg-[#188ab2]/30">
+    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#111111] selection:bg-[#188ab2]/30">
       {/* Navbar Wrapper */}
       <div className="fixed top-0 z-50 w-full flex flex-col">
         <AnnouncementBanner />
-        <nav className="w-full bg-[#FAF9F6] border-b-[3px] border-[#111111]">
+        <nav className="w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
           <div className="container mx-auto px-6 h-20 flex items-center justify-between">
             <Logo toHome={true} />
             <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
@@ -220,7 +220,7 @@ export function StudentsLandingPage() {
 
         {/* Mobile Nav */}
         {isMenuOpen && (
-          <div className="md:hidden w-full bg-[#FAF9F6] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+          <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
             <a href="#why-speedup" onClick={(e) => handleMobileLinkClick(e, 'why-speedup')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Why First Step?</a>
             <a href="#student-benefits" onClick={(e) => handleMobileLinkClick(e, 'student-benefits')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
             <a href="#curriculum" onClick={(e) => handleMobileLinkClick(e, 'curriculum')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Curriculum</a>
@@ -233,7 +233,7 @@ export function StudentsLandingPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-8 bg-[#FAF9F6] border-b-[3px] border-[#111111]">
+      <section className="pt-32 pb-8 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 text-center max-w-[1600px]">
           {/* Badge for Student Edition */}
           <div className="mb-6 inline-block">
@@ -293,7 +293,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Why SpeedUp / Who is it for */}
-      <section id="why-speedup" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="why-speedup" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-extrabold text-[#111111] mb-4">Who is PM-X First Step for?</h2>
@@ -375,7 +375,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Cohort Perks / Student Benefits */}
-      <section id="student-benefits" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="student-benefits" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-[#111111] uppercase">
@@ -449,7 +449,7 @@ export function StudentsLandingPage() {
 
 
       {/* Roadmap */}
-      <section id="roadmap" className="py-10 md:py-12 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="roadmap" className="py-10 md:py-12 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="text-center mb-8 max-w-3xl mx-auto relative">
             <h2 className="text-3xl md:text-4xl font-extrabold text-[#111111] mb-2">
@@ -575,7 +575,7 @@ export function StudentsLandingPage() {
 
 
       {/* Student Curriculum Section */}
-      <section id="curriculum" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="curriculum" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="text-center mb-16 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -698,7 +698,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Weekly Schedule Section */}
-      <section id="weekly-schedule" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="weekly-schedule" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-[#111111] uppercase">
@@ -775,7 +775,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section id="student-faq" className="py-16 bg-[#FAF9F6] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="student-faq" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-4xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
@@ -828,7 +828,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Registration Form / Call to action */}
-      <section id="enroll-student" className="py-16 bg-[#FAF9F6] relative border-b-[3px] border-[#111111] scroll-mt-[77px]">
+      <section id="enroll-student" className="py-16 bg-[#FFFFFF] relative border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl text-center">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-12 text-[#111111]">Ready to Start Your Journey?</h2>
           
@@ -933,7 +933,7 @@ export function StudentsLandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#FAF9F6] py-12 border-t-[3px] border-[#111111]">
+      <footer className="bg-[#FFFFFF] py-12 border-t-[3px] border-[#111111]">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-3 gap-16 mb-16 text-left">
             <div className="col-span-1">
