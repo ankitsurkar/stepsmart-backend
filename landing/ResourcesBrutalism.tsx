@@ -29,7 +29,10 @@ import {
   Loader2,
   Lock,
   HelpCircle,
-  Layers
+  Layers,
+  ChevronDown,
+  ChevronUp,
+  SlidersHorizontal
 } from 'lucide-react';
 import { Logo, Button, NavLink, AnnouncementBanner, saveLeadToDemoDB } from './AppBrutalism';
 
@@ -800,6 +803,17 @@ export function ResourcesBrutalism() {
   const [selectedQuestionCategory, setSelectedQuestionCategory] = useState<string>('All Question Types');
   const [activeResourceTab, setActiveResourceTab] = useState<'guides' | 'questions'>('guides');
   const [selectedCompany, setSelectedCompany] = useState<string>('All Companies');
+
+  // Collapsible Left Sidebar Dropdowns State
+  const [openDropdowns, setOpenDropdowns] = useState({
+    category: true,
+    questionType: true,
+    company: true
+  });
+
+  const toggleDropdown = (section: 'category' | 'questionType' | 'company') => {
+    setOpenDropdowns(prev => ({ ...prev, [section]: !prev[section] }));
+  };
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
@@ -1231,111 +1245,225 @@ export function ResourcesBrutalism() {
               <div className="flex flex-col lg:flex-row gap-8 items-start">
 
                 {/* Left Sidebar Filter */}
-                <aside className="w-full lg:w-64 xl:w-72 shrink-0 bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none sticky top-36 z-10">
+                <aside className="w-full lg:w-64 xl:w-72 shrink-0 bg-white border-[3px] border-[#111111] p-5 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none sticky top-36 z-10 space-y-5 text-left">
                   
-                  {/* Category Filter */}
-                  <div className="mb-8">
-                    <h3 className="text-sm font-black uppercase tracking-wider text-[#111111] mb-4 pb-2 border-b-2 border-[#111111]">
-                      Category
+                  {/* Header */}
+                  <div className="flex items-center justify-between pb-3 border-b-2 border-[#111111]">
+                    <h3 className="text-xs font-black uppercase tracking-wider text-[#111111] flex items-center gap-2">
+                      <SlidersHorizontal className="h-4 w-4 text-[#188ab2]" /> Filter Resources
                     </h3>
-                    <div className="space-y-2.5">
-                      {CATEGORIES.map((cat) => (
-                        <label 
-                          key={cat} 
-                          onClick={() => setSelectedCategory(cat)}
-                          className="flex items-center gap-3 cursor-pointer group text-left"
-                        >
-                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                            selectedCategory === cat 
-                              ? 'border-[#188ab2] bg-[#188ab2]' 
-                              : 'border-slate-300 group-hover:border-[#111111] bg-white'
-                          }`}>
-                            {selectedCategory === cat && (
-                              <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                            )}
-                          </div>
-                          <span className={`text-xs md:text-sm font-bold leading-snug transition-colors ${
-                            selectedCategory === cat 
-                              ? 'text-[#188ab2] font-black' 
-                              : 'text-slate-700 group-hover:text-[#111111]'
-                          }`}>
-                            {cat}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
+                    {(selectedCategory !== 'All Categories' || selectedCompany !== 'All Companies' || selectedQuestionCategory !== 'All Question Types') && (
+                      <button
+                        onClick={() => { 
+                          setSelectedCategory('All Categories'); 
+                          setSelectedCompany('All Companies'); 
+                          setSelectedQuestionCategory('All Question Types');
+                          setActiveResourceTab('guides');
+                        }}
+                        className="text-[10px] font-black uppercase text-[#188ab2] hover:underline"
+                      >
+                        Reset ↺
+                      </button>
+                    )}
                   </div>
 
-                  {/* Question Type Filter */}
-                  <div className="mb-8 pt-6 border-t-2 border-[#111111]/10">
-                    <h3 className="text-sm font-black uppercase tracking-wider text-[#111111] mb-4 pb-2 border-b-2 border-[#111111] flex items-center justify-between">
-                      <span>Question Type</span>
-                      <span className="text-[9px] bg-[#FFF3A7] border border-[#111111] px-1.5 py-0.5 font-bold">100+ PYQs</span>
-                    </h3>
-                    <div className="space-y-2.5">
-                      {QUESTION_TYPES.map((qType) => (
-                        <label 
-                          key={qType} 
-                          onClick={() => {
-                            setSelectedQuestionCategory(qType);
-                            if (qType !== 'All Question Types') {
+                  {/* 1. Guide Category Dropdown */}
+                  <div className="border-2 border-[#111111] p-3 bg-white shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                    <button 
+                      type="button"
+                      onClick={() => toggleDropdown('category')}
+                      className="w-full flex items-center justify-between font-black text-xs uppercase tracking-wider text-[#111111] cursor-pointer"
+                    >
+                      <div className="flex items-center gap-1.5 truncate">
+                        <FolderArchive className="h-3.5 w-3.5 text-[#188ab2] shrink-0" />
+                        <span className="truncate">Category</span>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span className="text-[9px] bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-1.5 py-0.5 font-extrabold rounded truncate max-w-[80px]">
+                          {selectedCategory === 'All Categories' ? 'All' : selectedCategory}
+                        </span>
+                        {openDropdowns.category ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                      </div>
+                    </button>
+
+                    {openDropdowns.category && (
+                      <div className="mt-2.5 pt-2.5 border-t border-slate-200 space-y-2">
+                        {/* Quick Dropdown Select */}
+                        <select 
+                          value={selectedCategory}
+                          onChange={(e) => setSelectedCategory(e.target.value)}
+                          className="w-full p-2 border-2 border-[#111111] font-bold text-xs bg-white outline-none cursor-pointer mb-2 focus:bg-[#FFF3A7]/20"
+                        >
+                          {CATEGORIES.map((cat) => (
+                            <option key={cat} value={cat}>{cat}</option>
+                          ))}
+                        </select>
+
+                        {/* List Options */}
+                        <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                          {CATEGORIES.map((cat) => (
+                            <label 
+                              key={cat} 
+                              onClick={() => setSelectedCategory(cat)}
+                              className="flex items-center gap-2 cursor-pointer group text-left"
+                            >
+                              <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                                selectedCategory === cat 
+                                  ? 'border-[#188ab2] bg-[#188ab2]' 
+                                  : 'border-slate-300 group-hover:border-[#111111] bg-white'
+                              }`}>
+                                {selectedCategory === cat && (
+                                  <div className="w-1 h-1 rounded-full bg-white" />
+                                )}
+                              </div>
+                              <span className={`text-xs font-bold leading-snug transition-colors ${
+                                selectedCategory === cat 
+                                  ? 'text-[#188ab2] font-black' 
+                                  : 'text-slate-700 group-hover:text-[#111111]'
+                              }`}>
+                                {cat}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 2. Question Type Dropdown */}
+                  <div className="border-2 border-[#111111] p-3 bg-white shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                    <button 
+                      type="button"
+                      onClick={() => toggleDropdown('questionType')}
+                      className="w-full flex items-center justify-between font-black text-xs uppercase tracking-wider text-[#111111] cursor-pointer"
+                    >
+                      <div className="flex items-center gap-1.5 truncate">
+                        <HelpCircle className="h-3.5 w-3.5 text-[#188ab2] shrink-0" />
+                        <span className="truncate">Question Type</span>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span className="text-[9px] bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B] px-1.5 py-0.5 font-extrabold rounded truncate max-w-[80px]">
+                          {selectedQuestionCategory === 'All Question Types' ? '100+ PYQs' : selectedQuestionCategory}
+                        </span>
+                        {openDropdowns.questionType ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                      </div>
+                    </button>
+
+                    {openDropdowns.questionType && (
+                      <div className="mt-2.5 pt-2.5 border-t border-slate-200 space-y-2">
+                        {/* Quick Dropdown Select */}
+                        <select 
+                          value={selectedQuestionCategory}
+                          onChange={(e) => {
+                            setSelectedQuestionCategory(e.target.value);
+                            if (e.target.value !== 'All Question Types') {
                               setActiveResourceTab('questions');
                             }
                           }}
-                          className="flex items-center gap-3 cursor-pointer group text-left"
+                          className="w-full p-2 border-2 border-[#111111] font-bold text-xs bg-white outline-none cursor-pointer mb-2 focus:bg-[#FFF3A7]/20"
                         >
-                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                            selectedQuestionCategory === qType 
-                              ? 'border-[#188ab2] bg-[#188ab2]' 
-                              : 'border-slate-300 group-hover:border-[#111111] bg-white'
-                          }`}>
-                            {selectedQuestionCategory === qType && (
-                              <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                            )}
-                          </div>
-                          <span className={`text-xs md:text-sm font-bold leading-snug transition-colors ${
-                            selectedQuestionCategory === qType 
-                              ? 'text-[#188ab2] font-black' 
-                              : 'text-slate-700 group-hover:text-[#111111]'
-                          }`}>
-                            {qType}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
+                          {QUESTION_TYPES.map((qType) => (
+                            <option key={qType} value={qType}>{qType}</option>
+                          ))}
+                        </select>
+
+                        {/* List Options */}
+                        <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                          {QUESTION_TYPES.map((qType) => (
+                            <label 
+                              key={qType} 
+                              onClick={() => {
+                                setSelectedQuestionCategory(qType);
+                                if (qType !== 'All Question Types') {
+                                  setActiveResourceTab('questions');
+                                }
+                              }}
+                              className="flex items-center gap-2 cursor-pointer group text-left"
+                            >
+                              <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                                selectedQuestionCategory === qType 
+                                  ? 'border-[#188ab2] bg-[#188ab2]' 
+                                  : 'border-slate-300 group-hover:border-[#111111] bg-white'
+                              }`}>
+                                {selectedQuestionCategory === qType && (
+                                  <div className="w-1 h-1 rounded-full bg-white" />
+                                )}
+                              </div>
+                              <span className={`text-xs font-bold leading-snug transition-colors ${
+                                selectedQuestionCategory === qType 
+                                  ? 'text-[#188ab2] font-black' 
+                                  : 'text-slate-700 group-hover:text-[#111111]'
+                              }`}>
+                                {qType}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Company Filter */}
-                  <div>
-                    <h3 className="text-sm font-black uppercase tracking-wider text-[#111111] mb-4 pb-2 border-b-2 border-[#111111]">
-                      Company
-                    </h3>
-                    <div className="space-y-2.5">
-                      {COMPANIES.map((comp) => (
-                        <label 
-                          key={comp} 
-                          onClick={() => setSelectedCompany(comp)}
-                          className="flex items-center gap-3 cursor-pointer group text-left"
+                  {/* 3. Company Dropdown */}
+                  <div className="border-2 border-[#111111] p-3 bg-white shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                    <button 
+                      type="button"
+                      onClick={() => toggleDropdown('company')}
+                      className="w-full flex items-center justify-between font-black text-xs uppercase tracking-wider text-[#111111] cursor-pointer"
+                    >
+                      <div className="flex items-center gap-1.5 truncate">
+                        <Tag className="h-3.5 w-3.5 text-[#188ab2] shrink-0" />
+                        <span className="truncate">Company</span>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span className="text-[9px] bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-1.5 py-0.5 font-extrabold rounded truncate max-w-[80px]">
+                          {selectedCompany === 'All Companies' ? 'All' : selectedCompany}
+                        </span>
+                        {openDropdowns.company ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                      </div>
+                    </button>
+
+                    {openDropdowns.company && (
+                      <div className="mt-2.5 pt-2.5 border-t border-slate-200 space-y-2">
+                        {/* Quick Dropdown Select */}
+                        <select 
+                          value={selectedCompany}
+                          onChange={(e) => setSelectedCompany(e.target.value)}
+                          className="w-full p-2 border-2 border-[#111111] font-bold text-xs bg-white outline-none cursor-pointer mb-2 focus:bg-[#FFF3A7]/20"
                         >
-                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                            selectedCompany === comp 
-                              ? 'border-[#188ab2] bg-[#188ab2]' 
-                              : 'border-slate-300 group-hover:border-[#111111] bg-white'
-                          }`}>
-                            {selectedCompany === comp && (
-                              <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                            )}
-                          </div>
-                          <span className={`text-xs md:text-sm font-bold transition-colors ${
-                            selectedCompany === comp 
-                              ? 'text-[#188ab2] font-black' 
-                              : 'text-slate-700 group-hover:text-[#111111]'
-                          }`}>
-                            {comp}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
+                          {COMPANIES.map((comp) => (
+                            <option key={comp} value={comp}>{comp}</option>
+                          ))}
+                        </select>
+
+                        {/* List Options */}
+                        <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                          {COMPANIES.map((comp) => (
+                            <label 
+                              key={comp} 
+                              onClick={() => setSelectedCompany(comp)}
+                              className="flex items-center gap-2 cursor-pointer group text-left"
+                            >
+                              <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                                selectedCompany === comp 
+                                  ? 'border-[#188ab2] bg-[#188ab2]' 
+                                  : 'border-slate-300 group-hover:border-[#111111] bg-white'
+                              }`}>
+                                {selectedCompany === comp && (
+                                  <div className="w-1 h-1 rounded-full bg-white" />
+                                )}
+                              </div>
+                              <span className={`text-xs font-bold leading-snug transition-colors ${
+                                selectedCompany === comp 
+                                  ? 'text-[#188ab2] font-black' 
+                                  : 'text-slate-700 group-hover:text-[#111111]'
+                              }`}>
+                                {comp}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Reset Filters Button */}
@@ -1347,7 +1475,7 @@ export function ResourcesBrutalism() {
                         setSelectedQuestionCategory('All Question Types');
                         setActiveResourceTab('guides');
                       }}
-                      className="mt-6 w-full py-2 bg-slate-100 border-2 border-[#111111] text-xs font-black uppercase hover:bg-[#FFF3A7] transition-all"
+                      className="w-full py-2 bg-[#FFF3A7] border-2 border-[#111111] text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#188ab2] hover:text-white transition-all cursor-pointer"
                     >
                       Reset Filters ↺
                     </button>
