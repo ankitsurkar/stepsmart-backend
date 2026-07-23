@@ -25,7 +25,8 @@ import {
   Info,
   Bookmark,
   Eye,
-  Heart
+  Heart,
+  Loader2
 } from 'lucide-react';
 import { Logo, Button, NavLink, AnnouncementBanner, saveLeadToDemoDB } from './AppBrutalism';
 
@@ -431,6 +432,76 @@ export function ResourcesBrutalism() {
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Apply Now Modal & Lead State
+  const [showApplyModal, setShowApplyModal] = useState<boolean>(false);
+  const [applyStatus, setApplyStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [applyValidationError, setApplyValidationError] = useState<string>('');
+  const [applyFormData, setApplyFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: ''
+  });
+
+  const handleApplySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setApplyValidationError('');
+
+    if (!applyFormData.fullName.trim()) {
+      setApplyValidationError('Please enter your full name.');
+      return;
+    }
+    if (!applyFormData.email.trim() || !applyFormData.email.includes('@')) {
+      setApplyValidationError('Please enter a valid email address.');
+      return;
+    }
+    if (!applyFormData.phone.trim() || applyFormData.phone.length < 8) {
+      setApplyValidationError('Please enter a valid phone/WhatsApp number.');
+      return;
+    }
+
+    setApplyStatus('loading');
+
+    const leadData = {
+      fullName: applyFormData.fullName,
+      email: applyFormData.email,
+      phone: applyFormData.phone,
+      intent: 'resource',
+      source: 'resource-page',
+      resourceId: activeResource?.id || 'resource-detail',
+      resourceTitle: activeResource?.title || 'APM Interview Guide'
+    };
+
+    // Save lead to local demo DB
+    saveLeadToDemoDB(leadData);
+
+    try {
+      const res = await fetch(
+        'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: applyFormData.fullName,
+            email: applyFormData.email,
+            phone: applyFormData.phone,
+            masterclassId: `resource:${activeResource?.id || 'resource-detail'}`,
+            source: 'resource-page',
+            resourceTitle: activeResource?.title || 'APM Interview Guide'
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        console.warn('Backend API submission warning:', res.status);
+      }
+      setApplyStatus('success');
+    } catch (err) {
+      console.error('Error submitting application lead:', err);
+      // Saved locally, mark success for clean UX
+      setApplyStatus('success');
+    }
+  };
+
   // New Resource Form state
   const [newResource, setNewResource] = useState({
     title: '',
@@ -730,14 +801,17 @@ export function ResourcesBrutalism() {
 
                   {/* Primary CTA Button */}
                   <div className="pt-2 border-t-2 border-[#111111]/10">
-                    <a 
-                      href="https://wa.me/919920803517?text=Hi%2C%20I%27m%20interested%20in%20PM-X%20%E2%80%94%20here%27s%20my%20background%3A"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full block text-center bg-[#188ab2] text-white border-[3px] border-[#111111] py-3.5 px-4 font-black text-sm uppercase shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:bg-[#188ab2] hover:text-white transition-all select-none cursor-pointer"
+                    <Button 
+                      variant="primary" 
+                      onClick={() => {
+                        setApplyStatus('idle');
+                        setApplyValidationError('');
+                        setShowApplyModal(true);
+                      }}
+                      className="w-full py-3.5 font-black text-sm uppercase shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px]"
                     >
-                      Chat 1:1 ➜
-                    </a>
+                      Apply Now ➜
+                    </Button>
                   </div>
 
                 </div>
@@ -926,6 +1000,107 @@ export function ResourcesBrutalism() {
             </div>
           </main>
         </>
+      )}
+
+      {/* Modal Popup Enrollment Form (Apply Now popup) */}
+      {showApplyModal && (
+        <div className="fixed inset-0 bg-[#111111]/80 z-50 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-md border-[4px] border-[#111111] bg-white p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] text-left">
+            <button 
+              onClick={() => { setShowApplyModal(false); setApplyStatus('idle'); }}
+              className="absolute top-4 right-4 bg-[#FFF3A7] border-2 border-[#111111] p-1.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#188ab2] hover:text-white transition-colors"
+            >
+              <X className="h-4 w-4 text-[#111111]" />
+            </button>
+
+            {applyStatus === 'success' ? (
+              <div className="text-center py-6">
+                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] text-green-600 w-16 h-16 flex items-center justify-center mx-auto mb-6 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+                  <CheckCircle2 className="h-8 w-8 text-[#188ab2]" />
+                </div>
+                <h3 className="text-2xl font-black mb-2 text-[#111111]">Application Received!</h3>
+                <p className="text-sm font-bold text-slate-600 mb-6 leading-relaxed">
+                  Your application for <span className="text-[#188ab2] font-black">{activeResource?.title || 'the guide'}</span> has been submitted. Our team will contact you shortly on WhatsApp.
+                </p>
+                <Button
+                  variant="primary"
+                  className="w-full py-2.5 font-extrabold uppercase shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]"
+                  onClick={() => { setShowApplyModal(false); setApplyStatus('idle'); }}
+                >
+                  Close Window
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleApplySubmit} className="space-y-5">
+                <div>
+                  <div className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] mb-2">
+                    PM-X Accelerator
+                  </div>
+                  <h3 className="text-xl font-black text-[#111111]">Apply Now</h3>
+                  <p className="text-xs font-bold text-slate-500 mt-1 line-clamp-1">
+                    Resource: {activeResource?.title || 'APM Interview Guide'}
+                  </p>
+                </div>
+
+                {applyValidationError && (
+                  <p className="text-red-600 text-xs font-extrabold bg-red-50 border-2 border-red-500/30 p-2.5">
+                    {applyValidationError}
+                  </p>
+                )}
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-black uppercase text-[#111111] mb-1.5">Full Name *</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={applyFormData.fullName}
+                      onChange={(e) => setApplyFormData({ ...applyFormData, fullName: e.target.value })}
+                      placeholder="Your Name" 
+                      className="w-full px-4 py-3 border-[3px] border-[#111111] bg-[#FFFFFF] font-bold text-sm outline-none focus:bg-[#FFF3A7]/20 transition-all placeholder-slate-400" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black uppercase text-[#111111] mb-1.5">Email Address *</label>
+                    <input 
+                      type="email" 
+                      required
+                      value={applyFormData.email}
+                      onChange={(e) => setApplyFormData({ ...applyFormData, email: e.target.value })}
+                      placeholder="name@example.com" 
+                      className="w-full px-4 py-3 border-[3px] border-[#111111] bg-[#FFFFFF] font-bold text-sm outline-none focus:bg-[#FFF3A7]/20 transition-all placeholder-slate-400" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black uppercase text-[#111111] mb-1.5">WhatsApp / Phone Number *</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={applyFormData.phone}
+                      onChange={(e) => setApplyFormData({ ...applyFormData, phone: e.target.value })}
+                      placeholder="+91 99000 00000" 
+                      className="w-full px-4 py-3 border-[3px] border-[#111111] bg-[#FFFFFF] font-bold text-sm outline-none focus:bg-[#FFF3A7]/20 transition-all placeholder-slate-400" 
+                    />
+                  </div>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full py-3.5 text-sm font-black uppercase shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]"
+                  isLoading={applyStatus === 'loading'}
+                >
+                  {applyStatus === 'loading' ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" /> Submitting...
+                    </span>
+                  ) : (
+                    'Submit Application ➜'
+                  )}
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
       )}
 
       {/* Upload Resource Modal */}
