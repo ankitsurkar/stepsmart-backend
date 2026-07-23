@@ -1774,20 +1774,9 @@ export function ResourcesBrutalism() {
                     </button>
 
                     {openDropdowns.category && (
-                      <div className="mt-2.5 pt-2.5 border-t border-slate-200 space-y-2">
-                        {/* Quick Dropdown Select */}
-                        <select 
-                          value={selectedCategory}
-                          onChange={(e) => setSelectedCategory(e.target.value)}
-                          className="w-full p-2 border-2 border-[#111111] font-bold text-xs bg-white outline-none cursor-pointer mb-2 focus:bg-[#FFF3A7]/20"
-                        >
-                          {CATEGORIES.map((cat) => (
-                            <option key={cat} value={cat}>{cat}</option>
-                          ))}
-                        </select>
-
+                      <div className="mt-2.5 pt-2.5 border-t border-slate-200">
                         {/* List Options */}
-                        <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                        <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                           {CATEGORIES.map((cat) => (
                             <label 
                               key={cat} 
@@ -1837,25 +1826,9 @@ export function ResourcesBrutalism() {
                     </button>
 
                     {openDropdowns.questionType && (
-                      <div className="mt-2.5 pt-2.5 border-t border-slate-200 space-y-2">
-                        {/* Quick Dropdown Select */}
-                        <select 
-                          value={selectedQuestionCategory}
-                          onChange={(e) => {
-                            setSelectedQuestionCategory(e.target.value);
-                            if (e.target.value !== 'All Question Types') {
-                              setActiveResourceTab('questions');
-                            }
-                          }}
-                          className="w-full p-2 border-2 border-[#111111] font-bold text-xs bg-white outline-none cursor-pointer mb-2 focus:bg-[#FFF3A7]/20"
-                        >
-                          {QUESTION_TYPES.map((qType) => (
-                            <option key={qType} value={qType}>{qType}</option>
-                          ))}
-                        </select>
-
+                      <div className="mt-2.5 pt-2.5 border-t border-slate-200">
                         {/* List Options */}
-                        <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                        <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                           {QUESTION_TYPES.map((qType) => (
                             <label 
                               key={qType} 
@@ -1910,20 +1883,9 @@ export function ResourcesBrutalism() {
                     </button>
 
                     {openDropdowns.company && (
-                      <div className="mt-2.5 pt-2.5 border-t border-slate-200 space-y-2">
-                        {/* Quick Dropdown Select */}
-                        <select 
-                          value={selectedCompany}
-                          onChange={(e) => setSelectedCompany(e.target.value)}
-                          className="w-full p-2 border-2 border-[#111111] font-bold text-xs bg-white outline-none cursor-pointer mb-2 focus:bg-[#FFF3A7]/20"
-                        >
-                          {COMPANIES.map((comp) => (
-                            <option key={comp} value={comp}>{comp}</option>
-                          ))}
-                        </select>
-
+                      <div className="mt-2.5 pt-2.5 border-t border-slate-200">
                         {/* List Options */}
-                        <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                        <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                           {COMPANIES.map((comp) => (
                             <label 
                               key={comp} 
