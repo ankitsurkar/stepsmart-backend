@@ -2018,17 +2018,12 @@ export function ResourcesBrutalism() {
                           );
                         }
 
-                        // Per-category counter map to lock 4th+ question in each category
-                        const categoryCounters: Record<string, number> = {};
-
                         return (
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {filteredQuestions.map((q) => {
-                              const currentCount = (categoryCounters[q.category] || 0);
-                              categoryCounters[q.category] = currentCount + 1;
-
-                              // First 3 questions per category are UNLOCKED. Question 4+ is LOCKED.
-                              const isLocked = currentCount >= 3;
+                            {filteredQuestions.map((q, index) => {
+                              // Only first 3 questions (index 0, 1, 2) in any view/company filter are UNLOCKED.
+                              // Question #4 onwards (index >= 3) are LOCKED 🔒.
+                              const isLocked = index >= 3;
 
                               if (isLocked) {
                                 return (
