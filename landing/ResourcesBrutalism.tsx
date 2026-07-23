@@ -26,7 +26,10 @@ import {
   Bookmark,
   Eye,
   Heart,
-  Loader2
+  Loader2,
+  Lock,
+  HelpCircle,
+  Layers
 } from 'lucide-react';
 import { Logo, Button, NavLink, AnnouncementBanner, saveLeadToDemoDB } from './AppBrutalism';
 
@@ -60,6 +63,15 @@ export type ResourceItem = {
   dateString?: string;
 };
 
+export type QuestionItem = {
+  id: string;
+  category: string;
+  company: string;
+  question: string;
+  description?: string;
+  yearTag?: string;
+};
+
 const LOCAL_STORAGE_KEY = 'pmx_custom_resources';
 
 export const CATEGORIES = [
@@ -72,15 +84,374 @@ export const CATEGORIES = [
   "Technical & System Design"
 ];
 
+export const QUESTION_TYPES = [
+  "All Question Types",
+  "Product Design",
+  "Guesstimate",
+  "Metrics & Analytics",
+  "Root Cause Analysis (RCA)",
+  "Product Strategy",
+  "Technical Architecture",
+  "Behavioral & HR",
+  "Case Study"
+];
+
 export const COMPANIES = [
   "All Companies",
   "Flipkart",
-  "Zomato & Blinkit",
+  "Zomato",
   "Uber",
+  "Swiggy",
   "Sprinklr",
   "Groww",
+  "Razorpay",
   "Meesho",
-  "Razorpay"
+  "CRED"
+];
+
+export const IIT_QUESTIONS_DATA: QuestionItem[] = [
+  // Behavioral & HR
+  {
+    id: "q-beh-1",
+    category: "Behavioral & HR",
+    company: "General / Flipkart",
+    question: "Why do you want to work in Product Management? / Why PM? Why you?",
+    description: "Explain your personal PM journey: tie past tech development, business skills, leadership roles, and user empathy to the PM role.",
+    yearTag: "IIT Placement PYQ"
+  },
+  {
+    id: "q-beh-2",
+    category: "Behavioral & HR",
+    company: "General",
+    question: "Tell me about yourself.",
+    description: "Standard opener. Walk through CV highlighting key product management, engineering, and leadership milestones.",
+    yearTag: "IIT Placement PYQ"
+  },
+  {
+    id: "q-beh-3",
+    category: "Behavioral & HR",
+    company: "MakeMyTrip / Groww / Flipkart",
+    question: "Why switch from Agri/Mechanical Engineering to Product Management? Why Company X?",
+    description: "Explain transitions or specific motivations: highlight why the target company's business model and culture interest you.",
+    yearTag: "IIT Placement PYQ"
+  },
+  {
+    id: "q-beh-4",
+    category: "Behavioral & HR",
+    company: "General / Z1 Tech",
+    question: "Describe a project where you used data to make a decision.",
+    description: "STAR method. Explain the business problem, the metrics tracked, data analysis findings, and the resulting change in product direction.",
+    yearTag: "IIT Placement PYQ"
+  },
+  {
+    id: "q-beh-5",
+    category: "Behavioral & HR",
+    company: "Ola / General",
+    question: "Describe a time you handled conflict in a team.",
+    description: "STAR method. Detail a team disagreement, the listening and communication strategies used, and the positive resolution.",
+    yearTag: "IIT Placement PYQ"
+  },
+  {
+    id: "q-beh-6",
+    category: "Behavioral & HR",
+    company: "Meesho",
+    question: "Walk me through your work experience and how it maps to Meesho's business model.",
+    description: "Map your engineering, design, or analytics projects directly to Meesho's social commerce & seller ecosystem.",
+    yearTag: "IIT Placement PYQ"
+  },
+
+  // Case Study
+  {
+    id: "q-cs-1",
+    category: "Case Study",
+    company: "IIT Kanpur Campus",
+    question: "Market Sizing Case Study: Estimate the total number of operational Air Conditioners currently running in the city of Kanpur.",
+    description: "Segment by residential vs commercial (offices, labs, hospitals, retail). Calculate total households, penetration rate per income tier, and commercial floor area.",
+    yearTag: "IIT Kanpur Case"
+  },
+  {
+    id: "q-cs-2",
+    category: "Case Study",
+    company: "Blinkit / Zepto",
+    question: "Dark-Store Demand Case Study: Predict product demands for a specific dark-store in a particular area of a city.",
+    description: "Develop a database schema of order history, local demographic density, weather patterns, and select ML algorithms (XGBoost/LightGBM) to forecast stock.",
+    yearTag: "Quick-Commerce Case"
+  },
+  {
+    id: "q-cs-3",
+    category: "Case Study",
+    company: "InsuranceTech",
+    question: "Product Launch Case Study: A company is launching a new car insurance product. Determine primary and secondary data factors for policy pricing.",
+    description: "Define risk parameters: vehicle age, driver safety score, telematics data, geographic risk zones, and competitor benchmark pricing.",
+    yearTag: "FinTech Case"
+  },
+  {
+    id: "q-cs-4",
+    category: "Case Study",
+    company: "Telco / SaaS",
+    question: "Customer Churn Case Study: Identify features to train an ML model to predict customer churning for SIM card services.",
+    description: "Track drop in call volume, data usage spikes/drops, customer support ticket frequency, network complaints, and competitor SIM ports.",
+    yearTag: "SaaS & Telco Case"
+  },
+  {
+    id: "q-cs-5",
+    category: "Case Study",
+    company: "Dr. Reddy's 2.0",
+    question: "Destination Dr. Reddy's 2.0 Hackathon: Operational bottleneck resolution & presentation.",
+    description: "Identify chemical supply chain bottlenecks, inventory turnover ratios, and regulatory compliance workflows.",
+    yearTag: "Hackathon Finalist"
+  },
+
+  // Guesstimate
+  {
+    id: "q-gues-1",
+    category: "Guesstimate",
+    company: "Flipkart",
+    question: "Estimate the number of pairs of shoes sold online in Delhi via Flipkart in one day.",
+    description: "Estimate online shoe sales for Flipkart in Delhi. Base calculation on population (~20M), internet users, online shoppers, shoe purchase frequency, and Flipkart market share.",
+    yearTag: "Flipkart PYQ"
+  },
+  {
+    id: "q-gues-2",
+    category: "Guesstimate",
+    company: "Sprinklr",
+    question: "Estimate the number of WhatsApp messages sent in your city per day.",
+    description: "Base calculation on metropolitan population, active smartphone users, WhatsApp penetration (~85%), and average messages per user per day (chats + groups).",
+    yearTag: "Sprinklr PYQ"
+  },
+  {
+    id: "q-gues-3",
+    category: "Guesstimate",
+    company: "Sprinklr",
+    question: "Total number of traffic lights in a metropolitan city like Delhi/Mumbai.",
+    description: "Estimate city traffic lights using city grid size (intersections per sq km), major road arteries vs residential lanes, or mapping population to major traffic nodes.",
+    yearTag: "Sprinklr PYQ"
+  },
+  {
+    id: "q-gues-4",
+    category: "Guesstimate",
+    company: "Media.net",
+    question: "Estimate the total number of babies born in India in a single day.",
+    description: "Base on India's population (~1.4B), crude birth rate (~16-17 per 1,000 people per year), and divide by 365 days.",
+    yearTag: "Media.net PYQ"
+  },
+  {
+    id: "q-gues-5",
+    category: "Guesstimate",
+    company: "HiLabs",
+    question: "Estimate the number of iPhone users in India.",
+    description: "Estimate premium smartphone ownership. Base on population, smartphone penetration (~50%), income tier distribution (top 3%), and Apple's market share.",
+    yearTag: "HiLabs PYQ"
+  },
+  {
+    id: "q-gues-6",
+    category: "Guesstimate",
+    company: "Groww",
+    question: "Estimate the daily UPI transaction value in India.",
+    description: "Calculate active UPI users (~350M), average daily transactions per user (2-3), and average transaction value (₹800-₹1,200).",
+    yearTag: "FinTech PYQ"
+  },
+
+  // Metrics & Analytics
+  {
+    id: "q-met-1",
+    category: "Metrics & Analytics",
+    company: "Flipkart",
+    question: "What are the relevant seller-side metrics for Flipkart PMs to track?",
+    description: "Identify seller-side KPIs: onboarding time, product listing rejection rate, out-of-stock rate, fulfillment delay, seller rating, and merchant churn.",
+    yearTag: "Flipkart PYQ"
+  },
+  {
+    id: "q-met-2",
+    category: "Metrics & Analytics",
+    company: "Airbnb",
+    question: "Prepare an executive dashboard of 5 crucial metrics for Airbnb's CEO.",
+    description: "Select 5 executive KPIs: Gross Booking Value (GBV), Nights Booked, Guest Net Promoter Score (NPS), Host Retention Rate, and Customer Acquisition Cost (CAC).",
+    yearTag: "Airbnb Case"
+  },
+  {
+    id: "q-met-3",
+    category: "Metrics & Analytics",
+    company: "MX Player",
+    question: "Identify the metrics and KPIs you'd use to measure the success of an OTT app.",
+    description: "Define framework for app metrics: Acquisition (downloads), Activation (signups), Engagement (DAU/MAU, session duration), Retention, and Revenue (ad impressions/subscriptions).",
+    yearTag: "MX Player PYQ"
+  },
+  {
+    id: "q-met-4",
+    category: "Metrics & Analytics",
+    company: "Zomato",
+    question: "What metrics would you track for Instagram's share feature?",
+    description: "Analyze share button KPIs: Shares per Active User, share conversion rate (recipient opening link), share type distribution (DM vs external), and virality coefficient.",
+    yearTag: "Zomato PYQ"
+  },
+  {
+    id: "q-met-5",
+    category: "Metrics & Analytics",
+    company: "Google",
+    question: "What should be the North Star Metric for Google Maps?",
+    description: "Focus on user utility and intent fulfillment: 'Successful Navigation Trips Completed' or 'Daily Useful Local Place Discoveries'.",
+    yearTag: "Google PYQ"
+  },
+
+  // Product Design
+  {
+    id: "q-pd-1",
+    category: "Product Design",
+    company: "Swiggy",
+    question: "How would you design a table reservation feature for Swiggy?",
+    description: "Design a feature enabling users to reserve dining tables. Focus on user needs, reservation booking flow, partner merchant interface, real-time availability, and success metrics.",
+    yearTag: "Swiggy PYQ"
+  },
+  {
+    id: "q-pd-2",
+    category: "Product Design",
+    company: "Zomato",
+    question: "How would you improve the large order feature with respect to dining on Zomato?",
+    description: "Propose features to enhance group or large-scale food ordering for diners. Focus on shared cart mechanics, group discounts, delivery coordination, and UI updates.",
+    yearTag: "Zomato PYQ"
+  },
+  {
+    id: "q-pd-3",
+    category: "Product Design",
+    company: "Uber",
+    question: "Design a lost-item retrieval system for Uber.",
+    description: "Create a seamless workflow for passengers to report and retrieve lost items from Uber rides. Address driver coordination, security/verification, communication channels, and tracking.",
+    yearTag: "Uber PYQ"
+  },
+  {
+    id: "q-pd-4",
+    category: "Product Design",
+    company: "Uber",
+    question: "Design a rewards program for Uber. What would it look like and how would you roll it out?",
+    description: "Propose a loyalty/rewards system. Define tiers, reward types (rides, eats, partner benefits), qualification criteria, roll-out strategy (regional pilot), and success metrics.",
+    yearTag: "Uber PYQ"
+  },
+  {
+    id: "q-pd-5",
+    category: "Product Design",
+    company: "Sprinklr",
+    question: "Turn WhatsApp into a super-app where users can complete end-to-end actions.",
+    description: "Design an expansion roadmap to integrate ride-hailing, shopping, payments, and utilities directly into the WhatsApp messaging interface without cluttering the UX.",
+    yearTag: "Sprinklr PYQ"
+  },
+
+  // Root Cause Analysis (RCA)
+  {
+    id: "q-rca-1",
+    category: "Root Cause Analysis (RCA)",
+    company: "Flipkart",
+    question: "Flipkart's app conversion dropped 10% yesterday. Diagnose the root cause.",
+    description: "Investigate a sudden drop in conversion. Analyze external factors (holidays, competitor promotions), technical factors (server downtime, checkout bugs), and user cohorts.",
+    yearTag: "Flipkart PYQ"
+  },
+  {
+    id: "q-rca-2",
+    category: "Root Cause Analysis (RCA)",
+    company: "Zomato",
+    question: "Assume the conversion rate for Zomato dropped by 20% suddenly. How do you investigate?",
+    description: "Diagnose the drop systematically. Look at checkout failure rates, payment gateway downtime, app version bugs, change in delivery fee, or regional weather events.",
+    yearTag: "Zomato PYQ"
+  },
+  {
+    id: "q-rca-3",
+    category: "Root Cause Analysis (RCA)",
+    company: "Swiggy",
+    question: "Swiggy's order cancellations went up 30% last week. What do you do?",
+    description: "Analyze why cancellations rose. Check customer-initiated cancellations (delays, incorrect orders), merchant cancellations (stockouts), or driver-side rejections.",
+    yearTag: "Swiggy PYQ"
+  },
+  {
+    id: "q-rca-4",
+    category: "Root Cause Analysis (RCA)",
+    company: "Uber",
+    question: "Uber's ride cancellation rate increased 8% in Delhi. Why?",
+    description: "Investigate the cancellation rise. Segment by driver vs rider cancellations, time of day, weather, traffic, transit zones, gas price spikes, or payout changes.",
+    yearTag: "Uber PYQ"
+  },
+  {
+    id: "q-rca-5",
+    category: "Root Cause Analysis (RCA)",
+    company: "Meta",
+    question: "Why are engagements/shares on WhatsApp declining?",
+    description: "Investigate lower social shares/engagements on WhatsApp. Address competition, changing user behaviors, feature fatigue, privacy concerns, or platform policy changes.",
+    yearTag: "Meta PYQ"
+  },
+
+  // Product Strategy
+  {
+    id: "q-strat-1",
+    category: "Product Strategy",
+    company: "Flipkart",
+    question: "Should Flipkart launch hyperlocal grocery delivery to compete with Blinkit & Instamart?",
+    description: "Assess opportunity, financial viability, logistics, competitor strength, Flipkart's current assets, and make a strategic recommendation.",
+    yearTag: "Flipkart PYQ"
+  },
+  {
+    id: "q-strat-2",
+    category: "Product Strategy",
+    company: "Zomato",
+    question: "Suggest three product portfolios Zomato could adopt to increase revenue by 70%.",
+    description: "Formulate three high-impact portfolios or product verticals (e.g. B2B supply, dining events, premium memberships) to achieve aggressive revenue targets.",
+    yearTag: "Zomato PYQ"
+  },
+  {
+    id: "q-strat-3",
+    category: "Product Strategy",
+    company: "Swiggy",
+    question: "Which market should Swiggy enter next — grocery or travel?",
+    description: "Compare grocery (high frequency, low margin, operational complexity) vs travel (low frequency, high margin, booking-based) to advise next step.",
+    yearTag: "Swiggy PYQ"
+  },
+  {
+    id: "q-strat-4",
+    category: "Product Strategy",
+    company: "Razorpay",
+    question: "Should Razorpay expand into consumer lending (Buy Now Pay Later)?",
+    description: "Evaluate expansion from B2B payment gateway to consumer lending. Analyze credit risks, merchant synergy, regulation, and market size.",
+    yearTag: "Razorpay PYQ"
+  },
+  {
+    id: "q-strat-5",
+    category: "Product Strategy",
+    company: "Netflix",
+    question: "How to grow Netflix 3x in 5 years in emerging markets like India?",
+    description: "Formulate massive growth strategy. Explore options like mobile-only plans, regional original content production, gaming integration, or pricing bundles.",
+    yearTag: "Netflix PYQ"
+  },
+
+  // Technical Architecture
+  {
+    id: "q-tech-1",
+    category: "Technical Architecture",
+    company: "Uber",
+    question: "Walk us through what the Uber Eats API architecture might look like for major restaurant partners.",
+    description: "Explain API architecture for restaurant integrations. Detail endpoints like /menu, /orders, /status, methods (POST/GET), JSON payloads, and webhooks.",
+    yearTag: "Uber Tech PYQ"
+  },
+  {
+    id: "q-tech-2",
+    category: "Technical Architecture",
+    company: "Uber",
+    question: "What happens technically when a consumer opens the Uber app on their phone?",
+    description: "Explain full system flow: client request, DNS lookup, API gateway routing, location updates, server matchmaking algorithm, caching, and database queries.",
+    yearTag: "Uber Tech PYQ"
+  },
+  {
+    id: "q-tech-3",
+    category: "Technical Architecture",
+    company: "Z1 Tech",
+    question: "What is an API and how does it work conceptually for non-tech stakeholders?",
+    description: "Define Application Programming Interface. Explain requests, response status codes, formats (JSON/XML), and server communication conceptually.",
+    yearTag: "Z1 Tech PYQ"
+  },
+  {
+    id: "q-tech-4",
+    category: "Technical Architecture",
+    company: "Z1 Tech",
+    question: "How does Google Search work under the hood?",
+    description: "Explain the technical lifecycle of search: web crawlers (Googlebot), indexing (PageRank database index), and query processing/ranking pipelines.",
+  }
 ];
 
 export const DEMO_RESOURCES: ResourceItem[] = [
@@ -426,6 +797,8 @@ export function ResourcesBrutalism() {
 
   const [resources, setResources] = useState<ResourceItem[]>(DEMO_RESOURCES);
   const [selectedCategory, setSelectedCategory] = useState<string>('All Categories');
+  const [selectedQuestionCategory, setSelectedQuestionCategory] = useState<string>('All Question Types');
+  const [activeResourceTab, setActiveResourceTab] = useState<'guides' | 'questions'>('guides');
   const [selectedCompany, setSelectedCompany] = useState<string>('All Companies');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -893,6 +1266,45 @@ export function ResourcesBrutalism() {
                     </div>
                   </div>
 
+                  {/* Question Type Filter */}
+                  <div className="mb-8 pt-6 border-t-2 border-[#111111]/10">
+                    <h3 className="text-sm font-black uppercase tracking-wider text-[#111111] mb-4 pb-2 border-b-2 border-[#111111] flex items-center justify-between">
+                      <span>Question Type</span>
+                      <span className="text-[9px] bg-[#FFF3A7] border border-[#111111] px-1.5 py-0.5 font-bold">100+ PYQs</span>
+                    </h3>
+                    <div className="space-y-2.5">
+                      {QUESTION_TYPES.map((qType) => (
+                        <label 
+                          key={qType} 
+                          onClick={() => {
+                            setSelectedQuestionCategory(qType);
+                            if (qType !== 'All Question Types') {
+                              setActiveResourceTab('questions');
+                            }
+                          }}
+                          className="flex items-center gap-3 cursor-pointer group text-left"
+                        >
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                            selectedQuestionCategory === qType 
+                              ? 'border-[#188ab2] bg-[#188ab2]' 
+                              : 'border-slate-300 group-hover:border-[#111111] bg-white'
+                          }`}>
+                            {selectedQuestionCategory === qType && (
+                              <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                            )}
+                          </div>
+                          <span className={`text-xs md:text-sm font-bold leading-snug transition-colors ${
+                            selectedQuestionCategory === qType 
+                              ? 'text-[#188ab2] font-black' 
+                              : 'text-slate-700 group-hover:text-[#111111]'
+                          }`}>
+                            {qType}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
                   {/* Company Filter */}
                   <div>
                     <h3 className="text-sm font-black uppercase tracking-wider text-[#111111] mb-4 pb-2 border-b-2 border-[#111111]">
@@ -927,9 +1339,14 @@ export function ResourcesBrutalism() {
                   </div>
 
                   {/* Reset Filters Button */}
-                  {(selectedCategory !== 'All Categories' || selectedCompany !== 'All Companies') && (
+                  {(selectedCategory !== 'All Categories' || selectedCompany !== 'All Companies' || selectedQuestionCategory !== 'All Question Types') && (
                     <button
-                      onClick={() => { setSelectedCategory('All Categories'); setSelectedCompany('All Companies'); }}
+                      onClick={() => { 
+                        setSelectedCategory('All Categories'); 
+                        setSelectedCompany('All Companies'); 
+                        setSelectedQuestionCategory('All Question Types');
+                        setActiveResourceTab('guides');
+                      }}
                       className="mt-6 w-full py-2 bg-slate-100 border-2 border-[#111111] text-xs font-black uppercase hover:bg-[#FFF3A7] transition-all"
                     >
                       Reset Filters ↺
@@ -938,60 +1355,230 @@ export function ResourcesBrutalism() {
 
                 </aside>
 
-                {/* Right Side: Main Resource Feed */}
-                <div className="flex-1 w-full space-y-5 text-left">
-                  {loading ? (
-                    <div className="flex justify-center py-16">
-                      <span className="text-lg font-bold">Loading guides...</span>
-                    </div>
-                  ) : filteredResources.length === 0 ? (
-                    <div className="border-[3px] border-[#111111] p-12 text-center bg-white shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] max-w-xl mx-auto">
-                      <Info className="h-10 w-10 mx-auto mb-4 text-slate-400" />
-                      <h3 className="text-xl font-extrabold text-[#111111] mb-2">No matching resources found</h3>
-                      <p className="text-sm font-bold text-slate-500 mb-6">Try clearing your filters.</p>
-                      <Button variant="outline" onClick={() => { setSelectedCategory('All Categories'); setSelectedCompany('All Companies'); }}>
-                        Clear Filters
-                      </Button>
+                {/* Right Side: Main Resource Feed / Question Cards */}
+                <div className="flex-1 w-full space-y-6 text-left">
+
+                  {/* View Switcher Tabs */}
+                  <div className="flex flex-wrap items-center gap-3 border-b-2 border-[#111111]/10 pb-4">
+                    <button
+                      onClick={() => {
+                        setActiveResourceTab('guides');
+                        setSelectedQuestionCategory('All Question Types');
+                      }}
+                      className={`px-5 py-2.5 font-black text-xs md:text-sm uppercase border-[3px] border-[#111111] transition-all flex items-center gap-2 select-none cursor-pointer ${
+                        activeResourceTab === 'guides' 
+                          ? 'bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]' 
+                          : 'bg-white text-[#111111] hover:bg-[#FFF3A7]'
+                      }`}
+                    >
+                      <BookOpen className="h-4 w-4" /> APM Interview Guides
+                    </button>
+
+                    <button
+                      onClick={() => setActiveResourceTab('questions')}
+                      className={`px-5 py-2.5 font-black text-xs md:text-sm uppercase border-[3px] border-[#111111] transition-all flex items-center gap-2 select-none cursor-pointer ${
+                        activeResourceTab === 'questions' 
+                          ? 'bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]' 
+                          : 'bg-white text-[#111111] hover:bg-[#FFF3A7]'
+                      }`}
+                    >
+                      <HelpCircle className="h-4 w-4" /> IIT Question Bank (PYQs)
+                    </button>
+                  </div>
+
+                  {activeResourceTab === 'questions' || selectedQuestionCategory !== 'All Question Types' ? (
+                    /* QUESTION BANK VIEW */
+                    <div className="space-y-6">
+                      <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-between flex-wrap gap-3">
+                        <div>
+                          <h3 className="font-black text-sm uppercase text-[#111111]">
+                            IIT Placement Question Bank — {selectedQuestionCategory}
+                          </h3>
+                          <p className="text-xs font-bold text-slate-600 mt-0.5">
+                            Showing questions asked in Flipkart, Zomato, Uber, Sprinklr & top startups.
+                          </p>
+                        </div>
+                        <span className="bg-white border border-[#111111] px-3 py-1 text-xs font-extrabold">
+                          First 3 per category free • Lock applies to rest 🔒
+                        </span>
+                      </div>
+
+                      {(() => {
+                        const filteredQuestions = IIT_QUESTIONS_DATA.filter(q => {
+                          const matchesQCat = selectedQuestionCategory === 'All Question Types' || q.category === selectedQuestionCategory;
+                          const matchesCompany = selectedCompany === 'All Companies' || q.company.toLowerCase().includes(selectedCompany.toLowerCase());
+                          return matchesQCat && matchesCompany;
+                        });
+
+                        if (filteredQuestions.length === 0) {
+                          return (
+                            <div className="border-[3px] border-[#111111] p-12 text-center bg-white shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] max-w-xl mx-auto">
+                              <Info className="h-10 w-10 mx-auto mb-4 text-slate-400" />
+                              <h3 className="text-xl font-extrabold text-[#111111] mb-2">No matching questions found</h3>
+                              <p className="text-sm font-bold text-slate-500 mb-6">Try selecting a different company or question type.</p>
+                              <Button variant="outline" onClick={() => { setSelectedQuestionCategory('All Question Types'); setSelectedCompany('All Companies'); }}>
+                                Reset Question Filters
+                              </Button>
+                            </div>
+                          );
+                        }
+
+                        // Per-category counter map to lock 4th+ question in each category
+                        const categoryCounters: Record<string, number> = {};
+
+                        return (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {filteredQuestions.map((q) => {
+                              const currentCount = (categoryCounters[q.category] || 0);
+                              categoryCounters[q.category] = currentCount + 1;
+
+                              // First 3 questions per category are UNLOCKED. Question 4+ is LOCKED.
+                              const isLocked = currentCount >= 3;
+
+                              if (isLocked) {
+                                return (
+                                  <div 
+                                    key={q.id}
+                                    onClick={() => {
+                                      setApplyStatus('idle');
+                                      setApplyValidationError('');
+                                      setShowApplyModal(true);
+                                    }}
+                                    className="relative bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden cursor-pointer select-none group min-h-[220px] flex flex-col justify-between"
+                                  >
+                                    {/* Blurred Content Background */}
+                                    <div className="filter blur-[4px] opacity-30 pointer-events-none select-none">
+                                      <div className="flex items-center justify-between mb-3">
+                                        <span className="bg-slate-200 text-slate-700 px-2 py-0.5 text-xs font-bold">{q.category}</span>
+                                        <span className="text-xs font-bold text-slate-400">{q.company}</span>
+                                      </div>
+                                      <h4 className="font-extrabold text-base text-slate-800 mb-2">{q.question}</h4>
+                                      <p className="text-xs text-slate-500">{q.description}</p>
+                                    </div>
+
+                                    {/* Lock Overlay */}
+                                    <div className="absolute inset-0 bg-white/85 backdrop-blur-[1px] flex flex-col items-center justify-center p-6 text-center z-10 group-hover:bg-white/75 transition-all">
+                                      <div className="w-10 h-10 bg-[#FFF3A7] border-[2.5px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] mb-2 rotate-[-3deg]">
+                                        <Lock className="h-5 w-5 text-[#111111]" />
+                                      </div>
+                                      <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] mb-2">
+                                        🔒 LOCKED • IIT PLACEMENT PYQ
+                                      </span>
+                                      <p className="font-black text-xs text-[#111111] mb-3 max-w-xs line-clamp-2">
+                                        {q.question}
+                                      </p>
+                                      <button className="bg-[#188ab2] text-white border-2 border-[#111111] px-4 py-1.5 text-xs font-black uppercase shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all">
+                                        Unlock Question & Answer 🔒
+                                      </button>
+                                    </div>
+                                  </div>
+                                );
+                              }
+
+                              return (
+                                <div 
+                                  key={q.id}
+                                  className="bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between text-left"
+                                >
+                                  <div>
+                                    <div className="flex items-center justify-between gap-3 mb-3">
+                                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                                        {q.category}
+                                      </span>
+                                      <span className="bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md">
+                                        {q.company}
+                                      </span>
+                                    </div>
+
+                                    <h4 className="text-base font-black text-[#111111] leading-snug mb-3">
+                                      {q.question}
+                                    </h4>
+
+                                    {q.description && (
+                                      <div className="text-xs font-semibold text-slate-600 leading-relaxed mb-4 border-l-3 border-[#188ab2] pl-3 py-1 bg-slate-50">
+                                        <strong className="text-[#188ab2] font-black block mb-0.5">Approach Hint:</strong>
+                                        {q.description}
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-extrabold text-slate-500">
+                                    <span className="text-emerald-600 font-extrabold flex items-center gap-1">
+                                      ✓ Unlocked IIT Question
+                                    </span>
+                                    <button 
+                                      onClick={() => {
+                                        setApplyStatus('idle');
+                                        setApplyValidationError('');
+                                        setShowApplyModal(true);
+                                      }}
+                                      className="bg-[#188ab2] text-white border-2 border-[#111111] px-3.5 py-1.5 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all"
+                                    >
+                                      Practice Case ➜
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })()}
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      {filteredResources.map((resource) => (
-                        <div 
-                          key={resource.id}
-                          onClick={() => handleOpenResource(resource.id)}
-                          className="bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between cursor-pointer select-none group"
-                        >
-                          {/* Title */}
-                          <h3 className="text-lg md:text-xl font-black text-[#111111] mb-2 leading-snug group-hover:text-[#188ab2] transition-colors">
-                            {resource.title}
-                          </h3>
+                    /* APM GUIDES FEED VIEW */
+                    loading ? (
+                      <div className="flex justify-center py-16">
+                        <span className="text-lg font-bold">Loading guides...</span>
+                      </div>
+                    ) : filteredResources.length === 0 ? (
+                      <div className="border-[3px] border-[#111111] p-12 text-center bg-white shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] max-w-xl mx-auto">
+                        <Info className="h-10 w-10 mx-auto mb-4 text-slate-400" />
+                        <h3 className="text-xl font-extrabold text-[#111111] mb-2">No matching resources found</h3>
+                        <p className="text-sm font-bold text-slate-500 mb-6">Try clearing your filters.</p>
+                        <Button variant="outline" onClick={() => { setSelectedCategory('All Categories'); setSelectedCompany('All Companies'); }}>
+                          Clear Filters
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {filteredResources.map((resource) => (
+                          <div 
+                            key={resource.id}
+                            onClick={() => handleOpenResource(resource.id)}
+                            className="bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between cursor-pointer select-none group"
+                          >
+                            {/* Title */}
+                            <h3 className="text-lg md:text-xl font-black text-[#111111] mb-2 leading-snug group-hover:text-[#188ab2] transition-colors">
+                              {resource.title}
+                            </h3>
 
-                          {/* Short Description */}
-                          <p className="text-xs md:text-sm font-semibold text-slate-600 leading-relaxed mb-5">
-                            {resource.description}
-                          </p>
+                            {/* Short Description */}
+                            <p className="text-xs md:text-sm font-semibold text-slate-600 leading-relaxed mb-5">
+                              {resource.description}
+                            </p>
 
-                          {/* Footer Row: Tags + View Guide CTA */}
-                          <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-slate-100">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className="bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md">
-                                {resource.category}
-                              </span>
-                              <span className="bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md">
-                                IIT Placement PYQ
-                              </span>
+                            {/* Footer Row: Tags + View Guide CTA */}
+                            <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-slate-100">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md">
+                                  {resource.category}
+                                </span>
+                                <span className="bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md">
+                                  IIT Placement PYQ
+                                </span>
+                              </div>
+
+                              <button 
+                                onClick={(e: React.MouseEvent) => { e.stopPropagation(); handleOpenResource(resource.id); }}
+                                className="bg-[#188ab2] text-white border-2 border-[#111111] px-5 py-2 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all"
+                              >
+                                View Guide ➜
+                              </button>
                             </div>
-
-                            <button 
-                              onClick={(e: React.MouseEvent) => { e.stopPropagation(); handleOpenResource(resource.id); }}
-                              className="bg-[#188ab2] text-white border-2 border-[#111111] px-5 py-2 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all"
-                            >
-                              View Guide ➜
-                            </button>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )
                   )}
                 </div>
 
