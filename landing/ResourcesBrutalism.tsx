@@ -1732,7 +1732,7 @@ export function ResourcesBrutalism() {
               <div className="flex flex-col lg:flex-row gap-8 items-start">
 
                 {/* Left Sidebar Filter */}
-                <aside className="w-full lg:w-64 xl:w-72 shrink-0 bg-white border-[3px] border-[#111111] p-5 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none sticky top-36 z-10 space-y-5 text-left">
+                <aside className="w-full lg:w-64 xl:w-72 shrink-0 bg-white border-[3px] border-[#111111] p-4 md:p-5 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none sticky top-36 max-h-[calc(100vh-10rem)] overflow-y-auto z-20 space-y-4 text-left">
                   
                   {/* Header */}
                   <div className="flex items-center justify-between pb-3 border-b-2 border-[#111111]">
@@ -1747,7 +1747,7 @@ export function ResourcesBrutalism() {
                           setSelectedQuestionCategory('All Question Types');
                           setActiveResourceTab('guides');
                         }}
-                        className="text-[10px] font-black uppercase text-[#188ab2] hover:underline"
+                        className="text-[10px] font-black uppercase text-[#188ab2] hover:underline cursor-pointer"
                       >
                         Reset ↺
                       </button>
@@ -2018,12 +2018,43 @@ export function ResourcesBrutalism() {
                           );
                         }
 
+                        // Interleave questions by category when All Question Types is selected so every category gets 1 unlocked question at the top!
+                        let displayQuestions = [...filteredQuestions];
+
+                        if (selectedQuestionCategory === 'All Question Types') {
+                          const catGroups: Record<string, typeof IIT_QUESTIONS_DATA> = {};
+                          filteredQuestions.forEach(q => {
+                            if (!catGroups[q.category]) catGroups[q.category] = [];
+                            catGroups[q.category].push(q);
+                          });
+
+                          const interleaved: typeof IIT_QUESTIONS_DATA = [];
+                          const categories = Object.keys(catGroups);
+                          const maxLen = Math.max(0, ...Object.values(catGroups).map(a => a.length));
+
+                          for (let i = 0; i < maxLen; i++) {
+                            for (const cat of categories) {
+                              if (catGroups[cat][i]) {
+                                interleaved.push(catGroups[cat][i]);
+                              }
+                            }
+                          }
+                          displayQuestions = interleaved;
+                        }
+
+                        // Track count per category so the 1st question in EACH category is unlocked at top when viewing All Question Types
+                        const perCategoryCount: Record<string, number> = {};
+
                         return (
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {filteredQuestions.map((q, index) => {
-                              // Only first 3 questions (index 0, 1, 2) in any view/company filter are UNLOCKED.
-                              // Question #4 onwards (index >= 3) are LOCKED 🔒.
-                              const isLocked = index >= 3;
+                            {displayQuestions.map((q) => {
+                              const countInCat = (perCategoryCount[q.category] || 0);
+                              perCategoryCount[q.category] = countInCat + 1;
+
+                              // Unlock 1st question in each category (or first 3 when viewing specific company/category)
+                              const isLocked = selectedQuestionCategory === 'All Question Types' 
+                                ? countInCat >= 1 
+                                : countInCat >= 3;
 
                               if (isLocked) {
                                 return (
@@ -2036,29 +2067,29 @@ export function ResourcesBrutalism() {
                                     }}
                                     className="relative bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden cursor-pointer select-none group min-h-[220px] flex flex-col justify-between"
                                   >
-                                    {/* Blurred Content Background */}
-                                    <div className="filter blur-[4px] opacity-30 pointer-events-none select-none">
+                                    {/* Blurred Privacy Background */}
+                                    <div className="filter blur-[6px] opacity-25 pointer-events-none select-none">
                                       <div className="flex items-center justify-between mb-3">
                                         <span className="bg-slate-200 text-slate-700 px-2 py-0.5 text-xs font-bold">{q.category}</span>
                                         <span className="text-xs font-bold text-slate-400">{q.company}</span>
                                       </div>
-                                      <h4 className="font-extrabold text-base text-slate-800 mb-2">{q.question}</h4>
-                                      <p className="text-xs text-slate-500">{q.description}</p>
+                                      <h4 className="font-extrabold text-base text-slate-800 mb-2">IIT APM Placement Interview Question</h4>
+                                      <p className="text-xs text-slate-500">Framework breakdown, metrics, approach hint, and detailed solution.</p>
                                     </div>
 
                                     {/* Lock Overlay */}
-                                    <div className="absolute inset-0 bg-white/85 backdrop-blur-[1px] flex flex-col items-center justify-center p-6 text-center z-10 group-hover:bg-white/75 transition-all">
-                                      <div className="w-10 h-10 bg-[#FFF3A7] border-[2.5px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] mb-2 rotate-[-3deg]">
+                                    <div className="absolute inset-0 bg-white/90 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10 group-hover:bg-white/80 transition-all">
+                                      <div className="w-11 h-11 bg-[#FFF3A7] border-[2.5px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] mb-3 rotate-[-3deg]">
                                         <Lock className="h-5 w-5 text-[#111111]" />
                                       </div>
                                       <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] mb-2">
                                         🔒 LOCKED • IIT PLACEMENT PYQ
                                       </span>
-                                      <p className="font-black text-xs text-[#111111] mb-3 max-w-xs line-clamp-2">
-                                        {q.question}
+                                      <p className="font-bold text-xs text-slate-600 mb-3 max-w-xs leading-relaxed">
+                                        Unlock full question statement, framework breakdown & solution.
                                       </p>
-                                      <button className="bg-[#188ab2] text-white border-2 border-[#111111] px-4 py-1.5 text-xs font-black uppercase shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all">
-                                        Unlock Question & Answer 🔒
+                                      <button className="bg-[#188ab2] text-white border-2 border-[#111111] px-4 py-2 text-xs font-black uppercase shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all cursor-pointer">
+                                        Unlock Question 🔒
                                       </button>
                                     </div>
                                   </div>
