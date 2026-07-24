@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { StudentsLandingPage } from './StudentsBrutalism';
-import { EventsPage } from './EventsBrutalism';
-import { ResourcesPage } from './ResourcesBrutalism';
 import * as z from 'zod';
 import { BrowserRouter, Link, Navigate, Route, Routes, useNavigate, useParams, useSearchParams, useLocation } from 'react-router-dom';
+
+const StudentsLandingPage = lazy(() => import('./StudentsBrutalism').then(m => ({ default: m.StudentsLandingPage })));
+const EventsPage = lazy(() => import('./EventsBrutalism').then(m => ({ default: m.EventsPage })));
+const ResourcesPage = lazy(() => import('./ResourcesBrutalism').then(m => ({ default: m.ResourcesPage })));
+
+const PageLoader = () => (
+  <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center p-8">
+    <div className="w-12 h-12 border-[4px] border-[#111111] border-t-[#188ab2] rounded-full animate-spin shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]" />
+    <span className="mt-4 font-extrabold text-sm uppercase tracking-wider text-[#111111]">Loading StepSmart...</span>
+  </div>
+);
+
 
 // Banner Configuration (Set enabled: true to display banner at top of all pages)
 export const BANNER_CONFIG = {
@@ -139,10 +148,10 @@ export const enrollmentSchema = z.object({
   intent: z.enum(["brochure", "enroll"]),
 });
 
-const logoSrc = "/stepsmart-logo.png";
-export const sanketPhotoSrc = "/mentor-sanket.jpg";
-export const ankitPhotoSrc = "/mentor-ankit.jpg";
-export const pankajPhotoSrc = "/mentor-pankaj.jpg";
+const logoSrc = "/stepsmart-logo.webp";
+export const sanketPhotoSrc = "/mentor-sanket.webp";
+export const ankitPhotoSrc = "/mentor-ankit.webp";
+export const pankajPhotoSrc = "/mentor-pankaj.webp";
 export const brochurePdfSrc = "/PM-X-Accelerator-Brochure.pdf";
 export const studentBrochurePdfSrc = "/PM-X-FirstStep-Brochure.pdf";
 const demoLeadsKey = "pmx_demo_leads";
@@ -176,7 +185,7 @@ export const Logo = ({ toHome }: { toHome?: boolean }) => {
       onClick={handleClick} 
       className="flex items-center gap-3 select-none cursor-pointer"
     >
-      <img src="/stepsmart-logo.png" alt="StepSmart Logo" className="w-8 h-8 object-contain" />
+      <img src="/stepsmart-logo.webp" alt="StepSmart Logo" className="w-8 h-8 object-contain" loading="eager" width="32" height="32" />
       <span className="font-extrabold text-2xl tracking-tight text-[#188ab2]">StepSmart</span>
     </a>
   );
@@ -504,9 +513,13 @@ function ProfessionalsLandingPage() {
 
           <div className="relative w-full max-w-5xl mx-auto border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] bg-white">
             <img 
-              src="/hero_image.jpg" 
+              src="/hero_image.webp" 
               alt="PM-X Accelerator — Product Management course outcomes and student success stories" 
               className="w-full h-auto object-cover"
+              // @ts-ignore
+              fetchpriority="high"
+              decoding="async"
+              loading="eager"
             />
           </div>
         </div>
@@ -1815,7 +1828,7 @@ const DEMO_BLOGS = [
     title: "A New Generation Studies AI, Apple's Recipe for On-Device Models, GLM5.2 Tackles Open-Ended Problems",
     description: "The Batch News & Insights: \"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter...",
     content: "## Inside Claude Code and Boris Cherney's Design Philosophy\n\n\"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter discussed it recently. Loop engineering focuses on iterating on feedback cycles rapidly.\n\n### Apple's Recipe for On-Device Models\nApple's latest research reveals a highly optimized pipeline for running LLMs on-device, leveraging unified memory and model quantization.\n\n### GLM5.2 Tackles Open-Ended Problems\nThe GLM team released version 5.2, setting a new benchmark for open-ended reasoning and code execution capabilities.",
-    imageUrl: "/blog-loops.jpg",
+    imageUrl: "/blog-loops.webp",
     date: "Jun 26, 2026",
     createdAt: "2026-06-26T12:00:00.000Z"
   },
@@ -1824,7 +1837,7 @@ const DEMO_BLOGS = [
     title: "Testing Mythos and Fable, Moving Beyond SWE-bench, Nvidia's Open Contender",
     description: "The Batch AI News and Insights: Over the last two weeks, both the U.S. Government and Anthropic took significant actions that...",
     content: "## Testing Mythos and Fable: The Path to Evaluation\n\nOver the last two weeks, both the U.S. Government and Anthropic took significant actions that highlight how evaluations are moving from research benchmarks to critical safety gates.\n\n### Moving Beyond SWE-bench\nStandard coding benchmarks are no longer sufficient. New evaluation frameworks are testing agents on multi-file changes and long-context logic.",
-    imageUrl: "/blog-collab.jpg",
+    imageUrl: "/blog-collab.webp",
     date: "Jun 19, 2026",
     createdAt: "2026-06-19T12:00:00.000Z"
   },
@@ -1833,7 +1846,7 @@ const DEMO_BLOGS = [
     title: "Mythos Begets Fable, Cursor's Composer 2.5, Agents Building Agents",
     description: "The Batch AI News and Insights: If you haven't already, I encourage you to experiment with using AI agents not just to chat but to actuall...",
     content: "## Cursor's Composer 2.5: The Future of IDEs\n\nIf you haven't already, I encourage you to experiment with using AI agents not just to chat but to actually build applications.\n\n### Agents Building Agents\nWith the release of Cursor Composer 2.5, multi-file edits are becoming standard. We are entering an era of software creation where the prompt is the blueprint.",
-    imageUrl: "/blog-editor.jpg",
+    imageUrl: "/blog-editor.webp",
     date: "Jun 12, 2026",
     createdAt: "2026-06-12T12:00:00.000Z"
   }
@@ -2095,9 +2108,10 @@ function BlogPage() {
                 >
                   <div className="relative w-full h-56 border-b-[3px] border-[#111111] overflow-hidden bg-slate-100">
                     <img
-                      src={blog.imageUrl || "/hero_image.png"}
+                      src={blog.imageUrl || "/hero_image.webp"}
                       alt={blog.title}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </div>
                   <div className="p-6 md:p-8 flex flex-col flex-1">
@@ -2166,9 +2180,9 @@ function BlogPage() {
 
 const HeroCarousel = () => {
   const slides = [
-    "/hero-slide-1.jpg",
-    "/hero-slide-2.jpg",
-    "/hero-slide-3.jpg"
+    "/hero-slide-1.webp",
+    "/hero-slide-2.webp",
+    "/hero-slide-3.webp"
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -2766,26 +2780,28 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<PortalPage />} />
-        <Route path="/professionals" element={<ProfessionalsLandingPage />} />
-        <Route path="/students" element={<StudentsLandingPage />} />
-        <Route path="/events" element={<EventsPage />} />
-        <Route path="/blog" element={<BlogPage />} />
-        <Route path="/blog/:blogId" element={<BlogPage />} />
-        <Route path="/resources" element={<ResourcesPage />} />
-        <Route path="/resources/:resourceId" element={<ResourcesPage />} />
-        <Route path="/auth" element={<AuthPage />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/" element={<PortalPage />} />
+          <Route path="/professionals" element={<ProfessionalsLandingPage />} />
+          <Route path="/students" element={<StudentsLandingPage />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:blogId" element={<BlogPage />} />
+          <Route path="/resources" element={<ResourcesPage />} />
+          <Route path="/resources/:resourceId" element={<ResourcesPage />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

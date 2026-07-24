@@ -205,9 +205,6 @@ export function StudentsLandingPage() {
               <NavLink href="#why-speedup">Why First Step?</NavLink>
               <NavLink href="#student-benefits">Cohort Perks</NavLink>
               <NavLink href="#curriculum">Curriculum</NavLink>
-              <NavLink to="/events">Events</NavLink>
-              <NavLink to="/blog">Blog</NavLink>
-              <NavLink to="/resources">Resources</NavLink>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
               <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => scrollToSection('enroll-student')}>
                 Apply Now
@@ -225,9 +222,6 @@ export function StudentsLandingPage() {
             <a href="#why-speedup" onClick={(e) => handleMobileLinkClick(e, 'why-speedup')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Why First Step?</a>
             <a href="#student-benefits" onClick={(e) => handleMobileLinkClick(e, 'student-benefits')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
             <a href="#curriculum" onClick={(e) => handleMobileLinkClick(e, 'curriculum')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Curriculum</a>
-            <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
-            <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
-            <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Resources</Link>
             <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
             <Button variant="primary" className="w-full px-5 py-2 text-sm" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
           </div>
@@ -257,11 +251,11 @@ export function StudentsLandingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 w-full max-w-[1500px] mx-auto select-none mb-12">
             {[
-              { src: "/student-comic-1.jpg", alt: "Placement season anxiety" },
-              { src: "/student-comic-2.jpg", alt: "Conflicting advice from peers" },
-              { src: "/student-comic-3.jpg", alt: "Unstructured prep confusion" },
-              { src: "/student-comic-4.jpg", alt: "Discovering structured PM-X path" },
-              { src: "/student-comic-5.jpg", alt: "Placement ready success" }
+              { src: "/student-comic-1.webp", alt: "Placement season anxiety" },
+              { src: "/student-comic-2.webp", alt: "Conflicting advice from peers" },
+              { src: "/student-comic-3.webp", alt: "Unstructured prep confusion" },
+              { src: "/student-comic-4.webp", alt: "Discovering structured PM-X path" },
+              { src: "/student-comic-5.webp", alt: "Placement ready success" }
             ].map((img, idx) => (
               <div 
                 key={idx} 
@@ -270,7 +264,8 @@ export function StudentsLandingPage() {
                 <img 
                   src={img.src} 
                   alt={img.alt} 
-                  className="w-full h-auto object-cover"
+                  className="w-full h-full object-cover" 
+                  loading="lazy"
                 />
               </div>
             ))}
@@ -480,9 +475,10 @@ export function StudentsLandingPage() {
                       {idx === 0 && (
                         <div className="absolute -top-32 left-0 right-0 flex flex-col items-center justify-center z-20 pointer-events-none">
                           <img 
-                            src="/student-mascot.png" 
+                            src="/student-mascot.webp" 
                             alt="Student mascot" 
                             className="h-28 w-auto object-contain"
+                            loading="lazy"
                           />
                           <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none mt-1">
                             <GraduationCap className="h-3.5 w-3.5 text-[#111111]" />

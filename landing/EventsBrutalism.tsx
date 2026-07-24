@@ -70,21 +70,21 @@ const DEMO_EVENTS: EventItem[] = [
         rating: 5.0,
         reviews: 42,
         role: "Product Manager at Mastercard | Mentor & Career Coach",
-        avatar: "/mentor-sanket.jpg"
+        avatar: "/mentor-sanket.webp"
       },
       {
         name: "Pankaj Sharma",
         rating: 5.0,
         reviews: 28,
         role: "Product Manager at Shopdeck | Ex - OLA",
-        avatar: "/mentor-pankaj.jpg"
+        avatar: "/mentor-pankaj.webp"
       },
       {
         name: "Ankit Surkar",
         rating: 5.0,
         reviews: 54,
         role: "Product Manager at Microsoft | Tech Leader",
-        avatar: "/mentor-ankit.jpg"
+        avatar: "/mentor-ankit.webp"
       }
     ],
     tags: ["PRODUCT MASTERCLASS FOR STUDENTS", "VIRTUAL", "FREE"]
