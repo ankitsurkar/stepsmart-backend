@@ -1303,6 +1303,7 @@ export function ResourcesBrutalism() {
   };
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [showMobileFilters, setShowMobileFilters] = useState<boolean>(false);
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -1535,9 +1536,9 @@ export function ResourcesBrutalism() {
           <div className="container mx-auto px-6 h-20 flex items-center justify-between">
             <Logo toHome={true} />
             <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-              <NavLink to="/events">Events</NavLink>
-              <NavLink to="/blog">Blog</NavLink>
-              <NavLink to="/resources">Resources</NavLink>
+              <a href="/#curriculum" className="hover:underline underline-offset-4 decoration-2 decoration-[#188ab2]">Cohort Perks</a>
+              <a href="/#curriculum" className="hover:underline underline-offset-4 decoration-2 decoration-[#188ab2]">Curriculum</a>
+              <Link to="/resources" className="text-[#188ab2] font-black underline underline-offset-4 decoration-2">Resources</Link>
               <a 
                 href="/learn" 
                 className="ml-2 px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold text-sm shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-0.5 active:translate-y-0.5 transition-all select-none"
@@ -1557,8 +1558,8 @@ export function ResourcesBrutalism() {
         {/* Mobile Nav */}
         {isMenuOpen && (
           <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-            <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
-            <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
+            <a href="/#curriculum" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
+            <a href="/#curriculum" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Curriculum</a>
             <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Resources</Link>
             <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
             <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
@@ -1568,27 +1569,27 @@ export function ResourcesBrutalism() {
 
       {/* Resource Detail View */}
       {activeResource ? (
-        <div className="pt-36 pb-20 bg-[#FFFFFF]">
-          <div className="container mx-auto px-6 max-w-5xl">
+        <div className="pt-28 sm:pt-36 pb-12 sm:pb-20 bg-[#FFFFFF]">
+          <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
             {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-6 select-none">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-xs font-bold text-slate-500 mb-6 select-none flex-wrap">
               <Link to="/" className="hover:text-[#111111]">Home</Link>
-              <ChevronRight className="h-3 w-3" />
+              <ChevronRight className="h-3 w-3 shrink-0" />
               <Link to="/resources" onClick={handleCloseResource} className="hover:text-[#111111]">Resources</Link>
-              <ChevronRight className="h-3 w-3" />
-              <span className="text-[#111111] truncate max-w-xs">{activeResource.title}</span>
+              <ChevronRight className="h-3 w-3 shrink-0" />
+              <span className="text-[#111111] truncate max-w-[140px] sm:max-w-xs">{activeResource.title}</span>
             </div>
 
             {/* Back Button */}
             <button 
               onClick={handleCloseResource}
-              className="inline-flex items-center gap-2 text-[#188ab2] font-extrabold hover:underline underline-offset-4 decoration-2 mb-8 cursor-pointer"
+              className="inline-flex items-center gap-2 text-[#188ab2] font-extrabold hover:underline underline-offset-4 decoration-2 mb-6 sm:mb-8 cursor-pointer text-sm"
             >
               <ArrowLeft className="h-4 w-4" /> Back to all resources
             </button>
 
             {/* Title Header */}
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-2 mb-3 sm:mb-4">
               <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-3 py-1 font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
                 {activeResource.category}
               </span>
@@ -1597,34 +1598,34 @@ export function ResourcesBrutalism() {
               </span>
             </div>
 
-            <h1 className="text-3xl md:text-5xl font-black text-[#111111] leading-tight mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-black text-[#111111] leading-tight mb-6 sm:mb-8">
               {activeResource.title}
             </h1>
 
             {/* Main 2-Column Detail Content */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
               
               {/* Left Column: Cover preview, Highlights, Content */}
-              <div className="lg:col-span-2 space-y-8 text-left">
+              <div className="lg:col-span-2 space-y-6 sm:space-y-8 text-left">
                 {/* Visual Cover Box */}
                 <div 
-                  className="w-full aspect-video border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-center items-center p-8 text-white text-center"
+                  className="w-full aspect-video border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] sm:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-center items-center p-4 sm:p-8 text-white text-center"
                   style={{ background: activeResource.bannerBg || 'linear-gradient(135deg, #188ab2 0%, #111111 100%)' }}
                 >
-                  <div className="w-16 h-16 bg-[#FFF3A7] border-[3px] border-[#111111] flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] mb-4 rotate-[-2deg]">
-                    <FileText className="h-8 w-8 text-[#111111]" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#FFF3A7] border-[3px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] mb-3 sm:mb-4 rotate-[-2deg]">
+                    <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-[#111111]" />
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-black leading-tight uppercase max-w-lg mb-2">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-black leading-tight uppercase max-w-lg mb-2">
                     {activeResource.title}
                   </h2>
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-200">
+                  <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-200">
                     IIT Placement Interview Guide • {activeResource.format}
                   </p>
                 </div>
 
                 {/* Detailed Overview Markdown/HTML */}
                 <div className="border-t-2 border-[#111111]/10 pt-6">
-                  <h3 className="text-xl font-black mb-4">Detailed Overview</h3>
+                  <h3 className="text-lg sm:text-xl font-black mb-4">Detailed Overview</h3>
                   <div 
                     className="prose prose-slate max-w-none text-sm text-[#111111] leading-relaxed space-y-4"
                     dangerouslySetInnerHTML={{ __html: parseMarkdown(activeResource.aboutText) }}
@@ -1635,7 +1636,7 @@ export function ResourcesBrutalism() {
 
               {/* Right Column: Sticky Table of Contents / What's Inside Card */}
               <div className="space-y-6 text-left">
-                <div className="bg-white border-[3px] border-[#111111] p-6 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] sticky top-36 z-10 space-y-6">
+                <div className="bg-white border-[3px] border-[#111111] p-5 sm:p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] sm:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] lg:sticky lg:top-36 z-10 space-y-6">
                   
                   {/* Sticky What's Inside / Table of Contents Header & List */}
                   <div className="space-y-4">
@@ -1698,18 +1699,18 @@ export function ResourcesBrutalism() {
         /* Regular Resource Listing Page */
         <>
           {/* Hero Section */}
-          <section className="pt-40 pb-12 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-            <div className="container mx-auto px-6 max-w-5xl text-center">
-              <div className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-6 py-2 font-extrabold text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none mb-6 rotate-[-1deg]">
+          <section className="pt-28 sm:pt-36 lg:pt-40 pb-8 lg:pb-12 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+            <div className="container mx-auto px-4 sm:px-6 max-w-5xl text-center">
+              <div className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 sm:px-6 py-1.5 sm:py-2 font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none mb-4 sm:mb-6 rotate-[-1deg]">
                 IIT Placement Special
               </div>
-              <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-[#111111] leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 sm:mb-6 text-[#111111] leading-tight">
                 APM{' '}
-                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-3 sm:px-4 py-0.5 rotate-[1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
                   Interview Guide
                 </span>
               </h1>
-              <p className="text-lg md:text-xl text-[#111111] max-w-3xl mx-auto leading-relaxed font-bold mb-8">
+              <p className="text-base sm:text-lg md:text-xl text-[#111111] max-w-3xl mx-auto leading-relaxed font-bold mb-6 sm:mb-8">
                 Company-by-company Product Manager (PM) and Associate Product Manager (APM) interview guides for IIT campus placements — covering shortlisting criteria, deck assignments, interview loops, and Previous Year Questions (PYQs).
               </p>
 
@@ -1717,7 +1718,7 @@ export function ResourcesBrutalism() {
               <div className="flex justify-center items-center">
                 <a 
                   href="/#who-is-it-for"
-                  className="px-8 py-4 bg-[#188ab2] text-white border-[3px] border-[#111111] font-extrabold text-base uppercase shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:bg-[#188ab2] hover:text-white transition-all select-none cursor-pointer inline-block"
+                  className="px-6 sm:px-8 py-3.5 sm:py-4 bg-[#188ab2] text-white border-[3px] border-[#111111] font-extrabold text-sm sm:text-base uppercase shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] sm:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:bg-[#188ab2] hover:text-white transition-all select-none cursor-pointer inline-block"
                 >
                   View Course ➜
                 </a>
@@ -1726,13 +1727,34 @@ export function ResourcesBrutalism() {
           </section>
 
           {/* Main Content Area with Left Sidebar Filter + Card Grid */}
-          <main className="py-12 bg-[#F8FAFC]">
-            <div className="container mx-auto px-6 max-w-7xl">
+          <main className="py-6 sm:py-12 bg-[#F8FAFC]">
+            <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
               
-              <div className="flex flex-col lg:flex-row gap-8 items-start">
+              {/* Mobile Filter Toggle Bar (Visible on < lg screens) */}
+              <div className="lg:hidden w-full mb-4">
+                <button
+                  type="button"
+                  onClick={() => setShowMobileFilters(!showMobileFilters)}
+                  className="w-full bg-white border-[3px] border-[#111111] p-3.5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-between font-black text-xs sm:text-sm uppercase text-[#111111] cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <SlidersHorizontal className="h-4 w-4 text-[#188ab2]" />
+                    <span>Filter & Search Resources</span>
+                    {(selectedCategory !== 'All Categories' || selectedCompany !== 'All Companies' || selectedQuestionCategory !== 'All Question Types') && (
+                      <span className="bg-[#FFF3A7] border border-[#111111] text-[9px] px-1.5 py-0.5 font-extrabold">Active</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs text-slate-500 font-bold">{showMobileFilters ? 'Hide' : 'Show'}</span>
+                    {showMobileFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  </div>
+                </button>
+              </div>
+
+              <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
 
                 {/* Left Sidebar Filter */}
-                <aside className="w-full lg:w-64 xl:w-72 shrink-0 bg-white border-[3px] border-[#111111] p-4 md:p-5 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none sticky top-36 max-h-[calc(100vh-10rem)] overflow-y-auto z-20 space-y-4 text-left">
+                <aside className={`w-full lg:w-64 xl:w-72 shrink-0 bg-white border-[3px] border-[#111111] p-4 md:p-5 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none lg:sticky lg:top-36 max-h-none lg:max-h-[calc(100vh-10rem)] overflow-y-auto z-20 space-y-4 text-left ${showMobileFilters ? 'block mb-6 lg:mb-0' : 'hidden lg:block'}`}>
                   
                   {/* Header */}
                   <div className="flex items-center justify-between pb-3 border-b-2 border-[#111111]">
@@ -1936,30 +1958,30 @@ export function ResourcesBrutalism() {
                 <div className="flex-1 w-full space-y-6 text-left">
 
                   {/* View Switcher Tabs */}
-                  <div className="flex flex-wrap items-center gap-3 border-b-2 border-[#111111]/10 pb-4">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 border-b-2 border-[#111111]/10 pb-4">
                     <button
                       onClick={() => {
                         setActiveResourceTab('guides');
                         setSelectedQuestionCategory('All Question Types');
                       }}
-                      className={`px-5 py-2.5 font-black text-xs md:text-sm uppercase border-[3px] border-[#111111] transition-all flex items-center gap-2 select-none cursor-pointer ${
+                      className={`w-full sm:w-auto flex-1 justify-center px-4 sm:px-5 py-2.5 font-black text-xs md:text-sm uppercase border-[3px] border-[#111111] transition-all flex items-center gap-2 select-none cursor-pointer ${
                         activeResourceTab === 'guides' 
                           ? 'bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]' 
                           : 'bg-white text-[#111111] hover:bg-[#FFF3A7]'
                       }`}
                     >
-                      <BookOpen className="h-4 w-4" /> APM Interview Guides
+                      <BookOpen className="h-4 w-4 shrink-0" /> APM Interview Guides
                     </button>
 
                     <button
                       onClick={() => setActiveResourceTab('questions')}
-                      className={`px-5 py-2.5 font-black text-xs md:text-sm uppercase border-[3px] border-[#111111] transition-all flex items-center gap-2 select-none cursor-pointer ${
+                      className={`w-full sm:w-auto flex-1 justify-center px-4 sm:px-5 py-2.5 font-black text-xs md:text-sm uppercase border-[3px] border-[#111111] transition-all flex items-center gap-2 select-none cursor-pointer ${
                         activeResourceTab === 'questions' 
                           ? 'bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]' 
                           : 'bg-white text-[#111111] hover:bg-[#FFF3A7]'
                       }`}
                     >
-                      <HelpCircle className="h-4 w-4" /> IIT Question Bank (PYQs)
+                      <HelpCircle className="h-4 w-4 shrink-0" /> IIT Question Bank (PYQs)
                     </button>
                   </div>
 
@@ -2213,7 +2235,7 @@ export function ResourcesBrutalism() {
       {/* Modal Popup Enrollment Form (Apply Now popup) */}
       {showApplyModal && (
         <div className="fixed inset-0 bg-[#111111]/80 z-50 flex items-center justify-center p-4">
-          <div className="relative w-full max-w-md border-[4px] border-[#111111] bg-white p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] text-left">
+          <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto border-[4px] border-[#111111] bg-white p-6 sm:p-8 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] text-left">
             <button 
               onClick={() => { setShowApplyModal(false); setApplyStatus('idle'); }}
               className="absolute top-4 right-4 bg-[#FFF3A7] border-2 border-[#111111] p-1.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#188ab2] hover:text-white transition-colors"
