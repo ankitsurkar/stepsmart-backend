@@ -53,6 +53,43 @@ export type EventItem = {
 // Only the Upcoming Product Masterclass event card as requested
 const DEMO_EVENTS: EventItem[] = [
   {
+    id: "product-masterclass-iit-kanpur-2026",
+    title: "Product Masterclass for Students",
+    dateStr: "2026-07-27",
+    dateDisplay: "Monday, Jul 27",
+    time: "8:00 PM IST",
+    format: "IIT Kanpur",
+    description: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
+    aboutText: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews. This session is designed for aspiring PMs looking to switch from non-tech, engineering, or MBA roles without needing prior product management credentials. Learn directly from PMs currently at Microsoft, Mastercard, and Shopdeck.\n\n### What We Cover:\n- **Skills & Frameworks**: Building product sense, RCA, design thinking, and guesstimates that companies actually test.\n- **Resume Mapping**: Translating existing analytical/technical experience to catch PM recruiter eyes.\n- **Interview Strategies**: Practical frameworks vs real thinking approaches.\n- **Q&A Round**: Open floor to ask speakers questions.",
+    registerUrl: EVENT_COMMUNITY_URL,
+    attendeeCount: 124,
+    bannerBg: "linear-gradient(135deg, #188ab2 0%, #1e40af 100%)",
+    hosts: [
+      {
+        name: "Sanket Katore",
+        rating: 5.0,
+        reviews: 42,
+        role: "Product Manager at Mastercard | Mentor & Career Coach",
+        avatar: "/mentor-sanket.webp"
+      },
+      {
+        name: "Pankaj Sharma",
+        rating: 5.0,
+        reviews: 28,
+        role: "Product Manager at Shopdeck | Ex - OLA",
+        avatar: "/mentor-pankaj.webp"
+      },
+      {
+        name: "Ankit Surkar",
+        rating: 5.0,
+        reviews: 54,
+        role: "Product Manager at Microsoft | Tech Leader",
+        avatar: "/mentor-ankit.webp"
+      }
+    ],
+    tags: ["PRODUCT MASTERCLASS FOR STUDENTS", "VIRTUAL", "FREE"]
+  },
+  {
     id: "product-masterclass-2026",
     title: "Product Masterclass for Students",
     dateStr: "2026-07-24",
