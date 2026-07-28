@@ -128,6 +128,32 @@ const DEMO_EVENTS: EventItem[] = [
   }
 ];
 
+const LOCAL_STORAGE_EVENTS_KEY = 'pmx_custom_events';
+
+export const getStoredEvents = (): EventItem[] => {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_EVENTS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.error('Failed to read stored events', e);
+  }
+  return DEMO_EVENTS;
+};
+
+export const saveStoredEvents = (events: EventItem[]) => {
+  try {
+    localStorage.setItem(LOCAL_STORAGE_EVENTS_KEY, JSON.stringify(events));
+    window.dispatchEvent(new Event('pmx_events_updated'));
+  } catch (e) {
+    console.error('Failed to save stored events', e);
+  }
+};
+
 // Helper to check event status dynamically based on current date
 const getEventStatus = (eventDateStr: string): 'upcoming' | 'ended' => {
   const eventDate = new Date(eventDateStr);
@@ -148,8 +174,8 @@ const getEventStatus = (eventDateStr: string): 'upcoming' | 'ended' => {
 };
 
 export function EventsPage() {
-  const [events, setEvents] = useState<EventItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState<EventItem[]>(() => getStoredEvents());
+  const [loading, setLoading] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [expandedMomentsId, setExpandedMomentsId] = useState<string | null>(null);
   const [activePhoto, setActivePhoto] = useState<string | null>(null);
@@ -165,31 +191,16 @@ export function EventsPage() {
   const activeEventId = searchParams.get('id');
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const res = await fetch(
-          'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ page: 'get_events' }),
-          }
-        );
-        if (!res.ok) throw new Error('Failed to fetch events');
-        const data = await res.json();
-        setEvents(data.events || []);
-      } catch (err: any) {
-        console.warn('API get_events not implemented yet, using fallback demo data.');
-        setEvents(DEMO_EVENTS);
-      } finally {
-        setLoading(false);
-      }
+    const handleEventsUpdate = () => {
+      setEvents(getStoredEvents());
     };
-    fetchEvents();
+
+    window.addEventListener('pmx_events_updated', handleEventsUpdate);
+    return () => window.removeEventListener('pmx_events_updated', handleEventsUpdate);
   }, []);
 
   // Compute status dynamically
-  const displayEvents = (events.length > 0 ? events : DEMO_EVENTS).map(event => {
+  const displayEvents = events.map(event => {
     const status = getEventStatus(event.dateStr);
     return { ...event, status };
   });

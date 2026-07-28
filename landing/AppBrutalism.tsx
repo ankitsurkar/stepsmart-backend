@@ -85,8 +85,76 @@ import {
   Trophy,
   Share,
   Brain,
-  HeartHandshake
+  HeartHandshake,
+  Plus,
+  Upload
 } from 'lucide-react';
+import type { EventItem } from './EventsBrutalism';
+
+const LOCAL_STORAGE_EVENTS_KEY = 'pmx_custom_events';
+
+const getStoredEvents = (): EventItem[] => {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_EVENTS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.error('Failed to read stored events', e);
+  }
+  return [
+    {
+      id: "product-masterclass-iit-kanpur-2026",
+      title: "Product Masterclass for Students",
+      dateStr: "2026-07-27",
+      dateDisplay: "Monday, Jul 27",
+      time: "8:00 PM IST",
+      format: "IIT Kanpur",
+      description: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
+      aboutText: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
+      registerUrl: "https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD",
+      attendeeCount: 124,
+      bannerBg: "linear-gradient(135deg, #188ab2 0%, #1e40af 100%)",
+      hosts: [
+        { name: "Sanket Katore", rating: 5.0, reviews: 42, role: "Product Manager at Mastercard", avatar: "/mentor-sanket.webp" },
+        { name: "Pankaj Sharma", rating: 5.0, reviews: 28, role: "Product Manager at Shopdeck", avatar: "/mentor-pankaj.webp" },
+        { name: "Ankit Surkar", rating: 5.0, reviews: 54, role: "Product Manager at Microsoft", avatar: "/mentor-ankit.webp" }
+      ],
+      tags: ["PRODUCT MASTERCLASS FOR STUDENTS", "VIRTUAL", "FREE"]
+    },
+    {
+      id: "product-masterclass-2026",
+      title: "Product Masterclass for Students",
+      dateStr: "2026-07-24",
+      dateDisplay: "Friday, Jul 24",
+      time: "8:00 PM IST",
+      format: "IIT Roorkee",
+      description: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
+      aboutText: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
+      registerUrl: "https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD",
+      attendeeCount: 124,
+      bannerBg: "linear-gradient(135deg, #188ab2 0%, #1e40af 100%)",
+      hosts: [
+        { name: "Sanket Katore", rating: 5.0, reviews: 42, role: "Product Manager at Mastercard", avatar: "/mentor-sanket.webp" },
+        { name: "Pankaj Sharma", rating: 5.0, reviews: 28, role: "Product Manager at Shopdeck", avatar: "/mentor-pankaj.webp" },
+        { name: "Ankit Surkar", rating: 5.0, reviews: 54, role: "Product Manager at Microsoft", avatar: "/mentor-ankit.webp" }
+      ],
+      tags: ["PRODUCT MASTERCLASS FOR STUDENTS", "VIRTUAL", "FREE"]
+    }
+  ];
+};
+
+const saveStoredEvents = (events: EventItem[]) => {
+  try {
+    localStorage.setItem(LOCAL_STORAGE_EVENTS_KEY, JSON.stringify(events));
+    window.dispatchEvent(new Event('pmx_events_updated'));
+  } catch (e) {
+    console.error('Failed to save stored events', e);
+  }
+};
 
 // Firebase Imports
 import { initializeApp } from 'firebase/app';
@@ -164,7 +232,7 @@ type DemoUser = {
   password: string;
 };
 
-type DashboardTab = 'lectures' | 'resources' | 'assignments' | 'calendar';
+type DashboardTab = 'lectures' | 'resources' | 'assignments' | 'calendar' | 'events_admin';
 
 export const Logo = ({ toHome }: { toHome?: boolean }) => {
   const navigate = useNavigate();
@@ -1630,13 +1698,15 @@ function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] flex items-center justify-center px-6 py-12">
-      <div className="w-full max-w-md bg-white border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8">
-        <Logo />
-        <h1 className="text-2xl font-extrabold text-[#111111] text-center mt-8 mb-2">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-6 py-12">
+      <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-xl p-8">
+        <div className="flex justify-center">
+          <Logo />
+        </div>
+        <h1 className="text-2xl font-extrabold text-slate-900 text-center mt-6 mb-1">
           {mode === 'signup' ? 'Create Your Account' : 'Welcome Back'}
         </h1>
-        <p className="text-[#111111] text-sm text-center mb-8 font-bold">
+        <p className="text-slate-500 text-sm text-center mb-6 font-medium">
           {mode === 'signup' ? 'Sign up to access the PM-X learner dashboard.' : 'Login to continue learning.'}
         </p>
 
@@ -1646,7 +1716,7 @@ function AuthPage() {
               value={fullName}
               onChange={(event) => setFullName(event.target.value)}
               placeholder="Full Name"
-              className="w-full px-4 py-3 border-[3px] border-[#111111] bg-[#FFFFFF] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_rgba(24,138,178,1)] transition-all placeholder-[#111111]/60"
+              className="w-full px-4 py-3 border border-slate-300 rounded-xl font-medium outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2] transition-all placeholder-slate-400 text-sm"
             />
           )}
           <input
@@ -1654,38 +1724,41 @@ function AuthPage() {
             onChange={(event) => setEmail(event.target.value)}
             type="email"
             placeholder="Email Address"
-            className="w-full px-4 py-3 border-[3px] border-[#111111] bg-[#FFFFFF] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_rgba(24,138,178,1)] transition-all placeholder-[#111111]/60"
+            className="w-full px-4 py-3 border border-slate-300 rounded-xl font-medium outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2] transition-all placeholder-slate-400 text-sm"
           />
           <input
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             type="password"
             placeholder="Password"
-            className="w-full px-4 py-3 border-[3px] border-[#111111] bg-[#FFFFFF] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_rgba(24,138,178,1)] transition-all placeholder-[#111111]/60"
+            className="w-full px-4 py-3 border border-slate-300 rounded-xl font-medium outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2] transition-all placeholder-slate-400 text-sm"
           />
 
           {error && (
             <div className="space-y-2">
-              <p className="text-red-500 text-sm font-bold">{error}</p>
+              <p className="text-red-500 text-sm font-semibold">{error}</p>
               {error === 'Invalid email or password.' && (
-                <div className="text-xs font-bold bg-[#FFF3A7] border-[3px] border-[#111111] p-3 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] text-[#111111] leading-relaxed">
-                  💡 <span className="underline">Tip</span>: You can Sign Up for a new local account, or log in with these seeded credentials:<br/>
-                  • Email: <span className="font-mono bg-white px-1 border border-slate-300">admin@stepsmart.net</span><br/>
-                  • Password: <span className="font-mono bg-white px-1 border border-slate-300">password</span>
+                <div className="text-xs font-medium bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-amber-900 leading-relaxed">
+                  💡 <span className="font-semibold underline">Tip</span>: You can Sign Up for a new local account, or log in with these seeded credentials:<br/>
+                  • Email: <span className="font-mono bg-white px-1.5 py-0.5 rounded border border-amber-300">admin@stepsmart.net</span><br/>
+                  • Password: <span className="font-mono bg-white px-1.5 py-0.5 rounded border border-amber-300">password</span>
                 </div>
               )}
             </div>
           )}
 
-          <Button type="submit" className="w-full py-3" variant="primary">
+          <button
+            type="submit"
+            className="w-full py-3 bg-[#188ab2] hover:bg-[#0f6f8f] text-white font-bold rounded-xl shadow-md transition-all cursor-pointer text-sm"
+          >
             {mode === 'signup' ? 'Sign Up' : 'Login'}
-          </Button>
+          </button>
         </form>
 
-        <div className="text-center mt-6 text-sm text-[#111111] font-bold">
+        <div className="text-center mt-6 text-sm text-slate-600 font-medium">
           {mode === 'signup' ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button
-            className="text-[#188ab2] font-extrabold hover:underline"
+            className="text-[#188ab2] font-bold hover:underline cursor-pointer"
             onClick={() => {
               setError('');
               setMode(mode === 'signup' ? 'login' : 'signup');
@@ -1699,9 +1772,478 @@ function AuthPage() {
   );
 }
 
+function AdminEventsManager() {
+  const [events, setEvents] = useState<EventItem[]>(() => getStoredEvents());
+  const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  
+  // Form State
+  const [title, setTitle] = useState('');
+  const [dateStr, setDateStr] = useState('');
+  const [dateDisplay, setDateDisplay] = useState('');
+  const [time, setTime] = useState('8:00 PM IST');
+  const [format, setFormat] = useState('IIT Kanpur');
+  const [description, setDescription] = useState('');
+  const [aboutText, setAboutText] = useState('');
+  const [registerUrl, setRegisterUrl] = useState('https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD');
+  const [attendeeCount, setAttendeeCount] = useState(124);
+
+  // Screenshots / Moments state for modal
+  const [moments, setMoments] = useState<string[]>([]);
+  const [pastedUrl, setPastedUrl] = useState('');
+
+  const openCreateModal = () => {
+    setEditingId(null);
+    setTitle('');
+    setDateStr('2026-08-01');
+    setDateDisplay('Saturday, Aug 1');
+    setTime('8:00 PM IST');
+    setFormat('IIT Kanpur');
+    setDescription('Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.');
+    setAboutText('Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.\n\n### What We Cover:\n- **Skills & Frameworks**: Building product sense, RCA, design thinking.\n- **Resume Mapping**: Translating existing experience.\n- **Q&A Round**: Open floor to ask speakers questions.');
+    setRegisterUrl('https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD');
+    setAttendeeCount(150);
+    setMoments([]);
+    setPastedUrl('');
+    setShowModal(true);
+  };
+
+  const openEditModal = (eventItem: EventItem) => {
+    setEditingId(eventItem.id);
+    setTitle(eventItem.title || '');
+    setDateStr(eventItem.dateStr || '');
+    setDateDisplay(eventItem.dateDisplay || '');
+    setTime(eventItem.time || '');
+    setFormat(eventItem.format || '');
+    setDescription(eventItem.description || '');
+    setAboutText(eventItem.aboutText || '');
+    setRegisterUrl(eventItem.registerUrl || '');
+    setAttendeeCount(eventItem.attendeeCount || 100);
+    setMoments(eventItem.moments || []);
+    setPastedUrl('');
+    setShowModal(true);
+  };
+
+  const handleSaveEvent = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !dateStr) return;
+
+    let updatedList: EventItem[] = [];
+
+    if (editingId) {
+      updatedList = events.map(ev => ev.id === editingId ? {
+        ...ev,
+        title,
+        dateStr,
+        dateDisplay: dateDisplay || dateStr,
+        time,
+        format,
+        description,
+        aboutText,
+        registerUrl,
+        attendeeCount: Number(attendeeCount),
+        moments
+      } : ev);
+    } else {
+      const newEvent: EventItem = {
+        id: `event-${Date.now()}`,
+        title,
+        dateStr,
+        dateDisplay: dateDisplay || dateStr,
+        time,
+        format,
+        description,
+        aboutText,
+        registerUrl,
+        attendeeCount: Number(attendeeCount),
+        moments,
+        bannerBg: 'linear-gradient(135deg, #188ab2 0%, #1e40af 100%)',
+        tags: ['PRODUCT MASTERCLASS FOR STUDENTS', 'VIRTUAL', 'FREE'],
+        hosts: [
+          { name: 'Sanket Katore', rating: 5.0, reviews: 42, role: 'Product Manager at Mastercard', avatar: '/mentor-sanket.webp' },
+          { name: 'Pankaj Sharma', rating: 5.0, reviews: 28, role: 'Product Manager at Shopdeck', avatar: '/mentor-pankaj.webp' },
+          { name: 'Ankit Surkar', rating: 5.0, reviews: 54, role: 'Product Manager at Microsoft', avatar: '/mentor-ankit.webp' }
+        ]
+      };
+      updatedList = [newEvent, ...events];
+    }
+
+    setEvents(updatedList);
+    saveStoredEvents(updatedList);
+    setShowModal(false);
+  };
+
+  const handleDeleteEvent = (eventId: string) => {
+    if (window.confirm('Are you sure you want to delete this event?')) {
+      const updated = events.filter(e => e.id !== eventId);
+      setEvents(updated);
+      saveStoredEvents(updated);
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (uploadEvent) => {
+        const base64Url = uploadEvent.target?.result as string;
+        if (base64Url) {
+          setMoments(prev => [...prev, base64Url]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleAddUrlScreenshot = () => {
+    if (!pastedUrl.trim()) return;
+    setMoments(prev => [...prev, pastedUrl.trim()]);
+    setPastedUrl('');
+  };
+
+  const handleRemoveScreenshot = (index: number) => {
+    setMoments(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleQuickAddScreenshotToEvent = (eventId: string, file: File) => {
+    const reader = new FileReader();
+    reader.onload = (uploadEvent) => {
+      const base64Url = uploadEvent.target?.result as string;
+      if (base64Url) {
+        const updated = events.map(ev => {
+          if (ev.id === eventId) {
+            const currentMoments = ev.moments || [];
+            return { ...ev, moments: [...currentMoments, base64Url] };
+          }
+          return ev;
+        });
+        setEvents(updated);
+        saveStoredEvents(updated);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Top Admin Action Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900 text-white rounded-2xl p-6 shadow-md">
+        <div>
+          <h2 className="text-xl font-bold uppercase tracking-wide text-white">
+            Event & Session Manager
+          </h2>
+          <p className="text-xs text-slate-300 mt-1">
+            Create upcoming events, manage venues, and upload past session screenshots to display live on the frontend.
+          </p>
+        </div>
+
+        <button
+          onClick={openCreateModal}
+          className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer inline-flex items-center gap-2 shrink-0"
+        >
+          <Plus className="h-4 w-4" /> Create New Event
+        </button>
+      </div>
+
+      {/* Events List */}
+      <div className="space-y-4">
+        {events.length === 0 ? (
+          <div className="text-center py-12 border border-slate-200 bg-white rounded-2xl">
+            <p className="font-medium text-slate-500">No events found. Click "Create New Event" above.</p>
+          </div>
+        ) : (
+          events.map((eventItem) => {
+            const isEnded = new Date(eventItem.dateStr) < new Date(new Date().setHours(0,0,0,0));
+            return (
+              <div 
+                key={eventItem.id} 
+                className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all space-y-4 text-left"
+              >
+                {/* Event Header info */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className={`px-3 py-1 font-bold text-[11px] uppercase tracking-wide rounded-full ${
+                        isEnded ? 'bg-slate-100 text-slate-600 border border-slate-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      }`}>
+                        {isEnded ? 'Past Session (Ended)' : 'Upcoming Live Event'}
+                      </span>
+                      <span className="bg-sky-50 text-sky-700 border border-sky-200 px-3 py-0.5 font-semibold text-xs rounded-full">
+                        {eventItem.format || 'IIT Campus'}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mt-1">{eventItem.title}</h3>
+                    <p className="text-xs font-medium text-slate-500 flex items-center gap-3 mt-0.5">
+                      <span>📅 {eventItem.dateDisplay || eventItem.dateStr}</span>
+                      <span>⏰ {eventItem.time}</span>
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-end sm:self-auto">
+                    <button
+                      onClick={() => openEditModal(eventItem)}
+                      className="px-3.5 py-1.5 bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Wrench className="h-3.5 w-3.5" /> Edit Event
+                    </button>
+                    <button
+                      onClick={() => handleDeleteEvent(eventItem.id)}
+                      className="px-3.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+
+                {/* Session Screenshots / Moments Gallery */}
+                <div className="pt-1">
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                      <span>📸</span> Session Screenshots ({eventItem.moments?.length || 0})
+                    </h4>
+
+                    <label className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer inline-flex items-center gap-1.5">
+                      <Upload className="h-3.5 w-3.5" /> Upload Screenshot
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        className="hidden"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            handleQuickAddScreenshotToEvent(eventItem.id, e.target.files[0]);
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  {eventItem.moments && eventItem.moments.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+                      {eventItem.moments.map((imgUrl, imgIdx) => (
+                        <div key={imgIdx} className="relative group border border-slate-200 rounded-xl aspect-video bg-slate-100 overflow-hidden shadow-xs">
+                          <img src={imgUrl} alt={`Screenshot ${imgIdx+1}`} className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = events.map(ev => {
+                                if (ev.id === eventItem.id) {
+                                  return { ...ev, moments: (ev.moments || []).filter((_, i) => i !== imgIdx) };
+                                }
+                                return ev;
+                              });
+                              setEvents(updated);
+                              saveStoredEvents(updated);
+                            }}
+                            className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-90 hover:opacity-100 cursor-pointer shadow-sm"
+                            title="Remove Screenshot"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs font-medium text-slate-400 italic">No session screenshots uploaded yet. Use "Upload Screenshot" to add photos from past sessions.</p>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Create / Edit Event Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-slate-200 bg-white rounded-2xl p-6 sm:p-8 shadow-2xl text-left">
+            <button 
+              type="button"
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full p-2 transition-colors cursor-pointer"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <h3 className="text-2xl font-bold text-slate-900 mb-6">
+              {editingId ? 'Edit Event Details' : 'Create New Event'}
+            </h3>
+
+            <form onSubmit={handleSaveEvent} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">Event Title *</label>
+                <input 
+                  type="text" 
+                  required
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="e.g. Product Masterclass for Students"
+                  className="w-full p-3 border border-slate-300 rounded-xl font-medium text-sm bg-white outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2]"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">Venue / Campus *</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={format}
+                    onChange={(e) => setFormat(e.target.value)}
+                    placeholder="e.g. IIT Kanpur"
+                    className="w-full p-3 border border-slate-300 rounded-xl font-medium text-sm bg-white outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">Date *</label>
+                  <input 
+                    type="date" 
+                    required
+                    value={dateStr}
+                    onChange={(e) => {
+                      setDateStr(e.target.value);
+                      if (e.target.value) {
+                        const d = new Date(e.target.value);
+                        const options: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'short', day: 'numeric' };
+                        setDateDisplay(d.toLocaleDateString('en-US', options));
+                      }
+                    }}
+                    className="w-full p-3 border border-slate-300 rounded-xl font-medium text-sm bg-white outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">Display Date String</label>
+                  <input 
+                    type="text" 
+                    value={dateDisplay}
+                    onChange={(e) => setDateDisplay(e.target.value)}
+                    placeholder="e.g. Monday, Jul 27"
+                    className="w-full p-3 border border-slate-300 rounded-xl font-medium text-sm bg-white outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">Time</label>
+                  <input 
+                    type="text" 
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    placeholder="e.g. 8:00 PM IST"
+                    className="w-full p-3 border border-slate-300 rounded-xl font-medium text-sm bg-white outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">WhatsApp / Registration Link</label>
+                  <input 
+                    type="url" 
+                    value={registerUrl}
+                    onChange={(e) => setRegisterUrl(e.target.value)}
+                    placeholder="https://chat.whatsapp.com/..."
+                    className="w-full p-3 border border-slate-300 rounded-xl font-medium text-sm bg-white outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">Short Summary Description</label>
+                <textarea 
+                  rows={2}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Summary of the masterclass session..."
+                  className="w-full p-3 border border-slate-300 rounded-xl font-medium text-sm bg-white outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">Detailed Overview / Agenda (Markdown)</label>
+                <textarea 
+                  rows={4}
+                  value={aboutText}
+                  onChange={(e) => setAboutText(e.target.value)}
+                  placeholder="Detailed session breakdown..."
+                  className="w-full p-3 border border-slate-300 rounded-xl font-medium text-sm bg-white outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2]"
+                />
+              </div>
+
+              {/* Session Screenshots / Moments Uploader in Modal */}
+              <div className="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3">
+                <label className="block text-xs font-bold uppercase text-slate-700">
+                  📸 Session Screenshots (Upload File or Paste Image URL)
+                </label>
+
+                <div className="flex flex-col sm:flex-row items-center gap-2">
+                  <input 
+                    type="url"
+                    value={pastedUrl}
+                    onChange={(e) => setPastedUrl(e.target.value)}
+                    placeholder="https://example.com/screenshot.jpg"
+                    className="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-medium bg-white outline-none focus:border-[#188ab2]"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddUrlScreenshot}
+                    className="w-full sm:w-auto px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer shrink-0"
+                  >
+                    Add URL
+                  </button>
+
+                  <label className="w-full sm:w-auto px-4 py-2.5 bg-[#188ab2] hover:bg-[#0f6f8f] text-white rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer shrink-0 text-center flex items-center justify-center gap-1 shadow-sm">
+                    <Upload className="h-3.5 w-3.5" /> Upload File
+                    <input type="file" accept="image/*" multiple onChange={handleFileUpload} className="hidden" />
+                  </label>
+                </div>
+
+                {moments.length > 0 && (
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-2">
+                    {moments.map((img, idx) => (
+                      <div key={idx} className="relative border border-slate-200 rounded-lg aspect-video bg-white overflow-hidden group">
+                        <img src={img} alt={`Preview ${idx+1}`} className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveScreenshot(idx)}
+                          className="absolute top-1 right-1 bg-red-600 text-white p-0.5 rounded-full hover:bg-red-700 cursor-pointer shadow-sm"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-200">
+                <button 
+                  type="button" 
+                  onClick={() => setShowModal(false)}
+                  className="px-5 py-2.5 border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold rounded-xl text-sm transition-all cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="px-6 py-2.5 bg-[#188ab2] hover:bg-[#0f6f8f] text-white font-bold rounded-xl text-sm shadow-sm transition-all cursor-pointer uppercase"
+                >
+                  {editingId ? 'Save Changes' : 'Create Event'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function DashboardPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<DashboardTab>('lectures');
+  const [activeTab, setActiveTab] = useState<DashboardTab>('events_admin');
   const sessionEmail = getDemoSession();
   const currentUser = getDemoUsers().find((user) => user.email === sessionEmail);
 
@@ -1716,34 +2258,34 @@ function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#111111]">
-      <header className="bg-white border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 py-5 flex items-center justify-between">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
+      <header className="bg-white border-b border-slate-200">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Logo />
           <div className="flex items-center gap-4">
-            <span className="text-sm font-extrabold hidden md:inline">
+            <span className="text-sm font-semibold text-slate-700 hidden md:inline">
               {currentUser?.fullName ? `Hi, ${currentUser.fullName}` : sessionEmail}
             </span>
-            <Button
-              variant="outline"
-              className="!px-4 !py-2"
+            <button
+              className="px-4 py-2 border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 cursor-pointer"
               onClick={() => {
                 setDemoSession(null);
                 navigate('/auth');
               }}
             >
-              <LogOut className="h-4 w-4 mr-2" />
+              <LogOut className="h-4 w-4" />
               Logout
-            </Button>
+            </button>
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-6 py-10">
-        <h1 className="text-3xl font-extrabold text-[#111111] mb-8">PM-X Learning Dashboard</h1>
+        <h1 className="text-3xl font-extrabold text-slate-900 mb-8">PM-X Admin & Learning Dashboard</h1>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           {[
+            { id: 'events_admin', label: 'Events & Sessions', icon: <Calendar className="h-5 w-5 mb-2" /> },
             { id: 'lectures', label: 'Video Lectures', icon: <PlayCircle className="h-5 w-5 mb-2" /> },
             { id: 'resources', label: 'Resources', icon: <FileText className="h-5 w-5 mb-2" /> },
             { id: 'assignments', label: 'Assignments', icon: <ClipboardList className="h-5 w-5 mb-2" /> },
@@ -1751,26 +2293,30 @@ function DashboardPage() {
           ].map((tab) => (
             <button
               key={tab.id}
-              className={`border-[3px] border-[#111111] p-4 text-left transition-all duration-100 select-none ${
+              className={`p-5 text-left rounded-2xl transition-all duration-150 select-none ${
                 activeTab === tab.id
-                  ? 'bg-[#188ab2] text-white shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] translate-x-[2px] translate-y-[2px]'
-                  : 'bg-white text-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]'
+                  ? 'bg-[#188ab2] text-white shadow-md font-bold'
+                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 shadow-xs font-semibold'
               }`}
               onClick={() => setActiveTab(tab.id as any)}
             >
               {tab.icon}
-              <p className="font-extrabold">{tab.label}</p>
+              <p className="font-extrabold text-sm">{tab.label}</p>
             </button>
           ))}
         </div>
 
-        <div className="bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] min-h-[300px]">
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm min-h-[350px]">
+          {activeTab === 'events_admin' && (
+            <AdminEventsManager />
+          )}
+
           {activeTab === 'lectures' && (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {['PM Fundamentals', 'Case Study Walkthrough', 'Product Strategy in Practice'].map((item) => (
-                <div key={item} className="bg-[#FFFFFF] border-[3px] border-[#111111] p-5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-                  <p className="font-extrabold text-[#111111] mb-2">{item}</p>
-                  <p className="text-sm text-[#111111] font-bold">Recorded session available</p>
+                <div key={item} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs text-left">
+                  <p className="font-bold text-slate-900 mb-1">{item}</p>
+                  <p className="text-sm text-slate-500 font-medium">Recorded session available</p>
                 </div>
               ))}
             </div>
@@ -1779,9 +2325,9 @@ function DashboardPage() {
           {activeTab === 'resources' && (
             <div className="grid md:grid-cols-2 gap-4">
               {['PRD Template', 'Go-to-Market Checklist', 'PM Interview Framework'].map((item) => (
-                <div key={item} className="bg-[#FFFFFF] border-[3px] border-[#111111] p-5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-                  <p className="font-extrabold text-[#111111] mb-2">{item}</p>
-                  <p className="text-sm text-[#111111] font-bold">Downloadable study material</p>
+                <div key={item} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs text-left">
+                  <p className="font-bold text-slate-900 mb-1">{item}</p>
+                  <p className="text-sm text-slate-500 font-medium">Downloadable study material</p>
                 </div>
               ))}
             </div>
@@ -1790,9 +2336,9 @@ function DashboardPage() {
           {activeTab === 'assignments' && (
             <div className="space-y-4">
               {['Week 1: Problem Discovery Exercise', 'Week 2: User Story Writing', 'Week 3: Metrics Definition'].map((item) => (
-                <div key={item} className="bg-[#FFFFFF] border-[3px] border-[#111111] p-5 flex items-center justify-between shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-                  <p className="font-extrabold text-[#111111]">{item}</p>
-                  <span className="text-xs font-extrabold uppercase tracking-wide text-[#111111] bg-[#FFF3A7] border-2 border-[#111111] px-3 py-1 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">Pending</span>
+                <div key={item} className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center justify-between shadow-xs text-left">
+                  <p className="font-bold text-slate-900">{item}</p>
+                  <span className="text-xs font-semibold uppercase tracking-wide text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">Pending</span>
                 </div>
               ))}
             </div>
@@ -1805,9 +2351,9 @@ function DashboardPage() {
                 { title: 'Mock Interview Practice', date: 'Tuesday, 8:00 PM' },
                 { title: 'Doubt Clearing AMA', date: 'Thursday, 7:30 PM' }
               ].map((item) => (
-                <div key={item.title} className="bg-[#FFFFFF] border-[3px] border-[#111111] p-5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-                  <p className="font-extrabold text-[#111111]">{item.title}</p>
-                  <p className="text-sm text-[#111111] mt-1 font-bold">{item.date}</p>
+                <div key={item.title} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs text-left">
+                  <p className="font-bold text-slate-900">{item.title}</p>
+                  <p className="text-sm text-slate-500 mt-1 font-medium">{item.date}</p>
                 </div>
               ))}
             </div>
