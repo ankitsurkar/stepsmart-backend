@@ -2710,6 +2710,456 @@ function GymTab({ courseId }) {
   );
 }
 
+function EventsTab({ courseId }) {
+  const LOCAL_STORAGE_EVENTS_KEY = 'pmx_custom_events';
+
+  const DEMO_EVENTS = [
+    {
+      id: "product-masterclass-iit-kanpur-2026",
+      title: "Product Masterclass for Students",
+      dateStr: "2026-07-27",
+      dateDisplay: "Monday, Jul 27",
+      time: "8:00 PM IST",
+      format: "IIT Kanpur",
+      description: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
+      aboutText: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
+      registerUrl: "https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD",
+      attendeeCount: 124,
+      moments: []
+    },
+    {
+      id: "product-masterclass-2026",
+      title: "Product Masterclass for Students",
+      dateStr: "2026-07-24",
+      dateDisplay: "Friday, Jul 24",
+      time: "8:00 PM IST",
+      format: "IIT Roorkee",
+      description: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
+      aboutText: "Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.",
+      registerUrl: "https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD",
+      attendeeCount: 124,
+      moments: []
+    }
+  ];
+
+  const [events, setEvents] = useState(() => {
+    try {
+      const raw = localStorage.getItem(LOCAL_STORAGE_EVENTS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return DEMO_EVENTS;
+  });
+
+  const [editingId, setEditingId] = useState(null);
+  const [title, setTitle] = useState('');
+  const [dateStr, setDateStr] = useState('');
+  const [dateDisplay, setDateDisplay] = useState('');
+  const [time, setTime] = useState('8:00 PM IST');
+  const [format, setFormat] = useState('IIT Kanpur');
+  const [description, setDescription] = useState('');
+  const [aboutText, setAboutText] = useState('');
+  const [registerUrl, setRegisterUrl] = useState('https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD');
+  const [attendeeCount, setAttendeeCount] = useState(120);
+  const [moments, setMoments] = useState([]);
+  const [pastedUrl, setPastedUrl] = useState('');
+  const [message, setMessage] = useState('');
+
+  const saveToStorage = (newList) => {
+    setEvents(newList);
+    try {
+      localStorage.setItem(LOCAL_STORAGE_EVENTS_KEY, JSON.stringify(newList));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('pmx_events_updated'));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const resetForm = () => {
+    setEditingId(null);
+    setTitle('');
+    setDateStr('');
+    setDateDisplay('');
+    setTime('8:00 PM IST');
+    setFormat('IIT Kanpur');
+    setDescription('');
+    setAboutText('');
+    setRegisterUrl('https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD');
+    setAttendeeCount(120);
+    setMoments([]);
+    setPastedUrl('');
+  };
+
+  const handleEdit = (ev) => {
+    setEditingId(ev.id);
+    setTitle(ev.title || '');
+    setDateStr(ev.dateStr || '');
+    setDateDisplay(ev.dateDisplay || '');
+    setTime(ev.time || '8:00 PM IST');
+    setFormat(ev.format || '');
+    setDescription(ev.description || '');
+    setAboutText(ev.aboutText || '');
+    setRegisterUrl(ev.registerUrl || '');
+    setAttendeeCount(ev.attendeeCount || 120);
+    setMoments(ev.moments || []);
+    setPastedUrl('');
+  };
+
+  const handleDelete = (id) => {
+    if (!window.confirm('Delete this event?')) return;
+    const updated = events.filter(e => e.id !== id);
+    saveToStorage(updated);
+    setMessage('Event deleted successfully.');
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!title.trim() || !dateStr) {
+      setMessage('Title and Date are required.');
+      return;
+    }
+
+    let updated = [];
+    if (editingId) {
+      updated = events.map(ev => ev.id === editingId ? {
+        ...ev,
+        title,
+        dateStr,
+        dateDisplay: dateDisplay || dateStr,
+        time,
+        format,
+        description,
+        aboutText,
+        registerUrl,
+        attendeeCount: Number(attendeeCount),
+        moments
+      } : ev);
+    } else {
+      const newEv = {
+        id: `event-${Date.now()}`,
+        title,
+        dateStr,
+        dateDisplay: dateDisplay || dateStr,
+        time,
+        format,
+        description,
+        aboutText,
+        registerUrl,
+        attendeeCount: Number(attendeeCount),
+        moments,
+        tags: ["PRODUCT MASTERCLASS FOR STUDENTS", "VIRTUAL", "FREE"],
+        hosts: [
+          { name: "Sanket Katore", rating: 5.0, reviews: 42, role: "Product Manager at Mastercard", avatar: "/mentor-sanket.webp" },
+          { name: "Pankaj Sharma", rating: 5.0, reviews: 28, role: "Product Manager at Shopdeck", avatar: "/mentor-pankaj.webp" },
+          { name: "Ankit Surkar", rating: 5.0, reviews: 54, role: "Product Manager at Microsoft", avatar: "/mentor-ankit.webp" }
+        ]
+      };
+      updated = [newEv, ...events];
+    }
+
+    saveToStorage(updated);
+    setMessage(editingId ? 'Event updated successfully!' : 'Event created successfully!');
+    resetForm();
+  };
+
+  const handleFileUpload = (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        if (evt.target?.result) {
+          setMoments(prev => [...prev, evt.target.result]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleAddScreenshotToEventDirect = (eventId, file) => {
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      if (evt.target?.result) {
+        const updated = events.map(ev => {
+          if (ev.id === eventId) {
+            return { ...ev, moments: [...(ev.moments || []), evt.target.result] };
+          }
+          return ev;
+        });
+        saveToStorage(updated);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddUrl = () => {
+    if (!pastedUrl.trim()) return;
+    setMoments(prev => [...prev, pastedUrl.trim()]);
+    setPastedUrl('');
+  };
+
+  const handleRemoveMoment = (idx) => {
+    setMoments(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+      {/* Create / Edit Form */}
+      <div style={s.card}>
+        <div style={s.cardTitle}>{editingId ? 'Edit Event' : 'Create New Event'}</div>
+        <form onSubmit={handleSubmit}>
+          <label style={s.label}>Event Title *</label>
+          <input
+            type="text"
+            style={s.input}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g. Product Masterclass for Students"
+            required
+          />
+
+          <div style={s.grid2}>
+            <div>
+              <label style={s.label}>Venue / Campus *</label>
+              <input
+                type="text"
+                style={s.input}
+                value={format}
+                onChange={(e) => setFormat(e.target.value)}
+                placeholder="e.g. IIT Kanpur"
+                required
+              />
+            </div>
+            <div>
+              <label style={s.label}>Date *</label>
+              <input
+                type="date"
+                style={s.input}
+                value={dateStr}
+                onChange={(e) => {
+                  setDateStr(e.target.value);
+                  if (e.target.value) {
+                    const d = new Date(e.target.value);
+                    setDateDisplay(d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }));
+                  }
+                }}
+                required
+              />
+            </div>
+          </div>
+
+          <div style={s.grid2}>
+            <div>
+              <label style={s.label}>Display Date String</label>
+              <input
+                type="text"
+                style={s.input}
+                value={dateDisplay}
+                onChange={(e) => setDateDisplay(e.target.value)}
+                placeholder="e.g. Monday, Jul 27"
+              />
+            </div>
+            <div>
+              <label style={s.label}>Time</label>
+              <input
+                type="text"
+                style={s.input}
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                placeholder="e.g. 8:00 PM IST"
+              />
+            </div>
+          </div>
+
+          <label style={s.label}>WhatsApp / Registration Link</label>
+          <input
+            type="url"
+            style={s.input}
+            value={registerUrl}
+            onChange={(e) => setRegisterUrl(e.target.value)}
+            placeholder="https://chat.whatsapp.com/..."
+          />
+
+          <label style={s.label}>Short Summary Description</label>
+          <textarea
+            style={{ ...s.textarea, height: '70px' }}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Brief overview of session..."
+          />
+
+          <label style={s.label}>Detailed Agenda / Overview (Markdown)</label>
+          <textarea
+            style={{ ...s.textarea, height: '110px' }}
+            value={aboutText}
+            onChange={(e) => setAboutText(e.target.value)}
+            placeholder="Detailed session breakdown..."
+          />
+
+          {/* Screenshot Uploader */}
+          <div style={{ marginBottom: '1.25rem', padding: '1rem', background: 'var(--muted, #f8fafc)', border: '1px solid var(--border, #e2e8f0)', borderRadius: '8px' }}>
+            <label style={{ ...s.label, marginBottom: '0.5rem', display: 'block', fontWeight: 600 }}>
+              📸 Session Screenshots ({moments.length})
+            </label>
+            
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
+              <input
+                type="url"
+                style={{ ...s.input, marginBottom: 0, fontSize: '0.8rem' }}
+                placeholder="Paste image URL..."
+                value={pastedUrl}
+                onChange={(e) => setPastedUrl(e.target.value)}
+              />
+              <button
+                type="button"
+                style={{ ...s.btnSecondary, padding: '0.4rem 0.8rem', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+                onClick={handleAddUrl}
+              >
+                Add URL
+              </button>
+              <label style={{ ...s.btn, padding: '0.4rem 0.8rem', fontSize: '0.8rem', cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center' }}>
+                Upload File
+                <input type="file" accept="image/*" multiple onChange={handleFileUpload} style={{ display: 'none' }} />
+              </label>
+            </div>
+
+            {moments.length > 0 && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
+                {moments.map((img, idx) => (
+                  <div key={idx} style={{ position: 'relative', aspectRatio: '16/9', borderRadius: '4px', overflow: 'hidden', border: '1px solid #cbd5e1' }}>
+                    <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveMoment(idx)}
+                      style={{ position: 'absolute', top: '2px', right: '2px', background: 'rgba(220,38,38,0.9)', color: '#fff', border: 'none', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button type="submit" style={s.btn}>
+              {editingId ? 'Update Event' : 'Create Event'}
+            </button>
+            {editingId && (
+              <button type="button" style={s.btnSecondary} onClick={resetForm}>
+                Cancel
+              </button>
+            )}
+          </div>
+          {message && <div style={s.message}>{message}</div>}
+        </form>
+      </div>
+
+      {/* Events List */}
+      <div style={s.card}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+          <div style={s.cardTitle}>Manage Masterclass & Live Events ({events.length})</div>
+        </div>
+
+        {events.length === 0 ? (
+          <p style={{ color: 'var(--muted-foreground)' }}>No events created yet.</p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {events.map((ev) => {
+              const isEnded = new Date(ev.dateStr) < new Date(new Date().setHours(0,0,0,0));
+              return (
+                <div key={ev.id} style={{ border: '1px solid var(--border, #e2e8f0)', borderRadius: '8px', padding: '1rem', background: '#fff' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                    <div>
+                      <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', marginBottom: '0.3rem' }}>
+                        <span style={{ ...s.badge, ...(isEnded ? s.badgeMuted : s.badgeSuccess), fontSize: '0.7rem' }}>
+                          {isEnded ? 'Past Session (Ended)' : 'Upcoming Live'}
+                        </span>
+                        <span style={{ ...s.badge, ...s.badgeInfo, fontSize: '0.7rem' }}>
+                          {ev.format || 'IIT Campus'}
+                        </span>
+                      </div>
+                      <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--foreground)' }}>{ev.title}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', marginTop: '0.25rem' }}>
+                        📅 {ev.dateDisplay || ev.dateStr} | ⏰ {ev.time}
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '0.35rem' }}>
+                      <button
+                        type="button"
+                        style={{ ...s.btn, padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
+                        onClick={() => handleEdit(ev)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        style={{ ...s.btn, ...s.btnDanger, padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
+                        onClick={() => handleDelete(ev.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Quick Screenshot Upload */}
+                  <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid #f1f5f9' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#475569' }}>
+                        📸 Screenshots ({ev.moments?.length || 0})
+                      </span>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#0284c7', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                        + Add Screenshot
+                        <input
+                          type="file"
+                          accept="image/*"
+                          style={{ display: 'none' }}
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              handleAddScreenshotToEventDirect(ev.id, e.target.files[0]);
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
+
+                    {ev.moments && ev.moments.length > 0 && (
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.35rem' }}>
+                        {ev.moments.map((img, idx) => (
+                          <div key={idx} style={{ position: 'relative', aspectRatio: '16/9', borderRadius: '4px', overflow: 'hidden', border: '1px solid #cbd5e1' }}>
+                            <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = events.map(item => item.id === ev.id ? {
+                                  ...item, moments: (item.moments || []).filter((_, i) => i !== idx)
+                                } : item);
+                                saveToStorage(updated);
+                              }}
+                              style={{ position: 'absolute', top: '1px', right: '1px', background: 'rgba(220,38,38,0.9)', color: '#fff', border: 'none', borderRadius: '50%', width: '14px', height: '14px', fontSize: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ────────────────────────────────────────────────────────────────────────────────
 // Main Admin Page
 // ────────────────────────────────────────────────────────────────────────────────
@@ -2771,6 +3221,7 @@ export default function AdminClient({ user, initialCourses }) {
           { id: 'submissions', label: 'Submissions' },
           { id: 'gym-submissions', label: 'PM Gym Responses' },
           { id: 'leads', label: 'Leads' },
+          { id: 'events', label: 'Events' },
         ].map((t) => (
           <button
             key={t.id}
@@ -2792,6 +3243,7 @@ export default function AdminClient({ user, initialCourses }) {
         {tab === 'submissions' && <SubmissionsTab courseId={currentCourseId} />}
         {tab === 'gym-submissions' && <GymSubmissionsTab courseId={currentCourseId} />}
         {tab === 'leads' && <LeadsTab />}
+        {tab === 'events' && <EventsTab courseId={currentCourseId} />}
       </div>
     </div>
   );
