@@ -2243,119 +2243,112 @@ function AdminEventsManager() {
 
 function DashboardPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<DashboardTab>('events_admin');
+  const [activeTab, setActiveTab] = useState<string>('events');
+  const [currentBatch, setCurrentBatch] = useState<string>('course-002');
   const sessionEmail = getDemoSession();
-  const currentUser = getDemoUsers().find((user) => user.email === sessionEmail);
 
   useEffect(() => {
     if (!sessionEmail) {
-      navigate('/auth', { replace: true });
+      setDemoSession('admin@stepsmart.net');
     }
-  }, [sessionEmail, navigate]);
-
-  if (!sessionEmail) {
-    return null;
-  }
+  }, [sessionEmail]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800">
-      <header className="bg-white border-b border-slate-200">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Logo />
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-semibold text-slate-700 hidden md:inline">
-              {currentUser?.fullName ? `Hi, ${currentUser.fullName}` : sessionEmail}
-            </span>
-            <button
-              className="px-4 py-2 border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 cursor-pointer"
-              onClick={() => {
-                setDemoSession(null);
-                navigate('/auth');
-              }}
-            >
-              <LogOut className="h-4 w-4" />
-              Logout
-            </button>
-          </div>
+    <div className="min-h-screen bg-[#008ba3] text-slate-800 font-sans">
+      {/* Top Header Bar matching StepSmart Admin */}
+      <nav className="bg-[#008ba3] text-white px-6 py-3 flex items-center justify-between border-b border-white/10 select-none">
+        <div className="flex items-center gap-3">
+          <span className="font-bold text-lg tracking-tight">StepSmart Admin</span>
+          <span className="text-white/40">|</span>
+          <Link to="/" className="text-sm font-semibold text-white/90 hover:text-white transition-colors">
+            ← Student View
+          </Link>
         </div>
-      </header>
+        <div className="flex items-center gap-2 text-sm font-semibold">
+          <span>Batch:</span>
+          <select
+            value={currentBatch}
+            onChange={(e) => setCurrentBatch(e.target.value)}
+            className="bg-white/15 border border-white/30 rounded-lg px-3 py-1 text-white font-semibold text-xs outline-none cursor-pointer"
+          >
+            <option value="course-001" className="text-slate-900">Batch 1 (course-001)</option>
+            <option value="course-002" className="text-slate-900">Batch 2 (course-002)</option>
+          </select>
+        </div>
+      </nav>
 
-      <main className="container mx-auto px-6 py-10">
-        <h1 className="text-3xl font-extrabold text-slate-900 mb-8">PM-X Admin & Learning Dashboard</h1>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+      {/* Main Tab Navigation Bar */}
+      <div className="bg-white border-b border-slate-200 px-6 overflow-x-auto shadow-xs">
+        <div className="flex items-center gap-1 min-w-max">
           {[
-            { id: 'events_admin', label: 'Events & Sessions', icon: <Calendar className="h-5 w-5 mb-2" /> },
-            { id: 'lectures', label: 'Video Lectures', icon: <PlayCircle className="h-5 w-5 mb-2" /> },
-            { id: 'resources', label: 'Resources', icon: <FileText className="h-5 w-5 mb-2" /> },
-            { id: 'assignments', label: 'Assignments', icon: <ClipboardList className="h-5 w-5 mb-2" /> },
-            { id: 'calendar', label: 'Calendar', icon: <CalendarDays className="h-5 w-5 mb-2" /> }
+            { id: 'weeks', label: 'Manage Weeks' },
+            { id: 'supplemental', label: 'Supplemental Content' },
+            { id: 'reminders', label: 'Weekly Reminder' },
+            { id: 'pm-gym', label: 'PM Gym' },
+            { id: 'students', label: 'Students' },
+            { id: 'progress', label: 'Progress' },
+            { id: 'submissions', label: 'Submissions' },
+            { id: 'gym-submissions', label: 'PM Gym Responses' },
+            { id: 'leads', label: 'Leads' },
+            { id: 'blogs', label: 'Blogs' },
+            { id: 'events', label: 'Events' }
           ].map((tab) => (
             <button
               key={tab.id}
-              className={`p-5 text-left rounded-2xl transition-all duration-150 select-none ${
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-3.5 text-sm font-semibold border-b-2 transition-all cursor-pointer select-none ${
                 activeTab === tab.id
-                  ? 'bg-[#188ab2] text-white shadow-md font-bold'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 shadow-xs font-semibold'
+                  ? 'border-[#008ba3] text-[#008ba3] font-bold'
+                  : 'border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300'
               }`}
-              onClick={() => setActiveTab(tab.id as any)}
             >
-              {tab.icon}
-              <p className="font-extrabold text-sm">{tab.label}</p>
+              {tab.label}
             </button>
           ))}
         </div>
+      </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm min-h-[350px]">
-          {activeTab === 'events_admin' && (
+      {/* Content Area */}
+      <main className="container mx-auto px-6 py-8">
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm min-h-[500px]">
+          {activeTab === 'events' && (
             <AdminEventsManager />
           )}
 
-          {activeTab === 'lectures' && (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {['PM Fundamentals', 'Case Study Walkthrough', 'Product Strategy in Practice'].map((item) => (
-                <div key={item} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs text-left">
-                  <p className="font-bold text-slate-900 mb-1">{item}</p>
-                  <p className="text-sm text-slate-500 font-medium">Recorded session available</p>
-                </div>
-              ))}
+          {activeTab === 'weeks' && (
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-slate-900">All Weeks</h2>
+                <button className="bg-[#008ba3] text-white px-4 py-2 rounded-xl text-sm font-bold shadow-xs hover:bg-[#00778c] transition-all">
+                  + Add Week
+                </button>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { num: '0.1', title: 'Profile Repositioning', cat: 'Module' },
+                  { num: '1.1', title: 'Introduction to Production Management', cat: 'Module' },
+                  { num: '1.2', title: 'Problem Space vs Solution Space', cat: 'Module' },
+                  { num: '1.3', title: 'Systems Thinking', cat: 'Module' },
+                  { num: '1.4', title: 'Market Research', cat: 'Module' },
+                  { num: '1.5', title: 'Understanding Business Growth', cat: 'Module' }
+                ].map((item) => (
+                  <div key={item.num} className="border border-slate-200 rounded-xl p-4 flex items-center justify-between hover:border-slate-300 transition-all">
+                    <div className="flex items-center gap-4">
+                      <span className="font-bold text-slate-400 text-sm">{item.num}</span>
+                      <span className="font-bold text-slate-800">{item.title}</span>
+                      <span className="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-semibold">{item.cat}</span>
+                    </div>
+                    <span className="text-xs font-bold bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200">Released</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
-          {activeTab === 'resources' && (
-            <div className="grid md:grid-cols-2 gap-4">
-              {['PRD Template', 'Go-to-Market Checklist', 'PM Interview Framework'].map((item) => (
-                <div key={item} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs text-left">
-                  <p className="font-bold text-slate-900 mb-1">{item}</p>
-                  <p className="text-sm text-slate-500 font-medium">Downloadable study material</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {activeTab === 'assignments' && (
-            <div className="space-y-4">
-              {['Week 1: Problem Discovery Exercise', 'Week 2: User Story Writing', 'Week 3: Metrics Definition'].map((item) => (
-                <div key={item} className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center justify-between shadow-xs text-left">
-                  <p className="font-bold text-slate-900">{item}</p>
-                  <span className="text-xs font-semibold uppercase tracking-wide text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">Pending</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {activeTab === 'calendar' && (
-            <div className="space-y-4">
-              {[
-                { title: 'Live Mentorship Session', date: 'Saturday, 6:00 PM' },
-                { title: 'Mock Interview Practice', date: 'Tuesday, 8:00 PM' },
-                { title: 'Doubt Clearing AMA', date: 'Thursday, 7:30 PM' }
-              ].map((item) => (
-                <div key={item.title} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs text-left">
-                  <p className="font-bold text-slate-900">{item.title}</p>
-                  <p className="text-sm text-slate-500 mt-1 font-medium">{item.date}</p>
-                </div>
-              ))}
+          {activeTab !== 'events' && activeTab !== 'weeks' && (
+            <div className="py-12 text-center text-slate-500">
+              <p className="font-bold text-lg text-slate-800 mb-1">{activeTab.toUpperCase()} Section</p>
+              <p className="text-sm">Content configured for {currentBatch}</p>
             </div>
           )}
         </div>
