@@ -87,6 +87,12 @@ export const adminGetStudents = (token, courseId) =>
   serverFetch(`/admin/students${buildQueryString({ courseId })}`, token);
 
 /**
+ * Admin create new course / batch.
+ */
+export const adminCreateCourse = (token, data) =>
+  serverFetch('/admin/courses', token, { method: 'POST', body: JSON.stringify(data) });
+
+/**
  * Admin view of weeks.
  */
 export const adminGetWeeks = (token, courseId) =>

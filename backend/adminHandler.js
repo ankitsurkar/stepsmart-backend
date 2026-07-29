@@ -811,6 +811,72 @@ async function listLeads() {
   return res(200, { leads });
 }
 
+// ── Batches / Courses ────────────────────────────────────────────────────────
+async function createCourse(body) {
+  let { courseId, name, description } = body || {};
+
+  if (!name && !courseId) {
+    return res(400, { message: 'Course name or courseId is required' });
+  }
+
+  // Auto-generate courseId if not provided
+  if (!courseId) {
+    try {
+      const existing = await ddb.send(new ScanCommand({
+        TableName: COURSES_TABLE,
+        FilterExpression: 'sk = :meta',
+        ExpressionAttributeValues: { ':meta': 'METADATA' },
+      }));
+      const count = (existing.Items || []).length;
+      courseId = `course-${String(count + 1).padStart(3, '0')}`;
+    } catch (err) {
+      console.error('Scan courses error:', err);
+      courseId = `course-${Date.now()}`;
+    }
+  }
+
+  // Ensure standard formatting e.g. "3" -> "course-003"
+  if (!courseId.startsWith('course-')) {
+    const num = parseInt(courseId, 10);
+    if (!isNaN(num)) {
+      courseId = `course-${String(num).padStart(3, '0')}`;
+    }
+  }
+
+  if (!name) {
+    const batchNum = courseId.replace('course-', '').replace(/^0+/, '');
+    name = `PM -X Accelerator (Batch ${batchNum || courseId})`;
+  }
+
+  const item = {
+    pk: `COURSE#${courseId}`,
+    sk: 'METADATA',
+    courseId,
+    name,
+    description: description || '',
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    await ddb.send(new PutCommand({
+      TableName: COURSES_TABLE,
+      Item: item
+    }));
+    return res(201, {
+      message: `Batch ${name} created successfully`,
+      course: {
+        courseId,
+        name,
+        description: item.description,
+        createdAt: item.createdAt
+      }
+    });
+  } catch (err) {
+    console.error('Failed to create course:', err);
+    return res(500, { message: 'Failed to create course in database' });
+  }
+}
+
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 exports.handler = async (event) => {
@@ -829,6 +895,7 @@ exports.handler = async (event) => {
   const params = event.pathParameters || {};
   const courseId = params.courseId || params.courseID || event.queryStringParameters?.courseId;
   const weekId = params.weekId || params.weekID;
+  const path = event.path || '';
 
   let body = {};
   try {
@@ -838,6 +905,11 @@ exports.handler = async (event) => {
   }
 
   try {
+    // ── Batches / Courses ─────────────────────────────────────────────
+    if (method === 'POST' && (resource === '/admin/courses' || resource === '/admin/batches' || resource === '/admin/courses/create' || path.endsWith('/admin/courses') || path.endsWith('/admin/batches'))) {
+      return await createCourse(body);
+    }
+
     // ── Students ──────────────────────────────────────────────────────
     if (method === 'GET' && resource === '/admin/students') return await listStudents(courseId, event);
     if (method === 'POST' && resource === '/admin/students') return await createStudent(body, event);

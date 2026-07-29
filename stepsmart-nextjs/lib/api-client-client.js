@@ -52,6 +52,9 @@ export const adminGetStudents = (courseId) =>
 export const adminCreateStudent = (data) =>
   api.post('/admin/students', data);
 
+export const adminCreateCourse = (data) =>
+  api.post('/admin/courses', data);
+
 export const adminGetWeeks = (courseId) =>
   api.get(`/admin/courses/${courseId}/weeks`);
 

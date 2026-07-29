@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {
   adminGetStudents,
   adminCreateStudent,
+  adminCreateCourse,
   adminGetWeeks,
   adminCreateWeek,
   adminUpdateWeek,
@@ -3172,10 +3173,91 @@ export default function AdminClient({ user, initialCourses }) {
     return 'course-001';
   });
 
+  const [coursesList, setCoursesList] = useState(() => {
+    if (initialCourses && initialCourses.length > 0) return initialCourses;
+    return [
+      { courseId: 'course-001', name: 'Batch 1 (course-001)' },
+      { courseId: 'course-002', name: 'Batch 2 (course-002)' },
+    ];
+  });
+
+  const [isCreateBatchOpen, setIsCreateBatchOpen] = useState(false);
+  const [newBatchName, setNewBatchName] = useState('');
+  const [newCourseId, setNewCourseId] = useState('');
+  const [newBatchDesc, setNewBatchDesc] = useState('');
+  const [createBatchLoading, setCreateBatchLoading] = useState(false);
+  const [createBatchError, setCreateBatchError] = useState('');
+
+  useEffect(() => {
+    async function loadCourses() {
+      try {
+        const { data } = await getMyCourses();
+        if (data && data.courses && data.courses.length > 0) {
+          setCoursesList(data.courses);
+        }
+      } catch (err) {
+        console.error('Failed to load courses in AdminClient nav:', err);
+      }
+    }
+    loadCourses();
+  }, []);
+
   const handleCourseChange = (courseId) => {
     setCurrentCourseId(courseId);
     if (typeof window !== 'undefined') {
       localStorage.setItem('admin_selected_course_id', courseId);
+    }
+  };
+
+  const handleOpenCreateBatchModal = () => {
+    const nextNum = coursesList.length + 1;
+    const suggestedId = `course-${String(nextNum).padStart(3, '0')}`;
+    const suggestedName = `PM -X Accelerator (Batch ${nextNum})`;
+    setNewCourseId(suggestedId);
+    setNewBatchName(suggestedName);
+    setNewBatchDesc(`Product Management Accelerator Cohort ${nextNum}`);
+    setCreateBatchError('');
+    setIsCreateBatchOpen(true);
+  };
+
+  const handleCreateBatchSubmit = async (e) => {
+    e.preventDefault();
+    if (!newBatchName.trim() || !newCourseId.trim()) {
+      setCreateBatchError('Batch Name and Course ID are required.');
+      return;
+    }
+    setCreateBatchLoading(true);
+    setCreateBatchError('');
+    try {
+      const res = await adminCreateCourse({
+        courseId: newCourseId.trim(),
+        name: newBatchName.trim(),
+        description: newBatchDesc.trim(),
+      });
+      const createdCourse = res.data?.course || {
+        courseId: newCourseId.trim(),
+        name: newBatchName.trim(),
+        description: newBatchDesc.trim(),
+      };
+
+      setCoursesList((prev) => {
+        const exists = prev.some((c) => c.courseId === createdCourse.courseId);
+        if (exists) {
+          return prev.map((c) => (c.courseId === createdCourse.courseId ? createdCourse : c));
+        }
+        return [...prev, createdCourse];
+      });
+
+      handleCourseChange(createdCourse.courseId);
+      setIsCreateBatchOpen(false);
+      setNewBatchName('');
+      setNewCourseId('');
+      setNewBatchDesc('');
+    } catch (err) {
+      console.error('Failed to create batch:', err);
+      setCreateBatchError(err.response?.data?.message || err.message || 'Failed to create batch.');
+    } finally {
+      setCreateBatchLoading(false);
     }
   };
 
@@ -3187,13 +3269,13 @@ export default function AdminClient({ user, initialCourses }) {
           <span style={s.navSep}>|</span>
           <Link href="/dashboard" style={s.backLink}>← Student View</Link>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontSize: '0.875rem', fontWeight: 600 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#fff', fontSize: '0.875rem', fontWeight: 600 }}>
           <span>Batch:</span>
           <select 
             value={currentCourseId} 
             onChange={(e) => handleCourseChange(e.target.value)}
             style={{
-              padding: '0.3rem 0.6rem',
+              padding: '0.35rem 0.65rem',
               borderRadius: '8px',
               border: '1px solid rgba(255,255,255,0.25)',
               background: 'rgba(255,255,255,0.12)',
@@ -3204,9 +3286,33 @@ export default function AdminClient({ user, initialCourses }) {
               fontSize: '0.8rem',
             }}
           >
-            <option value="course-001" style={{ color: '#000' }}>Batch 1 (course-001)</option>
-            <option value="course-002" style={{ color: '#000' }}>Batch 2 (course-002)</option>
+            {coursesList.map((c) => (
+              <option key={c.courseId} value={c.courseId} style={{ color: '#000' }}>
+                {c.name ? `${c.name} (${c.courseId})` : `Batch (${c.courseId})`}
+              </option>
+            ))}
           </select>
+          <button
+            type="button"
+            onClick={handleOpenCreateBatchModal}
+            style={{
+              padding: '0.35rem 0.75rem',
+              borderRadius: '8px',
+              border: 'none',
+              background: 'hsl(198, 93%, 60%)',
+              color: '#0f172a',
+              fontWeight: 700,
+              cursor: 'pointer',
+              fontSize: '0.8rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.3rem',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            + Create New Batch
+          </button>
         </div>
       </nav>
 
@@ -3245,6 +3351,166 @@ export default function AdminClient({ user, initialCourses }) {
         {tab === 'leads' && <LeadsTab />}
         {tab === 'events' && <EventsTab courseId={currentCourseId} />}
       </div>
+
+      {isCreateBatchOpen && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(15, 23, 42, 0.45)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999,
+          padding: '1rem',
+        }}>
+          <div style={{
+            background: 'var(--card, #ffffff)',
+            borderRadius: '16px',
+            padding: '1.75rem',
+            width: '90%',
+            maxWidth: '500px',
+            boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
+            boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+            border: '1px solid var(--border, #e2e8f0)',
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1.25rem',
+              borderBottom: '1px solid var(--border, #e2e8f0)',
+              paddingBottom: '0.75rem',
+            }}>
+              <h3 style={{ margin: 0, fontSize: '1.15rem', color: '#0f172a', fontWeight: 700 }}>Create New Batch</h3>
+              <button 
+                type="button" 
+                onClick={() => setIsCreateBatchOpen(false)} 
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.2rem',
+                  cursor: 'pointer',
+                  color: '#64748b',
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateBatchSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {createBatchError && (
+                <div style={{ padding: '0.6rem 0.8rem', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '6px', fontSize: '0.85rem' }}>
+                  {createBatchError}
+                </div>
+              )}
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '0.3rem' }}>
+                  Batch / Course Name <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. PM -X Accelerator (Batch 3)"
+                  value={newBatchName}
+                  onChange={(e) => setNewBatchName(e.target.value)}
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.6rem 0.8rem',
+                    borderRadius: '6px',
+                    border: '1px solid #cbd5e1',
+                    fontSize: '0.9rem',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '0.3rem' }}>
+                  Course ID (Unique Key) <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. course-003"
+                  value={newCourseId}
+                  onChange={(e) => setNewCourseId(e.target.value)}
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.6rem 0.8rem',
+                    borderRadius: '6px',
+                    border: '1px solid #cbd5e1',
+                    fontSize: '0.9rem',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.2rem', display: 'block' }}>
+                  Must follow format course-xxx (e.g. course-003)
+                </span>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '0.3rem' }}>
+                  Description (Optional)
+                </label>
+                <textarea
+                  placeholder="e.g. Product Management Accelerator Cohort 3"
+                  value={newBatchDesc}
+                  onChange={(e) => setNewBatchDesc(e.target.value)}
+                  rows={3}
+                  style={{
+                    width: '100%',
+                    padding: '0.6rem 0.8rem',
+                    borderRadius: '6px',
+                    border: '1px solid #cbd5e1',
+                    fontSize: '0.9rem',
+                    boxSizing: 'border-box',
+                    fontFamily: 'inherit',
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem', marginTop: '0.5rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setIsCreateBatchOpen(false)}
+                  disabled={createBatchLoading}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    borderRadius: '6px',
+                    border: '1px solid #cbd5e1',
+                    background: '#f8fafc',
+                    color: '#475569',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={createBatchLoading}
+                  style={{
+                    padding: '0.5rem 1.2rem',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: 'hsl(198, 93%, 45%)',
+                    color: '#fff',
+                    fontWeight: 600,
+                    cursor: createBatchLoading ? 'not-allowed' : 'pointer',
+                    opacity: createBatchLoading ? 0.7 : 1,
+                  }}
+                >
+                  {createBatchLoading ? 'Creating...' : 'Create Batch'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
