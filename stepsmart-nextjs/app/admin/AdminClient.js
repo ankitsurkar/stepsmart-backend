@@ -3261,33 +3261,70 @@ export default function AdminClient({ user, initialCourses }) {
     }
   };
 
+  const navItems = [
+    { id: 'weeks', label: 'Manage Weeks', icon: '📅' },
+    { id: 'supplemental', label: 'Supplemental Content', icon: '📚' },
+    { id: 'reminders', label: 'Weekly Reminder', icon: '🔔' },
+    { id: 'pm-gym', label: 'PM Gym', icon: '🏋️' },
+    { id: 'students', label: 'Students', icon: '👥' },
+    { id: 'progress', label: 'Progress', icon: '📊' },
+    { id: 'submissions', label: 'Submissions', icon: '📝' },
+    { id: 'gym-submissions', label: 'PM Gym Responses', icon: '💬' },
+    { id: 'leads', label: 'Leads', icon: '🎯' },
+    { id: 'blogs', label: 'Blogs', icon: '✍️' },
+    { id: 'events', label: 'Events', icon: '🎟️' },
+  ];
+
   return (
-    <div style={s.page}>
-      <nav style={s.nav}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-          <span style={s.navBrand}>StepSmart Admin</span>
-          <span style={s.navSep}>|</span>
-          <Link href="/dashboard" style={s.backLink}>← Student View</Link>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--background)' }}>
+      {/* Sidebar Navigation */}
+      <aside style={{
+        width: '270px',
+        minWidth: '270px',
+        background: '#0f172a',
+        color: '#f8fafc',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        position: 'sticky',
+        top: 0,
+        borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+        zIndex: 10,
+        boxShadow: '4px 0 16px rgba(0, 0, 0, 0.05)',
+      }}>
+        {/* Brand Header */}
+        <div style={{ padding: '1.25rem 1.25rem 1rem 1.25rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+          <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '1.15rem', letterSpacing: '-0.02em', marginBottom: '0.35rem' }}>
+            StepSmart Admin
+          </div>
+          <Link href="/dashboard" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+            ← Student View
+          </Link>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#fff', fontSize: '0.875rem', fontWeight: 600 }}>
-          <span>Batch:</span>
+
+        {/* Batch Selection & Create Batch */}
+        <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b' }}>
+            ACTIVE BATCH
+          </div>
           <select 
             value={currentCourseId} 
             onChange={(e) => handleCourseChange(e.target.value)}
             style={{
-              padding: '0.35rem 0.65rem',
+              width: '100%',
+              padding: '0.5rem 0.75rem',
               borderRadius: '8px',
-              border: '1px solid rgba(255,255,255,0.25)',
-              background: 'rgba(255,255,255,0.12)',
-              color: '#fff',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              background: 'rgba(255, 255, 255, 0.08)',
+              color: '#ffffff',
               outline: 'none',
               fontWeight: 600,
               cursor: 'pointer',
-              fontSize: '0.8rem',
+              fontSize: '0.85rem',
             }}
           >
             {coursesList.map((c) => (
-              <option key={c.courseId} value={c.courseId} style={{ color: '#000' }}>
+              <option key={c.courseId} value={c.courseId} style={{ color: '#0f172a' }}>
                 {c.name ? `${c.name} (${c.courseId})` : `Batch (${c.courseId})`}
               </option>
             ))}
@@ -3296,16 +3333,18 @@ export default function AdminClient({ user, initialCourses }) {
             type="button"
             onClick={handleOpenCreateBatchModal}
             style={{
-              padding: '0.35rem 0.75rem',
+              width: '100%',
+              padding: '0.5rem 0.75rem',
               borderRadius: '8px',
               border: 'none',
               background: 'hsl(198, 93%, 60%)',
               color: '#0f172a',
               fontWeight: 700,
               cursor: 'pointer',
-              fontSize: '0.8rem',
+              fontSize: '0.825rem',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: '0.3rem',
               boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
               transition: 'all 0.15s ease',
@@ -3314,43 +3353,60 @@ export default function AdminClient({ user, initialCourses }) {
             + Create New Batch
           </button>
         </div>
-      </nav>
 
-      <div style={s.tabs}>
-        {[
-          { id: 'weeks', label: 'Manage Weeks' },
-          { id: 'supplemental', label: 'Supplemental Content' },
-          { id: 'reminders', label: 'Weekly Reminder' },
-          { id: 'pm-gym', label: 'PM Gym' },
-          { id: 'students', label: 'Students' },
-          { id: 'progress', label: 'Progress' },
-          { id: 'submissions', label: 'Submissions' },
-          { id: 'gym-submissions', label: 'PM Gym Responses' },
-          { id: 'leads', label: 'Leads' },
-          { id: 'events', label: 'Events' },
-        ].map((t) => (
-          <button
-            key={t.id}
-            style={{ ...s.tab, ...(tab === t.id ? s.tabActive : {}) }}
-            onClick={() => setTab(t.id)}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+        {/* Tab Links */}
+        <nav style={{ flex: 1, padding: '1rem 0.75rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', paddingLeft: '0.5rem', marginBottom: '0.4rem' }}>
+            MANAGEMENT NAV
+          </div>
+          {navItems.map((t) => {
+            const isActive = tab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  width: '100%',
+                  padding: '0.65rem 0.85rem',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: isActive ? 700 : 500,
+                  fontSize: '0.85rem',
+                  color: isActive ? '#ffffff' : '#94a3b8',
+                  background: isActive ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+                  border: 'none',
+                  textAlign: 'left',
+                  boxShadow: isActive ? 'inset 3px 0 0 0 hsl(198, 93%, 60%)' : 'none',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                <span style={{ fontSize: '1rem' }}>{t.icon}</span>
+                <span>{t.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+      </aside>
 
-      <div style={s.content}>
-        {tab === 'weeks' && <WeeksTab courseId={currentCourseId} />}
-        {tab === 'supplemental' && <SupplementalContentTab courseId={currentCourseId} />}
-        {tab === 'reminders' && <RemindersTab courseId={currentCourseId} />}
-        {tab === 'pm-gym' && <GymTab courseId={currentCourseId} />}
-        {tab === 'students' && <StudentsTab courseId={currentCourseId} />}
-        {tab === 'progress' && <ProgressTab courseId={currentCourseId} />}
-        {tab === 'submissions' && <SubmissionsTab courseId={currentCourseId} />}
-        {tab === 'gym-submissions' && <GymSubmissionsTab courseId={currentCourseId} />}
-        {tab === 'leads' && <LeadsTab />}
-        {tab === 'events' && <EventsTab courseId={currentCourseId} />}
-      </div>
+      {/* Main Content Area */}
+      <main style={{ flex: 1, padding: '2rem', overflowY: 'auto', minWidth: 0 }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          {tab === 'weeks' && <WeeksTab courseId={currentCourseId} />}
+          {tab === 'supplemental' && <SupplementalContentTab courseId={currentCourseId} />}
+          {tab === 'reminders' && <RemindersTab courseId={currentCourseId} />}
+          {tab === 'pm-gym' && <GymTab courseId={currentCourseId} />}
+          {tab === 'students' && <StudentsTab courseId={currentCourseId} />}
+          {tab === 'progress' && <ProgressTab courseId={currentCourseId} />}
+          {tab === 'submissions' && <SubmissionsTab courseId={currentCourseId} />}
+          {tab === 'gym-submissions' && <GymSubmissionsTab courseId={currentCourseId} />}
+          {tab === 'leads' && <LeadsTab />}
+          {tab === 'blogs' && <BlogsTab courseId={currentCourseId} />}
+          {tab === 'events' && <EventsTab courseId={currentCourseId} />}
+        </div>
+      </main>
 
       {isCreateBatchOpen && (
         <div style={{
