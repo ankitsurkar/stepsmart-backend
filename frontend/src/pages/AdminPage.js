@@ -1418,11 +1418,16 @@ function WeeksTab({ courseId }) {
 // ────────────────────────────────────────────────────────────────────────────────
 
 
-function SupplementalContentTab({ courseId }) {
+function SupplementalContentTab({ courseId, subSection = 'all' }) {
   const [data, setData] = useState({ assignments: [], liveRecordedSessions: [], calendarEvents: [], resources: [] });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
+  const [activeSubTab, setActiveSubTab] = useState(subSection || 'all');
+
+  useEffect(() => {
+    if (subSection) setActiveSubTab(subSection);
+  }, [subSection]);
 
   useEffect(() => { load(); }, [courseId]);
 
@@ -1522,6 +1527,38 @@ function SupplementalContentTab({ courseId }) {
         </div>
       </div>
 
+      {/* Sub-tab Navigation Bar */}
+      <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
+        {[
+          { id: 'all', label: 'All Content', icon: '📋' },
+          { id: 'assignments', label: 'Assignments Page', icon: '📝' },
+          { id: 'resources', label: 'Resources & Docs Page', icon: '📂' },
+        ].map((st) => (
+          <button
+            key={st.id}
+            type="button"
+            onClick={() => setActiveSubTab(st.id)}
+            style={{
+              padding: '0.5rem 1rem',
+              borderRadius: '8px',
+              border: activeSubTab === st.id ? '1.5px solid hsl(198, 93%, 45%)' : '1px solid var(--border)',
+              background: activeSubTab === st.id ? 'hsl(198, 93%, 95%)' : 'var(--card)',
+              color: activeSubTab === st.id ? 'hsl(198, 93%, 35%)' : 'var(--muted-foreground)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <span>{st.icon}</span>
+            <span>{st.label}</span>
+          </button>
+        ))}
+      </div>
+
       {message && (
         <div style={{
           padding: '0.85rem 1.25rem',
@@ -1536,11 +1573,12 @@ function SupplementalContentTab({ courseId }) {
         </div>
       )}
 
-      {/* Global Course Assignments Card */}
-      <div style={s.card}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <div>
-            <div style={{ ...s.cardTitle, marginBottom: '0.2rem' }}>📝 Global Course Assignments</div>
+      {/* Global Course Assignments Section */}
+      {(activeSubTab === 'all' || activeSubTab === 'assignments') && (
+        <div style={s.card}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <div>
+              <div style={{ ...s.cardTitle, marginBottom: '0.2rem' }}>📝 Global Course Assignments</div>
             <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Create capstone assignments or course-wide submissions that all students must submit.</div>
           </div>
           <button type="button" style={s.btn} onClick={() => addItem('assignments', EMPTY_ASSIGNMENT)}>+ Add Assignment</button>
@@ -1572,76 +1610,79 @@ function SupplementalContentTab({ courseId }) {
           </div>
         )}
       </div>
+      )}
 
-      {/* Global Course Resources Card */}
-      <div style={s.card}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <div>
-            <div style={{ ...s.cardTitle, marginBottom: '0.2rem' }}>📂 Course Resources</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Create syllabus sheets, templates, references, or general handouts that all students can access.</div>
+      {/* Global Course Resources Section */}
+      {(activeSubTab === 'all' || activeSubTab === 'resources') && (
+        <div style={s.card}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <div>
+              <div style={{ ...s.cardTitle, marginBottom: '0.2rem' }}>📂 Course Resources</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>Create syllabus sheets, templates, references, or general handouts that all students can access.</div>
+            </div>
+            <button type="button" style={s.btn} onClick={() => addItem('resources', EMPTY_GLOBAL_RESOURCE)}>+ Add Resource</button>
           </div>
-          <button type="button" style={s.btn} onClick={() => addItem('resources', EMPTY_GLOBAL_RESOURCE)}>+ Add Resource</button>
-        </div>
 
-        {data.resources.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '2.5rem 1rem', border: '1.5px dashed var(--border)', borderRadius: '12px', background: 'var(--background)' }}>
-            <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>📂</span>
-            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>No resources created yet.</span>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {data.resources.map((res, i) => (
-              <div key={res.id || i} style={{ ...s.qPanel, border: '1px solid var(--border)', background: '#fff', boxShadow: 'var(--shadow-sm)', padding: '1.25rem', borderRadius: '12px', marginBottom: 0 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.55rem' }}>
-                  <span style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)' }}>Resource #{i + 1}</span>
-                  <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.25rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px' }} onClick={() => removeItem('resources', i)}>✕ Remove Resource</button>
-                </div>
-
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={s.label}>Resource Title</label>
-                  <input style={s.input} placeholder="e.g. Course Roadmap & Syllabus" value={res.title || ''} onChange={e => updateItem('resources', i, 'title', e.target.value)} />
-                </div>
-
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={s.label}>Description</label>
-                  <textarea style={{ ...s.textarea, minHeight: '80px', marginBottom: 0 }} placeholder="Brief details about the resource or instructions on how to use..." value={res.description || ''} onChange={e => updateItem('resources', i, 'description', e.target.value)} />
-                </div>
-
-                {/* Resource Documents Sub-section */}
-                <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '1rem', marginTop: '1rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Documents & Links</span>
-                    <button type="button" style={{ ...s.btn, ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem', borderRadius: '6px' }} onClick={() => addResourceDoc(i)}>+ Add Doc</button>
+          {data.resources.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '2.5rem 1rem', border: '1.5px dashed var(--border)', borderRadius: '12px', background: 'var(--background)' }}>
+              <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>📂</span>
+              <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>No resources created yet.</span>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {data.resources.map((res, i) => (
+                <div key={res.id || i} style={{ ...s.qPanel, border: '1px solid var(--border)', background: '#fff', boxShadow: 'var(--shadow-sm)', padding: '1.25rem', borderRadius: '12px', marginBottom: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.55rem' }}>
+                    <span style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)' }}>Resource #{i + 1}</span>
+                    <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.25rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px' }} onClick={() => removeItem('resources', i)}>✕ Remove Resource</button>
                   </div>
 
-                  {(res.docs || []).length === 0 ? (
-                    <div style={{ fontSize: '0.775rem', color: 'var(--muted-foreground)', padding: '0.5rem', background: '#f8fafc', borderRadius: '6px', textAlign: 'center' }}>
-                      No attachments added yet. Click "+ Add Doc" above to attach templates or files.
-                    </div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      {(res.docs || []).map((doc, di) => (
-                        <div key={doc.id || di} className="admin-doc-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr auto', gap: '0.5rem', alignItems: 'end', background: '#f8fafc', padding: '0.6rem', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
-                          <div>
-                            <label style={{ ...s.label, fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>Label</label>
-                            <input style={{ ...s.input, marginBottom: 0, padding: '0.35rem 0.6rem', fontSize: '0.775rem' }} placeholder="e.g. Syllabus PDF" value={doc.label || ''} onChange={e => updateResourceDoc(i, di, 'label', e.target.value)} />
-                          </div>
-                          <div>
-                            <label style={{ ...s.label, fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>File / Drive Link</label>
-                            <input type="url" style={{ ...s.input, marginBottom: 0, padding: '0.35rem 0.6rem', fontSize: '0.775rem' }} placeholder="https://..." value={doc.url || ''} onChange={e => updateResourceDoc(i, di, 'url', e.target.value)} />
-                          </div>
-                          <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.35rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px', marginBottom: 0 }} onClick={() => removeResourceDoc(i, di)}>✕</button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={s.label}>Resource Title</label>
+                    <input style={s.input} placeholder="e.g. Course Roadmap & Syllabus" value={res.title || ''} onChange={e => updateItem('resources', i, 'title', e.target.value)} />
+                  </div>
 
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={s.label}>Description</label>
+                    <textarea style={{ ...s.textarea, minHeight: '80px', marginBottom: 0 }} placeholder="Brief details about the resource or instructions on how to use..." value={res.description || ''} onChange={e => updateItem('resources', i, 'description', e.target.value)} />
+                  </div>
+
+                  {/* Resource Documents Sub-section */}
+                  <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '1rem', marginTop: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Documents & Links</span>
+                      <button type="button" style={{ ...s.btn, ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem', borderRadius: '6px' }} onClick={() => addResourceDoc(i)}>+ Add Doc</button>
+                    </div>
+
+                    {(res.docs || []).length === 0 ? (
+                      <div style={{ fontSize: '0.775rem', color: 'var(--muted-foreground)', padding: '0.5rem', background: '#f8fafc', borderRadius: '6px', textAlign: 'center' }}>
+                        No attachments added yet. Click "+ Add Doc" above to attach templates or files.
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        {(res.docs || []).map((doc, di) => (
+                          <div key={doc.id || di} className="admin-doc-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr auto', gap: '0.5rem', alignItems: 'end', background: '#f8fafc', padding: '0.6rem', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
+                            <div>
+                              <label style={{ ...s.label, fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>Label</label>
+                              <input style={{ ...s.input, marginBottom: 0, padding: '0.35rem 0.6rem', fontSize: '0.775rem' }} placeholder="e.g. Syllabus PDF" value={doc.label || ''} onChange={e => updateResourceDoc(i, di, 'label', e.target.value)} />
+                            </div>
+                            <div>
+                              <label style={{ ...s.label, fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>File / Drive Link</label>
+                              <input type="url" style={{ ...s.input, marginBottom: 0, padding: '0.35rem 0.6rem', fontSize: '0.775rem' }} placeholder="https://..." value={doc.url || ''} onChange={e => updateResourceDoc(i, di, 'url', e.target.value)} />
+                            </div>
+                            <button type="button" style={{ ...s.btn, ...s.btnDanger, padding: '0.35rem 0.55rem', fontSize: '0.725rem', borderRadius: '6px', marginBottom: 0 }} onClick={() => removeResourceDoc(i, di)}>✕</button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
         <button style={{ ...s.btn, padding: '0.85rem 2.5rem', fontSize: '0.9rem', borderRadius: '10px', boxShadow: 'var(--shadow-md)' }} type="submit" disabled={saving}>
@@ -3679,6 +3720,9 @@ function EventsTab({ courseId }) {
 // ────────────────────────────────────────────────────────────────────────────────
 export default function AdminPage() {
   const [tab, setTab] = useState('weeks');
+  const [supplementalSubSection, setSupplementalSubSection] = useState('all');
+  const [openSubmenus, setOpenSubmenus] = useState({ supplemental: true, submissions: true });
+
   const [currentCourseId, setCurrentCourseId] = useState(() => {
     return localStorage.getItem('admin_selected_course_id') || 'course-001';
   });
@@ -3768,13 +3812,29 @@ export default function AdminPage() {
 
   const navItems = [
     { id: 'weeks', label: 'Manage Weeks', icon: '📅' },
-    { id: 'supplemental', label: 'Supplemental Content', icon: '📚' },
+    { 
+      id: 'supplemental', 
+      label: 'Supplemental Content', 
+      icon: '📚',
+      subItems: [
+        { id: 'supplemental-all', label: 'All Content', icon: '📋', subSection: 'all' },
+        { id: 'supplemental-assignments', label: 'Assignments Page', icon: '📝', subSection: 'assignments' },
+        { id: 'supplemental-resources', label: 'Resources & Docs Page', icon: '📂', subSection: 'resources' },
+      ]
+    },
     { id: 'reminders', label: 'Weekly Reminder', icon: '🔔' },
     { id: 'pm-gym', label: 'PM Gym', icon: '🏋️' },
     { id: 'students', label: 'Students', icon: '👥' },
     { id: 'progress', label: 'Progress', icon: '📊' },
-    { id: 'submissions', label: 'Submissions', icon: '📝' },
-    { id: 'gym-submissions', label: 'PM Gym Responses', icon: '💬' },
+    { 
+      id: 'submissions', 
+      label: 'Submissions', 
+      icon: '📝',
+      subItems: [
+        { id: 'submissions', label: 'Project Submissions', icon: '📄' },
+        { id: 'gym-submissions', label: 'PM Gym Responses', icon: '💬' },
+      ]
+    },
     { id: 'leads', label: 'Leads', icon: '🎯' },
     { id: 'blogs', label: 'Blogs', icon: '✍️' },
     { id: 'events', label: 'Events', icon: '🎟️' },
@@ -3865,32 +3925,100 @@ export default function AdminPage() {
             MANAGEMENT NAV
           </div>
           {navItems.map((t) => {
-            const isActive = tab === t.id;
+            const isParentActive = tab === t.id || (t.id === 'supplemental' && tab === 'supplemental') || (t.id === 'submissions' && (tab === 'submissions' || tab === 'gym-submissions'));
+            const hasSub = t.subItems && t.subItems.length > 0;
+            const isOpen = openSubmenus[t.id];
+
             return (
-              <button
-                key={t.id}
-                onClick={() => setTab(t.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  width: '100%',
-                  padding: '0.65rem 0.85rem',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: isActive ? 700 : 500,
-                  fontSize: '0.85rem',
-                  color: isActive ? '#ffffff' : '#94a3b8',
-                  background: isActive ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
-                  border: 'none',
-                  textAlign: 'left',
-                  boxShadow: isActive ? 'inset 3px 0 0 0 hsl(198, 93%, 60%)' : 'none',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <span style={{ fontSize: '1rem' }}>{t.icon}</span>
-                <span>{t.label}</span>
-              </button>
+              <div key={t.id} style={{ display: 'flex', flexDirection: 'column' }}>
+                <button
+                  onClick={() => {
+                    if (hasSub) {
+                      setOpenSubmenus(prev => ({ ...prev, [t.id]: !prev[t.id] }));
+                      if (t.id === 'supplemental') {
+                        setTab('supplemental');
+                      } else if (t.id === 'submissions') {
+                        setTab('submissions');
+                      }
+                    } else {
+                      setTab(t.id);
+                    }
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    padding: '0.65rem 0.85rem',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontWeight: isParentActive ? 700 : 500,
+                    fontSize: '0.85rem',
+                    color: isParentActive ? '#ffffff' : '#94a3b8',
+                    background: isParentActive ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+                    border: 'none',
+                    textAlign: 'left',
+                    boxShadow: isParentActive ? 'inset 3px 0 0 0 hsl(198, 93%, 60%)' : 'none',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <span style={{ fontSize: '1rem' }}>{t.icon}</span>
+                    <span>{t.label}</span>
+                  </div>
+                  {hasSub && (
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', transition: 'transform 0.15s ease', transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                      ▶
+                    </span>
+                  )}
+                </button>
+
+                {hasSub && isOpen && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', paddingLeft: '1.75rem', marginTop: '0.2rem', marginBottom: '0.2rem' }}>
+                    {t.subItems.map((sub) => {
+                      let isSubActive = false;
+                      if (t.id === 'supplemental') {
+                        isSubActive = tab === 'supplemental' && supplementalSubSection === sub.subSection;
+                      } else {
+                        isSubActive = tab === sub.id;
+                      }
+
+                      return (
+                        <button
+                          key={sub.id}
+                          onClick={() => {
+                            if (t.id === 'supplemental') {
+                              setTab('supplemental');
+                              setSupplementalSubSection(sub.subSection);
+                            } else {
+                              setTab(sub.id);
+                            }
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.6rem',
+                            width: '100%',
+                            padding: '0.45rem 0.65rem',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontWeight: isSubActive ? 700 : 500,
+                            fontSize: '0.8rem',
+                            color: isSubActive ? 'hsl(198, 93%, 60%)' : '#94a3b8',
+                            background: isSubActive ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+                            border: 'none',
+                            textAlign: 'left',
+                            transition: 'all 0.15s ease',
+                          }}
+                        >
+                          <span style={{ fontSize: '0.85rem' }}>{sub.icon}</span>
+                          <span>{sub.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             );
           })}
         </nav>
@@ -3900,7 +4028,7 @@ export default function AdminPage() {
       <main style={{ flex: 1, padding: '2rem', overflowY: 'auto', minWidth: 0 }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           {tab === 'weeks' && <WeeksTab courseId={currentCourseId} />}
-          {tab === 'supplemental' && <SupplementalContentTab courseId={currentCourseId} />}
+          {tab === 'supplemental' && <SupplementalContentTab courseId={currentCourseId} subSection={supplementalSubSection} />}
           {tab === 'reminders' && <RemindersTab courseId={currentCourseId} />}
           {tab === 'pm-gym' && <GymTab courseId={currentCourseId} />}
           {tab === 'students' && <StudentsTab courseId={currentCourseId} />}
