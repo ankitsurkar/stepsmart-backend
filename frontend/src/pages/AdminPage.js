@@ -4097,8 +4097,8 @@ export default function AdminPage() {
               )}
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '0.3rem' }}>
-                  Batch / Course Name <span style={{ color: '#ef4444' }}>*</span>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.35rem' }}>
+                  Batch Name <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <input
                   type="text"
@@ -4106,15 +4106,20 @@ export default function AdminPage() {
                   value={newBatchName}
                   onChange={(e) => setNewBatchName(e.target.value)}
                   required
+                  autoFocus
                   style={{
                     width: '100%',
-                    padding: '0.6rem 0.8rem',
-                    borderRadius: '6px',
-                    border: '1px solid #cbd5e1',
-                    fontSize: '0.9rem',
+                    padding: '0.65rem 0.85rem',
+                    borderRadius: '8px',
+                    border: '1.5px solid #cbd5e1',
+                    fontSize: '0.95rem',
                     boxSizing: 'border-box',
+                    fontWeight: 500,
                   }}
                 />
+                <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.3rem', display: 'block' }}>
+                  Enter a display name for this new batch (e.g. Batch 3, PM Cohort 2026).
+                </span>
               </div>
 
               <div>
