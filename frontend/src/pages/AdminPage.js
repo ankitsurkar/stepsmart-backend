@@ -2565,40 +2565,7 @@ function BlogsTab({ courseId }) {
     }
   }
 
-  const DEMO_BLOGS = [
-    {
-      id: "a-new-generation-studies-ai",
-      title: "A New Generation Studies AI, Apple's Recipe for On-Device Models, GLM5.2 Tackles Open-Ended Problems",
-      description: "The Batch News & Insights: \"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter...",
-      content: "## Inside Claude Code and Boris Cherney's Design Philosophy\n\n\"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter discussed it recently. Loop engineering focuses on iterating on feedback cycles rapidly.\n\n### Apple's Recipe for On-Device Models\nApple's latest research reveals a highly optimized pipeline for running LLMs on-device, leveraging unified memory and model quantization.\n\n### GLM5.2 Tackles Open-Ended Problems\nThe GLM team released version 5.2, setting a new benchmark for open-ended reasoning and code execution capabilities.",
-      imageUrl: "/blog-loops.png",
-      date: "Jun 26, 2026",
-      createdAt: "2026-06-26T12:00:00.000Z"
-    },
-    {
-      id: "testing-mythos-and-fable",
-      title: "Testing Mythos and Fable, Moving Beyond SWE-bench, Nvidia's Open Contender",
-      description: "The Batch AI News and Insights: Over the last two weeks, both the U.S. Government and Anthropic took significant actions that...",
-      content: "## Testing Mythos and Fable: The Path to Evaluation\n\nOver the last two weeks, both the U.S. Government and Anthropic took significant actions that highlight how evaluations are moving from research benchmarks to critical safety gates.\n\n### Moving Beyond SWE-bench\nStandard coding benchmarks are no longer sufficient. New evaluation frameworks are testing agents on multi-file changes and long-context logic.",
-      imageUrl: "/blog-collab.png",
-      date: "Jun 19, 2026",
-      createdAt: "2026-06-19T12:00:00.000Z"
-    },
-    {
-      id: "mythos-begets-fable",
-      title: "Mythos Begets Fable, Cursor's Composer 2.5, Agents Building Agents",
-      description: "The Batch AI News and Insights: If you haven't already, I encourage you to experiment with using AI agents not just to chat but to actuall...",
-      content: "## Cursor's Composer 2.5: The Future of IDEs\n\nIf you haven't already, I encourage you to experiment with using AI agents not just to chat but to actually build applications.\n\n### Agents Building Agents\nWith the release of Cursor Composer 2.5, multi-file edits are becoming standard. We are entering an era of software creation where the prompt is the blueprint.",
-      imageUrl: "/blog-editor.png",
-      date: "Jun 12, 2026",
-      createdAt: "2026-06-12T12:00:00.000Z"
-    }
-  ];
-
-  const displayBlogs = [
-    ...blogs,
-    ...DEMO_BLOGS.filter(demo => !blogs.some(b => b.id === demo.id))
-  ];
+  const displayBlogs = blogs;
 
   // Handle title change to auto-suggest slug/ID
   const handleTitleChange = (val) => {
