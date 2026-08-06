@@ -2393,10 +2393,7 @@ function GymSubmissionsTab({ courseId }) {
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────────
-
 // Leads Tab
-// ────────────────────────────────────────────────────────────────────────────────
 function LeadsTab() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -2535,6 +2532,7 @@ function BlogsTab({ courseId }) {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
+  const [search, setSearch] = useState('');
   
   // Form states
   const [id, setId] = useState('');
@@ -2542,12 +2540,19 @@ function BlogsTab({ courseId }) {
   const [description, setDescription] = useState('');
   const [content, setContent] = useState('');
   const [previewTab, setPreviewTab] = useState(false);
-  const [imageType, setImageType] = useState('loops'); // 'loops' | 'collab' | 'editor' | 'custom'
   const [customImageUrl, setCustomImageUrl] = useState('');
   const [date, setDate] = useState('');
   const [createdAt, setCreatedAt] = useState('');
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  
+  // Image Upload States
+  const [coverUploadMode, setCoverUploadMode] = useState('drag'); // 'drag' | 'url'
+  const [dragOverCover, setDragOverCover] = useState(false);
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [photoModalUrl, setPhotoModalUrl] = useState('');
+  const [photoModalMode, setPhotoModalMode] = useState('drag'); // 'drag' | 'url'
+  const [dragOverPhotoModal, setDragOverPhotoModal] = useState(false);
 
   useEffect(() => {
     load();
@@ -2565,7 +2570,11 @@ function BlogsTab({ courseId }) {
     }
   }
 
-  const displayBlogs = blogs;
+  const displayBlogs = blogs.filter(b => 
+    !search.trim() || 
+    (b.title && b.title.toLowerCase().includes(search.toLowerCase())) ||
+    (b.id && b.id.toLowerCase().includes(search.toLowerCase()))
+  );
 
   // Handle title change to auto-suggest slug/ID
   const handleTitleChange = (val) => {
@@ -2581,7 +2590,10 @@ function BlogsTab({ courseId }) {
 
   const insertTag = (before, after = '') => {
     const textarea = document.getElementById('blog-content-editor');
-    if (!textarea) return;
+    if (!textarea) {
+      setContent(prev => prev + before + after);
+      return;
+    }
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const text = textarea.value;
@@ -2595,12 +2607,27 @@ function BlogsTab({ courseId }) {
     }, 0);
   };
 
-  const handleAddPhoto = () => {
-    const url = prompt('Enter photo/image URL:');
-    if (url) {
-      const formatted = formatImageUrl(url);
-      insertTag(`![image](${formatted})`);
+  const handleFileToDataUrl = (file, callback) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file (PNG, JPG, WEBP, GIF, SVG).');
+      return;
     }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target && e.target.result) {
+        callback(e.target.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleInsertPhotoModalSubmit = (urlToInsert) => {
+    if (!urlToInsert || !urlToInsert.trim()) return;
+    const formatted = formatImageUrl(urlToInsert.trim());
+    insertTag(`![image](${formatted})`);
+    setShowPhotoModal(false);
+    setPhotoModalUrl('');
   };
 
   const renderPreview = (text) => {
@@ -2678,14 +2705,8 @@ function BlogsTab({ courseId }) {
     setSaving(true);
     setMessage('');
 
-    // Determine image URL
-    let imageUrl = '';
-    if (imageType === 'loops') imageUrl = '/blog-loops.png';
-    else if (imageType === 'collab') imageUrl = '/blog-collab.png';
-    else if (imageType === 'editor') imageUrl = '/blog-editor.png';
-    else imageUrl = formatImageUrl(customImageUrl);
+    const imageUrl = customImageUrl.trim() ? formatImageUrl(customImageUrl) : '';
 
-    // Default date to today's date formatted nicely if empty
     const blogDate = date.trim() || new Date().toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -2706,18 +2727,7 @@ function BlogsTab({ courseId }) {
       await adminSaveBlogPost(courseId, payload);
       setMessage('✓ Blog post saved successfully!');
       
-      // Reset form
-      setId('');
-      setTitle('');
-      setDescription('');
-      setContent('');
-      setPreviewTab(false);
-      setImageType('loops');
-      setCustomImageUrl('');
-      setDate('');
-      setCreatedAt('');
-      setEditingId(null);
-      
+      resetForm();
       await load();
     } catch (err) {
       console.error(err);
@@ -2725,6 +2735,19 @@ function BlogsTab({ courseId }) {
     } finally {
       setSaving(false);
     }
+  };
+
+  const resetForm = () => {
+    setEditingId(null);
+    setId('');
+    setTitle('');
+    setDescription('');
+    setContent('');
+    setPreviewTab(false);
+    setCustomImageUrl('');
+    setDate('');
+    setCreatedAt('');
+    setMessage('');
   };
 
   const handleEdit = (blog) => {
@@ -2736,19 +2759,12 @@ function BlogsTab({ courseId }) {
     setPreviewTab(false);
     setDate(blog.date || '');
     setCreatedAt(blog.createdAt || '');
-    
-    if (blog.imageUrl === '/blog-loops.png') {
-      setImageType('loops');
-      setCustomImageUrl('');
-    } else if (blog.imageUrl === '/blog-collab.png') {
-      setImageType('collab');
-      setCustomImageUrl('');
-    } else if (blog.imageUrl === '/blog-editor.png') {
-      setImageType('editor');
-      setCustomImageUrl('');
-    } else {
-      setImageType('custom');
-      setCustomImageUrl(blog.imageUrl || '');
+    setCustomImageUrl(blog.imageUrl || '');
+
+    // Scroll smoothly to editor form
+    const formElement = document.getElementById('blog-editor-form-card');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -2758,272 +2774,110 @@ function BlogsTab({ courseId }) {
       await adminDeleteBlogPost(courseId, blogId);
       setMessage('✓ Blog post deleted successfully!');
       await load();
+      if (editingId === blogId) {
+        resetForm();
+      }
     } catch (err) {
       console.error(err);
       setMessage('❌ Failed to delete blog post.');
     }
   };
 
+  if (loading) return <p style={{ color: 'var(--muted-foreground)', padding: '2rem 0', textAlign: 'center' }}>Loading blogs...</p>;
+
   return (
-    <div className="admin-blog-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', width: '100%' }}>
+      {/* TOP SECTION: Created / Published Blogs Strip & Navbar */}
       <div style={s.card}>
-        <div style={s.cardTitle}>{editingId ? 'Edit Blog Post' : 'Create New Blog Post'}</div>
-        <form onSubmit={handleSave}>
-          <label style={s.label}>Blog Title</label>
-          <input
-            type="text"
-            style={s.input}
-            placeholder="e.g. A New Generation Studies AI"
-            value={title}
-            onChange={(e) => handleTitleChange(e.target.value)}
-            required
-          />
-
-          <label style={s.label}>Blog Description / Summary</label>
-          <textarea
-            style={{ ...s.textarea, minHeight: '60px' }}
-            placeholder="Type short summary or content snippet for the preview card..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', marginBottom: '0.3rem' }}>
-            <label style={s.label}>Whole Blog Content</label>
-            <div style={{ display: 'flex', gap: '0.25rem' }}>
-              <button
-                type="button"
-                style={{ 
-                  ...s.tab, 
-                  padding: '0.2rem 0.6rem', 
-                  fontSize: '0.75rem', 
-                  borderBottom: !previewTab ? '2.5px solid var(--primary)' : '2.5px solid transparent', 
-                  color: !previewTab ? 'var(--primary)' : 'var(--muted-foreground)' 
-                }}
-                onClick={() => setPreviewTab(false)}
-              >
-                Write
-              </button>
-              <button
-                type="button"
-                style={{ 
-                  ...s.tab, 
-                  padding: '0.2rem 0.6rem', 
-                  fontSize: '0.75rem', 
-                  borderBottom: previewTab ? '2.5px solid var(--primary)' : '2.5px solid transparent', 
-                  color: previewTab ? 'var(--primary)' : 'var(--muted-foreground)' 
-                }}
-                onClick={() => setPreviewTab(true)}
-              >
-                Preview
-              </button>
-            </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
+          <div>
+            <div style={s.cardTitle}>Created Blog Posts ({blogs.length})</div>
+            <p style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', marginTop: '0.2rem' }}>
+              Manage published articles or click "Edit" to load into the full-width editor below.
+            </p>
           </div>
 
-          {!previewTab ? (
-            <div style={{ marginBottom: '1rem' }}>
-              <div style={{ 
-                display: 'flex', 
-                gap: '0.35rem', 
-                background: 'var(--muted)', 
-                border: '1.5px solid var(--border)', 
-                borderBottom: 'none', 
-                borderRadius: '8px 8px 0 0', 
-                padding: '0.4rem',
-                flexWrap: 'wrap'
-              }}>
-                <button
-                  type="button"
-                  title="Bold"
-                  style={{ ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem', fontWeight: 'bold' }}
-                  onClick={() => insertTag('**', '**')}
-                >
-                  B
-                </button>
-                <button
-                  type="button"
-                  title="Italic"
-                  style={{ ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem', fontStyle: 'italic' }}
-                  onClick={() => insertTag('*', '*')}
-                >
-                  I
-                </button>
-                <button
-                  type="button"
-                  title="Heading 2"
-                  style={{ ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem', fontWeight: 600 }}
-                  onClick={() => insertTag('## ', '')}
-                >
-                  H2
-                </button>
-                <button
-                  type="button"
-                  title="Link"
-                  style={{ ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
-                  onClick={() => insertTag('[', '](url)')}
-                >
-                  🔗 Link
-                </button>
-                <button
-                  type="button"
-                  title="Add Photo"
-                  style={{ ...s.btnSecondary, padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
-                  onClick={handleAddPhoto}
-                >
-                  📷 Add Photo
-                </button>
-              </div>
-              
-              <textarea
-                id="blog-content-editor"
-                style={{ 
-                  ...s.textarea, 
-                  minHeight: '200px', 
-                  borderRadius: '0 0 8px 8px', 
-                  marginTop: 0,
-                  borderTop: 'none',
-                  marginBottom: 0
-                }}
-                placeholder="Write the full blog post content here in Markdown..."
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                required
-              />
-            </div>
-          ) : (
-            <div style={{
-              border: '1.5px solid var(--border)',
-              borderRadius: '8px',
-              padding: '1rem',
-              minHeight: '240px',
-              maxHeight: '350px',
-              overflowY: 'auto',
-              background: 'var(--background)',
-              marginBottom: '1rem'
-            }} dangerouslySetInnerHTML={{ __html: renderPreview(content) }} />
-          )}
-
-          <label style={s.label}>Blog Slug / ID (Unique)</label>
-          <input
-            type="text"
-            style={s.input}
-            placeholder="e.g. a-new-generation-studies-ai"
-            value={id}
-            onChange={(e) => setId(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, ''))}
-            disabled={!!editingId}
-            required
-          />
-
-          <div style={s.grid2} className="admin-grid2">
-            <div>
-              <label style={s.label}>Card Image</label>
-              <select
-                style={s.input}
-                value={imageType}
-                onChange={(e) => setImageType(e.target.value)}
-              >
-                <option value="loops">3 Key Loops (/blog-loops.png)</option>
-                <option value="collab">Global Collaboration (/blog-collab.png)</option>
-                <option value="editor">AI Code Editor (/blog-editor.png)</option>
-                <option value="custom">Custom Image URL...</option>
-              </select>
-            </div>
-            <div>
-              <label style={s.label}>Publish Date (Optional)</label>
-              <input
-                type="text"
-                style={s.input}
-                placeholder="e.g. Jun 26, 2026 (blank for today)"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {imageType === 'custom' && (
-            <div>
-              <label style={s.label}>Custom Image URL</label>
-              <input
-                type="text"
-                style={s.input}
-                placeholder="https://example.com/image.png"
-                value={customImageUrl}
-                onChange={(e) => setCustomImageUrl(e.target.value)}
-                required
-              />
-            </div>
-          )}
-
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-            <button type="submit" style={s.btn} disabled={saving}>
-              {saving ? 'Saving...' : editingId ? 'Update Post' : 'Save Post'}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <input 
+              style={{ ...s.input, width: '240px', marginBottom: 0, padding: '0.45rem 0.8rem', fontSize: '0.85rem' }} 
+              placeholder="Search by title or slug..." 
+              value={search} 
+              onChange={e => setSearch(e.target.value)} 
+            />
+            <button
+              type="button"
+              style={{ ...s.btn, padding: '0.5rem 1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+              onClick={resetForm}
+            >
+              <span>+</span> Create New Post
             </button>
-            {editingId && (
-              <button
-                type="button"
-                style={s.btnSecondary}
-                onClick={() => {
-                  setEditingId(null);
-                  setId('');
-                  setTitle('');
-                  setDescription('');
-                  setContent('');
-                  setPreviewTab(false);
-                  setImageType('loops');
-                  setCustomImageUrl('');
-                  setDate('');
-                  setCreatedAt('');
-                  setMessage('');
-                }}
-              >
-                Cancel
-              </button>
-            )}
           </div>
-          {message && <div style={s.message}>{message}</div>}
-        </form>
-      </div>
+        </div>
 
-      <div style={s.card}>
-        <div style={s.cardTitle}>Created Blog Posts</div>
-        {loading && <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>Loading blogs...</p>}
-        {!loading && displayBlogs.length === 0 && (
-          <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>No blog posts created yet.</p>
-        )}
-        {!loading && displayBlogs.length > 0 && (
+        {displayBlogs.length === 0 ? (
+          <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', padding: '1rem 0' }}>
+            {blogs.length === 0 ? 'No blog posts created yet. Fill out the form below to create your first article!' : 'No matching blog posts found.'}
+          </p>
+        ) : (
           <div className="responsive-table-container">
             <table style={s.table}>
               <thead>
                 <tr>
-                  <th style={{ ...s.th, width: '120px' }}>Date</th>
+                  <th style={s.th}>Cover</th>
                   <th style={s.th}>Title</th>
-                  <th style={{ ...s.th, textAlign: 'right', width: '100px' }}>Actions</th>
+                  <th style={s.th}>Slug ID</th>
+                  <th style={s.th}>Date</th>
+                  <th style={{ ...s.th, textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {displayBlogs.map((blog) => (
-                  <tr key={blog.id}>
-                    <td style={s.td}>{blog.date}</td>
+                  <tr key={blog.id} style={{ background: editingId === blog.id ? '#f0f9ff' : 'transparent' }}>
+                    <td style={{ ...s.td, width: '60px' }}>
+                      {blog.imageUrl ? (
+                        <img
+                          src={formatImageUrl(blog.imageUrl)}
+                          alt=""
+                          style={{ width: '42px', height: '42px', borderRadius: '6px', objectFit: 'cover', background: '#e2e8f0', display: 'block' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <div style={{ width: '42px', height: '42px', borderRadius: '6px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>Text</div>
+                      )}
+                    </td>
                     <td style={s.td}>
-                      <div style={{ fontWeight: 600, maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--foreground)' }}>
                         {blog.title}
                       </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '380px' }}>
+                        {blog.description}
+                      </div>
+                    </td>
+                    <td style={s.td}>
+                      <code style={{ fontSize: '0.75rem', background: '#f1f5f9', padding: '0.15rem 0.4rem', borderRadius: '4px', color: '#475569' }}>
+                        {blog.id}
+                      </code>
+                    </td>
+                    <td style={s.td}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>{blog.date}</span>
                     </td>
                     <td style={{ ...s.td, textAlign: 'right' }}>
-                      <button
-                        type="button"
-                        style={{ ...s.btn, padding: '0.2rem 0.5rem', fontSize: '0.75rem', marginRight: '0.35rem' }}
-                        onClick={() => handleEdit(blog)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        style={{ ...s.btn, ...s.btnDanger, padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}
-                        onClick={() => handleDelete(blog.id)}
-                      >
-                        Delete
-                      </button>
+                      <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
+                        <button
+                          type="button"
+                          style={{ ...s.btnSecondary, padding: '0.35rem 0.75rem', fontSize: '0.75rem', fontWeight: 600 }}
+                          onClick={() => handleEdit(blog)}
+                        >
+                          {editingId === blog.id ? 'Editing' : 'Edit'}
+                        </button>
+                        <button
+                          type="button"
+                          style={{ ...s.btnDanger, padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
+                          onClick={() => handleDelete(blog.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -3032,6 +2886,519 @@ function BlogsTab({ courseId }) {
           </div>
         )}
       </div>
+
+      {/* BOTTOM SECTION: Full Width Blog Editor Form (100% Width) */}
+      <div id="blog-editor-form-card" style={{ ...s.card, width: '100%' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
+          <div style={s.cardTitle}>
+            {editingId ? `Editing Post: "${title || editingId}"` : 'Create New Blog Post'}
+          </div>
+          {editingId && (
+            <button
+              type="button"
+              style={{ ...s.btnSecondary, padding: '0.3rem 0.8rem', fontSize: '0.8rem' }}
+              onClick={resetForm}
+            >
+              + Switch to New Post
+            </button>
+          )}
+        </div>
+
+        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div>
+            <label style={s.label}>Blog Title</label>
+            <input
+              type="text"
+              style={{ ...s.input, fontSize: '1rem', fontWeight: '600' }}
+              placeholder="e.g. A New Generation Studies AI"
+              value={title}
+              onChange={(e) => handleTitleChange(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label style={s.label}>Blog Description / Summary</label>
+            <textarea
+              style={{ ...s.textarea, minHeight: '65px' }}
+              placeholder="Type short summary or content snippet for the preview card..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Markdown Content Editor with Drag & Drop */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+              <label style={s.label}>Whole Blog Content (Markdown Supported)</label>
+              <div style={{ display: 'flex', gap: '0.25rem' }}>
+                <button
+                  type="button"
+                  style={{ 
+                    ...s.tab, 
+                    padding: '0.25rem 0.75rem', 
+                    fontSize: '0.75rem', 
+                    borderBottom: !previewTab ? '2.5px solid var(--primary)' : '2.5px solid transparent', 
+                    color: !previewTab ? 'var(--primary)' : 'var(--muted-foreground)',
+                    fontWeight: !previewTab ? '700' : '500'
+                  }}
+                  onClick={() => setPreviewTab(false)}
+                >
+                  Write
+                </button>
+                <button
+                  type="button"
+                  style={{ 
+                    ...s.tab, 
+                    padding: '0.25rem 0.75rem', 
+                    fontSize: '0.75rem', 
+                    borderBottom: previewTab ? '2.5px solid var(--primary)' : '2.5px solid transparent', 
+                    color: previewTab ? 'var(--primary)' : 'var(--muted-foreground)',
+                    fontWeight: previewTab ? '700' : '500'
+                  }}
+                  onClick={() => setPreviewTab(true)}
+                >
+                  Preview
+                </button>
+              </div>
+            </div>
+
+            {!previewTab ? (
+              <div style={{ marginBottom: '0.5rem' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  gap: '0.35rem', 
+                  background: 'var(--muted)', 
+                  border: '1.5px solid var(--border)', 
+                  borderBottom: 'none', 
+                  borderRadius: '8px 8px 0 0', 
+                  padding: '0.45rem 0.6rem',
+                  alignItems: 'center',
+                  flexWrap: 'wrap'
+                }}>
+                  <button
+                    type="button"
+                    title="Bold"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem', fontWeight: 'bold' }}
+                    onClick={() => insertTag('**', '**')}
+                  >
+                    B
+                  </button>
+                  <button
+                    type="button"
+                    title="Italic"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem', fontStyle: 'italic' }}
+                    onClick={() => insertTag('*', '*')}
+                  >
+                    I
+                  </button>
+                  <button
+                    type="button"
+                    title="Heading 2"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem', fontWeight: 600 }}
+                    onClick={() => insertTag('## ', '')}
+                  >
+                    H2
+                  </button>
+                  <button
+                    type="button"
+                    title="Heading 3"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem', fontWeight: 600 }}
+                    onClick={() => insertTag('### ', '')}
+                  >
+                    H3
+                  </button>
+                  <span style={{ color: '#cbd5e1' }}>|</span>
+                  <button
+                    type="button"
+                    title="Link"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem' }}
+                    onClick={() => insertTag('[Link Text](', ')')}
+                  >
+                    🔗 Link
+                  </button>
+                  <button
+                    type="button"
+                    title="Add Photo / Image"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem', background: '#e0f2fe', color: '#0369a1', borderColor: '#bae6fd', fontWeight: 600 }}
+                    onClick={() => setShowPhotoModal(true)}
+                  >
+                    📷 Add Photo / Upload Image
+                  </button>
+                </div>
+                
+                <textarea
+                  id="blog-content-editor"
+                  style={{ 
+                    ...s.textarea, 
+                    minHeight: '280px', 
+                    borderRadius: '0 0 8px 8px', 
+                    marginTop: 0,
+                    borderTop: 'none',
+                    marginBottom: 0,
+                    fontSize: '0.9rem',
+                    lineHeight: '1.6'
+                  }}
+                  placeholder="Write the full blog post content here in Markdown... (Drag & drop images directly onto this area or click 'Add Photo')"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                      handleFileToDataUrl(e.dataTransfer.files[0], (dataUrl) => {
+                        insertTag(`![image](${dataUrl})`);
+                      });
+                    }
+                  }}
+                  required
+                />
+              </div>
+            ) : (
+              <div style={{
+                border: '1.5px solid var(--border)',
+                borderRadius: '8px',
+                padding: '1.25rem',
+                minHeight: '280px',
+                maxHeight: '450px',
+                overflowY: 'auto',
+                background: 'var(--background)',
+                marginBottom: '1rem'
+              }} dangerouslySetInnerHTML={{ __html: renderPreview(content) }} />
+            )}
+          </div>
+
+          <div style={s.grid2} className="admin-grid2">
+            <div>
+              <label style={s.label}>Blog Slug / ID (Unique)</label>
+              <input
+                type="text"
+                style={s.input}
+                placeholder="e.g. a-new-generation-studies-ai"
+                value={id}
+                onChange={(e) => setId(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, ''))}
+                disabled={!!editingId}
+                required
+              />
+            </div>
+            <div>
+              <label style={s.label}>Publish Date (Optional)</label>
+              <input
+                type="text"
+                style={s.input}
+                placeholder="e.g. Aug 6, 2026 (blank for today)"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Header / Cover Image Uploader */}
+          <div style={{ border: '1.5px solid var(--border)', borderRadius: '10px', padding: '1.25rem', background: '#f8fafc' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <div>
+                <label style={{ ...s.label, marginBottom: '0.1rem', fontSize: '0.9rem' }}>Blog Cover / Header Image (Optional)</label>
+                <p style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+                  Upload a photo or paste a URL. This will be shown on the blog list cards and post header.
+                </p>
+              </div>
+
+              {/* Upload Mode Tabs */}
+              <div style={{ display: 'flex', gap: '0.25rem', background: '#e2e8f0', padding: '0.2rem', borderRadius: '6px' }}>
+                <button
+                  type="button"
+                  style={{
+                    padding: '0.25rem 0.65rem',
+                    fontSize: '0.75rem',
+                    borderRadius: '4px',
+                    border: 'none',
+                    background: coverUploadMode === 'drag' ? '#fff' : 'transparent',
+                    fontWeight: coverUploadMode === 'drag' ? '700' : '500',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => setCoverUploadMode('drag')}
+                >
+                  📁 File Upload / Drag & Drop
+                </button>
+                <button
+                  type="button"
+                  style={{
+                    padding: '0.25rem 0.65rem',
+                    fontSize: '0.75rem',
+                    borderRadius: '4px',
+                    border: 'none',
+                    background: coverUploadMode === 'url' ? '#fff' : 'transparent',
+                    fontWeight: coverUploadMode === 'url' ? '700' : '500',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => setCoverUploadMode('url')}
+                >
+                  🔗 Image URL
+                </button>
+              </div>
+            </div>
+
+            {/* Mode 1: Drag and Drop Dropzone */}
+            {coverUploadMode === 'drag' ? (
+              <div
+                onDragOver={(e) => { e.preventDefault(); setDragOverCover(true); }}
+                onDragLeave={() => setDragOverCover(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragOverCover(false);
+                  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    handleFileToDataUrl(e.dataTransfer.files[0], (dataUrl) => {
+                      setCustomImageUrl(dataUrl);
+                    });
+                  }
+                }}
+                style={{
+                  border: dragOverCover ? '2px dashed #188ab2' : '2px dashed #cbd5e1',
+                  background: dragOverCover ? '#f0f9ff' : '#ffffff',
+                  borderRadius: '10px',
+                  padding: '1.5rem',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onClick={() => {
+                  const input = document.getElementById('cover-file-input');
+                  if (input) input.click();
+                }}
+              >
+                <input
+                  id="cover-file-input"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleFileToDataUrl(e.target.files[0], (dataUrl) => {
+                        setCustomImageUrl(dataUrl);
+                      });
+                    }
+                  }}
+                />
+                <div style={{ fontSize: '2rem', marginBottom: '0.3rem' }}>📷</div>
+                <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#1e293b' }}>
+                  Drag & drop your blog cover image here
+                </div>
+                <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>
+                  or <span style={{ color: '#188ab2', fontWeight: 600, textDecoration: 'underline' }}>browse file from computer</span> (PNG, JPG, WEBP, GIF, SVG)
+                </div>
+              </div>
+            ) : (
+              /* Mode 2: Direct URL Input */
+              <div>
+                <input
+                  type="text"
+                  style={s.input}
+                  placeholder="https://... (Paste Google Drive, Dropbox, or CDN image link)"
+                  value={customImageUrl}
+                  onChange={(e) => setCustomImageUrl(e.target.value)}
+                />
+              </div>
+            )}
+
+            {/* Thumbnail Preview Box */}
+            {customImageUrl && (
+              <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                <img
+                  src={formatImageUrl(customImageUrl)}
+                  alt="Cover Preview"
+                  style={{ width: '80px', height: '60px', borderRadius: '6px', objectFit: 'cover', background: '#e2e8f0' }}
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#1e293b' }}>Cover Image Loaded</div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {customImageUrl.startsWith('data:') ? 'Direct uploaded file (Base64 Stream)' : customImageUrl}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  style={{ ...s.btnDanger, padding: '0.3rem 0.65rem', fontSize: '0.75rem' }}
+                  onClick={() => setCustomImageUrl('')}
+                >
+                  Remove Cover
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <button type="submit" style={{ ...s.btn, padding: '0.65rem 1.75rem', fontSize: '0.95rem' }} disabled={saving}>
+              {saving ? 'Saving Post...' : editingId ? 'Update Blog Post' : 'Save Blog Post'}
+            </button>
+            {editingId && (
+              <button
+                type="button"
+                style={{ ...s.btnSecondary, padding: '0.65rem 1.25rem', fontSize: '0.95rem' }}
+                onClick={resetForm}
+              >
+                Cancel Edit
+              </button>
+            )}
+          </div>
+          {message && <div style={s.message}>{message}</div>}
+        </form>
+      </div>
+
+      {/* Inline Content Photo Modal */}
+      {showPhotoModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: '#ffffff',
+            borderRadius: '12px',
+            width: '100%',
+            maxWidth: '520px',
+            padding: '1.5rem',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <div style={{ fontWeight: 800, fontSize: '1.1rem', color: '#0f172a' }}>Insert Image into Blog Article</div>
+              <button
+                type="button"
+                style={{ background: 'none', border: 'none', fontSize: '1.25rem', cursor: 'pointer', color: '#64748b' }}
+                onClick={() => setShowPhotoModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Mode Selector */}
+            <div style={{ display: 'flex', gap: '0.25rem', background: '#f1f5f9', padding: '0.25rem', borderRadius: '8px', marginBottom: '1.25rem' }}>
+              <button
+                type="button"
+                style={{
+                  flex: 1,
+                  padding: '0.4rem',
+                  fontSize: '0.8rem',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: photoModalMode === 'drag' ? '#ffffff' : 'transparent',
+                  fontWeight: photoModalMode === 'drag' ? '700' : '500',
+                  boxShadow: photoModalMode === 'drag' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                  cursor: 'pointer'
+                }}
+                onClick={() => setPhotoModalMode('drag')}
+              >
+                📁 Direct File Upload
+              </button>
+              <button
+                type="button"
+                style={{
+                  flex: 1,
+                  padding: '0.4rem',
+                  fontSize: '0.8rem',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: photoModalMode === 'url' ? '#ffffff' : 'transparent',
+                  fontWeight: photoModalMode === 'url' ? '700' : '500',
+                  boxShadow: photoModalMode === 'url' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                  cursor: 'pointer'
+                }}
+                onClick={() => setPhotoModalMode('url')}
+              >
+                🔗 Paste Image URL
+              </button>
+            </div>
+
+            {photoModalMode === 'drag' ? (
+              <div
+                onDragOver={(e) => { e.preventDefault(); setDragOverPhotoModal(true); }}
+                onDragLeave={() => setDragOverPhotoModal(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragOverPhotoModal(false);
+                  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    handleFileToDataUrl(e.dataTransfer.files[0], (dataUrl) => {
+                      handleInsertPhotoModalSubmit(dataUrl);
+                    });
+                  }
+                }}
+                style={{
+                  border: dragOverPhotoModal ? '2px dashed #188ab2' : '2px dashed #cbd5e1',
+                  background: dragOverPhotoModal ? '#f0f9ff' : '#ffffff',
+                  borderRadius: '10px',
+                  padding: '2rem 1rem',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  marginBottom: '1rem'
+                }}
+                onClick={() => {
+                  const input = document.getElementById('content-photo-file-input');
+                  if (input) input.click();
+                }}
+              >
+                <input
+                  id="content-photo-file-input"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleFileToDataUrl(e.target.files[0], (dataUrl) => {
+                        handleInsertPhotoModalSubmit(dataUrl);
+                      });
+                    }
+                  }}
+                />
+                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>📷</div>
+                <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#1e293b' }}>
+                  Drag & Drop image file here
+                </div>
+                <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.25rem' }}>
+                  or <span style={{ color: '#188ab2', fontWeight: 600, textDecoration: 'underline' }}>click to select photo</span>
+                </div>
+              </div>
+            ) : (
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label style={s.label}>Image URL</label>
+                <input
+                  type="text"
+                  style={s.input}
+                  placeholder="https://... (Google Drive, Dropbox, or image link)"
+                  value={photoModalUrl}
+                  onChange={(e) => setPhotoModalUrl(e.target.value)}
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  style={{ ...s.btn, width: '100%', marginTop: '0.75rem' }}
+                  onClick={() => handleInsertPhotoModalSubmit(photoModalUrl)}
+                >
+                  Insert Photo
+                </button>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+              <button
+                type="button"
+                style={{ ...s.btnSecondary, padding: '0.4rem 1rem', fontSize: '0.85rem' }}
+                onClick={() => setShowPhotoModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
