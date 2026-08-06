@@ -3255,19 +3255,19 @@ function BlogsTab({ courseId }) {
   const [description, setDescription] = useState('');
   const [content, setContent] = useState('');
   const [previewTab, setPreviewTab] = useState(false);
+  const [imageType, setImageType] = useState('loops');
   const [customImageUrl, setCustomImageUrl] = useState('');
   const [date, setDate] = useState('');
   const [createdAt, setCreatedAt] = useState('');
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState(null);
   
+  // Content Images State for Clean Tags & Visual Thumbnail Cards
+  const [contentImages, setContentImages] = useState([]); // [{ id: 'img_1', url: 'data:image/...', label: 'Photo 1' }]
+
   // Image Upload States
-  const [coverUploadMode, setCoverUploadMode] = useState('drag'); // 'drag' | 'url'
-  const [dragOverCover, setDragOverCover] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [photoModalUrl, setPhotoModalUrl] = useState('');
-  const [photoModalMode, setPhotoModalMode] = useState('drag'); // 'drag' | 'url'
-  const [dragOverPhotoModal, setDragOverPhotoModal] = useState(false);
 
   useEffect(() => {
     load();
@@ -3322,35 +3322,130 @@ function BlogsTab({ courseId }) {
     }, 0);
   };
 
+  // Compress image to prevent massive payload size and improve loading speed
   const handleFileToDataUrl = (file, callback) => {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
       alert('Please select an image file (PNG, JPG, WEBP, GIF, SVG).');
       return;
     }
+
     const reader = new FileReader();
     reader.onload = (e) => {
-      if (e.target && e.target.result) {
-        callback(e.target.result);
+      const dataUrl = e.target.result;
+      if (file.type === 'image/svg+xml' || file.size < 30000) {
+        callback(dataUrl);
+        return;
       }
+
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const MAX_SIZE = 1000;
+
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height = Math.round((height * MAX_SIZE) / width);
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width = Math.round((width * MAX_SIZE) / height);
+            height = MAX_SIZE;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        callback(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = () => callback(dataUrl);
+      img.src = dataUrl;
     };
     reader.readAsDataURL(file);
+  };
+
+  // Register image into contentImages gallery and insert clean short tag into Markdown
+  const registerAndInsertContentImage = (dataUrl) => {
+    let tagId = '';
+    let label = '';
+
+    setContentImages(prev => {
+      const existing = prev.find(item => item.url === dataUrl);
+      if (existing) {
+        tagId = existing.id;
+        label = existing.label;
+        return prev;
+      }
+      const nextIdx = prev.length + 1;
+      tagId = `img_${nextIdx}`;
+      label = `Photo ${nextIdx}`;
+      return [...prev, { id: tagId, url: dataUrl, label }];
+    });
+
+    setTimeout(() => {
+      setContentImages(currentList => {
+        const found = currentList.find(item => item.url === dataUrl);
+        const finalTagId = found ? found.id : (tagId || `img_${currentList.length}`);
+        const finalLabel = found ? found.label : (label || `Photo ${currentList.length}`);
+        insertTag(`![${finalLabel}](${finalTagId})`);
+        return currentList;
+      });
+    }, 50);
   };
 
   const handleInsertPhotoModalSubmit = (urlToInsert) => {
     if (!urlToInsert || !urlToInsert.trim()) return;
     const formatted = formatImageUrl(urlToInsert.trim());
-    insertTag(`![image](${formatted})`);
+    
+    if (formatted.startsWith('data:image/')) {
+      registerAndInsertContentImage(formatted);
+    } else {
+      insertTag(`![Image](${formatted})`);
+    }
     setShowPhotoModal(false);
     setPhotoModalUrl('');
   };
 
+  // Expand short tags (img_1) to full DataURLs before previewing or saving
+  const expandContentImages = (text, imagesList = contentImages) => {
+    if (!text) return '';
+    let result = text;
+    imagesList.forEach((img) => {
+      const regex = new RegExp(`!\\[(.*?)\\]\\(${img.id}\\)`, 'g');
+      result = result.replace(regex, (match, alt) => `![${alt || img.label}](${img.url})`);
+    });
+    return result;
+  };
+
+  // Parse existing Markdown text when editing to extract base64 URLs into visual gallery
+  const parseAndShortenContentImages = (rawContent) => {
+    if (!rawContent) return { cleanedContent: '', extractedImages: [] };
+    const extractedImages = [];
+    let index = 1;
+
+    const cleanedContent = rawContent.replace(/!\[(.*?)\]\((data:image\/[^)]+)\)/gi, (match, alt, dataUrl) => {
+      const tagId = `img_${index}`;
+      const label = alt && alt !== 'image' ? alt : `Photo ${index}`;
+      extractedImages.push({ id: tagId, url: dataUrl, label });
+      index++;
+      return `![${label}](${tagId})`;
+    });
+
+    return { cleanedContent, extractedImages };
+  };
+
   const renderPreview = (text) => {
-    if (!text) return '<p style="color: var(--muted-foreground); font-style: italic;">No content to preview.</p>';
+    const fullText = expandContentImages(text);
+    if (!fullText) return '<p style="color: var(--muted-foreground); font-style: italic;">No content to preview.</p>';
     
     // 1. Extract raw HTML <img> tags before HTML character escaping
     const imgPlaceholders = [];
-    let processed = text.replace(/<img\s+[^>]*src=["']([^"']+)["'][^>]*\/?>/gi, (match, src) => {
+    let processed = fullText.replace(/<img\s+[^>]*src=["']([^"']+)["'][^>]*\/?>/gi, (match, src) => {
       const formattedSrc = formatImageUrl(src);
       const placeholder = `__HTML_IMG_PLACEHOLDER_${imgPlaceholders.length}__`;
       const altMatch = match.match(/alt=["']([^"']*)["']/i);
@@ -3428,11 +3523,14 @@ function BlogsTab({ courseId }) {
       day: 'numeric'
     });
 
+    // Expand short tags into full compressed DataURLs before saving to DB
+    const expandedContent = expandContentImages(content.trim());
+
     const payload = {
       id: id.trim(),
       title: title.trim(),
       description: description.trim(),
-      content: content.trim(),
+      content: expandedContent,
       imageUrl,
       date: blogDate,
       createdAt: createdAt || new Date().toISOString()
@@ -3458,6 +3556,7 @@ function BlogsTab({ courseId }) {
     setTitle('');
     setDescription('');
     setContent('');
+    setContentImages([]);
     setPreviewTab(false);
     setCustomImageUrl('');
     setDate('');
@@ -3470,7 +3569,12 @@ function BlogsTab({ courseId }) {
     setId(blog.id);
     setTitle(blog.title);
     setDescription(blog.description);
-    setContent(blog.content || '');
+    
+    // Automatically parse out base64 images into visual gallery cards and shorten editor content
+    const { cleanedContent, extractedImages } = parseAndShortenContentImages(blog.content || '');
+    setContent(cleanedContent);
+    setContentImages(extractedImages);
+
     setPreviewTab(false);
     setDate(blog.date || '');
     setCreatedAt(blog.createdAt || '');
@@ -3680,16 +3784,138 @@ function BlogsTab({ courseId }) {
             </div>
 
             {!previewTab ? (
-              <textarea
-                id="blog-content-editor"
-                style={{ ...s.textarea, minHeight: '240px', fontFamily: 'monospace', fontSize: '0.85rem' }}
-                placeholder="Write your article content using Markdown or insert image URLs..."
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
+              <div style={{ marginBottom: '0.5rem' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  gap: '0.35rem', 
+                  background: 'var(--muted)', 
+                  border: '1.5px solid var(--border)', 
+                  borderBottom: 'none', 
+                  borderRadius: '8px 8px 0 0', 
+                  padding: '0.45rem 0.6rem',
+                  alignItems: 'center',
+                  flexWrap: 'wrap'
+                }}>
+                  <button
+                    type="button"
+                    title="Bold"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem', fontWeight: 'bold' }}
+                    onClick={() => insertTag('**', '**')}
+                  >
+                    B
+                  </button>
+                  <button
+                    type="button"
+                    title="Italic"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem', fontStyle: 'italic' }}
+                    onClick={() => insertTag('*', '*')}
+                  >
+                    I
+                  </button>
+                  <button
+                    type="button"
+                    title="Heading 2"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem', fontWeight: 600 }}
+                    onClick={() => insertTag('## ', '')}
+                  >
+                    H2
+                  </button>
+                  <button
+                    type="button"
+                    title="Heading 3"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem', fontWeight: 600 }}
+                    onClick={() => insertTag('### ', '')}
+                  >
+                    H3
+                  </button>
+                  <span style={{ color: '#cbd5e1' }}>|</span>
+                  <button
+                    type="button"
+                    title="Link"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem' }}
+                    onClick={() => insertTag('[Link Text](', ')')}
+                  >
+                    🔗 Link
+                  </button>
+                  <button
+                    type="button"
+                    title="Add Photo / Image"
+                    style={{ ...s.btnSecondary, padding: '0.25rem 0.65rem', fontSize: '0.75rem', background: '#e0f2fe', color: '#0369a1', borderColor: '#bae6fd', fontWeight: 600 }}
+                    onClick={() => setShowPhotoModal(true)}
+                  >
+                    📷 Add Photo / Upload Image
+                  </button>
+                </div>
+                
+                <textarea
+                  id="blog-content-editor"
+                  style={{ 
+                    ...s.textarea, 
+                    minHeight: '280px', 
+                    borderRadius: contentImages.length > 0 ? '0' : '0 0 8px 8px', 
+                    marginTop: 0,
+                    borderTop: 'none',
+                    marginBottom: 0,
+                    fontSize: '0.9rem',
+                    lineHeight: '1.6'
+                  }}
+                  placeholder="Write the full blog post content here in Markdown... (Drag & drop images directly onto this area or click 'Add Photo')"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                      handleFileToDataUrl(e.dataTransfer.files[0], (dataUrl) => {
+                        registerAndInsertContentImage(dataUrl);
+                      });
+                    }
+                  }}
+                  required
+                />
+
+                {/* Attached Content Photos Visual Gallery */}
+                {contentImages.length > 0 && (
+                  <div style={{ padding: '0.85rem', background: '#f8fafc', borderRadius: '0 0 8px 8px', border: '1.5px solid var(--border)', borderTop: 'none' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#334155', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span>📷 Attached Photos in Article ({contentImages.length})</span>
+                      <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 400 }}>Short tag stored in text for clean editing</span>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '0.75rem' }}>
+                      {contentImages.map((img) => (
+                        <div key={img.id} style={{ position: 'relative', background: '#ffffff', borderRadius: '6px', border: '1px solid #cbd5e1', padding: '0.4rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <img src={img.url} alt={img.label} style={{ width: '100%', height: '75px', objectFit: 'cover', borderRadius: '4px', background: '#f1f5f9' }} />
+                          <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#0f172a', marginTop: '0.3rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
+                            {img.label}
+                          </div>
+                          <div style={{ display: 'flex', gap: '0.25rem', marginTop: '0.35rem', width: '100%' }}>
+                            <button
+                              type="button"
+                              style={{ ...s.btnSecondary, flex: 1, padding: '0.2rem 0.3rem', fontSize: '0.65rem', fontWeight: 600 }}
+                              onClick={() => insertTag(`![${img.label}](${img.id})`)}
+                            >
+                              Insert
+                            </button>
+                            <button
+                              type="button"
+                              style={{ ...s.btnDanger, padding: '0.2rem 0.4rem', fontSize: '0.65rem' }}
+                              onClick={() => {
+                                setContentImages(prev => prev.filter(i => i.id !== img.id));
+                              }}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
               <div style={{
-                border: '1px solid var(--border)',
+                border: '1.5px solid var(--border)',
                 borderRadius: '8px',
                 padding: '1rem',
                 minHeight: '240px',
