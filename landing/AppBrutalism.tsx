@@ -2357,6 +2357,47 @@ function DashboardPage() {
   );
 }
 
+export function formatImageUrl(url?: string): string {
+  if (!url) return '';
+  let clean = url.trim();
+
+  // Strip wrapping quotes if present
+  if ((clean.startsWith('"') && clean.endsWith('"')) || (clean.startsWith("'") && clean.endsWith("'"))) {
+    clean = clean.slice(1, -1).trim();
+  }
+
+  // Handle Google Drive links (convert view/open/uc links to direct binary image URLs)
+  if (clean.includes('drive.google.com')) {
+    const matchFileD = clean.match(/\/file\/d\/([^/?]+)/);
+    if (matchFileD && matchFileD[1]) {
+      return `https://lh3.googleusercontent.com/d/${matchFileD[1]}`;
+    }
+    const matchUc = clean.match(/id=([^&]+)/);
+    if (matchUc && matchUc[1]) {
+      return `https://lh3.googleusercontent.com/d/${matchUc[1]}`;
+    }
+    const matchOpen = clean.match(/open\?id=([^&]+)/);
+    if (matchOpen && matchOpen[1]) {
+      return `https://lh3.googleusercontent.com/d/${matchOpen[1]}`;
+    }
+  }
+
+  // Handle Dropbox links
+  if (clean.includes('dropbox.com')) {
+    clean = clean.replace('?dl=0', '?raw=1').replace('&dl=0', '&raw=1');
+    if (!clean.includes('raw=1') && !clean.includes('dl=1')) {
+      clean += (clean.includes('?') ? '&raw=1' : '?raw=1');
+    }
+  }
+
+  // Handle protocol relative URLs
+  if (clean.startsWith('//')) {
+    clean = 'https:' + clean;
+  }
+
+  return clean;
+}
+
 const DEMO_BLOGS = [
   {
     id: "a-new-generation-studies-ai",
@@ -2427,25 +2468,64 @@ function BlogPage() {
   const parseMarkdown = (text: string) => {
     if (!text) return '<p class="text-slate-400 italic">No content written yet for this post.</p>';
     
-    let html = text
+    // 1. Extract raw HTML <img> tags before HTML character escaping
+    const imgPlaceholders: { placeholder: string; html: string }[] = [];
+    let processed = text.replace(/<img\s+[^>]*src=["']([^"']+)["'][^>]*\/?>/gi, (match, src) => {
+      const formattedSrc = formatImageUrl(src);
+      const placeholder = `__HTML_IMG_PLACEHOLDER_${imgPlaceholders.length}__`;
+      const altMatch = match.match(/alt=["']([^"']*)["']/i);
+      const altText = altMatch ? altMatch[1] : '';
+      
+      const imgHtml = `<figure class="my-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden bg-white"><img src="${formattedSrc}" alt="${altText}" class="max-w-full h-auto mx-auto block" loading="lazy" onError="this.style.display='none'" />${altText ? `<figcaption class="text-center text-xs font-bold text-[#111111] border-t-2 border-[#111111] py-2 bg-[#FFF3A7]">${altText}</figcaption>` : ''}</figure>`;
+        
+      imgPlaceholders.push({ placeholder, html: imgHtml });
+      return placeholder;
+    });
+
+    // 2. Escape HTML special characters
+    let html = processed
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
+    // 3. Headings
     html = html.replace(/^### (.*?)$/gm, '<h3 class="text-xl font-extrabold mt-8 mb-3 text-[#111111]">$1</h3>');
     html = html.replace(/^## (.*?)$/gm, '<h2 class="text-2xl font-extrabold mt-10 mb-4 border-b-[3px] border-[#111111] pb-2 text-[#111111]">$1</h2>');
     html = html.replace(/^# (.*?)$/gm, '<h1 class="text-3xl md:text-4xl font-extrabold mt-12 mb-6 text-[#111111] leading-tight">$1</h1>');
 
+    // 4. Bold & Italic
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold">$1</strong>');
     html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
 
-    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<figure class="my-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden bg-white"><img src="$2" alt="$1" class="max-w-full h-auto mx-auto" /><figcaption class="text-center text-xs font-bold text-[#111111] border-t-2 border-[#111111] py-2 bg-[#FFF3A7]">$1</figcaption></figure>');
+    // 5. Markdown Images ![alt](url)
+    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
+      const rawUrl = url.replace(/&amp;/g, '&');
+      const formattedUrl = formatImageUrl(rawUrl);
+      return `<figure class="my-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden bg-white"><img src="${formattedUrl}" alt="${alt}" class="max-w-full h-auto mx-auto block" loading="lazy" onError="this.style.display='none'" />${alt ? `<figcaption class="text-center text-xs font-bold text-[#111111] border-t-2 border-[#111111] py-2 bg-[#FFF3A7]">${alt}</figcaption>` : ''}</figure>`;
+    });
 
-    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" class="text-[#188ab2] hover:underline font-extrabold">$1</a>');
+    // 6. Standalone Image URLs
+    html = html.replace(/^(https?:\/\/[^\s<>]+\.(?:png|jpg|jpeg|gif|webp|svg)(?:\?[^\s<>]*)?)$/gim, (match, url) => {
+      const rawUrl = url.replace(/&amp;/g, '&');
+      const formattedUrl = formatImageUrl(rawUrl);
+      return `<figure class="my-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden bg-white"><img src="${formattedUrl}" alt="Blog Image" class="max-w-full h-auto mx-auto block" loading="lazy" onError="this.style.display='none'" /></figure>`;
+    });
 
+    // 7. Markdown Links [text](url)
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, (match, text, url) => {
+      const rawUrl = url.replace(/&amp;/g, '&');
+      const formattedUrl = formatImageUrl(rawUrl);
+      return `<a href="${formattedUrl}" target="_blank" class="text-[#188ab2] hover:underline font-extrabold">${text}</a>`;
+    });
+
+    // 8. Restore extracted HTML img placeholders
+    imgPlaceholders.forEach(({ placeholder, html: imgHtml }) => {
+      html = html.replace(placeholder, imgHtml);
+    });
+
+    // 9. Paragraph wrapping
     html = html.replace(/\n\n/g, '</p><p class="mb-6 text-[#111111] leading-relaxed text-base font-bold">');
     html = '<p class="mb-6 text-[#111111] leading-relaxed text-base font-bold">' + html + '</p>';
-
     html = html.replace(/<p class=".*?"><\/p>/g, '');
 
     return html;
@@ -2538,9 +2618,12 @@ function BlogPage() {
               {currentPost.imageUrl && (
                 <div className="w-full h-80 md:h-[28rem] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] overflow-hidden mb-12 bg-slate-100">
                   <img
-                    src={currentPost.imageUrl}
+                    src={formatImageUrl(currentPost.imageUrl)}
                     alt={currentPost.title}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = 'none';
+                    }}
                   />
                 </div>
               )}
@@ -2643,10 +2726,13 @@ function BlogPage() {
                 >
                   <div className="relative w-full h-56 border-b-[3px] border-[#111111] overflow-hidden bg-slate-100">
                     <img
-                      src={blog.imageUrl || "/hero_image.webp"}
+                      src={formatImageUrl(blog.imageUrl) || "/hero_image.webp"}
                       alt={blog.title}
                       className="w-full h-full object-cover"
                       loading="lazy"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/hero_image.webp";
+                      }}
                     />
                   </div>
                   <div className="p-6 md:p-8 flex flex-col flex-1">

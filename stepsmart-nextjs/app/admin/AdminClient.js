@@ -3202,6 +3202,576 @@ function EventsTab({ courseId }) {
   );
 }
 
+function formatImageUrl(url) {
+  if (!url) return '';
+  let clean = url.trim();
+
+  // Strip wrapping quotes if present
+  if ((clean.startsWith('"') && clean.endsWith('"')) || (clean.startsWith("'") && clean.endsWith("'"))) {
+    clean = clean.slice(1, -1).trim();
+  }
+
+  // Handle Google Drive links
+  if (clean.includes('drive.google.com')) {
+    const matchFileD = clean.match(/\/file\/d\/([^/?]+)/);
+    if (matchFileD && matchFileD[1]) {
+      return `https://lh3.googleusercontent.com/d/${matchFileD[1]}`;
+    }
+    const matchUc = clean.match(/id=([^&]+)/);
+    if (matchUc && matchUc[1]) {
+      return `https://lh3.googleusercontent.com/d/${matchUc[1]}`;
+    }
+    const matchOpen = clean.match(/open\?id=([^&]+)/);
+    if (matchOpen && matchOpen[1]) {
+      return `https://lh3.googleusercontent.com/d/${matchOpen[1]}`;
+    }
+  }
+
+  // Handle Dropbox links
+  if (clean.includes('dropbox.com')) {
+    clean = clean.replace('?dl=0', '?raw=1').replace('&dl=0', '&raw=1');
+    if (!clean.includes('raw=1') && !clean.includes('dl=1')) {
+      clean += (clean.includes('?') ? '&raw=1' : '?raw=1');
+    }
+  }
+
+  // Handle protocol relative URLs
+  if (clean.startsWith('//')) {
+    clean = 'https:' + clean;
+  }
+
+  return clean;
+}
+
+// Blogs Tab
+function BlogsTab({ courseId }) {
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState('');
+  
+  // Form states
+  const [id, setId] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [content, setContent] = useState('');
+  const [previewTab, setPreviewTab] = useState(false);
+  const [imageType, setImageType] = useState('loops'); // 'loops' | 'collab' | 'editor' | 'custom'
+  const [customImageUrl, setCustomImageUrl] = useState('');
+  const [date, setDate] = useState('');
+  const [createdAt, setCreatedAt] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+
+  useEffect(() => {
+    load();
+  }, [courseId]);
+
+  async function load() {
+    setLoading(true);
+    try {
+      const { data } = await adminGetWeeks(courseId);
+      setBlogs(data.blogs || []);
+    } catch (err) {
+      setMessage('Failed to load blogs.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const DEMO_BLOGS = [
+    {
+      id: "a-new-generation-studies-ai",
+      title: "A New Generation Studies AI, Apple's Recipe for On-Device Models, GLM5.2 Tackles Open-Ended Problems",
+      description: "The Batch News & Insights: \"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter...",
+      content: "## Inside Claude Code and Boris Cherney's Design Philosophy\n\n\"Loop engineering\" is a hot buzzphrase after Boris Cherney (Claude Code's creator) and Peter discussed it recently. Loop engineering focuses on iterating on feedback cycles rapidly.\n\n### Apple's Recipe for On-Device Models\nApple's latest research reveals a highly optimized pipeline for running LLMs on-device, leveraging unified memory and model quantization.\n\n### GLM5.2 Tackles Open-Ended Problems\nThe GLM team released version 5.2, setting a new benchmark for open-ended reasoning and code execution capabilities.",
+      imageUrl: "/blog-loops.png",
+      date: "Jun 26, 2026",
+      createdAt: "2026-06-26T12:00:00.000Z"
+    },
+    {
+      id: "testing-mythos-and-fable",
+      title: "Testing Mythos and Fable, Moving Beyond SWE-bench, Nvidia's Open Contender",
+      description: "The Batch AI News and Insights: Over the last two weeks, both the U.S. Government and Anthropic took significant actions that...",
+      content: "## Testing Mythos and Fable: The Path to Evaluation\n\nOver the last two weeks, both the U.S. Government and Anthropic took significant actions that highlight how evaluations are moving from research benchmarks to critical safety gates.\n\n### Moving Beyond SWE-bench\nStandard coding benchmarks are no longer sufficient. New evaluation frameworks are testing agents on multi-file changes and long-context logic.",
+      imageUrl: "/blog-collab.png",
+      date: "Jun 19, 2026",
+      createdAt: "2026-06-19T12:00:00.000Z"
+    },
+    {
+      id: "mythos-begets-fable",
+      title: "Mythos Begets Fable, Cursor's Composer 2.5, Agents Building Agents",
+      description: "The Batch AI News and Insights: If you haven't already, I encourage you to experiment with using AI agents not just to chat but to actuall...",
+      content: "## Cursor's Composer 2.5: The Future of IDEs\n\nIf you haven't already, I encourage you to experiment with using AI agents not just to chat but to actually build applications.\n\n### Agents Building Agents\nWith the release of Cursor Composer 2.5, multi-file edits are becoming standard. We are entering an era of software creation where the prompt is the blueprint.",
+      imageUrl: "/blog-editor.png",
+      date: "Jun 12, 2026",
+      createdAt: "2026-06-12T12:00:00.000Z"
+    }
+  ];
+
+  const displayBlogs = [
+    ...blogs,
+    ...DEMO_BLOGS.filter(demo => !blogs.some(b => b.id === demo.id))
+  ];
+
+  // Handle title change to auto-suggest slug/ID
+  const handleTitleChange = (val) => {
+    setTitle(val);
+    if (!editingId) {
+      const slug = val
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+      setId(slug);
+    }
+  };
+
+  const insertTag = (before, after = '') => {
+    const textarea = document.getElementById('blog-content-editor');
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selected = text.substring(start, end);
+    const replacement = before + selected + after;
+    setContent(text.substring(0, start) + replacement + text.substring(end));
+    
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + before.length, start + before.length + selected.length);
+    }, 0);
+  };
+
+  const handleAddPhoto = () => {
+    const url = prompt('Enter photo/image URL:');
+    if (url) {
+      const formatted = formatImageUrl(url);
+      insertTag(`![image](${formatted})`);
+    }
+  };
+
+  const renderPreview = (text) => {
+    if (!text) return '<p style="color: var(--muted-foreground); font-style: italic;">No content to preview.</p>';
+    
+    // 1. Extract raw HTML <img> tags before HTML character escaping
+    const imgPlaceholders = [];
+    let processed = text.replace(/<img\s+[^>]*src=["']([^"']+)["'][^>]*\/?>/gi, (match, src) => {
+      const formattedSrc = formatImageUrl(src);
+      const placeholder = `__HTML_IMG_PLACEHOLDER_${imgPlaceholders.length}__`;
+      const altMatch = match.match(/alt=["']([^"']*)["']/i);
+      const altText = altMatch ? altMatch[1] : '';
+      
+      const imgHtml = `<img src="${formattedSrc}" alt="${altText}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1rem auto; display: block; box-shadow: var(--shadow-sm);" onError="this.style.display='none'" />`;
+      imgPlaceholders.push({ placeholder, html: imgHtml });
+      return placeholder;
+    });
+
+    // 2. Escape HTML special characters
+    let html = processed
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // 3. Headings
+    html = html.replace(/^### (.*?)$/gm, '<h3 style="font-size: 1.15rem; font-weight: 700; margin-top: 1.2rem; margin-bottom: 0.5rem; color: var(--foreground);">$1</h3>');
+    html = html.replace(/^## (.*?)$/gm, '<h2 style="font-size: 1.35rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; color: var(--foreground);">$1</h2>');
+    html = html.replace(/^# (.*?)$/gm, '<h1 style="font-size: 1.6rem; font-weight: 800; margin-top: 1.8rem; margin-bottom: 0.8rem; color: var(--foreground);">$1</h1>');
+
+    // 4. Bold & Italic
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    // 5. Markdown Images ![alt](url)
+    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
+      const rawUrl = url.replace(/&amp;/g, '&');
+      const formattedUrl = formatImageUrl(rawUrl);
+      return `<img src="${formattedUrl}" alt="${alt}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1rem auto; display: block; box-shadow: var(--shadow-sm);" onError="this.style.display='none'" />`;
+    });
+
+    // 6. Standalone Image URLs
+    html = html.replace(/^(https?:\/\/[^\s<>]+\.(?:png|jpg|jpeg|gif|webp|svg)(?:\?[^\s<>]*)?)$/gim, (match, url) => {
+      const rawUrl = url.replace(/&amp;/g, '&');
+      const formattedUrl = formatImageUrl(rawUrl);
+      return `<img src="${formattedUrl}" alt="Blog Image" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1rem auto; display: block; box-shadow: var(--shadow-sm);" onError="this.style.display='none'" />`;
+    });
+
+    // 7. Markdown Links [text](url)
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, (match, text, url) => {
+      const rawUrl = url.replace(/&amp;/g, '&');
+      const formattedUrl = formatImageUrl(rawUrl);
+      return `<a href="${formattedUrl}" target="_blank" style="color: var(--primary); text-decoration: underline;">${text}</a>`;
+    });
+
+    // 8. Restore extracted HTML img placeholders
+    imgPlaceholders.forEach(({ placeholder, html: imgHtml }) => {
+      html = html.replace(placeholder, imgHtml);
+    });
+
+    // 9. Paragraph wrapping
+    html = html.replace(/\n\n/g, '</p><p style="margin-bottom: 0.85rem; line-height: 1.6; color: var(--foreground);">');
+    html = '<p style="margin-bottom: 0.85rem; line-height: 1.6; color: var(--foreground);">' + html + '</p>';
+    html = html.replace(/<p style=".*?"><\/p>/g, '');
+
+    return html;
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    if (!id.trim() || !title.trim() || !description.trim()) {
+      setMessage('❌ Please fill out all required fields.');
+      return;
+    }
+
+    setSaving(true);
+    setMessage('');
+
+    // Determine image URL
+    let imageUrl = '';
+    if (imageType === 'loops') imageUrl = '/blog-loops.png';
+    else if (imageType === 'collab') imageUrl = '/blog-collab.png';
+    else if (imageType === 'editor') imageUrl = '/blog-editor.png';
+    else imageUrl = formatImageUrl(customImageUrl);
+
+    // Default date to today's date formatted nicely if empty
+    const blogDate = date.trim() || new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+
+    const payload = {
+      id: id.trim(),
+      title: title.trim(),
+      description: description.trim(),
+      content: content.trim(),
+      imageUrl,
+      date: blogDate,
+      createdAt: createdAt || new Date().toISOString()
+    };
+
+    try {
+      await adminSaveBlogPost(courseId, payload);
+      setMessage('✓ Blog post saved successfully!');
+      
+      // Reset form
+      setId('');
+      setTitle('');
+      setDescription('');
+      setContent('');
+      setPreviewTab(false);
+      setImageType('loops');
+      setCustomImageUrl('');
+      setDate('');
+      setCreatedAt('');
+      setEditingId(null);
+      
+      await load();
+    } catch (err) {
+      console.error(err);
+      setMessage(err.response?.data?.message || '❌ Failed to save blog post.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleEdit = (blog) => {
+    setEditingId(blog.id);
+    setId(blog.id);
+    setTitle(blog.title);
+    setDescription(blog.description);
+    setContent(blog.content || '');
+    setPreviewTab(false);
+    setDate(blog.date || '');
+    setCreatedAt(blog.createdAt || '');
+    
+    if (blog.imageUrl === '/blog-loops.png') {
+      setImageType('loops');
+      setCustomImageUrl('');
+    } else if (blog.imageUrl === '/blog-collab.png') {
+      setImageType('collab');
+      setCustomImageUrl('');
+    } else if (blog.imageUrl === '/blog-editor.png') {
+      setImageType('editor');
+      setCustomImageUrl('');
+    } else {
+      setImageType('custom');
+      setCustomImageUrl(blog.imageUrl || '');
+    }
+  };
+
+  const handleDelete = async (blogId) => {
+    if (!window.confirm('Are you sure you want to delete this blog post?')) return;
+    try {
+      await adminDeleteBlogPost(courseId, blogId);
+      setMessage('✓ Blog post deleted successfully!');
+      await load();
+    } catch (err) {
+      console.error(err);
+      setMessage('❌ Failed to delete blog post.');
+    }
+  };
+
+  if (loading) return <p style={{ color: 'var(--muted-foreground)', padding: '2rem 0', textAlign: 'center' }}>Loading blogs...</p>;
+
+  return (
+    <div className="admin-blog-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+      {/* Blog Editor Form */}
+      <div style={s.card}>
+        <div style={s.cardTitle}>{editingId ? 'Edit Blog Post' : 'Create New Blog Post'}</div>
+        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div>
+            <label style={s.label}>Blog Title</label>
+            <input
+              type="text"
+              style={s.input}
+              placeholder="e.g. A New Generation Studies AI"
+              value={title}
+              onChange={(e) => handleTitleChange(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label style={s.label}>Blog Description / Summary</label>
+            <textarea
+              style={{ ...s.textarea, minHeight: '70px' }}
+              placeholder="Short summary for the blog card..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Content Editor with Formatting Toolbar & Preview Toggle */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+              <label style={s.label}>Blog Body Content (Markdown Supported)</label>
+              <div style={{ display: 'flex', gap: '0.3rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setPreviewTab(false)}
+                  style={{
+                    padding: '0.2rem 0.5rem',
+                    fontSize: '0.75rem',
+                    borderRadius: '4px',
+                    border: '1px solid var(--border)',
+                    background: !previewTab ? 'var(--primary)' : 'var(--card)',
+                    color: !previewTab ? '#fff' : 'var(--foreground)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreviewTab(true)}
+                  style={{
+                    padding: '0.2rem 0.5rem',
+                    fontSize: '0.75rem',
+                    borderRadius: '4px',
+                    border: '1px solid var(--border)',
+                    background: previewTab ? 'var(--primary)' : 'var(--card)',
+                    color: previewTab ? '#fff' : 'var(--foreground)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Preview
+                </button>
+              </div>
+            </div>
+
+            {/* Toolbar */}
+            {!previewTab && (
+              <div style={{
+                display: 'flex',
+                gap: '0.3rem',
+                marginBottom: '0.4rem',
+                background: '#f8fafc',
+                padding: '0.35rem 0.5rem',
+                borderRadius: '6px',
+                border: '1px solid var(--border)',
+                flexWrap: 'wrap'
+              }}>
+                <button type="button" title="Heading 1" style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem', borderRadius: '3px', cursor: 'pointer' }} onClick={() => insertTag('# ')}># H1</button>
+                <button type="button" title="Heading 2" style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem', borderRadius: '3px', cursor: 'pointer' }} onClick={() => insertTag('## ')}>## H2</button>
+                <button type="button" title="Heading 3" style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem', borderRadius: '3px', cursor: 'pointer' }} onClick={() => insertTag('### ')}>### H3</button>
+                <span style={{ color: '#cbd5e1' }}>|</span>
+                <button type="button" title="Bold" style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem', fontWeight: 'bold', borderRadius: '3px', cursor: 'pointer' }} onClick={() => insertTag('**', '**')}>B</button>
+                <button type="button" title="Italic" style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem', fontStyle: 'italic', borderRadius: '3px', cursor: 'pointer' }} onClick={() => insertTag('*', '*')}>I</button>
+                <span style={{ color: '#cbd5e1' }}>|</span>
+                <button type="button" title="Add Image URL" style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem', borderRadius: '3px', cursor: 'pointer' }} onClick={handleAddPhoto}>🖼️ Photo</button>
+                <button type="button" title="Add Link" style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem', borderRadius: '3px', cursor: 'pointer' }} onClick={() => insertTag('[Link Text](', ')')}>🔗 Link</button>
+              </div>
+            )}
+
+            {!previewTab ? (
+              <textarea
+                id="blog-content-editor"
+                style={{ ...s.textarea, minHeight: '240px', fontFamily: 'monospace', fontSize: '0.85rem' }}
+                placeholder="Write your article content using Markdown or insert image URLs..."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+              />
+            ) : (
+              <div style={{
+                border: '1px solid var(--border)',
+                borderRadius: '8px',
+                padding: '1rem',
+                minHeight: '240px',
+                maxHeight: '350px',
+                overflowY: 'auto',
+                background: 'var(--background)',
+                marginBottom: '1rem'
+              }} dangerouslySetInnerHTML={{ __html: renderPreview(content) }} />
+            )}
+
+            <label style={s.label}>Blog Slug / ID (Unique)</label>
+            <input
+              type="text"
+              style={s.input}
+              placeholder="e.g. a-new-generation-studies-ai"
+              value={id}
+              onChange={(e) => setId(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, ''))}
+              disabled={!!editingId}
+              required
+            />
+
+            <div style={s.grid2} className="admin-grid2">
+              <div>
+                <label style={s.label}>Card Image</label>
+                <select
+                  style={s.input}
+                  value={imageType}
+                  onChange={(e) => setImageType(e.target.value)}
+                >
+                  <option value="loops">3 Key Loops (/blog-loops.png)</option>
+                  <option value="collab">Global Collaboration (/blog-collab.png)</option>
+                  <option value="editor">AI Code Editor (/blog-editor.png)</option>
+                  <option value="custom">Custom Image URL...</option>
+                </select>
+              </div>
+              <div>
+                <label style={s.label}>Publish Date (Optional)</label>
+                <input
+                  type="text"
+                  style={s.input}
+                  placeholder="e.g. Jun 26, 2026 (blank for today)"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {imageType === 'custom' && (
+              <div>
+                <label style={s.label}>Custom Image URL</label>
+                <input
+                  type="text"
+                  style={s.input}
+                  placeholder="https://example.com/image.png"
+                  value={customImageUrl}
+                  onChange={(e) => setCustomImageUrl(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+              <button type="submit" style={s.btn} disabled={saving}>
+                {saving ? 'Saving...' : editingId ? 'Update Post' : 'Save Post'}
+              </button>
+              {editingId && (
+                <button
+                  type="button"
+                  style={s.btnSecondary}
+                  onClick={() => {
+                    setEditingId(null);
+                    setId('');
+                    setTitle('');
+                    setDescription('');
+                    setContent('');
+                    setPreviewTab(false);
+                    setImageType('loops');
+                    setCustomImageUrl('');
+                    setDate('');
+                    setCreatedAt('');
+                    setMessage('');
+                  }}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+            {message && <div style={s.message}>{message}</div>}
+          </div>
+        </form>
+      </div>
+
+      {/* Published Blogs List */}
+      <div style={s.card}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <div style={s.cardTitle}>Published Articles ({displayBlogs.length})</div>
+        </div>
+
+        {displayBlogs.length === 0 ? (
+          <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem' }}>No blogs created yet.</p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', maxHeight: '600px', overflowY: 'auto' }}>
+            {displayBlogs.map((blog) => (
+              <div
+                key={blog.id}
+                style={{
+                  padding: '0.85rem 1rem',
+                  borderRadius: '10px',
+                  border: '1px solid var(--border)',
+                  background: 'var(--background)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', minWidth: 0 }}>
+                  <img
+                    src={formatImageUrl(blog.imageUrl)}
+                    alt=""
+                    style={{ width: '48px', height: '48px', borderRadius: '8px', objectFit: 'cover', background: '#e2e8f0', flexShrink: 0 }}
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {blog.title}
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+                      {blog.date} • <code style={{ fontSize: '0.7rem' }}>{blog.id}</code>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
+                  <button
+                    type="button"
+                    style={{ ...s.btnSecondary, padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}
+                    onClick={() => handleEdit(blog)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    style={{ ...s.btnDanger, padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}
+                    onClick={() => handleDelete(blog.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ────────────────────────────────────────────────────────────────────────────────
 // Main Admin Page
 // ────────────────────────────────────────────────────────────────────────────────

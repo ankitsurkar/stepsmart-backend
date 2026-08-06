@@ -2489,6 +2489,47 @@ function LeadsTab() {
   );
 }
 
+function formatImageUrl(url) {
+  if (!url) return '';
+  let clean = url.trim();
+
+  // Strip wrapping quotes if present
+  if ((clean.startsWith('"') && clean.endsWith('"')) || (clean.startsWith("'") && clean.endsWith("'"))) {
+    clean = clean.slice(1, -1).trim();
+  }
+
+  // Handle Google Drive links
+  if (clean.includes('drive.google.com')) {
+    const matchFileD = clean.match(/\/file\/d\/([^/?]+)/);
+    if (matchFileD && matchFileD[1]) {
+      return `https://lh3.googleusercontent.com/d/${matchFileD[1]}`;
+    }
+    const matchUc = clean.match(/id=([^&]+)/);
+    if (matchUc && matchUc[1]) {
+      return `https://lh3.googleusercontent.com/d/${matchUc[1]}`;
+    }
+    const matchOpen = clean.match(/open\?id=([^&]+)/);
+    if (matchOpen && matchOpen[1]) {
+      return `https://lh3.googleusercontent.com/d/${matchOpen[1]}`;
+    }
+  }
+
+  // Handle Dropbox links
+  if (clean.includes('dropbox.com')) {
+    clean = clean.replace('?dl=0', '?raw=1').replace('&dl=0', '&raw=1');
+    if (!clean.includes('raw=1') && !clean.includes('dl=1')) {
+      clean += (clean.includes('?') ? '&raw=1' : '?raw=1');
+    }
+  }
+
+  // Handle protocol relative URLs
+  if (clean.startsWith('//')) {
+    clean = 'https:' + clean;
+  }
+
+  return clean;
+}
+
 // Blogs Tab
 function BlogsTab({ courseId }) {
   const [blogs, setBlogs] = useState([]);
@@ -2590,32 +2631,71 @@ function BlogsTab({ courseId }) {
   const handleAddPhoto = () => {
     const url = prompt('Enter photo/image URL:');
     if (url) {
-      insertTag(`![image](${url})`);
+      const formatted = formatImageUrl(url);
+      insertTag(`![image](${formatted})`);
     }
   };
 
   const renderPreview = (text) => {
     if (!text) return '<p style="color: var(--muted-foreground); font-style: italic;">No content to preview.</p>';
     
-    let html = text
+    // 1. Extract raw HTML <img> tags before HTML character escaping
+    const imgPlaceholders = [];
+    let processed = text.replace(/<img\s+[^>]*src=["']([^"']+)["'][^>]*\/?>/gi, (match, src) => {
+      const formattedSrc = formatImageUrl(src);
+      const placeholder = `__HTML_IMG_PLACEHOLDER_${imgPlaceholders.length}__`;
+      const altMatch = match.match(/alt=["']([^"']*)["']/i);
+      const altText = altMatch ? altMatch[1] : '';
+      
+      const imgHtml = `<img src="${formattedSrc}" alt="${altText}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1rem auto; display: block; box-shadow: var(--shadow-sm);" onError="this.style.display='none'" />`;
+      imgPlaceholders.push({ placeholder, html: imgHtml });
+      return placeholder;
+    });
+
+    // 2. Escape HTML special characters
+    let html = processed
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
+    // 3. Headings
     html = html.replace(/^### (.*?)$/gm, '<h3 style="font-size: 1.15rem; font-weight: 700; margin-top: 1.2rem; margin-bottom: 0.5rem; color: var(--foreground);">$1</h3>');
     html = html.replace(/^## (.*?)$/gm, '<h2 style="font-size: 1.35rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; color: var(--foreground);">$1</h2>');
     html = html.replace(/^# (.*?)$/gm, '<h1 style="font-size: 1.6rem; font-weight: 800; margin-top: 1.8rem; margin-bottom: 0.8rem; color: var(--foreground);">$1</h1>');
 
+    // 4. Bold & Italic
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
-    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1rem auto; display: block; box-shadow: var(--shadow-sm);" />');
+    // 5. Markdown Images ![alt](url)
+    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
+      const rawUrl = url.replace(/&amp;/g, '&');
+      const formattedUrl = formatImageUrl(rawUrl);
+      return `<img src="${formattedUrl}" alt="${alt}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1rem auto; display: block; box-shadow: var(--shadow-sm);" onError="this.style.display='none'" />`;
+    });
 
-    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color: var(--primary); text-decoration: underline;">$1</a>');
+    // 6. Standalone Image URLs
+    html = html.replace(/^(https?:\/\/[^\s<>]+\.(?:png|jpg|jpeg|gif|webp|svg)(?:\?[^\s<>]*)?)$/gim, (match, url) => {
+      const rawUrl = url.replace(/&amp;/g, '&');
+      const formattedUrl = formatImageUrl(rawUrl);
+      return `<img src="${formattedUrl}" alt="Blog Image" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1rem auto; display: block; box-shadow: var(--shadow-sm);" onError="this.style.display='none'" />`;
+    });
 
+    // 7. Markdown Links [text](url)
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, (match, text, url) => {
+      const rawUrl = url.replace(/&amp;/g, '&');
+      const formattedUrl = formatImageUrl(rawUrl);
+      return `<a href="${formattedUrl}" target="_blank" style="color: var(--primary); text-decoration: underline;">${text}</a>`;
+    });
+
+    // 8. Restore extracted HTML img placeholders
+    imgPlaceholders.forEach(({ placeholder, html: imgHtml }) => {
+      html = html.replace(placeholder, imgHtml);
+    });
+
+    // 9. Paragraph wrapping
     html = html.replace(/\n\n/g, '</p><p style="margin-bottom: 0.85rem; line-height: 1.6; color: var(--foreground);">');
     html = '<p style="margin-bottom: 0.85rem; line-height: 1.6; color: var(--foreground);">' + html + '</p>';
-
     html = html.replace(/<p style=".*?"><\/p>/g, '');
 
     return html;
@@ -2636,7 +2716,7 @@ function BlogsTab({ courseId }) {
     if (imageType === 'loops') imageUrl = '/blog-loops.png';
     else if (imageType === 'collab') imageUrl = '/blog-collab.png';
     else if (imageType === 'editor') imageUrl = '/blog-editor.png';
-    else imageUrl = customImageUrl.trim();
+    else imageUrl = formatImageUrl(customImageUrl);
 
     // Default date to today's date formatted nicely if empty
     const blogDate = date.trim() || new Date().toLocaleDateString('en-US', {
