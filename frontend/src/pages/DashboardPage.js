@@ -5048,7 +5048,7 @@ export default function DashboardPage() {
                           background: '#f8fafc',
                           border: '1px solid #cbd5e1',
                           color: '#475569',
-                          padding: '0.35rem 0.6rem',
+                          padding: '0.35rem 0.65rem',
                           borderRadius: '8px',
                           fontSize: '0.75rem',
                           fontWeight: 600,
@@ -5058,28 +5058,7 @@ export default function DashboardPage() {
                           gap: '0.25rem',
                         }}
                       >
-                        <Copy size={13} /> Copy
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => toggleBookmark(q.id)}
-                        title={isBookmarked ? 'Remove Bookmark' : 'Bookmark Question'}
-                        style={{
-                          background: isBookmarked ? '#fef3c7' : '#f8fafc',
-                          border: isBookmarked ? '1px solid #fde047' : '1px solid #cbd5e1',
-                          color: isBookmarked ? '#b45309' : '#64748b',
-                          padding: '0.35rem 0.6rem',
-                          borderRadius: '8px',
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.25rem',
-                        }}
-                      >
-                        <Bookmark size={13} fill={isBookmarked ? '#b45309' : 'none'} />
+                        <Copy size={13} /> Copy Question
                       </button>
                     </div>
                   </div>
@@ -5129,7 +5108,7 @@ export default function DashboardPage() {
   if (activeView === 'interview') {
     viewEyebrow = 'Interview Prep';
     viewTitle = 'Product Management Interview Questions';
-    viewSubtitle = 'Practice 150+ real Product Management interview questions asked at top tech companies. All questions unlocked.';
+    viewSubtitle = 'Practice 100+ real Product Management interview questions asked at top tech companies. All questions unlocked.';
   }
 
   if (activeView === 'settings') {
