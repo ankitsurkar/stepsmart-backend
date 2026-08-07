@@ -5,12 +5,13 @@ import { useAuth } from '../context/AuthContext';
 import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../utils/api';
 import AssignmentUpload from '../components/AssignmentUpload';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Book, Clock, ClipboardList, Calendar, Folder, Users, Settings, Bell, Trophy } from 'lucide-react';
+import { Home, Book, Clock, ClipboardList, Calendar, Folder, Users, Settings, Bell, Trophy, HelpCircle, Search, Bookmark, CheckCircle2, Copy, Filter } from 'lucide-react';
 import { addDays, subDays, startOfMonth as startOfMonthFn, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, getDaysInMonth, getDate, isSameMonth, isSameDay, getDay, addMonths } from 'date-fns';
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import { toast } from 'sonner';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { INTERVIEW_CATEGORIES, INTERVIEW_COMPANIES, ALL_INTERVIEW_QUESTIONS } from '../utils/interviewQuestions';
 
 const TIMEZONE_IST = 'Asia/Kolkata';
 
@@ -23,6 +24,7 @@ const NAV_ITEMS = [
   { id: 'dashboard', label: 'Home', icon: 'home' },
   { id: 'courses', label: 'Courses', icon: 'book' },
   { id: 'assignments', label: 'Assignments', icon: 'clipboard' },
+  { id: 'interview', label: 'Interview', icon: 'interview' },
   { id: 'resources', label: 'Resources', icon: 'folder' },
   { id: 'scheduling', label: 'Sessions', icon: 'clock' },
   { id: 'cohort', label: 'Cohort', icon: 'users' },
@@ -1771,6 +1773,7 @@ function SidebarIcon({ kind }) {
   if (kind === 'book') return <Book size={21} strokeWidth={2} />;
   if (kind === 'clock') return <Clock size={21} strokeWidth={2} />;
   if (kind === 'clipboard') return <ClipboardList size={21} strokeWidth={2} />;
+  if (kind === 'interview') return <HelpCircle size={21} strokeWidth={2} />;
   if (kind === 'folder') return <Folder size={21} strokeWidth={2} />;
   if (kind === 'users') return <Users size={21} strokeWidth={2} />;
   return <Settings size={21} strokeWidth={2} />;
@@ -2266,6 +2269,27 @@ export default function DashboardPage() {
   const [showYesterdayModal, setShowYesterdayModal] = useState(false);
   const [activeTooltipDay, setActiveTooltipDay] = useState(null);
   const [selectedGymDetailDay, setSelectedGymDetailDay] = useState(null);
+
+  // Interview Prep States
+  const [interviewCategory, setInterviewCategory] = useState('All Categories');
+  const [interviewCompany, setInterviewCompany] = useState('All Companies');
+  const [interviewSearch, setInterviewSearch] = useState('');
+  const [bookmarkedQuestions, setBookmarkedQuestions] = useState(() => {
+    try {
+      const saved = localStorage.getItem('stepsmart_bookmarked_questions');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      return {};
+    }
+  });
+  const [practicedQuestions, setPracticedQuestions] = useState(() => {
+    try {
+      const saved = localStorage.getItem('stepsmart_practiced_questions');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      return {};
+    }
+  });
 
   const [activeView, setActiveView] = useState(() => getInitialDashboardView(searchParams));
 
@@ -4686,6 +4710,388 @@ export default function DashboardPage() {
     );
   }
 
+  function renderInterviewView() {
+    const filteredQuestions = ALL_INTERVIEW_QUESTIONS.filter((q) => {
+      const matchCategory =
+        interviewCategory === 'All Categories' || q.category === interviewCategory;
+      const matchCompany =
+        interviewCompany === 'All Companies' ||
+        q.company.toLowerCase().includes(interviewCompany.toLowerCase());
+      const matchSearch =
+        !interviewSearch.trim() ||
+        q.question.toLowerCase().includes(interviewSearch.toLowerCase()) ||
+        q.description.toLowerCase().includes(interviewSearch.toLowerCase()) ||
+        q.company.toLowerCase().includes(interviewSearch.toLowerCase());
+      return matchCategory && matchCompany && matchSearch;
+    });
+
+    const toggleBookmark = (id) => {
+      setBookmarkedQuestions((prev) => {
+        const next = { ...prev, [id]: !prev[id] };
+        try {
+          localStorage.setItem('stepsmart_bookmarked_questions', JSON.stringify(next));
+        } catch (e) {}
+        return next;
+      });
+    };
+
+    const togglePracticed = (id) => {
+      setPracticedQuestions((prev) => {
+        const next = { ...prev, [id]: !prev[id] };
+        try {
+          localStorage.setItem('stepsmart_practiced_questions', JSON.stringify(next));
+        } catch (e) {}
+        return next;
+      });
+    };
+
+    const copyQuestion = (q) => {
+      try {
+        navigator.clipboard.writeText(`${q.question}\n\nCompany: ${q.company}\nCategory: ${q.category}\n\nDescription: ${q.description}`);
+        toast.success('Question copied to clipboard!');
+      } catch (e) {
+        toast.error('Could not copy question');
+      }
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        {/* Filter Card */}
+        <div
+          style={{
+            background: '#ffffff',
+            borderRadius: '16px',
+            border: '1px solid #e2e8f0',
+            padding: '1.25rem 1.5rem',
+            boxShadow: '0 4px 12px rgba(15, 23, 42, 0.03)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 700, color: '#0f172a' }}>
+              <Filter size={18} color="#188ab2" />
+              <span>Filter Interview Questions</span>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.8rem', fontWeight: 600, color: '#64748b' }}>
+              <span style={{ background: '#f1f5f9', color: '#334155', padding: '0.3rem 0.75rem', borderRadius: '20px', fontWeight: 700 }}>
+                Showing {filteredQuestions.length} of {ALL_INTERVIEW_QUESTIONS.length} Questions
+              </span>
+              {(interviewCategory !== 'All Categories' || interviewCompany !== 'All Companies' || interviewSearch) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setInterviewCategory('All Categories');
+                    setInterviewCompany('All Companies');
+                    setInterviewSearch('');
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#188ab2',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Reset Filters
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+            {/* Category Select */}
+            <div>
+              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.35rem' }}>
+                Category
+              </label>
+              <select
+                value={interviewCategory}
+                onChange={(e) => setInterviewCategory(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.55rem 0.85rem',
+                  borderRadius: '10px',
+                  border: '1px solid #cbd5e1',
+                  background: '#ffffff',
+                  color: '#0f172a',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  outline: 'none',
+                }}
+              >
+                {INTERVIEW_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Company Select */}
+            <div>
+              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.35rem' }}>
+                Company
+              </label>
+              <select
+                value={interviewCompany}
+                onChange={(e) => setInterviewCompany(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.55rem 0.85rem',
+                  borderRadius: '10px',
+                  border: '1px solid #cbd5e1',
+                  background: '#ffffff',
+                  color: '#0f172a',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  outline: 'none',
+                }}
+              >
+                {INTERVIEW_COMPANIES.map((comp) => (
+                  <option key={comp} value={comp}>
+                    {comp}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Search Input */}
+            <div>
+              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.35rem' }}>
+                Search Keywords
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type="text"
+                  placeholder="Search questions..."
+                  value={interviewSearch}
+                  onChange={(e) => setInterviewSearch(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.55rem 0.85rem 0.55rem 2.2rem',
+                    borderRadius: '10px',
+                    border: '1px solid #cbd5e1',
+                    background: '#ffffff',
+                    color: '#0f172a',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    outline: 'none',
+                  }}
+                />
+                <Search
+                  size={16}
+                  color="#64748b"
+                  style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Questions Grid */}
+        {filteredQuestions.length === 0 ? (
+          <div style={{ ...s.card, padding: '3rem 1.5rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#334155', marginBottom: '0.5rem' }}>
+              No interview questions match your filter.
+            </div>
+            <div style={{ fontSize: '0.875rem', color: '#64748b' }}>
+              Try selecting a different Category or Company from the top filter bar.
+            </div>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
+              gap: '1.25rem',
+            }}
+          >
+            {filteredQuestions.map((q) => {
+              const isBookmarked = !!bookmarkedQuestions[q.id];
+              const isPracticed = !!practicedQuestions[q.id];
+
+              return (
+                <div
+                  key={q.id}
+                  style={{
+                    background: '#ffffff',
+                    borderRadius: '16px',
+                    border: isPracticed ? '1px solid #86efac' : '1px solid #e2e8f0',
+                    padding: '1.35rem 1.5rem',
+                    boxShadow: '0 4px 12px rgba(15, 23, 42, 0.04)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    gap: '1rem',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <div>
+                    {/* Top Badges */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
+                      <span
+                        style={{
+                          background: '#e0f2fe',
+                          color: '#0369a1',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          padding: '0.2rem 0.65rem',
+                          borderRadius: '20px',
+                        }}
+                      >
+                        {q.category}
+                      </span>
+                      <span
+                        style={{
+                          background: '#f1f5f9',
+                          color: '#334155',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          padding: '0.2rem 0.65rem',
+                          borderRadius: '20px',
+                        }}
+                      >
+                        {q.company}
+                      </span>
+                      <span
+                        style={{
+                          marginLeft: 'auto',
+                          background: '#dcfce7',
+                          color: '#15803d',
+                          fontSize: '0.7rem',
+                          fontWeight: 700,
+                          padding: '0.2rem 0.55rem',
+                          borderRadius: '20px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                        }}
+                      >
+                        <CheckCircle2 size={12} /> Unlocked
+                      </span>
+                    </div>
+
+                    {/* Question Title */}
+                    <h3
+                      style={{
+                        fontSize: '1.025rem',
+                        fontWeight: 700,
+                        color: '#0f172a',
+                        lineHeight: 1.45,
+                        marginBottom: '0.65rem',
+                      }}
+                    >
+                      {q.question}
+                    </h3>
+
+                    {/* Description */}
+                    {q.description && (
+                      <p
+                        style={{
+                          fontSize: '0.875rem',
+                          color: '#475569',
+                          lineHeight: 1.55,
+                          margin: 0,
+                        }}
+                      >
+                        {q.description}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Card Actions Footer */}
+                  <div
+                    style={{
+                      paddingTop: '0.85rem',
+                      borderTop: '1px solid #f1f5f9',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '0.5rem',
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => togglePracticed(q.id)}
+                      style={{
+                        background: isPracticed ? '#dcfce7' : '#f8fafc',
+                        color: isPracticed ? '#15803d' : '#64748b',
+                        border: isPracticed ? '1px solid #86efac' : '1px solid #cbd5e1',
+                        padding: '0.35rem 0.75rem',
+                        borderRadius: '8px',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.35rem',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      <CheckCircle2 size={14} />
+                      {isPracticed ? 'Practiced' : 'Mark Practiced'}
+                    </button>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <button
+                        type="button"
+                        onClick={() => copyQuestion(q)}
+                        title="Copy question text"
+                        style={{
+                          background: '#f8fafc',
+                          border: '1px solid #cbd5e1',
+                          color: '#475569',
+                          padding: '0.35rem 0.6rem',
+                          borderRadius: '8px',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                        }}
+                      >
+                        <Copy size={13} /> Copy
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => toggleBookmark(q.id)}
+                        title={isBookmarked ? 'Remove Bookmark' : 'Bookmark Question'}
+                        style={{
+                          background: isBookmarked ? '#fef3c7' : '#f8fafc',
+                          border: isBookmarked ? '1px solid #fde047' : '1px solid #cbd5e1',
+                          color: isBookmarked ? '#b45309' : '#64748b',
+                          padding: '0.35rem 0.6rem',
+                          borderRadius: '8px',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                        }}
+                      >
+                        <Bookmark size={13} fill={isBookmarked ? '#b45309' : 'none'} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   let viewEyebrow = 'Student Dashboard';
   let viewTitle = `Welcome back, ${displayName}`;
   let viewSubtitle = '';
@@ -4718,6 +5124,12 @@ export default function DashboardPage() {
     viewEyebrow = 'Assignments';
     viewTitle = activeCourse?.name ? `${activeCourse.name} Assignments` : 'Assignments';
     viewSubtitle = 'Open an assignment card to upload your work from the dashboard sidebar.';
+  }
+
+  if (activeView === 'interview') {
+    viewEyebrow = 'Interview Prep';
+    viewTitle = 'Product Management Interview Questions';
+    viewSubtitle = 'Practice 150+ real Product Management interview questions asked at top tech companies. All questions unlocked.';
   }
 
   if (activeView === 'settings') {
@@ -5234,6 +5646,7 @@ export default function DashboardPage() {
               {activeView === 'scheduling' && renderSchedulingView()}
               {activeView === 'assignments' && renderAssignmentsView()}
               {activeView === 'resources' && renderResourcesView()}
+              {activeView === 'interview' && renderInterviewView()}
               {activeView === 'settings' && renderSettingsView()}
             </motion.div>
           </AnimatePresence>
