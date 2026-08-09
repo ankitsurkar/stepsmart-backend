@@ -1360,11 +1360,14 @@ function buildRecordedSessionGroups(weeks) {
 
     if (week.category === 'live') {
       const sessionNumber = `L.${group.sessions.length + 1}`;
+      const sessionUrl = week.url || week.youtubeUrl || week.videoUrl || week.docUrl || week.documentUrl || week.driveUrl || week.pdfUrl || week.link || week.fileUrl || (week.textContent && week.textContent.trim().length > 0 ? week.textContent.trim() : null);
       group.sessions.push({
+        ...week,
         id: week.weekId,
         title: week.title,
         description: week.description,
-        url: week.url || week.youtubeUrl,
+        textContent: week.textContent,
+        url: sessionUrl,
         storagePath: week.storagePath,
         storageProvider: week.storageProvider,
         courseId: week.courseId,
