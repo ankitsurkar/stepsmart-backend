@@ -116,7 +116,8 @@ export function AuthProvider({ children }) {
   //   { error: string }                  — login failure
   async function login(email, password) {
     try {
-      const result = await signIn({ username: email, password });
+      const cleanEmail = (email || '').trim().toLowerCase();
+      const result = await signIn({ username: cleanEmail, password });
 
       // Cognito sets new accounts to FORCE_CHANGE_PASSWORD.
       // The SRP challenge succeeds, but signIn is not yet complete.

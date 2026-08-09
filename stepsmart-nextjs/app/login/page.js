@@ -269,7 +269,8 @@ export default function LoginPage() {
       // Clear any stale Amplify session (e.g. from live CRA site or previous login)
       try { await signOut(); } catch (_) {}
 
-      const result = await signIn({ username: email, password });
+      const cleanEmail = (email || '').trim().toLowerCase();
+      const result = await signIn({ username: cleanEmail, password });
 
       if (result.nextStep?.signInStep === 'CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED') {
         setMode('newPassword');
@@ -297,7 +298,11 @@ export default function LoginPage() {
       return;
     }
     if (newPassword.length < 8) {
-      setError('Password must be at least 8 characters.');
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
+    if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[^A-Za-z0-9]/.test(newPassword)) {
+      setError('Password must contain at least one uppercase letter, one lowercase letter, one number, and one symbol (e.g. @, #, $).');
       return;
     }
 
@@ -608,7 +613,7 @@ export default function LoginPage() {
           ) : (
             <form onSubmit={handleNewPassword}>
               <div style={styles.info}>
-                Your account requires a new password before you can access the portal.
+                Your account requires a new password before you can access the portal. Password must be at least 8 characters and include uppercase, lowercase, numbers, and symbols (e.g. Step@2026).
               </div>
               <label style={styles.label}>New password</label>
               <input
