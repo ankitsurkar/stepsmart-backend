@@ -58,6 +58,7 @@ const {
   ListUsersCommand,
   AdminCreateUserCommand,
   AdminAddUserToGroupCommand,
+  AdminGetUserCommand,
 } = require('@aws-sdk/client-cognito-identity-provider');
 
 const { randomUUID } = require('crypto');
@@ -308,6 +309,28 @@ async function createStudent(body, event) {
     }));
   } catch (err) {
     console.error('Failed to create student in Cognito:', err);
+    if (err.name === 'UsernameExistsException' || err.code === 'UsernameExistsException') {
+      try {
+        const userObj = await cognito.send(new AdminGetUserCommand({
+          UserPoolId: userPoolId,
+          Username: email,
+        }));
+        const userId = userObj.UserAttributes?.find(a => a.Name === 'sub')?.Value || userObj.Username;
+        await ddb.send(new PutCommand({
+          TableName: ENROLLMENTS_TABLE,
+          Item: {
+            enrollmentId: userId,
+            userId,
+            courseId,
+            enrolledAt: new Date().toISOString()
+          }
+        }));
+        return res(200, { message: `Existing student ${email} successfully enrolled in ${courseId}` });
+      } catch (enrollErr) {
+        console.error('Failed to enroll existing student:', enrollErr);
+        return res(400, { message: 'Account already exists, but enrolling to batch failed.' });
+      }
+    }
     return res(500, { message: err.message || 'Failed to create student.' });
   }
 
