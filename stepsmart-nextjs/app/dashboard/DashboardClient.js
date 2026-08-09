@@ -1382,8 +1382,10 @@ function buildRecordedSessionGroups(weeks) {
       const sessionNumber = isSupp 
         ? `S.${group.sessions.length + 1}` 
         : `${groupNumber}.${group.sessions.length + 1}`;
+      const sessionUrl = session.url || session.youtubeUrl || session.videoUrl || session.docUrl || session.documentUrl || session.driveUrl || session.pdfUrl || session.link || session.fileUrl || (session.textContent && session.textContent.trim().length > 0 ? session.textContent.trim() : null);
       group.sessions.push({
         ...session,
+        url: sessionUrl,
         courseId: week.courseId,
         sourceWeekId: week.weekId,
         sourceTitle: week.title,
@@ -2090,7 +2092,8 @@ function FocusItem({ item }) {
 }
 
 function RecordedSessionCard({ session, isCompact, progressMap }) {
-  const isPlayable = !!session.url;
+  const sessionUrl = session.url || session.youtubeUrl || session.videoUrl || session.docUrl || session.documentUrl || session.driveUrl || session.pdfUrl || session.link || session.fileUrl || (session.textContent && session.textContent.trim().length > 0 ? session.textContent.trim() : null) || (session.storagePath ? 'storage' : null);
+  const isPlayable = !!sessionUrl;
 
   let status = 'not-started';
   if (isPlayable) {
@@ -2126,7 +2129,7 @@ function RecordedSessionCard({ session, isCompact, progressMap }) {
               : isPlayable ? '1px solid rgba(0, 111, 143, 0.12)' : '1px solid rgba(15, 40, 80, 0.05)',
           }}
         >
-          {status === 'complete' ? 'Completed ✓' : isPlayable ? 'Watch Video' : 'Coming Soon'}
+          {status === 'complete' ? 'Completed ✓' : isPlayable ? (session.textContent || (session.url && !session.youtubeUrl && !session.videoUrl) ? 'View Document' : 'Watch Video') : 'Coming Soon'}
         </span>
       </div>
     </>

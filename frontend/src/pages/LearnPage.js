@@ -446,11 +446,11 @@ function extractYouTubeId(url) {
 function getDisplayWeekNumber(allWeeks, targetWeek) {
   if (!targetWeek) return '';
 
-  const isLive = targetWeek.category === 'live' || String(targetWeek.weekId || targetWeek.id || '').startsWith('rec-');
+  const isLive = targetWeek.category === 'live' || String(targetWeek.weekId || targetWeek.id || '').startsWith('rec');
 
   if (isLive) {
     const liveItems = [...allWeeks]
-      .filter((week) => week.category === 'live' || String(week.weekId || week.id || '').startsWith('rec-'));
+      .filter((week) => week.category === 'live' || String(week.weekId || week.id || '').startsWith('rec'));
     const index = liveItems.findIndex((w) => (w.weekId || w.id) === (targetWeek.weekId || targetWeek.id));
     if (index === -1) return '';
     return `L.${index + 1}`;
@@ -464,7 +464,7 @@ function getDisplayWeekNumber(allWeeks, targetWeek) {
   const groupNumber = Math.floor(numericWeek);
   const groupWeeks = [...allWeeks]
     .filter((week) => {
-      if (week.category === 'live' || String(week.weekId || week.id || '').startsWith('rec-')) return false;
+      if (week.category === 'live' || String(week.weekId || week.id || '').startsWith('rec')) return false;
       const current = Number(week.weekNumber);
       return Number.isFinite(current) && Math.floor(current) === groupNumber;
     })
@@ -664,7 +664,7 @@ export default function LearnPage() {
       ]);
       
       let found = null;
-      const isRecordedSession = String(weekId).startsWith('rec-');
+      const isRecordedSession = String(weekId).startsWith('rec');
 
       const modulesList = weeksRes.data.modules || weeksRes.data.weeks || [];
       const liveWeeksList = weeksRes.data.liveWeeks || [];
@@ -678,9 +678,21 @@ export default function LearnPage() {
       setAllWeeks(weeksList);
 
       if (isRecordedSession) {
-        found = supplementalList.find((s) => s.id === weekId);
-      } else {
-        found = weeksList.find((w) => w.weekId === weekId);
+        found = supplementalList.find((s) => s.id === weekId || s.weekId === weekId);
+        if (!found) {
+          for (const w of weeksList) {
+            if (Array.isArray(w.liveRecordedSessions)) {
+              const match = w.liveRecordedSessions.find((s) => s.id === weekId || s.weekId === weekId);
+              if (match) {
+                found = { ...match, courseId: w.courseId || courseId, weekId: match.id || weekId };
+                break;
+              }
+            }
+          }
+        }
+      }
+      if (!found) {
+        found = weeksList.find((w) => w.weekId === weekId || w.id === weekId);
         if (found) {
           setDisplayWeekNumber(getDisplayWeekNumber(weeksList, found));
         }
@@ -764,9 +776,10 @@ export default function LearnPage() {
   if (error) return <div style={s.error}>{error}</div>;
   if (!week) return null;
 
-  const isRecordedSession = String(weekId).startsWith('rec-');
-  const videoUrl = week.storageProvider === 'supabase' ? week.url : null;
-  const videoId = videoUrl ? null : extractYouTubeId(week.youtubeUrl || week.url);
+  const isRecordedSession = String(weekId).startsWith('rec');
+  const rawUrl = week.url || week.youtubeUrl || week.videoUrl || week.docUrl || week.documentUrl || week.driveUrl || week.pdfUrl || week.link || week.fileUrl;
+  const videoUrl = week.storageProvider === 'supabase' ? week.url : (rawUrl && !extractYouTubeId(rawUrl) ? rawUrl : null);
+  const videoId = videoUrl ? null : extractYouTubeId(rawUrl || week.youtubeUrl || week.url);
   const hasQuiz = (week.quiz?.questions || []).length > 0;
   const weekComplete = videoComplete && (!hasQuiz || quizPassed);
 
@@ -779,7 +792,7 @@ export default function LearnPage() {
         let groupKey = '';
         let groupTitle = '';
         
-        if (String(itemWId).startsWith('rec-') || item.category === 'live') {
+        if (String(itemWId).startsWith('rec') || item.category === 'live') {
           groupKey = 'live';
           groupTitle = 'Live Sessions';
         } else {
@@ -916,7 +929,7 @@ export default function LearnPage() {
 
                         let displayNum = getDisplayWeekNumber(allWeeks, item);
                         let displayCat = 'Lecture';
-                        if (String(itemWId).startsWith('rec-')) {
+                        if (String(itemWId).startsWith('rec')) {
                           displayCat = 'Live Recording';
                         } else if (item.category === 'live') {
                           displayCat = 'Live Session';
