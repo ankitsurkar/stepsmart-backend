@@ -642,37 +642,19 @@ function calculateGymStreak(gymProgress, clientDate) {
 
   function getPrevGymDayUTC(dateStr) {
     const d = new Date(dateStr + 'T00:00:00Z');
-    while (true) {
-      d.setUTCDate(d.getUTCDate() - 1);
-      const day = d.getUTCDay();
-      if (day === 1 || day === 2 || day === 4 || day === 5) {
-        const yr = d.getUTCFullYear();
-        const mo = String(d.getUTCMonth() + 1).padStart(2, '0');
-        const dy = String(d.getUTCDate()).padStart(2, '0');
-        return `${yr}-${mo}-${dy}`;
-      }
-    }
+    d.setUTCDate(d.getUTCDate() - 1);
+    const yr = d.getUTCFullYear();
+    const mo = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const dy = String(d.getUTCDate()).padStart(2, '0');
+    return `${yr}-${mo}-${dy}`;
   }
 
   let streak = 0;
   let checkDate = clientDate;
 
-  const clientDateObj = new Date(clientDate + 'T00:00:00Z');
-  const dayOfWeek = clientDateObj.getUTCDay();
-  const isTodayGymDay = (dayOfWeek === 1 || dayOfWeek === 2 || dayOfWeek === 4 || dayOfWeek === 5);
-
-  if (isTodayGymDay) {
-    if (solvedDates.has(clientDate)) {
-      streak++;
-      checkDate = getPrevGymDayUTC(clientDate);
-    } else {
-      const prevGym = getPrevGymDayUTC(clientDate);
-      if (solvedDates.has(prevGym)) {
-        checkDate = prevGym;
-      } else {
-        return 0;
-      }
-    }
+  if (solvedDates.has(clientDate)) {
+    streak++;
+    checkDate = getPrevGymDayUTC(clientDate);
   } else {
     const prevGym = getPrevGymDayUTC(clientDate);
     if (solvedDates.has(prevGym)) {

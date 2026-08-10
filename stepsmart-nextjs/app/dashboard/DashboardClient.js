@@ -2874,28 +2874,23 @@ export default function DashboardClient({
     // Use target timezone to calculate the correct active day of the week
     const zonedTodayDate = toZonedTime(new Date(), TIMEZONE_IST);
     const dayOfWeek = getDay(zonedTodayDate); // 0 = Sun, 1 = Mon, ..., 6 = Sat
-    const isClosedDay = dayOfWeek === 0 || dayOfWeek === 3 || dayOfWeek === 6;
+    const isClosedDay = false;
 
     function getYesterdayGymDate(todayDate) {
       let d = toZonedTime(todayDate, TIMEZONE_IST);
-      while (true) {
-        d = subDays(d, 1);
-        const day = getDay(d);
-        if (day === 1 || day === 2 || day === 4 || day === 5) {
-          return toDateKey(d);
-        }
-      }
+      d = subDays(d, 1);
+      return toDateKey(d);
     }
     const yesterdayDateStr = getYesterdayGymDate(new Date());
     const yesterdayQuestion = gymQuestions.find(q => q.date === yesterdayDateStr);
     const yesterdaySubmission = gymProgress.find(p => p.date === yesterdayDateStr);
 
-    // Calculate weekly goal days (Mon, Tue, Thu, Fri of current week) in IST
+    // Calculate weekly goal days (All 7 days of current week) in IST
     const todayDate = new Date();
     const monday = startOfWeek(zonedTodayDate, { weekStartsOn: 1 });
     
-    const activeIndices = [0, 1, 3, 4];
-    const weekdaysLabel = ['M', 'T', 'Th', 'F'];
+    const activeIndices = [0, 1, 2, 3, 4, 5, 6];
+    const weekdaysLabel = ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su'];
     
     const weeklyGoalDays = activeIndices.map((idx, index) => {
       const d = addDays(monday, idx);
