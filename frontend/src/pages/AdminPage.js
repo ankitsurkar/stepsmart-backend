@@ -321,6 +321,7 @@ function WeeksTab({ courseId }) {
   const [importWeeks, setImportWeeks] = useState([]);
   const [importWeekId, setImportWeekId] = useState('');
   const [importOptions, setImportOptions] = useState({
+    video: true,
     quiz: true,
     docs: true,
     resources: true,
@@ -599,6 +600,17 @@ function WeeksTab({ courseId }) {
 
     const updates = {};
     const importedItemsList = [];
+
+    if (importOptions.video) {
+      if (sourceWeek.youtubeUrl) updates.youtubeUrl = sourceWeek.youtubeUrl;
+      if (sourceWeek.url) updates.url = sourceWeek.url;
+      if (sourceWeek.textContent) updates.textContent = sourceWeek.textContent;
+      if (sourceWeek.storagePath) updates.storagePath = sourceWeek.storagePath;
+      if (sourceWeek.storageProvider) updates.storageProvider = sourceWeek.storageProvider;
+      if (sourceWeek.youtubeUrl || sourceWeek.url || sourceWeek.textContent || sourceWeek.storagePath) {
+        importedItemsList.push('Video / Content URL');
+      }
+    }
 
     if (importOptions.quiz && sourceWeek.quiz?.questions) {
       updates.quiz = {
@@ -915,6 +927,10 @@ function WeeksTab({ courseId }) {
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ ...s.label, color: 'hsl(210, 100%, 20%)', marginBottom: '0.5rem' }}>Items to Import</label>
                 <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem', fontWeight: 600, color: 'var(--foreground)', cursor: 'pointer' }}>
+                    <input type="checkbox" checked={importOptions.video} onChange={(e) => setImportOptions({ ...importOptions, video: e.target.checked })} />
+                    Video / Content URL
+                  </label>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem', fontWeight: 600, color: 'var(--foreground)', cursor: 'pointer' }}>
                     <input type="checkbox" checked={importOptions.quiz} onChange={(e) => setImportOptions({ ...importOptions, quiz: e.target.checked })} />
                     Quiz Questions ({importWeeks.find(w => w.weekId === importWeekId)?.quiz?.questions?.length || 0})
