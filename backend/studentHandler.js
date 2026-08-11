@@ -542,8 +542,11 @@ async function buildLeaderboard(courseId, currentUserId, event) {
   const assignmentResults = await Promise.all(assignmentQueries);
   const assignmentItems = assignmentResults.flatMap((r) => r.Items || []);
 
-  const weekQuizMap = new Map(
-    validWeeks.map((week) => [week.weekId, (week.quiz?.questions || []).length > 0]),
+  const weekCategoryMap = new Map(
+    validWeeks.map((week) => [
+      week.weekId,
+      week.category || (String(week.weekId || '').startsWith('rec') ? 'live' : 'module'),
+    ]),
   );
 
   const leaderboardEntries = new Map();
@@ -553,19 +556,20 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     if (!itemUserId) continue;
     if (!enrolledUserIds.has(itemUserId)) continue;
 
-    // PM Gym question completion gives 2 points
+    // PM Gym question completion gives 1 point
     if (item.sk && item.sk.startsWith('GYM#')) {
       const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
-      entry.score += 2;
-      entry.totalPoints += 2;
+      entry.score += 1;
+      entry.totalPoints += 1;
       entry.lastActivity = laterDate(entry.lastActivity, toIso(item.submittedAt));
       continue;
     }
 
     const itemWeekId = item.weekId || (item.sk ? item.sk.split('#')[2] : null);
     if (!itemWeekId) continue;
-    if (!weekQuizMap.has(itemWeekId)) continue;
-    const hasQuiz = weekQuizMap.get(itemWeekId);
+    
+    const weekCategory = weekCategoryMap.get(itemWeekId) || (String(itemWeekId).startsWith('rec') ? 'live' : 'module');
+    const isLiveSession = weekCategory === 'live';
 
     const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
     
@@ -573,8 +577,11 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     const isComplete = !!item.videoComplete;
     if (isComplete) {
       entry.completedLectures += 1;
-      entry.score += 2;
-      entry.totalPoints += 2;
+      // Live session recordings give 0 points; regular module lectures give 2 points
+      if (!isLiveSession) {
+        entry.score += 2;
+        entry.totalPoints += 2;
+      }
     }
     if (item.quizPassed) {
       entry.completedQuizzes += 1;
