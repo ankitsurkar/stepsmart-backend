@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { sendHeartbeat } from '@/lib/api-client-client';
-import { Play, Pause, RotateCcw, RotateCw, Maximize, Minimize, CheckCircle2, Info } from 'lucide-react';
+import { Play, Pause, RotateCcw, RotateCw, Maximize, Minimize, CheckCircle2, Info, Subtitles } from 'lucide-react';
 import hotkeys from 'hotkeys-js';
 import { motion } from 'framer-motion';
 
@@ -158,6 +158,7 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
   const [completionPct, setCompletionPct] = useState(0);
   const [videoComplete, setVideoComplete] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [currentTime, setCurrentTime] = useState(resumeTimeRef.current);
   const [duration, setDuration] = useState(initialProgress?.duration || 0);
@@ -521,9 +522,17 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
         modestbranding: 1,
         iv_load_policy: 3,
         playsinline: 1,
+        cc_load_policy: 0,
+        cc_lang_pref: 'en',
       },
       events: {
         onReady: (event) => {
+          if (!subtitlesEnabled) {
+            try {
+              event.target.unloadModule?.('captions');
+              event.target.setOption?.('captions', 'track', {});
+            } catch (_) {}
+          }
           if (startTime > 0) event.target.seekTo(startTime, true);
           if (rate && rate !== 1) event.target.setPlaybackRate(rate);
           if (autoPlay) event.target.playVideo();
@@ -539,6 +548,32 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
         },
       },
     });
+  }
+
+  function toggleSubtitles() {
+    const nextState = !subtitlesEnabled;
+    setSubtitlesEnabled(nextState);
+
+    if (isHtml5) {
+      const tracks = nativeVideoRef.current?.textTracks;
+      if (tracks && tracks.length > 0) {
+        for (let i = 0; i < tracks.length; i++) {
+          tracks[i].mode = nextState ? 'showing' : 'disabled';
+        }
+      }
+    } else if (playerInstanceRef.current) {
+      try {
+        if (nextState) {
+          playerInstanceRef.current.loadModule?.('captions');
+          playerInstanceRef.current.setOption?.('captions', 'track', { languageCode: 'en' });
+        } else {
+          playerInstanceRef.current.unloadModule?.('captions');
+          playerInstanceRef.current.setOption?.('captions', 'track', {});
+        }
+      } catch (err) {
+        console.warn('Captions toggle warning:', err);
+      }
+    }
   }
 
   function checkAndMarkComplete(pct) {
@@ -722,7 +757,17 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
         ...s.wrapper,
         ...(isFullscreen ? { borderRadius: 0, border: 'none', display: 'flex', flexDirection: 'column', height: '100%' } : {})
       }}
+      className={`video-player-root ${subtitlesEnabled ? 'subtitles-on' : 'subtitles-off'}`}
     >
+      <style>{`
+        .subtitles-off .caption-window,
+        .subtitles-off .ytp-caption-window-bottom,
+        .subtitles-off .ytp-caption-sub-titles {
+          display: none !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
+        }
+      `}</style>
       <div style={{ ...s.aspectBox, ...(isFullscreen ? { paddingBottom: 0, flex: 1, height: 'auto' } : {}) }}>
         {isHtml5 ? (
           <video
@@ -811,14 +856,38 @@ export default function VideoPlayer({ videoId, videoUrl, courseId, weekId, initi
             }}
           />
         </div>
-        <span style={s.timeLabel}>{metaLabel}</span>
+        <span style={s.timeLabel} className="video-time-label">{metaLabel}</span>
         <button
-          style={{ ...s.btn, ...s.btnSecondary, marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+          type="button"
+          style={{
+            ...s.btn,
+            ...s.btnSecondary,
+            marginLeft: 'auto',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.25rem',
+            background: subtitlesEnabled ? 'var(--primary, #027A9B)' : 'rgba(255, 255, 255, 0.08)',
+            color: subtitlesEnabled ? '#ffffff' : 'var(--muted-foreground, #94a3b8)',
+            border: subtitlesEnabled ? '1px solid var(--primary, #027A9B)' : '1px solid rgba(255, 255, 255, 0.15)',
+            fontWeight: 700,
+            fontSize: '0.75rem',
+            padding: '0.35rem 0.6rem',
+          }}
+          onClick={toggleSubtitles}
+          title={subtitlesEnabled ? 'Turn Subtitles OFF' : 'Turn Subtitles ON'}
+          className="video-control-btn subtitles-btn"
+        >
+          <Subtitles size={14} />
+          <span className="btn-text">{subtitlesEnabled ? 'CC ON' : 'CC'}</span>
+        </button>
+        <button
+          style={{ ...s.btn, ...s.btnSecondary, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
           onClick={handleFullScreen}
           title="Fullscreen"
+          className="video-control-btn fullscreen-btn"
         >
           {isFullscreen ? <Minimize size={14} /> : <Maximize size={14} />}
-          {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+          <span className="btn-text">{isFullscreen ? 'Exit' : 'Full'}</span>
         </button>
       </div>
 
