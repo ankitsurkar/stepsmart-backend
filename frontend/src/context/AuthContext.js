@@ -133,10 +133,17 @@ export function AuthProvider({ children }) {
   }
 
   // Called immediately after login() returns { requiresNewPassword: true }.
-  // Completes the FORCE_CHANGE_PASSWORD challenge.
-  async function completeNewPassword(newPassword) {
+  async function completeNewPassword(newPassword, email) {
     try {
-      await confirmSignIn({ challengeResponse: newPassword });
+      const fallbackName = (email || '').split('@')[0] || 'User';
+      await confirmSignIn({
+        challengeResponse: newPassword,
+        options: {
+          userAttributes: {
+            name: fallbackName,
+          },
+        },
+      });
       await loadAuthenticatedUser();
       return { success: true };
     } catch (err) {

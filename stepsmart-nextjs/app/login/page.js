@@ -309,7 +309,15 @@ export default function LoginPage() {
     setSubmitting(true);
 
     try {
-      await confirmSignIn({ challengeResponse: newPassword });
+      const fallbackName = (email || '').split('@')[0] || 'User';
+      await confirmSignIn({
+        challengeResponse: newPassword,
+        options: {
+          userAttributes: {
+            name: fallbackName,
+          },
+        },
+      });
       await exchangeTokensForCookies();
       toast.success('Password updated and logged in successfully!');
       router.replace('/dashboard');
