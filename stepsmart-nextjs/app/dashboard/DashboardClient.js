@@ -10,7 +10,7 @@ import awsConfig from '@/lib/aws-config';
 import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '@/lib/api-client-client';
 import AssignmentUpload from '@/components/AssignmentUpload';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Book, Clock, ClipboardList, Calendar, Folder, Users, Settings, Bell, Trophy, HelpCircle, Search, Bookmark, CheckCircle2, Copy, Filter } from 'lucide-react';
+import { Home, Book, Clock, ClipboardList, Calendar, Folder, Users, Settings, Bell, Trophy, HelpCircle, Bookmark, CheckCircle2, Copy, Filter } from 'lucide-react';
 import { addDays, subDays, startOfMonth as startOfMonthFn, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, getDaysInMonth, getDate, isSameMonth, isSameDay, getDay, addMonths } from 'date-fns';
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import { toast } from 'sonner';
@@ -2262,10 +2262,10 @@ export default function DashboardClient({
   const [pmGymScore, setPmGymScore] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  // DB Gym States — initialized from SSR props so no client refetch is needed on first load
-  const [gymProgress, setGymProgress] = useState(initialGymProgress);
-  const [gymQuestions, setGymQuestions] = useState(initialGymQuestions);
-  const [gymStreak, setGymStreak] = useState(initialGymStreak);
+  // DB Gym States — initialized from SSR props or client cache
+  const [gymProgress, setGymProgress] = useState(() => (initialGymProgress?.length ? initialGymProgress : (clientDashboardCache?.gymProgress || [])));
+  const [gymQuestions, setGymQuestions] = useState(() => (initialGymQuestions?.length ? initialGymQuestions : (clientDashboardCache?.gymQuestions || [])));
+  const [gymStreak, setGymStreak] = useState(() => (initialGymStreak !== undefined && initialGymStreak !== 0 ? initialGymStreak : (clientDashboardCache?.gymStreak || 0)));
   const [tempSelectedOption, setTempSelectedOption] = useState(undefined);
   const [tempTextAnswer, setTempTextAnswer] = useState('');
   const [showYesterdayModal, setShowYesterdayModal] = useState(false);
@@ -2275,7 +2275,6 @@ export default function DashboardClient({
   // Interview Prep States
   const [interviewCategory, setInterviewCategory] = useState('All Categories');
   const [interviewCompany, setInterviewCompany] = useState('All Companies');
-  const [interviewSearch, setInterviewSearch] = useState('');
   const [bookmarkedQuestions, setBookmarkedQuestions] = useState(() => {
     try {
       const saved = localStorage.getItem('stepsmart_bookmarked_questions');
@@ -2379,6 +2378,9 @@ export default function DashboardClient({
         leaderboard: initialLeaderboard,
         activeCourse: initialActiveCourse,
         supplementalContent: initialSupplementalContent,
+        gymProgress: initialGymProgress,
+        gymQuestions: initialGymQuestions,
+        gymStreak: initialGymStreak,
       };
       savePersistedDashboardCache(user?.username, clientDashboardCache);
       setSupplementalContent(initialSupplementalContent);
@@ -2396,6 +2398,9 @@ export default function DashboardClient({
         setLeaderboard(persisted.leaderboard);
         setActiveCourse(persisted.activeCourse);
         setSupplementalContent(persisted.supplementalContent);
+        if (persisted.gymProgress) setGymProgress(persisted.gymProgress);
+        if (persisted.gymQuestions) setGymQuestions(persisted.gymQuestions);
+        if (persisted.gymStreak !== undefined) setGymStreak(persisted.gymStreak);
       }
     }
     loadData();
@@ -2521,77 +2526,92 @@ export default function DashboardClient({
 
     try {
       const todayStr = toDateKey(new Date());
+      const preferredCourseId = activeCourse?.courseId || clientDashboardCache?.activeCourse?.courseId || 'course-001';
+
+      // Parallelize courses, weeks, and progress requests to eliminate waterfall
+      const [coursesResult, initialWeeksResult, initialProgressResult] = await Promise.allSettled([
+        getMyCourses(),
+        getCourseWeeks(preferredCourseId),
+        getProgress(preferredCourseId, { includeLeaderboard: true, clientDate: todayStr }),
+      ]);
 
       let courseList = [];
-      let coursesFetchedSuccessfully = false;
-
-      try {
-        const coursesRes = await getMyCourses();
-        courseList = coursesRes.data.courses || [];
-        coursesFetchedSuccessfully = true;
-      } catch (err) {
-        console.error('Failed to fetch courses list, attempting backup course loading:', err);
+      if (coursesResult.status === 'fulfilled') {
+        courseList = coursesResult.value.courses || [];
+      } else {
+        console.error('Failed to fetch courses list, using fallback:', coursesResult.reason);
       }
 
       let actualCourse = null;
-      let weeksRes = null;
-      let progressRes = null;
+      let weeksData = [];
+      let progressData = {};
 
-      if (coursesFetchedSuccessfully && courseList.length > 0) {
-        // Normal path: courses fetched successfully and list is not empty
+      if (courseList.length > 0) {
         setCourses(courseList);
-        const preferredCourseId = activeCourse?.courseId || clientDashboardCache?.activeCourse?.courseId;
         actualCourse = courseList.find(c => c.courseId === preferredCourseId) || courseList[0];
         setActiveCourse(actualCourse);
 
-        // Fetch weeks and progress for the selected course
-        [weeksRes, progressRes] = await Promise.all([
-          getCourseWeeks(actualCourse.courseId),
-          getProgress(actualCourse.courseId, { includeLeaderboard: true, clientDate: todayStr })
-        ]);
+        // If the resolved course matches what we pre-fetched in parallel, use the results immediately
+        if (actualCourse.courseId === preferredCourseId && initialWeeksResult.status === 'fulfilled' && initialProgressResult.status === 'fulfilled') {
+          weeksData = initialWeeksResult.value.weeks || [];
+          progressData = initialProgressResult.value || {};
+        } else {
+          // In the rare event the active course was different, fetch for the actual course
+          const [weeksRes, progressRes] = await Promise.all([
+            getCourseWeeks(actualCourse.courseId),
+            getProgress(actualCourse.courseId, { includeLeaderboard: true, clientDate: todayStr }),
+          ]);
+          weeksData = weeksRes.weeks || [];
+          progressData = progressRes || {};
+        }
       } else {
-        // Fallback/Backup path: courses API failed or returned empty list.
-        // Try loading the preferred/cached course ID or default to 'course-001' as a backup.
-        const fallbackCourseId = activeCourse?.courseId || clientDashboardCache?.activeCourse?.courseId || 'course-001';
-        
-        console.log(`Running backup load path for course: ${fallbackCourseId}`);
-        [weeksRes, progressRes] = await Promise.all([
-          getCourseWeeks(fallbackCourseId),
-          getProgress(fallbackCourseId, { includeLeaderboard: true, clientDate: todayStr })
-        ]);
-
-        // If the backup load succeeded, create a synthetic course object so the student can still learn
+        // Fallback synthetic course path
         const syntheticCourse = {
-          courseId: fallbackCourseId,
-          name: COURSE_NAME_OVERRIDES[fallbackCourseId] || 'Active Course',
-          description: ''
+          courseId: preferredCourseId,
+          name: COURSE_NAME_OVERRIDES[preferredCourseId] || 'Active Course',
+          description: '',
         };
         courseList = [syntheticCourse];
         setCourses(courseList);
         actualCourse = syntheticCourse;
         setActiveCourse(syntheticCourse);
+
+        if (initialWeeksResult.status === 'fulfilled' && initialProgressResult.status === 'fulfilled') {
+          weeksData = initialWeeksResult.value.weeks || [];
+          progressData = initialProgressResult.value || {};
+        } else {
+          const [weeksRes, progressRes] = await Promise.all([
+            getCourseWeeks(preferredCourseId),
+            getProgress(preferredCourseId, { includeLeaderboard: true, clientDate: todayStr }),
+          ]);
+          weeksData = weeksRes.weeks || [];
+          progressData = progressRes || {};
+        }
       }
 
-      const weeksData = weeksRes.data.weeks || [];
       setWeeks(weeksData);
 
       const nextProgressMap = {};
-      for (const progress of (progressRes.data.progress || [])) {
+      for (const progress of (progressData.progress || [])) {
         nextProgressMap[progress.weekId] = progress;
       }
       setProgressMap(nextProgressMap);
 
-      const leaderboardData = progressRes.data.leaderboard || [];
+      const leaderboardData = progressData.leaderboard || [];
       setLeaderboard(leaderboardData);
 
-      const suppData = weeksRes.data.supplementalContent || null;
+      const suppData = weeksData.supplementalContent || null;
       setSupplementalContent(suppData);
 
-      setGymProgress(progressRes.data.gymProgress || []);
-      setGymQuestions(progressRes.data.gymQuestions || []);
-      setGymStreak(progressRes.data.gymStreak || 0);
+      const nextGymProgress = progressData.gymProgress || [];
+      const nextGymQuestions = progressData.gymQuestions || [];
+      const nextGymStreak = progressData.gymStreak || 0;
 
-      // Save to local cache & localStorage
+      setGymProgress(nextGymProgress);
+      setGymQuestions(nextGymQuestions);
+      setGymStreak(nextGymStreak);
+
+      // Save to local cache & localStorage (including PM Gym data)
       clientDashboardCache = {
         username: user?.username,
         courses: courseList,
@@ -2600,6 +2620,9 @@ export default function DashboardClient({
         leaderboard: leaderboardData,
         activeCourse: actualCourse,
         supplementalContent: suppData,
+        gymProgress: nextGymProgress,
+        gymQuestions: nextGymQuestions,
+        gymStreak: nextGymStreak,
       };
       savePersistedDashboardCache(user?.username, clientDashboardCache);
 
@@ -2625,29 +2648,33 @@ export default function DashboardClient({
         getProgress(courseId, { includeLeaderboard: true, clientDate: todayStr }),
       ]);
 
-      const weeksData = weeksRes.data.weeks || [];
+      const weeksData = weeksRes.weeks || [];
       setWeeks(weeksData);
 
       const nextProgressMap = {};
-      for (const progress of (progressRes.data.progress || [])) {
+      for (const progress of (progressRes.progress || [])) {
         nextProgressMap[progress.weekId] = progress;
       }
 
       setProgressMap(nextProgressMap);
-      const leaderboardData = progressRes.data.leaderboard || [];
+      const leaderboardData = progressRes.leaderboard || [];
       setLeaderboard(leaderboardData);
 
-      const suppData = weeksRes.data.supplementalContent || null;
+      const suppData = weeksRes.supplementalContent || null;
       setSupplementalContent(suppData);
 
-      setGymProgress(progressRes.data.gymProgress || []);
-      setGymQuestions(progressRes.data.gymQuestions || []);
-      setGymStreak(progressRes.data.gymStreak || 0);
+      const nextGymProgress = progressRes.gymProgress || [];
+      const nextGymQuestions = progressRes.gymQuestions || [];
+      const nextGymStreak = progressRes.gymStreak || 0;
+
+      setGymProgress(nextGymProgress);
+      setGymQuestions(nextGymQuestions);
+      setGymStreak(nextGymStreak);
 
       // Resolve the selected course correctly using courseId instead of stale activeCourse state
       const currentSelectedCourse = (courseList || courses || []).find(c => c.courseId === courseId) || activeCourse || (courseList && courseList[0]) || (courses && courses[0]);
 
-      // Save to module cache & localStorage
+      // Save to module cache & localStorage (including PM Gym data)
       clientDashboardCache = {
         username: user?.username,
         courses: courseList || courses,
@@ -2656,6 +2683,9 @@ export default function DashboardClient({
         leaderboard: leaderboardData,
         activeCourse: currentSelectedCourse,
         supplementalContent: suppData,
+        gymProgress: nextGymProgress,
+        gymQuestions: nextGymQuestions,
+        gymStreak: nextGymStreak,
       };
       savePersistedDashboardCache(user?.username, clientDashboardCache);
 
@@ -3230,16 +3260,52 @@ export default function DashboardClient({
         e.preventDefault();
         const ans = isQuiz ? tempSelectedOption : tempTextAnswer;
         if (ans === undefined || ans === '') return;
-        
+
+        const previousGymProgress = gymProgress;
+        const previousGymStreak = gymStreak;
+
+        const optimisticProgressItem = {
+          date: todayStr,
+          type: todayQuestion.type || (isQuiz ? 'quiz' : 'text'),
+          answer: String(ans),
+          score: 1,
+          submittedAt: new Date().toISOString(),
+        };
+
+        const nextGymProgress = [
+          ...gymProgress.filter((p) => p.date !== todayStr),
+          optimisticProgressItem,
+        ];
+
+        const hasAlreadySolved = gymProgress.some((p) => p.date === todayStr);
+        const nextStreak = hasAlreadySolved ? gymStreak : gymStreak + 1;
+
+        // Instant UI & cache update (Optimistic)
+        setGymProgress(nextGymProgress);
+        setGymStreak(nextStreak);
+        setPmGymSubmitted(true);
+
+        if (clientDashboardCache && clientDashboardCache.username === user?.username) {
+          clientDashboardCache.gymProgress = nextGymProgress;
+          clientDashboardCache.gymStreak = nextStreak;
+          savePersistedDashboardCache(user?.username, clientDashboardCache);
+        }
+
         try {
           await submitGymAnswer(activeCourse.courseId, todayStr, ans);
-          setPmGymSubmitted(true);
-          // Reload course data to get the updated progress and streak
-          loadCourse(activeCourse.courseId);
           toast.success('PM Gym response submitted successfully!');
         } catch (err) {
-          console.error(err);
-          toast.error('Failed to submit response.');
+          console.error('submitGymAnswer error:', err);
+          // Rollback on failure
+          setGymProgress(previousGymProgress);
+          setGymStreak(previousGymStreak);
+          setPmGymSubmitted(false);
+          if (clientDashboardCache && clientDashboardCache.username === user?.username) {
+            clientDashboardCache.gymProgress = previousGymProgress;
+            clientDashboardCache.gymStreak = previousGymStreak;
+            savePersistedDashboardCache(user?.username, clientDashboardCache);
+          }
+          toast.error('Failed to submit response. Please try again.');
         }
       };
 
@@ -3771,7 +3837,9 @@ export default function DashboardClient({
                   ? 'Closed today for resting. Rest up, or review previous answers!'
                   : todayQuestion
                     ? todayQuestion.text
-                    : 'No daily question scheduled for today. Check back later!'
+                    : loading
+                      ? "Loading today's daily challenge..."
+                      : 'No daily question scheduled for today. Check back later!'
                 }
               </p>
             </div>
@@ -4735,12 +4803,7 @@ export default function DashboardClient({
       const matchCompany =
         interviewCompany === 'All Companies' ||
         q.company.toLowerCase().includes(interviewCompany.toLowerCase());
-      const matchSearch =
-        !interviewSearch.trim() ||
-        q.question.toLowerCase().includes(interviewSearch.toLowerCase()) ||
-        q.description.toLowerCase().includes(interviewSearch.toLowerCase()) ||
-        q.company.toLowerCase().includes(interviewSearch.toLowerCase());
-      return matchCategory && matchCompany && matchSearch;
+      return matchCategory && matchCompany;
     });
 
     const toggleBookmark = (id) => {
@@ -4797,13 +4860,12 @@ export default function DashboardClient({
               <span style={{ background: '#f1f5f9', color: '#334155', padding: '0.3rem 0.75rem', borderRadius: '20px', fontWeight: 700 }}>
                 Showing {filteredQuestions.length} of {ALL_INTERVIEW_QUESTIONS.length} Questions
               </span>
-              {(interviewCategory !== 'All Categories' || interviewCompany !== 'All Companies' || interviewSearch) && (
+              {(interviewCategory !== 'All Categories' || interviewCompany !== 'All Companies') && (
                 <button
                   type="button"
                   onClick={() => {
                     setInterviewCategory('All Categories');
                     setInterviewCompany('All Companies');
-                    setInterviewSearch('');
                   }}
                   style={{
                     background: 'none',
@@ -4878,37 +4940,6 @@ export default function DashboardClient({
                   </option>
                 ))}
               </select>
-            </div>
-
-            {/* Search Input */}
-            <div>
-              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.35rem' }}>
-                Search Keywords
-              </label>
-              <div style={{ position: 'relative' }}>
-                <input
-                  type="text"
-                  placeholder="Search questions..."
-                  value={interviewSearch}
-                  onChange={(e) => setInterviewSearch(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '0.55rem 0.85rem 0.55rem 2.2rem',
-                    borderRadius: '10px',
-                    border: '1px solid #cbd5e1',
-                    background: '#ffffff',
-                    color: '#0f172a',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    outline: 'none',
-                  }}
-                />
-                <Search
-                  size={16}
-                  color="#64748b"
-                  style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
-                />
-              </div>
             </div>
           </div>
         </div>
