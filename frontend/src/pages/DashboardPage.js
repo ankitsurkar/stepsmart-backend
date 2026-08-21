@@ -1523,8 +1523,8 @@ function renderFormattedInstructions(text) {
 
   // 2. Unconditionally split inline numbered or bullet list items (e.g. "format 2. Identify" -> "format\n2. Identify")
   normalized = normalized
-    .replace(/([^\n])\s+(\d+[\.\)]\s*)/g, '$1\n$2')
-    .replace(/([^\n])\s+([\-•\*]\s+)/g, '$1\n$2');
+    .replace(/([^\n])\s+(\d+[.)]\s*)/g, '$1\n$2')
+    .replace(/([^\n])\s+([-•*]\s+)/g, '$1\n$2');
 
   const rawLines = normalized.split('\n');
   const blocks = [];
@@ -1574,8 +1574,8 @@ function renderFormattedInstructions(text) {
       continue;
     }
 
-    const olMatch = trimmed.match(/^(\d+)[\.\)]\s+(.*)/);
-    const ulMatch = trimmed.match(/^[\-\*•]\s+(.*)/);
+    const olMatch = trimmed.match(/^(\d+)[.)]\s*(.*)/);
+    const ulMatch = trimmed.match(/^[-•*]\s*(.*)/);
 
     if (olMatch) {
       const num = parseInt(olMatch[1], 10);
