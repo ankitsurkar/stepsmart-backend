@@ -1119,7 +1119,7 @@ const s = {
   },
   lessonInfo: { minWidth: 0 },
   lessonTitle: { fontSize: '0.875rem', fontWeight: 500, color: 'var(--foreground)', marginBottom: '0.2rem' },
-  lessonDesc: { fontSize: '0.8125rem', color: 'var(--muted-foreground)', lineHeight: 1.55 },
+  lessonDesc: { fontSize: '0.8125rem', color: 'var(--muted-foreground)', lineHeight: 1.55, whiteSpace: 'pre-wrap', wordBreak: 'break-word' },
   lessonProgressRow: {
     display: 'flex',
     alignItems: 'center',
@@ -1518,14 +1518,13 @@ function renderTextWithLinks(text) {
 function renderFormattedInstructions(text) {
   if (!text || typeof text !== 'string') return null;
 
-  // If text doesn't contain newlines, but contains inline numbered list items (e.g. "1. ... 2. ... 3. ...")
-  // or bullet points (e.g. "... - ... • ..."), normalize them with newlines.
-  let normalized = text;
-  if (!normalized.includes('\n')) {
-    normalized = normalized
-      .replace(/(?<=\S)\s+(?=\d+[\.\)]\s+)/g, '\n')
-      .replace(/(?<=\S)\s+(?=[\-•]\s+)/g, '\n');
-  }
+  // 1. Normalize line endings (\r\n -> \n, \r -> \n)
+  let normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+  // 2. Unconditionally split inline numbered or bullet list items (e.g. "format 2. Identify" -> "format\n2. Identify")
+  normalized = normalized
+    .replace(/([^\n])\s+(\d+[\.\)]\s*)/g, '$1\n$2')
+    .replace(/([^\n])\s+([\-•\*]\s+)/g, '$1\n$2');
 
   const rawLines = normalized.split('\n');
   const blocks = [];
