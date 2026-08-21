@@ -2136,38 +2136,50 @@ function GymSubmissionsTab({ courseId }) {
     inset: 0,
     background: 'rgba(15, 23, 42, 0.45)',
     backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 99999,
     padding: '1rem',
+    boxSizing: 'border-box',
   };
   const modalContentStyle = {
-    background: 'var(--card)',
-    borderRadius: '16px',
+    background: 'var(--card, #ffffff)',
+    borderRadius: '20px',
     padding: '1.75rem',
-    width: '90%',
-    maxWidth: '550px',
+    width: '100%',
+    maxWidth: '560px',
+    maxHeight: 'min(90vh, 760px)',
     boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    border: '1px solid var(--border)',
+    overflow: 'hidden',
+    border: '1px solid var(--border, #e2e8f0)',
   };
   const modalHeaderStyle = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: '1.25rem',
-    borderBottom: '1px solid var(--border)',
+    borderBottom: '1px solid var(--border, #e2e8f0)',
     paddingBottom: '0.75rem',
+    flexShrink: 0,
   };
   const modalCloseBtnStyle = {
-    background: 'none',
+    background: 'rgba(15, 23, 42, 0.06)',
     border: 'none',
-    fontSize: '1.2rem',
+    borderRadius: '50%',
+    width: '32px',
+    height: '32px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.1rem',
     cursor: 'pointer',
-    color: 'var(--muted-foreground)',
+    color: 'var(--foreground, #0f172a)',
+    flexShrink: 0,
   };
   const detailLabelStyle = {
     fontSize: '0.7rem',
@@ -2324,15 +2336,15 @@ function GymSubmissionsTab({ courseId }) {
       )}
 
       {activeModalAnswer && (
-        <div style={modalOverlayStyle}>
-          <div style={modalContentStyle}>
+        <div style={modalOverlayStyle} onClick={() => setActiveModalAnswer(null)}>
+          <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
             <div style={modalHeaderStyle}>
               <span style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--primary)' }}>
                 PM Gym Response Details
               </span>
               <button type="button" onClick={() => setActiveModalAnswer(null)} style={modalCloseBtnStyle}>✕</button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ overflowY: 'auto', flex: 1, paddingRight: '0.35rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
                 <div style={detailLabelStyle}>Student</div>
                 <div style={detailValueStyle}>

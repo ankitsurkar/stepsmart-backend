@@ -3329,37 +3329,50 @@ export default function DashboardClient({
         inset: 0,
         background: 'rgba(15, 23, 42, 0.45)',
         backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 99999,
         padding: '1rem',
+        boxSizing: 'border-box',
       };
       const modalContentStyle = {
         background: '#ffffff',
         borderRadius: '24px',
-        padding: '2rem',
-        width: '90%',
-        maxWidth: '500px',
+        padding: '1.75rem',
+        width: '100%',
+        maxWidth: '560px',
+        maxHeight: 'min(90vh, 760px)',
         boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'hidden',
       };
       const modalHeaderStyle = {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '1.5rem',
+        marginBottom: '1.25rem',
         borderBottom: '1px solid #e2e8f0',
         paddingBottom: '0.75rem',
+        flexShrink: 0,
       };
       const modalCloseBtnStyle = {
-        background: 'none',
+        background: 'rgba(15, 23, 42, 0.06)',
         border: 'none',
-        fontSize: '1.2rem',
+        borderRadius: '50%',
+        width: '34px',
+        height: '34px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '1.1rem',
         cursor: 'pointer',
-        color: 'var(--muted-foreground)',
+        color: 'var(--foreground)',
+        flexShrink: 0,
+        transition: 'background 0.15s ease',
       };
 
       if (!todayQuestion) {
@@ -3370,6 +3383,7 @@ export default function DashboardClient({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             style={modalOverlayStyle}
+            onClick={() => setShowPmGymModal(false)}
           >
             <motion.div
               initial={{ scale: 0.95, y: 15 }}
@@ -3377,6 +3391,7 @@ export default function DashboardClient({
               exit={{ scale: 0.95, y: 15 }}
               transition={{ type: 'spring', damping: 25, stiffness: 350 }}
               style={modalContentStyle}
+              onClick={(e) => e.stopPropagation()}
             >
               <div style={modalHeaderStyle}>
                 <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#027A9B' }}>
@@ -3454,6 +3469,12 @@ export default function DashboardClient({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           style={modalOverlayStyle}
+          onClick={() => {
+            setShowPmGymModal(false);
+            setPmGymSubmitted(false);
+            setTempSelectedOption(undefined);
+            setTempTextAnswer('');
+          }}
         >
           <motion.div
             initial={{ scale: 0.95, y: 15 }}
@@ -3461,6 +3482,7 @@ export default function DashboardClient({
             exit={{ scale: 0.95, y: 15 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
             style={modalContentStyle}
+            onClick={(e) => e.stopPropagation()}
           >
             <div style={modalHeaderStyle}>
               <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#027A9B' }}>
@@ -3480,118 +3502,122 @@ export default function DashboardClient({
               </button>
             </div>
 
-            {pmGymSubmitted ? (
-              <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
-                <span style={{ fontSize: '3rem' }}>💪</span>
-                <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--foreground)', margin: '1rem 0 0.5rem' }}>
-                  Response Submitted!
-                </h4>
-                <p style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)', lineHeight: '1.4', marginBottom: '1.5rem' }}>
-                  Awesome job completing today's daily challenge. Your streak has been updated!
-                  <br />
-                  <span style={{ fontWeight: 650, color: '#027A9B', marginTop: '0.5rem', display: 'block' }}>
-                    Note: The correct answer and explanation will unlock on the next gym day.
-                  </span>
-                </p>
-                <button
-                  type="button"
-                  style={{
-                    display: 'block',
-                    width: '100%',
-                    padding: '0.85rem',
-                    borderRadius: '12px',
-                    fontSize: '0.95rem',
-                    fontWeight: 'bold',
-                    background: '#027A9B',
-                    color: '#ffffff',
-                    border: 'none',
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => {
-                    setShowPmGymModal(false);
-                    setPmGymSubmitted(false);
-                    setTempSelectedOption(undefined);
-                    setTempTextAnswer('');
-                  }}
-                >
-                  Close Gym
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleFormSubmit}>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-                  Today's Challenge ({todayQuestion.date})
+            <div style={{ overflowY: 'auto', flex: 1, paddingRight: '0.35rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {pmGymSubmitted ? (
+                <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
+                  <span style={{ fontSize: '3rem' }}>💪</span>
+                  <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--foreground)', margin: '1rem 0 0.5rem' }}>
+                    Response Submitted!
+                  </h4>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)', lineHeight: '1.4', marginBottom: '1.5rem' }}>
+                    Awesome job completing today's daily challenge. Your streak has been updated!
+                    <br />
+                    <span style={{ fontWeight: 650, color: '#027A9B', marginTop: '0.5rem', display: 'block' }}>
+                      Note: The correct answer and explanation will unlock on the next gym day.
+                    </span>
+                  </p>
+                  <button
+                    type="button"
+                    style={{
+                      display: 'block',
+                      width: '100%',
+                      padding: '0.85rem',
+                      borderRadius: '12px',
+                      fontSize: '0.95rem',
+                      fontWeight: 'bold',
+                      background: '#027A9B',
+                      color: '#ffffff',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      setShowPmGymModal(false);
+                      setPmGymSubmitted(false);
+                      setTempSelectedOption(undefined);
+                      setTempTextAnswer('');
+                    }}
+                  >
+                    Close Gym
+                  </button>
                 </div>
-                <p style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--foreground)', margin: '0 0 1.25rem 0', lineHeight: '1.4' }}>
-                  {todayQuestion.text}
-                </p>
-
-                {isQuiz ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                    {(todayQuestion.options || []).map((option, idx) => {
-                      const isSelected = tempSelectedOption === idx;
-                      return (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => setTempSelectedOption(idx)}
-                          style={{
-                            textAlign: 'left',
-                            padding: '0.85rem 1.25rem',
-                            borderRadius: '12px',
-                            border: isSelected ? '2px solid #027A9B' : '1px solid var(--border)',
-                            background: isSelected ? 'rgba(2, 122, 155, 0.08)' : 'var(--card)',
-                            color: isSelected ? '#027A9B' : 'var(--foreground)',
-                            fontWeight: isSelected ? 700 : 500,
-                            fontSize: '0.9rem',
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease',
-                          }}
-                        >
-                          <span style={{ marginRight: '0.75rem', fontWeight: 700 }}>
-                            {String.fromCharCode(65 + idx)}.
-                          </span>
-                          {option}
-                        </button>
-                      );
-                    })}
+              ) : (
+                <form onSubmit={handleFormSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.4rem', letterSpacing: '0.04em' }}>
+                      Today's Challenge ({todayQuestion.date})
+                    </div>
+                    <p style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--foreground)', margin: 0, lineHeight: '1.45' }}>
+                      {todayQuestion.text}
+                    </p>
                   </div>
-                ) : (
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={s.label}>Your Response</label>
-                    <textarea
-                      style={{ ...s.textarea, minHeight: '120px' }}
-                      value={tempTextAnswer}
-                      onChange={(e) => setTempTextAnswer(e.target.value)}
-                      placeholder="Write your answer details here..."
-                      required
-                    />
-                  </div>
-                )}
 
-                <button
-                  type="submit"
-                  disabled={isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim()}
-                  style={{
-                    width: '100%',
-                    padding: '0.85rem',
-                    borderRadius: '12px',
-                    fontSize: '0.95rem',
-                    fontWeight: 'bold',
-                    color: '#ffffff',
-                    border: 'none',
-                    background: (isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim())
-                      ? 'rgba(2, 122, 155, 0.4)'
-                      : '#027A9B',
-                    cursor: (isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim())
-                      ? 'not-allowed'
-                      : 'pointer',
-                  }}
-                >
-                  Submit Challenge
-                </button>
-              </form>
-            )}
+                  {isQuiz ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {(todayQuestion.options || []).map((option, idx) => {
+                        const isSelected = tempSelectedOption === idx;
+                        return (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setTempSelectedOption(idx)}
+                            style={{
+                              textAlign: 'left',
+                              padding: '0.85rem 1.25rem',
+                              borderRadius: '12px',
+                              border: isSelected ? '2px solid #027A9B' : '1px solid var(--border)',
+                              background: isSelected ? 'rgba(2, 122, 155, 0.08)' : 'var(--card)',
+                              color: isSelected ? '#027A9B' : 'var(--foreground)',
+                              fontWeight: isSelected ? 700 : 500,
+                              fontSize: '0.9rem',
+                              cursor: 'pointer',
+                              transition: 'all 0.15s ease',
+                            }}
+                          >
+                            <span style={{ marginRight: '0.75rem', fontWeight: 700 }}>
+                              {String.fromCharCode(65 + idx)}.
+                            </span>
+                            {option}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div>
+                      <label style={s.label}>Your Response</label>
+                      <textarea
+                        style={{ ...s.textarea, minHeight: '120px' }}
+                        value={tempTextAnswer}
+                        onChange={(e) => setTempTextAnswer(e.target.value)}
+                        placeholder="Write your answer details here..."
+                        required
+                      />
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim()}
+                    style={{
+                      width: '100%',
+                      padding: '0.85rem',
+                      borderRadius: '12px',
+                      fontSize: '0.95rem',
+                      fontWeight: 'bold',
+                      color: '#ffffff',
+                      border: 'none',
+                      background: (isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim())
+                        ? 'rgba(2, 122, 155, 0.4)'
+                        : '#027A9B',
+                      cursor: (isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim())
+                        ? 'not-allowed'
+                        : 'pointer',
+                    }}
+                  >
+                    Submit Challenge
+                  </button>
+                </form>
+              )}
+            </div>
           </motion.div>
         </motion.div>
       );
@@ -3607,37 +3633,50 @@ export default function DashboardClient({
         inset: 0,
         background: 'rgba(15, 23, 42, 0.45)',
         backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 99999,
         padding: '1rem',
+        boxSizing: 'border-box',
       };
       const modalContentStyle = {
         background: '#ffffff',
         borderRadius: '24px',
-        padding: '2rem',
-        width: '90%',
-        maxWidth: '500px',
+        padding: '1.75rem',
+        width: '100%',
+        maxWidth: '560px',
+        maxHeight: 'min(90vh, 760px)',
         boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'hidden',
       };
       const modalHeaderStyle = {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '1.5rem',
+        marginBottom: '1.25rem',
         borderBottom: '1px solid #e2e8f0',
         paddingBottom: '0.75rem',
+        flexShrink: 0,
       };
       const modalCloseBtnStyle = {
-        background: 'none',
+        background: 'rgba(15, 23, 42, 0.06)',
         border: 'none',
-        fontSize: '1.2rem',
+        borderRadius: '50%',
+        width: '34px',
+        height: '34px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '1.1rem',
         cursor: 'pointer',
-        color: 'var(--muted-foreground)',
+        color: 'var(--foreground)',
+        flexShrink: 0,
+        transition: 'background 0.15s ease',
       };
 
       return (
@@ -3647,6 +3686,7 @@ export default function DashboardClient({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           style={modalOverlayStyle}
+          onClick={() => setShowYesterdayModal(false)}
         >
           <motion.div
             initial={{ scale: 0.95, y: 15 }}
@@ -3654,6 +3694,7 @@ export default function DashboardClient({
             exit={{ scale: 0.95, y: 15 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
             style={modalContentStyle}
+            onClick={(e) => e.stopPropagation()}
           >
             <div style={modalHeaderStyle}>
               <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#027A9B' }}>
@@ -3669,20 +3710,22 @@ export default function DashboardClient({
             </div>
 
             {yesterdayQ ? (
-              <div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-                  Question from {yesterdayQ.date}
+              <div style={{ overflowY: 'auto', flex: 1, paddingRight: '0.35rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.4rem', letterSpacing: '0.04em' }}>
+                    Question from {yesterdayQ.date}
+                  </div>
+                  <p style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--foreground)', margin: 0, lineHeight: '1.45' }}>
+                    {yesterdayQ.text}
+                  </p>
                 </div>
-                <p style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--foreground)', margin: '0 0 1.25rem 0', lineHeight: '1.4' }}>
-                  {yesterdayQ.text}
-                </p>
 
-                <div style={{ background: 'var(--background)', borderRadius: '12px', padding: '1rem', marginBottom: '1.25rem', border: '1px solid var(--border)' }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                <div style={{ background: 'var(--background)', borderRadius: '12px', padding: '1rem', border: '1px solid var(--border)' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', marginBottom: '0.35rem', letterSpacing: '0.04em' }}>
                     Your Submission
                   </div>
                   {yesterdaySub ? (
-                    <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--foreground)', margin: 0 }}>
+                    <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--foreground)', margin: 0, lineHeight: '1.4' }}>
                       {yesterdayQ.type === 'quiz'
                         ? `${String.fromCharCode(65 + Number(yesterdaySub.answer))}. ${yesterdayQ.options?.[Number(yesterdaySub.answer)] || ''}`
                         : yesterdaySub.answer
@@ -3698,11 +3741,11 @@ export default function DashboardClient({
                   )}
                 </div>
 
-                <div style={{ background: 'rgba(2, 122, 155, 0.06)', borderRadius: '12px', padding: '1rem', marginBottom: '1.25rem', border: '1px solid rgba(2, 122, 155, 0.15)' }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                <div style={{ background: 'rgba(2, 122, 155, 0.06)', borderRadius: '12px', padding: '1rem', border: '1px solid rgba(2, 122, 155, 0.15)' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.35rem', letterSpacing: '0.04em' }}>
                     Correct Answer
                   </div>
-                  <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#027A9B', margin: 0 }}>
+                  <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#027A9B', margin: 0, lineHeight: '1.4' }}>
                     {yesterdayQ.type === 'quiz'
                       ? `${String.fromCharCode(65 + yesterdayQ.correctIndex)}. ${yesterdayQ.options?.[yesterdayQ.correctIndex] || ''}`
                       : yesterdayQ.correctAnswer
@@ -3712,10 +3755,22 @@ export default function DashboardClient({
 
                 {yesterdayQ.explanation && (
                   <div>
-                    <label style={s.label}>Explanation</label>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)', lineHeight: '1.5', margin: 0 }}>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', marginBottom: '0.4rem', letterSpacing: '0.04em' }}>
+                      Explanation
+                    </div>
+                    <div style={{
+                      fontSize: '0.92rem',
+                      color: 'var(--foreground)',
+                      lineHeight: '1.6',
+                      background: 'rgba(15, 23, 42, 0.03)',
+                      border: '1px solid var(--border)',
+                      borderRadius: '12px',
+                      padding: '1rem',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                    }}>
                       {yesterdayQ.explanation}
-                    </p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -3738,29 +3793,41 @@ export default function DashboardClient({
         inset: 0,
         background: 'rgba(15, 23, 42, 0.45)',
         backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 99999,
         padding: '1rem',
+        boxSizing: 'border-box',
       };
       const modalContentStyle = {
         background: '#ffffff',
         borderRadius: '24px',
-        padding: '2rem',
-        width: '90%',
-        maxWidth: '500px',
+        padding: '1.75rem',
+        width: '100%',
+        maxWidth: '560px',
+        maxHeight: 'min(90vh, 760px)',
         boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'hidden',
       };
       const modalCloseBtnStyle = {
-        background: 'none',
+        background: 'rgba(15, 23, 42, 0.06)',
         border: 'none',
-        fontSize: '1.2rem',
+        borderRadius: '50%',
+        width: '34px',
+        height: '34px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '1.1rem',
         cursor: 'pointer',
-        color: 'var(--muted-foreground)',
+        color: 'var(--foreground)',
+        flexShrink: 0,
+        transition: 'background 0.15s ease',
       };
 
       return (
@@ -3770,6 +3837,7 @@ export default function DashboardClient({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           style={modalOverlayStyle}
+          onClick={() => setSelectedGymDetailDay(null)}
         >
           <motion.div
             initial={{ scale: 0.95, y: 15 }}
@@ -3777,8 +3845,9 @@ export default function DashboardClient({
             exit={{ scale: 0.95, y: 15 }}
             transition={{ duration: 0.2 }}
             style={modalContentStyle}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.75rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.75rem', flexShrink: 0 }}>
               <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--foreground)' }}>
                 Gym Answer Details
               </span>
@@ -3792,20 +3861,22 @@ export default function DashboardClient({
             </div>
 
             {question ? (
-              <div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-                  Question from {dateStr}
+              <div style={{ overflowY: 'auto', flex: 1, paddingRight: '0.35rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.4rem', letterSpacing: '0.04em' }}>
+                    Question from {dateStr}
+                  </div>
+                  <p style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--foreground)', margin: 0, lineHeight: '1.45' }}>
+                    {question.text}
+                  </p>
                 </div>
-                <p style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--foreground)', margin: '0 0 1.25rem 0', lineHeight: '1.4' }}>
-                  {question.text}
-                </p>
 
-                <div style={{ background: 'var(--background)', borderRadius: '12px', padding: '1rem', marginBottom: '1.25rem', border: '1px solid var(--border)' }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                <div style={{ background: 'var(--background)', borderRadius: '12px', padding: '1rem', border: '1px solid var(--border)' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', marginBottom: '0.35rem', letterSpacing: '0.04em' }}>
                     Your Submission
                   </div>
                   {submission ? (
-                    <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--foreground)', margin: 0 }}>
+                    <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--foreground)', margin: 0, lineHeight: '1.4' }}>
                       {question.type === 'quiz'
                         ? `${String.fromCharCode(65 + Number(submission.answer))}. ${question.options?.[Number(submission.answer)] || ''}`
                         : submission.answer
@@ -3821,11 +3892,11 @@ export default function DashboardClient({
                   )}
                 </div>
 
-                <div style={{ background: 'rgba(2, 122, 155, 0.06)', borderRadius: '12px', padding: '1rem', marginBottom: '1.25rem', border: '1px solid rgba(2, 122, 155, 0.15)' }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                <div style={{ background: 'rgba(2, 122, 155, 0.06)', borderRadius: '12px', padding: '1rem', border: '1px solid rgba(2, 122, 155, 0.15)' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.35rem', letterSpacing: '0.04em' }}>
                     Correct Answer
                   </div>
-                  <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#027A9B', margin: 0 }}>
+                  <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#027A9B', margin: 0, lineHeight: '1.4' }}>
                     {question.type === 'quiz'
                       ? `${String.fromCharCode(65 + question.correctIndex)}. ${question.options?.[question.correctIndex] || ''}`
                       : question.correctAnswer
@@ -3835,10 +3906,22 @@ export default function DashboardClient({
 
                 {question.explanation && (
                   <div>
-                    <label style={s.label}>Explanation</label>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)', lineHeight: '1.5', margin: 0 }}>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', marginBottom: '0.4rem', letterSpacing: '0.04em' }}>
+                      Explanation
+                    </div>
+                    <div style={{
+                      fontSize: '0.92rem',
+                      color: 'var(--foreground)',
+                      lineHeight: '1.6',
+                      background: 'rgba(15, 23, 42, 0.03)',
+                      border: '1px solid var(--border)',
+                      borderRadius: '12px',
+                      padding: '1rem',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                    }}>
                       {question.explanation}
-                    </p>
+                    </div>
                   </div>
                 )}
               </div>
