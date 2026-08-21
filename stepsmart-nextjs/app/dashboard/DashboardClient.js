@@ -1519,17 +1519,155 @@ function renderTextWithLinks(text) {
   });
 }
 
+function renderFormattedInstructions(text) {
+  if (!text || typeof text !== 'string') return null;
+
+  // If text doesn't contain newlines, but contains inline numbered list items (e.g. "1. ... 2. ... 3. ...")
+  // or bullet points (e.g. "... - ... • ..."), normalize them with newlines.
+  let normalized = text;
+  if (!normalized.includes('\n')) {
+    normalized = normalized
+      .replace(/(?<=\S)\s+(?=\d+[\.\)]\s+)/g, '\n')
+      .replace(/(?<=\S)\s+(?=[\-•]\s+)/g, '\n');
+  }
+
+  const rawLines = normalized.split('\n');
+  const blocks = [];
+  let currentList = null;
+
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+  const renderInlineFormatted = (str) => {
+    const parts = str.split(urlRegex);
+    return parts.map((part, i) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={i}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#188ab2', textDecoration: 'underline', wordBreak: 'break-all' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {part}
+          </a>
+        );
+      }
+      const tokens = part.split(/(\*\*.*?\*\*|\*.*?\*)/g);
+      return tokens.map((token, ti) => {
+        if (token.startsWith('**') && token.endsWith('**') && token.length > 4) {
+          return <strong key={`${i}-${ti}`}>{token.slice(2, -2)}</strong>;
+        }
+        if (token.startsWith('*') && token.endsWith('*') && token.length > 2) {
+          return <em key={`${i}-${ti}`}>{token.slice(1, -1)}</em>;
+        }
+        return token;
+      });
+    });
+  };
+
+  for (let i = 0; i < rawLines.length; i++) {
+    const line = rawLines[i];
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      if (currentList) {
+        blocks.push(currentList);
+        currentList = null;
+      }
+      continue;
+    }
+
+    const olMatch = trimmed.match(/^(\d+)[\.\)]\s+(.*)/);
+    const ulMatch = trimmed.match(/^[\-\*•]\s+(.*)/);
+
+    if (olMatch) {
+      const num = parseInt(olMatch[1], 10);
+      const content = olMatch[2];
+      if (!currentList || currentList.type !== 'ol') {
+        if (currentList) blocks.push(currentList);
+        currentList = { type: 'ol', items: [] };
+      }
+      currentList.items.push({ num, content });
+    } else if (ulMatch) {
+      const content = ulMatch[1];
+      if (!currentList || currentList.type !== 'ul') {
+        if (currentList) blocks.push(currentList);
+        currentList = { type: 'ul', items: [] };
+      }
+      currentList.items.push({ content });
+    } else {
+      if (currentList) {
+        blocks.push(currentList);
+        currentList = null;
+      }
+      blocks.push({ type: 'p', content: line });
+    }
+  }
+
+  if (currentList) {
+    blocks.push(currentList);
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem', lineHeight: 1.6, color: 'var(--foreground)' }}>
+      {blocks.map((block, idx) => {
+        if (block.type === 'ol') {
+          return (
+            <ol
+              key={idx}
+              style={{
+                margin: 0,
+                paddingLeft: '1.4rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.45rem',
+                listStyleType: 'decimal',
+              }}
+            >
+              {block.items.map((item, itemIdx) => (
+                <li key={itemIdx} value={item.num} style={{ paddingLeft: '0.25rem', whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: 'var(--foreground)' }}>
+                  {renderInlineFormatted(item.content)}
+                </li>
+              ))}
+            </ol>
+          );
+        }
+        if (block.type === 'ul') {
+          return (
+            <ul
+              key={idx}
+              style={{
+                margin: 0,
+                paddingLeft: '1.4rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.45rem',
+                listStyleType: 'disc',
+              }}
+            >
+              {block.items.map((item, itemIdx) => (
+                <li key={itemIdx} style={{ paddingLeft: '0.25rem', whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: 'var(--foreground)' }}>
+                  {renderInlineFormatted(item.content)}
+                </li>
+              ))}
+            </ul>
+          );
+        }
+        return (
+          <div key={idx} style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: 'var(--muted-foreground)' }}>
+            {renderInlineFormatted(block.content)}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function parseSolutionText(text) {
   if (!text) return '';
-  const html = text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #188ab2; text-decoration: underline;">$1</a>')
-    .replace(/\n/g, '<br/>');
-  return <span dangerouslySetInnerHTML={{ __html: html }} />;
+  return renderFormattedInstructions(text);
 }
 
 function formatCalendarLongDate(date) {
@@ -4592,8 +4730,8 @@ export default function DashboardClient({
                       ) : (
                         <div>
                           {assignment.description && (
-                            <div style={{ ...s.lessonDesc, marginBottom: '1.25rem' }}>
-                              {assignment.description}
+                            <div style={{ marginBottom: '1.25rem' }}>
+                              {renderFormattedInstructions(assignment.description)}
                             </div>
                           )}
                           <AssignmentUpload
