@@ -53,6 +53,7 @@ async function getSupplementalContent(courseId) {
       liveRecordedSessions: Array.isArray(item.liveRecordedSessions) ? item.liveRecordedSessions : [],
       calendarEvents: Array.isArray(item.calendarEvents) ? item.calendarEvents : [],
       reminders: Array.isArray(item.reminders) ? item.reminders : [],
+      resources: Array.isArray(item.resources) ? item.resources : [],
     };
   } catch (err) {
     console.error('DynamoDB GetCommand supplemental content error:', err);
@@ -61,6 +62,7 @@ async function getSupplementalContent(courseId) {
       liveRecordedSessions: [],
       calendarEvents: [],
       reminders: [],
+      resources: [],
     };
   }
 }
@@ -176,7 +178,7 @@ exports.handler = async (event) => {
     assignments: supplementalContent?.assignments || [],
     liveRecordedSessions: supplementalContent?.liveRecordedSessions || [],
     calendarEvents: supplementalContent?.calendarEvents || [],
-    resources: [],
+    resources: supplementalContent?.resources || [],
     docs: [],
     quiz: { questions: [] },
   };

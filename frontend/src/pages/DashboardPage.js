@@ -4573,9 +4573,64 @@ export default function DashboardPage() {
   }
 
   function renderResourcesView() {
-    const globalResources = (supplementalContent?.resources && supplementalContent.resources.length > 0)
-      ? supplementalContent.resources
-      : DEFAULT_RESOURCES;
+    // 1. Course-wide resources from supplementalContent
+    const courseWide = Array.isArray(supplementalContent?.resources) ? supplementalContent.resources : [];
+
+    // 2. Resources from supplemental week item
+    const suppWeek = (weeks || []).find((w) => w.weekId === '__supplemental__');
+    const suppWeekRes = Array.isArray(suppWeek?.resources) ? suppWeek.resources : [];
+
+    // 3. Module / Week-level resources across all released weeks
+    const weekItems = (weeks || []).filter((w) => w.weekId !== '__supplemental__').flatMap((w) => {
+      const wRes = Array.isArray(w.resources) ? w.resources : [];
+      const wDocs = Array.isArray(w.docs) ? w.docs : [];
+      if (wRes.length === 0 && wDocs.length === 0) return [];
+
+      const weekLabel = Number.isFinite(Number(w.weekNumber))
+        ? `Week ${Math.floor(Number(w.weekNumber))}`
+        : (w.title || 'Course Module');
+
+      const items = [];
+      wRes.forEach((r, idx) => {
+        const itemDocs = Array.isArray(r.docs) && r.docs.length > 0
+          ? r.docs
+          : (r.url ? [{ id: `doc-${idx}`, label: r.title || 'Open Resource', url: r.url }] : []);
+
+        items.push({
+          id: r.id || `wres-${w.weekId}-${idx}`,
+          title: r.title || `${weekLabel} Resource ${idx + 1}`,
+          description: r.description || '',
+          url: r.url || r.link || r.fileUrl || '',
+          docs: itemDocs,
+          sourceLabel: weekLabel,
+        });
+      });
+
+      if (wDocs.length > 0 && wRes.length === 0) {
+        items.push({
+          id: `wdocs-${w.weekId}`,
+          title: `${weekLabel} Reference Documents`,
+          description: `Reference materials and downloads for ${w.title || weekLabel}.`,
+          docs: wDocs,
+          sourceLabel: weekLabel,
+        });
+      }
+      return items;
+    });
+
+    const rawAll = [
+      ...courseWide.map((r) => ({ ...r, sourceLabel: 'Course Resource' })),
+      ...suppWeekRes.map((r) => ({ ...r, sourceLabel: 'Course Resource' })),
+      ...weekItems,
+    ];
+
+    const seen = new Set();
+    const globalResources = rawAll.filter((r) => {
+      const key = r.id || `${r.title}-${r.url}`;
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -4587,7 +4642,13 @@ export default function DashboardPage() {
           <div style={s.accordionList}>
             {globalResources.map((resource, index) => {
               const isExpanded = !!expandedResources[resource.id || index];
-              const docCount = resource.docs?.length || 0;
+              const allDocs = [
+                ...(Array.isArray(resource.docs) ? resource.docs : []),
+                ...(resource.url && (!resource.docs || !resource.docs.some((d) => d.url === resource.url))
+                  ? [{ id: `doc-direct-${index}`, label: resource.title || 'Open Link / File', url: resource.url }]
+                  : []),
+              ];
+              const docCount = allDocs.length;
 
               return (
                 <div key={resource.id || index} style={s.weekGroupCard}>
@@ -4602,7 +4663,7 @@ export default function DashboardPage() {
                           {resource.title}
                         </div>
                         <div style={s.weekGroupMeta}>
-                          {docCount} reference document{docCount === 1 ? '' : 's'}
+                          {resource.sourceLabel || 'Course Resource'} • {docCount} reference document{docCount === 1 ? '' : 's'}
                         </div>
                       </div>
 
@@ -4619,19 +4680,17 @@ export default function DashboardPage() {
                     <div style={{ ...s.weekGroupBody, display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1.25rem 1.5rem' }}>
                       {resource.description && (
                         <div>
-                          <div style={{ ...s.lessonDesc, color: 'var(--foreground)', fontSize: '0.9rem', lineHeight: 1.5, margin: 0 }}>
-                            {renderTextWithLinks(resource.description)}
-                          </div>
+                          {renderFormattedInstructions(resource.description)}
                         </div>
                       )}
 
                       {docCount > 0 ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: resource.description ? '0.5rem' : 0 }}>
                           <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>
-                            Reference Documents
+                            Reference Documents & Links
                           </div>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '0.75rem' }}>
-                            {resource.docs.map((doc, di) => (
+                            {allDocs.map((doc, di) => (
                               <a
                                 key={doc.id || di}
                                 href={doc.url}
