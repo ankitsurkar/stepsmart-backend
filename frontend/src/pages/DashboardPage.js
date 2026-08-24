@@ -2649,6 +2649,7 @@ export default function DashboardPage() {
 
       let actualCourse = null;
       let weeksData = [];
+      let suppData = null;
       let progressData = {};
 
       if (courseList.length > 0) {
@@ -2659,6 +2660,7 @@ export default function DashboardPage() {
         // If the resolved course matches what we pre-fetched in parallel, use the results immediately
         if (actualCourse.courseId === preferredCourseId && initialWeeksResult.status === 'fulfilled' && initialProgressResult.status === 'fulfilled') {
           weeksData = initialWeeksResult.value.data.weeks || [];
+          suppData = initialWeeksResult.value.data.supplementalContent || null;
           progressData = initialProgressResult.value.data || {};
         } else {
           // In the rare event the active course was different, fetch for the actual course
@@ -2667,6 +2669,7 @@ export default function DashboardPage() {
             getProgress(actualCourse.courseId, { includeLeaderboard: true, clientDate: todayStr }),
           ]);
           weeksData = weeksRes.data.weeks || [];
+          suppData = weeksRes.data.supplementalContent || null;
           progressData = progressRes.data || {};
         }
       } else {
@@ -2683,6 +2686,7 @@ export default function DashboardPage() {
 
         if (initialWeeksResult.status === 'fulfilled' && initialProgressResult.status === 'fulfilled') {
           weeksData = initialWeeksResult.value.data.weeks || [];
+          suppData = initialWeeksResult.value.data.supplementalContent || null;
           progressData = initialProgressResult.value.data || {};
         } else {
           const [weeksRes, progressRes] = await Promise.all([
@@ -2690,7 +2694,21 @@ export default function DashboardPage() {
             getProgress(preferredCourseId, { includeLeaderboard: true, clientDate: todayStr }),
           ]);
           weeksData = weeksRes.data.weeks || [];
+          suppData = weeksRes.data.supplementalContent || null;
           progressData = progressRes.data || {};
+        }
+      }
+
+      if (!suppData) {
+        const suppWeek = (weeksData || []).find((w) => w.weekId === '__supplemental__');
+        if (suppWeek) {
+          suppData = {
+            assignments: suppWeek.assignments || [],
+            liveRecordedSessions: suppWeek.liveRecordedSessions || [],
+            calendarEvents: suppWeek.calendarEvents || [],
+            reminders: suppWeek.reminders || [],
+            resources: suppWeek.resources || [],
+          };
         }
       }
 
@@ -2705,7 +2723,6 @@ export default function DashboardPage() {
       const leaderboardData = progressData.leaderboard || [];
       setLeaderboard(leaderboardData);
 
-      const suppData = weeksData.supplementalContent || null;
       setSupplementalContent(suppData);
 
       const nextGymProgress = progressData.gymProgress || [];
@@ -2754,6 +2771,19 @@ export default function DashboardPage() {
       ]);
 
       const weeksData = weeksRes.data.weeks || [];
+      let suppData = weeksRes.data.supplementalContent || null;
+      if (!suppData) {
+        const suppWeek = (weeksData || []).find((w) => w.weekId === '__supplemental__');
+        if (suppWeek) {
+          suppData = {
+            assignments: suppWeek.assignments || [],
+            liveRecordedSessions: suppWeek.liveRecordedSessions || [],
+            calendarEvents: suppWeek.calendarEvents || [],
+            reminders: suppWeek.reminders || [],
+            resources: suppWeek.resources || [],
+          };
+        }
+      }
       setWeeks(weeksData);
 
       const nextProgressMap = {};
@@ -2765,7 +2795,6 @@ export default function DashboardPage() {
       const leaderboardData = progressRes.data.leaderboard || [];
       setLeaderboard(leaderboardData);
 
-      const suppData = weeksRes.data.supplementalContent || null;
       setSupplementalContent(suppData);
 
       const nextGymProgress = progressRes.data.gymProgress || [];
@@ -3028,7 +3057,12 @@ export default function DashboardPage() {
 
     // Weekly Reminder Card
     const renderWeeklyReminderCard = () => {
-      const reminders = supplementalContent?.reminders || [];
+      const suppWeek = (weeks || []).find((w) => w.weekId === '__supplemental__');
+      const reminders = (supplementalContent?.reminders && supplementalContent.reminders.length > 0)
+        ? supplementalContent.reminders
+        : (suppWeek?.reminders && suppWeek.reminders.length > 0)
+          ? suppWeek.reminders
+          : [];
       return (
         <div
           ref={weeklyReminderCardRef}
@@ -4573,64 +4607,12 @@ export default function DashboardPage() {
   }
 
   function renderResourcesView() {
-    // 1. Course-wide resources from supplementalContent
-    const courseWide = Array.isArray(supplementalContent?.resources) ? supplementalContent.resources : [];
-
-    // 2. Resources from supplemental week item
     const suppWeek = (weeks || []).find((w) => w.weekId === '__supplemental__');
-    const suppWeekRes = Array.isArray(suppWeek?.resources) ? suppWeek.resources : [];
-
-    // 3. Module / Week-level resources across all released weeks
-    const weekItems = (weeks || []).filter((w) => w.weekId !== '__supplemental__').flatMap((w) => {
-      const wRes = Array.isArray(w.resources) ? w.resources : [];
-      const wDocs = Array.isArray(w.docs) ? w.docs : [];
-      if (wRes.length === 0 && wDocs.length === 0) return [];
-
-      const weekLabel = Number.isFinite(Number(w.weekNumber))
-        ? `Week ${Math.floor(Number(w.weekNumber))}`
-        : (w.title || 'Course Module');
-
-      const items = [];
-      wRes.forEach((r, idx) => {
-        const itemDocs = Array.isArray(r.docs) && r.docs.length > 0
-          ? r.docs
-          : (r.url ? [{ id: `doc-${idx}`, label: r.title || 'Open Resource', url: r.url }] : []);
-
-        items.push({
-          id: r.id || `wres-${w.weekId}-${idx}`,
-          title: r.title || `${weekLabel} Resource ${idx + 1}`,
-          description: r.description || '',
-          url: r.url || r.link || r.fileUrl || '',
-          docs: itemDocs,
-          sourceLabel: weekLabel,
-        });
-      });
-
-      if (wDocs.length > 0 && wRes.length === 0) {
-        items.push({
-          id: `wdocs-${w.weekId}`,
-          title: `${weekLabel} Reference Documents`,
-          description: `Reference materials and downloads for ${w.title || weekLabel}.`,
-          docs: wDocs,
-          sourceLabel: weekLabel,
-        });
-      }
-      return items;
-    });
-
-    const rawAll = [
-      ...courseWide.map((r) => ({ ...r, sourceLabel: 'Course Resource' })),
-      ...suppWeekRes.map((r) => ({ ...r, sourceLabel: 'Course Resource' })),
-      ...weekItems,
-    ];
-
-    const seen = new Set();
-    const globalResources = rawAll.filter((r) => {
-      const key = r.id || `${r.title}-${r.url}`;
-      if (!key || seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+    const globalResources = (supplementalContent?.resources && supplementalContent.resources.length > 0)
+      ? supplementalContent.resources
+      : (suppWeek?.resources && suppWeek.resources.length > 0)
+        ? suppWeek.resources
+        : DEFAULT_RESOURCES;
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
