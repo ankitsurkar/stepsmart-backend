@@ -21,6 +21,7 @@ import {
   CalendarDays,
   LogOut
 } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
 
 // Firebase Imports
 import { initializeApp } from 'firebase/app';
@@ -1233,6 +1234,7 @@ export default function App() {
         /> */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <Analytics />
     </BrowserRouter>
   );
 }

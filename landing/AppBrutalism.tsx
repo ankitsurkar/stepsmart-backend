@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { BrowserRouter, Link, Navigate, Route, Routes, useNavigate, useParams, useSearchParams, useLocation } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 
 const StudentsLandingPage = lazy(() => import('./StudentsBrutalism').then(m => ({ default: m.StudentsLandingPage })));
 const EventsPage = lazy(() => import('./EventsBrutalism').then(m => ({ default: m.EventsPage })));
@@ -3411,6 +3412,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
+      <Analytics />
     </BrowserRouter>
   );
 }
