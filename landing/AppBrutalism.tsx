@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { BrowserRouter, Link, Navigate, Route, Routes, useNavigate, useParams, useSearchParams, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
+import { applySeo, getSeoForLocation, SITE_ORIGIN } from './seo';
 
 const StudentsLandingPage = lazy(() => import('./StudentsBrutalism').then(m => ({ default: m.StudentsLandingPage })));
 const EventsPage = lazy(() => import('./EventsBrutalism').then(m => ({ default: m.EventsPage })));
@@ -2502,6 +2503,22 @@ function BlogPage() {
 
   const currentPost = blogId ? displayBlogs.find(b => b.id === blogId) : null;
 
+  useEffect(() => {
+    if (blogId && currentPost) {
+      const plain = (currentPost.description || '')
+        .replace(/<[^>]*>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      applySeo({
+        title: `${currentPost.title} | StepSmart PM Blog`,
+        description: plain ? plain.slice(0, 160) : `${currentPost.title} — a Product Management guide from StepSmart.`,
+        canonical: `${SITE_ORIGIN}/blog/${blogId}`,
+        ogImage: currentPost.imageUrl ? formatImageUrl(currentPost.imageUrl) : undefined,
+        ogType: 'article',
+      });
+    }
+  }, [blogId, currentPost]);
+
   // Single Post Detailed Reader View
   if (blogId) {
     if (loading) {
@@ -3370,10 +3387,21 @@ function ScrollToTop() {
   return null;
 }
 
+function SeoManager() {
+  const { pathname, search } = useLocation();
+
+  useEffect(() => {
+    applySeo(getSeoForLocation(pathname, search));
+  }, [pathname, search]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <SeoManager />
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<PortalPage />} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { 
   FileText, 
   BookOpen, 
@@ -1282,8 +1282,10 @@ The process typically involves 4 structured rounds:
 
 export function ResourcesBrutalism() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeResourceId = searchParams.get('id');
+  const [searchParams] = useSearchParams();
+  const { resourceId } = useParams();
+  // Prefer the clean /resources/:id path; fall back to legacy /resources?id=<id> links.
+  const activeResourceId = resourceId || searchParams.get('id');
 
   const [resources, setResources] = useState<ResourceItem[]>(DEMO_RESOURCES);
   const [selectedCategory, setSelectedCategory] = useState<string>('All Categories');
@@ -1421,13 +1423,12 @@ export function ResourcesBrutalism() {
   const activeResource = resources.find(r => r.id === activeResourceId);
 
   const handleOpenResource = (id: string) => {
-    setSearchParams({ id });
+    navigate(`/resources/${id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCloseResource = () => {
-    searchParams.delete('id');
-    setSearchParams(searchParams);
+    navigate('/resources');
   };
 
   const handleUploadSubmit = (e: React.FormEvent) => {
