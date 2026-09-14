@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { BrowserRouter, Link, Navigate, Route, Routes, useNavigate, useParams, useSearchParams, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
-import { applySeo, getSeoForLocation, SITE_ORIGIN } from './seo';
+import { applySeo, getSeoForLocation, SITE_ORIGIN, trackPageView } from './seo';
 
 const StudentsLandingPage = lazy(() => import('./StudentsBrutalism').then(m => ({ default: m.StudentsLandingPage })));
 const EventsPage = lazy(() => import('./EventsBrutalism').then(m => ({ default: m.EventsPage })));
@@ -3391,7 +3391,9 @@ function SeoManager() {
   const { pathname, search } = useLocation();
 
   useEffect(() => {
-    applySeo(getSeoForLocation(pathname, search));
+    const seo = getSeoForLocation(pathname, search);
+    applySeo(seo);
+    trackPageView(pathname + search, seo.title);
   }, [pathname, search]);
 
   return null;
