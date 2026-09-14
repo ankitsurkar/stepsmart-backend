@@ -6,6 +6,24 @@
 export const SITE_ORIGIN = 'https://www.stepsmart.net';
 const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/hero_image.webp`;
 
+export const GA_MEASUREMENT_ID = 'G-K86RQ49D2M';
+
+// Send a GA4 page_view for the current SPA route. Called on every route change.
+// Guarded so it only fires in the browser on the production domain (not local dev).
+export function trackPageView(path: string, title: string) {
+  if (typeof window === 'undefined') return;
+  const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+  if (typeof gtag !== 'function') return;
+  if (window.location.hostname !== 'www.stepsmart.net' && window.location.hostname !== 'stepsmart.net') {
+    return;
+  }
+  gtag('event', 'page_view', {
+    page_path: path,
+    page_title: title,
+    page_location: window.location.href,
+  });
+}
+
 export interface SeoData {
   title: string;
   description: string;
