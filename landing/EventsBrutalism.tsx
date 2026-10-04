@@ -155,7 +155,7 @@ export const saveStoredEvents = (events: EventItem[]) => {
 };
 
 // Helper to check event status dynamically based on current date
-const getEventStatus = (eventDateStr: string): 'upcoming' | 'ended' => {
+export const getEventStatus = (eventDateStr: string): 'upcoming' | 'ended' => {
   const eventDate = new Date(eventDateStr);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -172,6 +172,18 @@ const getEventStatus = (eventDateStr: string): 'upcoming' | 'ended' => {
   }
   return 'upcoming';
 };
+
+// Helper to get the earliest upcoming event for dynamic banners
+export const getNextUpcomingEvent = (events: EventItem[]): EventItem | null => {
+  const upcoming = events
+    .filter(e => e.dateStr && getEventStatus(e.dateStr) === 'upcoming')
+    .sort((a, b) => new Date(a.dateStr).getTime() - new Date(b.dateStr).getTime());
+  return upcoming.length > 0 ? upcoming[0] : null;
+};
+
+// Helper to render text with clickable links (supporting markdown [label](url), raw URLs, and www. links)
+import { formatHref, renderTextWithLinks } from './linkUtils';
+export { formatHref, renderTextWithLinks };
 
 export function EventsPage() {
   const [events, setEvents] = useState<EventItem[]>(() => getStoredEvents());
@@ -282,6 +294,16 @@ export function EventsPage() {
     html = html.replace(/^## (.*?)$/gm, '<h2 class="text-xl font-extrabold mt-8 mb-3 border-b-2 border-[#111111] pb-1 text-[#111111]">$1</h2>');
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold">$1</strong>');
     html = html.replace(/^- (.*?)$/gm, '<li class="ml-4 list-disc font-bold text-slate-700">$1</li>');
+
+    // Parse links (markdown links [text](url), raw URLs, and www. links)
+    const linkRegex = /\[([^\]]+)\]\(((?:https?:\/\/|www\.)[^\s)]+|[^\s)]+)\)|((?:https?:\/\/|www\.)[^\s<]+[^\s<.,:;\"')\]!?])/g;
+    html = html.replace(linkRegex, (_match, label, mdUrl, rawUrl) => {
+      const url = mdUrl || rawUrl;
+      const href = formatHref(url);
+      const display = label || rawUrl;
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-[#188ab2] underline hover:text-[#0f6f8f] font-extrabold cursor-pointer break-all">${display}</a>`;
+    });
+
     html = html.replace(/\n/g, '<br />');
     return html;
   };
@@ -367,12 +389,12 @@ export function EventsPage() {
                     {activeEvent.title}
                   </h2>
                   <p className="text-xs font-bold uppercase tracking-wider text-slate-200">
-                    Live from IIT Roorkee
+                    Live from {activeEvent.format || 'IIT Roorkee'}
                   </p>
                 </div>
 
                 {/* Attendee Count (Avatars & Rahul text removed as requested) */}
-                {activeEvent.attendeeCount && (
+                {Boolean(activeEvent.attendeeCount && activeEvent.attendeeCount > 0) && (
                   <div className="border-[3px] border-[#111111] p-6 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] bg-slate-50 flex items-center gap-3">
                     <Users className="h-5 w-5 text-[#188ab2]" />
                     <p className="text-sm font-black text-[#111111]">
@@ -412,11 +434,18 @@ export function EventsPage() {
 
                 {/* About Event Text */}
                 <div className="border-t-2 border-[#111111]/10 pt-6">
-                  <h3 className="text-xl font-black">About the event</h3>
-                  <div 
-                    className="prose prose-slate max-w-none text-sm text-[#111111] leading-relaxed space-y-4"
-                    dangerouslySetInnerHTML={{ __html: parseAboutText(activeEvent.aboutText) }}
-                  />
+                  <h3 className="text-xl font-black mb-4">About the event</h3>
+                  {activeEvent.description && activeEvent.aboutText && !activeEvent.aboutText.startsWith(activeEvent.description) && (
+                    <p className="text-sm font-bold text-slate-700 leading-relaxed mb-4 whitespace-pre-line">
+                      {renderTextWithLinks(activeEvent.description)}
+                    </p>
+                  )}
+                  {(activeEvent.aboutText || activeEvent.description) && (
+                    <div 
+                      className="prose prose-slate max-w-none text-sm text-[#111111] leading-relaxed space-y-4"
+                      dangerouslySetInnerHTML={{ __html: parseAboutText(activeEvent.aboutText || activeEvent.description) }}
+                    />
+                  )}
                 </div>
 
                 {/* Moments Gallery if ended */}
@@ -566,7 +595,7 @@ export function EventsPage() {
                           </div>
 
                           <h3 className="text-2xl md:text-3xl font-black text-[#111111] mb-4 leading-tight">{event.title}</h3>
-                          <p className="text-sm font-bold text-slate-600 leading-relaxed mb-6">{event.description}</p>
+                          <p className="text-sm font-bold text-slate-600 leading-relaxed mb-6 whitespace-pre-line">{renderTextWithLinks(event.description)}</p>
                           
                           {/* Event Stats */}
                           <div className="flex flex-wrap gap-6 text-xs font-black uppercase text-[#111111]/70">
@@ -630,11 +659,11 @@ export function EventsPage() {
                             </div>
 
                             <h3 className="text-2xl md:text-3xl font-black text-[#111111]/70 mb-4 leading-tight">{event.title}</h3>
-                            <p className="text-sm font-bold text-slate-500 leading-relaxed mb-6">{event.description}</p>
+                            <p className="text-sm font-bold text-slate-500 leading-relaxed mb-6 whitespace-pre-line">{renderTextWithLinks(event.description)}</p>
                           </div>
 
                           {/* Attendee Count Badge */}
-                          {event.attendeeCount && (
+                          {Boolean(event.attendeeCount && event.attendeeCount > 0) && (
                             <div className="shrink-0 bg-[#FFF3A7] border-2 border-[#111111] p-4 text-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] rotate-[-1.5deg]">
                               <p className="text-2xl font-black text-[#111111]">{event.attendeeCount}</p>
                               <p className="text-[10px] font-black uppercase text-slate-600 tracking-wider">people went</p>

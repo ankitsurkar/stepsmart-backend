@@ -18,50 +18,6 @@ const PageLoader = () => (
 );
 
 
-// Banner Configuration (Set enabled: true to display banner at top of all pages)
-export const BANNER_CONFIG = {
-  enabled: true,
-  text: "📅 Next Live Event: 'Product Masterclass' on Monday, July 27 at 8:00 PM IST",
-  ctaText: "Register Now ➜"
-};
-
-export function AnnouncementBanner() {
-  const [visible, setVisible] = useState(() => {
-    if (!BANNER_CONFIG.enabled) return false;
-    return localStorage.getItem('stepsmart_banner_dismissed') !== 'true';
-  });
-  const navigate = useNavigate();
-
-  if (!visible) return null;
-
-  const handleDismiss = () => {
-    localStorage.setItem('stepsmart_banner_dismissed', 'true');
-    setVisible(false);
-  };
-
-  return (
-    <div className="w-full bg-[#FFF3A7] border-b-[3px] border-[#111111] py-2 px-6 flex items-center justify-between text-[#111111] z-50 select-none relative font-bold text-xs sm:text-sm">
-      <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center">
-        <span>{BANNER_CONFIG.text}</span>
-        <button 
-          onClick={() => {
-            navigate('/events?id=product-masterclass-iit-kanpur-2026');
-          }}
-          className="bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer inline-block"
-        >
-          {BANNER_CONFIG.ctaText}
-        </button>
-      </div>
-      <button 
-        onClick={handleDismiss}
-        className="p-1 hover:bg-[#111111]/10 rounded border-2 border-transparent active:border-[#111111] transition-all ml-4"
-        aria-label="Dismiss Banner"
-      >
-        <X className="h-4 w-4 text-[#111111]" />
-      </button>
-    </div>
-  );
-}
 import {
   CheckCircle2,
   Mail,
@@ -91,9 +47,37 @@ import {
   Plus,
   Upload
 } from 'lucide-react';
+import { renderTextWithLinks } from './linkUtils';
 import type { EventItem } from './EventsBrutalism';
 
 const LOCAL_STORAGE_EVENTS_KEY = 'pmx_custom_events';
+
+// Helper to check event status dynamically based on current date
+const getEventStatus = (eventDateStr: string): 'upcoming' | 'ended' => {
+  const eventDate = new Date(eventDateStr);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const eventDay = new Date(eventDate);
+  eventDay.setHours(0, 0, 0, 0);
+  
+  // The next day after the event date
+  const nextDayAfterEvent = new Date(eventDay);
+  nextDayAfterEvent.setDate(nextDayAfterEvent.getDate() + 1);
+  
+  if (today >= nextDayAfterEvent) {
+    return 'ended';
+  }
+  return 'upcoming';
+};
+
+// Helper to get the earliest upcoming live event for dynamic banner
+const getNextUpcomingEvent = (events: EventItem[]): EventItem | null => {
+  const upcoming = events
+    .filter(e => e.dateStr && getEventStatus(e.dateStr) === 'upcoming')
+    .sort((a, b) => new Date(a.dateStr).getTime() - new Date(b.dateStr).getTime());
+  return upcoming.length > 0 ? upcoming[0] : null;
+};
 
 const getStoredEvents = (): EventItem[] => {
   try {
@@ -157,6 +141,76 @@ const saveStoredEvents = (events: EventItem[]) => {
     console.error('Failed to save stored events', e);
   }
 };
+
+// Banner Configuration (Set enabled: true to display banner at top of all pages)
+export const BANNER_CONFIG = {
+  enabled: true,
+  ctaText: "Register Now ➜"
+};
+
+export function AnnouncementBanner() {
+  const navigate = useNavigate();
+  const [events, setEvents] = useState<EventItem[]>(() => getStoredEvents());
+  const [dismissedEventId, setDismissedEventId] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem('stepsmart_banner_dismissed_event_id');
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const handleEventsUpdate = () => {
+      setEvents(getStoredEvents());
+    };
+    window.addEventListener('pmx_events_updated', handleEventsUpdate);
+    return () => window.removeEventListener('pmx_events_updated', handleEventsUpdate);
+  }, []);
+
+  if (!BANNER_CONFIG.enabled) return null;
+
+  const nextUpcomingEvent = getNextUpcomingEvent(events);
+
+  // If no upcoming event exists (e.g. event dates have passed) or user dismissed this event's banner, do not show
+  if (!nextUpcomingEvent || dismissedEventId === nextUpcomingEvent.id) {
+    return null;
+  }
+
+  const handleDismiss = () => {
+    try {
+      localStorage.setItem('stepsmart_banner_dismissed_event_id', nextUpcomingEvent.id);
+    } catch (e) {
+      console.error(e);
+    }
+    setDismissedEventId(nextUpcomingEvent.id);
+  };
+
+  const bannerText = `📅 Next Live Event: '${nextUpcomingEvent.title}' on ${nextUpcomingEvent.dateDisplay || nextUpcomingEvent.dateStr}${nextUpcomingEvent.time ? ` at ${nextUpcomingEvent.time}` : ''}`;
+
+  return (
+    <div className="w-full bg-[#FFF3A7] border-b-[3px] border-[#111111] py-2 px-6 flex items-center justify-between text-[#111111] z-50 select-none relative font-bold text-xs sm:text-sm">
+      <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center">
+        <span>{bannerText}</span>
+        <button 
+          onClick={() => {
+            navigate(`/events?id=${nextUpcomingEvent.id}`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer inline-block"
+        >
+          {BANNER_CONFIG.ctaText}
+        </button>
+      </div>
+      <button 
+        onClick={handleDismiss}
+        className="p-1 hover:bg-[#111111]/10 rounded border-2 border-transparent active:border-[#111111] transition-all ml-4 cursor-pointer"
+        aria-label="Dismiss Banner"
+      >
+        <X className="h-4 w-4 text-[#111111]" />
+      </button>
+    </div>
+  );
+}
 
 // Firebase Imports
 import { initializeApp } from 'firebase/app';
@@ -1788,23 +1842,25 @@ function AdminEventsManager() {
   const [description, setDescription] = useState('');
   const [aboutText, setAboutText] = useState('');
   const [registerUrl, setRegisterUrl] = useState('https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD');
-  const [attendeeCount, setAttendeeCount] = useState(124);
+  const [attendeeCount, setAttendeeCount] = useState<number | ''>('');
 
   // Screenshots / Moments state for modal
   const [moments, setMoments] = useState<string[]>([]);
   const [pastedUrl, setPastedUrl] = useState('');
 
+  const nextUpcomingEvent = getNextUpcomingEvent(events);
+
   const openCreateModal = () => {
     setEditingId(null);
     setTitle('');
-    setDateStr('2026-08-01');
-    setDateDisplay('Saturday, Aug 1');
+    setDateStr('');
+    setDateDisplay('');
     setTime('8:00 PM IST');
     setFormat('IIT Kanpur');
     setDescription('Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.');
     setAboutText('Get real insights from PMs on what it takes to become a Product Manager from skills to strategies to cracking interviews.\n\n### What We Cover:\n- **Skills & Frameworks**: Building product sense, RCA, design thinking.\n- **Resume Mapping**: Translating existing experience.\n- **Q&A Round**: Open floor to ask speakers questions.');
     setRegisterUrl('https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD');
-    setAttendeeCount(150);
+    setAttendeeCount('');
     setMoments([]);
     setPastedUrl('');
     setShowModal(true);
@@ -1820,7 +1876,7 @@ function AdminEventsManager() {
     setDescription(eventItem.description || '');
     setAboutText(eventItem.aboutText || '');
     setRegisterUrl(eventItem.registerUrl || '');
-    setAttendeeCount(eventItem.attendeeCount || 100);
+    setAttendeeCount(eventItem.attendeeCount !== undefined ? eventItem.attendeeCount : '');
     setMoments(eventItem.moments || []);
     setPastedUrl('');
     setShowModal(true);
@@ -1829,6 +1885,8 @@ function AdminEventsManager() {
   const handleSaveEvent = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !dateStr) return;
+
+    const parsedCount = attendeeCount === '' ? undefined : Number(attendeeCount);
 
     let updatedList: EventItem[] = [];
 
@@ -1843,7 +1901,7 @@ function AdminEventsManager() {
         description,
         aboutText,
         registerUrl,
-        attendeeCount: Number(attendeeCount),
+        attendeeCount: parsedCount,
         moments
       } : ev);
     } else {
@@ -1857,7 +1915,7 @@ function AdminEventsManager() {
         description,
         aboutText,
         registerUrl,
-        attendeeCount: Number(attendeeCount),
+        attendeeCount: parsedCount,
         moments,
         bannerBg: 'linear-gradient(135deg, #188ab2 0%, #1e40af 100%)',
         tags: ['PRODUCT MASTERCLASS FOR STUDENTS', 'VIRTUAL', 'FREE'],
@@ -1873,6 +1931,18 @@ function AdminEventsManager() {
     setEvents(updatedList);
     saveStoredEvents(updatedList);
     setShowModal(false);
+  };
+
+  const handleQuickUpdateAttendeeCount = (eventId: string, val: string) => {
+    const parsed = val.trim() === '' ? undefined : Number(val);
+    const updated = events.map(ev => {
+      if (ev.id === eventId) {
+        return { ...ev, attendeeCount: parsed };
+      }
+      return ev;
+    });
+    setEvents(updated);
+    saveStoredEvents(updated);
   };
 
   const handleDeleteEvent = (eventId: string) => {
@@ -1937,7 +2007,7 @@ function AdminEventsManager() {
             Event & Session Manager
           </h2>
           <p className="text-xs text-slate-300 mt-1">
-            Create upcoming events, manage venues, and upload past session screenshots to display live on the frontend.
+            Create upcoming events, manage venues, update attendee counts, and upload past session screenshots to display live on the frontend.
           </p>
         </div>
 
@@ -1947,6 +2017,32 @@ function AdminEventsManager() {
         >
           <Plus className="h-4 w-4" /> Create New Event
         </button>
+      </div>
+
+      {/* Top Announcement Banner Status */}
+      <div className={`border rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
+        nextUpcomingEvent 
+          ? 'bg-amber-50/70 border-amber-200 text-amber-950' 
+          : 'bg-slate-50 border-slate-200 text-slate-600'
+      }`}>
+        <div className="space-y-0.5">
+          <div className="flex items-center gap-2">
+            <span className={`h-2.5 w-2.5 rounded-full ${nextUpcomingEvent ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
+            <span className="text-xs font-bold uppercase tracking-wider">
+              Top Announcement Banner: {nextUpcomingEvent ? 'Active (Dynamic)' : 'Hidden (All Event Dates Passed)'}
+            </span>
+          </div>
+          <p className="text-xs text-slate-600">
+            {nextUpcomingEvent 
+              ? `Currently displaying: "${nextUpcomingEvent.title}" (${nextUpcomingEvent.dateDisplay || nextUpcomingEvent.dateStr}). Once this date passes, the banner will automatically hide or transition to the next upcoming event.`
+              : 'The top announcement banner is currently hidden on the website because all past event dates have passed. Creating a future event will automatically activate it.'}
+          </p>
+        </div>
+        {nextUpcomingEvent && (
+          <span className="text-[11px] font-bold bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-3 py-1 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] shrink-0">
+            Preview: 📅 {nextUpcomingEvent.title}
+          </span>
+        )}
       </div>
 
       {/* Events List */}
@@ -1966,7 +2062,7 @@ function AdminEventsManager() {
                 {/* Event Header info */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className={`px-3 py-1 font-bold text-[11px] uppercase tracking-wide rounded-full ${
                         isEnded ? 'bg-slate-100 text-slate-600 border border-slate-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                       }`}>
@@ -1975,12 +2071,59 @@ function AdminEventsManager() {
                       <span className="bg-sky-50 text-sky-700 border border-sky-200 px-3 py-0.5 font-semibold text-xs rounded-full">
                         {eventItem.format || 'IIT Campus'}
                       </span>
+                      <span className="bg-amber-50 text-amber-900 border border-amber-200 px-3 py-0.5 font-semibold text-xs rounded-full flex items-center gap-1">
+                        <Users className="h-3 w-3 text-amber-600" />
+                        {eventItem.attendeeCount !== undefined ? `${eventItem.attendeeCount} ${isEnded ? 'went' : 'attending'}` : 'No attendee count set'}
+                      </span>
                     </div>
                     <h3 className="text-xl font-bold text-slate-900 mt-1">{eventItem.title}</h3>
                     <p className="text-xs font-medium text-slate-500 flex items-center gap-3 mt-0.5">
                       <span>📅 {eventItem.dateDisplay || eventItem.dateStr}</span>
                       <span>⏰ {eventItem.time}</span>
                     </p>
+                    {eventItem.description && (
+                      <p className="text-xs text-slate-600 mt-2 font-medium leading-relaxed whitespace-pre-line">
+                        {renderTextWithLinks(eventItem.description)}
+                      </p>
+                    )}
+
+                    {/* Quick Attendee Count Editor */}
+                    <div className="flex flex-wrap items-center gap-2 pt-2 text-xs">
+                      <span className="font-semibold text-slate-700 flex items-center gap-1">
+                        <Users className="h-3.5 w-3.5 text-[#188ab2]" />
+                        {isEnded ? 'People who went:' : 'People attending:'}
+                      </span>
+                      <input 
+                        type="number"
+                        min="0"
+                        key={`${eventItem.id}-${eventItem.attendeeCount}`}
+                        defaultValue={eventItem.attendeeCount ?? ''}
+                        placeholder="e.g. 124"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleQuickUpdateAttendeeCount(eventItem.id, (e.target as HTMLInputElement).value);
+                          }
+                        }}
+                        onBlur={(e) => {
+                          handleQuickUpdateAttendeeCount(eventItem.id, e.target.value);
+                        }}
+                        className="w-24 px-2 py-1 text-xs font-bold border border-slate-300 rounded-lg bg-white outline-none focus:border-[#188ab2] focus:ring-1 focus:ring-[#188ab2]"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          const input = (e.currentTarget.previousElementSibling as HTMLInputElement);
+                          if (input) handleQuickUpdateAttendeeCount(eventItem.id, input.value);
+                        }}
+                        className="px-2.5 py-1 bg-[#188ab2] hover:bg-[#0f6f8f] text-white rounded-lg text-xs font-bold transition-all cursor-pointer shadow-xs"
+                      >
+                        Save Count
+                      </button>
+                      <span className="text-[11px] text-slate-400 italic">
+                        (updates live on website)
+                      </span>
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-2 self-end sm:self-auto">
@@ -2153,7 +2296,26 @@ function AdminEventsManager() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">Short Summary Description</label>
+                <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
+                  Number of Attendees (People who went / attending)
+                </label>
+                <input 
+                  type="number"
+                  min="0"
+                  value={attendeeCount}
+                  onChange={(e) => setAttendeeCount(e.target.value === '' ? '' : Number(e.target.value))}
+                  placeholder="e.g. 124"
+                  className="w-full p-3 border border-slate-300 rounded-xl font-medium text-sm bg-white outline-none focus:ring-2 focus:ring-[#188ab2]/30 focus:border-[#188ab2]"
+                />
+                <p className="text-[11px] text-slate-500 mt-1">
+                  Displays as "{attendeeCount || 'X'} people went" once the event has ended, or "{attendeeCount || 'X'} people attending" while upcoming. You can add or update this anytime later.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
+                  Short Summary Description <span className="text-slate-400 font-normal lowercase">(supports clickable links: https://... or [title](url))</span>
+                </label>
                 <textarea 
                   rows={2}
                   value={description}
@@ -2164,7 +2326,9 @@ function AdminEventsManager() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">Detailed Overview / Agenda (Markdown)</label>
+                <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
+                  Detailed Overview / Agenda <span className="text-slate-400 font-normal lowercase">(Markdown & clickable links: https://... or [title](url))</span>
+                </label>
                 <textarea 
                   rows={4}
                   value={aboutText}

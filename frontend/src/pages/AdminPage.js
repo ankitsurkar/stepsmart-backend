@@ -3902,7 +3902,7 @@ function EventsTab({ courseId }) {
   const [description, setDescription] = useState('');
   const [aboutText, setAboutText] = useState('');
   const [registerUrl, setRegisterUrl] = useState('https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD');
-  const [attendeeCount, setAttendeeCount] = useState(120);
+  const [attendeeCount, setAttendeeCount] = useState('');
   const [moments, setMoments] = useState([]);
   const [pastedUrl, setPastedUrl] = useState('');
   const [message, setMessage] = useState('');
@@ -3919,6 +3919,61 @@ function EventsTab({ courseId }) {
     }
   };
 
+  const formatHref = (url) => {
+    if (!url) return '#';
+    if (
+      url.startsWith('www.') || 
+      (/^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/i.test(url) && 
+        !url.startsWith('http://') && 
+        !url.startsWith('https://') && 
+        !url.startsWith('/') && 
+        !url.startsWith('#') && 
+        !url.startsWith('mailto:'))
+    ) {
+      return `https://${url}`;
+    }
+    return url;
+  };
+
+  const renderTextWithLinks = (text) => {
+    if (!text) return null;
+    const regex = /\[([^\]]+)\]\(((?:https?:\/\/|www\.)[^\s)]+|[^\s)]+)\)|((?:https?:\/\/|www\.)[^\s<]+[^\s<.,:;\"')\]!?])/g;
+    const elements = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        elements.push(text.substring(lastIndex, match.index));
+      }
+      const label = match[1];
+      const mdUrl = match[2];
+      const rawUrl = match[3];
+      const url = mdUrl || rawUrl;
+      const href = formatHref(url);
+      const display = label || rawUrl;
+      elements.push(
+        <a
+          key={`link-${match.index}`}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          style={{ color: '#188ab2', textDecoration: 'underline', fontWeight: 700, wordBreak: 'break-all' }}
+        >
+          {display}
+        </a>
+      );
+      lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      elements.push(text.substring(lastIndex));
+    }
+
+    return elements.length > 0 ? elements : text;
+  };
+
   const resetForm = () => {
     setEditingId(null);
     setTitle('');
@@ -3929,7 +3984,7 @@ function EventsTab({ courseId }) {
     setDescription('');
     setAboutText('');
     setRegisterUrl('https://chat.whatsapp.com/BwmKS1htgjW8Tkt9v4fMwD');
-    setAttendeeCount(120);
+    setAttendeeCount('');
     setMoments([]);
     setPastedUrl('');
   };
@@ -3944,7 +3999,7 @@ function EventsTab({ courseId }) {
     setDescription(ev.description || '');
     setAboutText(ev.aboutText || '');
     setRegisterUrl(ev.registerUrl || '');
-    setAttendeeCount(ev.attendeeCount || 120);
+    setAttendeeCount(ev.attendeeCount !== undefined ? ev.attendeeCount : '');
     setMoments(ev.moments || []);
     setPastedUrl('');
   };
@@ -3963,6 +4018,8 @@ function EventsTab({ courseId }) {
       return;
     }
 
+    const parsedCount = attendeeCount === '' ? undefined : Number(attendeeCount);
+
     let updated = [];
     if (editingId) {
       updated = events.map(ev => ev.id === editingId ? {
@@ -3975,7 +4032,7 @@ function EventsTab({ courseId }) {
         description,
         aboutText,
         registerUrl,
-        attendeeCount: Number(attendeeCount),
+        attendeeCount: parsedCount,
         moments
       } : ev);
     } else {
@@ -3989,7 +4046,7 @@ function EventsTab({ courseId }) {
         description,
         aboutText,
         registerUrl,
-        attendeeCount: Number(attendeeCount),
+        attendeeCount: parsedCount,
         moments,
         tags: ["PRODUCT MASTERCLASS FOR STUDENTS", "VIRTUAL", "FREE"],
         hosts: [
@@ -4124,7 +4181,22 @@ function EventsTab({ courseId }) {
             placeholder="https://chat.whatsapp.com/..."
           />
 
-          <label style={s.label}>Short Summary Description</label>
+          <label style={s.label}>Number of Attendees (People who went / attending)</label>
+          <input
+            type="number"
+            min="0"
+            style={s.input}
+            value={attendeeCount}
+            onChange={(e) => setAttendeeCount(e.target.value)}
+            placeholder="e.g. 124"
+          />
+          <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', marginTop: '-0.5rem', marginBottom: '1rem' }}>
+            Displays as "{attendeeCount || 'X'} people went" on ended events or "{attendeeCount || 'X'} people attending" while upcoming. Can be updated anytime later.
+          </div>
+
+          <label style={s.label}>
+            Short Summary Description <span style={{ fontWeight: 400, color: 'var(--muted-foreground)', fontSize: '0.75rem' }}>(supports clickable links: https://... or [title](url))</span>
+          </label>
           <textarea
             style={{ ...s.textarea, height: '70px' }}
             value={description}
@@ -4132,7 +4204,9 @@ function EventsTab({ courseId }) {
             placeholder="Brief overview of session..."
           />
 
-          <label style={s.label}>Detailed Agenda / Overview (Markdown)</label>
+          <label style={s.label}>
+            Detailed Agenda / Overview (Markdown) <span style={{ fontWeight: 400, color: 'var(--muted-foreground)', fontSize: '0.75rem' }}>(Markdown & clickable links: https://... or [title](url))</span>
+          </label>
           <textarea
             style={{ ...s.textarea, height: '110px' }}
             value={aboutText}
@@ -4222,10 +4296,50 @@ function EventsTab({ courseId }) {
                         <span style={{ ...s.badge, ...s.badgeInfo, fontSize: '0.7rem' }}>
                           {ev.format || 'IIT Campus'}
                         </span>
+                        <span style={{ ...s.badge, fontSize: '0.7rem', background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a' }}>
+                          👥 {ev.attendeeCount !== undefined ? `${ev.attendeeCount} ${isEnded ? 'went' : 'attending'}` : 'No count set'}
+                        </span>
                       </div>
                       <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--foreground)' }}>{ev.title}</div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', marginTop: '0.25rem' }}>
                         📅 {ev.dateDisplay || ev.dateStr} | ⏰ {ev.time}
+                      </div>
+                      {ev.description && (
+                        <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', marginTop: '0.35rem', whiteSpace: 'pre-line' }}>
+                          {renderTextWithLinks(ev.description)}
+                        </div>
+                      )}
+
+                      {/* Quick Attendee Count Editor */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.4rem', fontSize: '0.8rem' }}>
+                        <span style={{ fontWeight: 600, color: 'var(--foreground)' }}>
+                          {isEnded ? 'People who went:' : 'People attending:'}
+                        </span>
+                        <input
+                          type="number"
+                          min="0"
+                          defaultValue={ev.attendeeCount ?? ''}
+                          placeholder="e.g. 124"
+                          style={{ width: '80px', padding: '0.2rem 0.4rem', fontSize: '0.8rem', border: '1px solid var(--border, #cbd5e1)', borderRadius: '4px' }}
+                          onBlur={(e) => {
+                            const val = e.target.value;
+                            const count = val.trim() === '' ? undefined : Number(val);
+                            const updated = events.map(x => x.id === ev.id ? { ...x, attendeeCount: count } : x);
+                            saveToStorage(updated);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              const val = e.target.value;
+                              const count = val.trim() === '' ? undefined : Number(val);
+                              const updated = events.map(x => x.id === ev.id ? { ...x, attendeeCount: count } : x);
+                              saveToStorage(updated);
+                            }
+                          }}
+                        />
+                        <span style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+                          (auto-saves on enter or blur)
+                        </span>
                       </div>
                     </div>
 
