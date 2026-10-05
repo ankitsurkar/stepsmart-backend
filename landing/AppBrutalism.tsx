@@ -235,12 +235,12 @@ export function AnnouncementBanner() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-center">
             <span>
               🚀 <span className="bg-white border border-[#111111] px-1.5 py-0.2 text-[10px] font-black uppercase mr-1">{batchConfig.batchNumber || "BATCH #04"}</span>
-              {batchConfig.batchName} — Starts <strong>{batchConfig.startDate}</strong>{' '}
+              {batchConfig.batchName || "PM-X ACCELERATOR"} — Starts <strong>{batchConfig.startDate}</strong>{' '}
               <span className="text-red-700 font-extrabold hidden lg:inline">({batchConfig.urgencyTag})</span>
             </span>
             <button
               onClick={() => {
-                const target = batchConfig.ctaTarget || "/students#enroll-student";
+                const target = batchConfig.ctaTarget || "/professionals#enroll";
                 if (target.startsWith('#')) {
                   document.getElementById(target.slice(1))?.scrollIntoView({ behavior: 'smooth' });
                 } else if (target.includes('#')) {
@@ -687,9 +687,17 @@ function ProfessionalsLandingPage() {
                 </span>{' '}
                 without an MBA or IIT tag
               </h1>
-              <p className="text-lg md:text-xl text-[#111111] mb-12 max-w-3xl mx-auto leading-relaxed font-bold">
+              <p className="text-lg md:text-xl text-[#111111] mb-8 max-w-3xl mx-auto leading-relaxed font-bold">
                 For engineers and professionals who are ready to make the switch. Lead with identity and outcome, not just a certificate.
               </p>
+
+              {/* Featured Batch Boarding Pass Banner */}
+              <div className="mb-10 w-full text-left">
+                <BatchAdmitCardBanner 
+                  variant="main" 
+                  onAction={() => scrollToSection('enroll')} 
+                />
+              </div>
 
               <div className="flex flex-col items-center gap-6 mb-16">
                 <Button 
@@ -2169,7 +2177,7 @@ function AdminEventsManager() {
               type="text"
               value={batchSettings.batchName}
               onChange={(e) => setBatchSettings(prev => ({ ...prev, batchName: e.target.value }))}
-              placeholder="e.g. PM-X First Step — Student Placement Edition"
+              placeholder="e.g. PM-X ACCELERATOR"
               className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2] focus:ring-1 focus:ring-[#188ab2]"
             />
           </div>
@@ -2192,6 +2200,28 @@ function AdminEventsManager() {
               value={batchSettings.duration}
               onChange={(e) => setBatchSettings(prev => ({ ...prev, duration: e.target.value }))}
               placeholder="e.g. 6 Weeks Live"
+              className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2] focus:ring-1 focus:ring-[#188ab2]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[11px]">Original Fee (Strikethrough)</label>
+            <input 
+              type="text"
+              value={batchSettings.originalPrice || '₹19,999'}
+              onChange={(e) => setBatchSettings(prev => ({ ...prev, originalPrice: e.target.value }))}
+              placeholder="e.g. ₹19,999"
+              className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2] focus:ring-1 focus:ring-[#188ab2]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[11px]">Discounted Fee (Active)</label>
+            <input 
+              type="text"
+              value={batchSettings.discountedPrice || '₹14,999'}
+              onChange={(e) => setBatchSettings(prev => ({ ...prev, discountedPrice: e.target.value }))}
+              placeholder="e.g. ₹14,999"
               className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2] focus:ring-1 focus:ring-[#188ab2]"
             />
           </div>
@@ -3363,10 +3393,10 @@ function PortalPage() {
             </span>
           </div>
           <h2 className="text-3xl md:text-4xl font-black text-[#111111] mb-2 tracking-tight">
-            Enrollment is Live for Our Next Cohort
+            Enrollment is Live for PM-X ACCELERATOR
           </h2>
           <p className="text-sm font-bold text-slate-600 mb-6 max-w-xl mx-auto">
-            Small cohort size capped at 25 candidates for personalized 1:1 guidance with working Product Managers.
+            Direct 1:1 mentorship with working Product Managers at Microsoft, Mastercard, and ShopDeck.
           </p>
           <BatchAdmitCardBanner variant="main" />
         </div>
@@ -3844,6 +3874,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<PortalPage />} />
           <Route path="/professionals" element={<ProfessionalsLandingPage />} />
+          <Route path="/accelerator" element={<Navigate to="/professionals" replace />} />
           <Route path="/students" element={<StudentsLandingPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/blog" element={<BlogPage />} />

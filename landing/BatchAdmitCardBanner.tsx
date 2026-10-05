@@ -3,13 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Calendar, 
   Clock, 
-  Users, 
   Flame, 
-  ArrowRight, 
-  GraduationCap, 
-  Sparkles, 
-  Briefcase,
-  CheckCircle2
+  ArrowRight
 } from 'lucide-react';
 import { getStoredBatchConfig, type BatchConfig } from './batchConfig';
 
@@ -113,17 +108,17 @@ export function BatchAdmitCardBanner({
 
             {/* Batch Title & Value Proposition */}
             <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#111111] leading-tight mb-2 tracking-tight">
-              {config.batchName || "PM-X First Step — Student Placement Edition"}
+              {config.batchName || "PM-X ACCELERATOR"}
             </h3>
             <p className="text-sm font-bold text-slate-600 leading-relaxed mb-6">
-              A high-touch, live cohort designed to take ambitious candidates from scratch to placement & interview ready through direct 1:1 guidance and real PM frameworks.
+              A high-touch, live cohort designed to help working professionals transition into Product Management with 1:1 mentorship from top tech PMs.
             </p>
 
-            {/* Key Cohort Specs Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 select-none mb-6">
+            {/* Key Cohort Specs Grid (Start Date & Duration only) */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 select-none mb-4 max-w-sm">
               <div className="bg-slate-50 border-2 border-[#111111] p-2.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
                 <span className="text-[10px] font-black uppercase text-slate-500 block mb-0.5">Start Date</span>
-                <span className="text-xs sm:text-sm font-black text-[#111111] flex items-center gap-1">
+                <span className="text-xs sm:text-sm font-black text-[#111111] flex items-center gap-1.5">
                   <Calendar className="h-3.5 w-3.5 text-[#188ab2] shrink-0" />
                   {config.startDate || "15 Nov 2026"}
                 </span>
@@ -131,27 +126,27 @@ export function BatchAdmitCardBanner({
 
               <div className="bg-slate-50 border-2 border-[#111111] p-2.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
                 <span className="text-[10px] font-black uppercase text-slate-500 block mb-0.5">Duration</span>
-                <span className="text-xs sm:text-sm font-black text-[#111111] flex items-center gap-1">
+                <span className="text-xs sm:text-sm font-black text-[#111111] flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5 text-[#188ab2] shrink-0" />
                   {config.duration || "6 Weeks Live"}
                 </span>
               </div>
+            </div>
 
-              <div className="bg-slate-50 border-2 border-[#111111] p-2.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                <span className="text-[10px] font-black uppercase text-slate-500 block mb-0.5">Cohort Cap</span>
-                <span className="text-xs sm:text-sm font-black text-[#111111] flex items-center gap-1">
-                  <Users className="h-3.5 w-3.5 text-[#188ab2] shrink-0" />
-                  {config.seatsTotal || 25} Max Seats
+            {/* Price Badge on Ticket Body */}
+            <div className="mb-6 flex items-center gap-2 flex-wrap select-none">
+              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-2.5 py-1 text-xs font-black text-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] inline-flex items-center gap-2">
+                <span className="text-[10px] uppercase text-slate-600 font-extrabold">Fee:</span>
+                <span className="line-through decoration-red-500 decoration-2 text-slate-400 font-bold">
+                  {config.originalPrice || "₹19,999"}
                 </span>
-              </div>
-
-              <div className="bg-slate-50 border-2 border-[#111111] p-2.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                <span className="text-[10px] font-black uppercase text-slate-500 block mb-0.5">Format</span>
-                <span className="text-xs sm:text-sm font-black text-[#111111] flex items-center gap-1">
-                  <Sparkles className="h-3.5 w-3.5 text-[#188ab2] shrink-0" />
-                  Live + 1:1
+                <span className="text-sm font-black text-[#111111]">
+                  {config.discountedPrice || "₹14,999"}
                 </span>
-              </div>
+              </span>
+              <span className="bg-[#FEE2E2] text-red-900 border border-red-300 font-black text-[10px] px-2 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
+                SAVE ₹5,000 (Early Bird)
+              </span>
             </div>
           </div>
 
@@ -204,7 +199,7 @@ export function BatchAdmitCardBanner({
             </div>
 
             {/* Seat Availability Progress Bar */}
-            <div className="space-y-2 mb-6">
+            <div className="space-y-2 mb-4">
               <div className="flex items-center justify-between text-xs font-black">
                 <span className="text-slate-600 flex items-center gap-1">
                   <Flame className="h-4 w-4 text-amber-500 fill-amber-500" /> Seats Claimed:
@@ -226,6 +221,24 @@ export function BatchAdmitCardBanner({
               <span className="inline-block bg-[#FEE2E2] text-red-900 border border-red-300 font-black text-[11px] px-2 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
                 {config.urgencyTag || "Only 7 Seats Remaining"}
               </span>
+            </div>
+
+            {/* Pricing Box with ₹19,999 cancelled and ₹14,999 active */}
+            <div className="bg-white border-2 border-[#111111] p-3 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] my-3 text-left">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">Cohort Investment</span>
+                <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-1.5 py-0.5 font-black text-[9px] uppercase shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] rotate-[-1deg]">
+                  SAVE ₹5,000
+                </span>
+              </div>
+              <div className="flex items-baseline gap-2.5">
+                <span className="text-sm font-extrabold text-slate-400 line-through decoration-red-500 decoration-2">
+                  {config.originalPrice || "₹19,999"}
+                </span>
+                <span className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+                  {config.discountedPrice || "₹14,999"}
+                </span>
+              </div>
             </div>
           </div>
 

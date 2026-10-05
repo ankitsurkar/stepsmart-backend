@@ -49,7 +49,6 @@ import {
   startBrochureDownload,
   AnnouncementBanner
 } from './AppBrutalism';
-import { BatchAdmitCardBanner } from './BatchAdmitCardBanner';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const roadmapSteps = [
@@ -248,17 +247,9 @@ export function StudentsLandingPage() {
             </span>
           </h1>
 
-          <p className="text-base md:text-lg font-bold text-slate-700 max-w-3xl mx-auto leading-relaxed mb-8">
+          <p className="text-base md:text-lg font-bold text-slate-700 max-w-3xl mx-auto leading-relaxed mb-12">
             PM-X FirstStep is a 6-week structured program that takes final-year students from zero product experience to interview-ready — covering resume repositioning, product sense, and mock interviews with mentors currently working as PMs at Mastercard, Microsoft, and ShopDeck — built for students with limited time before placement season.
           </p>
-
-          {/* Featured Batch Boarding Pass Banner */}
-          <div className="mb-12">
-            <BatchAdmitCardBanner 
-              variant="students" 
-              onAction={() => scrollToSection('student-form-container')} 
-            />
-          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 w-full max-w-[1500px] mx-auto select-none mb-12">
             {[

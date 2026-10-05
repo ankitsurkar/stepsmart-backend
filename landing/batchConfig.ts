@@ -5,6 +5,8 @@ export interface BatchConfig {
   programTrack: string;
   startDate: string;
   duration: string;
+  originalPrice?: string;
+  discountedPrice?: string;
   seatsTotal: number;
   seatsFilled: number;
   urgencyTag: string;
@@ -20,17 +22,19 @@ export const LOCAL_STORAGE_BATCH_KEY = 'pmx_custom_batch_config';
 export const DEFAULT_BATCH_CONFIG: BatchConfig = {
   enabled: true,
   batchNumber: "BATCH #04",
-  batchName: "PM-X First Step — Student Placement Edition",
-  programTrack: "Final-Year Students & Pre-Finals",
+  batchName: "PM-X ACCELERATOR",
+  programTrack: "Working Professionals & Career Switchers",
   startDate: "15th November 2026",
   duration: "6 Weeks Live",
+  originalPrice: "₹19,999",
+  discountedPrice: "₹14,999",
   seatsTotal: 25,
   seatsFilled: 18,
   urgencyTag: "Only 7 Seats Remaining",
   badgeText: "APPLICATIONS OPEN 🟢",
   earlyBirdNote: "⚡ Rolling Vetting • Direct 1:1 Mentor Matching",
   ctaText: "Claim Your Cohort Pass ➜",
-  ctaTarget: "/students#enroll-student",
+  ctaTarget: "/professionals#enroll",
   bannerMode: "auto"
 };
 
@@ -39,6 +43,19 @@ export const getStoredBatchConfig = (): BatchConfig => {
     const raw = localStorage.getItem(LOCAL_STORAGE_BATCH_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
+      // Migrate legacy default student batch values to PM-X ACCELERATOR
+      if (parsed.batchName === "PM-X First Step — Student Placement Edition") {
+        parsed.batchName = DEFAULT_BATCH_CONFIG.batchName;
+      }
+      if (parsed.ctaTarget === "/students#enroll-student") {
+        parsed.ctaTarget = DEFAULT_BATCH_CONFIG.ctaTarget;
+      }
+      if (!parsed.originalPrice) {
+        parsed.originalPrice = DEFAULT_BATCH_CONFIG.originalPrice;
+      }
+      if (!parsed.discountedPrice) {
+        parsed.discountedPrice = DEFAULT_BATCH_CONFIG.discountedPrice;
+      }
       return { ...DEFAULT_BATCH_CONFIG, ...parsed };
     }
   } catch (e) {
