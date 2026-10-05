@@ -677,80 +677,45 @@ function ProfessionalsLandingPage() {
         )}
       </div>
 
-      {/* Hero Section (NextLeap Minimal Reference Layout in StepSmart Neobrutalism) */}
-      <section className="pt-32 pb-12 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center text-left mb-12">
-            {/* Left Column: Heading, Subtitle, 4 Specs, Actions, Proof */}
-            <div className="lg:col-span-7 space-y-6">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] text-[#111111]">
+      {/* Hero Section */}
+      <section className="pt-32 pb-8 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-6 text-center max-w-5xl">
+              <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-8 leading-[1.2] text-[#111111]">
                 Break into{' '}
-                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-3.5 py-1 rotate-[-1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
+                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-1 rotate-[-1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
                   Product Management
                 </span>{' '}
                 without an MBA or IIT tag
               </h1>
-
-              <p className="text-base sm:text-lg text-slate-700 font-bold leading-relaxed max-w-2xl">
+              <p className="text-lg md:text-xl text-[#111111] mb-8 max-w-3xl mx-auto leading-relaxed font-bold">
                 For engineers and professionals who are ready to make the switch. Lead with identity and outcome, not just a certificate.
               </p>
 
-              {/* 4 Minimal Feature Badges (Matching Reference) */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 select-none pt-2">
-                <div className="bg-slate-50 border-2 border-[#111111] p-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  <span className="text-base sm:text-lg font-black text-[#111111] block">100+ Hours</span>
-                  <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-500 uppercase">Live Learning</span>
-                </div>
-                <div className="bg-slate-50 border-2 border-[#111111] p-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  <span className="text-base sm:text-lg font-black text-[#111111] block">6 Weeks</span>
-                  <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-500 uppercase">Cohort Timeline</span>
-                </div>
-                <div className="bg-slate-50 border-2 border-[#111111] p-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  <span className="text-base sm:text-lg font-black text-[#111111] block">1:1 Mentors</span>
-                  <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-500 uppercase">Senior PMs</span>
-                </div>
-                <div className="bg-slate-50 border-2 border-[#111111] p-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  <span className="text-base sm:text-lg font-black text-[#111111] block">Interview</span>
-                  <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-500 uppercase">Mock & PRD Ready</span>
-                </div>
+              {/* Featured Batch Boarding Pass Banner */}
+              <div className="mb-10 w-full text-left">
+                <BatchAdmitCardBanner 
+                  variant="main" 
+                  onAction={() => scrollToSection('enroll')} 
+                />
               </div>
 
-              {/* Action Buttons Matching Screenshot */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
+              <div className="flex flex-col items-center gap-6 mb-16">
                 <Button 
                   variant="primary" 
-                  className="px-8 py-3.5 text-base font-extrabold shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
+                  className="px-12 py-5 text-xl font-extrabold shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]"
                   onClick={() => handleActionClick('enroll')}
                 >
-                  Apply for PM-X Accelerator ➜
+                  Apply for PM-X accelerator
                 </Button>
                 <button 
                   onClick={() => handleActionClick('brochure')}
-                  className="px-6 py-3.5 bg-white border-[3px] border-[#111111] font-extrabold text-sm text-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:bg-[#FFF3A7] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-[2px] active:translate-y-[2px] transition-all cursor-pointer inline-flex items-center gap-2"
+                  className="text-[#111111] text-sm font-extrabold underline underline-offset-4 decoration-[#188ab2] decoration-[3px] hover:text-[#188ab2] transition-colors"
                 >
-                  <Download className="h-4 w-4 text-[#111111]" />
-                  Download Curriculum
+                  Not sure yet? Download the curriculum first.
                 </button>
               </div>
 
-              {/* Proof stat line */}
-              <p className="text-xs font-black uppercase text-slate-500 tracking-wider flex items-center gap-2 pt-1">
-                <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
-                50+ professionals transitioned into PM roles • Mentored by PMs at Microsoft, Mastercard, ShopDeck
-              </p>
-            </div>
-
-            {/* Right Column: Minimal Admissions Card */}
-            <div className="lg:col-span-5 flex justify-center w-full">
-              <BatchAdmitCardBanner 
-                variant="main" 
-                onAction={() => scrollToSection('enroll')} 
-              />
-            </div>
-          </div>
-
-          {/* Hero Image Showcase */}
-          <div className="relative w-full max-w-6xl mx-auto border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] bg-white mt-8">
+          <div className="relative w-full max-w-5xl mx-auto border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] bg-white">
             <img 
               src="/hero_image.webp" 
               alt="PM-X Accelerator — Product Management course outcomes and student success stories" 
@@ -3419,46 +3384,21 @@ function PortalPage() {
         </div>
       </section>
 
-      {/* Featured Batch Section (Minimal Reference Layout) */}
-      <section className="py-16 px-6 bg-slate-50/70 border-b-[3px] border-[#111111]">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center text-left">
-            <div className="lg:col-span-7 space-y-4">
-              <div className="inline-block">
-                <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] rotate-[-1deg] select-none">
-                  🚀 UPCOMING BATCH ADMISSIONS
-                </span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] tracking-tight leading-[1.2]">
-                Enrollment is Live for PM-X ACCELERATOR
-              </h2>
-              <p className="text-base font-bold text-slate-700 leading-relaxed max-w-xl">
-                A high-touch, live cohort designed to help working professionals transition into Product Management with personalized 1:1 guidance from working Product Managers.
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 select-none pt-2">
-                <div className="bg-white border-2 border-[#111111] p-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  <span className="text-base font-black text-[#111111] block">6 Weeks</span>
-                  <span className="text-[10px] font-extrabold text-slate-500 uppercase">Live Cohort</span>
-                </div>
-                <div className="bg-white border-2 border-[#111111] p-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  <span className="text-base font-black text-[#111111] block">1:1 Mentors</span>
-                  <span className="text-[10px] font-extrabold text-slate-500 uppercase">Top PMs</span>
-                </div>
-                <div className="bg-white border-2 border-[#111111] p-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  <span className="text-base font-black text-[#111111] block">Real PRDs</span>
-                  <span className="text-[10px] font-extrabold text-slate-500 uppercase">Capstone Built</span>
-                </div>
-                <div className="bg-white border-2 border-[#111111] p-3 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  <span className="text-base font-black text-[#111111] block">Live Mocks</span>
-                  <span className="text-[10px] font-extrabold text-slate-500 uppercase">Interview Prep</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 flex justify-center w-full">
-              <BatchAdmitCardBanner variant="main" onAction={() => navigate('/professionals#enroll')} />
-            </div>
+      {/* Featured Batch Boarding Pass Banner */}
+      <section className="py-12 px-6 bg-slate-50/70 border-b-[3px] border-[#111111]">
+        <div className="container mx-auto max-w-6xl text-center">
+          <div className="inline-block mb-3">
+            <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] rotate-[-1deg] select-none">
+              🚀 UPCOMING BATCH ADMISSIONS
+            </span>
           </div>
+          <h2 className="text-3xl md:text-4xl font-black text-[#111111] mb-2 tracking-tight">
+            Enrollment is Live for PM-X ACCELERATOR
+          </h2>
+          <p className="text-sm font-bold text-slate-600 mb-6 max-w-xl mx-auto">
+            Direct 1:1 mentorship with working Product Managers at Microsoft, Mastercard, and ShopDeck.
+          </p>
+          <BatchAdmitCardBanner variant="main" />
         </div>
       </section>
 
