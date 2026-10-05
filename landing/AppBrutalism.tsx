@@ -49,6 +49,8 @@ import {
 } from 'lucide-react';
 import { renderTextWithLinks } from './linkUtils';
 import type { EventItem } from './EventsBrutalism';
+import { getStoredBatchConfig, saveStoredBatchConfig, type BatchConfig } from './batchConfig';
+import { BatchAdmitCardBanner } from './BatchAdmitCardBanner';
 
 const LOCAL_STORAGE_EVENTS_KEY = 'pmx_custom_events';
 
@@ -151,59 +153,133 @@ export const BANNER_CONFIG = {
 export function AnnouncementBanner() {
   const navigate = useNavigate();
   const [events, setEvents] = useState<EventItem[]>(() => getStoredEvents());
-  const [dismissedEventId, setDismissedEventId] = useState<string | null>(() => {
+  const [batchConfig, setBatchConfig] = useState<BatchConfig>(() => getStoredBatchConfig());
+  const [activeTab, setActiveTab] = useState<'batch' | 'event'>('batch');
+  const [isDismissed, setIsDismissed] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('stepsmart_banner_dismissed_event_id');
+      return sessionStorage.getItem('stepsmart_banner_dismissed') === 'true';
     } catch {
-      return null;
+      return false;
     }
   });
 
   useEffect(() => {
-    const handleEventsUpdate = () => {
-      setEvents(getStoredEvents());
-    };
+    const handleEventsUpdate = () => setEvents(getStoredEvents());
+    const handleBatchUpdate = () => setBatchConfig(getStoredBatchConfig());
     window.addEventListener('pmx_events_updated', handleEventsUpdate);
-    return () => window.removeEventListener('pmx_events_updated', handleEventsUpdate);
+    window.addEventListener('pmx_batch_updated', handleBatchUpdate);
+    return () => {
+      window.removeEventListener('pmx_events_updated', handleEventsUpdate);
+      window.removeEventListener('pmx_batch_updated', handleBatchUpdate);
+    };
   }, []);
 
-  if (!BANNER_CONFIG.enabled) return null;
+  if (!BANNER_CONFIG.enabled || isDismissed) return null;
 
   const nextUpcomingEvent = getNextUpcomingEvent(events);
+  const isBatchActive = Boolean(batchConfig.enabled);
+  const isEventActive = Boolean(nextUpcomingEvent);
 
-  // If no upcoming event exists (e.g. event dates have passed) or user dismissed this event's banner, do not show
-  if (!nextUpcomingEvent || dismissedEventId === nextUpcomingEvent.id) {
+  // If neither is active, do not show banner
+  if (!isBatchActive && !isEventActive) {
     return null;
   }
 
+  // Determine current active mode
+  const currentMode = (isBatchActive && isEventActive)
+    ? (batchConfig.bannerMode === 'event_first' && activeTab === 'batch' ? 'event' : activeTab)
+    : isBatchActive
+      ? 'batch'
+      : 'event';
+
   const handleDismiss = () => {
     try {
-      localStorage.setItem('stepsmart_banner_dismissed_event_id', nextUpcomingEvent.id);
+      sessionStorage.setItem('stepsmart_banner_dismissed', 'true');
     } catch (e) {
       console.error(e);
     }
-    setDismissedEventId(nextUpcomingEvent.id);
+    setIsDismissed(true);
   };
 
-  const bannerText = `📅 Next Live Event: '${nextUpcomingEvent.title}' on ${nextUpcomingEvent.dateDisplay || nextUpcomingEvent.dateStr}${nextUpcomingEvent.time ? ` at ${nextUpcomingEvent.time}` : ''}`;
-
   return (
-    <div className="w-full bg-[#FFF3A7] border-b-[3px] border-[#111111] py-2 px-6 flex items-center justify-between text-[#111111] z-50 select-none relative font-bold text-xs sm:text-sm">
-      <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center">
-        <span>{bannerText}</span>
-        <button 
-          onClick={() => {
-            navigate(`/events?id=${nextUpcomingEvent.id}`);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          className="bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer inline-block"
-        >
-          {BANNER_CONFIG.ctaText}
-        </button>
+    <div className="w-full bg-[#FFF3A7] border-b-[3px] border-[#111111] py-2 px-4 sm:px-6 flex items-center justify-between text-[#111111] z-50 select-none relative font-bold text-xs sm:text-sm">
+      <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-2 sm:gap-4 text-center">
+        {/* Switcher Pills if both Batch and Live Event are active */}
+        {isBatchActive && isEventActive && (
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={() => setActiveTab('batch')}
+              className={`px-2 py-0.5 text-[10px] font-black uppercase border-2 border-[#111111] transition-all cursor-pointer ${
+                currentMode === 'batch'
+                  ? 'bg-[#188ab2] text-white shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]'
+                  : 'bg-white text-slate-800 hover:bg-slate-100'
+              }`}
+            >
+              🚀 New Batch
+            </button>
+            <button
+              onClick={() => setActiveTab('event')}
+              className={`px-2 py-0.5 text-[10px] font-black uppercase border-2 border-[#111111] transition-all cursor-pointer ${
+                currentMode === 'event'
+                  ? 'bg-[#188ab2] text-white shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]'
+                  : 'bg-white text-slate-800 hover:bg-slate-100'
+              }`}
+            >
+              📅 Live Event
+            </button>
+          </div>
+        )}
+
+        {/* Dynamic Content based on active mode */}
+        {currentMode === 'batch' ? (
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-center">
+            <span>
+              🚀 <span className="bg-white border border-[#111111] px-1.5 py-0.2 text-[10px] font-black uppercase mr-1">{batchConfig.batchNumber || "BATCH #04"}</span>
+              {batchConfig.batchName} — Starts <strong>{batchConfig.startDate}</strong>{' '}
+              <span className="text-red-700 font-extrabold hidden lg:inline">({batchConfig.urgencyTag})</span>
+            </span>
+            <button
+              onClick={() => {
+                const target = batchConfig.ctaTarget || "/students#enroll-student";
+                if (target.startsWith('#')) {
+                  document.getElementById(target.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+                } else if (target.includes('#')) {
+                  const [path, hash] = target.split('#');
+                  if (window.location.pathname === path) {
+                    document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    navigate(target);
+                  }
+                } else {
+                  navigate(target);
+                }
+              }}
+              className="bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer inline-block shrink-0"
+            >
+              {batchConfig.ctaText || "Apply for Batch ➜"}
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-center">
+            <span>
+              📅 Next Live Masterclass: '{nextUpcomingEvent?.title}' on {nextUpcomingEvent?.dateDisplay || nextUpcomingEvent?.dateStr}{nextUpcomingEvent?.time ? ` at ${nextUpcomingEvent?.time}` : ''}
+            </span>
+            <button
+              onClick={() => {
+                navigate(`/events?id=${nextUpcomingEvent?.id}`);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer inline-block shrink-0"
+            >
+              {BANNER_CONFIG.ctaText}
+            </button>
+          </div>
+        )}
       </div>
-      <button 
+
+      <button
         onClick={handleDismiss}
-        className="p-1 hover:bg-[#111111]/10 rounded border-2 border-transparent active:border-[#111111] transition-all ml-4 cursor-pointer"
+        className="p-1 hover:bg-[#111111]/10 rounded border-2 border-transparent active:border-[#111111] transition-all ml-3 cursor-pointer shrink-0"
         aria-label="Dismiss Banner"
       >
         <X className="h-4 w-4 text-[#111111]" />
@@ -1848,6 +1924,10 @@ function AdminEventsManager() {
   const [moments, setMoments] = useState<string[]>([]);
   const [pastedUrl, setPastedUrl] = useState('');
 
+  // Batch Launch Settings State
+  const [batchSettings, setBatchSettings] = useState<BatchConfig>(() => getStoredBatchConfig());
+  const [batchSavedMessage, setBatchSavedMessage] = useState<string>('');
+
   const nextUpcomingEvent = getNextUpcomingEvent(events);
 
   const openCreateModal = () => {
@@ -2043,6 +2123,180 @@ function AdminEventsManager() {
             Preview: 📅 {nextUpcomingEvent.title}
           </span>
         )}
+      </div>
+
+      {/* New Cohort Batch Launch & Top Banner Settings */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5 text-left">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full bg-blue-600 animate-pulse" />
+              <h3 className="text-lg font-bold text-slate-900 uppercase tracking-wide">
+                🚀 New Cohort Batch Launch Settings
+              </h3>
+            </div>
+            <p className="text-xs text-slate-500 mt-1">
+              Configure the upcoming cohort batch advertised on the Top Banner and the Hero Boarding Pass card on Main & Accelerator pages.
+            </p>
+          </div>
+
+          <label className="flex items-center gap-2.5 cursor-pointer bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold text-slate-800 hover:bg-slate-100 transition-colors select-none">
+            <input 
+              type="checkbox" 
+              checked={batchSettings.enabled}
+              onChange={(e) => setBatchSettings(prev => ({ ...prev, enabled: e.target.checked }))}
+              className="h-4 w-4 rounded accent-[#188ab2] cursor-pointer"
+            />
+            <span>Enable Batch Announcements</span>
+          </label>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs font-semibold">
+          <div>
+            <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[11px]">Batch Identifier</label>
+            <input 
+              type="text"
+              value={batchSettings.batchNumber}
+              onChange={(e) => setBatchSettings(prev => ({ ...prev, batchNumber: e.target.value }))}
+              placeholder="e.g. BATCH #04"
+              className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2] focus:ring-1 focus:ring-[#188ab2]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[11px]">Batch Name / Program</label>
+            <input 
+              type="text"
+              value={batchSettings.batchName}
+              onChange={(e) => setBatchSettings(prev => ({ ...prev, batchName: e.target.value }))}
+              placeholder="e.g. PM-X First Step — Student Placement Edition"
+              className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2] focus:ring-1 focus:ring-[#188ab2]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[11px]">Cohort Start Date</label>
+            <input 
+              type="text"
+              value={batchSettings.startDate}
+              onChange={(e) => setBatchSettings(prev => ({ ...prev, startDate: e.target.value }))}
+              placeholder="e.g. 15th November 2026"
+              className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2] focus:ring-1 focus:ring-[#188ab2]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[11px]">Program Duration</label>
+            <input 
+              type="text"
+              value={batchSettings.duration}
+              onChange={(e) => setBatchSettings(prev => ({ ...prev, duration: e.target.value }))}
+              placeholder="e.g. 6 Weeks Live"
+              className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2] focus:ring-1 focus:ring-[#188ab2]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[11px]">Seats: Filled / Total</label>
+            <div className="flex items-center gap-2">
+              <input 
+                type="number"
+                min="0"
+                value={batchSettings.seatsFilled}
+                onChange={(e) => setBatchSettings(prev => ({ ...prev, seatsFilled: Number(e.target.value) }))}
+                placeholder="Filled (e.g. 18)"
+                className="w-1/2 p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2]"
+              />
+              <span className="text-slate-400">/</span>
+              <input 
+                type="number"
+                min="1"
+                value={batchSettings.seatsTotal}
+                onChange={(e) => setBatchSettings(prev => ({ ...prev, seatsTotal: Number(e.target.value) }))}
+                placeholder="Total (e.g. 25)"
+                className="w-1/2 p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[11px]">Urgency / Scarcity Badge</label>
+            <input 
+              type="text"
+              value={batchSettings.urgencyTag}
+              onChange={(e) => setBatchSettings(prev => ({ ...prev, urgencyTag: e.target.value }))}
+              placeholder="e.g. Only 7 Seats Remaining"
+              className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[11px]">Early Bird / Guarantee Note</label>
+            <input 
+              type="text"
+              value={batchSettings.earlyBirdNote}
+              onChange={(e) => setBatchSettings(prev => ({ ...prev, earlyBirdNote: e.target.value }))}
+              placeholder="e.g. ⚡ Rolling Vetting • Direct 1:1 Mentor Matching"
+              className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[11px]">CTA Button Text</label>
+            <input 
+              type="text"
+              value={batchSettings.ctaText}
+              onChange={(e) => setBatchSettings(prev => ({ ...prev, ctaText: e.target.value }))}
+              placeholder="e.g. Claim Your Cohort Spot ➜"
+              className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[11px]">CTA Target Link</label>
+            <input 
+              type="text"
+              value={batchSettings.ctaTarget}
+              onChange={(e) => setBatchSettings(prev => ({ ...prev, ctaTarget: e.target.value }))}
+              placeholder="e.g. /students#enroll-student"
+              className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2]"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-2">
+          <button
+            type="button"
+            onClick={() => {
+              saveStoredBatchConfig(batchSettings);
+              setBatchSavedMessage('✅ Batch settings saved live!');
+              setTimeout(() => setBatchSavedMessage(''), 3000);
+            }}
+            className="px-6 py-2.5 bg-[#188ab2] hover:bg-[#0f6f8f] text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer inline-flex items-center gap-2"
+          >
+            Save Batch Settings
+          </button>
+          {batchSavedMessage && (
+            <span className="text-xs font-bold text-emerald-700 animate-fade-in">
+              {batchSavedMessage}
+            </span>
+          )}
+        </div>
+
+        {/* Live Admin Preview of the Boarding Pass */}
+        <div className="mt-6 pt-5 border-t border-slate-100">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+              Live Preview: Cohort Boarding Pass (Concept 1)
+            </span>
+            <span className="text-[11px] text-slate-400">
+              (How it renders on Main & Accelerator pages)
+            </span>
+          </div>
+          <div className="bg-slate-100 p-4 rounded-xl border border-slate-200 overflow-x-auto">
+            <BatchAdmitCardBanner variant="preview" customConfig={batchSettings} />
+          </div>
+        </div>
       </div>
 
       {/* Events List */}
@@ -3097,6 +3351,24 @@ function PortalPage() {
 
           {/* Hero Carousel */}
           <HeroCarousel />
+        </div>
+      </section>
+
+      {/* Featured Batch Boarding Pass Banner */}
+      <section className="py-12 px-6 bg-slate-50/70 border-b-[3px] border-[#111111]">
+        <div className="container mx-auto max-w-6xl text-center">
+          <div className="inline-block mb-3">
+            <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] rotate-[-1deg] select-none">
+              🚀 UPCOMING BATCH ADMISSIONS
+            </span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-black text-[#111111] mb-2 tracking-tight">
+            Enrollment is Live for Our Next Cohort
+          </h2>
+          <p className="text-sm font-bold text-slate-600 mb-6 max-w-xl mx-auto">
+            Small cohort size capped at 25 candidates for personalized 1:1 guidance with working Product Managers.
+          </p>
+          <BatchAdmitCardBanner variant="main" />
         </div>
       </section>
 
