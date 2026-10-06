@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PM Hidden-Jobs Engine | Fresh LinkedIn Hiring Posts for Freshers</title>
+  <meta name="description" content="Surfacing fresh LinkedIn hiring posts for PM freshers, APMs, Product Analysts & Interns with direct recruiter emails and DM invites.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Navbar -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 8V6C16 4.34315 14.6569 3 13 3H11C9.34315 3 8 4.34315 8 6V8M5 8H19C20.1046 8 21 8.89543 21 10V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V10C3 8.89543 3.89543 8 5 8Z" stroke="url(#paint0_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="paint0_linear" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#38BDF8"/>
+                <stop offset="1" stop-color="#818CF8"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">LinkedIn <span class="gradient-text">Hidden-Jobs Engine</span></h1>
+          <p class="brand-subtitle">Fresh PM Hiring Posts (<72h) • APMs, Analysts, Interns & 0-2y • Direct Emails & DMs</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="sync-badge" id="syncStatusBadge">
+          <span class="status-pulse"></span>
+          <span id="syncStatusText">Auto-Refreshes 4h</span>
+        </div>
+        
+        <button id="syncNowBtn" class="btn btn-secondary">
+          <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 4-13.68L2.13 6"/>
+          </svg>
+          Run Apify Pipeline
+        </button>
+        
+        <button id="exportCsvBtn" class="btn btn-primary">
+          <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="12" y1="18" x2="12" y2="12"></line>
+            <polyline points="9 15 12 18 15 15"></polyline>
+          </svg>
+          Export to Sheets (.CSV)
+        </button>
+
+        <button id="settingsBtn" class="btn btn-icon-only" title="Settings & Apify / Sheets Config">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Metrics Summary Cards -->
+    <section class="stats-section">
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Verified PM Hiring Posts</span>
+          <span class="stat-icon icon-blue">💼</span>
+        </div>
+        <div class="stat-value" id="statTotalJobs">0</div>
+        <div class="stat-trend">Survived hard filters & quality score &ge; 60</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Fresh (< 24h) With Email</span>
+          <span class="stat-icon icon-purple">⚡</span>
+        </div>
+        <div class="stat-value" id="statRecentJobs">0</div>
+        <div class="stat-trend">Direct recruiter emails for instant outreach</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Direct Emails Extracted</span>
+          <span class="stat-icon icon-green">✉️</span>
+        </div>
+        <div class="stat-value" id="statApplyLinks">0</div>
+        <div class="stat-trend">Regex verified hiring manager emails</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Decision Maker Poster</span>
+          <span class="stat-icon icon-amber">👑</span>
+        </div>
+        <div class="stat-value" id="statContacts">0</div>
+        <div class="stat-trend">Head of Product, VPs & Founders</div>
+      </div>
+    </section>
+
+    <!    <!-- Recall-First V3 Dashboard View Tabs -->
+    <nav class="view-tabs-nav">
+      <button class="tab-btn active" data-tab="fresher-fit">
+        ⚡ Fresh (<7d) APM / 0-2y <span class="tab-count" id="countFresher">0</span>
+      </button>
+      <button class="tab-btn" data-tab="fresh-email">
+        ✉️ Direct Email <span class="tab-count" id="countFreshEmail">0</span>
+      </button>
+      <button class="tab-btn" data-tab="founder-posted">
+        👑 Founder / Hiring Lead <span class="tab-count" id="countFounder">0</span>
+      </button>
+      <button class="tab-btn" data-tab="all-posts">
+        🌐 All Fresh (<7d) <span class="tab-count" id="countAll">0</span>
+      </button>
+      <button class="tab-btn" data-tab="archived">
+        📁 Archived / Previous (>7d) <span class="tab-count" id="countArchived">0</span>
+      </button>
+    </nav>
+
+    <!-- Filters & Search Toolbar -->
+    <section class="toolbar-section">
+      <div class="search-box">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search APM, Junior PM, emails, companies, recruiters...">
+      </div>
+
+      <div class="filters-group">
+        <div class="filter-item">
+          <label for="seniorityFilter">Seniority Fit:</label>
+          <select id="seniorityFilter">
+            <option value="ALL">All Fresher Fits</option>
+            <option value="Associate / APM">Associate / APM</option>
+            <option value="Rotational PM (RPM)">Rotational PM (RPM)</option>
+            <option value="Entry Level / Junior PM">Entry Level / Junior PM</option>
+            <option value="Product Analyst">Product Analyst</option>
+            <option value="PM Intern">PM Intern</option>
+            <option value="Senior PM">Senior PM</option>
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <label for="locationFilter">Location:</label>
+          <select id="locationFilter">
+            <option value="ALL">All Locations</option>
+            <option value="Remote">Remote</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Onsite">Onsite</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Job Cards Grid -->
+    <main class="jobs-feed">
+      <div id="jobsGrid" class="jobs-grid">
+        <!-- Dynamic JS Rendered Job Cards -->
+      </div>
+      <div id="noResultsState" class="empty-state hidden">
+        <div class="empty-icon">🔍</div>
+        <h3>No hiring posts found matching current tab or filters</h3>
+        <p>Try switching tabs or resetting your search query.</p>
+        <button id="resetFiltersBtn" class="btn btn-secondary">Reset Filters</button>
+      </div>
+    </main>
+
+    <!-- Post Detail Modal -->
+    <div id="detailModal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <button id="closeModalBtn" class="modal-close">&times;</button>
+        <div class="modal-header">
+          <span class="badge badge-seniority" id="modalSeniority">Associate / APM</span>
+          <span class="badge badge-location" id="modalLocation">Remote</span>
+          <span class="badge badge-score" id="modalScore">Quality Score: 95/100</span>
+        </div>
+        
+        <div class="modal-poster-box">
+          <div class="poster-avatar-lg" id="modalPosterAvatar">SC</div>
+          <div>
+            <h3 class="poster-name-lg" id="modalPosterName">Sarah Chen</h3>
+            <p class="poster-headline" id="modalPosterHeadline">Head of Platform Product @ Stripe</p>
+            <a id="modalPosterLink" href="#" target="_blank" class="link-btn">
+              View Profile on LinkedIn &rarr;
+            </a>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <h4 class="section-label">LinkedIn Hiring Post Content</h4>
+          <div id="modalDescription" class="post-text-full"></div>
+        </div>
+
+        <div class="modal-footer">
+          <a id="modalLinkedInPostBtn" href="#" target="_blank" class="btn btn-secondary">
+            View LinkedIn Post
+          </a>
+          <a id="modalApplyBtn" href="#" target="_blank" class="btn btn-primary btn-lg">
+            Apply Now &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Drawer -->
+    <div id="settingsDrawer" class="drawer-backdrop hidden">
+      <div class="drawer-panel">
+        <div class="drawer-header">
+          <h2>Configuration & Pipeline Settings</h2>
+          <button id="closeDrawerBtn" class="drawer-close">&times;</button>
+        </div>
+
+        <div class="drawer-body">
+          <div class="config-section">
+            <h3>🔑 Apify LinkedIn Scraper Token</h3>
+            <p class="field-desc">Apify API Token configured for 4-hour scheduled scraping runs.</p>
+            <input type="password" id="apifyTokenInput" placeholder="apify_api_..." value="">
+            <button id="saveApifyTokenBtn" class="btn btn-secondary btn-sm">Save Token</button>
+          </div>
+
+          <div class="config-section">
+            <h3>📊 Google Sheets Direct Auto-Sync</h3>
+            <p class="field-desc">Configured Sheet ID for auto-populating fresh PM jobs.</p>
+            <input type="text" id="sheetIdInput" placeholder="1BxiMVs0XRA5nFMdKbB..." value="">
+          </div>
+
+          <div class="config-section">
+            <h3>⏱️ Pipeline Schedule</h3>
+            <p class="field-desc">Background execution frequency (Current setting: Every 4 hours staggered)</p>
+            <select id="scheduleIntervalSelect">
+              <option value="4" selected>Every 4 Hours (Recommended)</option>
+              <option value="6">Every 6 Hours</option>
+              <option value="12">Every 12 Hours</option>
+            </select>
+          </div>
+
+          <div class="config-section">
+            <h3>⚡ Google Apps Script Code</h3>
+            <pre class="code-block" id="appsScriptCode">
+function syncHiddenPMJobsEvery4Hours() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var res = UrlFetchApp.fetch("YOUR_URL/data/jobs.json");
+  var jobs = JSON.parse(res.getContentText());
+  // Auto-populates fresh <72h PM hiring posts into Google Sheets
+}
+            </pre>
+            <button id="copyAppsScriptBtn" class="btn btn-secondary btn-sm">Copy Google Apps Script</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

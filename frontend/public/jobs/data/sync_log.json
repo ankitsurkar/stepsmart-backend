@@ -1,0 +1,44 @@
+[
+  {
+    "timestamp": "2026-10-02T08:50:08.888552+00:00",
+    "status": "SUCCESS",
+    "total_jobs": 14,
+    "message": "Scraped PM posts and updated Google Sheets CSV & JSON database.",
+    "next_scheduled_run": "2026-10-02T14:50:08.888574+00:00"
+  },
+  {
+    "timestamp": "2026-10-02T08:38:58.151410+00:00",
+    "status": "SUCCESS",
+    "total_jobs": 17,
+    "message": "Scraped PM posts and updated Google Sheets CSV & JSON database.",
+    "next_scheduled_run": "2026-10-02T14:38:58.151417+00:00"
+  },
+  {
+    "timestamp": "2026-10-02T08:23:41.079268+00:00",
+    "status": "SUCCESS",
+    "total_jobs": 14,
+    "message": "Scraped PM posts and updated Google Sheets CSV & JSON database.",
+    "next_scheduled_run": "2026-10-02T14:23:41.079282+00:00"
+  },
+  {
+    "timestamp": "2026-10-02T08:09:11.070090+00:00",
+    "status": "SUCCESS",
+    "total_jobs": 12,
+    "message": "Scraped PM posts and updated Google Sheets CSV & JSON database.",
+    "next_scheduled_run": "2026-10-02T14:09:11.070097+00:00"
+  },
+  {
+    "timestamp": "2026-10-02T08:03:41.855769+00:00",
+    "status": "SUCCESS",
+    "total_jobs": 6,
+    "message": "Scraped PM posts and updated Google Sheets CSV & JSON database.",
+    "next_scheduled_run": "2026-10-02T14:03:41.855775+00:00"
+  },
+  {
+    "timestamp": "2026-10-02T08:02:43.116924+00:00",
+    "status": "SUCCESS",
+    "total_jobs": 6,
+    "message": "Scraped PM posts and updated Google Sheets CSV & JSON database.",
+    "next_scheduled_run": "2026-10-02T14:02:43.116931+00:00"
+  }
+]

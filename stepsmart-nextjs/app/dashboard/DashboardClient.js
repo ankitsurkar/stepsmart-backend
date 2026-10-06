@@ -10,7 +10,7 @@ import awsConfig from '@/lib/aws-config';
 import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '@/lib/api-client-client';
 import AssignmentUpload from '@/components/AssignmentUpload';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Book, Clock, ClipboardList, Calendar, Folder, Users, Settings, Bell, Trophy, HelpCircle, Bookmark, CheckCircle2, Copy, Filter } from 'lucide-react';
+import { Home, Book, Briefcase, Clock, ClipboardList, Calendar, Folder, Users, Settings, Bell, Trophy, HelpCircle, Bookmark, CheckCircle2, Copy, Filter } from 'lucide-react';
 import { addDays, subDays, startOfMonth as startOfMonthFn, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, getDaysInMonth, getDate, isSameMonth, isSameDay, getDay, addMonths } from 'date-fns';
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import { toast } from 'sonner';
@@ -30,6 +30,7 @@ const COURSE_NAME_OVERRIDES = {
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Home', icon: 'home' },
   { id: 'courses', label: 'Courses', icon: 'book' },
+  { id: 'jobs', label: 'PM Jobs', icon: 'jobs' },
   { id: 'assignments', label: 'Assignments', icon: 'clipboard' },
   { id: 'interview', label: 'Interview', icon: 'interview' },
   { id: 'resources', label: 'Resources', icon: 'folder' },
@@ -1917,6 +1918,7 @@ function StatusBadge({ status }) {
 function SidebarIcon({ kind }) {
   if (kind === 'home') return <Home size={21} strokeWidth={2} />;
   if (kind === 'book') return <Book size={21} strokeWidth={2} />;
+  if (kind === 'jobs') return <Briefcase size={21} strokeWidth={2} />;
   if (kind === 'clock') return <Clock size={21} strokeWidth={2} />;
   if (kind === 'clipboard') return <ClipboardList size={21} strokeWidth={2} />;
   if (kind === 'interview') return <HelpCircle size={21} strokeWidth={2} />;
@@ -5381,6 +5383,37 @@ export default function DashboardClient({
     );
   }
 
+  function renderJobsView() {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: 'calc(100vh - 170px)',
+          minHeight: '750px',
+          background: '#ffffff',
+          borderRadius: '20px',
+          overflow: 'hidden',
+          border: '1px solid rgba(20, 49, 86, 0.08)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <iframe
+          src="/jobs/index.html?embed=true"
+          title="PM Jobs Portal"
+          style={{
+            width: '100%',
+            height: '100%',
+            border: 'none',
+            flex: 1,
+            display: 'block',
+          }}
+        />
+      </div>
+    );
+  }
+
   let viewEyebrow = 'Student Dashboard';
   let viewTitle = `Welcome back, ${displayName}`;
   let viewSubtitle = '';
@@ -5389,6 +5422,12 @@ export default function DashboardClient({
     viewEyebrow = 'My Courses';
     viewTitle = activeCourse?.name || 'My Courses';
     viewSubtitle = activeCourse?.description || 'Browse your course videos and live sessions grouped by week.';
+  }
+
+  if (activeView === 'jobs') {
+    viewEyebrow = 'Career Portal';
+    viewTitle = 'PM Hidden Jobs Engine';
+    viewSubtitle = 'Fresh curated PM, APM, and Analyst opportunities with direct recruiter emails and LinkedIn contacts.';
   }
 
   if (activeView === 'cohort') {
@@ -5745,6 +5784,30 @@ export default function DashboardClient({
                 </svg>
                 <span>Open WhatsApp Community</span>
               </a>
+            ) : activeView === 'jobs' ? (
+              <a
+                href="/jobs/index.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  padding: '0.55rem 1.1rem',
+                  borderRadius: '10px',
+                  background: 'var(--primary)',
+                  color: '#fff',
+                  fontSize: '0.84rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  transition: 'opacity 0.2s',
+                  boxShadow: 'var(--shadow-sm)',
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.opacity = 0.9; }}
+                onMouseOut={(e) => { e.currentTarget.style.opacity = 1; }}
+              >
+                <span>Open Full Portal ↗</span>
+              </a>
             ) : courses.length > 1 ? (
               <div style={s.courseTabs}>
                 {courses.map((course) => (
@@ -5774,6 +5837,7 @@ export default function DashboardClient({
             >
               {activeView === 'dashboard' && renderDashboardView()}
               {activeView === 'courses' && renderCoursesView()}
+              {activeView === 'jobs' && renderJobsView()}
               {activeView === 'cohort' && renderCohortView()}
               {activeView === 'scheduling' && renderSchedulingView()}
               {activeView === 'assignments' && renderAssignmentsView()}
