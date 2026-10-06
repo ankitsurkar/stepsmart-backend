@@ -69,7 +69,11 @@ async function loadJobsData() {
   try {
     const res = await fetch('data/jobs.json?t=' + Date.now());
     if (res.ok) {
-      allJobs = await res.json();
+      const data = await res.json();
+      allJobs = data.map((j, idx) => ({
+        ...j,
+        job_id: j.job_id || j.id || `pm_job_${idx}`
+      }));
     } else {
       throw new Error('Fallback to default seed');
     }
@@ -224,72 +228,155 @@ function getValidLinkedInUrl(url, role, company) {
   return `https://www.linkedin.com/search/results/content/?keywords=${q}&sortBy=%22date_posted%22`;
 }
 
+function sanitizeCompanyName(company, email) {
+  if (company && typeof company === 'string') {
+    const trimmed = company.trim();
+    if (!['nan', 'none', 'null', 'undefined', ''].includes(trimmed.toLowerCase())) {
+      return trimmed;
+    }
+  }
+  if (email && email.includes('@')) {
+    const domain = email.split('@')[1];
+    if (domain) {
+      const parts = domain.split('.');
+      if (parts.length >= 2 && !['gmail', 'yahoo', 'outlook', 'hotmail', 'protonmail', 'icloud'].includes(parts[0].toLowerCase())) {
+        return parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+      }
+    }
+  }
+  return '';
+}
+
+function cleanMarkdownSnippet(text, maxLength = 160) {
+  if (!text) return '';
+  let clean = String(text)
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/#{1,6}\s+/g, '')
+    .replace(/`{1,3}.*?`{1,3}/g, '')
+    .replace(/\n+/g, ' ')
+    .trim();
+  if (clean.length > maxLength) {
+    clean = clean.substring(0, maxLength).trim() + '...';
+  }
+  return clean;
+}
+
+function formatSeniorityBadge(job) {
+  const s = (job.seniority || job.seniority_fit || '').trim();
+  if (!s || s.toLowerCase() === 'all' || s.toLowerCase() === 'nan') return 'PRODUCT';
+  if (s.toLowerCase().includes('apm') || s.toLowerCase().includes('associate')) return 'APM / 0-2Y';
+  if (s.toLowerCase().includes('senior') || s.toLowerCase().includes('lead') || s.toLowerCase().includes('principal')) return 'SENIOR PM';
+  if (s.toLowerCase().includes('owner') || s.toLowerCase().includes('po')) return 'PRODUCT OWNER';
+  if (s.toLowerCase().includes('growth')) return 'GROWTH PM';
+  if (s.toLowerCase().includes('technical') || s.toLowerCase().includes('tpm')) return 'TECH PM';
+  if (s.toLowerCase().includes('intern')) return 'PM INTERN';
+  return s.length > 15 ? 'PRODUCT' : s.toUpperCase();
+}
+
+function formatDateLabel(dateStr) {
+  if (!dateStr || dateStr === 'nan' || dateStr === 'None') return 'Recent';
+  if (dateStr.includes('ago') || dateStr.includes('Past') || dateStr.includes('Today') || dateStr.includes('Yesterday')) {
+    return dateStr;
+  }
+  const d = new Date(dateStr);
+  if (!isNaN(d.getTime())) {
+    const now = new Date();
+    const diffHours = Math.round((now - d) / (1000 * 60 * 60));
+    if (diffHours >= 0 && diffHours < 24) return `${diffHours || 1}h ago`;
+    const diffDays = Math.round(diffHours / 24);
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays > 1 && diffDays <= 7) return `${diffDays}d ago`;
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+  return String(dateStr);
+}
+
 function createJobCardHTML(job) {
+  const cleanCompany = sanitizeCompanyName(job.company || job.company_name, job.email || job.extracted_email);
   const contact = job.relevant_contact || {};
   const rawPosterName = contact.name || job.author_name;
-  const posterName = (rawPosterName && rawPosterName !== 'None' && rawPosterName !== 'Hiring Manager') ? rawPosterName : (job.company ? `${job.company} Hiring Team` : 'Hiring Team');
+  const isPosterValid = rawPosterName && !['nan', 'none', 'null', 'undefined', 'hiring manager'].includes(String(rawPosterName).toLowerCase());
+  const posterName = isPosterValid ? rawPosterName : (cleanCompany ? `${cleanCompany} Hiring Team` : 'Product Hiring Team');
+
   const rawHeadline = contact.headline || job.author_title;
-  const headline = (rawHeadline && rawHeadline !== 'None' && rawHeadline !== 'Product Leader') ? rawHeadline : (job.source ? `Recruiter / Hiring Lead (${job.source})` : 'Product Leader');
+  const isHeadlineValid = rawHeadline && !['nan', 'none', 'null', 'undefined', 'product leader'].includes(String(rawHeadline).toLowerCase());
+  const headline = isHeadlineValid ? rawHeadline : (cleanCompany ? `Recruiter / Hiring Lead (${cleanCompany})` : 'Product Leader');
+
   const initials = getInitials(posterName);
   const email = job.email || job.extracted_email;
   const score = job.quality_score || 85;
   const currentAction = studentActions[job.job_id] || '';
+  const jobTitle = job.title || job.role_title || job.role || 'Product Manager';
+  const dateLabel = formatDateLabel(job.posted_at || job.date_posted);
 
-  const postUrl = getValidLinkedInUrl(job.post_url, job.role_title || job.role, job.company);
-  const applyUrl = getValidLinkedInUrl(job.apply_link || job.apply_url || job.post_url, job.role_title || job.role, job.company);
+  const postUrl = getValidLinkedInUrl(job.post_url, jobTitle, cleanCompany);
+  const applyUrl = getValidLinkedInUrl(job.apply_link || job.apply_url || job.post_url, jobTitle, cleanCompany);
+
+  const seniorityBadge = formatSeniorityBadge(job);
+  const rawLoc = (job.location && job.location !== 'nan') ? job.location : 'Remote / India';
+  const locationBadge = rawLoc.length > 20 ? rawLoc.substring(0, 18) + '...' : rawLoc;
 
   const emailBoxHTML = email ? `
     <div class="email-highlight-box">
-      <span class="email-address-text">✉️ ${escapeHTML(email)}</span>
+      <span class="email-address-text" title="${escapeHTML(email)}">✉️ ${escapeHTML(email)}</span>
       <button class="copy-email-btn" data-email="${escapeHTML(email)}">Copy Email</button>
     </div>
   ` : '';
 
+  const snippet = cleanMarkdownSnippet(job.job_description || job.text || '');
+
   return `
     <article class="job-card" id="card-${job.job_id}">
-      <div class="job-card-header">
-        <div class="badges-row">
-          <span class="badge badge-seniority">${escapeHTML(job.role_title || job.seniority || 'Associate PM')}</span>
-          <span class="badge badge-location">${escapeHTML(job.location || 'Remote')}</span>
-          <span class="badge badge-score">Score: ${score}/100</span>
+      <div class="job-card-top">
+        <div class="job-card-header">
+          <div class="badges-row">
+            <span class="badge badge-seniority">${escapeHTML(seniorityBadge)}</span>
+            <span class="badge badge-location" title="${escapeHTML(rawLoc)}">${escapeHTML(locationBadge)}</span>
+            <span class="badge badge-score">Score: ${score}/100</span>
+          </div>
+          <span class="job-time">${escapeHTML(dateLabel)}</span>
         </div>
-        <span class="job-time">${escapeHTML(job.posted_at || 'Past 24h')}</span>
-      </div>
 
-      ${emailBoxHTML}
+        <h3 class="job-card-title" title="${escapeHTML(jobTitle)}">${escapeHTML(jobTitle)}</h3>
 
-      <div class="poster-box">
-        <div class="poster-avatar">${escapeHTML(initials)}</div>
-        <div class="poster-details">
-          <div class="poster-name">${escapeHTML(posterName)}</div>
-          <div class="poster-headline">${escapeHTML(headline)}</div>
+        ${emailBoxHTML}
+
+        <div class="poster-box">
+          <div class="poster-avatar">${escapeHTML(initials)}</div>
+          <div class="poster-details">
+            <div class="poster-name">${escapeHTML(posterName)}</div>
+            <div class="poster-headline">${escapeHTML(headline)}</div>
+          </div>
+        </div>
+
+        <div class="job-body">
+          <p class="job-text-snippet">${escapeHTML(snippet)}</p>
+          <button class="read-more-btn" data-job-id="${job.job_id}">Read full post &rarr;</button>
         </div>
       </div>
 
-      <div class="job-body">
-        <p class="job-text-snippet">${escapeHTML(job.job_description || '')}</p>
-        <button class="read-more-btn" data-job-id="${job.job_id}">Read full post &rarr;</button>
-      </div>
+      <div class="job-card-bottom">
+        <div class="student-actions-bar">
+          <button class="student-action-btn ${currentAction === 'emailed' ? 'active-emailed' : ''}" data-job-id="${job.job_id}" data-action="emailed">
+            ${currentAction === 'emailed' ? '✓ Emailed' : '✉️ Emailed'}
+          </button>
+          <button class="student-action-btn ${currentAction === 'replied' ? 'active-replied' : ''}" data-job-id="${job.job_id}" data-action="replied">
+            ${currentAction === 'replied' ? '💬 Replied' : '💬 Replied'}
+          </button>
+          <button class="student-action-btn ${currentAction === 'dead' ? 'active-dead' : ''}" data-job-id="${job.job_id}" data-action="dead">
+            ${currentAction === 'dead' ? '❌ Dead' : '❌ Pass'}
+          </button>
+        </div>
 
-      <div class="student-actions-bar">
-        <button class="student-action-btn ${currentAction === 'emailed' ? 'active-emailed' : ''}" data-job-id="${job.job_id}" data-action="emailed">
-          ${currentAction === 'emailed' ? '✓ Emailed' : '✉️ Emailed'}
-        </button>
-        <button class="student-action-btn ${currentAction === 'replied' ? 'active-replied' : ''}" data-job-id="${job.job_id}" data-action="replied">
-          ${currentAction === 'replied' ? '💬 Replied' : '💬 Replied'}
-        </button>
-        <button class="student-action-btn ${currentAction === 'dead' ? 'active-dead' : ''}" data-job-id="${job.job_id}" data-action="dead">
-          ${currentAction === 'dead' ? '❌ Dead' : '❌ Pass'}
-        </button>
-      </div>
-
-      <div class="job-card-footer">
-        <a href="${escapeHTML(postUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-          LinkedIn Post
-        </a>
-        <a href="${escapeHTML(applyUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-          Apply Now &rarr;
-        </a>
+        <div class="job-card-footer">
+          <a href="${escapeHTML(postUrl)}" target="_blank" rel="noopener noreferrer" class="btn-card-link btn-secondary-link">
+            LinkedIn Post
+          </a>
+          <a href="${escapeHTML(applyUrl)}" target="_blank" rel="noopener noreferrer" class="btn-card-link btn-primary-link">
+            Apply Now &rarr;
+          </a>
+        </div>
       </div>
     </article>
   `;
@@ -310,27 +397,31 @@ function openModal(jobId) {
   if (!job) return;
 
   const contact = job.relevant_contact || {};
-
-  const postUrl = getValidLinkedInUrl(job.post_url, job.role_title || job.role, job.company);
-  const applyUrl = getValidLinkedInUrl(job.apply_link || job.apply_url || job.post_url, job.role_title || job.role, job.company);
-
-  document.getElementById('modalSeniority').textContent = job.role_title || job.seniority || 'Associate PM';
-  document.getElementById('modalLocation').textContent = job.location || 'Remote';
-  document.getElementById('modalScore').textContent = `Quality Score: ${job.quality_score || 85}/100`;
-
+  const cleanCompany = sanitizeCompanyName(job.company || job.company_name, job.email || job.extracted_email);
   const rawPosterName = contact.name || job.author_name;
-  const posterName = (rawPosterName && rawPosterName !== 'None' && rawPosterName !== 'Hiring Manager') ? rawPosterName : (job.company ? `${job.company} Hiring Team` : 'Hiring Team');
+  const isPosterValid = rawPosterName && !['nan', 'none', 'null', 'undefined', 'hiring manager'].includes(String(rawPosterName).toLowerCase());
+  const posterName = isPosterValid ? rawPosterName : (cleanCompany ? `${cleanCompany} Hiring Team` : 'Product Hiring Team');
+
   const rawHeadline = contact.headline || job.author_title;
-  const headline = (rawHeadline && rawHeadline !== 'None' && rawHeadline !== 'Product Leader') ? rawHeadline : (job.source ? `Recruiter / Hiring Lead (${job.source})` : 'Product Leader');
+  const isHeadlineValid = rawHeadline && !['nan', 'none', 'null', 'undefined', 'product leader'].includes(String(rawHeadline).toLowerCase());
+  const headline = isHeadlineValid ? rawHeadline : (cleanCompany ? `Recruiter / Hiring Lead (${cleanCompany})` : 'Product Leader');
+
+  const jobTitle = job.title || job.role_title || job.role || 'Product Manager';
+  const postUrl = getValidLinkedInUrl(job.post_url, jobTitle, cleanCompany);
+  const applyUrl = getValidLinkedInUrl(job.apply_link || job.apply_url || job.post_url, jobTitle, cleanCompany);
+
+  document.getElementById('modalSeniority').textContent = formatSeniorityBadge(job);
+  document.getElementById('modalLocation').textContent = (job.location && job.location !== 'nan') ? job.location : 'Remote / India';
+  document.getElementById('modalScore').textContent = `Quality Score: ${job.quality_score || 85}/100`;
 
   document.getElementById('modalPosterAvatar').textContent = getInitials(posterName);
   document.getElementById('modalPosterName').textContent = posterName;
   document.getElementById('modalPosterHeadline').textContent = headline;
   
   const profileBtn = document.getElementById('modalPosterLink');
-  profileBtn.href = getValidLinkedInUrl(contact.profile_url || postUrl, job.role_title || job.role, job.company);
+  profileBtn.href = getValidLinkedInUrl(contact.profile_url || postUrl, jobTitle, cleanCompany);
 
-  document.getElementById('modalDescription').textContent = job.job_description;
+  document.getElementById('modalDescription').textContent = job.job_description || job.text || 'No description available.';
   document.getElementById('modalLinkedInPostBtn').href = postUrl;
   document.getElementById('modalApplyBtn').href = applyUrl;
 
