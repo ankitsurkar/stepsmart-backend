@@ -1,0 +1,50 @@
+[
+  {
+    "query_id": "q_wide_pm_hiring_01",
+    "query": "Product Manager hiring India",
+    "target": "Product Manager Hiring Posts (Wide)",
+    "active": true,
+    "yield_count": 0,
+    "last_run": null
+  },
+  {
+    "query_id": "q_wide_apm_hiring_02",
+    "query": "APM associate product manager hiring",
+    "target": "APM & Associate PM Hiring (Wide)",
+    "active": true,
+    "yield_count": 0,
+    "last_run": null
+  },
+  {
+    "query_id": "q_wide_product_analyst_03",
+    "query": "Product Analyst hiring India",
+    "target": "Product Analyst Hiring (Wide)",
+    "active": true,
+    "yield_count": 0,
+    "last_run": null
+  },
+  {
+    "query_id": "q_wide_product_intern_04",
+    "query": "Product Intern hiring",
+    "target": "Product Intern & Trainee Hiring (Wide)",
+    "active": true,
+    "yield_count": 0,
+    "last_run": null
+  },
+  {
+    "query_id": "q_wide_ai_tpm_growth_05",
+    "query": "AI Product Manager Technical PM Growth PM hiring",
+    "target": "AI PM / TPM / Growth PM Hiring (Wide)",
+    "active": true,
+    "yield_count": 0,
+    "last_run": null
+  },
+  {
+    "query_id": "q_wide_hubs_bengaluru_gurugram_06",
+    "query": "Product Manager hiring Bengaluru Gurugram Mumbai Hyderabad",
+    "target": "PM Hiring in India Tech Hubs",
+    "active": true,
+    "yield_count": 0,
+    "last_run": null
+  }
+]
