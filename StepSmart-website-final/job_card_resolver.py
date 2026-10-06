@@ -86,6 +86,7 @@ def standardize_schema(post):
 
     standardized = {
         "job_id": post.get('job_id') or post.get('id') or post.get('job_card_id') or f"post_{hash(raw_post_url)}",
+        "activity_id": post.get('activity_id'),
         "post_url": raw_post_url,
         "author": author_name,
         "author_name": author_name,

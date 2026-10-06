@@ -11,7 +11,7 @@ import json
 import ssl
 import urllib.request
 import urllib.parse
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 def load_env_file():
     """Zero-dependency .env file parser"""
@@ -22,9 +22,18 @@ def load_env_file():
                 line = line.strip()
                 if line and not line.startswith('#') and '=' in line:
                     key, val = line.split('=', 1)
-                    os.environ[key.strip()] = val.strip().strip('"\'')
+                    os.environ.setdefault(key.strip(), val.strip().strip('"\''))
 
 load_env_file()
+
+LAST_SCRAPE_ERRORS = 0
+
+def record_scrape_error():
+    global LAST_SCRAPE_ERRORS
+    LAST_SCRAPE_ERRORS += 1
+
+def get_last_scrape_errors():
+    return LAST_SCRAPE_ERRORS
 
 KEYWORDS_FILE = os.path.join(os.path.dirname(__file__), 'pm_keywords.json')
 def load_pm_keywords():
@@ -100,6 +109,62 @@ def build_working_profile_search_url(name, company):
     encoded = urllib.parse.quote(query)
     return f"https://www.linkedin.com/search/results/people/?keywords={encoded}"
 
+def parse_posted_datetime(item):
+    """Return UTC posting time only when the source provides usable evidence."""
+    for key in ("posted_at", "postedAt", "postDate", "postedTime", "date_posted", "datePosted", "datePublished", "created_at", "createdAt", "timestamp", "date"):
+        value = item.get(key)
+        if isinstance(value, (int, float)):
+            try:
+                return datetime.fromtimestamp(value / (1000 if value > 10**12 else 1), timezone.utc)
+            except (OverflowError, OSError, ValueError):
+                continue
+        if isinstance(value, str) and value.strip():
+            raw = value.strip()
+            if raw.lower() in {"just now", "today"}:
+                return datetime.now(timezone.utc)
+            if raw.lower() == "yesterday":
+                return datetime.now(timezone.utc) - timedelta(days=1)
+            try:
+                parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+                return parsed.replace(tzinfo=timezone.utc) if parsed.tzinfo is None else parsed.astimezone(timezone.utc)
+            except ValueError:
+                for fmt in ("%b %d, %Y", "%B %d, %Y", "%Y-%m-%d"):
+                    try:
+                        return datetime.strptime(raw, fmt).replace(tzinfo=timezone.utc)
+                    except ValueError:
+                        continue
+                match = re.search(r"(\d+)\s*(seconds?|secs?|minutes?|mins?|hours?|hrs?|days?|weeks?|[smhdw])(?:\s+ago)?\b", raw, re.I)
+                if match:
+                    amount, unit = int(match.group(1)), match.group(2).lower()
+                    if unit.startswith("s"):
+                        delta = timedelta(seconds=amount)
+                    elif unit.startswith("m"):
+                        delta = timedelta(minutes=amount)
+                    elif unit.startswith("h"):
+                        delta = timedelta(hours=amount)
+                    elif unit.startswith("w"):
+                        delta = timedelta(weeks=amount)
+                    else:
+                        delta = timedelta(days=amount)
+                    return datetime.now(timezone.utc) - delta
+    activity_source = str(item.get("activity_id") or item.get("post_url") or item.get("url") or "")
+    activity_match = re.search(r"(\d{18,20})", activity_source)
+    if activity_match:
+        try:
+            timestamp_ms = int(activity_match.group(1)) >> 22
+            dt = datetime.fromtimestamp(timestamp_ms / 1000.0, timezone.utc)
+            if datetime(2015, 1, 1, tzinfo=timezone.utc) <= dt <= datetime.now(timezone.utc) + timedelta(minutes=5):
+                return dt
+        except (OverflowError, OSError, ValueError):
+            pass
+    return None
+
+def post_is_recent(posted_dt, window_days=7):
+    if not posted_dt:
+        return False
+    now = datetime.now(timezone.utc)
+    return now - timedelta(days=window_days) <= posted_dt <= now + timedelta(minutes=5)
+
 def infer_seniority(text):
     text_lower = text.lower() if text else ""
     if "intern" in text_lower:
@@ -140,6 +205,17 @@ def infer_location(text):
         return "Hybrid"
     return "India / Flexible"
 
+def extract_post_fields(text):
+    """Conservative field extraction from the post body; retain the body as source evidence."""
+    clean = re.sub(r"\s+", " ", text or "").strip()
+    role_match = re.search(r"\b((?:Associate|Assistant|Junior|Senior|Staff|Principal|Group|Technical|Growth|AI|Lead|Director of|Head of)?\s*(?:Product Manager|Product Analyst|Product Owner|Product Intern|Product Management Intern|Product Lead|Product Director|Product Management)|APM|PM Intern|RPM)\b", clean, re.I)
+    role = role_match.group(1).strip() if role_match else ""
+    company_match = re.search(r"(?:at|@|company\s*[:\-])\s*([A-Z][A-Za-z0-9&.' -]{1,50}?)(?=\s+(?:is|are|for|in|based|located|hiring|looking|with)\b|[.,\n]|$)", text or "", re.I)
+    company = company_match.group(1).strip(" .,-") if company_match else ""
+    location_match = re.search(r"(?:location|based in|work location)\s*[:\-]?\s*([^\n.;]{2,60})", text or "", re.I)
+    location = location_match.group(1).strip() if location_match else ""
+    return role, company, location
+
 def fetch_linkedin_serp_pm_posts(apify_key):
     """
     Query Apify's Google SERP LinkedIn Indexer actor for 100% fresh India PM hiring posts
@@ -149,11 +225,11 @@ def fetch_linkedin_serp_pm_posts(apify_key):
     endpoint = f"https://api.apify.com/v2/acts/apify~google-search-scraper/run-sync-get-dataset-items?token={apify_key}"
     
     queries = [
-        'site:linkedin.com/posts "Associate Product Manager" hiring India 2026',
-        'site:linkedin.com/posts "MakeMyTrip" OR "Swiggy" OR "Razorpay" OR "Kissht" OR "Lokal App" "Associate Product Manager" 2026',
-        'site:linkedin.com/posts "Product Manager" OR "APM" ("we are hiring" OR "I\'m hiring" OR "send resume" OR "DM") Bengaluru OR Gurugram OR Mumbai OR Remote 2026',
-        'site:linkedin.com/posts "Product Analyst" OR "PM Intern" hiring India 2026',
-        'site:linkedin.com/posts "hiring for my team" "Associate Product Manager" India 2026'
+        'site:linkedin.com/posts "Associate Product Manager" hiring India',
+        'site:linkedin.com/posts ("MakeMyTrip" OR "Swiggy" OR "Razorpay" OR "Kissht" OR "Lokal App") "Associate Product Manager"',
+        'site:linkedin.com/posts ("Product Manager" OR "APM") ("we are hiring" OR "I am hiring" OR "send resume" OR "DM") (Bengaluru OR Gurugram OR Mumbai OR Remote)',
+        'site:linkedin.com/posts ("Product Analyst" OR "PM Intern") hiring India',
+        'site:linkedin.com/posts "hiring for my team" "Associate Product Manager" India'
     ]
 
     payload = {
@@ -161,7 +237,7 @@ def fetch_linkedin_serp_pm_posts(apify_key):
         "maxPagesPerQuery": 1,
         "resultsPerPage": 20,
         "customOptions": {
-            "tbs": "qdr:m"  # Past month Google Search filter for 100% fresh 2026 posts
+            "tbs": "qdr:w"  # Match the seven-day live feed window.
         }
     }
 
@@ -183,14 +259,17 @@ def fetch_linkedin_serp_pm_posts(apify_key):
                     url = organic.get('url', '')
                     title = organic.get('title', '')
                     snippet = organic.get('snippet', '')
-                    
-                    full_text = f"{title} {snippet}".lower()
-                    
-                    # Filter out outdated past years (2024, 2023, 2022)
-                    if any(y in full_text for y in ["2024", "2023", "2022", "2021"]) and "2026" not in full_text:
+                    post_text = organic.get('postText') or organic.get('fullText') or organic.get('text') or organic.get('content')
+                    # Search snippets are incomplete and must not be presented as the body of a hiring post.
+                    if not post_text:
                         continue
-                        
+                    full_text = f"{title} {post_text}".lower()
+
                     if 'linkedin.com/posts/' in url:
+                        posted_dt = parse_posted_datetime(organic)
+                        if not post_is_recent(posted_dt):
+                            continue
+                        role_title, company_name, post_location = extract_post_fields(post_text)
                         # Extract poster name from title or snippet
                         poster_name = title.split('-')[0].split('|')[0].strip() if '-' in title or '|' in title else "Hiring Manager"
                         if "Purushottam Ratre" in title or "Purushottam" in snippet:
@@ -200,7 +279,7 @@ def fetch_linkedin_serp_pm_posts(apify_key):
                         
                         job = {
                             "job_id": f"serp_{hash(url)}",
-                            "job_description": f"{title}\n\n{snippet}",
+                            "job_description": post_text,
                             "relevant_contact": {
                                 "name": poster_name,
                                 "headline": f"Recruiter / Hiring Lead @ {company}",
@@ -209,19 +288,23 @@ def fetch_linkedin_serp_pm_posts(apify_key):
                             "author_name": poster_name,
                             "author_title": f"Hiring Lead @ {company}",
                             "author_is_decision_maker": True,
-                            "company": company,
-                            "apply_link": extract_apply_links(snippet) or url,
+                            "company": company_name or company,
+                            "role_title": role_title,
+                            "apply_link": extract_apply_links(post_text) or url,
                             "post_url": url,
                             "seniority": infer_seniority(snippet + " " + title),
                             "seniority_fit": "0-2y",
-                            "location": infer_location(snippet + " " + title),
-                            "posted_at": "Past 24 hours",
+                            "location": post_location or infer_location(post_text),
+                            "posted_at": posted_dt.isoformat(),
+                            "date_posted": posted_dt.date().isoformat(),
+                            "age_days": max(0, (datetime.now(timezone.utc) - posted_dt).total_seconds() / 86400),
                             "quality_score": 90 if "makemytrip" in snippet.lower() else 85,
                             "scraped_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
                         }
                         parsed_jobs.append(job)
             return parsed_jobs
     except urllib.error.HTTPError as e:
+        record_scrape_error()
         err_body = e.read().decode('utf-8')
         if "Monthly usage hard limit exceeded" in err_body or e.code == 403:
             print(f"[APIFY NOTICE] Apify API Key monthly usage hard limit reached (403).")
@@ -229,6 +312,7 @@ def fetch_linkedin_serp_pm_posts(apify_key):
             print(f"[APIFY SERAPER ERROR] Google SERP scraper failed: {e}")
         return []
     except Exception as e:
+        record_scrape_error()
         print(f"[APIFY SERAPER ERROR] Google SERP scraper failed: {e}")
         return []
 
@@ -237,11 +321,11 @@ def fetch_linkedin_native_posts(apify_key, max_items=20):
     endpoint = f"https://api.apify.com/v2/acts/apimaestro~linkedin-posts-search-scraper-no-cookies/run-sync-get-dataset-items?token={apify_key}"
     
     wide_search_terms = [
-        "Product Manager hiring",
+        "Product Manager hiring India",
         "Associate Product Manager hiring",
         "APM hiring India",
         "Product Analyst hiring",
-        "Product Intern hiring"
+        "Product Intern hiring India"
     ]
     
     parsed_jobs = []
@@ -267,12 +351,17 @@ def fetch_linkedin_native_posts(apify_key, max_items=20):
                     post_url = item.get('post_url') or item.get('url') or ''
                     author = item.get('author', {})
                     author_name = author.get('name') if isinstance(author, dict) else (item.get('author_name') or 'Hiring Manager')
-                    author_headline = author.get('headline') if isinstance(author, dict) else (item.get('author_title') or '')
-                    text = item.get('text') or ''
+                    author_headline = (author.get('headline') or '') if isinstance(author, dict) else (item.get('author_title') or '')
+                    text = item.get('text') or item.get('post_text') or item.get('content') or item.get('description') or ''
+                    posted_dt = parse_posted_datetime(item)
+                    if not post_is_recent(posted_dt):
+                        continue
+                    role_title, company_name, post_location = extract_post_fields(text)
                     act_id = item.get('activity_id') or f"native_{hash(post_url)}"
                     
                     job = {
                         "job_id": str(act_id),
+                        "activity_id": str(item.get('activity_id') or act_id),
                         "job_description": text,
                         "relevant_contact": {
                             "name": author_name,
@@ -282,19 +371,23 @@ def fetch_linkedin_native_posts(apify_key, max_items=20):
                         "author_name": author_name,
                         "author_title": author_headline,
                         "author_is_decision_maker": any(k in author_headline.lower() for k in ["founder", "cpo", "head of product", "lead pm", "manager", "recruit", "talent"]),
-                        "company": "Tech Company",
+                        "company": company_name or (author_headline.rsplit('@', 1)[-1].strip() if '@' in author_headline else "Unknown company"),
+                        "role_title": role_title,
                         "apply_link": extract_apply_links(text) or post_url,
                         "post_url": post_url,
                         "seniority": infer_seniority(text),
                         "seniority_fit": "0-2y",
-                        "location": infer_location(text),
-                        "posted_at": "Past 24 hours",
+                        "location": post_location or infer_location(text),
+                        "posted_at": posted_dt.isoformat(),
+                        "date_posted": posted_dt.date().isoformat(),
+                        "age_days": max(0, (datetime.now(timezone.utc) - posted_dt).total_seconds() / 86400),
                         "quality_score": 85,
                         "scraped_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
                         "source": "apimaestro_native"
                     }
                     parsed_jobs.append(job)
         except urllib.error.HTTPError as e:
+            record_scrape_error()
             err_body = e.read().decode('utf-8')
             if "Monthly usage hard limit exceeded" in err_body or e.code == 403:
                 print(f"[APIFY NOTICE] Apify API Key monthly usage hard limit reached (403). Using cached & enriched India PM dataset.")
@@ -302,17 +395,21 @@ def fetch_linkedin_native_posts(apify_key, max_items=20):
             else:
                 print(f"[APIFY NATIVE SCRAPER ERROR] Query '{term}' failed: {e}")
         except Exception as e:
+            record_scrape_error()
             print(f"[APIFY NATIVE SCRAPER ERROR] Query '{term}' failed: {e}")
             
     return parsed_jobs
 
 def fetch_linkedin_pm_posts(apify_api_key=None, max_items=40):
+    global LAST_SCRAPE_ERRORS
+    LAST_SCRAPE_ERRORS = 0
     load_env_file()
     apify_key = apify_api_key or os.getenv('APIFY_API_KEY')
     
     if not apify_key or apify_key == 'your_apify_api_token_here':
-        print("[APIFY SCRAPER] No Apify API key set in .env. Loading fallback India PM job dataset...")
-        return get_enhanced_pm_jobs()
+        print("[APIFY SCRAPER] No Apify API key set in .env. Live posts cannot be fetched.")
+        record_scrape_error()
+        return []
 
     # 1. Primary: Run Apify Native LinkedIn Posts Scraper
     native_jobs = fetch_linkedin_native_posts(apify_key, max_items=20)
@@ -323,10 +420,7 @@ def fetch_linkedin_pm_posts(apify_api_key=None, max_items=40):
     print(f"[APIFY SCRAPER] Surfaced {len(serp_jobs)} India PM posts via Apify SERP scraper!")
 
     combined = native_jobs + serp_jobs
-    if len(combined) > 0:
-        return combined
-
-    return get_enhanced_pm_jobs()
+    return combined
 
 def load_gold_set_posts():
     gold_path = os.path.join(os.path.dirname(__file__), 'data', 'gold_set.json')
@@ -537,4 +631,3 @@ if __name__ == '__main__':
     print(f"\nFetched {len(jobs)} India PM hiring posts from LinkedIn:")
     if jobs:
         print(json.dumps(jobs[0], indent=2))
-

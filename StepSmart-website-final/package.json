@@ -4,7 +4,7 @@
   "description": "Product Management LinkedIn Job Posts Scraper & Google Sheets Tracker V1",
   "main": "app.js",
   "scripts": {
-    "start": "python3 -m http.server 3000",
+    "start": "python3 app_server.py",
     "scrape": "python3 apify_scraper.py",
     "sync": "python3 gsheets_sync.py",
     "scheduler": "python3 scheduler.py"

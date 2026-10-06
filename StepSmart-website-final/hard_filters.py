@@ -43,7 +43,7 @@ def extract_emails(text):
     valid = [m for m in matches if not m.endswith(('.png', '.jpg', '.jpeg', '@example.com', '@domain.com'))]
     return list(set(valid))
 
-def apply_hard_filters(post):
+def apply_hard_filters(post, require_post_intent=True):
     text = (post.get('job_description') or post.get('text') or '').strip()
     title = (post.get('title') or post.get('role_title') or '').strip()
     location = (post.get('location') or post.get('city') or '').strip().lower()
@@ -57,10 +57,14 @@ def apply_hard_filters(post):
         return False, "Author headline or text indicates job seeker (#opentowork)", post
 
     # 2. Basic Hiring Intent Check
-    hiring_keywords = ["hiring", "hire", "opening", "opportunity", "apply", "looking for", "join our team", "we're hiring", "i'm hiring", "role", "position", "recruiting", "referral"]
+    hiring_keywords = ["hiring", "open role", "job opening", "apply", "looking for", "join our team", "we're hiring", "we are hiring", "i'm hiring", "i am hiring", "recruiting", "referral", "send resume", "send your cv", "dm me"]
     is_hiring_post = any(kw in full_text_lower for kw in hiring_keywords)
-    if not is_hiring_post:
+    if require_post_intent and not is_hiring_post:
         return False, "Not a hiring post (lacks hiring intent keywords)", post
+
+    pm_role_terms = ["product manager", "associate product", "apm", "product analyst", "product owner", "product lead", "product intern", "product director", "head of product", "technical product", "product management"]
+    if not any(term in full_text_lower for term in pm_role_terms):
+        return False, "No product role found in post content", post
 
     # Drop synthetic watchlist search fallback links
     raw_url = post.get('post_url') or post.get('url') or post.get('apply_link') or ''
@@ -81,7 +85,7 @@ def apply_hard_filters(post):
 
     # 5. Recency & Archive Tagging (Activity ID -> Date String Fallback)
     post_url = post.get('post_url') or post.get('job_url') or post.get('apply_link') or post.get('url') or ''
-    match = re.search(r'(\d{18,20})', str(post_url))
+    match = re.search(r'(\d{18,20})', str(post_url)) or re.search(r'\b(\d{18,20})\b', str(post.get('activity_id') or ''))
     
     age_days_val = None
     import datetime
@@ -97,17 +101,30 @@ def apply_hard_filters(post):
             pass
 
     if age_days_val is None:
-        dp = str(post.get('date_posted') or post.get('posted_at') or '').strip()
+        dp = str(post.get('posted_at') or post.get('date_posted') or '').strip()
         if dp and dp.lower() not in ['none', 'nan', 'unknown', '']:
-            if re.match(r'^\d{4}-\d{2}-\d{2}', dp):
+            try:
+                iso_dt = datetime.datetime.fromisoformat(dp.replace('Z', '+00:00'))
+                if 'T' in dp or ' ' in dp:
+                    if iso_dt.tzinfo is None:
+                        iso_dt = iso_dt.replace(tzinfo=datetime.timezone.utc)
+                    age_days_val = round((now_dt - iso_dt.astimezone(datetime.timezone.utc)).total_seconds() / 86400.0, 3)
+            except ValueError:
+                pass
+            if age_days_val is None and re.match(r'^\d{4}-\d{2}-\d{2}', dp):
                 try:
                     p_dt = datetime.datetime.strptime(dp[:10], '%Y-%m-%d').replace(tzinfo=datetime.timezone.utc)
                     age_days_val = round((now_dt - p_dt).total_seconds() / 86400.0, 1)
                 except Exception:
                     pass
-            elif any(k in dp.lower() for k in ['hour', 'min', '24h', 'just now', 'today']):
-                age_days_val = 0.5
-            elif 'day' in dp.lower():
+            elif age_days_val is None and any(k in dp.lower() for k in ['hour', 'min', '24h', 'just now', 'today']):
+                rel = re.search(r'(\d+)\s*(hour|hr|min|minute)', dp.lower())
+                if rel:
+                    n = int(rel.group(1))
+                    age_days_val = (n / 60 if 'min' in rel.group(2) else n) / 24
+                else:
+                    age_days_val = 0.02
+            elif age_days_val is None and 'day' in dp.lower():
                 d_match = re.search(r'(\d+)\s*day', dp.lower())
                 age_days_val = float(d_match.group(1)) if d_match else 1.0
 
@@ -115,14 +132,14 @@ def apply_hard_filters(post):
         try:
             age_days_val = float(post.get('age_days'))
         except (TypeError, ValueError):
-            age_days_val = 1.0
+            return False, "Posting date unknown; cannot verify recency", post
 
-    # Drop obsolete historical posts (>90 days old)
-    if age_days_val > 90:
-        return False, f"Obsolete post created {int(age_days_val)} days ago", post
+    # Live board is limited to posts whose publication time is verifiably within seven days.
+    if age_days_val < 0 or age_days_val > 7:
+        return False, f"Outside recent window ({age_days_val:.1f} days old)", post
 
-    is_archived = age_days_val > 7.0
-    status_label = "Archived" if is_archived else "Fresh"
+    is_archived = False
+    status_label = "Fresh"
 
     # Enrich post metadata
     enriched = dict(post)

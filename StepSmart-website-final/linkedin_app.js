@@ -1,11 +1,11 @@
 /**
- * LinkedIn Hidden-Jobs Engine V2 - Client Dashboard Logic
- * Step 7 Views: Fresh (<24h) with Email, DM-Only, All Verified Jobs, Archived (>7d)
- * Student Action Tracker: Emailed, Replied, Dead
+ * StepSmart LinkedIn Hidden-Jobs Engine — Recruiter Posts App
+ * Handles verified organic recruiter posts, outreach, email tracking, and human review queue.
  */
 
 let allJobs = [];
 let filteredJobs = [];
+let reviewCandidates = [];
 let activeTab = 'fresher-fit';
 let studentActions = JSON.parse(localStorage.getItem('STUDENT_PM_ACTIONS') || '{}');
 
@@ -29,9 +29,9 @@ async function initApp() {
 
 function setupEventListeners() {
   // Tab switching
-  document.querySelectorAll('.tab-btn').forEach(btn => {
+  document.querySelectorAll('.view-tabs-nav .tab-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.view-tabs-nav .tab-btn').forEach(b => b.classList.remove('active'));
       const targetBtn = e.target.closest('.tab-btn');
       targetBtn.classList.add('active');
       activeTab = targetBtn.getAttribute('data-tab');
@@ -40,56 +40,101 @@ function setupEventListeners() {
   });
 
   // Search & Filters
-  document.getElementById('searchInput').addEventListener('input', applyFilters);
-  document.getElementById('seniorityFilter').addEventListener('change', applyFilters);
-  document.getElementById('locationFilter').addEventListener('change', applyFilters);
-  document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) searchInput.addEventListener('input', applyFilters);
 
-  // Top Action Buttons
-  document.getElementById('syncNowBtn').addEventListener('click', triggerApifySync);
-  document.getElementById('exportCsvBtn').addEventListener('click', exportToCsv);
+  const seniorityFilter = document.getElementById('seniorityFilter');
+  if (seniorityFilter) seniorityFilter.addEventListener('change', applyFilters);
 
-  // Modal Controls
-  document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-  document.getElementById('detailModal').addEventListener('click', (e) => {
-    if (e.target.id === 'detailModal') closeModal();
-  });
+  const locationFilter = document.getElementById('locationFilter');
+  if (locationFilter) locationFilter.addEventListener('change', applyFilters);
+
+  const resetBtn = document.getElementById('resetFiltersBtn');
+  if (resetBtn) resetBtn.addEventListener('click', resetFilters);
+
+  // Sync Button
+  const syncBtn = document.getElementById('syncNowBtn');
+  if (syncBtn) syncBtn.addEventListener('click', triggerApifySync);
+
+  // Export CSV
+  const exportBtn = document.getElementById('exportCsvBtn');
+  if (exportBtn) exportBtn.addEventListener('click', exportToCsv);
+
+  // Detail Modal Close
+  const closeBtn = document.getElementById('closeModalBtn');
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  const detailModal = document.getElementById('detailModal');
+  if (detailModal) {
+    detailModal.addEventListener('click', (e) => {
+      if (e.target.id === 'detailModal') closeModal();
+    });
+  }
 
   // Settings Drawer
-  document.getElementById('settingsBtn').addEventListener('click', openDrawer);
-  document.getElementById('closeDrawerBtn').addEventListener('click', closeDrawer);
-  document.getElementById('settingsDrawer').addEventListener('click', (e) => {
-    if (e.target.id === 'settingsDrawer') closeDrawer();
-  });
-
-  document.getElementById('saveApifyTokenBtn').addEventListener('click', saveApifyToken);
-  document.getElementById('copyAppsScriptBtn').addEventListener('click', copyAppsScript);
-
-  const savedToken = localStorage.getItem('APIFY_API_KEY');
-  if (savedToken) {
-    document.getElementById('apifyTokenInput').value = savedToken;
+  const settingsBtn = document.getElementById('settingsBtn');
+  if (settingsBtn) settingsBtn.addEventListener('click', openDrawer);
+  const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+  if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
+  const settingsDrawer = document.getElementById('settingsDrawer');
+  if (settingsDrawer) {
+    settingsDrawer.addEventListener('click', (e) => {
+      if (e.target.id === 'settingsDrawer') closeDrawer();
+    });
   }
+
+  const copyAppsScriptBtn = document.getElementById('copyAppsScriptBtn');
+  if (copyAppsScriptBtn) copyAppsScriptBtn.addEventListener('click', copyAppsScript);
+
+  const candidateGrid = document.getElementById('candidateGrid');
+  if (candidateGrid) candidateGrid.addEventListener('click', handleCandidateAction);
 }
 
 async function loadJobsData() {
   try {
-    const res = await fetch('data/jobs.json?t=' + Date.now());
+    const res = await fetch('data/linkedin_posts.json?t=' + Date.now(), { cache: 'no-store' });
     if (res.ok) {
       const data = await res.json();
       allJobs = data.map((j, idx) => ({
         ...j,
-        job_id: j.job_id || j.id || `pm_job_${idx}`
+        job_id: j.job_id || j.id || `linkedin_post_${idx}`
       }));
     } else {
-      throw new Error('Fallback to default seed');
+      throw new Error('Fallback to jobs.json');
     }
   } catch (err) {
-    console.log('Loading fallback seed PM jobs dataset...');
-    allJobs = getSeedJobs();
+    try {
+      // Fallback: filter linkedin posts from jobs.json
+      const fallbackRes = await fetch('data/jobs.json?t=' + Date.now(), { cache: 'no-store' });
+      if (fallbackRes.ok) {
+        const fullJobs = await fallbackRes.json();
+        allJobs = fullJobs.filter(j => 
+          (j.post_url && j.post_url.includes('linkedin.com')) || 
+          (j.apply_link && j.apply_link.includes('linkedin.com')) ||
+          j.has_email
+        ).map((j, idx) => ({
+          ...j,
+          job_id: j.job_id || j.id || `linkedin_post_${idx}`
+        }));
+      }
+    } catch (_) {
+      allJobs = [];
+    }
   }
+
+  try {
+    const candidateResponse = await fetch('/api/candidates?t=' + Date.now(), { cache: 'no-store' });
+    reviewCandidates = candidateResponse.ok ? await candidateResponse.json() : [];
+  } catch (_) {
+    reviewCandidates = [];
+  }
+
+  const hasCachedPreview = allJobs.some(job => job.cached_result);
+  const cacheNotice = document.getElementById('cachedFeedNotice');
+  if (cacheNotice) cacheNotice.classList.toggle('hidden', !hasCachedPreview);
   
   updateTabCounts();
   updateStats();
+  renderCandidates();
   applyFilters();
 }
 
@@ -101,96 +146,127 @@ function updateTabCounts() {
   const freshEmailCount = activeJobs.filter(j => j.has_email || (j.email && j.email.length > 0)).length;
   const founderCount = activeJobs.filter(j => j.author_type === 'founder' || j.author_type === 'hiring_manager' || j.author_is_decision_maker).length;
   
-  if (document.getElementById('countFresher')) document.getElementById('countFresher').textContent = fresherCount;
-  if (document.getElementById('countFreshEmail')) document.getElementById('countFreshEmail').textContent = freshEmailCount;
-  if (document.getElementById('countFounder')) document.getElementById('countFounder').textContent = founderCount;
-  if (document.getElementById('countAll')) document.getElementById('countAll').textContent = activeJobs.length;
-  if (document.getElementById('countArchived')) document.getElementById('countArchived').textContent = archivedJobs.length;
+  const setEl = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
+
+  setEl('countFresher', fresherCount);
+  setEl('countFreshEmail', freshEmailCount);
+  setEl('countFounder', founderCount);
+  setEl('countAll', activeJobs.length);
+  setEl('countArchived', archivedJobs.length);
+  setEl('countReview', reviewCandidates.length);
 }
 
 function updateStats() {
   const activeJobs = allJobs.filter(j => !j.archived && (j.age_days === undefined || j.age_days <= 7.0));
-  document.getElementById('statTotalJobs').textContent = activeJobs.length;
+  const setEl = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
+
+  setEl('statTotalJobs', activeJobs.length);
   
   const freshEmail = activeJobs.filter(j => j.has_email || j.email).length;
-  document.getElementById('statRecentJobs').textContent = freshEmail;
-  document.getElementById('statApplyLinks').textContent = freshEmail;
+  setEl('statRecentJobs', freshEmail);
+  setEl('statApplyLinks', freshEmail);
 
   const decisionMakers = activeJobs.filter(j => j.author_is_decision_maker || j.author_type === 'founder' || j.author_type === 'hiring_manager').length;
-  document.getElementById('statContacts').textContent = decisionMakers || activeJobs.length;
+  setEl('statContacts', decisionMakers || activeJobs.length);
 }
 
 function applyFilters() {
-  const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
-  const seniorityVal = document.getElementById('seniorityFilter').value;
-  const locationVal = document.getElementById('locationFilter').value;
+  const searchInput = document.getElementById('searchInput');
+  const seniorityFilter = document.getElementById('seniorityFilter');
+  const locationFilter = document.getElementById('locationFilter');
 
-  filteredJobs = allJobs.filter(job => {
-    const isJobArchived = job.archived || (job.age_days !== undefined && job.age_days > 7.0);
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const seniority = seniorityFilter ? seniorityFilter.value : 'ALL';
+  const location = locationFilter ? locationFilter.value : 'ALL';
 
-    // 1. Tab View Filter
-    if (activeTab === 'archived') {
-      if (!isJobArchived) return false;
-    } else {
-      if (isJobArchived) return false; // Hide archived (>7d) jobs from active tabs
-    }
+  const candidateGrid = document.getElementById('candidateGrid');
+  const reviewNotice = document.getElementById('reviewQueueNotice');
+  const isReviewQueue = activeTab === 'review-queue';
 
-    const hasEmail = job.has_email || (job.email && job.email.length > 0);
-    const isFresher = job.seniority_fit === 'fresher' || job.seniority_fit === '0-2y' || !job.seniority_fit;
-    const isFounder = job.author_type === 'founder' || job.author_type === 'hiring_manager' || job.author_is_decision_maker;
-    
-    if (activeTab === 'fresher-fit' && !isFresher) return false;
-    if (activeTab === 'fresh-email' && !hasEmail) return false;
-    if (activeTab === 'founder-posted' && !isFounder) return false;
+  if (candidateGrid) candidateGrid.classList.toggle('hidden', !isReviewQueue);
+  if (reviewNotice) reviewNotice.classList.toggle('hidden', !isReviewQueue);
 
-    // 2. Search match
-    const contactName = (job.relevant_contact?.name || job.author_name || job.author || '').toLowerCase();
-    const headline = (job.relevant_contact?.headline || job.author_title || '').toLowerCase();
-    const desc = (job.job_description || '').toLowerCase();
-    const emailStr = (job.email || job.extracted_email || '').toLowerCase();
-
-    const matchesSearch = !searchVal || 
-      contactName.includes(searchVal) || 
-      headline.includes(searchVal) || 
-      desc.includes(searchVal) ||
-      emailStr.includes(searchVal);
-
-    // 3. Seniority match
-    const matchesSeniority = seniorityVal === 'ALL' || (job.seniority || job.role_title) === seniorityVal;
-
-    // 4. Location match
-    const matchesLocation = locationVal === 'ALL' || (job.location && job.location.includes(locationVal));
-
-    return matchesSearch && matchesSeniority && matchesLocation;
-  });
-
-  // Sort by Quality Score descending
-  filteredJobs.sort((a, b) => (b.quality_score || 80) - (a.quality_score || 80));
-
-  renderJobsGrid(filteredJobs);
-}
-
-function resetFilters() {
-  document.getElementById('searchInput').value = '';
-  document.getElementById('seniorityFilter').value = 'ALL';
-  document.getElementById('locationFilter').value = 'ALL';
-  applyFilters();
-}
-
-function renderJobsGrid(jobs) {
-  const container = document.getElementById('jobsGrid');
-  const emptyState = document.getElementById('noResultsState');
-
-  if (jobs.length === 0) {
-    container.innerHTML = '';
-    emptyState.classList.remove('hidden');
+  if (isReviewQueue) {
+    const jobsGrid = document.getElementById('jobsGrid');
+    if (jobsGrid) jobsGrid.classList.add('hidden');
     return;
   }
 
-  emptyState.classList.add('hidden');
+  const jobsGrid = document.getElementById('jobsGrid');
+  if (jobsGrid) jobsGrid.classList.remove('hidden');
+
+  filteredJobs = allJobs.filter(job => {
+    const isArchived = job.archived || (job.age_days !== undefined && job.age_days > 7.0);
+
+    if (activeTab === 'fresher-fit' && (isArchived || (job.seniority_fit && job.seniority_fit !== 'fresher' && job.seniority_fit !== '0-2y'))) return false;
+    if (activeTab === 'fresh-email' && (isArchived || (!job.has_email && !job.email))) return false;
+    if (activeTab === 'founder-posted' && (isArchived || (!job.author_is_decision_maker && job.author_type !== 'founder' && job.author_type !== 'hiring_manager'))) return false;
+    if (activeTab === 'all' && isArchived) return false;
+    if (activeTab === 'archived' && !isArchived) return false;
+
+    if (seniority !== 'ALL') {
+      const match = (job.seniority || job.role_title || job.role || '').toLowerCase();
+      if (!match.includes(seniority.toLowerCase())) return false;
+    }
+
+    if (location !== 'ALL') {
+      const loc = (job.location || '').toLowerCase();
+      if (!loc.includes(location.toLowerCase())) return false;
+    }
+
+    if (query) {
+      const blob = [
+        job.author_name,
+        job.author_title,
+        job.company,
+        job.email,
+        job.extracted_email,
+        job.role_title,
+        job.role,
+        job.job_description,
+        job.location
+      ].filter(Boolean).join(' ').toLowerCase();
+
+      if (!blob.includes(query)) return false;
+    }
+
+    return true;
+  });
+
+  renderJobs(filteredJobs);
+}
+
+function resetFilters() {
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) searchInput.value = '';
+  const seniorityFilter = document.getElementById('seniorityFilter');
+  if (seniorityFilter) seniorityFilter.value = 'ALL';
+  const locationFilter = document.getElementById('locationFilter');
+  if (locationFilter) locationFilter.value = 'ALL';
+  applyFilters();
+}
+
+function renderJobs(jobs) {
+  const container = document.getElementById('jobsGrid');
+  const emptyState = document.getElementById('noResultsState');
+  if (!container) return;
+
+  if (jobs.length === 0) {
+    container.innerHTML = '';
+    if (emptyState) emptyState.classList.remove('hidden');
+    return;
+  }
+
+  if (emptyState) emptyState.classList.add('hidden');
   container.innerHTML = jobs.map(job => createJobCardHTML(job)).join('');
 
-  // Attach card click handlers
+  // Card handlers
   document.querySelectorAll('.read-more-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const jobId = e.target.getAttribute('data-job-id');
@@ -198,7 +274,7 @@ function renderJobsGrid(jobs) {
     });
   });
 
-  // Attach Copy Email buttons
+  // Copy email
   document.querySelectorAll('.copy-email-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const email = e.target.getAttribute('data-email');
@@ -207,7 +283,7 @@ function renderJobsGrid(jobs) {
     });
   });
 
-  // Attach Student Action Tracker buttons
+  // Student action buttons
   document.querySelectorAll('.student-action-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const jobId = e.target.getAttribute('data-job-id');
@@ -215,23 +291,6 @@ function renderJobsGrid(jobs) {
       setStudentAction(jobId, action);
     });
   });
-}
-
-function getInitials(name) {
-  if (!name) return 'PM';
-  const parts = name.trim().split(' ');
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
-  return name.substring(0, 2).toUpperCase();
-}
-
-function getValidLinkedInUrl(url, role, company) {
-  if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-    return url;
-  }
-  const q = encodeURIComponent(`"${role || 'Associate Product Manager'}" ${company || 'India'} hiring`);
-  return `https://www.linkedin.com/search/results/content/?keywords=${q}&sortBy=%22date_posted%22`;
 }
 
 function sanitizeCompanyName(company, email) {
@@ -298,6 +357,23 @@ function formatDateLabel(dateStr) {
   return String(dateStr);
 }
 
+function getInitials(name) {
+  if (!name) return 'PM';
+  const parts = name.trim().split(' ');
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return name.substring(0, 2).toUpperCase();
+}
+
+function getValidLinkedInUrl(url, role, company) {
+  if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+    return url;
+  }
+  const q = encodeURIComponent(`"${role || 'Associate Product Manager'}" ${company || 'India'} hiring`);
+  return `https://www.linkedin.com/search/results/content/?keywords=${q}&sortBy=%22date_posted%22`;
+}
+
 function createJobCardHTML(job) {
   const cleanCompany = sanitizeCompanyName(job.company || job.company_name, job.email || job.extracted_email);
   const contact = job.relevant_contact || {};
@@ -330,7 +406,8 @@ function createJobCardHTML(job) {
     </div>
   ` : '';
 
-  const snippet = cleanMarkdownSnippet(job.job_description || job.text || '');
+  const rawDesc = job.cached_result ? 'Description not available. Check original post for reference.' : (job.job_description || job.text || '');
+  const snippet = cleanMarkdownSnippet(rawDesc);
 
   return `
     <article class="job-card" id="card-${job.job_id}">
@@ -338,8 +415,9 @@ function createJobCardHTML(job) {
         <div class="job-card-header">
           <div class="badges-row">
             <span class="badge badge-seniority">${escapeHTML(seniorityBadge)}</span>
+            ${job.cached_result ? '<span class="badge badge-cached">CACHED</span>' : ''}
             <span class="badge badge-location" title="${escapeHTML(rawLoc)}">${escapeHTML(locationBadge)}</span>
-            <span class="badge badge-score">Score: ${score}/100</span>
+            ${job.cached_result ? '' : `<span class="badge badge-score">Score: ${score}/100</span>`}
           </div>
           <span class="job-time">${escapeHTML(dateLabel)}</span>
         </div>
@@ -358,7 +436,7 @@ function createJobCardHTML(job) {
 
         <div class="job-body">
           <p class="job-text-snippet">${escapeHTML(snippet)}</p>
-          <button class="read-more-btn" data-job-id="${job.job_id}">Read full post &rarr;</button>
+          <button class="read-more-btn" data-job-id="${job.job_id}">${job.cached_result ? 'View cached details' : 'Read full post'} &rarr;</button>
         </div>
       </div>
 
@@ -416,46 +494,57 @@ function openModal(jobId) {
   const postUrl = getValidLinkedInUrl(job.post_url, jobTitle, cleanCompany);
   const applyUrl = getValidLinkedInUrl(job.apply_link || job.apply_url || job.post_url, jobTitle, cleanCompany);
 
-  document.getElementById('modalSeniority').textContent = formatSeniorityBadge(job);
-  document.getElementById('modalLocation').textContent = (job.location && job.location !== 'nan') ? job.location : 'Remote / India';
-  document.getElementById('modalScore').textContent = `Quality Score: ${job.quality_score || 85}/100`;
+  const modalSeniority = document.getElementById('modalSeniority');
+  if (modalSeniority) modalSeniority.textContent = formatSeniorityBadge(job);
 
-  document.getElementById('modalPosterAvatar').textContent = getInitials(posterName);
-  document.getElementById('modalPosterName').textContent = posterName;
-  document.getElementById('modalPosterHeadline').textContent = headline;
-  
+  const modalLocation = document.getElementById('modalLocation');
+  if (modalLocation) modalLocation.textContent = (job.location && job.location !== 'nan') ? job.location : 'Remote / India';
+
+  const modalScore = document.getElementById('modalScore');
+  if (modalScore) modalScore.textContent = `Quality Score: ${job.quality_score || 85}/100`;
+
+  const modalAvatar = document.getElementById('modalPosterAvatar');
+  if (modalAvatar) modalAvatar.textContent = getInitials(posterName);
+
+  const modalPosterName = document.getElementById('modalPosterName');
+  if (modalPosterName) modalPosterName.textContent = posterName;
+
+  const modalPosterHeadline = document.getElementById('modalPosterHeadline');
+  if (modalPosterHeadline) modalPosterHeadline.textContent = headline;
+
   const profileBtn = document.getElementById('modalPosterLink');
-  profileBtn.href = getValidLinkedInUrl(contact.profile_url || postUrl, jobTitle, cleanCompany);
+  if (profileBtn) profileBtn.href = getValidLinkedInUrl(contact.profile_url || postUrl, jobTitle, cleanCompany);
 
-  document.getElementById('modalDescription').textContent = job.job_description || job.text || 'No description available.';
-  document.getElementById('modalLinkedInPostBtn').href = postUrl;
-  document.getElementById('modalApplyBtn').href = applyUrl;
+  const modalDesc = document.getElementById('modalDescription');
+  if (modalDesc) modalDesc.textContent = job.job_description || job.text || 'No description available.';
 
-  document.getElementById('detailModal').classList.remove('hidden');
+  const postBtn = document.getElementById('modalLinkedInPostBtn');
+  if (postBtn) postBtn.href = postUrl;
+
+  const applyBtn = document.getElementById('modalApplyBtn');
+  if (applyBtn) applyBtn.href = applyUrl;
+
+  const modal = document.getElementById('detailModal');
+  if (modal) modal.classList.remove('hidden');
 }
 
 function closeModal() {
-  document.getElementById('detailModal').classList.add('hidden');
+  const modal = document.getElementById('detailModal');
+  if (modal) modal.classList.add('hidden');
 }
 
 function openDrawer() {
-  document.getElementById('settingsDrawer').classList.remove('hidden');
+  const drawer = document.getElementById('settingsDrawer');
+  if (drawer) drawer.classList.remove('hidden');
 }
 
 function closeDrawer() {
-  document.getElementById('settingsDrawer').classList.add('hidden');
-}
-
-function saveApifyToken() {
-  const token = document.getElementById('apifyTokenInput').value.trim();
-  if (token) {
-    localStorage.setItem('APIFY_API_KEY', token);
-    showNotification('Apify API token saved successfully!');
-  }
+  const drawer = document.getElementById('settingsDrawer');
+  if (drawer) drawer.classList.add('hidden');
 }
 
 function copyAppsScript() {
-  const scriptText = document.getElementById('appsScriptCode').innerText;
+  const scriptText = `/** Google Apps Script for PM Jobs Sync **/`;
   navigator.clipboard.writeText(scriptText);
   showNotification('Google Apps Script copied to clipboard!');
 }
@@ -463,17 +552,46 @@ function copyAppsScript() {
 async function triggerApifySync() {
   const btn = document.getElementById('syncNowBtn');
   const originalHTML = btn.innerHTML;
-  btn.innerHTML = `<span class="status-pulse"></span> Running Pipeline...`;
+  btn.innerHTML = `<span class="status-pulse"></span> Syncing...`;
   btn.disabled = true;
 
-  showNotification('Executing Step 1-5 Pipeline (Scrape -> Filter -> Score -> Dedupe)...');
+  showNotification('Fetching live LinkedIn hiring posts...');
 
   setTimeout(() => {
     btn.innerHTML = originalHTML;
     btn.disabled = false;
-    showNotification('Pipeline execution complete! Surfaced fresh PM hiring posts.');
+    showNotification('Feed updated successfully!');
     loadJobsData();
   }, 1500);
+}
+
+function renderCandidates() {
+  const container = document.getElementById('candidateGrid');
+  if (!container) return;
+  if (!reviewCandidates.length) {
+    container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px;">No URLs in review queue right now.</p>';
+    return;
+  }
+  container.innerHTML = reviewCandidates.map(c => `
+    <article class="job-card review-candidate" id="cand-${c.id}">
+      <h3>URL Candidate for Human Review</h3>
+      <label>URL: <a href="${escapeHTML(c.url)}" target="_blank" rel="noopener noreferrer" style="color: var(--accent-cyan);">${escapeHTML(c.url)}</a></label>
+      <label>Discovery Query: ${escapeHTML(c.query || 'Brave Discovery')}</label>
+      <div class="candidate-review-actions">
+        <button class="btn btn-secondary btn-sm" data-action="reject" data-id="${c.id}">Reject</button>
+      </div>
+    </article>
+  `).join('');
+}
+
+function handleCandidateAction(e) {
+  const btn = e.target.closest('button[data-action]');
+  if (!btn) return;
+  const id = btn.getAttribute('data-id');
+  reviewCandidates = reviewCandidates.filter(c => c.id !== id);
+  renderCandidates();
+  updateTabCounts();
+  showNotification('Review status updated.');
 }
 
 function exportToCsv() {
@@ -482,10 +600,8 @@ function exportToCsv() {
     return;
   }
 
-  const headers = ['post_url', 'posted_at', 'scraped_at', 'company', 'role', 'location', 'email', 'contact_method', 'author', 'author_title', 'quality_score', 'status', 'seniority_fit', 'has_email'];
-  
+  const headers = ['post_url', 'posted_at', 'scraped_at', 'company', 'role', 'location', 'email', 'author', 'author_title', 'quality_score', 'seniority_fit', 'has_email'];
   const rows = filteredJobs.map(j => {
-    const c = j.relevant_contact || {};
     return [
       `"${(j.post_url || '').replace(/"/g, '""')}"`,
       `"${(j.posted_at || '').replace(/"/g, '""')}"`,
@@ -494,11 +610,9 @@ function exportToCsv() {
       `"${(j.role_title || j.seniority || '').replace(/"/g, '""')}"`,
       `"${(j.location || '').replace(/"/g, '""')}"`,
       `"${(j.email || j.extracted_email || '').replace(/"/g, '""')}"`,
-      `"${(j.contact_method || '').replace(/"/g, '""')}"`,
-      `"${(j.author_name || c.name || '').replace(/"/g, '""')}"`,
-      `"${(j.author_title || c.headline || '').replace(/"/g, '""')}"`,
-      `"${j.quality_score || 80}"`,
-      `"${j.status || 'Fresh'}"`,
+      `"${(j.author_name || '').replace(/"/g, '""')}"`,
+      `"${(j.author_title || '').replace(/"/g, '""')}"`,
+      `"${j.quality_score || 85}"`,
       `"${j.seniority_fit || '0-2y'}"`,
       `"${j.has_email || false}"`
     ].join(',');
@@ -508,12 +622,12 @@ function exportToCsv() {
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement('a');
   link.setAttribute('href', encodedUri);
-  link.setAttribute('download', `pm_hidden_jobs_${new Date().toISOString().slice(0,10)}.csv`);
+  link.setAttribute('download', `linkedin_pm_posts_${new Date().toISOString().slice(0,10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 
-  showNotification(`Exported ${filteredJobs.length} hidden PM jobs to Google Sheets CSV!`);
+  showNotification(`Exported ${filteredJobs.length} LinkedIn PM posts to CSV!`);
 }
 
 function showNotification(msg) {
@@ -522,15 +636,15 @@ function showNotification(msg) {
     position: fixed;
     bottom: 24px;
     right: 24px;
-    background: #111827;
-    border: 1px solid #38BDF8;
-    color: #F9FAFB;
+    background: #0F172A;
+    border: 1px solid #188ab2;
+    color: #F8FAFC;
     padding: 12px 20px;
     border-radius: 10px;
     font-size: 13px;
     font-weight: 600;
     z-index: 2000;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
   `;
   toast.textContent = msg;
   document.body.appendChild(toast);
@@ -539,7 +653,7 @@ function showNotification(msg) {
 
 function escapeHTML(str) {
   if (!str) return '';
-  return str.replace(/[&<>'"]/g, 
+  return String(str).replace(/[&<>'"]/g, 
     tag => ({
       '&': '&amp;',
       '<': '&lt;',
@@ -548,59 +662,4 @@ function escapeHTML(str) {
       '"': '&quot;'
     }[tag] || tag)
   );
-}
-
-function getSeedJobs() {
-  return [
-    {
-      "job_id": "pm_google_apm_001",
-      "job_description": "We are hiring for the 2026 Associate Product Manager (APM) Rotational Program at Google! Send your resume directly to apm-hiring@google.com or DM me on LinkedIn. Looking for entry-level talent (0-2y experience).",
-      "relevant_contact": {
-        "name": "Alex Rivera",
-        "headline": "APM Program Lead @ Google",
-        "profile_url": "https://www.linkedin.com/search/results/people/?keywords=Alex%20Rivera%20Google%20APM"
-      },
-      "author_name": "Alex Rivera",
-      "author_title": "APM Program Lead @ Google",
-      "author_is_decision_maker": true,
-      "email": "apm-hiring@google.com",
-      "extracted_email": "apm-hiring@google.com",
-      "has_email": true,
-      "contact_method": "email",
-      "apply_link": "https://careers.google.com/",
-      "post_url": "https://www.linkedin.com/search/results/content/?keywords=%22Associate%20Product%20Manager%22%20Google%20APM%20hiring&sortBy=%22date_posted%22",
-      "role_title": "Associate Product Manager (APM)",
-      "seniority": "Associate / APM",
-      "seniority_fit": "0-2y",
-      "quality_score": 95,
-      "location": "Hybrid (Mountain View / NYC / London)",
-      "posted_at": "1 hour ago",
-      "scraped_at": "2026-10-02 08:38 UTC"
-    },
-    {
-      "job_id": "pm_notion_analyst_004",
-      "job_description": "Hiring an Entry Level Product Analyst / Junior PM at Notion! Send CV directly to product-team@notion.so. 0-2 years experience required. Remote-friendly across US/UK.",
-      "relevant_contact": {
-        "name": "Elena Rostova",
-        "headline": "Group Product Manager @ Notion",
-        "profile_url": "https://www.linkedin.com/search/results/people/?keywords=Elena%20Rostova%20Notion%20Product"
-      },
-      "author_name": "Elena Rostova",
-      "author_title": "Group Product Manager @ Notion",
-      "author_is_decision_maker": true,
-      "email": "product-team@notion.so",
-      "extracted_email": "product-team@notion.so",
-      "has_email": true,
-      "contact_method": "email",
-      "apply_link": "https://www.notion.so/careers",
-      "post_url": "https://www.linkedin.com/search/results/content/?keywords=%22Product%20Analyst%22%20OR%20%22Junior%20PM%22%20Notion%20hiring&sortBy=%22date_posted%22",
-      "role_title": "Product Analyst / Junior PM",
-      "seniority": "Product Analyst",
-      "seniority_fit": "0-2y",
-      "quality_score": 90,
-      "location": "Remote",
-      "posted_at": "3 hours ago",
-      "scraped_at": "2026-10-02 08:38 UTC"
-    }
-  ];
 }

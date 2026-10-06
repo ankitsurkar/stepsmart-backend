@@ -139,7 +139,7 @@ def run_daily_pipeline():
     processed_web_jobs = []
     for item in raw_web_jobs:
         std = standardize_schema(item)
-        keep, reason, enriched = apply_hard_filters(std)
+        keep, reason, enriched = apply_hard_filters(std, require_post_intent=False)
         if keep:
             processed_web_jobs.append(enriched)
 

@@ -76,6 +76,88 @@ body.is-embedded .app-container {
   padding: 0 24px;
 }
 
+/* Top Dashboard Switcher Tabs (JobSpy Board vs LinkedIn Recruiter Engine) */
+.nav-tabs-header {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+body.is-embedded .nav-tabs-header {
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
+
+.nav-tab-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: all 0.2s ease;
+}
+
+.nav-tab-link:hover {
+  color: var(--text-primary);
+  border-color: #CBD5E1;
+  background: #F8FAFC;
+  transform: translateY(-1px);
+}
+
+.nav-tab-link.active {
+  color: #FFFFFF;
+  background: var(--gradient-brand);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 4px 12px rgba(24, 138, 178, 0.25);
+}
+
+.notice-banner {
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  color: #1E40AF;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge-cached {
+  color: #B45309;
+  background: #FEF3C7;
+  border: 1px solid #FDE68A;
+}
+
+.review-candidate { gap: 8px; }
+.review-candidate h3 { margin: 0; color: var(--text-primary); }
+.review-candidate > label { color: var(--text-secondary); font-size: 12px; font-weight: 600; }
+.review-candidate textarea,
+.review-candidate input[type="datetime-local"] {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+  color: var(--text-primary);
+  padding: 10px;
+  font: inherit;
+}
+.candidate-review-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.candidate-review-actions button:disabled { opacity: .6; cursor: wait; }
+
 /* Navbar Header */
 .navbar {
   display: flex;

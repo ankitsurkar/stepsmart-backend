@@ -7,10 +7,12 @@ Schema: post_url, posted_at, scraped_at, company, role, location, email, contact
 import os
 import csv
 import json
+import re
 from datetime import datetime, timezone
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 JOBS_JSON_PATH = os.path.join(DATA_DIR, 'jobs.json')
+LINKEDIN_POSTS_JSON_PATH = os.path.join(DATA_DIR, 'linkedin_posts.json')
 JOBS_CSV_PATH = os.path.join(DATA_DIR, 'pm_jobs_google_sheets.csv')
 
 def ensure_data_dir():
@@ -28,27 +30,41 @@ def export_to_json(jobs, filepath=JOBS_JSON_PATH):
             existing_jobs = []
 
     from hard_filters import apply_hard_filters
+    require_post_intent = os.path.abspath(filepath) == os.path.abspath(LINKEDIN_POSTS_JSON_PATH)
 
     jobs_dict = {}
     for j in existing_jobs:
-        keep, _, enriched = apply_hard_filters(j)
+        keep, _, enriched = apply_hard_filters(j, require_post_intent=require_post_intent)
         if keep:
-            jid = j.get('job_id') or j.get('post_url') or f"job_{hash(str(j))}"
+            jid = canonical_job_key(j)
             jobs_dict[jid] = enriched
 
     for j in jobs:
-        keep, _, enriched = apply_hard_filters(j)
+        keep, _, enriched = apply_hard_filters(j, require_post_intent=require_post_intent)
         if keep:
-            jid = j.get('job_id') or j.get('post_url') or f"job_{hash(str(j))}"
+            jid = canonical_job_key(j)
             jobs_dict[jid] = enriched
 
-    updated_list = sorted(jobs_dict.values(), key=lambda x: x.get('quality_score', 0), reverse=True)
+    updated_list = sorted(jobs_dict.values(), key=lambda x: (x.get('age_days', 999), -x.get('quality_score', 0)))
     
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(updated_list, f, indent=2, ensure_ascii=False)
     
     print(f"[GSHEETS SYNC] Updated local database at '{filepath}' with {len(updated_list)} total jobs.")
     return updated_list
+
+def canonical_job_key(job):
+    """Prefer LinkedIn activity ID or canonical post URL for stable cross-run upserts."""
+    activity_id = str(job.get('activity_id') or '').strip()
+    if activity_id.isdigit():
+        return f"linkedin_activity_{activity_id}"
+    url = str(job.get('post_url') or job.get('job_url') or job.get('url') or '').strip()
+    activity = re.search(r'(?:activity[:/-]|-activity-)(\d{8,})', url, re.I)
+    if activity:
+        return f"linkedin_activity_{activity.group(1)}"
+    if url and 'linkedin.com/search/' not in url:
+        return url.split('?', 1)[0].rstrip('/')
+    return str(job.get('job_id') or url or f"job_{hash(str(job))}")
 
 def export_to_csv(jobs, filepath=JOBS_CSV_PATH):
     ensure_data_dir()
@@ -143,5 +159,5 @@ def sync_to_google_sheets_api(jobs, sheet_id=None, service_account_path='service
 if __name__ == '__main__':
     from apify_scraper import fetch_linkedin_pm_posts
     jobs = fetch_linkedin_pm_posts()
-    export_to_json(jobs)
-    export_to_csv(jobs)
+    updated = export_to_json(jobs, filepath=LINKEDIN_POSTS_JSON_PATH)
+    export_to_csv(updated)
