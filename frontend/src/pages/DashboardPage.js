@@ -4,6 +4,7 @@ import * as Tooltip from '@radix-ui/react-tooltip';
 import { useAuth } from '../context/AuthContext';
 import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../utils/api';
 import AssignmentUpload from '../components/AssignmentUpload';
+import JobsView from '../components/JobsView';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Book, Briefcase, Clock, ClipboardList, Calendar, Folder, Users, Settings, Bell, Trophy, HelpCircle, Bookmark, CheckCircle2, Copy, Filter } from 'lucide-react';
 import { addDays, subDays, startOfMonth as startOfMonthFn, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, getDaysInMonth, getDate, isSameMonth, isSameDay, getDay, addMonths } from 'date-fns';
@@ -5376,35 +5377,7 @@ export default function DashboardPage() {
   }
 
   function renderJobsView() {
-    const jobsUrl = `${process.env.PUBLIC_URL || ''}/jobs/index.html?embed=true`;
-    return (
-      <div
-        style={{
-          width: '100%',
-          height: 'calc(100vh - 170px)',
-          minHeight: '750px',
-          background: '#ffffff',
-          borderRadius: '20px',
-          overflow: 'hidden',
-          border: '1px solid rgba(20, 49, 86, 0.08)',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <iframe
-          src={jobsUrl}
-          title="PM Jobs Portal"
-          style={{
-            width: '100%',
-            height: '100%',
-            border: 'none',
-            flex: 1,
-            display: 'block',
-          }}
-        />
-      </div>
-    );
+    return <JobsView />;
   }
 
   let viewEyebrow = 'Student Dashboard';
