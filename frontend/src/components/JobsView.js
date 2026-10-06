@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Mail, Copy, Check, ExternalLink, X, Briefcase, MapPin, Sparkles, Clock, User, Filter, RotateCcw, CheckCircle2 } from 'lucide-react';
+import initialJobsData from '../data/jobs.json';
 
 function sanitizeCompanyName(company, email) {
   if (company && typeof company === 'string') {
@@ -77,8 +78,8 @@ function getValidLinkedInUrl(url, role, company) {
 }
 
 export default function JobsView() {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [jobs, setJobs] = useState(() => (Array.isArray(initialJobsData) ? initialJobsData : []));
+  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('fresher-fit');
   const [searchQuery, setSearchQuery] = useState('');
   const [seniorityFilter, setSeniorityFilter] = useState('ALL');
@@ -95,25 +96,30 @@ export default function JobsView() {
 
   useEffect(() => {
     let isMounted = true;
-    const dataUrl = (typeof process !== 'undefined' && process.env.PUBLIC_URL ? process.env.PUBLIC_URL : '') + '/jobs/data/jobs.json?t=' + Date.now();
-    
-    fetch(dataUrl)
-      .then((res) => {
-        if (!res.ok) throw new Error('Fetch failed');
-        return res.json();
-      })
-      .then((data) => {
-        if (isMounted) {
-          setJobs(Array.isArray(data) ? data : []);
-          setLoading(false);
+    const candidateUrls = [
+      (typeof process !== 'undefined' && process.env.PUBLIC_URL ? process.env.PUBLIC_URL : '') + '/jobs/data/jobs.json',
+      '/jobs/data/jobs.json',
+      '/learn/jobs/data/jobs.json',
+    ].filter(Boolean);
+
+    async function tryFetchFreshData() {
+      for (const url of candidateUrls) {
+        try {
+          const res = await fetch(url + '?t=' + Date.now());
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0 && isMounted) {
+              setJobs(data);
+              return;
+            }
+          }
+        } catch {
+          // ignore and try next
         }
-      })
-      .catch((err) => {
-        console.warn('Jobs fetch fallback:', err);
-        if (isMounted) {
-          setLoading(false);
-        }
-      });
+      }
+    }
+
+    tryFetchFreshData();
 
     return () => {
       isMounted = false;
