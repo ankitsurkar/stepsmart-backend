@@ -662,9 +662,14 @@ function ProfessionalsLandingPage() {
               <NavLink href="#mentors">Mentors</NavLink>
               <NavLink to="/resources">Resources</NavLink>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
-              <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => scrollToSection('enroll')}>
+              <a 
+                href="https://wa.me/message/GH5C7YLAYIEHN1" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-5 py-2 text-sm font-extrabold bg-[#0f6f8f] hover:bg-[#188ab2] text-white border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all inline-flex items-center justify-center select-none cursor-pointer"
+              >
                 Apply Now
-              </Button>
+              </a>
             </div>
             <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
@@ -680,7 +685,15 @@ function ProfessionalsLandingPage() {
             <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
             <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Resources</Link>
             <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
-            <Button variant="primary" className="w-full px-5 py-2 text-sm" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
+            <a 
+              href="https://wa.me/message/GH5C7YLAYIEHN1" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              onClick={() => setIsMenuOpen(false)} 
+              className="w-full text-center px-5 py-2.5 text-sm font-extrabold bg-[#0f6f8f] hover:bg-[#188ab2] text-white border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all inline-block select-none cursor-pointer"
+            >
+              Apply Now
+            </a>
           </div>
         )}
       </div>
@@ -707,20 +720,24 @@ function ProfessionalsLandingPage() {
                 />
               </div>
 
-              <div className="flex flex-col items-center gap-6 mb-16">
-                <Button 
-                  variant="primary" 
-                  className="px-12 py-5 text-xl font-extrabold shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]"
-                  onClick={() => handleActionClick('enroll')}
-                >
-                  Apply for PM-X accelerator
-                </Button>
-                <button 
-                  onClick={() => handleActionClick('brochure')}
-                  className="text-[#111111] text-sm font-extrabold underline underline-offset-4 decoration-[#188ab2] decoration-[3px] hover:text-[#188ab2] transition-colors"
-                >
-                  Not sure yet? Download the curriculum first.
-                </button>
+              <div className="flex flex-col items-center gap-4 mb-16">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <a 
+                    href="https://wa.me/message/GH5C7YLAYIEHN1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-10 py-5 text-lg sm:text-xl font-extrabold bg-[#0f6f8f] hover:bg-[#188ab2] text-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] transition-all inline-flex items-center justify-center select-none cursor-pointer"
+                  >
+                    Apply Now ➜
+                  </a>
+                  <Button 
+                    variant="outline" 
+                    className="px-8 py-5 text-lg font-extrabold shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
+                    onClick={() => scrollToSection('enroll')}
+                  >
+                    Enroll Online ↓
+                  </Button>
+                </div>
               </div>
 
           <div className="relative w-full max-w-5xl mx-auto border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] bg-white">
@@ -1122,20 +1139,6 @@ function ProfessionalsLandingPage() {
                 <span className="text-base">💬</span>
                 <span>WhatsApp Doubt Support • 2-Hour SLA</span>
               </div>
-            </div>
-
-            {/* Download Brochure callout */}
-            <div className="text-center mt-10">
-              <p className="text-sm md:text-base font-extrabold text-[#111111] mb-4">
-                Want to review the detailed week-by-week syllabus and teardowns?
-              </p>
-              <Button 
-                variant="secondary" 
-                onClick={() => handleActionClick('brochure')}
-                className="px-8 py-4 text-base font-extrabold shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
-              >
-                Download Full Curriculum Brochure ➜
-              </Button>
             </div>
           </div>
 
@@ -1730,33 +1733,10 @@ function ProfessionalsLandingPage() {
       {/* Enroll Form Section */}
       <section id="enroll" className="py-16 bg-[#FFFFFF] relative border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-6 max-w-6xl text-center">
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-12 text-[#111111]">Ready to Start Your Journey?</h2>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
-            <button
-              onClick={() => handleActionClick('brochure')}
-              className={`flex flex-col items-center p-10 bg-white border-[3px] transition-all duration-100 ${
-                formIntent === 'brochure'
-                  ? 'border-[#188ab2] shadow-[6px_6px_0px_0px_rgba(24,138,178,1)] translate-x-[-2px] translate-y-[-2px]'
-                  : 'border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]'
-              }`}
-            >
-              <Download className={`h-10 w-10 mb-4 ${formIntent === 'brochure' ? 'text-[#188ab2]' : 'text-[#111111]'}`} />
-              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">{userType === 'professional' ? "Download Accelerator Brochure" : "Download First Step Brochure"}</h3>
-              <p className="text-[#111111] text-sm font-bold">Get the curriculum and roadmap details.</p>
-            </button>
-            <button
-              onClick={() => handleActionClick('enroll')}
-              className={`flex flex-col items-center p-10 bg-white border-[3px] transition-all duration-100 ${
-                formIntent === 'enroll'
-                  ? 'border-[#188ab2] shadow-[6px_6px_0px_0px_rgba(24,138,178,1)] translate-x-[-2px] translate-y-[-2px]'
-                  : 'border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]'
-              }`}
-            >
-              <Briefcase className={`h-10 w-10 mb-4 ${formIntent === 'enroll' ? 'text-[#188ab2]' : 'text-[#111111]'}`} />
-              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">{userType === 'professional' ? "Enroll for PM-X Accelerator" : "Enroll for PM-X First Step"}</h3>
-              <p className="text-[#111111] text-sm font-bold">Register for the next batch or masterclass.</p>
-            </button>
-          </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-[#111111]">Ready to Start Your Journey?</h2>
+          <p className="text-lg font-bold text-slate-600 max-w-2xl mx-auto mb-12">
+            Register your intent below for the upcoming batch with 1:1 mentorship from top tech PMs.
+          </p>
 
           <div id="form-container" className="max-w-xl mx-auto bg-white border-[3px] border-[#111111] p-8 md:p-12 text-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] scroll-mt-[77px]">
             {enrollmentStatus === 'success' ? (
@@ -1764,11 +1744,9 @@ function ProfessionalsLandingPage() {
                 <div className="bg-[#FFFFFF] border-[3px] border-[#111111] text-green-600 w-16 h-16 flex items-center justify-center mx-auto mb-8 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
                   <CheckCircle2 className="h-8 w-8 text-[#188ab2]" />
                 </div>
-                <h3 className="text-3xl font-extrabold mb-4">{formIntent === 'brochure' ? "Brochure Ready!" : "Enrollment Submitted!"}</h3>
+                <h3 className="text-3xl font-extrabold mb-4">Enrollment Submitted!</h3>
                 <p className="text-[#111111] mb-8 font-bold">
-                  {formIntent === 'brochure'
-                    ? "Download started."
-                    : "Enrollment saved. You will receive a welcome email shortly."}
+                  Enrollment saved. You will receive a welcome email shortly.
                 </p>
                 <Button
                   variant="outline"
@@ -1780,7 +1758,7 @@ function ProfessionalsLandingPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-left">
-                <input type="hidden" {...register("intent")} />
+                <input type="hidden" {...register("intent")} value="enroll" />
                 <div className="space-y-4">
                   <div>
                     <input 
@@ -1809,7 +1787,7 @@ function ProfessionalsLandingPage() {
                   </div>
                 </div>
                 <Button type="submit" className="w-full py-5 text-xl font-extrabold" isLoading={enrollmentStatus === 'loading'}>
-                  {formIntent === 'brochure' ? 'Get Brochure Now' : (userType === 'professional' ? 'Join Accelerator Batch' : 'Join First Step Student Batch')}
+                  {userType === 'professional' ? 'Join Accelerator Batch' : 'Join First Step Student Batch'}
                 </Button>
               </form>
             )}
