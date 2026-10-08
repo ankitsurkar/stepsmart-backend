@@ -1171,7 +1171,7 @@ function ProfessionalsLandingPage() {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] border border-[#111111]"></span>
                 <span className="font-extrabold text-[#111111]">Continuous Integration Model:</span>
-                <span>You do not wait until Week 10 to practice or build. All 4 tracks run parallelly in sync.</span>
+                <span>You do not wait until Week 8 to practice or build. All 4 tracks run parallelly in sync.</span>
               </div>
               <span className="font-mono text-xs font-black text-slate-700 bg-slate-100 px-3 py-1 border border-[#111111]">
                 LEARN → BUILD → PRACTISE → CAREER
