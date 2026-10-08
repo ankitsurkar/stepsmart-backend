@@ -843,188 +843,6 @@ function ProfessionalsLandingPage() {
         </div>
       </section>
 
-      {userType === 'professional' ? (
-        /* Batch Details Section */
-        <section id="batch-details" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
-          <div className="container mx-auto px-6 max-w-4xl">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
-                Every batch is{' '}
-                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                  one more step
-                </span>
-              </h2>
-              <p className="text-lg font-bold text-slate-500 mt-4">Small by design. Personally vetted, every time.</p>
-            </div>
-
-            {/* Chart Section */}
-            <div className="grid grid-cols-4 max-w-2xl mx-auto gap-3 md:gap-6 items-end mt-12 mb-8">
-              {/* Batch 1 */}
-              <div className="flex flex-col items-center">
-                <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 1</span>
-                <div className="w-full bg-[#10b981] border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] h-24 md:h-28 flex items-center justify-center rounded-none select-none">
-                  <span className="text-white text-xl md:text-2xl font-extrabold">✓</span>
-                </div>
-              </div>
-
-              {/* Batch 2 */}
-              <div className="flex flex-col items-center">
-                <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 2</span>
-                <div className="w-full bg-[#10b981] border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] h-32 md:h-36 flex items-center justify-center rounded-none select-none">
-                  <span className="text-white text-xl md:text-2xl font-extrabold">✓</span>
-                </div>
-              </div>
-
-              {/* Batch 3 */}
-              <div className="flex flex-col items-center relative">
-                <div className="absolute -top-7 bg-[#111111] text-[#FFF3A7] border-[2px] border-[#111111] px-1.5 py-0.5 font-extrabold text-[8px] md:text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none whitespace-nowrap">
-                  OPEN NOW
-                </div>
-                <span className="text-[10px] md:text-xs font-extrabold text-[#111111] mb-2 uppercase tracking-wider">Batch 3</span>
-                <div className="w-full bg-[#188ab2] border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] h-40 md:h-44 flex flex-col items-center justify-center rounded-none select-none relative">
-                  <div className="text-center text-white">
-                    <div className="text-xl md:text-2xl font-extrabold">03</div>
-                    <div className="text-[8px] md:text-[10px] font-extrabold tracking-wider uppercase">BATCH 3</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Batch 4 */}
-              <div className="flex flex-col items-center">
-                <span className="text-[10px] md:text-xs font-extrabold text-slate-400 mb-2 uppercase tracking-wider">Batch 4</span>
-                <div className="w-full border-[3px] border-dashed border-slate-300 h-48 md:h-52 flex items-center justify-center rounded-none select-none">
-                  <span className="text-slate-400 font-extrabold text-xs md:text-sm uppercase tracking-wider">TBD</span>
-                </div>
-              </div>
-            </div>
-
-            <hr className="border-t-[3px] border-[#111111] my-12" />
-
-            {/* Callouts */}
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-white border-[3px] border-[#111111] p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none">
-                <p className="text-base font-bold text-[#111111] leading-relaxed">
-                  <strong>1 batch completed, 1 batch ongoing.</strong> 50+ professionals transitioned into PM roles.
-                </p>
-              </div>
-
-              <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none">
-                <p className="text-base font-bold text-[#111111] leading-relaxed">
-                  <strong>Batch 3 is open</strong> — 12-18 seats, personally vetted on a 30 min call.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-      ) : (
-        <>
-          {/* Cohort Perks / Student Benefits */}
-          <section id="student-benefits" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
-            <div className="container mx-auto px-6 max-w-6xl">
-              <div className="mb-16 text-center md:text-left">
-                <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
-                  Student{' '}
-                  <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                    Exclusive Perks
-                  </span>
-                </h2>
-                <p className="text-lg font-bold text-[#111111]">Everything you need to compete with MBA candidates as a college student.</p>
-              </div>
-
-              <div className="grid md:grid-cols-4 gap-6">
-                {[
-                  {
-                    title: "Portfolio Building",
-                    desc: "Build 3 industry-grade PRDs to prove your product thinking on your resume.",
-                    icon: <FileText className="h-5 w-5 text-white" />
-                  },
-                  {
-                    title: "Mock Placement Drives",
-                    desc: "Live mock rounds simulating startup APM tests & case interviews.",
-                    icon: <FolderArchive className="h-5 w-5 text-white" />
-                  },
-                  {
-                    title: "Tool Mastery",
-                    desc: "Hands-on experience with Jira, Figma, Mixpanel, and AI prototyping tools.",
-                    icon: <Wrench className="h-5 w-5 text-white" />
-                  },
-                  {
-                    title: "Referrals & Network",
-                    desc: "Get referred by our mentors directly into startups hiring freshers.",
-                    icon: <MessageSquare className="h-5 w-5 text-white" />
-                  }
-                ].map((item, idx) => (
-                  <div 
-                    key={idx} 
-                    className="bg-white border-[3px] border-[#111111] p-6 pt-12 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 flex flex-col justify-between rounded-none relative select-none h-64"
-                  >
-                    <div className="absolute -top-5 left-6 bg-[#188ab2] text-white border-[3px] border-[#111111] w-10 h-10 flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                      {item.icon}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-extrabold text-[#111111] mb-3">{item.title}</h3>
-                      <p className="text-xs font-bold leading-relaxed text-[#111111]">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Testimonials */}
-          <section className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-            <div className="container mx-auto px-6 text-center max-w-5xl">
-              <h2 className="text-4xl font-extrabold mb-4 text-[#111111]">Student Success Stories</h2>
-              <p className="text-lg font-bold text-slate-500 mb-16">How college freshers broke into PM roles right out of campus.</p>
-              <div className="grid md:grid-cols-2 gap-10">
-                {/* Student 1 */}
-                <div className="bg-[var(--surface-peach)] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
-                  <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
-                    A
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                        APM @ Razorpay
-                      </span>
-                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                        Ex-Intern @ Groww
-                      </span>
-                    </div>
-                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Aditya</h3>
-                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Razorpay</p>
-                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                      "I had zero corporate experience. PM-X First Step helped me design a PRD portfolio that stood out in APM selection rounds. The structured case mock sessions were an absolute lifesaver!"
-                    </p>
-                  </div>
-                </div>
-
-                {/* Student 2 */}
-                <div className="bg-[var(--surface-lavender)] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-8 relative flex flex-col md:flex-row items-center md:items-start gap-8 text-left">
-                  <div className="w-28 h-28 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center font-extrabold text-3xl">
-                    N
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                        APM @ Zepto
-                      </span>
-                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                        B.Tech Graduate
-                      </span>
-                    </div>
-                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Neha</h3>
-                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">APM - Zepto</p>
-                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                      "I was confused between standard coding placements and PM roles. This cohort gave me the exact frameworks I needed to build product strategy and transition directly after graduation."
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </>
-      )}
 
       {/* Mentors */}
       <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
@@ -1248,622 +1066,404 @@ function ProfessionalsLandingPage() {
       </section>
 
       {/* The PM-X Experience Section */}
-      <section id="curriculum" className="py-20 bg-[#F8FAFC] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-4 sm:px-6 max-w-6xl space-y-16">
+      <section id="curriculum" className="py-20 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+        <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
           
           {/* Main Section Header */}
-          <div className="text-center max-w-3xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="inline-block bg-[#FFF3A7] border-[2px] border-[#111111] px-4 py-1 text-xs font-black uppercase tracking-widest shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] mb-4 select-none">
               ★ The PM-X Experience
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-[#111111] mb-4 leading-tight tracking-tight">
-              <span className="text-[#0284c7]">Learn.</span>{' '}
-              <span className="text-[#0d9488]">Build.</span>{' '}
-              <span className="text-[#4338ca]">Practise.</span>{' '}
-              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-3 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none text-[#111111]">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4 tracking-tight leading-tight">
+              Learn. Build. Practise.{' '}
+              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
                 Career.
               </span>
             </h2>
-            <p className="text-base sm:text-lg font-bold text-slate-700 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg font-bold text-slate-600 leading-relaxed max-w-2xl mx-auto">
               A structured weekly rhythm designed to turn PM knowledge into real-world capability.
             </p>
           </div>
 
           {/* 01 / Journey Blueprint */}
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-black uppercase tracking-wider text-[#111111] bg-white border-2 border-[#111111] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  01 / Journey Blueprint
+          <div className="py-12 border-t-[3px] border-[#111111]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-8">
+              <div>
+                <span className="text-xs font-black uppercase tracking-widest text-[#188ab2]">
+                  01 / JOURNEY BLUEPRINT
                 </span>
-                <span className="text-xs font-bold text-slate-600">• The 4 Sequential Stages of Capability</span>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#111111] mt-1">
+                  The 4 Sequential Stages of Capability
+                </h3>
               </div>
-              <div className="text-[11px] font-mono font-bold text-slate-500 hidden sm:block uppercase tracking-wider">
+              <span className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider self-start sm:self-center">
                 Linear Product Framework
-              </div>
+              </span>
             </div>
 
-            {/* Blueprint Master Container */}
-            <div className="bg-white border-[3px] border-[#111111] p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]">
-              {/* Desktop Milestone Pipeline */}
-              <div className="hidden lg:block relative mb-8 px-6">
-                <div className="h-1.5 w-full bg-[#111111] relative"></div>
-                <div className="absolute -top-2.5 inset-x-6 flex justify-between">
-                  <div className="w-6 h-6 rounded-full bg-[#e0f2fe] border-2 border-[#111111] flex items-center justify-center font-black text-[10px] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">01</div>
-                  <div className="w-6 h-6 rounded-full bg-[#ccfbf1] border-2 border-[#111111] flex items-center justify-center font-black text-[10px] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">02</div>
-                  <div className="w-6 h-6 rounded-full bg-[#e0e7ff] border-2 border-[#111111] flex items-center justify-center font-black text-[10px] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">03</div>
-                  <div className="w-6 h-6 rounded-full bg-[#f3e8ff] border-2 border-[#111111] flex items-center justify-center font-black text-[10px] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">04</div>
+            {/* 4 Stages Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  num: "01",
+                  phase: "Phase One",
+                  title: "LEARN",
+                  subtitle: "Foundation",
+                  action: "Build the foundation",
+                  desc: "Recorded modules + frameworks + PM concepts",
+                  footer: "Self-Paced Core →"
+                },
+                {
+                  num: "02",
+                  phase: "Phase Two",
+                  title: "BUILD",
+                  subtitle: "Outputs",
+                  action: "Turn knowledge into output",
+                  desc: "Assignments + case studies + PM portfolio",
+                  footer: "Proof of Work →"
+                },
+                {
+                  num: "03",
+                  phase: "Phase Three",
+                  title: "PRACTISE",
+                  subtitle: "Repetition",
+                  action: "Think like a PM",
+                  desc: "PM Gym + live workshops + mentor feedback",
+                  footer: "Live Muscle Memory →"
+                },
+                {
+                  num: "04",
+                  phase: "Final Goal",
+                  title: "CAREER",
+                  subtitle: "Opportunity",
+                  action: "Put it into action",
+                  desc: "Interview preparation + resume + job search",
+                  footer: "Offer Secured ★"
+                }
+              ].map((stage, idx) => (
+                <div 
+                  key={idx}
+                  className="bg-white border-[3px] border-[#111111] p-6 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0px_0px_rgba(17,17,17,1)] transition-all"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-4xl font-black text-[#111111] font-mono">{stage.num}</span>
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 bg-[#FFF3A7] border border-[#111111] text-[#111111]">
+                        {stage.phase}
+                      </span>
+                    </div>
+                    <h4 className="text-xl font-black text-[#111111]">{stage.title}</h4>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-0.5">{stage.subtitle}</p>
+                    <div className="mt-4 pt-4 border-t-2 border-[#111111]/10">
+                      <p className="text-sm font-extrabold text-[#111111]">{stage.action}</p>
+                      <p className="text-xs font-bold text-slate-600 mt-1 leading-relaxed">{stage.desc}</p>
+                    </div>
+                  </div>
+                  <div className="mt-6 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-xs font-black text-[#111111]">
+                    <span>{stage.footer}</span>
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Bottom Callout */}
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-xs font-bold text-slate-700">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] border border-[#111111]"></span>
+                <span className="font-extrabold text-[#111111]">Continuous Integration Model:</span>
+                <span>You do not wait until Week 10 to practice or build. All 4 tracks run parallelly in sync.</span>
               </div>
-
-              {/* 4 Stages Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Stage 01: LEARN */}
-                <div className="border-[3px] border-[#111111] p-5 bg-[#F8FAFC] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-3xl font-black text-[#0284c7]">01</span>
-                      <span className="text-[10px] font-mono font-black uppercase tracking-wider px-2 py-0.5 bg-[#e0f2fe] text-[#0284c7] border border-[#111111]">
-                        Phase One
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-black text-[#111111] tracking-tight">LEARN</h3>
-                      <span className="inline-block mt-1 text-[11px] font-black uppercase tracking-wider text-[#0284c7]">
-                        Foundation
-                      </span>
-                    </div>
-                    <div className="pt-3 border-t-2 border-[#111111]/10">
-                      <p className="text-xs font-black text-[#111111] mb-1">Build the foundation</p>
-                      <p className="text-xs font-bold text-slate-600 leading-relaxed font-mono">
-                        Recorded modules + frameworks + PM concepts
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-5 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-[11px] font-extrabold text-[#111111]">
-                    <span>Self-Paced Core</span>
-                    <span className="text-[#0284c7] font-black text-sm">→</span>
-                  </div>
-                </div>
-
-                {/* Stage 02: BUILD */}
-                <div className="border-[3px] border-[#111111] p-5 bg-[#F8FAFC] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-3xl font-black text-[#0d9488]">02</span>
-                      <span className="text-[10px] font-mono font-black uppercase tracking-wider px-2 py-0.5 bg-[#ccfbf1] text-[#0d9488] border border-[#111111]">
-                        Phase Two
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-black text-[#111111] tracking-tight">BUILD</h3>
-                      <span className="inline-block mt-1 text-[11px] font-black uppercase tracking-wider text-[#0d9488]">
-                        Outputs
-                      </span>
-                    </div>
-                    <div className="pt-3 border-t-2 border-[#111111]/10">
-                      <p className="text-xs font-black text-[#111111] mb-1">Turn knowledge into output</p>
-                      <p className="text-xs font-bold text-slate-600 leading-relaxed font-mono">
-                        Assignments + case studies + PM portfolio
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-5 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-[11px] font-extrabold text-[#111111]">
-                    <span>Proof of Work</span>
-                    <span className="text-[#0d9488] font-black text-sm">→</span>
-                  </div>
-                </div>
-
-                {/* Stage 03: PRACTISE */}
-                <div className="border-[3px] border-[#111111] p-5 bg-[#F8FAFC] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-3xl font-black text-[#4338ca]">03</span>
-                      <span className="text-[10px] font-mono font-black uppercase tracking-wider px-2 py-0.5 bg-[#e0e7ff] text-[#4338ca] border border-[#111111]">
-                        Phase Three
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-black text-[#111111] tracking-tight">PRACTISE</h3>
-                      <span className="inline-block mt-1 text-[11px] font-black uppercase tracking-wider text-[#4338ca]">
-                        Repetition
-                      </span>
-                    </div>
-                    <div className="pt-3 border-t-2 border-[#111111]/10">
-                      <p className="text-xs font-black text-[#111111] mb-1">Think like a PM</p>
-                      <p className="text-xs font-bold text-slate-600 leading-relaxed font-mono">
-                        PM Gym + live workshops + mentor feedback
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-5 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-[11px] font-extrabold text-[#111111]">
-                    <span>Live Muscle Memory</span>
-                    <span className="text-[#4338ca] font-black text-sm">→</span>
-                  </div>
-                </div>
-
-                {/* Stage 04: CAREER */}
-                <div className="border-[3px] border-[#111111] p-5 bg-[#F8FAFC] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-3xl font-black text-[#7e22ce]">04</span>
-                      <span className="text-[10px] font-mono font-black uppercase tracking-wider px-2 py-0.5 bg-[#f3e8ff] text-[#7e22ce] border border-[#111111]">
-                        Final Goal
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-black text-[#111111] tracking-tight">CAREER</h3>
-                      <span className="inline-block mt-1 text-[11px] font-black uppercase tracking-wider text-[#7e22ce]">
-                        Opportunity
-                      </span>
-                    </div>
-                    <div className="pt-3 border-t-2 border-[#111111]/10">
-                      <p className="text-xs font-black text-[#111111] mb-1">Put it into action</p>
-                      <p className="text-xs font-bold text-slate-600 leading-relaxed font-mono">
-                        Interview preparation + resume + job search
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-5 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-[11px] font-extrabold text-[#111111]">
-                    <span>Offer Secured</span>
-                    <span className="text-[#7e22ce] font-black text-sm">★</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Blueprint Callout */}
-              <div className="mt-6 pt-5 border-t-[2px] border-[#111111] flex flex-wrap items-center justify-between text-xs font-bold text-slate-700 gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] border border-[#111111]"></span>
-                  <span className="font-extrabold text-[#111111]">Continuous Integration Model:</span>
-                  <span>You do not wait until Week 10 to practice or build. All 4 tracks run parallelly in sync.</span>
-                </div>
-                <div className="font-mono text-[11px] font-black text-slate-600 bg-[#F1F5F9] px-2.5 py-1 border border-[#111111]">
-                  LEARN → BUILD → PRACTISE → CAREER
-                </div>
-              </div>
+              <span className="font-mono text-xs font-black text-slate-700 bg-slate-100 px-3 py-1 border border-[#111111]">
+                LEARN → BUILD → PRACTISE → CAREER
+              </span>
             </div>
           </div>
 
           {/* 02 / Execution Cadence */}
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-black uppercase tracking-wider text-[#111111] bg-white border-2 border-[#111111] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  02 / Execution Cadence
+          <div className="py-12 border-t-[3px] border-[#111111]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-8">
+              <div>
+                <span className="text-xs font-black uppercase tracking-widest text-[#188ab2]">
+                  02 / EXECUTION CADENCE
                 </span>
-                <span className="text-xs font-bold text-slate-600">• What a week at PM-X looks like</span>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#111111] mt-1">
+                  What a week at PM-X looks like
+                </h3>
+                <p className="text-sm font-bold text-slate-500 mt-1">
+                  Designed specifically for ambitious working professionals.
+                </p>
               </div>
-              <div className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider">
-                Async Depth + Live Sync
+              <span className="self-start sm:self-center px-3 py-1 bg-[#FFF3A7] border-2 border-[#111111] text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                Balanced Weekly Workload
+              </span>
+            </div>
+
+            {/* 4 Weekly Rhythm Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  tag: "MON – FRI",
+                  mode: "Async",
+                  icon: <Video className="w-5 h-5 text-[#111111]" />,
+                  title: "2 Recorded Modules",
+                  desc: "Learn at your own pace during the week with bite-sized, deep-dive theory and practical industry teardowns.",
+                  duration: "3–4 hrs total",
+                  label: "Self-Paced"
+                },
+                {
+                  tag: "EVERY DAY",
+                  mode: "Daily Drill",
+                  icon: <Brain className="w-5 h-5 text-[#111111]" />,
+                  title: "PM Gym",
+                  desc: "One product-thinking question every day. Sharp prompts that train prioritization, trade-offs, and strategic product acumen.",
+                  duration: "15 min / day",
+                  label: "Daily Habit"
+                },
+                {
+                  tag: "SATURDAY",
+                  mode: "Live Interactive",
+                  icon: <Zap className="w-5 h-5 text-[#111111]" />,
+                  title: "3-Hour Live Workshop",
+                  desc: "Cases, discussions, problem-solving and real-time mentor interaction. No dry monologues—pure simulated PM rooms.",
+                  duration: "3 Hours Live",
+                  label: "Weekend Anchor"
+                },
+                {
+                  tag: "FLEXIBLE",
+                  mode: "On-Demand",
+                  icon: <MessageSquare className="w-5 h-5 text-[#111111]" />,
+                  title: "Doubt Support",
+                  desc: "WhatsApp support with a guaranteed 2-hour response window. Never get stuck on assignments or framework doubts.",
+                  duration: "< 2hr SLA",
+                  label: "Always Open"
+                }
+              ].map((card, i) => (
+                <div 
+                  key={i}
+                  className="bg-white border-[3px] border-[#111111] p-6 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0px_0px_rgba(17,17,17,1)] transition-all"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-[11px] font-mono font-black tracking-wider uppercase text-[#111111]">
+                        {card.tag}
+                      </span>
+                      <span className="text-xs font-mono font-bold text-slate-500">{card.mode}</span>
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-[#FFF3A7] border-2 border-[#111111] flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] shrink-0">
+                        {card.icon}
+                      </div>
+                      <h4 className="text-base font-black text-[#111111]">{card.title}</h4>
+                    </div>
+                    <p className="text-xs font-bold text-slate-600 mt-3 leading-relaxed">{card.desc}</p>
+                  </div>
+                  <div className="mt-6 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-[11px] font-black text-[#111111]">
+                    <span className="font-mono">{card.duration}</span>
+                    <span className="text-slate-600">{card.label}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* 3 Commitment Metrics */}
+            <div className="mt-8 pt-8 border-t-2 border-[#111111]/20 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div className="p-4 bg-white border-2 border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
+                <div className="text-3xl font-black text-[#111111] font-mono">10–12 HRS</div>
+                <p className="text-xs font-black uppercase tracking-wider text-slate-600 mt-1">per week total commitment</p>
+              </div>
+              <div className="p-4 bg-white border-2 border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
+                <div className="text-3xl font-black text-[#111111] font-mono">3 HRS</div>
+                <p className="text-xs font-black uppercase tracking-wider text-slate-600 mt-1">live every Saturday</p>
+              </div>
+              <div className="p-4 bg-white border-2 border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
+                <div className="text-3xl font-black text-[#111111] font-mono">100%</div>
+                <p className="text-xs font-black uppercase tracking-wider text-slate-600 mt-1">live sessions recorded</p>
               </div>
             </div>
 
-            <div className="bg-white border-[3px] border-[#111111] p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] space-y-8">
-              {/* Header inside cadence container */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-[#111111] pb-5">
-                <div>
-                  <h3 className="text-2xl font-black text-[#111111] tracking-tight">What a week at PM-X looks like</h3>
-                  <p className="text-xs sm:text-sm font-bold text-slate-600 mt-1">Designed specifically for ambitious working professionals.</p>
-                </div>
-                <span className="inline-flex items-center self-start sm:self-center px-3 py-1 bg-[#FFF3A7] border-2 border-[#111111] text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  Balanced Weekly Workload
-                </span>
-              </div>
-
-              {/* 4 Cadence Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Card 1: MON-FRI */}
-                <div className="border-[3px] border-[#111111] p-5 bg-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between border-t-[8px] border-t-[#0284c7]">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-mono font-black tracking-wider px-2 py-0.5 bg-[#e0f2fe] text-[#0284c7] border border-[#111111] uppercase">
-                        MON – FRI
-                      </span>
-                      <span className="text-xs font-mono font-bold text-slate-500">Async</span>
-                    </div>
-                    <div className="pt-1">
-                      <div className="text-2xl mb-1">🎥</div>
-                      <h4 className="text-base font-black text-[#111111]">
-                        2 Recorded Modules
-                      </h4>
-                      <p className="text-xs font-bold text-slate-600 mt-2 leading-relaxed">
-                        Learn at your own pace during the week with bite-sized, deep-dive theory and practical industry teardowns.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-[11px] font-bold text-slate-600">
-                    <span className="flex items-center gap-1 font-mono font-bold text-[#111111]">
-                      <Clock className="w-3.5 h-3.5 text-[#0284c7]" />
-                      3–4 hrs total
-                    </span>
-                    <span className="text-[#0284c7] font-black">Self-Paced</span>
-                  </div>
-                </div>
-
-                {/* Card 2: EVERY DAY */}
-                <div className="border-[3px] border-[#111111] p-5 bg-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between border-t-[8px] border-t-amber-500">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-mono font-black tracking-wider px-2 py-0.5 bg-amber-100 text-amber-800 border border-[#111111] uppercase">
-                        EVERY DAY
-                      </span>
-                      <span className="text-xs font-mono font-bold text-slate-500">Daily Drill</span>
-                    </div>
-                    <div className="pt-1">
-                      <div className="text-2xl mb-1">🧠</div>
-                      <h4 className="text-base font-black text-[#111111]">
-                        PM Gym
-                      </h4>
-                      <p className="text-xs font-bold text-slate-600 mt-2 leading-relaxed">
-                        One product-thinking question every day. Sharp prompts that train prioritization, trade-offs, and strategic product acumen.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-[11px] font-bold text-slate-600">
-                    <span className="flex items-center gap-1 font-mono font-bold text-[#111111]">
-                      <Zap className="w-3.5 h-3.5 text-amber-600" />
-                      15 min / day
-                    </span>
-                    <span className="text-amber-700 font-black">Daily Habit</span>
-                  </div>
-                </div>
-
-                {/* Card 3: SATURDAY */}
-                <div className="border-[3px] border-[#111111] p-5 bg-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between border-t-[8px] border-t-[#4338ca]">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-mono font-black tracking-wider px-2 py-0.5 bg-[#e0e7ff] text-[#4338ca] border border-[#111111] uppercase">
-                        SATURDAY
-                      </span>
-                      <span className="text-xs font-mono font-bold text-[#4338ca]">Live Interactive</span>
-                    </div>
-                    <div className="pt-1">
-                      <div className="text-2xl mb-1">⚡</div>
-                      <h4 className="text-base font-black text-[#111111]">
-                        3-Hour Live Workshop
-                      </h4>
-                      <p className="text-xs font-bold text-slate-600 mt-2 leading-relaxed">
-                        Cases, discussions, problem-solving and real-time mentor interaction. No dry monologues—pure simulated PM rooms.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-[11px] font-bold text-slate-600">
-                    <span className="flex items-center gap-1 font-mono font-bold text-[#111111]">
-                      <Video className="w-3.5 h-3.5 text-[#4338ca]" />
-                      3 Hours Live
-                    </span>
-                    <span className="text-[#4338ca] font-black">Weekend Anchor</span>
-                  </div>
-                </div>
-
-                {/* Card 4: FLEXIBLE */}
-                <div className="border-[3px] border-[#111111] p-5 bg-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between border-t-[8px] border-t-[#059669]">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-mono font-black tracking-wider px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-[#111111] uppercase">
-                        FLEXIBLE
-                      </span>
-                      <span className="text-xs font-mono font-bold text-slate-500">On-Demand</span>
-                    </div>
-                    <div className="pt-1">
-                      <div className="text-2xl mb-1">💬</div>
-                      <h4 className="text-base font-black text-[#111111]">
-                        Doubt Support
-                      </h4>
-                      <p className="text-xs font-bold text-slate-600 mt-2 leading-relaxed">
-                        WhatsApp support with a guaranteed 2-hour response window. Never get stuck on assignments or framework doubts.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-[11px] font-bold text-slate-600">
-                    <span className="flex items-center gap-1 font-mono font-bold text-[#111111]">
-                      <MessageSquare className="w-3.5 h-3.5 text-[#059669]" />
-                      &lt; 2hr SLA
-                    </span>
-                    <span className="text-emerald-700 font-black">Always Open</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 3 Commitment Metrics */}
-              <div className="pt-6 border-t-2 border-[#111111]">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-                  {/* Metric 1 */}
-                  <div className="flex items-center gap-4 p-4 bg-[#F8FAFC] border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
-                    <div className="w-12 h-12 bg-[#e0f2fe] border-2 border-[#111111] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                      <span className="text-2xl">⏳</span>
-                    </div>
-                    <div>
-                      <div className="text-2xl sm:text-3xl font-black text-[#111111] font-mono">
-                        10–12 <span className="text-xs font-bold text-slate-600">HRS</span>
-                      </div>
-                      <div className="text-[11px] font-black text-slate-600 uppercase tracking-wider">
-                        per week total commitment
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Metric 2 */}
-                  <div className="flex items-center gap-4 p-4 bg-[#F8FAFC] border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
-                    <div className="w-12 h-12 bg-[#e0e7ff] border-2 border-[#111111] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                      <span className="text-2xl">⚡</span>
-                    </div>
-                    <div>
-                      <div className="text-2xl sm:text-3xl font-black text-[#111111] font-mono">
-                        3 <span className="text-xs font-bold text-slate-600">HRS</span>
-                      </div>
-                      <div className="text-[11px] font-black text-slate-600 uppercase tracking-wider">
-                        live every Saturday
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Metric 3 */}
-                  <div className="flex items-center gap-4 p-4 bg-[#F8FAFC] border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
-                    <div className="w-12 h-12 bg-[#ccfbf1] border-2 border-[#111111] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                      <span className="text-2xl">📼</span>
-                    </div>
-                    <div>
-                      <div className="text-2xl sm:text-3xl font-black text-[#111111] font-mono">
-                        100<span className="text-[#0d9488] font-black">%</span>
-                      </div>
-                      <div className="text-[11px] font-black text-slate-600 uppercase tracking-wider">
-                        live sessions recorded
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Operational Guarantee Badge */}
-                <div className="mt-6 text-center">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFF3A7] border-[2px] border-[#111111] text-xs font-black shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] text-[#111111]">
-                    <span>ℹ️</span>
-                    <span>Workshop timings are decided with the cohort. All live sessions are recorded for replay.</span>
-                  </div>
-                </div>
-              </div>
+            <div className="mt-6 text-center">
+              <p className="text-xs font-bold text-slate-600">
+                ℹ️ Workshop timings are decided with the cohort. All live sessions are recorded for replay.
+              </p>
             </div>
           </div>
 
           {/* 03 / The Inclusion Ecosystem */}
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-black uppercase tracking-wider text-[#111111] bg-white border-2 border-[#111111] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  03 / The Inclusion Ecosystem
+          <div className="pt-12 border-t-[3px] border-[#111111]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-8">
+              <div>
+                <span className="text-xs font-black uppercase tracking-widest text-[#188ab2]">
+                  03 / THE INCLUSION ECOSYSTEM
                 </span>
-                <span className="text-xs font-bold text-slate-600">• All 11 Core Assets</span>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#111111] mt-1">
+                  Everything you need to make the transition
+                </h3>
+                <p className="text-sm font-bold text-slate-500 mt-1">
+                  All 11 core assets — not fragmented features, a cohesive PM operating system.
+                </p>
               </div>
-              <div className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider">
-                4 Strategic Categories
+              <span className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider self-start sm:self-center">
+                Complete Transition Stack
+              </span>
+            </div>
+
+            {/* 4 Category Columns */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Column 1: LEARN */}
+              <div className="bg-white border-[3px] border-[#111111] p-6 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between pb-4 border-b-2 border-[#111111] mb-4">
+                    <h4 className="font-mono font-black text-sm tracking-wider uppercase text-[#111111]">LEARN</h4>
+                    <span className="text-[10px] font-mono font-black bg-slate-100 border border-[#111111] px-2 py-0.5">03 Items</span>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono font-black text-xs text-[#188ab2]">01</span>
+                        <h5 className="font-black text-sm text-[#111111]">Recorded PM Modules</h5>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 ml-5 mt-0.5">Core concepts, mental models & frameworks</p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-200">
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono font-black text-xs text-[#188ab2]">02</span>
+                        <h5 className="font-black text-sm text-[#111111]">PM Frameworks & Templates</h5>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 ml-5 mt-0.5">PRDs, discovery canvases & strategy trees</p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-200">
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono font-black text-xs text-[#188ab2]">03</span>
+                        <h5 className="font-black text-sm text-[#111111]">PM Toolkit</h5>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 ml-5 mt-0.5">Curated tools for analytics, research & roadmapping</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Column 2: BUILD */}
+              <div className="bg-white border-[3px] border-[#111111] p-6 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between pb-4 border-b-2 border-[#111111] mb-4">
+                    <h4 className="font-mono font-black text-sm tracking-wider uppercase text-[#111111]">BUILD</h4>
+                    <span className="text-[10px] font-mono font-black bg-slate-100 border border-[#111111] px-2 py-0.5">03 Items</span>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono font-black text-xs text-[#188ab2]">04</span>
+                        <h5 className="font-black text-sm text-[#111111]">Graded Assignments</h5>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 ml-5 mt-0.5">Real-world deliverables with rubric evaluation</p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-200">
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono font-black text-xs text-[#188ab2]">05</span>
+                        <h5 className="font-black text-sm text-[#111111]">Case Studies</h5>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 ml-5 mt-0.5">Deep unpacks of high-growth product challenges</p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-200">
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono font-black text-xs text-[#188ab2]">06</span>
+                        <h5 className="font-black text-sm text-[#111111]">PM Portfolio</h5>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 ml-5 mt-0.5">Tangible artifacts proving domain execution</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Column 3: PRACTISE */}
+              <div className="bg-white border-[3px] border-[#111111] p-6 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between pb-4 border-b-2 border-[#111111] mb-4">
+                    <h4 className="font-mono font-black text-sm tracking-wider uppercase text-[#111111]">PRACTISE</h4>
+                    <span className="text-[10px] font-mono font-black bg-slate-100 border border-[#111111] px-2 py-0.5">03 Items</span>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono font-black text-xs text-[#188ab2]">07</span>
+                        <h5 className="font-black text-sm text-[#111111]">Live Mentor Workshops</h5>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 ml-5 mt-0.5">Interactive Saturday teardown & debates</p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-200">
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono font-black text-xs text-[#188ab2]">08</span>
+                        <h5 className="font-black text-sm text-[#111111]">Daily PM Gym</h5>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 ml-5 mt-0.5">Bite-sized daily scenario & intuition builder</p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-200">
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono font-black text-xs text-[#188ab2]">09</span>
+                        <h5 className="font-black text-sm text-[#111111]">Mock Interview / Case Practice</h5>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 ml-5 mt-0.5">Structured peer and mentor mock rounds</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Column 4: CAREER */}
+              <div className="bg-white border-[3px] border-[#111111] p-6 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between pb-4 border-b-2 border-[#111111] mb-4">
+                    <h4 className="font-mono font-black text-sm tracking-wider uppercase text-[#111111]">CAREER</h4>
+                    <span className="text-[10px] font-mono font-black bg-slate-100 border border-[#111111] px-2 py-0.5">02 Items</span>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono font-black text-xs text-[#188ab2]">10</span>
+                        <h5 className="font-black text-sm text-[#111111]">Resume & Job Search Support</h5>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 ml-5 mt-0.5">PM ATS positioning, storytelling & outreach</p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-200">
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono font-black text-xs text-[#188ab2]">11</span>
+                        <h5 className="font-black text-sm text-[#111111]">PM Community</h5>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 ml-5 mt-0.5">Lifelong network of alumni and hiring leads</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-6 pt-4 border-t-2 border-[#111111]/10 text-center">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-[#188ab2]">
+                    Transition Readiness Complete ✓
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div className="bg-white border-[3px] border-[#111111] p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] space-y-8">
-              {/* Heading */}
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b-2 border-[#111111] pb-5 gap-3">
-                <div>
-                  <span className="text-xs font-mono font-black uppercase tracking-wider text-[#4338ca]">
-                    Complete Transition Stack
-                  </span>
-                  <h3 className="text-2xl font-black text-[#111111] tracking-tight mt-1">
-                    Everything you need to make the transition
-                  </h3>
-                </div>
-                <p className="text-xs font-bold text-slate-600 font-mono">
-                  Not fragmented features — a cohesive PM operating system.
-                </p>
+            {/* Trust Badges */}
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="inline-flex items-center gap-2 px-5 py-3 bg-[#FFF3A7] border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] font-black text-xs uppercase tracking-wide text-[#111111]">
+                <span className="text-base">🏆</span>
+                <span>Certificate of Completion • Verified Credential</span>
               </div>
-
-              {/* 4 Category Columns */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
-                
-                {/* COLUMN 1: LEARN */}
-                <div className="bg-[#F8FAFC] border-[3px] border-[#111111] p-4 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between border-b-2 border-[#111111] pb-3 mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#0284c7] border border-[#111111]"></span>
-                        <h4 className="text-sm font-black tracking-wider text-[#0284c7] uppercase font-mono">LEARN</h4>
-                      </div>
-                      <span className="text-[10px] font-mono font-black bg-[#e0f2fe] text-[#0284c7] px-2 py-0.5 border border-[#111111]">03 Items</span>
-                    </div>
-
-                    <ul className="space-y-2.5">
-                      <li className="p-3 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-xs font-mono font-black text-[#0284c7] shrink-0">01</span>
-                          <div>
-                            <div className="text-xs font-black text-[#111111]">Recorded PM Modules</div>
-                            <div className="text-[11px] font-bold text-slate-600 mt-0.5">Core concepts, mental models & frameworks</div>
-                          </div>
-                        </div>
-                      </li>
-
-                      <li className="p-3 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-xs font-mono font-black text-[#0284c7] shrink-0">02</span>
-                          <div>
-                            <div className="text-xs font-black text-[#111111]">PM Frameworks & Templates</div>
-                            <div className="text-[11px] font-bold text-slate-600 mt-0.5">PRDs, discovery canvases & strategy trees</div>
-                          </div>
-                        </div>
-                      </li>
-
-                      <li className="p-3 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-xs font-mono font-black text-[#0284c7] shrink-0">03</span>
-                          <div>
-                            <div className="text-xs font-black text-[#111111]">PM Toolkit</div>
-                            <div className="text-[11px] font-bold text-slate-600 mt-0.5">Curated tools for analytics, research & roadmapping</div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* COLUMN 2: BUILD */}
-                <div className="bg-[#F8FAFC] border-[3px] border-[#111111] p-4 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between border-b-2 border-[#111111] pb-3 mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#0d9488] border border-[#111111]"></span>
-                        <h4 className="text-sm font-black tracking-wider text-[#0d9488] uppercase font-mono">BUILD</h4>
-                      </div>
-                      <span className="text-[10px] font-mono font-black bg-[#ccfbf1] text-[#0d9488] px-2 py-0.5 border border-[#111111]">03 Items</span>
-                    </div>
-
-                    <ul className="space-y-2.5">
-                      <li className="p-3 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-xs font-mono font-black text-[#0d9488] shrink-0">04</span>
-                          <div>
-                            <div className="text-xs font-black text-[#111111]">Graded Assignments</div>
-                            <div className="text-[11px] font-bold text-slate-600 mt-0.5">Real-world deliverables with rubric evaluation</div>
-                          </div>
-                        </div>
-                      </li>
-
-                      <li className="p-3 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-xs font-mono font-black text-[#0d9488] shrink-0">05</span>
-                          <div>
-                            <div className="text-xs font-black text-[#111111]">Case Studies</div>
-                            <div className="text-[11px] font-bold text-slate-600 mt-0.5">Deep unpacks of high-growth product challenges</div>
-                          </div>
-                        </div>
-                      </li>
-
-                      <li className="p-3 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-xs font-mono font-black text-[#0d9488] shrink-0">06</span>
-                          <div>
-                            <div className="text-xs font-black text-[#111111]">PM Portfolio</div>
-                            <div className="text-[11px] font-bold text-slate-600 mt-0.5">Tangible artifacts proving domain execution</div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* COLUMN 3: PRACTISE */}
-                <div className="bg-[#F8FAFC] border-[3px] border-[#111111] p-4 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between border-b-2 border-[#111111] pb-3 mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#4338ca] border border-[#111111]"></span>
-                        <h4 className="text-sm font-black tracking-wider text-[#4338ca] uppercase font-mono">PRACTISE</h4>
-                      </div>
-                      <span className="text-[10px] font-mono font-black bg-[#e0e7ff] text-[#4338ca] px-2 py-0.5 border border-[#111111]">03 Items</span>
-                    </div>
-
-                    <ul className="space-y-2.5">
-                      <li className="p-3 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-xs font-mono font-black text-[#4338ca] shrink-0">07</span>
-                          <div>
-                            <div className="text-xs font-black text-[#111111]">Live Mentor Workshops</div>
-                            <div className="text-[11px] font-bold text-slate-600 mt-0.5">Interactive Saturday teardown & debates</div>
-                          </div>
-                        </div>
-                      </li>
-
-                      <li className="p-3 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-xs font-mono font-black text-[#4338ca] shrink-0">08</span>
-                          <div>
-                            <div className="text-xs font-black text-[#111111]">Daily PM Gym</div>
-                            <div className="text-[11px] font-bold text-slate-600 mt-0.5">Bite-sized daily scenario & intuition builder</div>
-                          </div>
-                        </div>
-                      </li>
-
-                      <li className="p-3 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-xs font-mono font-black text-[#4338ca] shrink-0">09</span>
-                          <div>
-                            <div className="text-xs font-black text-[#111111]">Mock Interview / Case Practice</div>
-                            <div className="text-[11px] font-bold text-slate-600 mt-0.5">Structured peer and mentor mock rounds</div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* COLUMN 4: CAREER */}
-                <div className="bg-[#F8FAFC] border-[3px] border-[#111111] p-4 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between border-b-2 border-[#111111] pb-3 mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#7e22ce] border border-[#111111]"></span>
-                        <h4 className="text-sm font-black tracking-wider text-[#7e22ce] uppercase font-mono">CAREER</h4>
-                      </div>
-                      <span className="text-[10px] font-mono font-black bg-[#f3e8ff] text-[#7e22ce] px-2 py-0.5 border border-[#111111]">02 Items</span>
-                    </div>
-
-                    <ul className="space-y-2.5">
-                      <li className="p-3 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-xs font-mono font-black text-[#7e22ce] shrink-0">10</span>
-                          <div>
-                            <div className="text-xs font-black text-[#111111]">Resume & Job Search Support</div>
-                            <div className="text-[11px] font-bold text-slate-600 mt-0.5">PM ATS positioning, storytelling & outreach</div>
-                          </div>
-                        </div>
-                      </li>
-
-                      <li className="p-3 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-xs font-mono font-black text-[#7e22ce] shrink-0">11</span>
-                          <div>
-                            <div className="text-xs font-black text-[#111111]">PM Community</div>
-                            <div className="text-[11px] font-bold text-slate-600 mt-0.5">Lifelong network of alumni and hiring leads</div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="mt-4 p-2.5 bg-[#f3e8ff] border-2 border-[#111111] text-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                    <span className="text-[11px] font-black text-[#7e22ce] uppercase tracking-wide">Transition Readiness Complete</span>
-                  </div>
-                </div>
-
+              <div className="inline-flex items-center gap-2 px-5 py-3 bg-white border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] font-black text-xs uppercase tracking-wide text-[#111111]">
+                <span className="text-base">💬</span>
+                <span>WhatsApp Doubt Support • 2-Hour SLA</span>
               </div>
+            </div>
 
-              {/* Trust Badges */}
-              <div className="pt-4 border-t-2 border-[#111111] flex flex-col sm:flex-row items-center justify-center gap-4">
-                <div className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#FFF3A7] border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] font-black text-xs uppercase tracking-wide text-[#111111]">
-                  <span className="text-base">🏆</span>
-                  <span>Certificate of Completion</span>
-                  <span className="text-slate-600 font-mono hidden md:inline">• Verified Credential</span>
-                </div>
-
-                <div className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-emerald-100 border-[3px] border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] font-black text-xs uppercase tracking-wide text-emerald-950">
-                  <span className="text-base">💬</span>
-                  <span>WhatsApp Doubt Support</span>
-                  <span className="text-[10px] font-mono bg-emerald-200 px-2 py-0.5 border border-[#111111]">2-Hour SLA</span>
-                </div>
-              </div>
-
-              {/* Download Brochure callout */}
-              <div className="text-center pt-6 border-t-2 border-[#111111] flex flex-col items-center gap-4 select-none">
-                <p className="text-sm md:text-base font-black text-[#111111]">
-                  Want the full week-by-week syllabus breakdown and teardowns?
-                </p>
-                <Button 
-                  variant="secondary" 
-                  onClick={() => handleActionClick('brochure')}
-                  className="px-8 py-4 text-base font-extrabold shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
-                >
-                  Download Full Curriculum Brochure ➜
-                </Button>
-              </div>
-
+            {/* Download Brochure callout */}
+            <div className="text-center mt-10">
+              <p className="text-sm md:text-base font-extrabold text-[#111111] mb-4">
+                Want to review the detailed week-by-week syllabus and teardowns?
+              </p>
+              <Button 
+                variant="secondary" 
+                onClick={() => handleActionClick('brochure')}
+                className="px-8 py-4 text-base font-extrabold shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
+              >
+                Download Full Curriculum Brochure ➜
+              </Button>
             </div>
           </div>
 
@@ -2230,7 +1830,7 @@ function ProfessionalsLandingPage() {
               <h4 className="font-extrabold text-[#111111] mb-6">Quick Links</h4>
               <ul className="space-y-4 text-[#111111] text-sm font-bold">
                 <li><a href="#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Who is it for?</a></li>
-                <li><a href="#batch-details" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Batch Details</a></li>
+                <li><a href="#curriculum" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">The Experience</a></li>
                 <li><a href="#mentors" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Mentors</a></li>
                 <li><Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link></li>
               </ul>
