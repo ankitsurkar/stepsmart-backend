@@ -96,7 +96,7 @@ export function BatchAdmitCardBanner({
 
                 {/* Batch Number Sticker */}
                 <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-3 py-0.5 font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] rotate-[-1.5deg] select-none">
-                  {config.batchNumber || "BATCH #04"}
+                  {config.batchNumber || "BATCH #03"}
                 </span>
               </div>
 
@@ -128,7 +128,7 @@ export function BatchAdmitCardBanner({
                 <span className="text-[10px] font-black uppercase text-slate-500 block mb-0.5">Duration</span>
                 <span className="text-xs sm:text-sm font-black text-[#111111] flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5 text-[#188ab2] shrink-0" />
-                  {config.duration || "6 Weeks Live"}
+                  {config.duration || "8 Weeks Live"}
                 </span>
               </div>
             </div>
@@ -205,7 +205,7 @@ export function BatchAdmitCardBanner({
                   <Flame className="h-4 w-4 text-amber-500 fill-amber-500" /> Seats Claimed:
                 </span>
                 <span className="text-[#111111]">
-                  {config.seatsFilled || 18} / {config.seatsTotal || 25}
+                  {config.seatsFilled ?? 7} / {config.seatsTotal || 25}
                 </span>
               </div>
 
@@ -219,7 +219,7 @@ export function BatchAdmitCardBanner({
 
               {/* Urgency Badge */}
               <span className="inline-block bg-[#FEE2E2] text-red-900 border border-red-300 font-black text-[11px] px-2 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
-                {config.urgencyTag || "Only 7 Seats Remaining"}
+                {config.urgencyTag || "Only 18 Seats Remaining"}
               </span>
             </div>
 

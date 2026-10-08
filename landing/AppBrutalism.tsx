@@ -240,7 +240,7 @@ export function AnnouncementBanner() {
         {currentMode === 'batch' ? (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-center">
             <span>
-              🚀 <span className="bg-white border border-[#111111] px-1.5 py-0.2 text-[10px] font-black uppercase mr-1">{batchConfig.batchNumber || "BATCH #04"}</span>
+              🚀 <span className="bg-white border border-[#111111] px-1.5 py-0.2 text-[10px] font-black uppercase mr-1">{batchConfig.batchNumber || "BATCH #03"}</span>
               {batchConfig.batchName || "PM-X ACCELERATOR"} — Starts <strong>{batchConfig.startDate}</strong>{' '}
               <span className="text-red-700 font-extrabold hidden lg:inline">({batchConfig.urgencyTag})</span>
             </span>
@@ -2255,7 +2255,7 @@ function AdminEventsManager() {
               type="text"
               value={batchSettings.batchNumber}
               onChange={(e) => setBatchSettings(prev => ({ ...prev, batchNumber: e.target.value }))}
-              placeholder="e.g. BATCH #04"
+              placeholder="e.g. BATCH #03"
               className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2] focus:ring-1 focus:ring-[#188ab2]"
             />
           </div>
@@ -2288,7 +2288,7 @@ function AdminEventsManager() {
               type="text"
               value={batchSettings.duration}
               onChange={(e) => setBatchSettings(prev => ({ ...prev, duration: e.target.value }))}
-              placeholder="e.g. 6 Weeks Live"
+              placeholder="e.g. 8 Weeks Live"
               className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2] focus:ring-1 focus:ring-[#188ab2]"
             />
           </div>
@@ -2323,7 +2323,7 @@ function AdminEventsManager() {
                 min="0"
                 value={batchSettings.seatsFilled}
                 onChange={(e) => setBatchSettings(prev => ({ ...prev, seatsFilled: Number(e.target.value) }))}
-                placeholder="Filled (e.g. 18)"
+                placeholder="Filled (e.g. 7)"
                 className="w-1/2 p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2]"
               />
               <span className="text-slate-400">/</span>
@@ -2344,7 +2344,7 @@ function AdminEventsManager() {
               type="text"
               value={batchSettings.urgencyTag}
               onChange={(e) => setBatchSettings(prev => ({ ...prev, urgencyTag: e.target.value }))}
-              placeholder="e.g. Only 7 Seats Remaining"
+              placeholder="e.g. Only 18 Seats Remaining"
               className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2]"
             />
           </div>

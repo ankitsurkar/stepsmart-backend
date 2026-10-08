@@ -21,16 +21,16 @@ export const LOCAL_STORAGE_BATCH_KEY = 'pmx_custom_batch_config';
 
 export const DEFAULT_BATCH_CONFIG: BatchConfig = {
   enabled: true,
-  batchNumber: "BATCH #04",
+  batchNumber: "BATCH #03",
   batchName: "PM-X ACCELERATOR",
   programTrack: "Working Professionals & Career Switchers",
   startDate: "15th November 2026",
-  duration: "6 Weeks Live",
+  duration: "8 Weeks Live",
   originalPrice: "₹19,999",
   discountedPrice: "₹14,999",
   seatsTotal: 25,
-  seatsFilled: 18,
-  urgencyTag: "Only 7 Seats Remaining",
+  seatsFilled: 7,
+  urgencyTag: "Only 18 Seats Remaining",
   badgeText: "APPLICATIONS OPEN 🟢",
   earlyBirdNote: "⚡ Rolling Vetting • Direct 1:1 Mentor Matching",
   ctaText: "Claim Your Cohort Pass ➜",
@@ -55,6 +55,18 @@ export const getStoredBatchConfig = (): BatchConfig => {
       }
       if (!parsed.discountedPrice) {
         parsed.discountedPrice = DEFAULT_BATCH_CONFIG.discountedPrice;
+      }
+      if (parsed.batchNumber === "BATCH #04") {
+        parsed.batchNumber = DEFAULT_BATCH_CONFIG.batchNumber;
+      }
+      if (parsed.urgencyTag === "Only 7 Seats Remaining") {
+        parsed.urgencyTag = DEFAULT_BATCH_CONFIG.urgencyTag;
+      }
+      if (parsed.seatsFilled === 18 && parsed.seatsTotal === 25) {
+        parsed.seatsFilled = DEFAULT_BATCH_CONFIG.seatsFilled;
+      }
+      if (parsed.duration === "6 Weeks Live") {
+        parsed.duration = DEFAULT_BATCH_CONFIG.duration;
       }
       return { ...DEFAULT_BATCH_CONFIG, ...parsed };
     }
