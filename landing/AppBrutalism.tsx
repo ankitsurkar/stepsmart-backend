@@ -657,8 +657,9 @@ function ProfessionalsLandingPage() {
           <div className="container mx-auto px-6 h-20 flex items-center justify-between">
             <Logo toHome={true} />
             <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-              <NavLink href="#who-is-it-for">Who is it for?</NavLink>
               <NavLink href="#curriculum">The Experience</NavLink>
+              <NavLink href="#who-is-it-for">Who is it for?</NavLink>
+              <NavLink href="#mentors">Mentors</NavLink>
               <NavLink to="/resources">Resources</NavLink>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
               <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => scrollToSection('enroll')}>
@@ -674,8 +675,9 @@ function ProfessionalsLandingPage() {
         {/* Mobile Nav */}
         {isMenuOpen && (
           <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-            <a href="#who-is-it-for" onClick={(e) => handleMobileLinkClick(e, 'who-is-it-for')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
             <a href="#curriculum" onClick={(e) => handleMobileLinkClick(e, 'curriculum')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">The Experience</a>
+            <a href="#who-is-it-for" onClick={(e) => handleMobileLinkClick(e, 'who-is-it-for')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
+            <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
             <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Resources</Link>
             <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
             <Button variant="primary" className="w-full px-5 py-2 text-sm" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>
@@ -735,338 +737,8 @@ function ProfessionalsLandingPage() {
         </div>
       </section>
 
-      {/* Who is it for */}
-      <section id="who-is-it-for" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
-        <div className="container mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl font-extrabold text-[#111111] mb-4">
-              {userType === 'professional' ? "Who is this for?" : "Who is PM-X First Step for?"}
-            </h2>
-            <p className="text-lg font-bold text-[#111111]">
-              {userType === 'professional' 
-                ? "The PM-X Accelerator is designed for builders ready to take the next step in their career." 
-                : "Tailored exclusively for ambitious college students seeking non-engineering roles."}
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {(userType === 'professional' ? [
-              { 
-                label: "Software Engineers", 
-                desc: "Technical minds wanting to move from 'how to build' to 'what to build'.", 
-                icon: <Users className="h-8 w-8 text-[#111111]" />,
-                iconTilt: "rotate-[3deg]",
-                tag: "Technical background",
-                tagTilt: "rotate-[-1.5deg]"
-              },
-              { 
-                label: "Aspiring PMs", 
-                desc: "Non-PM professionals looking for a structured, real-world entry path.", 
-                icon: <CheckCircle2 className="h-8 w-8 text-[#111111]" />,
-                iconTilt: "rotate-[-2deg]",
-                tag: "Career switcher",
-                tagTilt: "rotate-[2deg]"
-              },
-              { 
-                label: "Business Analysts", 
-                desc: "Analysts wanting to own the product lifecycle and drive strategy.", 
-                icon: <Briefcase className="h-8 w-8 text-[#111111]" />,
-                iconTilt: "rotate-[4deg]",
-                tag: "Strategy-minded",
-                tagTilt: "rotate-[-2deg]"
-              },
-              { 
-                label: "Recent Graduates", 
-                desc: "Hungry talent wanting to bypass the 'lack of experience' trap.", 
-                icon: <Calendar className="h-8 w-8 text-[#111111]" />,
-                iconTilt: "rotate-[-3deg]",
-                tag: "Entry-level",
-                tagTilt: "rotate-[1.5deg]"
-              }
-            ] : [
-              { 
-                label: "Final-Year Students", 
-                desc: "Secure high-paying APM offers before graduation.", 
-                icon: <GraduationCap className="h-8 w-8 text-[#111111]" />,
-                iconTilt: "rotate-[3deg]",
-                tag: "Placement Prep",
-                tagTilt: "rotate-[-1.5deg]"
-              },
-              { 
-                label: "Pre-Final Year Students", 
-                desc: "Crack elite summer product management internships.", 
-                icon: <Calendar className="h-8 w-8 text-[#111111]" />,
-                iconTilt: "rotate-[-2deg]",
-                tag: "Internship Prep",
-                tagTilt: "rotate-[2deg]"
-              },
-              { 
-                label: "Non-CS Students", 
-                desc: "Switch from core engineering, design, or commerce to tech roles.", 
-                icon: <BookOpen className="h-8 w-8 text-[#111111]" />,
-                iconTilt: "rotate-[4deg]",
-                tag: "Stream Agnostic",
-                tagTilt: "rotate-[-2deg]"
-              },
-              { 
-                label: "Recent Graduates", 
-                desc: "Bypass the 'need experience to get experience' loop.", 
-                icon: <Trophy className="h-8 w-8 text-[#111111]" />,
-                iconTilt: "rotate-[-3deg]",
-                tag: "Zero Experience",
-                tagTilt: "rotate-[1.5deg]"
-              }
-            ]).map((box, i) => (
-              <div 
-                key={i} 
-                className={`p-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between transition-all duration-100 select-none group cursor-pointer ${['bg-white', 'bg-[var(--surface-blue)]', 'bg-[var(--surface-mint)]', 'bg-[var(--surface-lavender)]'][i]}`}
-              >
-                <div>
-                  {/* Icon wrapper with custom alternating tilt */}
-                  <div className={`w-14 h-14 bg-[#188ab2] border-[3px] border-[#111111] flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] mb-6 transition-transform duration-100 ${box.iconTilt}`}>
-                    {box.icon}
-                  </div>
-                  
-                  <h3 className="font-extrabold text-xl text-[#111111] mb-1">{box.label}</h3>
-                  
-                  {/* Rotated pill style credential/stamped tag */}
-                  <div className="mb-4 inline-block">
-                    <span className={`inline-block bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none ${box.tagTilt}`}>
-                      {box.tag}
-                    </span>
-                  </div>
-
-                  <p className="text-[#111111] text-xs leading-relaxed font-bold mt-2">{box.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* Mentors */}
-      <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
-        <div className="container mx-auto px-6 text-center max-w-6xl">
-          {userType === 'professional' ? (
-            <>
-              <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
-              <div className="grid md:grid-cols-3 gap-8 text-left">
-                {/* Sanket */}
-                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
-                  {/* Headshot in circle with black border */}
-                  <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
-                    <img
-                      src={sanketPhotoSrc}
-                      alt="Sanket, Senior Product Manager at Mastercard, PM mentor at StepSmart"
-                      className="w-full h-full object-cover object-top"
-                    />
-                  </div>
-                  
-                  <div className="flex-1">
-                    {/* Rotated tags */}
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                        PM @ Mastercard
-                      </span>
-                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                        50+ Mentored
-                      </span>
-                    </div>
-                    
-                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Sanket</h3>
-                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
-                      <a 
-                        href="https://www.linkedin.com/in/sanketkumar-katore/" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="hover:underline inline-flex items-center gap-1.5"
-                      >
-                        Senior PM - Mastercard
-                        <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
-                          <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
-                        </svg>
-                      </a>
-                    </p>
-                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                      Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Ankit */}
-                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
-                  {/* Headshot in circle with black border */}
-                  <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
-                    <img
-                      src={ankitPhotoSrc}
-                      alt="Ankit, Product Manager at Microsoft, PM mentor at StepSmart"
-                      className="w-full h-full object-cover object-top"
-                    />
-                  </div>
-                  
-                  <div className="flex-1">
-                    {/* Rotated tags */}
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                        PM 2 @ Microsoft
-                      </span>
-                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                        AI Specialist
-                      </span>
-                    </div>
-                    
-                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Ankit</h3>
-                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
-                      <a 
-                        href="https://www.linkedin.com/in/ankit-surkar/" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="hover:underline inline-flex items-center gap-1.5"
-                      >
-                        Product Manager 2 - Microsoft
-                        <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
-                          <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
-                        </svg>
-                      </a>
-                    </p>
-                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                      Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Pankaj */}
-                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
-                  {/* Headshot in circle with black border */}
-                  <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
-                    <img
-                      src={pankajPhotoSrc}
-                      alt="Pankaj, Senior Product Manager at ShopDeck, PM mentor at StepSmart"
-                      className="w-full h-full object-cover object-top"
-                    />
-                  </div>
-                  
-                  <div className="flex-1">
-                    {/* Rotated tags */}
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                        SENIOR PM @ SHOPDECK
-                      </span>
-                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
-                        B2B + B2C
-                      </span>
-                    </div>
-                    
-                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Pankaj</h3>
-                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
-                      <a 
-                        href="https://www.linkedin.com/in/pancage/" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="hover:underline inline-flex items-center gap-1.5"
-                      >
-                        SENIOR PM - SHOPDECK
-                        <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
-                          <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
-                        </svg>
-                      </a>
-                    </p>
-                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
-                      Owns merchant-experience, profitability, and logistics at ShopDeck, with 5+ years across SaaS, e-commerce, and mobility. Expert at turning business challenges into revenue-generating solutions for both B2B and B2C.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <h2 className="text-4xl font-extrabold mb-16 text-center text-[#111111]">Meet the Founders & Mentors</h2>
-              <div className="flex flex-col gap-16 relative text-left">
-                {/* Card 1: Sanket */}
-                <div className="sticky top-36 bg-[#FFF3A7] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
-                  <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
-                    <img
-                      src={sanketPhotoSrc}
-                      alt="Sanket, Senior PM at Mastercard"
-                      className="w-full h-full object-cover object-top"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                        PM @ Mastercard
-                      </span>
-                      <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                        IIT Kanpur Alum
-                      </span>
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation."</h3>
-                    <p className="text-base font-bold text-[#111111] leading-relaxed">
-                      PM-X is the structured path I wish existed when I was making the switch — behavioural interviews, product sense, and prioritisation frameworks built for career switchers.
-                    </p>
-                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Sanket, Co-founder & Senior PM @ Mastercard</p>
-                  </div>
-                </div>
-
-                {/* Card 2: Ankit */}
-                <div className="sticky top-44 bg-[#e0f2fe] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
-                  <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
-                    <img
-                      src={ankitPhotoSrc}
-                      alt="Ankit, PM 2 @ Microsoft"
-                      className="w-full h-full object-cover object-top"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                        PM 2 @ Microsoft
-                      </span>
-                      <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                        IIM B Alum
-                      </span>
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I build enterprise AI products at Microsoft. Let me show you how to build real products, not just certificates."</h3>
-                    <p className="text-base font-bold text-[#111111] leading-relaxed">
-                      An alumnus of IIT Kanpur and IIM Bangalore, I've mentored 500+ aspiring PMs. In PM-X, we focus on technical depth, metrics, PRD portfolios, and systems thinking that hiring managers actually look for.
-                    </p>
-                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Ankit, Founder & PM 2 @ Microsoft</p>
-                  </div>
-                </div>
-
-                {/* Card 3: Pankaj */}
-                <div className="sticky top-52 bg-[#fed7aa] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-0.5deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px] mb-12">
-                  <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
-                    <img
-                      src={pankajPhotoSrc}
-                      alt="Pankaj, Senior PM at ShopDeck"
-                      className="w-full h-full object-cover object-top"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                        SENIOR PM @ SHOPDECK
-                      </span>
-                      <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                        B2B + B2C
-                      </span>
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I own merchant experience, profitability, and logistics. Let me help you turn business challenges into revenue-generating solutions."</h3>
-                    <p className="text-base font-bold text-[#111111] leading-relaxed">
-                      Owns merchant-experience, profitability, and logistics at ShopDeck, with 5+ years across SaaS, e-commerce, and mobility. Expert at turning business challenges into revenue-generating solutions for both B2B and B2C.
-                    </p>
-                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Pankaj, Mentor & Senior PM @ ShopDeck</p>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </section>
-
       {/* The PM-X Experience Section */}
-      <section id="curriculum" className="py-20 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
+      <section id="curriculum" className="py-20 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
           
           {/* Main Section Header */}
@@ -1470,6 +1142,335 @@ function ProfessionalsLandingPage() {
         </div>
       </section>
 
+      {/* Who is it for */}
+      <section id="who-is-it-for" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+        <div className="container mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-4xl font-extrabold text-[#111111] mb-4">
+              {userType === 'professional' ? "Who is this for?" : "Who is PM-X First Step for?"}
+            </h2>
+            <p className="text-lg font-bold text-[#111111]">
+              {userType === 'professional' 
+                ? "The PM-X Accelerator is designed for builders ready to take the next step in their career." 
+                : "Tailored exclusively for ambitious college students seeking non-engineering roles."}
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {(userType === 'professional' ? [
+              { 
+                label: "Software Engineers", 
+                desc: "Technical minds wanting to move from 'how to build' to 'what to build'.", 
+                icon: <Users className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[3deg]",
+                tag: "Technical background",
+                tagTilt: "rotate-[-1.5deg]"
+              },
+              { 
+                label: "Aspiring PMs", 
+                desc: "Non-PM professionals looking for a structured, real-world entry path.", 
+                icon: <CheckCircle2 className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[-2deg]",
+                tag: "Career switcher",
+                tagTilt: "rotate-[2deg]"
+              },
+              { 
+                label: "Business Analysts", 
+                desc: "Analysts wanting to own the product lifecycle and drive strategy.", 
+                icon: <Briefcase className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[4deg]",
+                tag: "Strategy-minded",
+                tagTilt: "rotate-[-2deg]"
+              },
+              { 
+                label: "Recent Graduates", 
+                desc: "Hungry talent wanting to bypass the 'lack of experience' trap.", 
+                icon: <Calendar className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[-3deg]",
+                tag: "Entry-level",
+                tagTilt: "rotate-[1.5deg]"
+              }
+            ] : [
+              { 
+                label: "Final-Year Students", 
+                desc: "Secure high-paying APM offers before graduation.", 
+                icon: <GraduationCap className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[3deg]",
+                tag: "Placement Prep",
+                tagTilt: "rotate-[-1.5deg]"
+              },
+              { 
+                label: "Pre-Final Year Students", 
+                desc: "Crack elite summer product management internships.", 
+                icon: <Calendar className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[-2deg]",
+                tag: "Internship Prep",
+                tagTilt: "rotate-[2deg]"
+              },
+              { 
+                label: "Non-CS Students", 
+                desc: "Switch from core engineering, design, or commerce to tech roles.", 
+                icon: <BookOpen className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[4deg]",
+                tag: "Stream Agnostic",
+                tagTilt: "rotate-[-2deg]"
+              },
+              { 
+                label: "Recent Graduates", 
+                desc: "Bypass the 'need experience to get experience' loop.", 
+                icon: <Trophy className="h-8 w-8 text-[#111111]" />,
+                iconTilt: "rotate-[-3deg]",
+                tag: "Zero Experience",
+                tagTilt: "rotate-[1.5deg]"
+              }
+            ]).map((box, i) => (
+              <div 
+                key={i} 
+                className={`p-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between transition-all duration-100 select-none group cursor-pointer ${['bg-white', 'bg-[var(--surface-blue)]', 'bg-[var(--surface-mint)]', 'bg-[var(--surface-lavender)]'][i]}`}
+              >
+                <div>
+                  {/* Icon wrapper with custom alternating tilt */}
+                  <div className={`w-14 h-14 bg-[#188ab2] border-[3px] border-[#111111] flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] mb-6 transition-transform duration-100 ${box.iconTilt}`}>
+                    {box.icon}
+                  </div>
+                  
+                  <h3 className="font-extrabold text-xl text-[#111111] mb-1">{box.label}</h3>
+                  
+                  {/* Rotated pill style credential/stamped tag */}
+                  <div className="mb-4 inline-block">
+                    <span className={`inline-block bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none ${box.tagTilt}`}>
+                      {box.tag}
+                    </span>
+                  </div>
+
+                  <p className="text-[#111111] text-xs leading-relaxed font-bold mt-2">{box.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Mentors */}
+      <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
+        <div className="container mx-auto px-6 text-center max-w-6xl">
+          {userType === 'professional' ? (
+            <>
+              <h2 className="text-4xl font-extrabold mb-16 text-[#111111]">Learn from Professionals</h2>
+              <div className="grid md:grid-cols-3 gap-8 text-left">
+                {/* Sanket */}
+                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
+                  {/* Headshot in circle with black border */}
+                  <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                    <img
+                      src={sanketPhotoSrc}
+                      alt="Sanket, Senior Product Manager at Mastercard, PM mentor at StepSmart"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  
+                  <div className="flex-1">
+                    {/* Rotated tags */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        PM @ Mastercard
+                      </span>
+                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        50+ Mentored
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Sanket</h3>
+                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
+                      <a 
+                        href="https://www.linkedin.com/in/sanketkumar-katore/" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="hover:underline inline-flex items-center gap-1.5"
+                      >
+                        Senior PM - Mastercard
+                        <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+                          <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                        </svg>
+                      </a>
+                    </p>
+                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                      Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Ankit */}
+                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
+                  {/* Headshot in circle with black border */}
+                  <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                    <img
+                      src={ankitPhotoSrc}
+                      alt="Ankit, Product Manager at Microsoft, PM mentor at StepSmart"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  
+                  <div className="flex-1">
+                    {/* Rotated tags */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        PM 2 @ Microsoft
+                      </span>
+                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        AI Specialist
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Ankit</h3>
+                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
+                      <a 
+                        href="https://www.linkedin.com/in/ankit-surkar/" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="hover:underline inline-flex items-center gap-1.5"
+                      >
+                        Product Manager 2 - Microsoft
+                        <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+                          <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                        </svg>
+                      </a>
+                    </p>
+                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                      Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Pankaj */}
+                <div className="bg-[#FFFFFF] border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] p-6 relative flex flex-col gap-6">
+                  {/* Headshot in circle with black border */}
+                  <div className="w-24 h-24 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                    <img
+                      src={pankajPhotoSrc}
+                      alt="Pankaj, Senior Product Manager at ShopDeck, PM mentor at StepSmart"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  
+                  <div className="flex-1">
+                    {/* Rotated tags */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        SENIOR PM @ SHOPDECK
+                      </span>
+                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none">
+                        B2B + B2C
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-2xl font-extrabold text-[#111111] mb-1">Pankaj</h3>
+                    <p className="text-[#188ab2] text-xs font-extrabold uppercase tracking-widest mb-4">
+                      <a 
+                        href="https://www.linkedin.com/in/pancage/" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="hover:underline inline-flex items-center gap-1.5"
+                      >
+                        SENIOR PM - SHOPDECK
+                        <svg className="h-3.5 w-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+                          <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                        </svg>
+                      </a>
+                    </p>
+                    <p className="text-sm font-bold text-[#111111] leading-relaxed">
+                      Owns merchant-experience, profitability, and logistics at ShopDeck, with 5+ years across SaaS, e-commerce, and mobility. Expert at turning business challenges into revenue-generating solutions for both B2B and B2C.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-4xl font-extrabold mb-16 text-center text-[#111111]">Meet the Founders & Mentors</h2>
+              <div className="flex flex-col gap-16 relative text-left">
+                {/* Card 1: Sanket */}
+                <div className="sticky top-36 bg-[#FFF3A7] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
+                  <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                    <img
+                      src={sanketPhotoSrc}
+                      alt="Sanket, Senior PM at Mastercard"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        PM @ Mastercard
+                      </span>
+                      <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        IIT Kanpur Alum
+                      </span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation."</h3>
+                    <p className="text-base font-bold text-[#111111] leading-relaxed">
+                      PM-X is the structured path I wish existed when I was making the switch — behavioural interviews, product sense, and prioritisation frameworks built for career switchers.
+                    </p>
+                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Sanket, Co-founder & Senior PM @ Mastercard</p>
+                  </div>
+                </div>
+
+                {/* Card 2: Ankit */}
+                <div className="sticky top-44 bg-[#e0f2fe] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[1deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px]">
+                  <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                    <img
+                      src={ankitPhotoSrc}
+                      alt="Ankit, PM 2 @ Microsoft"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        PM 2 @ Microsoft
+                      </span>
+                      <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        IIM B Alum
+                      </span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I build enterprise AI products at Microsoft. Let me show you how to build real products, not just certificates."</h3>
+                    <p className="text-base font-bold text-[#111111] leading-relaxed">
+                      An alumnus of IIT Kanpur and IIM Bangalore, I've mentored 500+ aspiring PMs. In PM-X, we focus on technical depth, metrics, PRD portfolios, and systems thinking that hiring managers actually look for.
+                    </p>
+                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Ankit, Founder & PM 2 @ Microsoft</p>
+                  </div>
+                </div>
+
+                {/* Card 3: Pankaj */}
+                <div className="sticky top-52 bg-[#fed7aa] border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] rounded-none rotate-[-0.5deg] transition-all duration-100 flex flex-col md:flex-row gap-8 items-center min-h-[380px] mb-12">
+                  <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] overflow-hidden shrink-0 bg-white">
+                    <img
+                      src={pankajPhotoSrc}
+                      alt="Pankaj, Senior PM at ShopDeck"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[1deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        SENIOR PM @ SHOPDECK
+                      </span>
+                      <span className="bg-white text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[10px] uppercase rotate-[-2deg] inline-block shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                        B2B + B2C
+                      </span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#111111] mb-4">"I own merchant experience, profitability, and logistics. Let me help you turn business challenges into revenue-generating solutions."</h3>
+                    <p className="text-base font-bold text-[#111111] leading-relaxed">
+                      Owns merchant-experience, profitability, and logistics at ShopDeck, with 5+ years across SaaS, e-commerce, and mobility. Expert at turning business challenges into revenue-generating solutions for both B2B and B2C.
+                    </p>
+                    <p className="text-[#188ab2] font-extrabold text-sm uppercase tracking-wider mt-4">— Pankaj, Mentor & Senior PM @ ShopDeck</p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+
       {/* How to Join Section */}
       <section className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
         <div className="container mx-auto px-6 max-w-6xl">
@@ -1829,8 +1830,8 @@ function ProfessionalsLandingPage() {
             <div>
               <h4 className="font-extrabold text-[#111111] mb-6">Quick Links</h4>
               <ul className="space-y-4 text-[#111111] text-sm font-bold">
-                <li><a href="#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Who is it for?</a></li>
                 <li><a href="#curriculum" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">The Experience</a></li>
+                <li><a href="#who-is-it-for" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Who is it for?</a></li>
                 <li><a href="#mentors" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Mentors</a></li>
                 <li><Link to="/blog" className="hover:underline decoration-2 decoration-[#188ab2] underline-offset-4">Blog</Link></li>
               </ul>
