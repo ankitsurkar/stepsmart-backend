@@ -51,7 +51,9 @@ import {
   Zap,
   ArrowRight,
   Sparkles,
-  Check
+  Check,
+  Flag,
+  Target
 } from 'lucide-react';
 import { renderTextWithLinks } from './linkUtils';
 import type { EventItem } from './EventsBrutalism';
@@ -778,30 +780,193 @@ function ProfessionalsLandingPage() {
 
           {/* 01 / Journey Blueprint */}
           <div className="py-12 border-t-[3px] border-[#111111]">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-8">
-              <div>
-                <span className="text-xs font-black uppercase tracking-widest text-[#188ab2]">
-                  01 / JOURNEY BLUEPRINT
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#111111] mt-1">
-                  The 4 Sequential Stages of Capability
-                </h3>
-              </div>
-              <span className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider self-start sm:self-center">
-                Linear Product Framework
+            <div className="mb-4 text-left">
+              <span className="text-xs font-black uppercase tracking-widest text-[#188ab2]">
+                01 / JOURNEY BLUEPRINT
               </span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-[#111111] mt-1">
+                The 4 Sequential Stages of Capability
+              </h3>
             </div>
 
-            {/* 4 Stages Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Desktop Staircase Roadmap View */}
+            <div className="hidden lg:block pt-32 pb-4">
+              <div className="relative">
+                {/* 4 Step Cards Grid with Ascending Staircase Heights */}
+                <div className="grid grid-cols-4 gap-4 xl:gap-5 items-end relative">
+                  {[
+                    {
+                      num: "01",
+                      phase: "Phase One",
+                      title: "LEARN",
+                      subtitle: "Foundation",
+                      Icon: BookOpen,
+                      action: "Build the foundation",
+                      bullets: [
+                        "Recorded modules + frameworks",
+                        "Core PM mental models & concepts",
+                        "Self-paced conceptual mastery"
+                      ],
+                      footer: "Self-Paced Core →"
+                    },
+                    {
+                      num: "02",
+                      phase: "Phase Two",
+                      title: "BUILD",
+                      subtitle: "Outputs",
+                      Icon: Wrench,
+                      action: "Turn knowledge into output",
+                      bullets: [
+                        "Assignments + case studies",
+                        "Live PM portfolio & PRDs",
+                        "Tangible product proof of work"
+                      ],
+                      footer: "Proof of Work →"
+                    },
+                    {
+                      num: "03",
+                      phase: "Phase Three",
+                      title: "PRACTISE",
+                      subtitle: "Repetition",
+                      Icon: Target,
+                      action: "Think like a PM",
+                      bullets: [
+                        "PM Gym + live solving drills",
+                        "Interactive mentor workshops",
+                        "Direct critique & muscle memory"
+                      ],
+                      footer: "Live Muscle Memory →"
+                    },
+                    {
+                      num: "04",
+                      phase: "Final Goal",
+                      title: "CAREER",
+                      subtitle: "Opportunity",
+                      Icon: Trophy,
+                      action: "Put it into action",
+                      bullets: [
+                        "Interview preparation + resume revamp",
+                        "1:1 mock drills with senior PMs",
+                        "Targeted job search & referrals"
+                      ],
+                      footer: "Offer Secured ★"
+                    }
+                  ].map((stage, idx) => {
+                    // Ascending staircase heights for rising step effect
+                    const stepHeights = ['h-[350px]', 'h-[390px]', 'h-[430px]', 'h-[470px]'];
+                    const cardHeightClass = stepHeights[idx];
+
+                    return (
+                      <div key={idx} className="flex flex-col justify-end relative group select-none">
+                        {/* Top Mascot on Step 01 */}
+                        {idx === 0 && (
+                          <div className="absolute -top-32 left-0 right-0 flex flex-col items-center justify-center z-20 pointer-events-none">
+                            <img 
+                              src="/student-mascot.webp" 
+                              alt="Mascot" 
+                              className="h-28 w-auto object-contain"
+                              loading="lazy"
+                            />
+                            <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none mt-1">
+                              <GraduationCap className="h-3.5 w-3.5 text-[#111111]" />
+                              <span>Start Here</span>
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Top Flag for Step 04 */}
+                        {idx === 3 && (
+                          <div className="absolute -top-9 left-0 right-0 flex justify-center z-20">
+                            <span className="bg-[#188ab2] text-white border-[2px] border-[#111111] px-3 py-1 font-black text-[11px] uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 select-none">
+                              <Flag className="h-3.5 w-3.5 fill-white text-white" />
+                              <span>OFFER SECURED 🚩</span>
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Directional Step-Change Connector Arrow Between Adjacent Steps */}
+                        {idx < 3 && (
+                          <div className="hidden lg:flex absolute -right-2.5 xl:-right-3 top-1/2 -translate-y-1/2 z-20 w-6 h-6 bg-[#FFF3A7] border-2 border-[#111111] rounded-full items-center justify-center shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] group-hover:scale-110 group-hover:bg-[#FACC15] transition-all">
+                            <ArrowRight className="w-3.5 h-3.5 text-[#111111]" />
+                          </div>
+                        )}
+
+                        {/* Step Card */}
+                        <div className={`w-full ${cardHeightClass} bg-white border-[3px] border-[#111111] shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0px_0px_rgba(17,17,17,1)] transition-all duration-150 flex flex-col overflow-hidden text-left`}>
+                          {/* Step Cap Header */}
+                          <div className="bg-[#188ab2] text-white border-b-[3px] border-[#111111] py-1.5 px-3 text-center shrink-0 flex items-center justify-center">
+                            <span className="font-black text-lg tracking-wider">{stage.num}</span>
+                          </div>
+
+                          {/* Step Card Body */}
+                          <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between bg-white overflow-hidden">
+                            <div>
+                              {/* Step Icon */}
+                              <div className="w-9 h-9 mx-auto bg-[#FFF3A7] border-[2px] border-[#111111] flex items-center justify-center rounded-lg mb-2 shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] transition-transform group-hover:rotate-[-4deg]">
+                                <stage.Icon className="h-4.5 w-4.5 text-[#111111]" />
+                              </div>
+
+                              {/* Title & Phase */}
+                              <div className="text-center mb-2">
+                                <span className="inline-block bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2 py-0.5 font-black text-[9px] uppercase tracking-wider shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] mb-1">
+                                  {stage.phase}
+                                </span>
+                                <h4 className="font-black text-lg xl:text-xl text-[#111111] tracking-tight leading-none">
+                                  {stage.title}
+                                </h4>
+                                <p className="font-extrabold text-[10px] xl:text-[11px] uppercase tracking-wider text-[#188ab2] mt-0.5">
+                                  {stage.subtitle}
+                                </p>
+                              </div>
+
+                              {/* Core Action */}
+                              <p className="font-extrabold text-xs text-[#111111] text-center border-t-2 border-[#111111]/10 pt-2 mb-2 leading-snug">
+                                {stage.action}
+                              </p>
+
+                              {/* Bullets */}
+                              <ul className="space-y-1.5 text-[#111111]">
+                                {stage.bullets.map((bullet, bIdx) => (
+                                  <li key={bIdx} className="flex items-start gap-1.5 text-[10.5px] xl:text-[11px] font-bold leading-tight">
+                                    <span className="text-[#188ab2] font-black select-none shrink-0">•</span>
+                                    <span>{bullet}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {/* Footer Tag */}
+                            <div className="pt-2.5 border-t-2 border-[#111111]/10 mt-auto">
+                              <span className={`inline-block w-full py-1.5 px-2 text-center font-black text-[10px] uppercase tracking-wide border-2 border-[#111111] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] ${
+                                idx === 3 ? 'bg-[#FFF3A7] text-[#111111]' : 'bg-slate-50 text-slate-800'
+                              }`}>
+                                {stage.footer}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile & Tablet View */}
+            <div className="lg:hidden flex flex-col gap-5 max-w-lg mx-auto pt-4">
               {[
                 {
                   num: "01",
                   phase: "Phase One",
                   title: "LEARN",
                   subtitle: "Foundation",
+                  Icon: BookOpen,
                   action: "Build the foundation",
-                  desc: "Recorded modules + frameworks + PM concepts",
+                  bullets: [
+                    "Recorded modules + frameworks",
+                    "Core PM mental models & concepts",
+                    "Self-paced conceptual mastery"
+                  ],
                   footer: "Self-Paced Core →"
                 },
                 {
@@ -809,8 +974,13 @@ function ProfessionalsLandingPage() {
                   phase: "Phase Two",
                   title: "BUILD",
                   subtitle: "Outputs",
+                  Icon: Wrench,
                   action: "Turn knowledge into output",
-                  desc: "Assignments + case studies + PM portfolio",
+                  bullets: [
+                    "Assignments + case studies",
+                    "Live PM portfolio & PRDs",
+                    "Tangible product proof of work"
+                  ],
                   footer: "Proof of Work →"
                 },
                 {
@@ -818,8 +988,13 @@ function ProfessionalsLandingPage() {
                   phase: "Phase Three",
                   title: "PRACTISE",
                   subtitle: "Repetition",
+                  Icon: Target,
                   action: "Think like a PM",
-                  desc: "PM Gym + live workshops + mentor feedback",
+                  bullets: [
+                    "PM Gym + live solving drills",
+                    "Interactive mentor workshops",
+                    "Direct critique & muscle memory"
+                  ],
                   footer: "Live Muscle Memory →"
                 },
                 {
@@ -827,46 +1002,60 @@ function ProfessionalsLandingPage() {
                   phase: "Final Goal",
                   title: "CAREER",
                   subtitle: "Opportunity",
+                  Icon: Trophy,
                   action: "Put it into action",
-                  desc: "Interview preparation + resume + job search",
+                  bullets: [
+                    "Interview preparation + resume revamp",
+                    "1:1 mock drills with senior PMs",
+                    "Targeted job search & referrals"
+                  ],
                   footer: "Offer Secured ★"
                 }
               ].map((stage, idx) => (
-                <div 
-                  key={idx}
-                  className="bg-white border-[3px] border-[#111111] p-6 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0px_0px_rgba(17,17,17,1)] transition-all"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-4xl font-black text-[#111111] font-mono">{stage.num}</span>
-                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 bg-[#FFF3A7] border border-[#111111] text-[#111111]">
-                        {stage.phase}
+                <div key={idx} className="bg-white border-[3px] border-[#111111] p-5 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] relative text-left">
+                  {idx === 0 && (
+                    <div className="absolute -top-3.5 left-4 bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none">
+                      <GraduationCap className="h-3 w-3 text-[#111111]" />
+                      <span>START HERE</span>
+                    </div>
+                  )}
+                  {idx === 3 && (
+                    <div className="absolute -top-3.5 right-4 bg-[#188ab2] text-white border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none">
+                      <Flag className="h-3 w-3 fill-white text-white" />
+                      <span>OFFER SECURED 🚩</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between border-b-2 border-[#111111]/10 pb-3 mb-3">
+                    <div className="flex items-center gap-3">
+                      <span className="bg-[#188ab2] text-white font-mono font-black text-sm px-2.5 py-0.5 border-[2px] border-[#111111]">
+                        {stage.num}
                       </span>
+                      <div>
+                        <h4 className="font-extrabold text-base text-[#111111]">{stage.title}</h4>
+                        <span className="text-[10px] font-black uppercase text-[#188ab2]">{stage.subtitle}</span>
+                      </div>
                     </div>
-                    <h4 className="text-xl font-black text-[#111111]">{stage.title}</h4>
-                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-0.5">{stage.subtitle}</p>
-                    <div className="mt-4 pt-4 border-t-2 border-[#111111]/10">
-                      <p className="text-sm font-extrabold text-[#111111]">{stage.action}</p>
-                      <p className="text-xs font-bold text-slate-600 mt-1 leading-relaxed">{stage.desc}</p>
-                    </div>
+                    <stage.Icon className="h-5 w-5 text-[#188ab2] shrink-0" />
                   </div>
-                  <div className="mt-6 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-xs font-black text-[#111111]">
-                    <span>{stage.footer}</span>
+                  <p className="text-xs font-extrabold text-[#111111] mb-2">{stage.action}</p>
+                  <ul className="space-y-1.5 mb-3 text-[#111111]">
+                    {stage.bullets.map((bullet, bIdx) => (
+                      <li key={bIdx} className="flex items-start gap-2 text-xs font-bold text-slate-700">
+                        <span className="text-[#188ab2] font-black shrink-0">•</span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="pt-2.5 border-t-2 border-[#111111]/10 flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">{stage.phase}</span>
+                    <span className={`px-2 py-0.5 text-xs font-black uppercase border-2 border-[#111111] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] ${
+                      idx === 3 ? 'bg-[#FFF3A7] text-[#111111]' : 'bg-slate-50 text-slate-800'
+                    }`}>
+                      {stage.footer}
+                    </span>
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* Bottom Callout */}
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-xs font-bold text-slate-700">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] border border-[#111111]"></span>
-                <span className="font-extrabold text-[#111111]">Continuous Integration Model:</span>
-                <span>You do not wait until Week 8 to practice or build. All 4 tracks run parallelly in sync.</span>
-              </div>
-              <span className="font-mono text-xs font-black text-slate-700 bg-slate-100 px-3 py-1 border border-[#111111]">
-                LEARN → BUILD → PRACTISE → CAREER
-              </span>
             </div>
           </div>
 
