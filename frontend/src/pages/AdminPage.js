@@ -17,6 +17,8 @@ import {
   adminDeleteGymQuestion,
   adminSaveBlogPost,
   adminDeleteBlogPost,
+  adminSaveEvent,
+  adminDeleteEvent,
 } from '../utils/api';
 
 const COURSE_ID = 'course-001';
@@ -3893,6 +3895,8 @@ function EventsTab({ courseId }) {
     return DEMO_EVENTS;
   });
 
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [title, setTitle] = useState('');
   const [dateStr, setDateStr] = useState('');
@@ -3906,6 +3910,72 @@ function EventsTab({ courseId }) {
   const [moments, setMoments] = useState([]);
   const [pastedUrl, setPastedUrl] = useState('');
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    loadEvents();
+  }, [courseId]);
+
+  async function loadEvents() {
+    setLoading(true);
+    try {
+      const { data } = await adminGetWeeks(courseId);
+      if (data && Array.isArray(data.events) && data.events.length > 0) {
+        setEvents(data.events);
+        localStorage.setItem(LOCAL_STORAGE_EVENTS_KEY, JSON.stringify(data.events));
+      } else {
+        const raw = localStorage.getItem(LOCAL_STORAGE_EVENTS_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) setEvents(parsed);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load events from backend:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const compressImage = (file, callback) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file (PNG, JPG, WEBP).');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      if (file.type === 'image/svg+xml' || file.size < 30000) {
+        callback(dataUrl);
+        return;
+      }
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const MAX_SIZE = 900;
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height = Math.round((height * MAX_SIZE) / width);
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width = Math.round((width * MAX_SIZE) / height);
+            height = MAX_SIZE;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        callback(canvas.toDataURL('image/jpeg', 0.8));
+      };
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
+  };
 
   const saveToStorage = (newList) => {
     setEvents(newList);
@@ -3937,7 +4007,7 @@ function EventsTab({ courseId }) {
 
   const renderTextWithLinks = (text) => {
     if (!text) return null;
-    const regex = /\[([^\]]+)\]\(((?:https?:\/\/|www\.)[^\s)]+|[^\s)]+)\)|((?:https?:\/\/|www\.)[^\s<]+[^\s<.,:;\"')\]!?])/g;
+    const regex = /\[([^\]]+)\]\(((?:https?:\/\/|www\.)[^\s)]+|[^\s)]+)\)|((?:https?:\/\/|www\.)[^\s<]+[^\s<.,:;"')\]!?])/g;
     const elements = [];
     let lastIndex = 0;
     let match;
@@ -4004,93 +4074,104 @@ function EventsTab({ courseId }) {
     setPastedUrl('');
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm('Delete this event?')) return;
-    const updated = events.filter(e => e.id !== id);
-    saveToStorage(updated);
-    setMessage('Event deleted successfully.');
+    try {
+      await adminDeleteEvent(courseId, id);
+      const updated = events.filter(e => e.id !== id);
+      saveToStorage(updated);
+      setMessage('✓ Event deleted successfully.');
+    } catch (err) {
+      console.error(err);
+      setMessage(err.response?.data?.message || '❌ Failed to delete event.');
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !dateStr) {
-      setMessage('Title and Date are required.');
+      setMessage('❌ Title and Date are required.');
       return;
     }
 
+    setSaving(true);
+    setMessage('');
+
     const parsedCount = attendeeCount === '' ? undefined : Number(attendeeCount);
+    const eventId = editingId || `event-${Date.now()}`;
+    const existingEv = events.find(ev => ev.id === eventId);
 
-    let updated = [];
-    if (editingId) {
-      updated = events.map(ev => ev.id === editingId ? {
-        ...ev,
-        title,
-        dateStr,
-        dateDisplay: dateDisplay || dateStr,
-        time,
-        format,
-        description,
-        aboutText,
-        registerUrl,
-        attendeeCount: parsedCount,
-        moments
-      } : ev);
-    } else {
-      const newEv = {
-        id: `event-${Date.now()}`,
-        title,
-        dateStr,
-        dateDisplay: dateDisplay || dateStr,
-        time,
-        format,
-        description,
-        aboutText,
-        registerUrl,
-        attendeeCount: parsedCount,
-        moments,
-        tags: ["PRODUCT MASTERCLASS FOR STUDENTS", "VIRTUAL", "FREE"],
-        hosts: [
-          { name: "Sanket Katore", rating: 5.0, reviews: 42, role: "Product Manager at Mastercard", avatar: "/mentor-sanket.webp" },
-          { name: "Pankaj Sharma", rating: 5.0, reviews: 28, role: "Product Manager at Shopdeck", avatar: "/mentor-pankaj.webp" },
-          { name: "Ankit Surkar", rating: 5.0, reviews: 54, role: "Product Manager at Microsoft", avatar: "/mentor-ankit.webp" }
-        ]
-      };
-      updated = [newEv, ...events];
+    const payload = {
+      id: eventId,
+      title: title.trim(),
+      dateStr: dateStr.trim(),
+      dateDisplay: (dateDisplay || dateStr).trim(),
+      time: (time || '8:00 PM IST').trim(),
+      format: (format || '').trim(),
+      description: description.trim(),
+      aboutText: aboutText.trim(),
+      registerUrl: registerUrl.trim(),
+      attendeeCount: parsedCount !== undefined ? parsedCount : 0,
+      moments: Array.isArray(moments) ? moments : [],
+      bannerBg: existingEv?.bannerBg || 'linear-gradient(135deg, #188ab2 0%, #1e40af 100%)',
+      tags: existingEv?.tags || ["PRODUCT MASTERCLASS FOR STUDENTS", "VIRTUAL", "FREE"],
+      hosts: existingEv?.hosts || [
+        { name: "Sanket Katore", rating: 5.0, reviews: 42, role: "Product Manager at Mastercard", avatar: "/mentor-sanket.webp" },
+        { name: "Pankaj Sharma", rating: 5.0, reviews: 28, role: "Product Manager at Shopdeck", avatar: "/mentor-pankaj.webp" },
+        { name: "Ankit Surkar", rating: 5.0, reviews: 54, role: "Product Manager at Microsoft", avatar: "/mentor-ankit.webp" }
+      ],
+      createdAt: existingEv?.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    try {
+      await adminSaveEvent(courseId, payload);
+      let updated;
+      if (editingId) {
+        updated = events.map(ev => ev.id === editingId ? payload : ev);
+      } else {
+        updated = [payload, ...events];
+      }
+      saveToStorage(updated);
+      setMessage(editingId ? '✓ Event updated and saved to backend!' : '✓ Event created and saved to backend!');
+      resetForm();
+    } catch (err) {
+      console.error(err);
+      setMessage(err.response?.data?.message || '❌ Failed to save event.');
+    } finally {
+      setSaving(false);
     }
-
-    saveToStorage(updated);
-    setMessage(editingId ? 'Event updated successfully!' : 'Event created successfully!');
-    resetForm();
   };
 
   const handleFileUpload = (e) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        if (evt.target?.result) {
-          setMoments(prev => [...prev, evt.target.result]);
-        }
-      };
-      reader.readAsDataURL(file);
+      compressImage(file, (compressedUrl) => {
+        setMoments(prev => [...prev, compressedUrl]);
+      });
     });
   };
 
   const handleAddScreenshotToEventDirect = (eventId, file) => {
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      if (evt.target?.result) {
-        const updated = events.map(ev => {
-          if (ev.id === eventId) {
-            return { ...ev, moments: [...(ev.moments || []), evt.target.result] };
-          }
-          return ev;
-        });
+    compressImage(file, async (compressedUrl) => {
+      const targetEv = events.find(ev => ev.id === eventId);
+      if (!targetEv) return;
+      const updatedEv = {
+        ...targetEv,
+        moments: [...(targetEv.moments || []), compressedUrl],
+        updatedAt: new Date().toISOString(),
+      };
+      try {
+        await adminSaveEvent(courseId, updatedEv);
+        const updated = events.map(ev => ev.id === eventId ? updatedEv : ev);
         saveToStorage(updated);
+        setMessage('✓ Screenshot saved to backend.');
+      } catch (err) {
+        console.error(err);
+        setMessage('❌ Failed to save screenshot.');
       }
-    };
-    reader.readAsDataURL(file);
+    });
   };
 
   const handleAddUrl = () => {
@@ -4260,8 +4341,8 @@ function EventsTab({ courseId }) {
           </div>
 
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button type="submit" style={s.btn}>
-              {editingId ? 'Update Event' : 'Create Event'}
+            <button type="submit" style={{ ...s.btn, opacity: saving ? 0.7 : 1 }} disabled={saving}>
+              {saving ? 'Saving...' : (editingId ? 'Update Event' : 'Create Event')}
             </button>
             {editingId && (
               <button type="button" style={s.btnSecondary} onClick={resetForm}>

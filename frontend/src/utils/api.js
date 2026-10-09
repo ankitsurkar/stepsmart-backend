@@ -140,4 +140,11 @@ export const adminSaveBlogPost = (courseId, blog) =>
 export const adminDeleteBlogPost = (courseId, id) =>
   api.patch(`/admin/courses/${courseId}/weeks/__blog__`, { action: 'delete', id });
 
+// ─── Events ──────────────────────────────────────────────────────────────────
+export const adminSaveEvent = (courseId, event) =>
+  api.patch(`/admin/courses/${courseId}/weeks/__event__`, { action: 'save', event });
+
+export const adminDeleteEvent = (courseId, id) =>
+  api.patch(`/admin/courses/${courseId}/weeks/__event__`, { action: 'delete', id });
+
 export default api;

@@ -19,7 +19,7 @@ case "$FUNCTION_KEY" in
     LAMBDA_NAME="uploadAssignment"
     ;;
   publicHandler)
-    LAMBDA_NAME="lms-publicHandler"
+    LAMBDA_NAME="lms-public"
     ;;
   "")
     echo "Error: Please specify a function key (e.g. studentHandler, adminHandler, getCourseWeeks, getProgress)"

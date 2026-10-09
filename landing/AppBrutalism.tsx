@@ -152,6 +152,59 @@ const saveStoredEvents = (events: EventItem[]) => {
   }
 };
 
+const fetchPublicEvents = async (): Promise<EventItem[]> => {
+  try {
+    const res = await fetch(
+      'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: 'get_events' }),
+      }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data.events) && data.events.length > 0) {
+        saveStoredEvents(data.events);
+        return data.events;
+      }
+    }
+  } catch (err) {
+    console.error('Failed to fetch events from backend:', err);
+  }
+  return getStoredEvents();
+};
+
+const syncEventToBackend = async (event: EventItem) => {
+  try {
+    await fetch(
+      'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: 'save_event', event }),
+      }
+    );
+  } catch (err) {
+    console.error('Failed to sync event to backend:', err);
+  }
+};
+
+const deleteEventFromBackend = async (id: string) => {
+  try {
+    await fetch(
+      'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: 'delete_event', id }),
+      }
+    );
+  } catch (err) {
+    console.error('Failed to delete event from backend:', err);
+  }
+};
+
 // Banner Configuration (Set enabled: true to display banner at top of all pages)
 export const BANNER_CONFIG = {
   enabled: true,
@@ -172,11 +225,19 @@ export function AnnouncementBanner() {
   });
 
   useEffect(() => {
+    let isMounted = true;
+    fetchPublicEvents().then(fetched => {
+      if (isMounted && fetched && fetched.length > 0) {
+        setEvents(fetched);
+      }
+    });
+
     const handleEventsUpdate = () => setEvents(getStoredEvents());
     const handleBatchUpdate = () => setBatchConfig(getStoredBatchConfig());
     window.addEventListener('pmx_events_updated', handleEventsUpdate);
     window.addEventListener('pmx_batch_updated', handleBatchUpdate);
     return () => {
+      isMounted = false;
       window.removeEventListener('pmx_events_updated', handleEventsUpdate);
       window.removeEventListener('pmx_batch_updated', handleBatchUpdate);
     };
@@ -2136,6 +2197,12 @@ function AdminEventsManager() {
   const [events, setEvents] = useState<EventItem[]>(() => getStoredEvents());
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchPublicEvents().then(fetched => {
+      if (fetched && fetched.length > 0) setEvents(fetched);
+    });
+  }, []);
   
   // Form State
   const [title, setTitle] = useState('');
@@ -2238,6 +2305,8 @@ function AdminEventsManager() {
 
     setEvents(updatedList);
     saveStoredEvents(updatedList);
+    const targetEv = editingId ? updatedList.find(ev => ev.id === editingId) : updatedList[0];
+    if (targetEv) syncEventToBackend(targetEv);
     setShowModal(false);
   };
 
@@ -2251,6 +2320,8 @@ function AdminEventsManager() {
     });
     setEvents(updated);
     saveStoredEvents(updated);
+    const target = updated.find(ev => ev.id === eventId);
+    if (target) syncEventToBackend(target);
   };
 
   const handleDeleteEvent = (eventId: string) => {
@@ -2258,6 +2329,7 @@ function AdminEventsManager() {
       const updated = events.filter(e => e.id !== eventId);
       setEvents(updated);
       saveStoredEvents(updated);
+      deleteEventFromBackend(eventId);
     }
   };
 
@@ -2301,6 +2373,8 @@ function AdminEventsManager() {
         });
         setEvents(updated);
         saveStoredEvents(updated);
+        const targetEv = updated.find(ev => ev.id === eventId);
+        if (targetEv) syncEventToBackend(targetEv);
       }
     };
     reader.readAsDataURL(file);

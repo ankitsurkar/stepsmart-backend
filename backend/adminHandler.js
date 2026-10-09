@@ -357,7 +357,7 @@ async function createStudent(body, event) {
 // GET /admin/courses/{courseId}/weeks
 // Returns all weeks (including hidden ones) with full quiz data including correctIndex.
 async function listWeeks(courseId) {
-  const [result, supplementalContent, gymResult, blogResult] = await Promise.all([
+  const [result, supplementalContent, gymResult, blogResult, eventResult] = await Promise.all([
     ddb.send(new QueryCommand({
       TableName: COURSES_TABLE,
       KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
@@ -383,6 +383,14 @@ async function listWeeks(courseId) {
         ':prefix': 'POST#',
       },
     })),
+    ddb.send(new QueryCommand({
+      TableName: COURSES_TABLE,
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': 'EVENT#GLOBAL',
+        ':prefix': 'EVENT#',
+      },
+    })),
   ]);
 
   const rawWeeks = (result.Items || [])
@@ -397,7 +405,10 @@ async function listWeeks(courseId) {
   const blogs = (blogResult.Items || [])
     .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
 
-  return res(200, { weeks: signedWeeks, supplementalContent, gymQuestions, blogs });
+  const events = (eventResult.Items || [])
+    .sort((a, b) => (b.dateStr || '').localeCompare(a.dateStr || ''));
+
+  return res(200, { weeks: signedWeeks, supplementalContent, gymQuestions, blogs, events });
 }
 
 // POST /admin/courses/{courseId}/weeks
@@ -509,6 +520,51 @@ async function updateBlog(courseId, body) {
   return res(400, { message: 'Invalid action for blog content' });
 }
 
+async function updateEvent(courseId, body) {
+  const { action } = body;
+  if (action === 'save') {
+    const { event } = body;
+    if (!event || !event.id) {
+      return res(400, { message: 'Event and id are required' });
+    }
+    const sk = `EVENT#${event.id}`;
+    const item = {
+      pk: 'EVENT#GLOBAL',
+      sk,
+      id: event.id,
+      title: event.title || '',
+      dateStr: event.dateStr || '',
+      dateDisplay: event.dateDisplay || '',
+      time: event.time || '',
+      format: event.format || '',
+      description: event.description || '',
+      aboutText: event.aboutText || '',
+      registerUrl: event.registerUrl || '',
+      attendeeCount: Number(event.attendeeCount) || 0,
+      moments: Array.isArray(event.moments) ? event.moments : [],
+      hosts: Array.isArray(event.hosts) ? event.hosts : [],
+      tags: Array.isArray(event.tags) ? event.tags : [],
+      bannerBg: event.bannerBg || 'linear-gradient(135deg, #188ab2 0%, #1e40af 100%)',
+      createdAt: event.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    await ddb.send(new PutCommand({
+      TableName: COURSES_TABLE,
+      Item: item,
+    }));
+    return res(200, { message: 'Event saved successfully', event: item });
+  } else if (action === 'delete') {
+    const { id } = body;
+    if (!id) return res(400, { message: 'Id is required for delete' });
+    await ddb.send(new DeleteCommand({
+      TableName: COURSES_TABLE,
+      Key: { pk: 'EVENT#GLOBAL', sk: `EVENT#${id}` },
+    }));
+    return res(200, { message: 'Event deleted successfully', id });
+  }
+  return res(400, { message: 'Invalid action for event content' });
+}
+
 // Updates any subset of week fields. Commonly used to toggle visibility.
 async function updateWeek(courseId, weekId, body) {
   console.log('DEPLOY_CHECK_V2: updateWeek called with weekId =', weekId);
@@ -519,6 +575,10 @@ async function updateWeek(courseId, weekId, body) {
   if (weekId === '__blog__') {
     console.log('DEPLOY_CHECK_V2: Redirecting to updateBlog');
     return await updateBlog(courseId, body);
+  }
+  if (weekId === '__event__') {
+    console.log('DEPLOY_CHECK_V2: Redirecting to updateEvent');
+    return await updateEvent(courseId, body);
   }
   // Guard: if this is actually a supplemental content update, redirect to the correct handler.
   // This ensures data is always saved to SUPPLEMENTAL#GLOBAL (not WEEK#__supplemental__).

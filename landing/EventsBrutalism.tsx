@@ -154,6 +154,59 @@ export const saveStoredEvents = (events: EventItem[]) => {
   }
 };
 
+export const fetchPublicEvents = async (): Promise<EventItem[]> => {
+  try {
+    const res = await fetch(
+      'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: 'get_events' }),
+      }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data.events) && data.events.length > 0) {
+        saveStoredEvents(data.events);
+        return data.events;
+      }
+    }
+  } catch (err) {
+    console.error('Failed to fetch events from backend:', err);
+  }
+  return getStoredEvents();
+};
+
+export const syncEventToBackend = async (event: EventItem) => {
+  try {
+    await fetch(
+      'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: 'save_event', event }),
+      }
+    );
+  } catch (err) {
+    console.error('Failed to sync event to backend:', err);
+  }
+};
+
+export const deleteEventFromBackend = async (id: string) => {
+  try {
+    await fetch(
+      'https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: 'delete_event', id }),
+      }
+    );
+  } catch (err) {
+    console.error('Failed to delete event from backend:', err);
+  }
+};
+
 // Helper to check event status dynamically based on current date
 export const getEventStatus = (eventDateStr: string): 'upcoming' | 'ended' => {
   const eventDate = new Date(eventDateStr);
@@ -203,12 +256,28 @@ export function EventsPage() {
   const activeEventId = searchParams.get('id');
 
   useEffect(() => {
+    let isMounted = true;
+    const loadEvents = async () => {
+      try {
+        const fetched = await fetchPublicEvents();
+        if (isMounted && fetched && fetched.length > 0) {
+          setEvents(fetched);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    loadEvents();
+
     const handleEventsUpdate = () => {
       setEvents(getStoredEvents());
     };
 
     window.addEventListener('pmx_events_updated', handleEventsUpdate);
-    return () => window.removeEventListener('pmx_events_updated', handleEventsUpdate);
+    return () => {
+      isMounted = false;
+      window.removeEventListener('pmx_events_updated', handleEventsUpdate);
+    };
   }, []);
 
   // Compute status dynamically

@@ -119,4 +119,11 @@ export const adminDeleteGymQuestion = (courseId, date) =>
 export const submitGymAnswer = (courseId, date, answer) =>
   api.post('/quiz/submit', { courseId, weekId: 'gym', answers: { [date]: answer } });
 
+// ─── Events ──────────────────────────────────────────────────────────────────
+export const adminSaveEvent = (courseId, event) =>
+  api.patch(`/admin/courses/${courseId}/weeks/__event__`, { action: 'save', event });
+
+export const adminDeleteEvent = (courseId, id) =>
+  api.patch(`/admin/courses/${courseId}/weeks/__event__`, { action: 'delete', id });
+
 export default api;

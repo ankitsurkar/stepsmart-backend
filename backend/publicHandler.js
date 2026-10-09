@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, PutCommand, UpdateCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient, PutCommand, UpdateCommand, QueryCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb');
 
 const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(ddbClient);
@@ -37,6 +37,60 @@ exports.handler = async (event) => {
           .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
 
         return response(200, { success: true, blogs });
+      }
+
+      if (page === 'get_events') {
+        const eventsResult = await docClient.send(new QueryCommand({
+          TableName: COURSES_TABLE,
+          KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+          ExpressionAttributeValues: {
+            ':pk': 'EVENT#GLOBAL',
+            ':prefix': 'EVENT#',
+          },
+        }));
+
+        const events = (eventsResult.Items || [])
+          .sort((a, b) => (b.dateStr || '').localeCompare(a.dateStr || ''));
+
+        return response(200, { success: true, events });
+      }
+
+      if (page === 'save_event' && data.event && data.event.id) {
+        const { event: ev } = data;
+        const sk = `EVENT#${ev.id}`;
+        const item = {
+          pk: 'EVENT#GLOBAL',
+          sk,
+          id: ev.id,
+          title: ev.title || '',
+          dateStr: ev.dateStr || '',
+          dateDisplay: ev.dateDisplay || '',
+          time: ev.time || '',
+          format: ev.format || '',
+          description: ev.description || '',
+          aboutText: ev.aboutText || '',
+          registerUrl: ev.registerUrl || '',
+          attendeeCount: Number(ev.attendeeCount) || 0,
+          moments: Array.isArray(ev.moments) ? ev.moments : [],
+          hosts: Array.isArray(ev.hosts) ? ev.hosts : [],
+          tags: Array.isArray(ev.tags) ? ev.tags : [],
+          bannerBg: ev.bannerBg || 'linear-gradient(135deg, #188ab2 0%, #1e40af 100%)',
+          createdAt: ev.createdAt || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        await docClient.send(new PutCommand({
+          TableName: COURSES_TABLE,
+          Item: item,
+        }));
+        return response(200, { success: true, event: item });
+      }
+
+      if (page === 'delete_event' && data.id) {
+        await docClient.send(new DeleteCommand({
+          TableName: COURSES_TABLE,
+          Key: { pk: 'EVENT#GLOBAL', sk: `EVENT#${data.id}` },
+        }));
+        return response(200, { success: true, id: data.id });
       }
 
       const { name, email, phone, masterclassId = 'default' } = data;
@@ -77,6 +131,22 @@ exports.handler = async (event) => {
           .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
 
         return response(200, { success: true, blogs });
+      }
+
+      if (page === 'get_events') {
+        const eventsResult = await docClient.send(new QueryCommand({
+          TableName: COURSES_TABLE,
+          KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+          ExpressionAttributeValues: {
+            ':pk': 'EVENT#GLOBAL',
+            ':prefix': 'EVENT#',
+          },
+        }));
+
+        const events = (eventsResult.Items || [])
+          .sort((a, b) => (b.dateStr || '').localeCompare(a.dateStr || ''));
+
+        return response(200, { success: true, events });
       }
 
       const today = new Date().toISOString().split('T')[0];
