@@ -671,14 +671,13 @@ function ProfessionalsLandingPage() {
               <NavLink href="#mentors">Mentors</NavLink>
               <NavLink to="/resources">Resources</NavLink>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
-              <a 
-                href="https://wa.me/message/GH5C7YLAYIEHN1" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <button 
+                type="button"
+                onClick={() => handleActionClick('enroll')}
                 className="px-5 py-2 text-sm font-extrabold bg-[#0f6f8f] hover:bg-[#188ab2] text-white border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all inline-flex items-center justify-center select-none cursor-pointer"
               >
                 Apply Now
-              </a>
+              </button>
             </div>
             <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="h-6 w-6 text-[#111111]" /> : <Menu className="h-6 w-6 text-[#111111]" />}
@@ -694,15 +693,13 @@ function ProfessionalsLandingPage() {
             <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
             <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Resources</Link>
             <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
-            <a 
-              href="https://wa.me/message/GH5C7YLAYIEHN1" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              onClick={() => setIsMenuOpen(false)} 
+            <button 
+              type="button"
+              onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}
               className="w-full text-center px-5 py-2.5 text-sm font-extrabold bg-[#0f6f8f] hover:bg-[#188ab2] text-white border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all inline-block select-none cursor-pointer"
             >
               Apply Now
-            </a>
+            </button>
           </div>
         )}
       </div>
@@ -729,32 +726,14 @@ function ProfessionalsLandingPage() {
                 />
               </div>
 
-              <div className="flex flex-col items-center gap-4 mb-16">
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <a 
-                    href="https://wa.me/message/GH5C7YLAYIEHN1"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-10 py-5 text-lg sm:text-xl font-extrabold bg-[#0f6f8f] hover:bg-[#188ab2] text-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] transition-all inline-flex items-center justify-center select-none cursor-pointer"
-                  >
-                    Apply Now ➜
-                  </a>
-                  <Button 
-                    variant="secondary" 
-                    className="px-8 py-5 text-lg font-extrabold shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
-                    onClick={() => handleActionClick('brochure')}
-                  >
-                    <Download className="w-5 h-5 mr-2 inline" />
-                    Download Brochure ↓
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="px-8 py-5 text-lg font-extrabold shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
-                    onClick={() => scrollToSection('enroll')}
-                  >
-                    Enroll Online ↓
-                  </Button>
-                </div>
+              <div className="flex flex-col items-center justify-center gap-4 mb-16">
+                <button 
+                  type="button"
+                  onClick={() => handleActionClick('enroll')}
+                  className="px-12 py-5 text-lg sm:text-xl font-extrabold bg-[#0f6f8f] hover:bg-[#188ab2] text-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] transition-all inline-flex items-center justify-center select-none cursor-pointer"
+                >
+                  Apply Now ➜
+                </button>
               </div>
 
           <div className="relative w-full max-w-5xl mx-auto border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] bg-white">
