@@ -1041,30 +1041,30 @@ function ProfessionalsLandingPage() {
           </div>
 
           {/* 02 / Execution Cadence */}
-          <div className="py-12 border-t-[3px] border-[#111111]">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-8">
+          <div className="py-16 sm:py-20 border-t-[3px] border-[#111111]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
               <div>
                 <span className="text-xs font-black uppercase tracking-widest text-[#188ab2]">
                   02 / EXECUTION CADENCE
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#111111] mt-1">
+                <h3 className="text-2xl sm:text-4xl font-extrabold text-[#111111] mt-1 tracking-tight">
                   What a week at PM-X looks like
                 </h3>
-                <p className="text-sm font-bold text-slate-500 mt-1">
+                <p className="text-sm sm:text-base font-bold text-slate-500 mt-1">
                   Designed specifically for ambitious working professionals.
                 </p>
               </div>
-              <span className="self-start sm:self-center px-3 py-1 bg-[#FFF3A7] border-2 border-[#111111] text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+              <span className="self-start sm:self-center px-3.5 py-1.5 bg-[#FFF3A7] border-2 border-[#111111] text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] select-none">
                 Balanced Weekly Workload
               </span>
             </div>
 
-            {/* Weekly Rhythm Items - 2-Column Offerings Style */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 select-none mb-10">
+            {/* 4 Weekly Rhythm Cards in 2x2 Grid with Generous Spacing */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 select-none mb-12">
               {[
                 {
                   tag: "MON – FRI",
-                  mode: "Async",
+                  mode: "Async Learning",
                   icon: <Video className="h-6 w-6 text-[#127193]" />,
                   title: "2 Recorded Modules",
                   desc: "Learn at your own pace during the week with bite-sized, deep-dive theory and practical industry teardowns.",
@@ -1073,9 +1073,9 @@ function ProfessionalsLandingPage() {
                 },
                 {
                   tag: "EVERY DAY",
-                  mode: "Daily Drill",
+                  mode: "Daily Habit",
                   icon: <Brain className="h-6 w-6 text-[#127193]" />,
-                  title: "PM Gym",
+                  title: "Daily PM Gym",
                   desc: "One product-thinking question every day. Sharp prompts that train prioritization, trade-offs, and strategic product acumen.",
                   duration: "15 min / day",
                   label: "Daily Habit"
@@ -1091,7 +1091,7 @@ function ProfessionalsLandingPage() {
                 },
                 {
                   tag: "FLEXIBLE",
-                  mode: "On-Demand",
+                  mode: "On-Demand Support",
                   icon: <MessageSquare className="h-6 w-6 text-[#127193]" />,
                   title: "Doubt Support",
                   desc: "WhatsApp support with a guaranteed 2-hour response window. Never get stuck on assignments or framework doubts.",
@@ -1099,43 +1099,64 @@ function ProfessionalsLandingPage() {
                   label: "Always Open"
                 }
               ].map((item, idx) => (
-                <div key={idx} className="flex gap-5 items-start text-left">
-                  <div className="shrink-0 w-12 h-12 rounded-full border-2 border-[#111111] bg-[#FFF3A7] flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                    {item.icon}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <h4 className="text-xl font-black text-[#111111]">{item.title}</h4>
-                      <span className="px-2 py-0.5 bg-slate-100 border border-[#111111] text-[10px] font-mono font-black uppercase text-slate-700">
-                        {item.tag} • {item.mode}
+                <div 
+                  key={idx}
+                  className="bg-white border-[3px] border-[#111111] p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    {/* Top Header */}
+                    <div className="flex items-center justify-between pb-4 border-b-2 border-[#111111]/15 mb-6">
+                      <span className="px-3 py-1 bg-[#FFF3A7] border-2 border-[#111111] text-xs font-mono font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                        {item.tag}
+                      </span>
+                      <span className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">
+                        {item.mode}
                       </span>
                     </div>
-                    <p className="text-sm font-bold text-slate-600 leading-relaxed mb-2.5">
+
+                    {/* Icon & Title */}
+                    <div className="flex items-center gap-4 mb-3.5">
+                      <div className="w-12 h-12 rounded-full border-2 border-[#111111] bg-[#FFF3A7] flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] shrink-0">
+                        {item.icon}
+                      </div>
+                      <h4 className="text-xl sm:text-2xl font-black text-[#111111]">
+                        {item.title}
+                      </h4>
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-sm sm:text-[15px] font-bold text-slate-600 leading-relaxed">
                       {item.desc}
                     </p>
-                    <div className="inline-flex items-center gap-2 px-2.5 py-0.5 bg-[#FFF3A7] border border-[#111111] font-mono text-[11px] font-black text-[#111111] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
-                      <span>⏱️ {item.duration}</span>
-                      <span className="text-slate-400">•</span>
-                      <span className="text-slate-700 font-sans font-bold">{item.label}</span>
-                    </div>
+                  </div>
+
+                  {/* Clean Footer Bar */}
+                  <div className="mt-6 pt-4 border-t-2 border-[#111111]/15 flex items-center justify-between text-xs font-mono font-black text-[#111111]">
+                    <span className="flex items-center gap-1.5 text-slate-700">
+                      <span>⏱️</span>
+                      <span>{item.duration}</span>
+                    </span>
+                    <span className="font-sans font-bold text-slate-500 uppercase tracking-wider text-[11px]">
+                      {item.label}
+                    </span>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* 3 Commitment Metrics */}
-            <div className="mt-8 pt-8 border-t-2 border-[#111111]/20 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-              <div className="p-4 bg-white border-2 border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
-                <div className="text-3xl font-black text-[#111111] font-mono">10–12 HRS</div>
-                <p className="text-xs font-black uppercase tracking-wider text-slate-600 mt-1">per week total commitment</p>
+            <div className="mt-12 pt-10 border-t-2 border-[#111111]/20 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div className="p-5 bg-white border-2 border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
+                <div className="text-3xl sm:text-4xl font-black text-[#111111] font-mono">10–12 HRS</div>
+                <p className="text-xs font-black uppercase tracking-wider text-slate-600 mt-1.5">per week total commitment</p>
               </div>
-              <div className="p-4 bg-white border-2 border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
-                <div className="text-3xl font-black text-[#111111] font-mono">3 HRS</div>
-                <p className="text-xs font-black uppercase tracking-wider text-slate-600 mt-1">live every Saturday</p>
+              <div className="p-5 bg-white border-2 border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
+                <div className="text-3xl sm:text-4xl font-black text-[#111111] font-mono">3 HRS</div>
+                <p className="text-xs font-black uppercase tracking-wider text-slate-600 mt-1.5">live every Saturday</p>
               </div>
-              <div className="p-4 bg-white border-2 border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
-                <div className="text-3xl font-black text-[#111111] font-mono">100%</div>
-                <p className="text-xs font-black uppercase tracking-wider text-slate-600 mt-1">live sessions recorded</p>
+              <div className="p-5 bg-white border-2 border-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
+                <div className="text-3xl sm:text-4xl font-black text-[#111111] font-mono">100%</div>
+                <p className="text-xs font-black uppercase tracking-wider text-slate-600 mt-1.5">live sessions recorded</p>
               </div>
             </div>
 
