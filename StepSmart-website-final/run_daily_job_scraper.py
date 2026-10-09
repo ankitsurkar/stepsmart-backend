@@ -143,10 +143,13 @@ def run_daily_pipeline():
         if keep:
             processed_web_jobs.append(enriched)
 
-    final_dataset = export_to_json(processed_web_jobs)
-    export_to_csv(final_dataset)
+    # Save strictly JobSpy multi-portal dataset to data/jobs.json
+    jobs_json_path = os.path.join(os.path.dirname(__file__), 'data', 'jobs.json')
+    os.makedirs(os.path.dirname(jobs_json_path), exist_ok=True)
+    with open(jobs_json_path, 'w', encoding='utf-8') as f:
+        json.dump(processed_web_jobs, f, indent=2, ensure_ascii=False)
 
-    print(f"\n✅ Pipeline Success! {len(final_dataset)} verified PM jobs updated in data/jobs.json and data/pm_jobs_google_sheets.csv")
+    print(f"\n✅ Pipeline Success! {len(processed_web_jobs)} verified PM jobs updated in data/jobs.json and {csv_path}")
 
 if __name__ == "__main__":
     run_daily_pipeline()

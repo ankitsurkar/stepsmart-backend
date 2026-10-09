@@ -22,3 +22,10 @@ __pycache__/
 # Large Temporary / Log files
 *.log
 scratch/
+
+# Local search discoveries and cached LinkedIn post records
+data/linkedin_candidates.json
+data/linkedin_posts.json
+data/apify_budget.json
+data/apify_budget.lock
+data/apify_budget.tmp

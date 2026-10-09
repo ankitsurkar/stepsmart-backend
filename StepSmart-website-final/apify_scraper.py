@@ -27,6 +27,7 @@ def load_env_file():
 load_env_file()
 
 LAST_SCRAPE_ERRORS = 0
+LAST_SCRAPE_STATUS = "idle"
 
 def record_scrape_error():
     global LAST_SCRAPE_ERRORS
@@ -34,6 +35,9 @@ def record_scrape_error():
 
 def get_last_scrape_errors():
     return LAST_SCRAPE_ERRORS
+
+def get_last_scrape_status():
+    return LAST_SCRAPE_STATUS
 
 KEYWORDS_FILE = os.path.join(os.path.dirname(__file__), 'pm_keywords.json')
 def load_pm_keywords():
@@ -401,14 +405,23 @@ def fetch_linkedin_native_posts(apify_key, max_items=20):
     return parsed_jobs
 
 def fetch_linkedin_pm_posts(apify_api_key=None, max_items=40):
-    global LAST_SCRAPE_ERRORS
+    global LAST_SCRAPE_ERRORS, LAST_SCRAPE_STATUS
     LAST_SCRAPE_ERRORS = 0
+    LAST_SCRAPE_STATUS = "idle"
     load_env_file()
     apify_key = apify_api_key or os.getenv('APIFY_API_KEY')
     
     if not apify_key or apify_key == 'your_apify_api_token_here':
         print("[APIFY SCRAPER] No Apify API key set in .env. Live posts cannot be fetched.")
         record_scrape_error()
+        LAST_SCRAPE_STATUS = "error"
+        return []
+
+    from apify_budget import reserve_apify_run
+    allowed, budget_message = reserve_apify_run()
+    print(f"[APIFY BUDGET] {budget_message}")
+    if not allowed:
+        LAST_SCRAPE_STATUS = "skipped_budget_guard"
         return []
 
     # 1. Primary: Run Apify Native LinkedIn Posts Scraper
@@ -420,6 +433,7 @@ def fetch_linkedin_pm_posts(apify_api_key=None, max_items=40):
     print(f"[APIFY SCRAPER] Surfaced {len(serp_jobs)} India PM posts via Apify SERP scraper!")
 
     combined = native_jobs + serp_jobs
+    LAST_SCRAPE_STATUS = "completed"
     return combined
 
 def load_gold_set_posts():
