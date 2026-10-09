@@ -246,8 +246,10 @@ export function AnnouncementBanner() {
             </span>
             <button
               onClick={() => {
-                const target = batchConfig.ctaTarget || "/professionals#enroll";
-                if (target.startsWith('#')) {
+                const target = batchConfig.ctaTarget || "https://wa.me/message/GH5C7YLAYIEHN1";
+                if (target.startsWith('http://') || target.startsWith('https://')) {
+                  window.open(target, '_blank', 'noopener,noreferrer');
+                } else if (target.startsWith('#')) {
                   document.getElementById(target.slice(1))?.scrollIntoView({ behavior: 'smooth' });
                 } else if (target.includes('#')) {
                   const [path, hash] = target.split('#');
@@ -262,7 +264,7 @@ export function AnnouncementBanner() {
               }}
               className="bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-0.5 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer inline-block shrink-0"
             >
-              {batchConfig.ctaText || "Apply for Batch ➜"}
+              {batchConfig.ctaText || "Connect 1:1 ➜"}
             </button>
           </div>
         ) : (
@@ -716,7 +718,7 @@ function ProfessionalsLandingPage() {
               <div className="mb-10 w-full text-left">
                 <BatchAdmitCardBanner 
                   variant="main" 
-                  onAction={() => scrollToSection('enroll')} 
+                  onAction={() => window.open('https://wa.me/message/GH5C7YLAYIEHN1', '_blank', 'noopener,noreferrer')} 
                 />
               </div>
 
@@ -2345,7 +2347,7 @@ function AdminEventsManager() {
               type="text"
               value={batchSettings.ctaText}
               onChange={(e) => setBatchSettings(prev => ({ ...prev, ctaText: e.target.value }))}
-              placeholder="e.g. Claim Your Cohort Spot ➜"
+              placeholder="e.g. Connect 1:1 ➜"
               className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2]"
             />
           </div>
@@ -2356,7 +2358,7 @@ function AdminEventsManager() {
               type="text"
               value={batchSettings.ctaTarget}
               onChange={(e) => setBatchSettings(prev => ({ ...prev, ctaTarget: e.target.value }))}
-              placeholder="e.g. /students#enroll-student"
+              placeholder="e.g. https://wa.me/message/GH5C7YLAYIEHN1"
               className="w-full p-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-[#188ab2]"
             />
           </div>

@@ -8,10 +8,6 @@ import {
 } from 'lucide-react';
 import { getStoredBatchConfig, type BatchConfig } from './batchConfig';
 
-const sanketPhotoSrc = "/mentor-sanket.webp";
-const ankitPhotoSrc = "/mentor-ankit.webp";
-const pankajPhotoSrc = "/mentor-pankaj.webp";
-
 interface BatchAdmitCardBannerProps {
   variant?: 'main' | 'students' | 'preview';
   onAction?: () => void;
@@ -50,16 +46,23 @@ export function BatchAdmitCardBanner({
       return;
     }
 
-    if (config.ctaTarget.startsWith('#')) {
-      const el = document.getElementById(config.ctaTarget.slice(1));
+    const target = config.ctaTarget || 'https://wa.me/message/GH5C7YLAYIEHN1';
+
+    if (target.startsWith('http://') || target.startsWith('https://')) {
+      window.open(target, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    if (target.startsWith('#')) {
+      const el = document.getElementById(target.slice(1));
       if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
         return;
       }
     }
 
-    if (config.ctaTarget.includes('#')) {
-      const [path, hash] = config.ctaTarget.split('#');
+    if (target.includes('#')) {
+      const [path, hash] = target.split('#');
       if (window.location.pathname === path) {
         const el = document.getElementById(hash);
         if (el) {
@@ -69,7 +72,7 @@ export function BatchAdmitCardBanner({
       }
     }
 
-    navigate(config.ctaTarget);
+    navigate(target);
   };
 
   const percentageFilled = Math.min(
@@ -83,7 +86,7 @@ export function BatchAdmitCardBanner({
       <div className="relative bg-white border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[10px_10px_0px_0px_rgba(17,17,17,1)] flex flex-col lg:flex-row overflow-hidden text-left">
         
         {/* Left / Main Ticket Body */}
-        <div className="flex-1 p-6 sm:p-8 flex flex-col justify-between relative bg-white">
+        <div className="flex-1 p-6 sm:p-8 flex flex-col justify-center relative bg-white">
           {/* Top Stamp / Badge Row */}
           <div>
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -115,7 +118,7 @@ export function BatchAdmitCardBanner({
             </p>
 
             {/* Key Cohort Specs Grid (Start Date & Duration only) */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 select-none mb-4 max-w-sm">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 select-none max-w-sm">
               <div className="bg-slate-50 border-2 border-[#111111] p-2.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
                 <span className="text-[10px] font-black uppercase text-slate-500 block mb-0.5">Start Date</span>
                 <span className="text-xs sm:text-sm font-black text-[#111111] flex items-center gap-1.5">
@@ -131,46 +134,6 @@ export function BatchAdmitCardBanner({
                   {config.duration || "8 Weeks Live"}
                 </span>
               </div>
-            </div>
-
-            {/* Price Badge on Ticket Body */}
-            <div className="mb-6 flex items-center gap-2 flex-wrap select-none">
-              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-2.5 py-1 text-xs font-black text-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] inline-flex items-center gap-2">
-                <span className="text-[10px] uppercase text-slate-600 font-extrabold">Fee:</span>
-                <span className="line-through decoration-red-500 decoration-2 text-slate-400 font-bold">
-                  {config.originalPrice || "₹19,999"}
-                </span>
-                <span className="text-sm font-black text-[#111111]">
-                  {config.discountedPrice || "₹14,999"}
-                </span>
-              </span>
-              <span className="bg-[#FEE2E2] text-red-900 border border-red-300 font-black text-[10px] px-2 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
-                SAVE ₹5,000 (Early Bird)
-              </span>
-            </div>
-          </div>
-
-          {/* Mentors Preview Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t-2 border-slate-100">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-black uppercase text-slate-500">Mentored by PMs at:</span>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2 py-0.5 font-black text-[11px] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
-                  Microsoft
-                </span>
-                <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2 py-0.5 font-black text-[11px] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
-                  Mastercard
-                </span>
-                <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2 py-0.5 font-black text-[11px] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
-                  ShopDeck
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center -space-x-2">
-              <img src={sanketPhotoSrc} alt="Sanket Katore" className="h-7 w-7 rounded-full border-2 border-[#111111] object-cover" />
-              <img src={ankitPhotoSrc} alt="Ankit Surkar" className="h-7 w-7 rounded-full border-2 border-[#111111] object-cover" />
-              <img src={pankajPhotoSrc} alt="Pankaj Sharma" className="h-7 w-7 rounded-full border-2 border-[#111111] object-cover" />
             </div>
           </div>
         </div>
@@ -248,7 +211,7 @@ export function BatchAdmitCardBanner({
               onClick={handleCtaClick}
               className="w-full py-4 px-5 font-black text-sm uppercase border-[3px] border-[#111111] bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6f8f] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer inline-flex items-center justify-center gap-2"
             >
-              <span>{config.ctaText || "Claim Your Cohort Spot"}</span>
+              <span>{config.ctaText ? config.ctaText.replace(/➜|→/g, '').trim() : "Connect 1:1"}</span>
               <ArrowRight className="h-4 w-4" />
             </button>
 

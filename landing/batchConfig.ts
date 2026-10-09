@@ -33,8 +33,8 @@ export const DEFAULT_BATCH_CONFIG: BatchConfig = {
   urgencyTag: "Only 18 Seats Remaining",
   badgeText: "APPLICATIONS OPEN 🟢",
   earlyBirdNote: "⚡ Rolling Vetting • Direct 1:1 Mentor Matching",
-  ctaText: "Claim Your Cohort Pass ➜",
-  ctaTarget: "/professionals#enroll",
+  ctaText: "Connect 1:1 ➜",
+  ctaTarget: "https://wa.me/message/GH5C7YLAYIEHN1",
   bannerMode: "auto"
 };
 
@@ -47,8 +47,11 @@ export const getStoredBatchConfig = (): BatchConfig => {
       if (parsed.batchName === "PM-X First Step — Student Placement Edition") {
         parsed.batchName = DEFAULT_BATCH_CONFIG.batchName;
       }
-      if (parsed.ctaTarget === "/students#enroll-student") {
+      if (parsed.ctaTarget === "/students#enroll-student" || parsed.ctaTarget === "/professionals#enroll" || !parsed.ctaTarget) {
         parsed.ctaTarget = DEFAULT_BATCH_CONFIG.ctaTarget;
+      }
+      if (parsed.ctaText === "Claim Your Cohort Pass ➜" || parsed.ctaText === "Claim Your Cohort Spot" || !parsed.ctaText) {
+        parsed.ctaText = DEFAULT_BATCH_CONFIG.ctaText;
       }
       if (!parsed.originalPrice) {
         parsed.originalPrice = DEFAULT_BATCH_CONFIG.originalPrice;
