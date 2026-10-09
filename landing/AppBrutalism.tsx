@@ -779,8 +779,8 @@ function ProfessionalsLandingPage() {
           </div>
 
           {/* 01 / Journey Blueprint */}
-          <div className="py-8 sm:py-10 border-t-[3px] border-[#111111]">
-            <div className="mb-2 text-left">
+          <div className="py-12 sm:py-16 border-t-[3px] border-[#111111]">
+            <div className="mb-4 sm:mb-6 text-left">
               <span className="text-xs font-black uppercase tracking-widest text-[#188ab2]">
                 01 / JOURNEY BLUEPRINT
               </span>
@@ -884,38 +884,38 @@ function ProfessionalsLandingPage() {
               return (
                 <>
                   {/* Desktop Staircase Roadmap View */}
-                  <div className="hidden lg:block pt-16 pb-2">
+                  <div className="hidden lg:block pt-28 pb-6">
                     <div className="relative">
                       {/* 4 Step Cards Grid with Ascending Staircase Heights */}
                       <div className="grid grid-cols-4 gap-4 xl:gap-5 items-end relative">
                         {capabilityStages.map((stage, idx) => {
-                          // Snug ascending staircase heights
-                          const stepHeights = ['h-[270px]', 'h-[300px]', 'h-[330px]', 'h-[360px]'];
+                          // Ascending staircase heights with generous space
+                          const stepHeights = ['h-[330px]', 'h-[365px]', 'h-[400px]', 'h-[435px]'];
                           const cardHeightClass = stepHeights[idx];
 
                           return (
                             <div key={idx} className="flex flex-col justify-end relative group select-none">
-                              {/* Top Mascot on Step 01 */}
+                              {/* Top Mascot on Step 01 - Strictly Above the Card */}
                               {idx === 0 && (
-                                <div className="absolute -top-19 left-0 right-0 flex flex-col items-center justify-center z-20 pointer-events-none">
+                                <div className="absolute bottom-full left-0 right-0 mb-1 flex flex-col items-center justify-center z-20 pointer-events-none">
                                   <img 
                                     src="/student-mascot.webp" 
                                     alt="Mascot" 
-                                    className="h-16 w-auto object-contain"
+                                    className="h-24 w-auto object-contain"
                                     loading="lazy"
                                   />
-                                  <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2 py-0.5 font-black text-[9px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none">
-                                    <GraduationCap className="h-3 w-3 text-[#111111]" />
+                                  <span className="bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none mt-1">
+                                    <GraduationCap className="h-3.5 w-3.5 text-[#111111]" />
                                     <span>Start Here</span>
                                   </span>
                                 </div>
                               )}
 
-                              {/* Top Flag for Step 04 */}
+                              {/* Top Flag for Step 04 - Strictly Above the Card */}
                               {idx === 3 && (
-                                <div className="absolute -top-7 left-0 right-0 flex justify-center z-20">
-                                  <span className="bg-[#188ab2] text-white border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 select-none">
-                                    <Flag className="h-3 w-3 fill-white text-white" />
+                                <div className="absolute bottom-full left-0 right-0 mb-1.5 flex justify-center z-20">
+                                  <span className="bg-[#188ab2] text-white border-[2px] border-[#111111] px-3 py-1 font-black text-[11px] uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1.5 select-none">
+                                    <Flag className="h-3.5 w-3.5 fill-white text-white" />
                                     <span>OFFER SECURED 🚩</span>
                                   </span>
                                 </div>
@@ -931,40 +931,40 @@ function ProfessionalsLandingPage() {
                               {/* Step Card */}
                               <div className={`w-full ${cardHeightClass} bg-white border-[3px] border-[#111111] shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0px_0px_rgba(17,17,17,1)] transition-all duration-150 flex flex-col overflow-hidden text-left`}>
                                 {/* Step Cap Header */}
-                                <div className="bg-[#188ab2] text-white border-b-[3px] border-[#111111] py-1 px-3 shrink-0 flex items-center justify-between">
-                                  <span className="font-mono font-black text-base tracking-wider text-white">{stage.num}</span>
-                                  <span className="text-[9px] font-mono font-black bg-[#FFF3A7] text-[#111111] border border-[#111111] px-1.5 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
+                                <div className="bg-[#188ab2] text-white border-b-[3px] border-[#111111] py-1.5 px-3 shrink-0 flex items-center justify-between">
+                                  <span className="font-mono font-black text-lg tracking-wider text-white">{stage.num}</span>
+                                  <span className="text-[10px] font-mono font-black bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
                                     {stage.itemsCount}
                                   </span>
                                 </div>
 
                                 {/* Step Card Body */}
-                                <div className="p-3 sm:p-3.5 flex-1 flex flex-col justify-between bg-white overflow-hidden">
+                                <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between bg-white overflow-hidden">
                                   <div>
                                     {/* Title Bar */}
-                                    <div className="pb-1.5 border-b-2 border-[#111111] mb-2">
+                                    <div className="pb-2 border-b-2 border-[#111111] mb-2.5">
                                       <h4 className="font-mono font-black text-sm tracking-wider uppercase text-[#111111]">
                                         {stage.title}
                                       </h4>
                                     </div>
 
                                     {/* Items List */}
-                                    <div className="space-y-2">
+                                    <div className="space-y-2.5">
                                       {stage.items.map((item, itemIdx) => (
-                                        <div key={itemIdx} className={itemIdx > 0 ? "pt-1.5 border-t border-slate-200" : ""}>
-                                          <div className="flex items-baseline gap-1.5">
-                                            <span className="font-mono font-black text-[11px] text-[#188ab2] shrink-0">{item.id}</span>
-                                            <h5 className="font-black text-xs text-[#111111] leading-tight">{item.title}</h5>
+                                        <div key={itemIdx} className={itemIdx > 0 ? "pt-2 border-t border-slate-200" : ""}>
+                                          <div className="flex items-baseline gap-2">
+                                            <span className="font-mono font-black text-xs text-[#188ab2] shrink-0">{item.id}</span>
+                                            <h5 className="font-black text-xs sm:text-[13px] text-[#111111] leading-tight">{item.title}</h5>
                                           </div>
-                                          <p className="text-[10px] font-bold text-slate-600 ml-4 mt-0.5 leading-snug">{item.desc}</p>
+                                          <p className="text-[11px] font-bold text-slate-600 ml-5 mt-0.5 leading-snug">{item.desc}</p>
                                         </div>
                                       ))}
                                     </div>
                                   </div>
 
                                   {/* Footer Tag */}
-                                  <div className="pt-2 border-t-2 border-[#111111]/10 mt-auto">
-                                    <span className={`inline-block w-full py-1 px-1.5 text-center font-black text-[9.5px] uppercase tracking-wide border-2 border-[#111111] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] ${
+                                  <div className="pt-2.5 border-t-2 border-[#111111]/10 mt-auto">
+                                    <span className={`inline-block w-full py-1.5 px-2 text-center font-black text-[10px] uppercase tracking-wide border-2 border-[#111111] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] ${
                                       idx === 3 ? 'bg-[#FFF3A7] text-[#111111]' : 'bg-slate-50 text-slate-800'
                                     }`}>
                                       {stage.footer}
@@ -980,25 +980,25 @@ function ProfessionalsLandingPage() {
                   </div>
 
                   {/* Mobile & Tablet View */}
-                  <div className="lg:hidden flex flex-col gap-4 max-w-lg mx-auto pt-3">
+                  <div className="lg:hidden flex flex-col gap-5 max-w-lg mx-auto pt-4">
                     {capabilityStages.map((stage, idx) => (
-                      <div key={idx} className="bg-white border-[3px] border-[#111111] p-4 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] relative text-left">
+                      <div key={idx} className="bg-white border-[3px] border-[#111111] p-5 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] relative text-left">
                         {idx === 0 && (
-                          <div className="absolute -top-3.5 left-4 bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2 py-0.5 font-black text-[9px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none">
+                          <div className="absolute -top-3.5 left-4 bg-[#FFF3A7] text-[#111111] border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none">
                             <GraduationCap className="h-3 w-3 text-[#111111]" />
                             <span>START HERE</span>
                           </div>
                         )}
                         {idx === 3 && (
-                          <div className="absolute -top-3.5 right-4 bg-[#188ab2] text-white border-[2px] border-[#111111] px-2 py-0.5 font-black text-[9px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none">
+                          <div className="absolute -top-3.5 right-4 bg-[#188ab2] text-white border-[2px] border-[#111111] px-2.5 py-0.5 font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] flex items-center gap-1 select-none">
                             <Flag className="h-3 w-3 fill-white text-white" />
                             <span>OFFER SECURED 🚩</span>
                           </div>
                         )}
                         
                         {/* Header */}
-                        <div className="flex items-center justify-between border-b-2 border-[#111111] pb-2 mb-2.5">
-                          <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-between border-b-2 border-[#111111] pb-2.5 mb-3">
+                          <div className="flex items-center gap-2.5">
                             <span className="bg-[#188ab2] text-white font-mono font-black text-xs px-2 py-0.5 border border-[#111111]">
                               {stage.num}
                             </span>
@@ -1006,27 +1006,27 @@ function ProfessionalsLandingPage() {
                               {stage.title}
                             </h4>
                           </div>
-                          <span className="text-[9px] font-mono font-black bg-slate-100 border border-[#111111] px-2 py-0.5">
+                          <span className="text-[10px] font-mono font-black bg-slate-100 border border-[#111111] px-2 py-0.5">
                             {stage.itemsCount}
                           </span>
                         </div>
 
                         {/* Items */}
-                        <div className="space-y-2 mb-3">
+                        <div className="space-y-3 mb-4">
                           {stage.items.map((item, itemIdx) => (
-                            <div key={itemIdx} className={itemIdx > 0 ? "pt-1.5 border-t border-slate-200" : ""}>
-                              <div className="flex items-baseline gap-1.5">
+                            <div key={itemIdx} className={itemIdx > 0 ? "pt-2.5 border-t border-slate-200" : ""}>
+                              <div className="flex items-baseline gap-2">
                                 <span className="font-mono font-black text-xs text-[#188ab2] shrink-0">{item.id}</span>
                                 <h5 className="font-black text-xs sm:text-sm text-[#111111] leading-tight">{item.title}</h5>
                               </div>
-                              <p className="text-[10.5px] font-bold text-slate-600 ml-4 mt-0.5 leading-snug">{item.desc}</p>
+                              <p className="text-[11px] font-bold text-slate-600 ml-5 mt-0.5 leading-snug">{item.desc}</p>
                             </div>
                           ))}
                         </div>
 
                         {/* Footer */}
-                        <div className="pt-2 border-t-2 border-[#111111]/10">
-                          <span className={`inline-block w-full py-1 px-2 text-center text-xs font-black uppercase border-2 border-[#111111] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] ${
+                        <div className="pt-2.5 border-t-2 border-[#111111]/10">
+                          <span className={`inline-block w-full py-1.5 px-2 text-center text-xs font-black uppercase border-2 border-[#111111] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] ${
                             idx === 3 ? 'bg-[#FFF3A7] text-[#111111]' : 'bg-slate-50 text-slate-800'
                           }`}>
                             {stage.footer}
