@@ -1059,13 +1059,13 @@ function ProfessionalsLandingPage() {
               </span>
             </div>
 
-            {/* 4 Weekly Rhythm Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Weekly Rhythm Items - 2-Column Offerings Style */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 select-none mb-10">
               {[
                 {
                   tag: "MON – FRI",
                   mode: "Async",
-                  icon: <Video className="w-5 h-5 text-[#111111]" />,
+                  icon: <Video className="h-6 w-6 text-[#127193]" />,
                   title: "2 Recorded Modules",
                   desc: "Learn at your own pace during the week with bite-sized, deep-dive theory and practical industry teardowns.",
                   duration: "3–4 hrs total",
@@ -1074,7 +1074,7 @@ function ProfessionalsLandingPage() {
                 {
                   tag: "EVERY DAY",
                   mode: "Daily Drill",
-                  icon: <Brain className="w-5 h-5 text-[#111111]" />,
+                  icon: <Brain className="h-6 w-6 text-[#127193]" />,
                   title: "PM Gym",
                   desc: "One product-thinking question every day. Sharp prompts that train prioritization, trade-offs, and strategic product acumen.",
                   duration: "15 min / day",
@@ -1083,7 +1083,7 @@ function ProfessionalsLandingPage() {
                 {
                   tag: "SATURDAY",
                   mode: "Live Interactive",
-                  icon: <Zap className="w-5 h-5 text-[#111111]" />,
+                  icon: <Zap className="h-6 w-6 text-[#127193]" />,
                   title: "3-Hour Live Workshop",
                   desc: "Cases, discussions, problem-solving and real-time mentor interaction. No dry monologues—pure simulated PM rooms.",
                   duration: "3 Hours Live",
@@ -1092,35 +1092,32 @@ function ProfessionalsLandingPage() {
                 {
                   tag: "FLEXIBLE",
                   mode: "On-Demand",
-                  icon: <MessageSquare className="w-5 h-5 text-[#111111]" />,
+                  icon: <MessageSquare className="h-6 w-6 text-[#127193]" />,
                   title: "Doubt Support",
                   desc: "WhatsApp support with a guaranteed 2-hour response window. Never get stuck on assignments or framework doubts.",
                   duration: "< 2hr SLA",
                   label: "Always Open"
                 }
-              ].map((card, i) => (
-                <div 
-                  key={i}
-                  className="bg-white border-[3px] border-[#111111] p-6 shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0px_0px_rgba(17,17,17,1)] transition-all"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-[11px] font-mono font-black tracking-wider uppercase text-[#111111]">
-                        {card.tag}
-                      </span>
-                      <span className="text-xs font-mono font-bold text-slate-500">{card.mode}</span>
-                    </div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 bg-[#FFF3A7] border-2 border-[#111111] flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] shrink-0">
-                        {card.icon}
-                      </div>
-                      <h4 className="text-base font-black text-[#111111]">{card.title}</h4>
-                    </div>
-                    <p className="text-xs font-bold text-slate-600 mt-3 leading-relaxed">{card.desc}</p>
+              ].map((item, idx) => (
+                <div key={idx} className="flex gap-5 items-start text-left">
+                  <div className="shrink-0 w-12 h-12 rounded-full border-2 border-[#111111] bg-[#FFF3A7] flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                    {item.icon}
                   </div>
-                  <div className="mt-6 pt-3 border-t-2 border-[#111111]/10 flex items-center justify-between text-[11px] font-black text-[#111111]">
-                    <span className="font-mono">{card.duration}</span>
-                    <span className="text-slate-600">{card.label}</span>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <h4 className="text-xl font-black text-[#111111]">{item.title}</h4>
+                      <span className="px-2 py-0.5 bg-slate-100 border border-[#111111] text-[10px] font-mono font-black uppercase text-slate-700">
+                        {item.tag} • {item.mode}
+                      </span>
+                    </div>
+                    <p className="text-sm font-bold text-slate-600 leading-relaxed mb-2.5">
+                      {item.desc}
+                    </p>
+                    <div className="inline-flex items-center gap-2 px-2.5 py-0.5 bg-[#FFF3A7] border border-[#111111] font-mono text-[11px] font-black text-[#111111] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
+                      <span>⏱️ {item.duration}</span>
+                      <span className="text-slate-400">•</span>
+                      <span className="text-slate-700 font-sans font-bold">{item.label}</span>
+                    </div>
                   </div>
                 </div>
               ))}
