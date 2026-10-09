@@ -609,15 +609,15 @@ function ProfessionalsLandingPage() {
     setEnrollmentStatus('success');
     if (intent === 'brochure') {
       setTimeout(() => {
-        startBrochureDownload();
-      }, 1000);
+        startBrochureDownload(false);
+      }, 500);
       return;
     }
   };
 
   const onSubmit = async (data: any) => {
     setEnrollmentStatus('loading');
-    saveLeadToDemoDB(data);
+    saveLeadToDemoDB({ ...data, cohortTrack: 'PM-X Accelerator (Professionals)' });
 
     try {
       const res = await fetch(
@@ -629,7 +629,7 @@ function ProfessionalsLandingPage() {
             name: data.fullName,
             email: data.email,
             phone: data.phone,
-            masterclassId: userType === 'professional' ? 'pm-x-accelerator' : 'pm-x-speedup-students',
+            masterclassId: data.intent === 'brochure' ? 'pm-x-accelerator-brochure' : 'pm-x-accelerator',
           }),
         }
       );
@@ -637,7 +637,12 @@ function ProfessionalsLandingPage() {
       if (!res.ok) throw new Error('Enrollment failed');
       completeLeadSubmission(data.intent);
     } catch (err) {
-      setEnrollmentStatus('error');
+      // In case of error/network fail, still trigger brochure download if that was the intent
+      if (data.intent === 'brochure') {
+        completeLeadSubmission('brochure');
+      } else {
+        setEnrollmentStatus('error');
+      }
     }
   };
 
@@ -734,6 +739,14 @@ function ProfessionalsLandingPage() {
                   >
                     Apply Now ➜
                   </a>
+                  <Button 
+                    variant="secondary" 
+                    className="px-8 py-5 text-lg font-extrabold shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
+                    onClick={() => handleActionClick('brochure')}
+                  >
+                    <Download className="w-5 h-5 mr-2 inline" />
+                    Download Brochure ↓
+                  </Button>
                   <Button 
                     variant="outline" 
                     className="px-8 py-5 text-lg font-extrabold shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
@@ -1164,6 +1177,21 @@ function ProfessionalsLandingPage() {
               <p className="text-xs font-bold text-slate-600">
                 ℹ️ Workshop timings are decided with the cohort. All live sessions are recorded for replay.
               </p>
+            </div>
+
+            {/* Download Brochure Callout */}
+            <div className="mt-12 pt-8 border-t-2 border-[#111111]/20 text-center">
+              <p className="text-sm md:text-base font-extrabold text-[#111111] mb-4">
+                Want to review the detailed week-by-week syllabus and case teardowns?
+              </p>
+              <Button 
+                variant="secondary" 
+                onClick={() => handleActionClick('brochure')}
+                className="px-8 py-4 text-base font-extrabold shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]"
+              >
+                <Download className="w-5 h-5 mr-2 inline" />
+                Download Full Curriculum Brochure ➜
+              </Button>
             </div>
           </div>
 
@@ -1762,8 +1790,35 @@ function ProfessionalsLandingPage() {
         <div className="container mx-auto px-6 max-w-6xl text-center">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-[#111111]">Ready to Start Your Journey?</h2>
           <p className="text-lg font-bold text-slate-600 max-w-2xl mx-auto mb-12">
-            Register your intent below for the upcoming batch with 1:1 mentorship from top tech PMs.
+            Download the detailed syllabus or register your intent for the upcoming accelerator batch.
           </p>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+            <button
+              onClick={() => handleActionClick('brochure')}
+              className={`flex flex-col items-center p-10 bg-white border-[3px] transition-all duration-100 cursor-pointer ${
+                formIntent === 'brochure'
+                  ? 'border-[#188ab2] shadow-[6px_6px_0px_0px_rgba(24,138,178,1)] translate-x-[-2px] translate-y-[-2px]'
+                  : 'border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]'
+              }`}
+            >
+              <Download className={`h-10 w-10 mb-4 ${formIntent === 'brochure' ? 'text-[#188ab2]' : 'text-[#111111]'}`} />
+              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">Download Accelerator Brochure</h3>
+              <p className="text-[#111111] text-sm font-bold">Get the syllabus, week-by-week schedule, and roadmap details.</p>
+            </button>
+            <button
+              onClick={() => handleActionClick('enroll')}
+              className={`flex flex-col items-center p-10 bg-white border-[3px] transition-all duration-100 cursor-pointer ${
+                formIntent === 'enroll'
+                  ? 'border-[#188ab2] shadow-[6px_6px_0px_0px_rgba(24,138,178,1)] translate-x-[-2px] translate-y-[-2px]'
+                  : 'border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]'
+              }`}
+            >
+              <Briefcase className={`h-10 w-10 mb-4 ${formIntent === 'enroll' ? 'text-[#188ab2]' : 'text-[#111111]'}`} />
+              <h3 className="text-xl font-extrabold mb-2 text-[#111111]">Enroll for PM-X Accelerator</h3>
+              <p className="text-[#111111] text-sm font-bold">Register for the next cohort with 1:1 mentorship from top PMs.</p>
+            </button>
+          </div>
 
           <div id="form-container" className="max-w-xl mx-auto bg-white border-[3px] border-[#111111] p-8 md:p-12 text-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] scroll-mt-[77px]">
             {enrollmentStatus === 'success' ? (
@@ -1771,13 +1826,24 @@ function ProfessionalsLandingPage() {
                 <div className="bg-[#FFFFFF] border-[3px] border-[#111111] text-green-600 w-16 h-16 flex items-center justify-center mx-auto mb-8 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
                   <CheckCircle2 className="h-8 w-8 text-[#188ab2]" />
                 </div>
-                <h3 className="text-3xl font-extrabold mb-4">Enrollment Submitted!</h3>
+                <h3 className="text-3xl font-extrabold mb-4">{formIntent === 'brochure' ? "Brochure Ready!" : "Enrollment Submitted!"}</h3>
                 <p className="text-[#111111] mb-8 font-bold">
-                  Enrollment saved. You will receive a welcome email shortly.
+                  {formIntent === 'brochure'
+                    ? "Your PM-X Accelerator Brochure download has started automatically."
+                    : "Enrollment saved. You will receive a welcome email shortly."}
                 </p>
+                {formIntent === 'brochure' && (
+                  <Button
+                    variant="outline"
+                    className="w-full mb-4 font-extrabold"
+                    onClick={() => startBrochureDownload(false)}
+                  >
+                    Click here if download didn't start ➜
+                  </Button>
+                )}
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full font-extrabold"
                   onClick={() => setEnrollmentStatus('idle')}
                 >
                   Back
@@ -1785,7 +1851,7 @@ function ProfessionalsLandingPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-left">
-                <input type="hidden" {...register("intent")} value="enroll" />
+                <input type="hidden" {...register("intent")} value={formIntent} />
                 <div className="space-y-4">
                   <div>
                     <input 
@@ -1814,7 +1880,7 @@ function ProfessionalsLandingPage() {
                   </div>
                 </div>
                 <Button type="submit" className="w-full py-5 text-xl font-extrabold" isLoading={enrollmentStatus === 'loading'}>
-                  {userType === 'professional' ? 'Join Accelerator Batch' : 'Join First Step Student Batch'}
+                  {formIntent === 'brochure' ? 'Get Brochure Now ➜' : (userType === 'professional' ? 'Join Accelerator Batch' : 'Join First Step Student Batch')}
                 </Button>
               </form>
             )}
