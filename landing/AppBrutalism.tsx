@@ -889,8 +889,8 @@ function ProfessionalsLandingPage() {
                       {/* 4 Step Cards Grid with Ascending Staircase Heights */}
                       <div className="grid grid-cols-4 gap-4 xl:gap-5 items-end relative">
                         {capabilityStages.map((stage, idx) => {
-                          // Ascending staircase heights with generous space
-                          const stepHeights = ['h-[330px]', 'h-[365px]', 'h-[400px]', 'h-[435px]'];
+                          // Ascending staircase heights with ample room to prevent button clipping
+                          const stepHeights = ['h-[370px]', 'h-[405px]', 'h-[440px]', 'h-[475px]'];
                           const cardHeightClass = stepHeights[idx];
 
                           return (
@@ -939,7 +939,7 @@ function ProfessionalsLandingPage() {
                                 </div>
 
                                 {/* Step Card Body */}
-                                <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between bg-white overflow-hidden">
+                                <div className="p-3 sm:p-3.5 flex-1 flex flex-col justify-between bg-white overflow-hidden">
                                   <div>
                                     {/* Title Bar */}
                                     <div className="pb-2 border-b-2 border-[#111111] mb-2.5">
@@ -963,7 +963,7 @@ function ProfessionalsLandingPage() {
                                   </div>
 
                                   {/* Footer Tag */}
-                                  <div className="pt-2.5 border-t-2 border-[#111111]/10 mt-auto">
+                                  <div className="pt-2 border-t-2 border-[#111111]/10 mt-auto shrink-0 pb-0.5">
                                     <span className={`inline-block w-full py-1.5 px-2 text-center font-black text-[10px] uppercase tracking-wide border-2 border-[#111111] shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] ${
                                       idx === 3 ? 'bg-[#FFF3A7] text-[#111111]' : 'bg-slate-50 text-slate-800'
                                     }`}>
