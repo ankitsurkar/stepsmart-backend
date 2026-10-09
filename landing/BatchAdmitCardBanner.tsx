@@ -86,10 +86,10 @@ export function BatchAdmitCardBanner({
       <div className="relative bg-white border-[3px] border-[#111111] shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[10px_10px_0px_0px_rgba(17,17,17,1)] flex flex-col lg:flex-row overflow-hidden text-left">
         
         {/* Left / Main Ticket Body */}
-        <div className="flex-1 p-6 sm:p-8 flex flex-col justify-center relative bg-white">
+        <div className="flex-1 p-5 sm:p-6 lg:p-7 flex flex-col justify-center relative bg-white">
           {/* Top Stamp / Badge Row */}
           <div>
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-3 sm:mb-4">
               <div className="flex items-center gap-2 flex-wrap">
                 {/* Live Admissions Pulsing Indicator */}
                 <span className="bg-[#C6F6D5] text-green-900 border-2 border-[#111111] px-2.5 py-0.5 font-black text-xs uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] select-none inline-flex items-center gap-1.5">
@@ -113,7 +113,7 @@ export function BatchAdmitCardBanner({
             <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#111111] leading-tight mb-2 tracking-tight">
               {config.batchName || "PM-X ACCELERATOR"}
             </h3>
-            <p className="text-sm font-bold text-slate-600 leading-relaxed mb-6">
+            <p className="text-sm font-bold text-slate-600 leading-relaxed mb-4 sm:mb-5">
               A high-touch, live cohort designed to help working professionals transition into Product Management with 1:1 mentorship from top tech PMs.
             </p>
 
@@ -155,70 +155,58 @@ export function BatchAdmitCardBanner({
         </div>
 
         {/* Right / Stub Action Card */}
-        <div className="lg:w-80 bg-slate-50 p-6 sm:p-8 flex flex-col justify-between items-stretch text-center border-t-[3px] lg:border-t-0 border-[#111111]">
-          <div>
-            <div className="inline-block bg-[#111111] text-white px-3 py-1 font-black text-[10px] uppercase tracking-widest mb-4 rotate-[1deg]">
-              ADMIT ONE CANDIDATE
-            </div>
-
-            {/* Seat Availability Progress Bar */}
-            <div className="space-y-2 mb-4">
-              <div className="flex items-center justify-between text-xs font-black">
-                <span className="text-slate-600 flex items-center gap-1">
-                  <Flame className="h-4 w-4 text-amber-500 fill-amber-500" /> Seats Claimed:
-                </span>
-                <span className="text-[#111111]">
-                  {config.seatsFilled ?? 7} / {config.seatsTotal || 25}
-                </span>
-              </div>
-
-              {/* Progress bar */}
-              <div className="w-full h-3.5 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] overflow-hidden">
-                <div 
-                  className="h-full bg-[#188ab2] transition-all duration-500"
-                  style={{ width: `${percentageFilled}%` }}
-                />
-              </div>
-
-              {/* Urgency Badge */}
-              <span className="inline-block bg-[#FEE2E2] text-red-900 border border-red-300 font-black text-[11px] px-2 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
-                {config.urgencyTag || "Only 18 Seats Remaining"}
+        <div className="lg:w-80 bg-slate-50 p-5 sm:p-6 flex flex-col justify-center items-stretch text-center border-t-[3px] lg:border-t-0 border-[#111111] space-y-3.5">
+          {/* Seat Availability Progress Bar */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs font-black">
+              <span className="text-slate-600 flex items-center gap-1">
+                <Flame className="h-4 w-4 text-amber-500 fill-amber-500" /> Seats Claimed:
+              </span>
+              <span className="text-[#111111]">
+                {config.seatsFilled ?? 7} / {config.seatsTotal || 25}
               </span>
             </div>
 
-            {/* Pricing Box with ₹19,999 cancelled and ₹14,999 active */}
-            <div className="bg-white border-2 border-[#111111] p-3 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] my-3 text-left">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">Cohort Investment</span>
-                <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-1.5 py-0.5 font-black text-[9px] uppercase shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] rotate-[-1deg]">
-                  SAVE ₹5,000
-                </span>
-              </div>
-              <div className="flex items-baseline gap-2.5">
-                <span className="text-sm font-extrabold text-slate-400 line-through decoration-red-500 decoration-2">
-                  {config.originalPrice || "₹19,999"}
-                </span>
-                <span className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
-                  {config.discountedPrice || "₹14,999"}
-                </span>
-              </div>
+            {/* Progress bar */}
+            <div className="w-full h-3.5 bg-white border-2 border-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] overflow-hidden">
+              <div 
+                className="h-full bg-[#188ab2] transition-all duration-500"
+                style={{ width: `${percentageFilled}%` }}
+              />
+            </div>
+
+            {/* Urgency Badge */}
+            <span className="inline-block bg-[#FEE2E2] text-red-900 border border-red-300 font-black text-[11px] px-2 py-0.5 shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
+              {config.urgencyTag || "Only 18 Seats Remaining"}
+            </span>
+          </div>
+
+          {/* Pricing Box with ₹19,999 cancelled and ₹14,999 active */}
+          <div className="bg-white border-2 border-[#111111] p-3 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] text-left">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">Cohort Investment</span>
+              <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-1.5 py-0.5 font-black text-[9px] uppercase shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] rotate-[-1deg]">
+                SAVE ₹5,000
+              </span>
+            </div>
+            <div className="flex items-baseline gap-2.5">
+              <span className="text-sm font-extrabold text-slate-400 line-through decoration-red-500 decoration-2">
+                {config.originalPrice || "₹19,999"}
+              </span>
+              <span className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+                {config.discountedPrice || "₹14,999"}
+              </span>
             </div>
           </div>
 
           {/* Action CTA Button */}
-          <div className="space-y-2 pt-2">
-            <button
-              onClick={handleCtaClick}
-              className="w-full py-4 px-5 font-black text-sm uppercase border-[3px] border-[#111111] bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6f8f] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer inline-flex items-center justify-center gap-2"
-            >
-              <span>{config.ctaText ? config.ctaText.replace(/➜|→/g, '').trim() : "Connect 1:1"}</span>
-              <ArrowRight className="h-4 w-4" />
-            </button>
-
-            <p className="text-[11px] font-bold text-slate-500">
-              {config.earlyBirdNote || "⚡ Rolling Vetting • Direct 1:1 Mentor Matching"}
-            </p>
-          </div>
+          <button
+            onClick={handleCtaClick}
+            className="w-full py-3.5 px-5 font-black text-sm uppercase border-[3px] border-[#111111] bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6f8f] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer inline-flex items-center justify-center gap-2"
+          >
+            <span>{config.ctaText ? config.ctaText.replace(/➜|→/g, '').trim() : "Connect 1:1"}</span>
+            <ArrowRight className="h-4 w-4" />
+          </button>
         </div>
 
       </div>
