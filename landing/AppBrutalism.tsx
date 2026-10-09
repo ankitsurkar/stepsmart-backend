@@ -1521,77 +1521,157 @@ function ProfessionalsLandingPage() {
             <p className="text-lg font-bold text-[#111111] mt-4">No automated gateways, no automated rejections. We screen for alignment at every step.</p>
           </div>
           
-          <div className="grid md:grid-cols-5 gap-8 items-stretch">
-            {[
+          {/* Timeline View - Not "Box Box" */}
+          {(() => {
+            const joinSteps = [
               {
                 num: "01",
                 title: "Apply Now",
-                desc: "Fill out the quick enrollment form below to register your intent.",
-                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
-                tilt: "rotate-[-1deg]"
+                desc: "Fill out the quick enrollment form to register your intent.",
+                nodeBg: "bg-[#FFF3A7]",
+                nodeBorder: "border-[#111111]",
               },
               {
                 num: "02",
                 title: "Message Us on WhatsApp",
                 desc: "Drop us a message with your background and goals.",
-                shadow: "shadow-[6px_6px_0px_0px_rgba(17,17,17,1)]",
-                tilt: "rotate-[2deg]",
+                nodeBg: "bg-[#E0F2FE]",
+                nodeBorder: "border-[#111111]",
                 action: (
-                  <div className="mt-4">
+                  <div className="mt-2.5 flex flex-col items-center">
                     <a
                       href="https://wa.me/message/GH5C7YLAYIEHN1"
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-block bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-1 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] transition-all cursor-pointer select-none"
+                      className="inline-block bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-1 font-extrabold text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all cursor-pointer select-none"
                     >
                       CHAT WITH US →
                     </a>
-                    <div className="mt-3 inline-block bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 font-extrabold text-[8px] uppercase rotate-[-2deg] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]">
-                      REPLIES WITHIN A FEW HOURS / NO COMMITMENT
-                    </div>
+                    <span className="text-[9px] font-mono font-bold text-slate-500 mt-1">
+                      Replies within a few hours
+                    </span>
                   </div>
                 )
               },
               {
                 num: "03",
                 title: "Get Decision",
-                desc: "We confirm fit over WhatsApp and follow up with your application status and next steps.",
-                shadow: "shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]",
-                tilt: "rotate-[-1.5deg]"
+                desc: "We confirm fit over WhatsApp and follow up with your application status.",
+                nodeBg: "bg-[#D1FAE5]",
+                nodeBorder: "border-[#111111]",
               },
               {
                 num: "04",
                 title: "Batch Starts",
-                desc: "Secure your slot. Onboarding details are shared over WhatsApp before the cohort begins.",
-                shadow: "shadow-[6px_4px_0px_0px_rgba(17,17,17,1)]",
-                tilt: "rotate-[1deg]"
+                desc: "Secure your slot. Onboarding details are shared before the cohort begins.",
+                nodeBg: "bg-[#FED7AA]",
+                nodeBorder: "border-[#111111]",
               },
               {
                 num: "05",
                 title: "Lifetime Access",
                 desc: "Join our active alumni network across 90+ global companies.",
-                shadow: "shadow-[4px_6px_0px_0px_rgba(17,17,17,1)]",
-                tilt: "rotate-[-2deg]"
+                nodeBg: "bg-[#EDE9FE]",
+                nodeBorder: "border-[#111111]",
               }
-            ].map((step, i) => (
-              <div 
-                key={i} 
-                className={`bg-white border-[3px] border-[#111111] p-6 pt-10 ${step.shadow} flex flex-col justify-between h-full relative hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all duration-100 select-none`}
-              >
-                {/* Number Badge */}
-                <div className={`absolute -top-4 -left-4 bg-[#188ab2] text-white border-[3px] border-[#111111] w-9 h-9 flex items-center justify-center font-extrabold text-sm shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] ${step.tilt}`}>
-                  {step.num}
+            ];
+
+            return (
+              <>
+                {/* Desktop Alternating Horizontal Timeline (matching reference template) */}
+                <div className="hidden lg:block relative py-12 select-none">
+                  {/* Central Timeline Axis Line */}
+                  <div className="absolute top-1/2 left-8 right-8 -translate-y-1/2 h-[3px] bg-[#111111] z-0">
+                    {/* Axis Terminals */}
+                    <div className="absolute -left-1.5 -top-1 w-3 h-3 rounded-full bg-[#111111]" />
+                    <div className="absolute -right-1.5 -top-1 w-3 h-3 rounded-full bg-[#111111]" />
+                  </div>
+
+                  {/* 5 Alternating Timeline Columns */}
+                  <div className="grid grid-cols-5 gap-4 relative z-10">
+                    {joinSteps.map((step, idx) => {
+                      const isTop = idx % 2 === 0;
+
+                      return (
+                        <div key={idx} className="relative h-[390px] flex flex-col justify-center items-center">
+                          {/* Top Half Content (for steps 01, 03, 05) */}
+                          {isTop ? (
+                            <div className="absolute bottom-1/2 left-0 right-0 pb-7 flex flex-col items-center text-center">
+                              <span className="text-[11px] font-mono font-black uppercase text-[#188ab2] tracking-wider mb-1">
+                                STEP {step.num}
+                              </span>
+                              <h3 className="text-base font-black text-[#111111] mb-1.5 px-2">
+                                {step.title}
+                              </h3>
+                              <p className="text-xs font-bold text-slate-600 leading-relaxed max-w-[190px]">
+                                {step.desc}
+                              </p>
+                              {/* Vertical Connector Stem Down to Axis */}
+                              <div className="w-[3px] h-7 bg-[#111111] mt-3" />
+                            </div>
+                          ) : (
+                            /* Bottom Half Content (for steps 02, 04) */
+                            <div className="absolute top-1/2 left-0 right-0 pt-7 flex flex-col items-center text-center">
+                              {/* Vertical Connector Stem Down from Axis */}
+                              <div className="w-[3px] h-7 bg-[#111111] mb-3" />
+                              <span className="text-[11px] font-mono font-black uppercase text-[#188ab2] tracking-wider mb-1">
+                                STEP {step.num}
+                              </span>
+                              <h3 className="text-base font-black text-[#111111] mb-1.5 px-2">
+                                {step.title}
+                              </h3>
+                              <p className="text-xs font-bold text-slate-600 leading-relaxed max-w-[190px]">
+                                {step.desc}
+                              </p>
+                              {step.action && step.action}
+                            </div>
+                          )}
+
+                          {/* Central Timeline Milestone Node */}
+                          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                            <div className={`w-12 h-12 rounded-full border-[3px] ${step.nodeBorder} ${step.nodeBg} flex items-center justify-center font-mono font-black text-sm text-[#111111] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] hover:scale-110 transition-transform cursor-default`}>
+                              {step.num}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                
-                <div>
-                  <h3 className="font-extrabold text-lg text-[#111111] mb-2">{step.title}</h3>
-                  <p className="text-xs text-[#111111] leading-relaxed font-bold">{step.desc}</p>
+
+                {/* Mobile & Tablet Vertical Timeline (Clean, No "Box Box") */}
+                <div className="lg:hidden relative pl-8 sm:pl-10 space-y-8 my-8 text-left select-none">
+                  {/* Vertical Timeline Axis Line */}
+                  <div className="absolute left-4 sm:left-5 top-3 bottom-3 w-[3px] bg-[#111111]" />
+
+                  {joinSteps.map((step, idx) => (
+                    <div key={idx} className="relative">
+                      {/* Timeline Node on Left */}
+                      <div className="absolute -left-8 sm:-left-10 top-0">
+                        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border-[3px] ${step.nodeBorder} ${step.nodeBg} flex items-center justify-center font-mono font-black text-xs sm:text-sm text-[#111111] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]`}>
+                          {step.num}
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="pt-0.5">
+                        <span className="text-[10px] font-mono font-black uppercase text-[#188ab2] tracking-wider block mb-0.5">
+                          STEP {step.num}
+                        </span>
+                        <h4 className="text-base sm:text-lg font-black text-[#111111] mb-1">
+                          {step.title}
+                        </h4>
+                        <p className="text-xs sm:text-sm font-bold text-slate-600 leading-relaxed max-w-md">
+                          {step.desc}
+                        </p>
+                        {step.action && <div className="mt-2 text-left">{step.action}</div>}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                
-                {step.action && step.action}
-              </div>
-            ))}
-          </div>
+              </>
+            );
+          })()}
         </div>
       </section>
 
