@@ -49,6 +49,27 @@ body {
   padding-bottom: 60px;
 }
 
+/* Embedded inside LMS Dashboard iframe */
+body.is-embedded {
+  background-color: transparent !important;
+  background-image: none !important;
+  padding-bottom: 24px;
+}
+
+body.is-embedded .navbar {
+  display: none !important;
+}
+
+body.is-embedded .app-container {
+  max-width: 100%;
+  padding: 8px 16px;
+}
+
+body.is-embedded .nav-tabs-header {
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
+
 .app-container {
   max-width: 1280px;
   margin: 0 auto;

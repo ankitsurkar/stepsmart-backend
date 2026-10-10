@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PM Hidden-Jobs Engine | Fresh LinkedIn Hiring Posts for Freshers</title>
-  <meta name="description" content="Surfacing fresh LinkedIn hiring posts for PM freshers, APMs, Product Analysts & Interns with direct recruiter emails and DM invites.">
+  <title>StepSmart PM Job Board — Daily Verified 418 Jobs Table</title>
+  <meta name="description" content="Daily automated Product Management Job Board in India. Verified jobs aggregated across LinkedIn, Naukri, Instahyre, Glassdoor, Indeed & YC Work at a Startup.">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,16 +12,125 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-tabs-header {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+    .nav-tab-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      transition: all 0.2s ease;
+    }
+    .nav-tab-link:hover {
+      color: var(--text-primary);
+      border-color: var(--border-highlight);
+      background: rgba(56, 189, 248, 0.08);
+    }
+    .nav-tab-link.active {
+      color: #FFF;
+      background: var(--gradient-brand);
+      border-color: transparent;
+      box-shadow: var(--shadow-glow);
+    }
+    .badge-linkedin { background: rgba(10, 102, 194, 0.2); color: #0A66C2; border: 1px solid rgba(10, 102, 194, 0.4); }
+    .badge-naukri { background: rgba(255, 122, 0, 0.2); color: #FF7A00; border: 1px solid rgba(255, 122, 0, 0.4); }
+    .badge-instahyre { background: rgba(139, 92, 246, 0.2); color: #A78BFA; border: 1px solid rgba(139, 92, 246, 0.4); }
+    .badge-glassdoor { background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-indeed { background: rgba(37, 99, 235, 0.2); color: #60A5FA; border: 1px solid rgba(37, 99, 235, 0.4); }
+    .badge-site { background: rgba(255, 255, 255, 0.1); color: var(--text-secondary); border: 1px solid var(--border-color); }
+    
+    .view-toggle {
+      display: flex;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+    }
+    .view-btn {
+      padding: 6px 12px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .view-btn.active {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--accent-cyan);
+    }
+    
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-main);
+    }
+    .jobs-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .jobs-table th, .jobs-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+    .jobs-table th {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .jobs-table tr:hover {
+      background: rgba(56, 189, 248, 0.04);
+    }
+    .company-cell {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .title-cell {
+      font-weight: 600;
+      color: var(--accent-cyan);
+    }
+    .date-cell {
+      font-size: 13px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+  </style>
 </head>
 <body>
   <div class="app-container">
-    <!-- Top Navigation Switcher between the Two Dashboards -->
+    
+    <!-- Top Navigation Switcher between the Two Panels -->
     <nav class="nav-tabs-header">
       <a href="index.html" class="nav-tab-link active">
-        <span>⚡</span> Daily Verified PM Job Board (400+ Jobs)
+        <span>📊</span> Panel 1: Verified Job Board Table (JobSpy Scraped)
       </a>
       <a href="linkedin_posts.html" class="nav-tab-link">
-        <span>📩</span> LinkedIn Recruiter Posts & Outreach Engine
+        <span>📩</span> Panel 2: LinkedIn Recruiter Hiring Posts Engine
       </a>
     </nav>
 
@@ -40,23 +149,16 @@
           </svg>
         </div>
         <div>
-          <h1 class="brand-title">LinkedIn <span class="gradient-text">Hidden-Jobs Engine</span></h1>
-          <p class="brand-subtitle">Fresh PM Hiring Posts (<72h) • APMs, Analysts, Interns & 0-2y • Direct Emails & DMs</p>
+          <h1 class="brand-title">StepSmart <span class="gradient-text">Verified PM Jobs Board</span></h1>
+          <p class="brand-subtitle">Daily Automated Multi-Portal Aggregator • Verified Roles across LinkedIn, Naukri, Instahyre, Glassdoor, Indeed</p>
         </div>
       </div>
 
       <div class="header-actions">
         <div class="sync-badge" id="syncStatusBadge">
           <span class="status-pulse"></span>
-          <span id="syncStatusText">Auto-Refreshes 4h</span>
+          <span id="syncStatusText">Daily Scraper Active (418 live jobs)</span>
         </div>
-        
-        <button id="syncNowBtn" class="btn btn-secondary">
-          <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 4-13.68L2.13 6"/>
-          </svg>
-          Run Apify Pipeline
-        </button>
         
         <button id="exportCsvBtn" class="btn btn-primary">
           <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -65,14 +167,7 @@
             <line x1="12" y1="18" x2="12" y2="12"></line>
             <polyline points="9 15 12 18 15 15"></polyline>
           </svg>
-          Export to Sheets (.CSV)
-        </button>
-
-        <button id="settingsBtn" class="btn btn-icon-only" title="Settings & Apify / Sheets Config">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-          </svg>
+          Export CSV
         </button>
       </div>
     </header>
@@ -81,189 +176,178 @@
     <section class="stats-section">
       <div class="stat-card">
         <div class="stat-header">
-          <span class="stat-title">Verified PM Hiring Posts</span>
+          <span class="stat-title">Verified PM Jobs</span>
           <span class="stat-icon icon-blue">💼</span>
         </div>
-        <div class="stat-value" id="statTotalJobs">0</div>
-        <div class="stat-trend">Survived hard filters & quality score &ge; 60</div>
+        <div class="stat-value" id="statTotalJobs">418</div>
+        <div class="stat-trend">JobSpy Scraped Dataset</div>
       </div>
 
       <div class="stat-card">
         <div class="stat-header">
-          <span class="stat-title">Fresh (< 24h) With Email</span>
-          <span class="stat-icon icon-purple">⚡</span>
+          <span class="stat-title">LinkedIn Jobs</span>
+          <span class="stat-icon icon-purple">🔵</span>
         </div>
-        <div class="stat-value" id="statRecentJobs">0</div>
-        <div class="stat-trend">Direct recruiter emails for instant outreach</div>
+        <div class="stat-value" id="statLinkedinCount">155</div>
+        <div class="stat-trend">Official Portal Listings</div>
       </div>
 
       <div class="stat-card">
         <div class="stat-header">
-          <span class="stat-title">Direct Emails Extracted</span>
-          <span class="stat-icon icon-green">✉️</span>
+          <span class="stat-title">Naukri & Instahyre</span>
+          <span class="stat-icon icon-green">🟠</span>
         </div>
-        <div class="stat-value" id="statApplyLinks">0</div>
-        <div class="stat-trend">Regex verified hiring manager emails</div>
+        <div class="stat-value"><span id="statNaukriCount">103</span> / <span id="statInstahyreCount">73</span></div>
+        <div class="stat-trend">Startup & Tech Hiring</div>
       </div>
 
       <div class="stat-card">
         <div class="stat-header">
-          <span class="stat-title">Decision Maker Poster</span>
-          <span class="stat-icon icon-amber">👑</span>
+          <span class="stat-title">Glassdoor & Indeed</span>
+          <span class="stat-icon icon-amber">🌐</span>
         </div>
-        <div class="stat-value" id="statContacts">0</div>
-        <div class="stat-trend">Head of Product, VPs & Founders</div>
+        <div class="stat-value"><span id="statGlassdoorCount">51</span> / <span id="statIndeedCount">36</span></div>
+        <div class="stat-trend">Corporate PM Roles</div>
       </div>
     </section>
 
-    <!    <!-- Recall-First V3 Dashboard View Tabs -->
-    <nav class="view-tabs-nav">
-      <button class="tab-btn active" data-tab="fresher-fit">
-        ⚡ Fresh (<7d) APM / 0-2y <span class="tab-count" id="countFresher">0</span>
-      </button>
-      <button class="tab-btn" data-tab="fresh-email">
-        ✉️ Direct Email <span class="tab-count" id="countFreshEmail">0</span>
-      </button>
-      <button class="tab-btn" data-tab="founder-posted">
-        👑 Founder / Hiring Lead <span class="tab-count" id="countFounder">0</span>
-      </button>
-      <button class="tab-btn" data-tab="all-posts">
-        🌐 All Fresh (<7d) <span class="tab-count" id="countAll">0</span>
-      </button>
-      <button class="tab-btn" data-tab="archived">
-        📁 Archived / Previous (>7d) <span class="tab-count" id="countArchived">0</span>
-      </button>
-    </nav>
-
-    <!-- Filters & Search Toolbar -->
-    <section class="toolbar-section">
+    <!-- Filter Toolbar (Title, Date, Portal, Location) -->
+    <section class="controls-section">
       <div class="search-box">
         <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="text" id="searchInput" placeholder="Search APM, Junior PM, emails, companies, recruiters...">
+        <input type="text" id="searchInput" placeholder="Search role title, company, skills, or location...">
       </div>
 
-      <div class="filters-group">
-        <div class="filter-item">
-          <label for="seniorityFilter">Seniority Fit:</label>
-          <select id="seniorityFilter">
-            <option value="ALL">All Fresher Fits</option>
-            <option value="Associate / APM">Associate / APM</option>
-            <option value="Rotational PM (RPM)">Rotational PM (RPM)</option>
-            <option value="Entry Level / Junior PM">Entry Level / Junior PM</option>
-            <option value="Product Analyst">Product Analyst</option>
-            <option value="PM Intern">PM Intern</option>
-            <option value="Senior PM">Senior PM</option>
-          </select>
-        </div>
+      <div class="filter-dropdowns">
+        <!-- Job Title Filter -->
+        <select id="seniorityFilter" class="select-filter" title="Filter by Job Title">
+          <option value="ALL">All Job Titles</option>
+          <option value="APM">Associate Product Manager / APM</option>
+          <option value="Product Manager">Product Manager (Mid)</option>
+          <option value="Senior PM">Senior & Lead PM</option>
+          <option value="TPM">Technical PM / Head of Product</option>
+        </select>
 
-        <div class="filter-item">
-          <label for="locationFilter">Location:</label>
-          <select id="locationFilter">
-            <option value="ALL">All Locations</option>
-            <option value="Remote">Remote</option>
-            <option value="Hybrid">Hybrid</option>
-            <option value="Onsite">Onsite</option>
-          </select>
+        <!-- Post Date Filter -->
+        <select id="dateFilter" class="select-filter" title="Filter by Post Date">
+          <option value="ALL">All Post Dates</option>
+          <option value="24H">Past 24 Hours</option>
+          <option value="3D">Past 3 Days</option>
+          <option value="7D">Past 7 Days</option>
+        </select>
+
+        <!-- Site / Portal Filter -->
+        <select id="siteFilter" class="select-filter" title="Filter by Source Portal">
+          <option value="ALL">All Portals (13 Sites)</option>
+          <option value="LINKEDIN">LinkedIn (155)</option>
+          <option value="NAUKRI">Naukri (103)</option>
+          <option value="INSTAHYRE">Instahyre (73)</option>
+          <option value="GLASSDOOR">Glassdoor (51)</option>
+          <option value="INDEED">Indeed (36)</option>
+        </select>
+
+        <!-- Location Filter -->
+        <select id="locationFilter" class="select-filter" title="Filter by Location">
+          <option value="ALL">All Locations</option>
+          <option value="Bengaluru">Bengaluru / Bangalore</option>
+          <option value="Gurugram">Gurugram / Noida / Delhi</option>
+          <option value="Mumbai">Mumbai</option>
+          <option value="Hyderabad">Hyderabad</option>
+          <option value="Remote">Remote</option>
+        </select>
+
+        <button id="resetFiltersBtn" class="btn btn-secondary">Reset Filters</button>
+
+        <!-- View Toggle -->
+        <div class="view-toggle">
+          <button id="viewTableBtn" class="view-btn active" title="Table View">☰ Table</button>
+          <button id="viewGridBtn" class="view-btn" title="Grid View">🀁 Cards</button>
         </div>
       </div>
     </section>
 
-    <!-- Main Job Cards Grid -->
-    <main class="jobs-feed">
-      <div id="jobsGrid" class="jobs-grid">
-        <!-- Dynamic JS Rendered Job Cards -->
+    <!-- Tab Category Filters -->
+    <div class="tabs-container">
+      <button class="tab-btn active" data-tab="all">
+        All Verified Jobs (<span id="countAll">0</span>)
+      </button>
+      <button class="tab-btn" data-tab="apm">
+        ⚡ APM & Associate (<span id="countAPM">0</span>)
+      </button>
+      <button class="tab-btn" data-tab="senior">
+        💼 Senior & Lead PM (<span id="countSenior">0</span>)
+      </button>
+      <button class="tab-btn" data-tab="email">
+        ✉️ With Email (<span id="countEmail">0</span>)
+      </button>
+    </div>
+
+    <!-- Main Content Container -->
+    <main style="margin-top: 16px;">
+      <!-- Primary Table View Container -->
+      <div id="tableViewContainer" class="table-responsive">
+        <table class="jobs-table">
+          <thead>
+            <tr>
+              <th style="width: 40px; text-align: center;">#</th>
+              <th>Company</th>
+              <th>Job Title</th>
+              <th>Location</th>
+              <th>Source</th>
+              <th>Post Date</th>
+              <th>Apply</th>
+              <th>Overview</th>
+            </tr>
+          </thead>
+          <tbody id="jobTableBody">
+            <!-- Rendered via jobspy_app.js -->
+          </tbody>
+        </table>
       </div>
+
+      <!-- Secondary Cards View Grid -->
+      <div id="jobsGrid" class="jobs-grid hidden">
+        <!-- Rendered via jobspy_app.js -->
+      </div>
+
+      <!-- Empty State -->
       <div id="noResultsState" class="empty-state hidden">
         <div class="empty-icon">🔍</div>
-        <h3>No hiring posts found matching current tab or filters</h3>
-        <p>Try switching tabs or resetting your search query.</p>
-        <button id="resetFiltersBtn" class="btn btn-secondary">Reset Filters</button>
+        <h3>No matching Product Management jobs found</h3>
+        <p>Try clearing your search query or broadening your filters.</p>
       </div>
     </main>
 
-    <!-- Post Detail Modal -->
+    <!-- Detail Modal Popup -->
     <div id="detailModal" class="modal-backdrop hidden">
-      <div class="modal-card">
-        <button id="closeModalBtn" class="modal-close">&times;</button>
+      <div class="modal-content" style="max-width: 650px;">
         <div class="modal-header">
-          <span class="badge badge-seniority" id="modalSeniority">Associate / APM</span>
-          <span class="badge badge-location" id="modalLocation">Remote</span>
-          <span class="badge badge-score" id="modalScore">Quality Score: 95/100</span>
-        </div>
-        
-        <div class="modal-poster-box">
-          <div class="poster-avatar-lg" id="modalPosterAvatar">SC</div>
           <div>
-            <h3 class="poster-name-lg" id="modalPosterName">Sarah Chen</h3>
-            <p class="poster-headline" id="modalPosterHeadline">Head of Platform Product @ Stripe</p>
-            <a id="modalPosterLink" href="#" target="_blank" class="link-btn">
-              View Profile on LinkedIn &rarr;
+            <h2 id="modalTitle" class="modal-title">Product Manager</h2>
+            <p id="modalCompany" style="color: var(--accent-cyan); font-weight: 600; font-size: 15px;">Company Name</p>
+          </div>
+          <button id="closeModalBtn" class="close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body" style="padding: 20px 24px;">
+          <div class="meta-row" style="margin-bottom: 16px;">
+            <span class="meta-item">📍 <span id="modalLocation">Location</span></span>
+            <span class="meta-item">🌐 <span id="modalSite">Site</span></span>
+            <span class="meta-item">📅 <span id="modalDate">Date</span></span>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <h4 style="color: var(--text-secondary); margin-bottom: 8px; font-size: 13px; text-transform: uppercase;">Job Description Overview</h4>
+            <div id="modalDescription" style="white-space: pre-wrap; font-size: 14px; color: var(--text-primary); line-height: 1.6; max-height: 280px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 14px; border-radius: var(--radius-sm);"></div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+            <a id="modalApplyBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="padding: 10px 24px;">
+              Apply Direct on Source ➔
             </a>
-          </div>
-        </div>
-
-        <div class="modal-body">
-          <h4 class="section-label">LinkedIn Hiring Post Content</h4>
-          <div id="modalDescription" class="post-text-full"></div>
-        </div>
-
-        <div class="modal-footer">
-          <a id="modalLinkedInPostBtn" href="#" target="_blank" class="btn btn-secondary">
-            View LinkedIn Post
-          </a>
-          <a id="modalApplyBtn" href="#" target="_blank" class="btn btn-primary btn-lg">
-            Apply Now &rarr;
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Settings Drawer -->
-    <div id="settingsDrawer" class="drawer-backdrop hidden">
-      <div class="drawer-panel">
-        <div class="drawer-header">
-          <h2>Configuration & Pipeline Settings</h2>
-          <button id="closeDrawerBtn" class="drawer-close">&times;</button>
-        </div>
-
-        <div class="drawer-body">
-          <div class="config-section">
-            <h3>🔑 Apify LinkedIn Scraper Token</h3>
-            <p class="field-desc">Apify API Token configured for 4-hour scheduled scraping runs.</p>
-            <input type="password" id="apifyTokenInput" placeholder="apify_api_..." value="">
-            <button id="saveApifyTokenBtn" class="btn btn-secondary btn-sm">Save Token</button>
-          </div>
-
-          <div class="config-section">
-            <h3>📊 Google Sheets Direct Auto-Sync</h3>
-            <p class="field-desc">Configured Sheet ID for auto-populating fresh PM jobs.</p>
-            <input type="text" id="sheetIdInput" placeholder="1BxiMVs0XRA5nFMdKbB..." value="">
-          </div>
-
-          <div class="config-section">
-            <h3>⏱️ Pipeline Schedule</h3>
-            <p class="field-desc">Background execution frequency (Current setting: Every 4 hours staggered)</p>
-            <select id="scheduleIntervalSelect">
-              <option value="4" selected>Every 4 Hours (Recommended)</option>
-              <option value="6">Every 6 Hours</option>
-              <option value="12">Every 12 Hours</option>
-            </select>
-          </div>
-
-          <div class="config-section">
-            <h3>⚡ Google Apps Script Code</h3>
-            <pre class="code-block" id="appsScriptCode">
-function syncHiddenPMJobsEvery4Hours() {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var res = UrlFetchApp.fetch("YOUR_URL/data/jobs.json");
-  var jobs = JSON.parse(res.getContentText());
-  // Auto-populates fresh <72h PM hiring posts into Google Sheets
-}
-            </pre>
-            <button id="copyAppsScriptBtn" class="btn btn-secondary btn-sm">Copy Google Apps Script</button>
           </div>
         </div>
       </div>
@@ -271,6 +355,6 @@ function syncHiddenPMJobsEvery4Hours() {
 
   </div>
 
-  <script src="app.js"></script>
+  <script src="jobspy_app.js"></script>
 </body>
 </html>

@@ -1,15 +1,20 @@
 /**
  * LinkedIn Hidden-Jobs Engine V2 - Client Dashboard Logic
- * Step 7 Views: Fresh (<24h) with Email, DM-Only, All Verified Jobs, Archived (>7d)
+ * Step 7 Views: Recent (<=7d), email, hiring manager, and archived views
  * Student Action Tracker: Emailed, Replied, Dead
  */
 
 let allJobs = [];
 let filteredJobs = [];
+let reviewCandidates = [];
 let activeTab = 'fresher-fit';
 let studentActions = JSON.parse(localStorage.getItem('STUDENT_PM_ACTIONS') || '{}');
 
 document.addEventListener('DOMContentLoaded', () => {
+  initApp();
+});
+
+async function initApp() {
   if (window.self !== window.top || window.location.search.includes('embed=true')) {
     document.body.classList.add('is-embedded');
     document.querySelectorAll('.nav-tab-link').forEach(link => {
@@ -19,12 +24,28 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-  initApp();
-});
-
-async function initApp() {
   setupEventListeners();
+  refreshSyncStatus();
   await loadJobsData();
+}
+
+async function refreshSyncStatus() {
+  try {
+    const res = await fetch('/api/status', { cache: 'no-store' });
+    if (!res.ok) return;
+    const status = await res.json();
+    const label = document.getElementById('syncStatusText');
+    if (!label) return;
+    if (status.running) label.textContent = 'Dashboard update in progress…';
+    else if (status.error) label.textContent = `Last scrape failed: ${status.error}`;
+    else if (status.message && status.message.startsWith('Brave Search discovered')) label.textContent = status.message;
+    else if (status.message && status.message.startsWith('Showing ')) label.textContent = status.message;
+    else if (status.last_success) label.textContent = `Last scrape: ${new Date(status.last_success).toLocaleString()} (${status.jobs ?? 0} current posts)`;
+    else label.textContent = 'Live scrape ready';
+  } catch (_) {
+    const label = document.getElementById('syncStatusText');
+    if (label) label.textContent = 'Start with npm start for live refresh';
+  }
 }
 
 function setupEventListeners() {
@@ -62,40 +83,42 @@ function setupEventListeners() {
     if (e.target.id === 'settingsDrawer') closeDrawer();
   });
 
-  document.getElementById('saveApifyTokenBtn').addEventListener('click', saveApifyToken);
   document.getElementById('copyAppsScriptBtn').addEventListener('click', copyAppsScript);
 
-  const savedToken = localStorage.getItem('APIFY_API_KEY');
-  if (savedToken) {
-    document.getElementById('apifyTokenInput').value = savedToken;
-  }
+  document.getElementById('candidateGrid').addEventListener('click', handleCandidateAction);
 }
 
 async function loadJobsData() {
   try {
-    const res = await fetch('data/jobs.json?t=' + Date.now());
+    const res = await fetch('data/linkedin_posts.json?t=' + Date.now(), { cache: 'no-store' });
     if (res.ok) {
-      const data = await res.json();
-      allJobs = data.map((j, idx) => ({
-        ...j,
-        job_id: j.job_id || j.id || `pm_job_${idx}`
-      }));
+      allJobs = await res.json();
     } else {
-      throw new Error('Fallback to default seed');
+      allJobs = [];
     }
   } catch (err) {
-    console.log('Loading fallback seed PM jobs dataset...');
-    allJobs = getSeedJobs();
+    console.error('Could not load the live LinkedIn-post feed.', err);
+    allJobs = [];
   }
+  try {
+    const candidateResponse = await fetch('/api/candidates?t=' + Date.now(), { cache: 'no-store' });
+    reviewCandidates = candidateResponse.ok ? await candidateResponse.json() : [];
+  } catch (_) {
+    reviewCandidates = [];
+  }
+  const hasCachedPreview = allJobs.some(job => job.cached_result);
+  const cacheNotice = document.getElementById('cachedFeedNotice');
+  if (cacheNotice) cacheNotice.classList.toggle('hidden', !hasCachedPreview);
   
   updateTabCounts();
   updateStats();
+  renderCandidates();
   applyFilters();
 }
 
 function updateTabCounts() {
-  const activeJobs = allJobs.filter(j => !j.archived && (j.age_days === undefined || j.age_days <= 7.0));
-  const archivedJobs = allJobs.filter(j => j.archived || (j.age_days !== undefined && j.age_days > 7.0));
+  const activeJobs = allJobs.filter(j => getJobAgeDays(j) !== null && getJobAgeDays(j) <= 7.0);
+  const archivedJobs = allJobs.filter(j => getJobAgeDays(j) !== null && getJobAgeDays(j) > 7.0);
 
   const fresherCount = activeJobs.filter(j => j.seniority_fit === 'fresher' || j.seniority_fit === '0-2y' || !j.seniority_fit).length;
   const freshEmailCount = activeJobs.filter(j => j.has_email || (j.email && j.email.length > 0)).length;
@@ -106,10 +129,11 @@ function updateTabCounts() {
   if (document.getElementById('countFounder')) document.getElementById('countFounder').textContent = founderCount;
   if (document.getElementById('countAll')) document.getElementById('countAll').textContent = activeJobs.length;
   if (document.getElementById('countArchived')) document.getElementById('countArchived').textContent = archivedJobs.length;
+  if (document.getElementById('countReview')) document.getElementById('countReview').textContent = reviewCandidates.filter(c => c.review_status === 'pending').length;
 }
 
 function updateStats() {
-  const activeJobs = allJobs.filter(j => !j.archived && (j.age_days === undefined || j.age_days <= 7.0));
+  const activeJobs = allJobs.filter(j => getJobAgeDays(j) !== null && getJobAgeDays(j) <= 7.0);
   document.getElementById('statTotalJobs').textContent = activeJobs.length;
   
   const freshEmail = activeJobs.filter(j => j.has_email || j.email).length;
@@ -117,16 +141,27 @@ function updateStats() {
   document.getElementById('statApplyLinks').textContent = freshEmail;
 
   const decisionMakers = activeJobs.filter(j => j.author_is_decision_maker || j.author_type === 'founder' || j.author_type === 'hiring_manager').length;
-  document.getElementById('statContacts').textContent = decisionMakers || activeJobs.length;
+  document.getElementById('statContacts').textContent = decisionMakers;
 }
 
 function applyFilters() {
+  const candidateGrid = document.getElementById('candidateGrid');
+  const jobsGrid = document.getElementById('jobsGrid');
+  const noResults = document.getElementById('noResultsState');
+  const reviewMode = activeTab === 'review-queue';
+  candidateGrid.classList.toggle('hidden', !reviewMode);
+  jobsGrid.classList.toggle('hidden', reviewMode);
+  noResults.classList.toggle('hidden', reviewMode || filteredJobs.length > 0);
+  document.getElementById('reviewQueueNotice').classList.toggle('hidden', !reviewMode);
+  if (reviewMode) return;
   const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
   const seniorityVal = document.getElementById('seniorityFilter').value;
   const locationVal = document.getElementById('locationFilter').value;
 
   filteredJobs = allJobs.filter(job => {
-    const isJobArchived = job.archived || (job.age_days !== undefined && job.age_days > 7.0);
+    const ageDays = getJobAgeDays(job);
+    if (ageDays === null) return false;
+    const isJobArchived = ageDays > 7.0;
 
     // 1. Tab View Filter
     if (activeTab === 'archived') {
@@ -164,10 +199,20 @@ function applyFilters() {
     return matchesSearch && matchesSeniority && matchesLocation;
   });
 
-  // Sort by Quality Score descending
-  filteredJobs.sort((a, b) => (b.quality_score || 80) - (a.quality_score || 80));
+  // Show the newest verified posts first, with quality as a tie-breaker.
+  filteredJobs.sort((a, b) => getJobAgeDays(a) - getJobAgeDays(b) || (b.quality_score || 80) - (a.quality_score || 80));
 
   renderJobsGrid(filteredJobs);
+}
+
+function getJobAgeDays(job) {
+  const posted = Date.parse(job.posted_at || job.date_posted || '');
+  if (Number.isFinite(posted)) return (Date.now() - posted) / 86400000;
+  const scraped = Date.parse(job.scraped_at || '');
+  if (Number.isFinite(job.age_days) && Number.isFinite(scraped)) {
+    return Number(job.age_days) + Math.max(0, Date.now() - scraped) / 86400000;
+  }
+  return null;
 }
 
 function resetFilters() {
@@ -234,155 +279,74 @@ function getValidLinkedInUrl(url, role, company) {
   return `https://www.linkedin.com/search/results/content/?keywords=${q}&sortBy=%22date_posted%22`;
 }
 
-function sanitizeCompanyName(company, email) {
-  if (company && typeof company === 'string') {
-    const trimmed = company.trim();
-    if (!['nan', 'none', 'null', 'undefined', ''].includes(trimmed.toLowerCase())) {
-      return trimmed;
-    }
-  }
-  if (email && email.includes('@')) {
-    const domain = email.split('@')[1];
-    if (domain) {
-      const parts = domain.split('.');
-      if (parts.length >= 2 && !['gmail', 'yahoo', 'outlook', 'hotmail', 'protonmail', 'icloud'].includes(parts[0].toLowerCase())) {
-        return parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
-      }
-    }
-  }
-  return '';
-}
-
-function cleanMarkdownSnippet(text, maxLength = 160) {
-  if (!text) return '';
-  let clean = String(text)
-    .replace(/\*\*(.*?)\*\*/g, '$1')
-    .replace(/\*(.*?)\*/g, '$1')
-    .replace(/#{1,6}\s+/g, '')
-    .replace(/`{1,3}.*?`{1,3}/g, '')
-    .replace(/\n+/g, ' ')
-    .trim();
-  if (clean.length > maxLength) {
-    clean = clean.substring(0, maxLength).trim() + '...';
-  }
-  return clean;
-}
-
-function formatSeniorityBadge(job) {
-  const s = (job.seniority || job.seniority_fit || '').trim();
-  if (!s || s.toLowerCase() === 'all' || s.toLowerCase() === 'nan') return 'PRODUCT';
-  if (s.toLowerCase().includes('apm') || s.toLowerCase().includes('associate')) return 'APM / 0-2Y';
-  if (s.toLowerCase().includes('senior') || s.toLowerCase().includes('lead') || s.toLowerCase().includes('principal')) return 'SENIOR PM';
-  if (s.toLowerCase().includes('owner') || s.toLowerCase().includes('po')) return 'PRODUCT OWNER';
-  if (s.toLowerCase().includes('growth')) return 'GROWTH PM';
-  if (s.toLowerCase().includes('technical') || s.toLowerCase().includes('tpm')) return 'TECH PM';
-  if (s.toLowerCase().includes('intern')) return 'PM INTERN';
-  return s.length > 15 ? 'PRODUCT' : s.toUpperCase();
-}
-
-function formatDateLabel(dateStr) {
-  if (!dateStr || dateStr === 'nan' || dateStr === 'None') return 'Recent';
-  if (dateStr.includes('ago') || dateStr.includes('Past') || dateStr.includes('Today') || dateStr.includes('Yesterday')) {
-    return dateStr;
-  }
-  const d = new Date(dateStr);
-  if (!isNaN(d.getTime())) {
-    const now = new Date();
-    const diffHours = Math.round((now - d) / (1000 * 60 * 60));
-    if (diffHours >= 0 && diffHours < 24) return `${diffHours || 1}h ago`;
-    const diffDays = Math.round(diffHours / 24);
-    if (diffDays === 1) return 'Yesterday';
-    if (diffDays > 1 && diffDays <= 7) return `${diffDays}d ago`;
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  }
-  return String(dateStr);
-}
-
 function createJobCardHTML(job) {
-  const cleanCompany = sanitizeCompanyName(job.company || job.company_name, job.email || job.extracted_email);
   const contact = job.relevant_contact || {};
   const rawPosterName = contact.name || job.author_name;
-  const isPosterValid = rawPosterName && !['nan', 'none', 'null', 'undefined', 'hiring manager'].includes(String(rawPosterName).toLowerCase());
-  const posterName = isPosterValid ? rawPosterName : (cleanCompany ? `${cleanCompany} Hiring Team` : 'Product Hiring Team');
-
+  const posterName = (rawPosterName && rawPosterName !== 'None' && rawPosterName !== 'Hiring Manager') ? rawPosterName : (job.company ? `${job.company} Hiring Team` : 'Hiring Team');
   const rawHeadline = contact.headline || job.author_title;
-  const isHeadlineValid = rawHeadline && !['nan', 'none', 'null', 'undefined', 'product leader'].includes(String(rawHeadline).toLowerCase());
-  const headline = isHeadlineValid ? rawHeadline : (cleanCompany ? `Recruiter / Hiring Lead (${cleanCompany})` : 'Product Leader');
-
+  const headline = (rawHeadline && rawHeadline !== 'None' && rawHeadline !== 'Product Leader') ? rawHeadline : (job.source ? `Recruiter / Hiring Lead (${job.source})` : 'Product Leader');
   const initials = getInitials(posterName);
   const email = job.email || job.extracted_email;
   const score = job.quality_score || 85;
   const currentAction = studentActions[job.job_id] || '';
-  const jobTitle = job.title || job.role_title || job.role || 'Product Manager';
-  const dateLabel = formatDateLabel(job.posted_at || job.date_posted);
 
-  const postUrl = getValidLinkedInUrl(job.post_url, jobTitle, cleanCompany);
-  const applyUrl = getValidLinkedInUrl(job.apply_link || job.apply_url || job.post_url, jobTitle, cleanCompany);
-
-  const seniorityBadge = formatSeniorityBadge(job);
-  const rawLoc = (job.location && job.location !== 'nan') ? job.location : 'Remote / India';
-  const locationBadge = rawLoc.length > 20 ? rawLoc.substring(0, 18) + '...' : rawLoc;
+  if (job.cached_result) job.job_description = 'Description not available check the original post for reference.';
+  const postUrl = getValidLinkedInUrl(job.post_url, job.role_title || job.role, job.company);
+  const applyUrl = getValidLinkedInUrl(job.apply_link || job.apply_url || job.post_url, job.role_title || job.role, job.company);
 
   const emailBoxHTML = email ? `
     <div class="email-highlight-box">
-      <span class="email-address-text" title="${escapeHTML(email)}">✉️ ${escapeHTML(email)}</span>
+      <span class="email-address-text">✉️ ${escapeHTML(email)}</span>
       <button class="copy-email-btn" data-email="${escapeHTML(email)}">Copy Email</button>
     </div>
   ` : '';
 
-  const snippet = cleanMarkdownSnippet(job.job_description || job.text || '');
-
   return `
     <article class="job-card" id="card-${job.job_id}">
-      <div class="job-card-top">
-        <div class="job-card-header">
-          <div class="badges-row">
-            <span class="badge badge-seniority">${escapeHTML(seniorityBadge)}</span>
-            <span class="badge badge-location" title="${escapeHTML(rawLoc)}">${escapeHTML(locationBadge)}</span>
-            <span class="badge badge-score">Score: ${score}/100</span>
-          </div>
-          <span class="job-time">${escapeHTML(dateLabel)}</span>
+      <div class="job-card-header">
+        <div class="badges-row">
+          <span class="badge badge-seniority">${escapeHTML(job.role_title || job.seniority || 'Associate PM')}</span>
+          ${job.cached_result ? '<span class="badge badge-cached">CACHED</span>' : ''}
+          <span class="badge badge-location">${escapeHTML(job.location || 'Remote')}</span>
+          ${job.cached_result ? '' : `<span class="badge badge-score">Score: ${score}/100</span>`}
         </div>
+        <span class="job-time">${escapeHTML(job.posted_at || 'Past 24h')}</span>
+      </div>
 
-        <h3 class="job-card-title" title="${escapeHTML(jobTitle)}">${escapeHTML(jobTitle)}</h3>
+      ${emailBoxHTML}
 
-        ${emailBoxHTML}
-
-        <div class="poster-box">
-          <div class="poster-avatar">${escapeHTML(initials)}</div>
-          <div class="poster-details">
-            <div class="poster-name">${escapeHTML(posterName)}</div>
-            <div class="poster-headline">${escapeHTML(headline)}</div>
-          </div>
-        </div>
-
-        <div class="job-body">
-          <p class="job-text-snippet">${escapeHTML(snippet)}</p>
-          <button class="read-more-btn" data-job-id="${job.job_id}">Read full post &rarr;</button>
+      <div class="poster-box">
+        <div class="poster-avatar">${escapeHTML(initials)}</div>
+        <div class="poster-details">
+          <div class="poster-name">${escapeHTML(posterName)}</div>
+          <div class="poster-headline">${escapeHTML(headline)}</div>
         </div>
       </div>
 
-      <div class="job-card-bottom">
-        <div class="student-actions-bar">
-          <button class="student-action-btn ${currentAction === 'emailed' ? 'active-emailed' : ''}" data-job-id="${job.job_id}" data-action="emailed">
-            ${currentAction === 'emailed' ? '✓ Emailed' : '✉️ Emailed'}
-          </button>
-          <button class="student-action-btn ${currentAction === 'replied' ? 'active-replied' : ''}" data-job-id="${job.job_id}" data-action="replied">
-            ${currentAction === 'replied' ? '💬 Replied' : '💬 Replied'}
-          </button>
-          <button class="student-action-btn ${currentAction === 'dead' ? 'active-dead' : ''}" data-job-id="${job.job_id}" data-action="dead">
-            ${currentAction === 'dead' ? '❌ Dead' : '❌ Pass'}
-          </button>
-        </div>
+      <div class="job-body">
+        <p class="job-text-snippet">${escapeHTML(job.job_description || '')}</p>
+        <button class="read-more-btn" data-job-id="${job.job_id}">${job.cached_result ? 'View cached details' : 'Read full post'} &rarr;</button>
+      </div>
 
-        <div class="job-card-footer">
-          <a href="${escapeHTML(postUrl)}" target="_blank" rel="noopener noreferrer" class="btn-card-link btn-secondary-link">
-            LinkedIn Post
-          </a>
-          <a href="${escapeHTML(applyUrl)}" target="_blank" rel="noopener noreferrer" class="btn-card-link btn-primary-link">
-            Apply Now &rarr;
-          </a>
-        </div>
+      <div class="student-actions-bar">
+        <button class="student-action-btn ${currentAction === 'emailed' ? 'active-emailed' : ''}" data-job-id="${job.job_id}" data-action="emailed">
+          ${currentAction === 'emailed' ? '✓ Emailed' : '✉️ Emailed'}
+        </button>
+        <button class="student-action-btn ${currentAction === 'replied' ? 'active-replied' : ''}" data-job-id="${job.job_id}" data-action="replied">
+          ${currentAction === 'replied' ? '💬 Replied' : '💬 Replied'}
+        </button>
+        <button class="student-action-btn ${currentAction === 'dead' ? 'active-dead' : ''}" data-job-id="${job.job_id}" data-action="dead">
+          ${currentAction === 'dead' ? '❌ Dead' : '❌ Pass'}
+        </button>
+      </div>
+
+      <div class="job-card-footer">
+        <a href="${escapeHTML(postUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+          LinkedIn Post
+        </a>
+        <a href="${escapeHTML(applyUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+          Apply Now &rarr;
+        </a>
       </div>
     </article>
   `;
@@ -403,31 +367,27 @@ function openModal(jobId) {
   if (!job) return;
 
   const contact = job.relevant_contact || {};
-  const cleanCompany = sanitizeCompanyName(job.company || job.company_name, job.email || job.extracted_email);
-  const rawPosterName = contact.name || job.author_name;
-  const isPosterValid = rawPosterName && !['nan', 'none', 'null', 'undefined', 'hiring manager'].includes(String(rawPosterName).toLowerCase());
-  const posterName = isPosterValid ? rawPosterName : (cleanCompany ? `${cleanCompany} Hiring Team` : 'Product Hiring Team');
 
-  const rawHeadline = contact.headline || job.author_title;
-  const isHeadlineValid = rawHeadline && !['nan', 'none', 'null', 'undefined', 'product leader'].includes(String(rawHeadline).toLowerCase());
-  const headline = isHeadlineValid ? rawHeadline : (cleanCompany ? `Recruiter / Hiring Lead (${cleanCompany})` : 'Product Leader');
+  const postUrl = getValidLinkedInUrl(job.post_url, job.role_title || job.role, job.company);
+  const applyUrl = getValidLinkedInUrl(job.apply_link || job.apply_url || job.post_url, job.role_title || job.role, job.company);
 
-  const jobTitle = job.title || job.role_title || job.role || 'Product Manager';
-  const postUrl = getValidLinkedInUrl(job.post_url, jobTitle, cleanCompany);
-  const applyUrl = getValidLinkedInUrl(job.apply_link || job.apply_url || job.post_url, jobTitle, cleanCompany);
-
-  document.getElementById('modalSeniority').textContent = formatSeniorityBadge(job);
-  document.getElementById('modalLocation').textContent = (job.location && job.location !== 'nan') ? job.location : 'Remote / India';
+  document.getElementById('modalSeniority').textContent = job.role_title || job.seniority || 'Associate PM';
+  document.getElementById('modalLocation').textContent = job.location || 'Remote';
   document.getElementById('modalScore').textContent = `Quality Score: ${job.quality_score || 85}/100`;
+
+  const rawPosterName = contact.name || job.author_name;
+  const posterName = (rawPosterName && rawPosterName !== 'None' && rawPosterName !== 'Hiring Manager') ? rawPosterName : (job.company ? `${job.company} Hiring Team` : 'Hiring Team');
+  const rawHeadline = contact.headline || job.author_title;
+  const headline = (rawHeadline && rawHeadline !== 'None' && rawHeadline !== 'Product Leader') ? rawHeadline : (job.source ? `Recruiter / Hiring Lead (${job.source})` : 'Product Leader');
 
   document.getElementById('modalPosterAvatar').textContent = getInitials(posterName);
   document.getElementById('modalPosterName').textContent = posterName;
   document.getElementById('modalPosterHeadline').textContent = headline;
   
   const profileBtn = document.getElementById('modalPosterLink');
-  profileBtn.href = getValidLinkedInUrl(contact.profile_url || postUrl, jobTitle, cleanCompany);
+  profileBtn.href = getValidLinkedInUrl(contact.profile_url || postUrl, job.role_title || job.role, job.company);
 
-  document.getElementById('modalDescription').textContent = job.job_description || job.text || 'No description available.';
+  document.getElementById('modalDescription').textContent = job.job_description;
   document.getElementById('modalLinkedInPostBtn').href = postUrl;
   document.getElementById('modalApplyBtn').href = applyUrl;
 
@@ -446,11 +406,54 @@ function closeDrawer() {
   document.getElementById('settingsDrawer').classList.add('hidden');
 }
 
-function saveApifyToken() {
-  const token = document.getElementById('apifyTokenInput').value.trim();
-  if (token) {
-    localStorage.setItem('APIFY_API_KEY', token);
-    showNotification('Apify API token saved successfully!');
+function renderCandidates() {
+  const pending = reviewCandidates.filter(candidate => candidate.review_status === 'pending');
+  const grid = document.getElementById('candidateGrid');
+  grid.innerHTML = pending.length ? pending.map(candidate => `
+    <article class="job-card review-candidate" data-candidate-id="${escapeHTML(candidate.job_id)}">
+      <div class="job-card-header"><div class="badges-row"><span class="badge badge-cached">SEARCH CANDIDATE</span></div><span class="job-time">Found ${escapeHTML(new Date(candidate.discovered_at).toLocaleString())}</span></div>
+      <h3>${escapeHTML(candidate.title || 'LinkedIn post')}</h3>
+      <p class="job-text-snippet"><strong>Search snippet (not verified post text):</strong> ${escapeHTML(candidate.search_snippet || 'No snippet available.')}</p>
+      <p><a href="${escapeHTML(candidate.post_url)}" target="_blank" rel="noopener noreferrer">Open original LinkedIn post ↗</a></p>
+      <label>Original post description (paste after checking the post)</label>
+      <textarea class="candidate-post-text" rows="5" placeholder="Paste the complete LinkedIn post description"></textarea>
+      <label>Role title shown in the post</label>
+      <input class="candidate-role" type="text" placeholder="e.g. Associate Product Manager">
+      <label>Company named in the post</label>
+      <input class="candidate-company" type="text" placeholder="e.g. Example company">
+      <label>Location, if specified</label>
+      <input class="candidate-location" type="text" placeholder="e.g. Bengaluru / Remote">
+      <label>Posting date and time shown on LinkedIn</label>
+      <input class="candidate-posted-at" type="datetime-local">
+      <div class="candidate-review-actions"><button class="btn btn-primary" data-review-action="verify">Verify and add to feed</button><button class="btn btn-secondary" data-review-action="dismiss">Dismiss</button></div>
+    </article>
+  `).join('') : '<div class="empty-state"><h3>No search candidates waiting</h3><p>Add BRAVE_SEARCH_API_KEY to the local .env file, then use Update Dashboard to discover public LinkedIn post URLs.</p></div>';
+}
+
+async function handleCandidateAction(event) {
+  const button = event.target.closest('[data-review-action]');
+  if (!button) return;
+  const card = button.closest('[data-candidate-id]');
+  const action = button.dataset.reviewAction;
+  const payload = { job_id: card.dataset.candidateId, action };
+  if (action === 'verify') {
+    payload.post_text = card.querySelector('.candidate-post-text').value;
+    payload.role_title = card.querySelector('.candidate-role').value.trim();
+    payload.company = card.querySelector('.candidate-company').value.trim();
+    payload.location = card.querySelector('.candidate-location').value.trim();
+    const localDate = card.querySelector('.candidate-posted-at').value;
+    payload.posted_at = localDate ? new Date(localDate).toISOString() : '';
+  }
+  button.disabled = true;
+  try {
+    const response = await fetch('/api/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || 'Could not update candidate');
+    showNotification(action === 'verify' ? 'Post verified and added to the fresh jobs feed.' : 'Candidate dismissed.');
+    await loadJobsData();
+  } catch (error) {
+    showNotification(error.message);
+    button.disabled = false;
   }
 }
 
@@ -463,17 +466,32 @@ function copyAppsScript() {
 async function triggerApifySync() {
   const btn = document.getElementById('syncNowBtn');
   const originalHTML = btn.innerHTML;
-  btn.innerHTML = `<span class="status-pulse"></span> Running Pipeline...`;
+  btn.innerHTML = `<span class="status-pulse"></span> Searching...`;
   btn.disabled = true;
 
-  showNotification('Executing Step 1-5 Pipeline (Scrape -> Filter -> Score -> Dedupe)...');
-
-  setTimeout(() => {
+  try {
+    const started = await fetch('/api/sync', { method: 'POST' });
+    if (!started.ok) throw new Error(started.status === 409 ? 'A discovery run is already running.' : 'Could not start discovery.');
+    showNotification('Updating saved results or running Brave discovery if configured. Apify is not used by this button.');
+    for (let i = 0; i < 180; i++) {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await fetch('/api/status', { cache: 'no-store' });
+      const status = await response.json();
+      if (!status.running) {
+        if (status.error) throw new Error(status.error);
+        await loadJobsData();
+        showNotification(status.message || 'Dashboard update complete.');
+        break;
+      }
+      if (i === 179) showNotification('Discovery is still running. Check the sync status shortly.');
+    }
+  } catch (error) {
+    showNotification(`Refresh failed: ${error.message}`);
+  } finally {
     btn.innerHTML = originalHTML;
     btn.disabled = false;
-    showNotification('Pipeline execution complete! Surfaced fresh PM hiring posts.');
-    loadJobsData();
-  }, 1500);
+    refreshSyncStatus();
+  }
 }
 
 function exportToCsv() {
