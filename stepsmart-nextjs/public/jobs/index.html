@@ -12,114 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
-  <style>
-    .nav-tabs-header {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 12px;
-    }
-    .nav-tab-link {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 18px;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-color);
-      transition: all 0.2s ease;
-    }
-    .nav-tab-link:hover {
-      color: var(--text-primary);
-      border-color: var(--border-highlight);
-      background: rgba(56, 189, 248, 0.08);
-    }
-    .nav-tab-link.active {
-      color: #FFF;
-      background: var(--gradient-brand);
-      border-color: transparent;
-      box-shadow: var(--shadow-glow);
-    }
-    .badge-linkedin { background: rgba(10, 102, 194, 0.2); color: #0A66C2; border: 1px solid rgba(10, 102, 194, 0.4); }
-    .badge-naukri { background: rgba(255, 122, 0, 0.2); color: #FF7A00; border: 1px solid rgba(255, 122, 0, 0.4); }
-    .badge-instahyre { background: rgba(139, 92, 246, 0.2); color: #A78BFA; border: 1px solid rgba(139, 92, 246, 0.4); }
-    .badge-glassdoor { background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.4); }
-    .badge-indeed { background: rgba(37, 99, 235, 0.2); color: #60A5FA; border: 1px solid rgba(37, 99, 235, 0.4); }
-    .badge-site { background: rgba(255, 255, 255, 0.1); color: var(--text-secondary); border: 1px solid var(--border-color); }
-    
-    .view-toggle {
-      display: flex;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      padding: 3px;
-    }
-    .view-btn {
-      padding: 6px 12px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .view-btn.active {
-      background: rgba(56, 189, 248, 0.2);
-      color: var(--accent-cyan);
-    }
-    
-    .table-responsive {
-      width: 100%;
-      overflow-x: auto;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-color);
-      background: var(--bg-card);
-      box-shadow: var(--shadow-main);
-    }
-    .jobs-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-    .jobs-table th, .jobs-table td {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 14px;
-    }
-    .jobs-table th {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-secondary);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 700;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-    .jobs-table tr:hover {
-      background: rgba(56, 189, 248, 0.04);
-    }
-    .company-cell {
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    .title-cell {
-      font-weight: 600;
-      color: var(--accent-cyan);
-    }
-    .date-cell {
-      font-size: 13px;
-      color: var(--text-secondary);
-      white-space: nowrap;
-    }
-  </style>
 </head>
 <body>
   <div class="app-container">
@@ -341,7 +233,7 @@
 
           <div style="margin-bottom: 16px;">
             <h4 style="color: var(--text-secondary); margin-bottom: 8px; font-size: 13px; text-transform: uppercase;">Job Description Overview</h4>
-            <div id="modalDescription" style="white-space: pre-wrap; font-size: 14px; color: var(--text-primary); line-height: 1.6; max-height: 280px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 14px; border-radius: var(--radius-sm);"></div>
+            <div id="modalDescription" style="white-space: pre-wrap; font-size: 14px; color: #334155; line-height: 1.6; max-height: 280px; overflow-y: auto; background: #f8fafc; border: 1px solid var(--border-color); padding: 14px; border-radius: var(--radius-sm);"></div>
           </div>
 
           <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
