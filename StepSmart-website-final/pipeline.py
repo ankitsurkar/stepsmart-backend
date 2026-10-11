@@ -41,9 +41,13 @@ def run_hidden_jobs_pipeline():
         except (OSError, ValueError):
             cached = []
         print("[PIPELINE] Budget guard skipped Apify; returning saved feed without writing or syncing.")
-        return cached
     if not raw_posts and get_last_scrape_errors():
-        raise RuntimeError("LinkedIn scrape failed before returning results; existing feed was left unchanged.")
+        print(f"[PIPELINE WARNING] Live scrape skipped or failed: {get_last_scrape_errors()[0]}. Retaining existing feed.")
+        try:
+            with open(LINKEDIN_POSTS_JSON_PATH, 'r', encoding='utf-8') as existing:
+                return json.load(existing)
+        except Exception:
+            return []
 
     # 2. Standardize Schema & Resolve Job Cards
     standardized_posts = [standardize_schema(p) for p in raw_posts]
