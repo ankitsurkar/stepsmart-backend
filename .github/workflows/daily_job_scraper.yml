@@ -2,9 +2,8 @@ name: Automated Daily Product Management Job Scraper
 
 on:
   schedule:
-    # Runs daily at 03:30 UTC (9:00 AM IST)
     - cron: '30 3 * * *'
-  workflow_dispatch: # Allows manual trigger from GitHub Actions UI
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -34,9 +33,14 @@ jobs:
         working-directory: ./StepSmart-website-final
         run: |
           python run_daily_job_scraper.py
+          mkdir -p ../stepsmart-nextjs/public/jobs/data ../frontend/public/jobs/data
+          cp data/jobs.json ../stepsmart-nextjs/public/jobs/data/jobs.json || true
+          cp data/jobs.json ../frontend/public/jobs/data/jobs.json || true
+          cp strict_pm_jobs_all_portals_india.csv ../stepsmart-nextjs/public/jobs/ || true
+          cp strict_pm_jobs_all_portals_india.csv ../frontend/public/jobs/ || true
 
       - name: Commit and Push Updated Job Data
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chrono: Automated daily PM job board refresh [skip ci]"
-          file_pattern: "StepSmart-website-final/data/jobs.json StepSmart-website-final/strict_pm_jobs_all_portals_india.csv StepSmart-website-final/data/pm_jobs_google_sheets.csv"
+          commit_message: "chrono: Automated daily PM job board refresh"
+          file_pattern: "StepSmart-website-final/data/jobs.json StepSmart-website-final/strict_pm_jobs_all_portals_india.csv stepsmart-nextjs/public/jobs/data/jobs.json frontend/public/jobs/data/jobs.json"
