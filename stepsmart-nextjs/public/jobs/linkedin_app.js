@@ -15,6 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initApp() {
+  if (window.self !== window.top || window.location.search.includes('embed=true')) {
+    document.body.classList.add('is-embedded');
+    document.querySelectorAll('.nav-tab-link').forEach(link => {
+      const sep = link.href.includes('?') ? '&' : '?';
+      if (!link.href.includes('embed=true')) {
+        link.href = link.href + sep + 'embed=true';
+      }
+    });
+  }
   setupEventListeners();
   refreshSyncStatus();
   await loadJobsData();
