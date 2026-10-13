@@ -151,5 +151,13 @@ def run_daily_pipeline():
 
     print(f"\n✅ Pipeline Success! {len(processed_web_jobs)} verified PM jobs updated in data/jobs.json and {csv_path}")
 
+    # Export daily jobs digest for Google Doc sync
+    try:
+        from export_to_google_doc import run_export
+        print("\n--> Generating and syncing daily PM jobs digest for Google Doc...")
+        run_export()
+    except Exception as ge:
+        print(f"[GOOGLE DOC EXPORT WARNING] Non-fatal error exporting to Google Doc: {ge}")
+
 if __name__ == "__main__":
     run_daily_pipeline()

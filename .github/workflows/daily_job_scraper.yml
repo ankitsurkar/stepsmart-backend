@@ -31,11 +31,15 @@ jobs:
 
       - name: Execute Daily Multi-Portal PM Job Scraper (JobSpy Engine)
         working-directory: ./StepSmart-website-final
+        env:
+          GOOGLE_DOC_WEBHOOK_URL: ${{ secrets.GOOGLE_DOC_WEBHOOK_URL }}
         run: |
           python run_daily_job_scraper.py
           mkdir -p ../stepsmart-nextjs/public/jobs/data ../frontend/public/jobs/data
           cp data/jobs.json ../stepsmart-nextjs/public/jobs/data/jobs.json || true
           cp data/jobs.json ../frontend/public/jobs/data/jobs.json || true
+          cp data/daily_pm_jobs_google_doc.md ../stepsmart-nextjs/public/jobs/data/daily_pm_jobs_google_doc.md || true
+          cp data/daily_pm_jobs_google_doc.md ../frontend/public/jobs/data/daily_pm_jobs_google_doc.md || true
           cp strict_pm_jobs_all_portals_india.csv ../stepsmart-nextjs/public/jobs/ || true
           cp strict_pm_jobs_all_portals_india.csv ../frontend/public/jobs/ || true
 
@@ -43,4 +47,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chrono: Automated daily PM job board refresh"
-          file_pattern: "StepSmart-website-final/data/jobs.json StepSmart-website-final/strict_pm_jobs_all_portals_india.csv stepsmart-nextjs/public/jobs/data/jobs.json frontend/public/jobs/data/jobs.json"
+          file_pattern: "StepSmart-website-final/data/jobs.json StepSmart-website-final/data/daily_pm_jobs_google_doc.md StepSmart-website-final/strict_pm_jobs_all_portals_india.csv stepsmart-nextjs/public/jobs/data/jobs.json frontend/public/jobs/data/jobs.json"
