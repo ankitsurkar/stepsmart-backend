@@ -154,16 +154,16 @@ function appendJobsToGoogleDoc(jobs, dateStr) {
   // Add Date & Title Heading
   var headingText = "📅 StepSmart Daily PM Job Board — " + dateStr;
   var heading = body.appendParagraph(headingText);
-  heading.setHeading(DocumentApp.ParagraphHeading.HEADING_2);
-  heading.setForegroundColor("#0f172a");
+  heading.setHeading(DocumentApp.ParagraphHeading.HEADING2);
+  heading.editAsText().setForegroundColor("#0f172a");
 
   // Add Subtitle
-  var sub = body.appendParagraph(
-    "Verified Daily PM Roles (" + jobs.length + " Openings) • Sources: LinkedIn, Naukri, Instahyre, Glassdoor, Indeed"
-  );
-  sub.setFontSize(10.5);
-  sub.setForegroundColor("#64748b");
-  sub.setItalic(true);
+  var subText = "Verified Daily PM Roles (" + jobs.length + " Openings) • Sources: LinkedIn, Naukri, Instahyre, Glassdoor, Indeed";
+  var sub = body.appendParagraph(subText);
+  sub.editAsText()
+     .setFontSize(10)
+     .setForegroundColor("#64748b")
+     .setItalic(true);
 
   // Build Table
   var tableData = [
@@ -184,13 +184,19 @@ function appendJobsToGoogleDoc(jobs, dateStr) {
   }
 
   var table = body.appendTable(tableData);
+  try {
+    table.setBorderColor("#cbd5e1");
+  } catch (_) {}
 
   // Style Header Row
   var headerRow = table.getRow(0);
   for (var col = 0; col < headerRow.getNumCells(); col++) {
     var cell = headerRow.getCell(col);
     cell.setBackgroundColor("#f1f5f9");
-    cell.editAsText().setBold(true).setForegroundColor("#0f172a").setFontSize(10);
+    cell.editAsText()
+        .setBold(true)
+        .setForegroundColor("#0f172a")
+        .setFontSize(10);
   }
 
   // Style Data Rows & Hyperlinks
@@ -201,7 +207,7 @@ function appendJobsToGoogleDoc(jobs, dateStr) {
     for (var cIdx = 0; cIdx < row.getNumCells(); cIdx++) {
       var dCell = row.getCell(cIdx);
       var text = dCell.editAsText();
-      text.setFontSize(9.5);
+      text.setFontSize(9);
 
       // Make Company bold
       if (cIdx === 1) {
