@@ -30,19 +30,41 @@
  * ==============================================================================
  */
 
-// If your Apps Script was created from inside the Google Doc, leave this empty.
-// If created from script.google.com, paste your Google Doc ID here:
+// Paste your Google Doc URL or ID here (e.g. "https://docs.google.com/document/d/YOUR_DOC_ID/edit" or "YOUR_DOC_ID")
+// If your script was opened directly from inside your Google Doc (Extensions -> Apps Script), you can leave this empty.
 var TARGET_DOC_ID = "";
 
 function getTargetDoc() {
-  if (TARGET_DOC_ID && TARGET_DOC_ID.trim() !== "") {
-    return DocumentApp.openById(TARGET_DOC_ID.trim());
-  }
+  // 1. If script is bound directly inside a Google Doc (Extensions -> Apps Script)
   try {
-    return DocumentApp.getActiveDocument();
-  } catch (e) {
-    throw new Error("Target Google Doc not found. Please set TARGET_DOC_ID in the script.");
+    var activeDoc = DocumentApp.getActiveDocument();
+    if (activeDoc) return activeDoc;
+  } catch (_) {}
+
+  // 2. Extract Document ID from TARGET_DOC_ID (handles full URL or raw ID)
+  var raw = (TARGET_DOC_ID || "").trim();
+  if (raw) {
+    var docId = raw;
+    var urlMatch = raw.match(/\/document\/d\/([a-zA-Z0-9-_]+)/);
+    if (urlMatch) {
+      docId = urlMatch[1];
+    }
+    
+    try {
+      return DocumentApp.openById(docId);
+    } catch (err) {
+      try {
+        return DocumentApp.openByUrl(raw);
+      } catch (err2) {
+        var userEmail = Session.getActiveUser().getEmail() || "your active Google account";
+        throw new Error(
+          "Could not open Google Doc. Make sure '" + userEmail + "' has Edit access to the document, or set General Access to 'Anyone with the link can edit'. Doc ID attempted: " + docId
+        );
+      }
+    }
   }
+
+  throw new Error("Target Google Doc not found. Please paste your Google Doc URL or ID into TARGET_DOC_ID at the top of the script.");
 }
 
 /**
