@@ -147,4 +147,21 @@ export const adminSaveEvent = (courseId, event) =>
 export const adminDeleteEvent = (courseId, id) =>
   api.patch(`/admin/courses/${courseId}/weeks/__event__`, { action: 'delete', id });
 
+// ─── Peer-to-Peer Sessions ──────────────────────────────────────────────────
+export const getOpenPeerSessions = (courseId) =>
+  api.get(`/courses/${courseId}/peer-sessions`);
+
+export const getMyPeerSessions = (courseId) =>
+  api.get(`/courses/${courseId}/peer-sessions/my`);
+
+export const createPeerSession = (courseId, sessionData) =>
+  api.post(`/courses/${courseId}/peer-sessions`, sessionData);
+
+export const bookPeerSession = (courseId, sessionId) =>
+  api.post(`/courses/${courseId}/peer-sessions/${sessionId}/book`);
+
+export const cancelPeerSession = (courseId, sessionId) =>
+  api.post(`/courses/${courseId}/peer-sessions/${sessionId}/cancel`);
+
 export default api;
+

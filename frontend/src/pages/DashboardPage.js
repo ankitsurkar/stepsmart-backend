@@ -4,6 +4,7 @@ import * as Tooltip from '@radix-ui/react-tooltip';
 import { useAuth } from '../context/AuthContext';
 import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../utils/api';
 import AssignmentUpload from '../components/AssignmentUpload';
+import PeerSessionsTab from '../components/PeerSessionsTab';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Book, Briefcase, Clock, ClipboardList, Calendar, Folder, Users, Settings, Bell, Trophy, HelpCircle, Bookmark, CheckCircle2, Copy, Filter } from 'lucide-react';
 import { addDays, subDays, startOfMonth as startOfMonthFn, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, getDaysInMonth, getDate, isSameMonth, isSameDay, getDay, addMonths } from 'date-fns';
@@ -4448,21 +4449,12 @@ export default function DashboardPage() {
 
   function renderSchedulingView() {
     return (
-      <div style={s.card}>
-        <div style={s.panelHeader}>
-          <div>
-            <div style={s.sectionTitle}>1:1 Scheduling</div>
-            <div style={s.sectionMeta}>Schedule links and mentor slots will appear here.</div>
-          </div>
-        </div>
-        {qaLesson ? (
-          <a href={qaLesson.qaLink} target="_blank" rel="noopener noreferrer" style={s.primaryAction}>
-            Open Q&amp;A Booking
-          </a>
-        ) : (
-          <div style={s.empty}>No scheduling link is available yet for your completed lessons.</div>
-        )}
-      </div>
+      <PeerSessionsTab
+        courseId={activeCourse?.courseId}
+        courseTitle={activeCourse?.title || activeCourse?.name}
+        qaLesson={qaLesson}
+        currentUserId={user?.sub || user?.id}
+      />
     );
   }
 
@@ -5436,9 +5428,9 @@ export default function DashboardPage() {
   }
 
   if (activeView === 'scheduling') {
-    viewEyebrow = '1:1 Scheduling';
-    viewTitle = 'Book Your Mentoring Session';
-    viewSubtitle = 'Access your live booking links and scheduling updates.';
+    viewEyebrow = 'Sessions & Networking';
+    viewTitle = 'Peer Study & Mentoring Hub';
+    viewSubtitle = 'Connect with classmates for 1-on-1 study sessions, mock interviews, and access mentor office hours.';
   }
 
   if (activeView === 'assignments') {
