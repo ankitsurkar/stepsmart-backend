@@ -32,6 +32,30 @@ const PRESET_TOPICS = [
   'Resume & Portfolio Discussion'
 ];
 
+// Generate 30-min interval times throughout 24 hours, ordered from 6 AM to midnight then early morning
+const TIME_SLOTS = [];
+for (let hour = 6; hour < 24; hour++) {
+  for (let min = 0; min < 60; min += 30) {
+    const hh = String(hour).padStart(2, '0');
+    const mm = String(min).padStart(2, '0');
+    const val = `${hh}:${mm}`;
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const displayH = hour % 12 === 0 ? 12 : hour % 12;
+    TIME_SLOTS.push({ value: val, label: `${displayH}:${mm} ${period}` });
+  }
+}
+for (let hour = 0; hour < 6; hour++) {
+  for (let min = 0; min < 60; min += 30) {
+    const hh = String(hour).padStart(2, '0');
+    const mm = String(min).padStart(2, '0');
+    const val = `${hh}:${mm}`;
+    const displayH = hour === 0 ? 12 : hour;
+    TIME_SLOTS.push({ value: val, label: `${displayH}:${mm} AM` });
+  }
+}
+
+const DURATION_CHOICES = [15, 30, 45, 60, 90];
+
 export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, currentUserId }) {
   const [activeTab, setActiveTab] = useState('peer'); // 'peer' | 'mentor'
   const [openSlots, setOpenSlots] = useState([]);
@@ -955,23 +979,47 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                   <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '6px' }}>
                     Start Time *
                   </label>
-                  <input
-                    type="time"
-                    value={formTime}
-                    onChange={(e) => setFormTime(e.target.value)}
-                    required
-                    style={{
-                      width: '100%',
-                      boxSizing: 'border-box',
-                      padding: '10px 12px',
-                      background: '#f8fafc',
-                      border: '1px solid #cbd5e1',
-                      borderRadius: '10px',
-                      fontSize: '0.875rem',
-                      color: '#0f172a',
-                      outline: 'none'
-                    }}
-                  />
+                  <div style={{ position: 'relative' }}>
+                    <select
+                      value={formTime}
+                      onChange={(e) => setFormTime(e.target.value)}
+                      required
+                      style={{
+                        width: '100%',
+                        boxSizing: 'border-box',
+                        padding: '10px 36px 10px 12px',
+                        background: '#f8fafc',
+                        border: '1px solid #cbd5e1',
+                        borderRadius: '10px',
+                        fontSize: '0.875rem',
+                        fontWeight: 500,
+                        color: '#0f172a',
+                        outline: 'none',
+                        cursor: 'pointer',
+                        appearance: 'none',
+                        WebkitAppearance: 'none',
+                        MozAppearance: 'none'
+                      }}
+                    >
+                      {TIME_SLOTS.map((slot) => (
+                        <option key={slot.value} value={slot.value}>
+                          {slot.label}
+                        </option>
+                      ))}
+                    </select>
+                    <div style={{
+                      position: 'absolute',
+                      right: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      pointerEvents: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: '#64748b'
+                    }}>
+                      <Clock size={16} />
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -980,26 +1028,28 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                 <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '6px' }}>
                   Duration
                 </label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  {[30, 45, 60].map((mins) => (
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {DURATION_CHOICES.map((mins) => (
                     <button
                       key={mins}
                       type="button"
                       onClick={() => setFormDuration(mins)}
                       style={{
                         flex: 1,
-                        padding: '8px 12px',
-                        border: formDuration === mins ? '1px solid var(--primary, #188ab2)' : '1px solid #cbd5e1',
+                        minWidth: '55px',
+                        padding: '9px 10px',
+                        border: formDuration === mins ? '1.5px solid var(--primary, #188ab2)' : '1px solid #cbd5e1',
                         borderRadius: '10px',
                         background: formDuration === mins ? 'var(--primary, #188ab2)' : '#ffffff',
                         color: formDuration === mins ? '#ffffff' : '#475569',
                         fontWeight: 600,
                         fontSize: '0.825rem',
                         cursor: 'pointer',
+                        boxShadow: formDuration === mins ? '0 3px 10px rgba(24, 138, 178, 0.28)' : 'none',
                         transition: 'all 0.15s ease'
                       }}
                     >
-                      {mins} mins
+                      {mins}m
                     </button>
                   ))}
                 </div>
