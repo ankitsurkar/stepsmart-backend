@@ -12,9 +12,8 @@ import {
   Trash2, 
   CheckCircle2, 
   AlertCircle,
-  HelpCircle,
-  MessageSquare,
-  UserCheck
+  UserCheck,
+  MessageSquare
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { 
@@ -87,7 +86,6 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
       return;
     }
 
-    // Combine local date and time to ISO string
     const scheduledStart = new Date(`${formDate}T${formTime}:00`);
     if (isNaN(scheduledStart.getTime())) {
       toast.error('Invalid date or time selected.');
@@ -111,7 +109,7 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
         customMeetingUrl: formCustomUrl.trim() || undefined,
       });
 
-      toast.success('Study slot created! Classmates can now join.');
+      toast.success('Study slot created! Classmates can now connect with you.');
       setIsModalOpen(false);
       setFormNotes('');
       setFormCustomUrl('');
@@ -184,34 +182,28 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
   const availableClassmateSlots = openSlots.filter(s => s.hostUserId !== currentUserId);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', maxWidth: '1100px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
       
-      {/* ── Top Tabs Switcher (Neobrutalism Style) ── */}
+      {/* ── Top Tabs Switcher (Native LMS Style) ── */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{
-          display: 'inline-flex',
-          background: '#ffffff',
-          border: '2px solid #111111',
-          padding: '4px',
-          borderRadius: '12px',
-          boxShadow: '3px 3px 0px 0px #111111',
-          gap: '4px'
-        }}>
+        <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
           <button
             type="button"
             onClick={() => setActiveTab('peer')}
             style={{
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              padding: '8px 18px',
-              borderRadius: '8px',
-              border: activeTab === 'peer' ? '2px solid #111111' : '2px solid transparent',
-              background: activeTab === 'peer' ? '#FACC15' : 'transparent',
-              color: '#111111',
-              fontWeight: 700,
+              padding: '0.65rem 1.25rem',
+              borderRadius: '999px',
+              fontWeight: 600,
               fontSize: '0.875rem',
               cursor: 'pointer',
+              border: activeTab === 'peer' ? '1px solid var(--primary, #188ab2)' : '1px solid rgba(15, 40, 80, 0.12)',
+              background: activeTab === 'peer' ? 'var(--primary, #188ab2)' : 'rgba(255, 255, 255, 0.8)',
+              color: activeTab === 'peer' ? '#ffffff' : 'var(--muted-foreground, #64748b)',
+              boxShadow: activeTab === 'peer' ? '0 4px 14px rgba(24, 138, 178, 0.28)' : 'none',
+              backdropFilter: 'blur(8px)',
               transition: 'all 0.15s ease'
             }}
           >
@@ -222,17 +214,19 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
             type="button"
             onClick={() => setActiveTab('mentor')}
             style={{
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              padding: '8px 18px',
-              borderRadius: '8px',
-              border: activeTab === 'mentor' ? '2px solid #111111' : '2px solid transparent',
-              background: activeTab === 'mentor' ? '#FACC15' : 'transparent',
-              color: '#111111',
-              fontWeight: 700,
+              padding: '0.65rem 1.25rem',
+              borderRadius: '999px',
+              fontWeight: 600,
               fontSize: '0.875rem',
               cursor: 'pointer',
+              border: activeTab === 'mentor' ? '1px solid var(--primary, #188ab2)' : '1px solid rgba(15, 40, 80, 0.12)',
+              background: activeTab === 'mentor' ? 'var(--primary, #188ab2)' : 'rgba(255, 255, 255, 0.8)',
+              color: activeTab === 'mentor' ? '#ffffff' : 'var(--muted-foreground, #64748b)',
+              boxShadow: activeTab === 'mentor' ? '0 4px 14px rgba(24, 138, 178, 0.28)' : 'none',
+              backdropFilter: 'blur(8px)',
               transition: 'all 0.15s ease'
             }}
           >
@@ -242,49 +236,49 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
         </div>
 
         {activeTab === 'peer' && (
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
             <button
               type="button"
               onClick={() => loadSessions(true)}
               disabled={refreshing}
-              title="Refresh sessions"
+              title="Refresh slots"
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '9px 12px',
+                width: '38px',
+                height: '38px',
                 background: '#ffffff',
-                border: '2px solid #111111',
-                borderRadius: '10px',
-                boxShadow: '3px 3px 0px 0px #111111',
+                border: '1px solid rgba(15, 40, 80, 0.12)',
+                borderRadius: '12px',
                 cursor: 'pointer',
-                color: '#111111'
+                color: '#64748b',
+                boxShadow: '0 2px 6px rgba(15, 40, 80, 0.04)',
+                transition: 'all 0.15s ease'
               }}
             >
-              <RefreshCw size={16} style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />
+              <RefreshCw size={15} style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />
             </button>
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                background: '#0f6f8f',
+                background: 'var(--primary, #188ab2)',
                 color: '#ffffff',
-                border: '2px solid #111111',
-                borderRadius: '10px',
-                padding: '9px 18px',
-                fontWeight: 700,
+                border: 'none',
+                borderRadius: '12px',
+                padding: '0.65rem 1.2rem',
+                fontWeight: 600,
                 fontSize: '0.875rem',
                 cursor: 'pointer',
-                boxShadow: '3px 3px 0px 0px #111111',
-                transition: 'transform 0.1s ease'
+                boxShadow: '0 4px 14px rgba(24, 138, 178, 0.28)',
+                transition: 'all 0.15s ease'
               }}
-              onMouseDown={(e) => { e.currentTarget.style.transform = 'translate(2px, 2px)'; }}
-              onMouseUp={(e) => { e.currentTarget.style.transform = 'none'; }}
             >
-              <Plus size={18} />
+              <Plus size={16} />
               Offer a Study Slot
             </button>
           </div>
@@ -293,40 +287,41 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
 
       {/* ── TAB 1: PEER-TO-PEER STUDY ── */}
       {activeTab === 'peer' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           
-          {/* Banner Card */}
+          {/* Header Banner Card (Soft Gradient LMS Style) */}
           <div style={{
-            background: '#FFF3A7',
-            border: '2px solid #111111',
-            borderRadius: '14px',
-            padding: '1.25rem 1.5rem',
-            boxShadow: '4px 4px 0px 0px #111111',
+            background: 'linear-gradient(135deg, rgba(24, 138, 178, 0.08) 0%, rgba(255, 255, 255, 0.95) 100%)',
+            border: '1px solid rgba(24, 138, 178, 0.18)',
+            borderRadius: '20px',
+            padding: '1.5rem',
+            boxShadow: '0 10px 28px rgba(15, 40, 80, 0.06)',
+            backdropFilter: 'blur(10px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
-            gap: '1rem'
+            gap: '1.25rem'
           }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                 <span style={{
-                  background: '#111111',
-                  color: '#FFF3A7',
-                  padding: '2px 8px',
-                  borderRadius: '4px',
-                  fontSize: '0.72rem',
-                  fontWeight: 900,
-                  letterSpacing: '0.5px'
+                  background: 'rgba(24, 138, 178, 0.12)',
+                  color: '#0f6f8f',
+                  padding: '3px 10px',
+                  borderRadius: '999px',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.02em'
                 }}>
                   PEER LEARNING
                 </span>
-                <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#111111' }}>
-                  Connect 1-on-1 with Your Classmates
+                <span style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--foreground, #0f172a)' }}>
+                  Practice & Learn with Cohort Classmates
                 </span>
               </div>
-              <p style={{ margin: 0, fontSize: '0.875rem', color: '#333333', maxWidth: '680px', lineHeight: 1.5 }}>
-                Select an open slot below to study together, practice mock interviews, or work on course assignments. An instant private video room will be ready for you both.
+              <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--muted-foreground, #64748b)', maxWidth: '680px', lineHeight: 1.5 }}>
+                Connect 1-on-1 for mock product interviews, assignment brainstorms, or topic revisions. A private zero-setup video meeting link is created instantly once matched.
               </p>
             </div>
             <button
@@ -334,92 +329,93 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
               onClick={() => setIsModalOpen(true)}
               style={{
                 background: '#ffffff',
-                border: '2px solid #111111',
-                padding: '8px 16px',
-                borderRadius: '8px',
-                fontWeight: 700,
-                fontSize: '0.825rem',
-                color: '#111111',
+                border: '1px solid rgba(24, 138, 178, 0.3)',
+                padding: '0.65rem 1.15rem',
+                borderRadius: '12px',
+                fontWeight: 600,
+                fontSize: '0.85rem',
+                color: '#0f6f8f',
                 cursor: 'pointer',
-                boxShadow: '2px 2px 0px 0px #111111',
-                whiteSpace: 'nowrap'
+                boxShadow: '0 2px 8px rgba(24, 138, 178, 0.08)',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.15s ease'
               }}
             >
-              + Create Your Own Slot
+              + Create Your Slot
             </button>
           </div>
 
-          {/* Section: My Sessions (Offered or Booked) */}
+          {/* Section: My Scheduled Sessions (Offered or Matched) */}
           {(myBooked.length > 0 || myOffered.length > 0) && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <UserCheck size={18} color="#0f6f8f" />
-                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#111111' }}>
+                <UserCheck size={18} color="#188ab2" />
+                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--foreground, #0f172a)' }}>
                   My Scheduled Sessions ({myBooked.length + myOffered.length})
                 </h3>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1rem' }}>
-                {/* 1. Booked Sessions (where current user is peer or matched host) */}
+                {/* Booked Sessions */}
                 {myBooked.map((session) => (
                   <div key={session.sessionId} style={{
-                    background: '#ffffff',
-                    border: '2px solid #111111',
-                    borderRadius: '12px',
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    border: '1px solid rgba(15, 40, 80, 0.08)',
+                    borderRadius: '18px',
                     padding: '1.25rem',
-                    boxShadow: '3px 3px 0px 0px #111111',
+                    boxShadow: '0 8px 24px rgba(15, 40, 80, 0.06)',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     gap: '1rem'
                   }}>
                     <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
                         <span style={{
-                          background: '#D1FAE5',
-                          border: '1.5px solid #111111',
-                          padding: '2px 8px',
-                          borderRadius: '6px',
-                          fontSize: '0.72rem',
-                          fontWeight: 800,
-                          color: '#065f46'
+                          background: 'rgba(16, 185, 129, 0.12)',
+                          color: '#059669',
+                          padding: '3px 9px',
+                          borderRadius: '999px',
+                          fontSize: '0.75rem',
+                          fontWeight: 700
                         }}>
-                          MATCHED WITH {session.hostName?.toUpperCase() || 'CLASSMATE'}
+                          Matched with {session.hostName || 'Classmate'}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleCancel(session.sessionId, false, session.status)}
                           disabled={actionId === session.sessionId}
-                          title="Leave this session"
+                          title="Leave session"
                           style={{
-                            background: '#FEE2E2',
-                            border: '1px solid #111111',
-                            borderRadius: '6px',
-                            padding: '4px 6px',
+                            background: 'transparent',
+                            border: 'none',
+                            color: '#ef4444',
                             cursor: 'pointer',
-                            display: 'flex',
+                            display: 'inline-flex',
                             alignItems: 'center',
-                            color: '#991b1b',
+                            gap: '4px',
                             fontSize: '0.75rem',
-                            fontWeight: 700
+                            fontWeight: 600,
+                            padding: '3px 6px',
+                            borderRadius: '6px'
                           }}
                         >
-                          <Trash2 size={13} style={{ marginRight: '4px' }} /> Leave
+                          <Trash2 size={13} /> Leave
                         </button>
                       </div>
 
-                      <div style={{ fontWeight: 800, fontSize: '1rem', color: '#111111', marginBottom: '6px' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.975rem', color: 'var(--foreground, #0f172a)', marginBottom: '6px' }}>
                         {session.topic}
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.825rem', color: '#4b5563', marginBottom: '4px' }}>
-                        <Calendar size={14} />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.825rem', color: '#64748b', marginBottom: '6px' }}>
+                        <Calendar size={14} color="#188ab2" />
                         <span>{formatDateTime(session.scheduledStartTime)}</span>
                       </div>
 
                       {session.hostEmail && (
-                        <div style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '6px' }}>
-                          Host Email: <span style={{ fontWeight: 600, color: '#111111' }}>{session.hostEmail}</span>
+                        <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                          Host Email: <span style={{ fontWeight: 500, color: '#334155' }}>{session.hostEmail}</span>
                         </div>
                       )}
                     </div>
@@ -433,49 +429,49 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: '6px',
-                        background: '#0f6f8f',
+                        background: 'var(--primary, #188ab2)',
                         color: '#ffffff',
-                        border: '2px solid #111111',
-                        borderRadius: '8px',
-                        padding: '9px 12px',
-                        fontWeight: 700,
+                        border: 'none',
+                        borderRadius: '10px',
+                        padding: '9px 14px',
+                        fontWeight: 600,
                         fontSize: '0.85rem',
                         textDecoration: 'none',
-                        boxShadow: '2px 2px 0px 0px #111111'
+                        boxShadow: '0 4px 12px rgba(24, 138, 178, 0.22)',
+                        transition: 'opacity 0.15s ease'
                       }}
                     >
-                      <Video size={16} /> Join Video Call <ExternalLink size={14} />
+                      <Video size={16} /> Join Video Room <ExternalLink size={14} />
                     </a>
                   </div>
                 ))}
 
-                {/* 2. My Offered Slots */}
+                {/* My Offered Slots */}
                 {myOffered.map((session) => {
                   const isBooked = session.status === 'BOOKED';
                   return (
                     <div key={session.sessionId} style={{
-                      background: '#ffffff',
-                      border: '2px solid #111111',
-                      borderRadius: '12px',
+                      background: 'rgba(255, 255, 255, 0.95)',
+                      border: '1px solid rgba(15, 40, 80, 0.08)',
+                      borderRadius: '18px',
                       padding: '1.25rem',
-                      boxShadow: '3px 3px 0px 0px #111111',
+                      boxShadow: '0 8px 24px rgba(15, 40, 80, 0.06)',
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'space-between',
                       gap: '1rem'
                     }}>
                       <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
                           <span style={{
-                            background: isBooked ? '#D1FAE5' : '#FEF3C7',
-                            border: '1.5px solid #111111',
-                            padding: '2px 8px',
-                            borderRadius: '6px',
-                            fontSize: '0.72rem',
-                            fontWeight: 800,
-                            color: isBooked ? '#065f46' : '#92400e'
+                            background: isBooked ? 'rgba(16, 185, 129, 0.12)' : 'rgba(245, 158, 11, 0.12)',
+                            color: isBooked ? '#059669' : '#d97706',
+                            padding: '3px 9px',
+                            borderRadius: '999px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700
                           }}>
-                            {isBooked ? `BOOKED BY ${session.peerName?.toUpperCase() || 'STUDENT'}` : 'OPEN (WAITING FOR PEER)'}
+                            {isBooked ? `Booked by ${session.peerName || 'Student'}` : 'Open (Waiting for peer)'}
                           </span>
                           <button
                             type="button"
@@ -483,34 +479,35 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                             disabled={actionId === session.sessionId}
                             title="Cancel slot"
                             style={{
-                              background: '#FEE2E2',
-                              border: '1px solid #111111',
-                              borderRadius: '6px',
-                              padding: '4px 6px',
+                              background: 'transparent',
+                              border: 'none',
+                              color: '#ef4444',
                               cursor: 'pointer',
-                              display: 'flex',
+                              display: 'inline-flex',
                               alignItems: 'center',
-                              color: '#991b1b',
+                              gap: '4px',
                               fontSize: '0.75rem',
-                              fontWeight: 700
+                              fontWeight: 600,
+                              padding: '3px 6px',
+                              borderRadius: '6px'
                             }}
                           >
-                            <Trash2 size={13} style={{ marginRight: '4px' }} /> {isBooked ? 'Cancel' : 'Delete'}
+                            <Trash2 size={13} /> {isBooked ? 'Cancel' : 'Delete'}
                           </button>
                         </div>
 
-                        <div style={{ fontWeight: 800, fontSize: '1rem', color: '#111111', marginBottom: '6px' }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.975rem', color: 'var(--foreground, #0f172a)', marginBottom: '6px' }}>
                           {session.topic}
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.825rem', color: '#4b5563', marginBottom: '4px' }}>
-                          <Calendar size={14} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.825rem', color: '#64748b', marginBottom: '6px' }}>
+                          <Calendar size={14} color="#188ab2" />
                           <span>{formatDateTime(session.scheduledStartTime)}</span>
                         </div>
 
                         {isBooked && session.peerEmail && (
-                          <div style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '6px' }}>
-                            Peer Email: <span style={{ fontWeight: 600, color: '#111111' }}>{session.peerEmail}</span>
+                          <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                            Peer Email: <span style={{ fontWeight: 500, color: '#334155' }}>{session.peerEmail}</span>
                           </div>
                         )}
                       </div>
@@ -525,22 +522,22 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '6px',
-                            background: '#0f6f8f',
+                            background: 'var(--primary, #188ab2)',
                             color: '#ffffff',
-                            border: '2px solid #111111',
-                            borderRadius: '8px',
-                            padding: '9px 12px',
-                            fontWeight: 700,
+                            border: 'none',
+                            borderRadius: '10px',
+                            padding: '9px 14px',
+                            fontWeight: 600,
                             fontSize: '0.85rem',
                             textDecoration: 'none',
-                            boxShadow: '2px 2px 0px 0px #111111'
+                            boxShadow: '0 4px 12px rgba(24, 138, 178, 0.22)'
                           }}
                         >
-                          <Video size={16} /> Join Video Call <ExternalLink size={14} />
+                          <Video size={16} /> Join Video Room <ExternalLink size={14} />
                         </a>
                       ) : (
-                        <div style={{ fontSize: '0.78rem', color: '#666', fontStyle: 'italic' }}>
-                          Link will activate once a classmate connects.
+                        <div style={{ fontSize: '0.8rem', color: '#94a3b8', fontStyle: 'italic' }}>
+                          Video room will activate once a peer books this slot.
                         </div>
                       )}
                     </div>
@@ -552,32 +549,30 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
 
           {/* Section: Available Open Slots from Classmates */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Sparkles size={18} color="#F59E0B" />
-                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#111111' }}>
-                  Open Slots Offered by Classmates ({availableClassmateSlots.length})
-                </h3>
-              </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Sparkles size={18} color="#188ab2" />
+              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--foreground, #0f172a)' }}>
+                Available Classmate Slots ({availableClassmateSlots.length})
+              </h3>
             </div>
 
             {loading ? (
               <div style={{
-                background: '#ffffff',
-                border: '2px solid #111111',
-                borderRadius: '12px',
+                background: 'rgba(255, 255, 255, 0.85)',
+                border: '1px solid rgba(15, 40, 80, 0.08)',
+                borderRadius: '18px',
                 padding: '2.5rem',
                 textAlign: 'center',
-                boxShadow: '3px 3px 0px 0px #111111',
-                color: '#666'
+                boxShadow: '0 8px 24px rgba(15, 40, 80, 0.05)',
+                color: '#64748b'
               }}>
-                Loading available peer slots...
+                Loading open slots...
               </div>
             ) : availableClassmateSlots.length === 0 ? (
               <div style={{
-                background: '#ffffff',
-                border: '2px dashed #999999',
-                borderRadius: '12px',
+                background: 'rgba(255, 255, 255, 0.7)',
+                border: '1px dashed rgba(15, 40, 80, 0.16)',
+                borderRadius: '18px',
                 padding: '3rem 1.5rem',
                 textAlign: 'center',
                 display: 'flex',
@@ -586,38 +581,36 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                 gap: '0.75rem'
               }}>
                 <div style={{
-                  width: '54px',
-                  height: '54px',
-                  borderRadius: '50%',
-                  background: '#FEF3C7',
-                  border: '2px solid #111111',
+                  width: '50px',
+                  height: '50px',
+                  borderRadius: '14px',
+                  background: 'rgba(24, 138, 178, 0.1)',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '2px 2px 0px 0px #111111'
+                  justifyContent: 'center'
                 }}>
-                  <Users size={26} color="#111111" />
+                  <Users size={24} color="#188ab2" />
                 </div>
-                <div style={{ fontWeight: 800, fontSize: '1.1rem', color: '#111111' }}>
+                <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--foreground, #0f172a)' }}>
                   No open study slots right now
                 </div>
-                <p style={{ margin: 0, fontSize: '0.875rem', color: '#666', maxWidth: '420px', lineHeight: 1.5 }}>
-                  Be the first in your cohort to offer a study slot! Set your preferred time, and a classmate can connect with you with one click.
+                <p style={{ margin: 0, fontSize: '0.875rem', color: '#64748b', maxWidth: '420px', lineHeight: 1.5 }}>
+                  Be the first to offer a study slot! Select a time that works for you, and your classmates can join with a single click.
                 </p>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(true)}
                   style={{
-                    marginTop: '0.5rem',
-                    background: '#0f6f8f',
+                    marginTop: '0.4rem',
+                    background: 'var(--primary, #188ab2)',
                     color: '#ffffff',
-                    border: '2px solid #111111',
-                    borderRadius: '8px',
-                    padding: '8px 18px',
-                    fontWeight: 700,
-                    fontSize: '0.875rem',
+                    border: 'none',
+                    borderRadius: '10px',
+                    padding: '0.65rem 1.25rem',
+                    fontWeight: 600,
+                    fontSize: '0.85rem',
                     cursor: 'pointer',
-                    boxShadow: '3px 3px 0px 0px #111111'
+                    boxShadow: '0 4px 14px rgba(24, 138, 178, 0.28)'
                   }}
                 >
                   + Offer a Study Slot
@@ -628,40 +621,38 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                 {availableClassmateSlots.map((slot) => (
                   <div key={slot.sessionId} style={{
                     background: '#ffffff',
-                    border: '2px solid #111111',
-                    borderRadius: '12px',
+                    border: '1px solid rgba(15, 40, 80, 0.08)',
+                    borderRadius: '18px',
                     padding: '1.25rem',
-                    boxShadow: '4px 4px 0px 0px #111111',
+                    boxShadow: '0 8px 24px rgba(15, 40, 80, 0.06)',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     gap: '1rem',
-                    transition: 'transform 0.15s ease'
+                    transition: 'transform 0.15s ease, box-shadow 0.15s ease'
                   }}>
                     <div>
-                      {/* Host Badge */}
+                      {/* Host Info */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                         <div style={{
-                          width: '38px',
-                          height: '38px',
-                          borderRadius: '8px',
-                          background: '#E0F2FE',
-                          border: '2px solid #111111',
+                          width: '36px',
+                          height: '36px',
+                          borderRadius: '10px',
+                          background: 'rgba(24, 138, 178, 0.12)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          fontWeight: 800,
-                          fontSize: '1rem',
-                          color: '#0369a1',
-                          boxShadow: '1.5px 1.5px 0px 0px #111111'
+                          fontWeight: 700,
+                          fontSize: '0.95rem',
+                          color: '#0f6f8f'
                         }}>
                           {slot.hostName ? slot.hostName.charAt(0).toUpperCase() : 'S'}
                         </div>
                         <div>
-                          <div style={{ fontWeight: 800, fontSize: '0.925rem', color: '#111111' }}>
+                          <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--foreground, #0f172a)' }}>
                             {slot.hostName || 'Classmate'}
                           </div>
-                          <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+                          <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
                             Course Peer
                           </div>
                         </div>
@@ -669,11 +660,11 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
 
                       {/* Topic */}
                       <div style={{
-                        fontWeight: 800,
-                        fontSize: '1.05rem',
-                        color: '#111111',
+                        fontWeight: 700,
+                        fontSize: '1rem',
+                        color: 'var(--foreground, #0f172a)',
                         marginBottom: '8px',
-                        lineHeight: 1.3
+                        lineHeight: 1.35
                       }}>
                         {slot.topic}
                       </div>
@@ -685,27 +676,28 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                         gap: '6px',
                         background: '#f8fafc',
                         border: '1px solid #e2e8f0',
-                        borderRadius: '6px',
+                        borderRadius: '8px',
                         padding: '6px 10px',
                         fontSize: '0.825rem',
-                        fontWeight: 600,
+                        fontWeight: 500,
                         color: '#334155',
                         marginBottom: '8px'
                       }}>
-                        <Calendar size={14} color="#0f6f8f" />
+                        <Calendar size={14} color="#188ab2" />
                         <span>{formatDateTime(slot.scheduledStartTime)}</span>
                       </div>
 
-                      {/* Notes / Description */}
+                      {/* Notes / Agenda */}
                       {slot.notes && (
                         <p style={{
                           fontSize: '0.825rem',
-                          color: '#4b5563',
+                          color: '#64748b',
                           margin: 0,
-                          lineHeight: 1.4,
-                          background: '#fffdf5',
-                          borderLeft: '3px solid #FACC15',
-                          padding: '4px 8px'
+                          lineHeight: 1.45,
+                          background: '#f8fafc',
+                          borderLeft: '3px solid #188ab2',
+                          padding: '6px 10px',
+                          borderRadius: '0 6px 6px 0'
                         }}>
                           "{slot.notes}"
                         </p>
@@ -722,19 +714,17 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: '8px',
-                        background: '#FACC15',
-                        color: '#111111',
-                        border: '2px solid #111111',
-                        borderRadius: '8px',
+                        background: 'var(--primary, #188ab2)',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '10px',
                         padding: '10px 14px',
-                        fontWeight: 800,
+                        fontWeight: 600,
                         fontSize: '0.875rem',
                         cursor: 'pointer',
-                        boxShadow: '2px 2px 0px 0px #111111',
-                        transition: 'transform 0.1s ease'
+                        boxShadow: '0 4px 14px rgba(24, 138, 178, 0.25)',
+                        transition: 'opacity 0.15s ease'
                       }}
-                      onMouseDown={(e) => { e.currentTarget.style.transform = 'translate(1.5px, 1.5px)'; }}
-                      onMouseUp={(e) => { e.currentTarget.style.transform = 'none'; }}
                     >
                       <Users size={16} />
                       {actionId === slot.sessionId ? 'Connecting...' : 'Connect & Join Slot'}
@@ -747,44 +737,44 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
         </div>
       )}
 
-      {/* ── TAB 2: 1:1 MENTOR OFFICE HOURS (Existing System) ── */}
+      {/* ── TAB 2: 1:1 MENTOR OFFICE HOURS (Preserves Existing System) ── */}
       {activeTab === 'mentor' && (
         <div style={{
-          background: '#ffffff',
-          border: '2px solid #111111',
-          borderRadius: '14px',
+          background: 'rgba(255, 255, 255, 0.95)',
+          border: '1px solid rgba(15, 40, 80, 0.08)',
+          borderRadius: '20px',
           padding: '2rem',
-          boxShadow: '4px 4px 0px 0px #111111',
+          boxShadow: '0 10px 28px rgba(15, 40, 80, 0.06)',
+          backdropFilter: 'blur(10px)',
           display: 'flex',
           flexDirection: 'column',
           gap: '1.25rem'
         }}>
           <div>
             <span style={{
-              background: '#E0F2FE',
-              border: '1.5px solid #111111',
-              padding: '2px 8px',
-              borderRadius: '4px',
-              fontSize: '0.72rem',
-              fontWeight: 800,
-              color: '#0369a1'
+              background: 'rgba(24, 138, 178, 0.1)',
+              color: '#0f6f8f',
+              padding: '3px 10px',
+              borderRadius: '999px',
+              fontSize: '0.75rem',
+              fontWeight: 700
             }}>
               OFFICE HOURS
             </span>
-            <h2 style={{ fontSize: '1.3rem', fontWeight: 900, color: '#111111', margin: '8px 0 4px 0' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--foreground, #0f172a)', margin: '8px 0 4px 0' }}>
               1:1 Mentor Scheduling
             </h2>
-            <p style={{ margin: 0, fontSize: '0.9rem', color: '#4b5563', lineHeight: 1.5 }}>
-              Book dedicated office hours with instructors and industry mentors to review assignments, unblock doubts, and discuss career roadmaps.
+            <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748b', lineHeight: 1.5 }}>
+              Book office hours with instructors and mentors to review assignments, resolve doubts, and receive personalized feedback.
             </p>
           </div>
 
-          <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '4px 0' }} />
+          <hr style={{ border: 'none', borderTop: '1px solid rgba(15, 40, 80, 0.06)', margin: '4px 0' }} />
 
           {qaLesson?.qaLink ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>
-              <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111111' }}>
-                Your current Q&A and mentoring calendar booking link is active:
+              <div style={{ fontSize: '0.9rem', fontWeight: 500, color: '#334155' }}>
+                Your mentoring calendar booking link is currently available:
               </div>
               <a
                 href={qaLesson.qaLink}
@@ -794,25 +784,25 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  background: '#0f6f8f',
+                  background: 'var(--primary, #188ab2)',
                   color: '#ffffff',
-                  border: '2px solid #111111',
-                  borderRadius: '10px',
-                  padding: '12px 24px',
-                  fontWeight: 800,
-                  fontSize: '0.95rem',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '11px 22px',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
                   textDecoration: 'none',
-                  boxShadow: '3px 3px 0px 0px #111111'
+                  boxShadow: '0 4px 14px rgba(24, 138, 178, 0.28)'
                 }}
               >
-                <Calendar size={18} /> Open Mentor Booking Calendar <ExternalLink size={16} />
+                <Calendar size={17} /> Open Q&amp;A Booking Calendar <ExternalLink size={15} />
               </a>
             </div>
           ) : (
             <div style={{
               background: '#f8fafc',
               border: '1px solid #e2e8f0',
-              borderRadius: '10px',
+              borderRadius: '12px',
               padding: '1.5rem',
               color: '#64748b',
               fontSize: '0.9rem',
@@ -821,19 +811,19 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
               gap: '10px'
             }}>
               <AlertCircle size={20} color="#94a3b8" />
-              <span>No mentor scheduling link is released yet for your completed course modules. Mentoring slots open as you progress.</span>
+              <span>No mentor scheduling link is available yet for your completed lessons. Mentoring slots open as you complete modules.</span>
             </div>
           )}
         </div>
       )}
 
-      {/* ── CREATE STUDY SLOT MODAL (Neobrutalism Design) ── */}
+      {/* ── CREATE STUDY SLOT MODAL (Clean LMS SaaS Style) ── */}
       {isModalOpen && (
         <div style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(0,0,0,0.6)',
-          backdropFilter: 'blur(3px)',
+          background: 'rgba(15, 23, 42, 0.45)',
+          backdropFilter: 'blur(4px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -842,11 +832,11 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
         }}>
           <div style={{
             background: '#ffffff',
-            border: '3px solid #111111',
-            borderRadius: '16px',
+            border: '1px solid rgba(15, 40, 80, 0.1)',
+            borderRadius: '20px',
             width: '100%',
-            maxWidth: '540px',
-            boxShadow: '8px 8px 0px 0px #111111',
+            maxWidth: '520px',
+            boxShadow: '0 25px 50px -12px rgba(15, 40, 80, 0.25)',
             padding: '1.75rem',
             position: 'relative',
             maxHeight: '90vh',
@@ -856,17 +846,16 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
               <div>
                 <span style={{
-                  background: '#FFF3A7',
-                  border: '1.5px solid #111111',
-                  padding: '2px 8px',
-                  borderRadius: '4px',
+                  background: 'rgba(24, 138, 178, 0.1)',
+                  color: '#0f6f8f',
+                  padding: '3px 9px',
+                  borderRadius: '999px',
                   fontSize: '0.72rem',
-                  fontWeight: 800,
-                  color: '#111111'
+                  fontWeight: 700
                 }}>
                   NEW STUDY SLOT
                 </span>
-                <h3 style={{ margin: '4px 0 0 0', fontSize: '1.2rem', fontWeight: 900, color: '#111111' }}>
+                <h3 style={{ margin: '4px 0 0 0', fontSize: '1.15rem', fontWeight: 700, color: 'var(--foreground, #0f172a)' }}>
                   Offer a Peer Study Slot
                 </h3>
               </div>
@@ -874,12 +863,13 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                 type="button"
                 onClick={() => setIsModalOpen(false)}
                 style={{
-                  background: '#f4f4f5',
-                  border: '2px solid #111111',
+                  background: '#f1f5f9',
+                  border: 'none',
                   borderRadius: '8px',
-                  padding: '4px',
+                  padding: '6px',
                   cursor: 'pointer',
-                  display: 'flex'
+                  display: 'flex',
+                  color: '#64748b'
                 }}
               >
                 <X size={18} />
@@ -887,12 +877,12 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleCreateSlot} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+            <form onSubmit={handleCreateSlot} style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>
               
               {/* Topic */}
               <div>
-                <label style={{ display: 'block', fontWeight: 800, fontSize: '0.85rem', color: '#111111', marginBottom: '6px' }}>
-                  Discussion Topic / Goal *
+                <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '6px' }}>
+                  Discussion Topic / Focus *
                 </label>
                 <input
                   type="text"
@@ -904,10 +894,11 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                     width: '100%',
                     boxSizing: 'border-box',
                     padding: '10px 12px',
-                    border: '2px solid #111111',
-                    borderRadius: '8px',
+                    background: '#f8fafc',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: '10px',
                     fontSize: '0.9rem',
-                    fontWeight: 600,
+                    color: '#0f172a',
                     outline: 'none'
                   }}
                 />
@@ -919,14 +910,14 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                       type="button"
                       onClick={() => setFormTopic(topic)}
                       style={{
-                        background: formTopic === topic ? '#FACC15' : '#f4f4f5',
-                        border: '1.5px solid #111111',
-                        borderRadius: '6px',
-                        padding: '3px 8px',
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
+                        background: formTopic === topic ? 'rgba(24, 138, 178, 0.15)' : '#f1f5f9',
+                        border: formTopic === topic ? '1px solid var(--primary, #188ab2)' : '1px solid #e2e8f0',
+                        borderRadius: '999px',
+                        padding: '4px 10px',
+                        fontSize: '0.75rem',
+                        fontWeight: 500,
                         cursor: 'pointer',
-                        color: '#111111'
+                        color: formTopic === topic ? '#0f6f8f' : '#64748b'
                       }}
                     >
                       {topic}
@@ -938,7 +929,7 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
               {/* Date & Time Row */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontWeight: 800, fontSize: '0.85rem', color: '#111111', marginBottom: '6px' }}>
+                  <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '6px' }}>
                     Date *
                   </label>
                   <input
@@ -951,16 +942,17 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                       width: '100%',
                       boxSizing: 'border-box',
                       padding: '10px 12px',
-                      border: '2px solid #111111',
-                      borderRadius: '8px',
+                      background: '#f8fafc',
+                      border: '1px solid #cbd5e1',
+                      borderRadius: '10px',
                       fontSize: '0.875rem',
-                      fontWeight: 600,
+                      color: '#0f172a',
                       outline: 'none'
                     }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontWeight: 800, fontSize: '0.85rem', color: '#111111', marginBottom: '6px' }}>
+                  <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '6px' }}>
                     Start Time *
                   </label>
                   <input
@@ -972,10 +964,11 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                       width: '100%',
                       boxSizing: 'border-box',
                       padding: '10px 12px',
-                      border: '2px solid #111111',
-                      borderRadius: '8px',
+                      background: '#f8fafc',
+                      border: '1px solid #cbd5e1',
+                      borderRadius: '10px',
                       fontSize: '0.875rem',
-                      fontWeight: 600,
+                      color: '#0f172a',
                       outline: 'none'
                     }}
                   />
@@ -984,7 +977,7 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
 
               {/* Duration Pills */}
               <div>
-                <label style={{ display: 'block', fontWeight: 800, fontSize: '0.85rem', color: '#111111', marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '6px' }}>
                   Duration
                 </label>
                 <div style={{ display: 'flex', gap: '8px' }}>
@@ -996,14 +989,14 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                       style={{
                         flex: 1,
                         padding: '8px 12px',
-                        border: '2px solid #111111',
-                        borderRadius: '8px',
-                        background: formDuration === mins ? '#0f6f8f' : '#ffffff',
-                        color: formDuration === mins ? '#ffffff' : '#111111',
-                        fontWeight: 700,
+                        border: formDuration === mins ? '1px solid var(--primary, #188ab2)' : '1px solid #cbd5e1',
+                        borderRadius: '10px',
+                        background: formDuration === mins ? 'var(--primary, #188ab2)' : '#ffffff',
+                        color: formDuration === mins ? '#ffffff' : '#475569',
+                        fontWeight: 600,
                         fontSize: '0.825rem',
                         cursor: 'pointer',
-                        boxShadow: formDuration === mins ? '2px 2px 0px 0px #111111' : 'none'
+                        transition: 'all 0.15s ease'
                       }}
                     >
                       {mins} mins
@@ -1014,21 +1007,23 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
 
               {/* Notes */}
               <div>
-                <label style={{ display: 'block', fontWeight: 800, fontSize: '0.85rem', color: '#111111', marginBottom: '6px' }}>
-                  Notes / Agenda (Optional)
+                <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '6px' }}>
+                  Agenda / Notes (Optional)
                 </label>
                 <textarea
                   rows={2}
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
-                  placeholder="e.g. Let's do 20 mins mock case, 15 mins mutual feedback."
+                  placeholder="e.g. 20m case question, 15m mutual feedback."
                   style={{
                     width: '100%',
                     boxSizing: 'border-box',
                     padding: '10px 12px',
-                    border: '2px solid #111111',
-                    borderRadius: '8px',
+                    background: '#f8fafc',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: '10px',
                     fontSize: '0.875rem',
+                    color: '#0f172a',
                     fontFamily: 'inherit',
                     outline: 'none',
                     resize: 'vertical'
@@ -1038,8 +1033,8 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
 
               {/* Custom Video Link */}
               <div>
-                <label style={{ display: 'block', fontWeight: 800, fontSize: '0.85rem', color: '#111111', marginBottom: '4px' }}>
-                  Custom Video Meeting Link (Optional)
+                <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '4px' }}>
+                  Custom Video Room URL (Optional)
                 </label>
                 <input
                   type="url"
@@ -1050,13 +1045,15 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                     width: '100%',
                     boxSizing: 'border-box',
                     padding: '10px 12px',
-                    border: '2px solid #111111',
-                    borderRadius: '8px',
+                    background: '#f8fafc',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: '10px',
                     fontSize: '0.85rem',
+                    color: '#0f172a',
                     outline: 'none'
                   }}
                 />
-                <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '4px' }}>
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '4px' }}>
                   Leave empty to automatically generate a private zero-setup StepSmart video room.
                 </div>
               </div>
@@ -1068,11 +1065,12 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                   onClick={() => setIsModalOpen(false)}
                   style={{
                     background: '#ffffff',
-                    border: '2px solid #111111',
-                    padding: '10px 18px',
-                    borderRadius: '8px',
-                    fontWeight: 700,
-                    fontSize: '0.875rem',
+                    border: '1px solid #cbd5e1',
+                    padding: '9px 16px',
+                    borderRadius: '10px',
+                    fontWeight: 600,
+                    fontSize: '0.85rem',
+                    color: '#475569',
                     cursor: 'pointer'
                   }}
                 >
@@ -1082,18 +1080,18 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                   type="submit"
                   disabled={submitting}
                   style={{
-                    background: '#FACC15',
-                    color: '#111111',
-                    border: '2px solid #111111',
-                    padding: '10px 22px',
-                    borderRadius: '8px',
-                    fontWeight: 800,
-                    fontSize: '0.875rem',
+                    background: 'var(--primary, #188ab2)',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '9px 20px',
+                    borderRadius: '10px',
+                    fontWeight: 600,
+                    fontSize: '0.85rem',
                     cursor: 'pointer',
-                    boxShadow: '3px 3px 0px 0px #111111'
+                    boxShadow: '0 4px 14px rgba(24, 138, 178, 0.28)'
                   }}
                 >
-                  {submitting ? 'Posting Slot...' : 'Post Study Slot'}
+                  {submitting ? 'Creating Slot...' : 'Create Study Slot'}
                 </button>
               </div>
             </form>
