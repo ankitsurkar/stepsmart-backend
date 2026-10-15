@@ -1304,20 +1304,22 @@ async function listOpenPeerSessions(courseId, userId) {
       },
     }));
 
-    const items = (result.Items || []).map((item) => ({
-      sessionId: item.sessionId,
-      courseId: item.courseId,
-      hostUserId: item.hostUserId,
-      hostName: item.hostName,
-      scheduledStartTime: item.scheduledStartTime,
-      scheduledEndTime: item.scheduledEndTime,
-      topic: item.topic || 'General Discussion',
-      notes: item.notes || '',
-      meetingUrl: item.meetingUrl,
-      status: item.status,
-      isMySlot: item.hostUserId === userId,
-      createdAt: item.createdAt,
-    }));
+    const items = (result.Items || [])
+      .filter((item) => item.hostUserId !== userId)
+      .map((item) => ({
+        sessionId: item.sessionId,
+        courseId: item.courseId,
+        hostUserId: item.hostUserId,
+        hostName: item.hostName,
+        scheduledStartTime: item.scheduledStartTime,
+        scheduledEndTime: item.scheduledEndTime,
+        topic: item.topic || 'General Discussion',
+        notes: item.notes || '',
+        meetingUrl: item.meetingUrl,
+        status: item.status,
+        isMySlot: false,
+        createdAt: item.createdAt,
+      }));
 
     return res(200, { sessions: items });
   } catch (err) {

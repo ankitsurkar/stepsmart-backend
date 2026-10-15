@@ -66,6 +66,7 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [actionId, setActionId] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(null); // { type: 'connect', slot } | { type: 'cancel', sessionId, isHost, status, title }
 
   // Form State
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
@@ -146,40 +147,34 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
     }
   };
 
-  const handleBookSlot = async (sessionId, hostName) => {
-    if (!window.confirm(`Connect with ${hostName || 'your classmate'} for this study session?`)) {
-      return;
-    }
-
+  const executeBookSlot = async (sessionId) => {
     setActionId(sessionId);
     try {
       const res = await bookPeerSession(courseId, sessionId);
       toast.success(res.data?.message || 'Connected successfully! See details in My Sessions.');
+      setConfirmModal(null);
       await loadSessions(true);
     } catch (err) {
       console.error('Error booking slot:', err);
       toast.error(err.response?.data?.message || 'Failed to connect. The slot might already be taken.');
+      setConfirmModal(null);
       await loadSessions(true);
     } finally {
       setActionId(null);
     }
   };
 
-  const handleCancel = async (sessionId, isHost, status) => {
-    const confirmMsg = isHost 
-      ? (status === 'OPEN' ? 'Remove this open slot?' : 'Cancel this scheduled study session with your peer?')
-      : 'Leave this study session? The slot will reopen for other students.';
-
-    if (!window.confirm(confirmMsg)) return;
-
+  const executeCancel = async (sessionId, isHost, status) => {
     setActionId(sessionId);
     try {
       const res = await cancelPeerSession(courseId, sessionId);
       toast.success(res.data?.message || 'Session updated.');
+      setConfirmModal(null);
       await loadSessions(true);
     } catch (err) {
       console.error('Error canceling session:', err);
       toast.error(err.response?.data?.message || 'Failed to update session.');
+      setConfirmModal(null);
     } finally {
       setActionId(null);
     }
@@ -202,8 +197,8 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
     }
   };
 
-  // Filter available slots: exclude my own slots from open feed
-  const availableClassmateSlots = openSlots.filter(s => s.hostUserId !== currentUserId);
+  // Filter available slots: strictly exclude caller's own slots
+  const availableClassmateSlots = openSlots.filter(s => !s.isMySlot && (!currentUserId || s.hostUserId !== currentUserId));
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
@@ -407,7 +402,13 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                         </span>
                         <button
                           type="button"
-                          onClick={() => handleCancel(session.sessionId, false, session.status)}
+                          onClick={() => setConfirmModal({
+                            type: 'cancel',
+                            sessionId: session.sessionId,
+                            isHost: false,
+                            status: session.status,
+                            title: 'Leave Study Session?'
+                          })}
                           disabled={actionId === session.sessionId}
                           title="Leave session"
                           style={{
@@ -499,7 +500,13 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                           </span>
                           <button
                             type="button"
-                            onClick={() => handleCancel(session.sessionId, true, session.status)}
+                            onClick={() => setConfirmModal({
+                              type: 'cancel',
+                              sessionId: session.sessionId,
+                              isHost: true,
+                              status: session.status,
+                              title: session.status === 'OPEN' ? 'Remove Study Slot?' : 'Cancel Study Session?'
+                            })}
                             disabled={actionId === session.sessionId}
                             title="Cancel slot"
                             style={{
@@ -731,7 +738,13 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                     {/* Connect Button */}
                     <button
                       type="button"
-                      onClick={() => handleBookSlot(slot.sessionId, slot.hostName)}
+                      onClick={() => setConfirmModal({
+                        type: 'connect',
+                        sessionId: slot.sessionId,
+                        hostName: slot.hostName || 'Classmate',
+                        topic: slot.topic,
+                        time: slot.scheduledStartTime
+                      })}
                       disabled={actionId === slot.sessionId}
                       style={{
                         display: 'flex',
@@ -1145,6 +1158,170 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── IN-APP CONFIRMATION MODAL (Replaces browser popups) ── */}
+      {confirmModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(15, 23, 42, 0.55)',
+          backdropFilter: 'blur(6px)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: '#ffffff',
+            borderRadius: '20px',
+            padding: '1.75rem',
+            width: '100%',
+            maxWidth: '440px',
+            boxShadow: '0 24px 48px rgba(15, 40, 80, 0.18)',
+            border: '1px solid rgba(15, 40, 80, 0.08)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.25rem',
+            animation: 'fadeIn 0.15s ease-out'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '12px',
+                  background: confirmModal.type === 'connect' ? 'rgba(24, 138, 178, 0.12)' : 'rgba(239, 68, 68, 0.12)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: confirmModal.type === 'connect' ? '#188ab2' : '#ef4444'
+                }}>
+                  {confirmModal.type === 'connect' ? <Users size={20} /> : <AlertCircle size={20} />}
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#0f172a' }}>
+                    {confirmModal.type === 'connect' ? 'Confirm Study Connection' : confirmModal.title || 'Cancel Session?'}
+                  </h3>
+                  <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '2px' }}>
+                    {confirmModal.type === 'connect' ? 'Connect with your cohort classmate' : 'Action cannot be undone'}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setConfirmModal(null)}
+                disabled={actionId !== null}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#94a3b8',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  borderRadius: '6px'
+                }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {confirmModal.type === 'connect' ? (
+              <div style={{
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: '14px',
+                padding: '1rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.825rem' }}>
+                  <span style={{ color: '#64748b' }}>Host:</span>
+                  <span style={{ fontWeight: 600, color: '#0f172a' }}>{confirmModal.hostName}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.825rem' }}>
+                  <span style={{ color: '#64748b' }}>Topic:</span>
+                  <span style={{ fontWeight: 600, color: '#0f172a', textAlign: 'right', maxWidth: '240px' }}>{confirmModal.topic}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.825rem' }}>
+                  <span style={{ color: '#64748b' }}>Time:</span>
+                  <span style={{ fontWeight: 600, color: '#188ab2' }}>{formatDateTime(confirmModal.time)}</span>
+                </div>
+                <p style={{ margin: '6px 0 0', fontSize: '0.78rem', color: '#64748b', lineHeight: 1.45, borderTop: '1px dashed #e2e8f0', paddingTop: '6px' }}>
+                  Once connected, a private video meeting room will be activated for both of you and confirmation emails will be sent.
+                </p>
+              </div>
+            ) : (
+              <div style={{
+                background: '#fef2f2',
+                border: '1px solid #fee2e2',
+                borderRadius: '14px',
+                padding: '1rem',
+                fontSize: '0.85rem',
+                color: '#991b1b',
+                lineHeight: 1.5
+              }}>
+                {confirmModal.isHost 
+                  ? (confirmModal.status === 'OPEN' 
+                      ? 'This open study slot will be deleted and removed from the cohort feed.' 
+                      : 'This scheduled session will be cancelled and your peer will be notified.') 
+                  : 'You will leave this study session. The slot will reopen for other students to connect.'}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => setConfirmModal(null)}
+                disabled={actionId !== null}
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  borderRadius: '10px',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  color: '#475569',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirmModal.type === 'connect') {
+                    executeBookSlot(confirmModal.sessionId);
+                  } else {
+                    executeCancel(confirmModal.sessionId, confirmModal.isHost, confirmModal.status);
+                  }
+                }}
+                disabled={actionId !== null}
+                style={{
+                  background: confirmModal.type === 'connect' ? 'var(--primary, #188ab2)' : '#ef4444',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '9px 18px',
+                  borderRadius: '10px',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  boxShadow: confirmModal.type === 'connect' 
+                    ? '0 4px 14px rgba(24, 138, 178, 0.28)' 
+                    : '0 4px 14px rgba(239, 68, 68, 0.28)'
+                }}
+              >
+                {actionId !== null 
+                  ? 'Processing...' 
+                  : (confirmModal.type === 'connect' ? 'Confirm & Connect' : 'Yes, Proceed')}
+              </button>
+            </div>
           </div>
         </div>
       )}

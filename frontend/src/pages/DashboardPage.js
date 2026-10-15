@@ -4453,7 +4453,7 @@ export default function DashboardPage() {
         courseId={activeCourse?.courseId}
         courseTitle={activeCourse?.title || activeCourse?.name}
         qaLesson={qaLesson}
-        currentUserId={user?.sub || user?.id}
+        currentUserId={user?.userId || user?.sub || user?.id || user?.username}
       />
     );
   }
