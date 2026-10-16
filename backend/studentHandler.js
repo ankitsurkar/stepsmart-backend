@@ -1267,7 +1267,11 @@ async function sendPeerSessionConfirmationEmails({
           Subject: { Data: hostSubject },
           Body: { Html: { Data: hostHtml } },
         },
-      })).catch((err) => console.error('Failed to send email to host:', err))
+      })).then(() => {
+        console.log(`Confirmation email sent successfully to host: ${hostEmail}`);
+      }).catch((err) => {
+        console.error(`Failed to send email to host (${hostEmail}):`, err.message || err);
+      })
     );
   }
   if (peerEmail) {
@@ -1279,28 +1283,58 @@ async function sendPeerSessionConfirmationEmails({
           Subject: { Data: peerSubject },
           Body: { Html: { Data: peerHtml } },
         },
-      })).catch((err) => console.error('Failed to send email to peer:', err))
+      })).then(() => {
+        console.log(`Confirmation email sent successfully to peer: ${peerEmail}`);
+      }).catch((err) => {
+        console.error(`Failed to send email to peer (${peerEmail}):`, err.message || err);
+      })
+    );
+  }
+
+  // Also send an administrative booking record to admin@stepsmart.net
+  if (FROM_EMAIL) {
+    const adminSubject = `[Booking Alert] ${peerName} booked study session with ${hostName}`;
+    const adminHtml = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 8px;">
+        <h2 style="color: #0f172a; margin-top: 0;">New Peer Study Session Booked!</h2>
+        <p><strong>Host:</strong> ${hostName} (${hostEmail || 'N/A'})</p>
+        <p><strong>Peer:</strong> ${peerName} (${peerEmail || 'N/A'})</p>
+        <p><strong>Cohort / Course:</strong> ${courseName}</p>
+        <p><strong>Topic:</strong> ${safeTopic}</p>
+        <p><strong>Scheduled Time:</strong> ${formattedStart}</p>
+        <p><strong>Meeting Room:</strong> <a href="${safeMeetingUrl}">${safeMeetingUrl}</a></p>
+      </div>
+    `;
+    tasks.push(
+      ses.send(new SendEmailCommand({
+        Source: FROM_EMAIL,
+        Destination: { ToAddresses: [FROM_EMAIL] },
+        Message: {
+          Subject: { Data: adminSubject },
+          Body: { Html: { Data: adminHtml } },
+        },
+      })).then(() => {
+        console.log(`Admin copy sent successfully to ${FROM_EMAIL}`);
+      }).catch((err) => {
+        console.error(`Failed to send admin copy to ${FROM_EMAIL}:`, err.message || err);
+      })
     );
   }
 
   await Promise.allSettled(tasks);
 }
 
+// Global across all batches: returns all open slots in the academy
 async function listOpenPeerSessions(courseId, userId) {
-  if (!courseId) return res(400, { message: 'Missing courseId' });
-
   const nowIso = new Date().toISOString();
   try {
-    const result = await ddb.send(new QueryCommand({
+    const result = await ddb.send(new ScanCommand({
       TableName: PEER_SESSIONS_TABLE,
-      IndexName: 'CourseSlotsIndex',
-      KeyConditionExpression: 'courseId = :cid AND scheduledStartTime >= :now',
-      FilterExpression: '#status = :open',
+      FilterExpression: '#status = :open AND scheduledStartTime >= :now',
       ExpressionAttributeNames: { '#status': 'status' },
       ExpressionAttributeValues: {
-        ':cid': courseId,
-        ':now': nowIso,
         ':open': 'OPEN',
+        ':now': nowIso,
       },
     }));
 
@@ -1309,6 +1343,7 @@ async function listOpenPeerSessions(courseId, userId) {
       .map((item) => ({
         sessionId: item.sessionId,
         courseId: item.courseId,
+        courseName: item.courseName || item.batchName || '',
         hostUserId: item.hostUserId,
         hostName: item.hostName,
         scheduledStartTime: item.scheduledStartTime,
@@ -1321,6 +1356,8 @@ async function listOpenPeerSessions(courseId, userId) {
         createdAt: item.createdAt,
       }));
 
+    items.sort((a, b) => (a.scheduledStartTime || '').localeCompare(b.scheduledStartTime || ''));
+
     return res(200, { sessions: items });
   } catch (err) {
     console.error('listOpenPeerSessions error:', err);
@@ -1328,6 +1365,7 @@ async function listOpenPeerSessions(courseId, userId) {
   }
 }
 
+// Global across all batches: returns all of the user's scheduled sessions regardless of active course
 async function listMyPeerSessions(courseId, userId) {
   try {
     const [hostRes, peerRes] = await Promise.all([
@@ -1353,11 +1391,6 @@ async function listMyPeerSessions(courseId, userId) {
 
     let offered = hostRes.Items || [];
     let booked = peerRes.Items || [];
-
-    if (courseId) {
-      offered = offered.filter((s) => s.courseId === courseId);
-      booked = booked.filter((s) => s.courseId === courseId);
-    }
 
     offered.sort((a, b) => (a.scheduledStartTime || '').localeCompare(b.scheduledStartTime || ''));
     booked.sort((a, b) => (a.scheduledStartTime || '').localeCompare(b.scheduledStartTime || ''));
@@ -1398,10 +1431,13 @@ async function createPeerSession(courseId, userId, body, event) {
     : `https://meet.jit.si/stepsmart-p2p-${sessionId.slice(-10)}`;
 
   const ttl = Math.floor(startTimeDate.getTime() / 1000) + (30 * 86400);
+  const courseName = await getCourseName(courseId);
 
   const item = {
     sessionId,
     courseId,
+    courseName,
+    batchName: courseName,
     status: 'OPEN',
     hostUserId: userId,
     hostName: userProfile.name,
@@ -1447,10 +1483,6 @@ async function bookPeerSession(courseId, sessionId, userId, event) {
     return res(404, { message: 'Study slot not found' });
   }
 
-  if (session.courseId !== courseId) {
-    return res(400, { message: 'Slot does not belong to this course' });
-  }
-
   if (session.hostUserId === userId) {
     return res(400, { message: 'You cannot connect to your own slot' });
   }
@@ -1481,14 +1513,14 @@ async function bookPeerSession(courseId, sessionId, userId, event) {
     }));
 
     const updatedSession = updateRes.Attributes;
-    const courseName = await getCourseName(courseId);
+    const sessionCourseName = updatedSession.courseName || updatedSession.batchName || await getCourseName(courseId);
 
-    sendPeerSessionConfirmationEmails({
+    await sendPeerSessionConfirmationEmails({
       hostName: updatedSession.hostName,
       hostEmail: updatedSession.hostEmail,
       peerName: updatedSession.peerName,
       peerEmail: updatedSession.peerEmail,
-      courseName,
+      courseName: sessionCourseName,
       topic: updatedSession.topic,
       scheduledStartTime: updatedSession.scheduledStartTime,
       scheduledEndTime: updatedSession.scheduledEndTime,
@@ -1592,8 +1624,9 @@ exports.handler = async (event) => {
   // Enrollment Verification Guard
   const targetCourseId = courseId || body.courseId || body.courseID;
   if (targetCourseId && resource !== '/courses/my') {
+    const isPeerSessionRoute = resource.includes('/peer-sessions');
     const enrolled = await checkEnrollment(userId, targetCourseId, event);
-    if (!enrolled) {
+    if (!enrolled && !isPeerSessionRoute) {
       return res(403, { message: 'Forbidden: you are not enrolled in this course.' });
     }
   }

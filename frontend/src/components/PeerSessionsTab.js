@@ -336,11 +336,11 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                   PEER LEARNING
                 </span>
                 <span style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--foreground, #0f172a)' }}>
-                  Practice & Learn with Cohort Classmates
+                  Practice & Learn with Classmates Across All Batches
                 </span>
               </div>
               <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--muted-foreground, #64748b)', maxWidth: '680px', lineHeight: 1.5 }}>
-                Connect 1-on-1 for mock product interviews, assignment brainstorms, or topic revisions. A private zero-setup video meeting link is created instantly once matched.
+                Connect 1-on-1 for mock product interviews, assignment brainstorms, or topic revisions. Study slots are shared across all StepSmart cohorts.
               </p>
             </div>
             <button
@@ -437,6 +437,12 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                         <Calendar size={14} color="#188ab2" />
                         <span>{formatDateTime(session.scheduledStartTime)}</span>
                       </div>
+
+                      {(session.courseName || session.batchName) && (
+                        <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '6px' }}>
+                          Cohort: <span style={{ fontWeight: 600, color: '#0f6f8f' }}>{session.courseName || session.batchName}</span>
+                        </div>
+                      )}
 
                       {session.hostEmail && (
                         <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
@@ -535,6 +541,12 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                           <Calendar size={14} color="#188ab2" />
                           <span>{formatDateTime(session.scheduledStartTime)}</span>
                         </div>
+
+                        {(session.courseName || session.batchName) && (
+                          <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '6px' }}>
+                            Cohort: <span style={{ fontWeight: 600, color: '#0f6f8f' }}>{session.courseName || session.batchName}</span>
+                          </div>
+                        )}
 
                         {isBooked && session.peerEmail && (
                           <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
@@ -683,8 +695,8 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                           <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--foreground, #0f172a)' }}>
                             {slot.hostName || 'Classmate'}
                           </div>
-                          <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                            Course Peer
+                          <div style={{ fontSize: '0.75rem', color: '#0f6f8f', fontWeight: 600 }}>
+                            {slot.courseName || 'Cohort Peer'}
                           </div>
                         </div>
                       </div>
@@ -743,7 +755,8 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                         sessionId: slot.sessionId,
                         hostName: slot.hostName || 'Classmate',
                         topic: slot.topic,
-                        time: slot.scheduledStartTime
+                        time: slot.scheduledStartTime,
+                        courseName: slot.courseName
                       })}
                       disabled={actionId === slot.sessionId}
                       style={{
@@ -1245,6 +1258,12 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
                   <span style={{ color: '#64748b' }}>Host:</span>
                   <span style={{ fontWeight: 600, color: '#0f172a' }}>{confirmModal.hostName}</span>
                 </div>
+                {confirmModal.courseName && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.825rem' }}>
+                    <span style={{ color: '#64748b' }}>Cohort:</span>
+                    <span style={{ fontWeight: 600, color: '#0f6f8f' }}>{confirmModal.courseName}</span>
+                  </div>
+                )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.825rem' }}>
                   <span style={{ color: '#64748b' }}>Topic:</span>
                   <span style={{ fontWeight: 600, color: '#0f172a', textAlign: 'right', maxWidth: '240px' }}>{confirmModal.topic}</span>
