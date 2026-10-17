@@ -197,8 +197,8 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
     }
   };
 
-  // Filter available slots: strictly exclude caller's own slots
-  const availableClassmateSlots = openSlots.filter(s => !s.isMySlot && (!currentUserId || s.hostUserId !== currentUserId));
+  // All open study slots across cohorts
+  const allOpenSlots = openSlots;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
@@ -595,7 +595,7 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Sparkles size={18} color="#188ab2" />
               <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--foreground, #0f172a)' }}>
-                Available Classmate Slots ({availableClassmateSlots.length})
+                Available Study Slots ({allOpenSlots.length})
               </h3>
             </div>
 
@@ -611,7 +611,7 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
               }}>
                 Loading open slots...
               </div>
-            ) : availableClassmateSlots.length === 0 ? (
+            ) : allOpenSlots.length === 0 ? (
               <div style={{
                 background: 'rgba(255, 255, 255, 0.7)',
                 border: '1px dashed rgba(15, 40, 80, 0.16)',
@@ -661,126 +661,185 @@ export default function PeerSessionsTab({ courseId, courseTitle, qaLesson, curre
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
-                {availableClassmateSlots.map((slot) => (
-                  <div key={slot.sessionId} style={{
-                    background: '#ffffff',
-                    border: '1px solid rgba(15, 40, 80, 0.08)',
-                    borderRadius: '18px',
-                    padding: '1.25rem',
-                    boxShadow: '0 8px 24px rgba(15, 40, 80, 0.06)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    gap: '1rem',
-                    transition: 'transform 0.15s ease, box-shadow 0.15s ease'
-                  }}>
-                    <div>
-                      {/* Host Info */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                {allOpenSlots.map((slot) => {
+                  const isMySlot = Boolean(slot.isMySlot || (currentUserId && slot.hostUserId === currentUserId));
+                  return (
+                    <div key={slot.sessionId} style={{
+                      background: '#ffffff',
+                      border: isMySlot ? '1px solid rgba(24, 138, 178, 0.25)' : '1px solid rgba(15, 40, 80, 0.08)',
+                      borderRadius: '18px',
+                      padding: '1.25rem',
+                      boxShadow: '0 8px 24px rgba(15, 40, 80, 0.06)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      gap: '1rem',
+                      transition: 'transform 0.15s ease, box-shadow 0.15s ease'
+                    }}>
+                      <div>
+                        {/* Host Info */}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div style={{
+                              width: '36px',
+                              height: '36px',
+                              borderRadius: '10px',
+                              background: isMySlot ? 'rgba(24, 138, 178, 0.18)' : 'rgba(24, 138, 178, 0.12)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontWeight: 700,
+                              fontSize: '0.95rem',
+                              color: '#0f6f8f'
+                            }}>
+                              {slot.hostName ? slot.hostName.charAt(0).toUpperCase() : 'S'}
+                            </div>
+                            <div>
+                              <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--foreground, #0f172a)' }}>
+                                {slot.hostName || 'Classmate'} {isMySlot && <span style={{ fontSize: '0.78rem', color: '#188ab2', fontWeight: 700 }}>(You)</span>}
+                              </div>
+                              <div style={{ fontSize: '0.75rem', color: '#0f6f8f', fontWeight: 600 }}>
+                                {slot.courseName || 'Cohort Peer'}
+                              </div>
+                            </div>
+                          </div>
+                          {isMySlot && (
+                            <span style={{
+                              background: 'rgba(24, 138, 178, 0.1)',
+                              color: '#0f6f8f',
+                              padding: '3px 8px',
+                              borderRadius: '6px',
+                              fontSize: '0.725rem',
+                              fontWeight: 700
+                            }}>
+                              Your Slot
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Topic */}
                         <div style={{
-                          width: '36px',
-                          height: '36px',
-                          borderRadius: '10px',
-                          background: 'rgba(24, 138, 178, 0.12)',
+                          fontWeight: 700,
+                          fontSize: '1rem',
+                          color: 'var(--foreground, #0f172a)',
+                          marginBottom: '8px',
+                          lineHeight: 1.35
+                        }}>
+                          {slot.topic}
+                        </div>
+
+                        {/* Date & Time */}
+                        <div style={{
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: 700,
-                          fontSize: '0.95rem',
-                          color: '#0f6f8f'
-                        }}>
-                          {slot.hostName ? slot.hostName.charAt(0).toUpperCase() : 'S'}
-                        </div>
-                        <div>
-                          <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--foreground, #0f172a)' }}>
-                            {slot.hostName || 'Classmate'}
-                          </div>
-                          <div style={{ fontSize: '0.75rem', color: '#0f6f8f', fontWeight: 600 }}>
-                            {slot.courseName || 'Cohort Peer'}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Topic */}
-                      <div style={{
-                        fontWeight: 700,
-                        fontSize: '1rem',
-                        color: 'var(--foreground, #0f172a)',
-                        marginBottom: '8px',
-                        lineHeight: 1.35
-                      }}>
-                        {slot.topic}
-                      </div>
-
-                      {/* Date & Time */}
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        background: '#f8fafc',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        padding: '6px 10px',
-                        fontSize: '0.825rem',
-                        fontWeight: 500,
-                        color: '#334155',
-                        marginBottom: '8px'
-                      }}>
-                        <Calendar size={14} color="#188ab2" />
-                        <span>{formatDateTime(slot.scheduledStartTime)}</span>
-                      </div>
-
-                      {/* Notes / Agenda */}
-                      {slot.notes && (
-                        <p style={{
-                          fontSize: '0.825rem',
-                          color: '#64748b',
-                          margin: 0,
-                          lineHeight: 1.45,
+                          gap: '6px',
                           background: '#f8fafc',
-                          borderLeft: '3px solid #188ab2',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '8px',
                           padding: '6px 10px',
-                          borderRadius: '0 6px 6px 0'
+                          fontSize: '0.825rem',
+                          fontWeight: 500,
+                          color: '#334155',
+                          marginBottom: '8px'
                         }}>
-                          "{slot.notes}"
-                        </p>
+                          <Calendar size={14} color="#188ab2" />
+                          <span>{formatDateTime(slot.scheduledStartTime)}</span>
+                        </div>
+
+                        {/* Notes / Agenda */}
+                        {slot.notes && (
+                          <p style={{
+                            fontSize: '0.825rem',
+                            color: '#64748b',
+                            margin: 0,
+                            lineHeight: 1.45,
+                            background: '#f8fafc',
+                            borderLeft: '3px solid #188ab2',
+                            padding: '6px 10px',
+                            borderRadius: '0 6px 6px 0'
+                          }}>
+                            "{slot.notes}"
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Action Button: Live status for Host, Connect button for Peers */}
+                      {isMySlot ? (
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '9px 12px',
+                          background: '#f0fdf4',
+                          border: '1px solid #bbf7d0',
+                          borderRadius: '10px',
+                          width: '100%',
+                          boxSizing: 'border-box'
+                        }}>
+                          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#166534', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <CheckCircle2 size={15} color="#16a34a" /> Live &amp; Open to Classmates
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setConfirmModal({
+                              type: 'cancel',
+                              sessionId: slot.sessionId,
+                              isHost: true,
+                              status: slot.status,
+                              title: 'Remove Study Slot?'
+                            })}
+                            disabled={actionId === slot.sessionId}
+                            style={{
+                              background: 'transparent',
+                              border: 'none',
+                              color: '#ef4444',
+                              cursor: 'pointer',
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '3px'
+                            }}
+                          >
+                            <Trash2 size={13} /> Delete
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setConfirmModal({
+                            type: 'connect',
+                            sessionId: slot.sessionId,
+                            hostName: slot.hostName || 'Classmate',
+                            topic: slot.topic,
+                            time: slot.scheduledStartTime,
+                            courseName: slot.courseName
+                          })}
+                          disabled={actionId === slot.sessionId}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px',
+                            background: 'var(--primary, #188ab2)',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: '10px',
+                            padding: '10px 14px',
+                            fontWeight: 600,
+                            fontSize: '0.875rem',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 14px rgba(24, 138, 178, 0.25)',
+                            transition: 'opacity 0.15s ease'
+                          }}
+                        >
+                          <Users size={16} />
+                          {actionId === slot.sessionId ? 'Connecting...' : 'Connect & Join Slot'}
+                        </button>
                       )}
                     </div>
-
-                    {/* Connect Button */}
-                    <button
-                      type="button"
-                      onClick={() => setConfirmModal({
-                        type: 'connect',
-                        sessionId: slot.sessionId,
-                        hostName: slot.hostName || 'Classmate',
-                        topic: slot.topic,
-                        time: slot.scheduledStartTime,
-                        courseName: slot.courseName
-                      })}
-                      disabled={actionId === slot.sessionId}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px',
-                        background: 'var(--primary, #188ab2)',
-                        color: '#ffffff',
-                        border: 'none',
-                        borderRadius: '10px',
-                        padding: '10px 14px',
-                        fontWeight: 600,
-                        fontSize: '0.875rem',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 14px rgba(24, 138, 178, 0.25)',
-                        transition: 'opacity 0.15s ease'
-                      }}
-                    >
-                      <Users size={16} />
-                      {actionId === slot.sessionId ? 'Connecting...' : 'Connect & Join Slot'}
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

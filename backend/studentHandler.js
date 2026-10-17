@@ -1339,7 +1339,6 @@ async function listOpenPeerSessions(courseId, userId) {
     }));
 
     const items = (result.Items || [])
-      .filter((item) => item.hostUserId !== userId)
       .map((item) => ({
         sessionId: item.sessionId,
         courseId: item.courseId,
@@ -1352,7 +1351,7 @@ async function listOpenPeerSessions(courseId, userId) {
         notes: item.notes || '',
         meetingUrl: item.meetingUrl,
         status: item.status,
-        isMySlot: false,
+        isMySlot: item.hostUserId === userId,
         createdAt: item.createdAt,
       }));
 
