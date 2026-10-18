@@ -2,46 +2,35 @@
  * ==============================================================================
  * StepSmart PM Job Board — Google Doc Auto-Sync Apps Script
  * ==============================================================================
- * This script automatically syncs daily verified PM job listings into your Google Doc.
+ * Automatically syncs daily verified PM job listings into your Google Doc.
+ * Includes auto-catchup: automatically detects missing dates and adds them!
  *
- * HOW TO SET THIS UP (Takes 2 Minutes):
+ * HOW TO SET THIS UP (Takes 1 Minute):
  * ------------------------------------------------------------------------------
- * METHOD 1: Webhook Push (Recommended — Triggered by GitHub Actions Daily)
- * 1. Create or open your Google Doc: https://docs.google.com/document/create
+ * 1. Open your Google Doc.
  * 2. In Google Docs, click: Extensions -> Apps Script
- * 3. Delete any default code in Code.gs and paste this entire file.
- * 4. (Optional) Set your GOOGLE_DOC_ID in line 25 if this script is not bound to the doc.
- * 5. Click "Deploy" (top right) -> "New deployment"
- * 6. Select type: "Web app"
- *    - Description: "StepSmart Daily Job Sync"
- *    - Execute as: "Me"
- *    - Who has access: "Anyone"
- * 7. Click "Deploy" and authorize permissions.
- * 8. Copy the "Web app URL" (ends in /exec).
- * 9. Add this URL as a GitHub Secret named `GOOGLE_DOC_WEBHOOK_URL` in your repository:
- *    https://github.com/ankitsurkar/stepsmart-backend/settings/secrets/actions
- * 
- * METHOD 2: Standalone Daily Timer (No GitHub Secrets Needed!)
- * 1. Follow steps 1-4 above.
- * 2. In Apps Script, click the Clock icon on the left ("Triggers") -> "Add Trigger".
- * 3. Choose function: "fetchDailyJobsFromGitHub"
- * 4. Event source: "Time-driven" -> "Day timer" -> Choose "9am to 10am" (or preferred time).
- * 5. Save. It will automatically fetch and write to your Google Doc every day!
+ * 3. Replace all code in Code.gs with this entire file.
+ * 4. Paste your Google Doc URL or ID in TARGET_DOC_ID (line 27).
+ * 5. Click the "Save" icon (disk icon).
+ * 6. Select "fetchDailyJobsFromGitHub" from the top toolbar dropdown and click "Run".
+ *    -> This will immediately catch up and add all recent days (Oct 14-18) to your doc!
+ * 7. Click the Clock icon on the left ("Triggers") -> "Add Trigger" (bottom right).
+ *    - Function: "fetchDailyJobsFromGitHub"
+ *    - Event source: "Time-driven" -> "Day timer"
+ *    - Time of day: "2pm to 3pm" (or "3pm to 4pm" IST, after GitHub's daily scrape)
+ *    - Save.
  * ==============================================================================
  */
 
-// Paste your Google Doc URL or ID here (e.g. "https://docs.google.com/document/d/YOUR_DOC_ID/edit" or "YOUR_DOC_ID")
-// If your script was opened directly from inside your Google Doc (Extensions -> Apps Script), you can leave this empty.
+// Paste your Google Doc URL or ID here (e.g. "https://docs.google.com/document/d/.../edit" or raw ID):
 var TARGET_DOC_ID = "";
 
 function getTargetDoc() {
-  // 1. If script is bound directly inside a Google Doc (Extensions -> Apps Script)
   try {
     var activeDoc = DocumentApp.getActiveDocument();
     if (activeDoc) return activeDoc;
   } catch (_) {}
 
-  // 2. Extract Document ID from TARGET_DOC_ID (handles full URL or raw ID)
   var raw = (TARGET_DOC_ID || "").trim();
   if (raw) {
     var docId = raw;
@@ -49,7 +38,6 @@ function getTargetDoc() {
     if (urlMatch) {
       docId = urlMatch[1];
     }
-    
     try {
       return DocumentApp.openById(docId);
     } catch (err) {
@@ -102,40 +90,77 @@ function doPost(e) {
 
 /**
  * Standalone scheduled function to fetch latest daily jobs directly from GitHub
+ * Automatically catches up on all missing dates and prevents duplicates!
  */
 function fetchDailyJobsFromGitHub() {
   var rawJsonUrl = "https://raw.githubusercontent.com/ankitsurkar/stepsmart-backend/main/StepSmart-website-final/data/jobs.json";
   try {
     var response = UrlFetchApp.fetch(rawJsonUrl);
     var allJobs = JSON.parse(response.getContentText());
-    
-    // Filter fresh jobs (last 2 days)
-    var todayStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "yyyy-MM-dd");
-    var freshJobs = [];
-    var seen = {};
 
+    var doc = getTargetDoc();
+    var existingText = doc.getBody().getText();
+
+    // Group all jobs by posted_at date
+    var byDate = {};
     for (var i = 0; i < allJobs.length; i++) {
       var j = allJobs[i];
-      var key = ((j.title || "") + "::" + (j.company || "")).toLowerCase();
-      if (seen[key]) continue;
-      seen[key] = true;
+      var pDate = (j.posted_at || j.date_posted || "").substring(0, 10);
+      if (!pDate || pDate.length !== 10) continue;
 
-      freshJobs.push({
-        title: j.title || j.role_title || "Product Manager",
-        company: j.company || j.company_name || "Company",
-        location: j.location || "India",
-        source: j.source || j.site || "Job Board",
-        posted_at: j.posted_at || j.date_posted || todayStr,
-        apply_url: j.apply_url || j.job_url || j.post_url || ""
-      });
-
-      if (freshJobs.length >= 60) break; // Limit daily section size
+      if (!byDate[pDate]) {
+        byDate[pDate] = [];
+      }
+      byDate[pDate].push(j);
     }
 
-    if (freshJobs.length > 0) {
-      appendJobsToGoogleDoc(freshJobs, todayStr);
-      Logger.log("Successfully appended " + freshJobs.length + " jobs to Google Doc.");
+    // Sort dates in ascending order (oldest to newest)
+    var sortedDates = Object.keys(byDate).sort();
+    var addedCount = 0;
+
+    for (var d = 0; d < sortedDates.length; d++) {
+      var dateKey = sortedDates[d];
+      
+      // Skip dates that are already recorded in the Google Doc
+      if (existingText.indexOf(dateKey) !== -1) {
+        Logger.log("Date " + dateKey + " already in Google Doc. Skipping.");
+        continue;
+      }
+
+      var dayJobs = byDate[dateKey];
+      var seen = {};
+      var deduplicated = [];
+
+      for (var k = 0; k < dayJobs.length; k++) {
+        var item = dayJobs[k];
+        var uKey = ((item.title || "") + "::" + (item.company || "")).toLowerCase();
+        if (seen[uKey]) continue;
+        seen[uKey] = true;
+
+        deduplicated.push({
+          title: item.title || item.role_title || "Product Manager",
+          company: item.company || item.company_name || "Company",
+          location: item.location || "India",
+          source: item.source || item.site || "Job Board",
+          posted_at: dateKey,
+          apply_url: item.apply_url || item.job_url || item.post_url || ""
+        });
+      }
+
+      if (deduplicated.length > 0) {
+        Logger.log("Appending " + deduplicated.length + " jobs for " + dateKey + " to Google Doc...");
+        appendJobsToGoogleDoc(deduplicated, dateKey);
+        addedCount++;
+        existingText += " " + dateKey;
+      }
     }
+
+    if (addedCount === 0) {
+      Logger.log("Google Doc is already up to date with all recent job dates.");
+    } else {
+      Logger.log("Successfully synced " + addedCount + " days of jobs to Google Doc!");
+    }
+
   } catch (err) {
     Logger.log("Error fetching jobs from GitHub: " + err.toString());
   }
