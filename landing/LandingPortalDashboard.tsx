@@ -19,7 +19,13 @@ import {
   Menu,
   ChevronRight,
   Zap,
-  Check
+  Check,
+  Video,
+  FileText,
+  Calendar,
+  Sparkles,
+  ArrowRight,
+  GraduationCap
 } from 'lucide-react';
 
 export const WHATSAPP_BUSINESS_URL = "https://wa.me/message/GH5C7YLAYIEHN1";
@@ -63,13 +69,169 @@ const FALLBACK_QUESTION: GymQuestion = {
   category: "Product Discovery & Risks"
 };
 
-const TOP_PEERS = [
-  { id: 1, name: "Deepak Sankhala", initials: "DS", points: 91, gradient: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)", rank: 1 },
-  { id: 2, name: "Nishant Sinha", initials: "NS", points: 48, gradient: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)", rank: 2 },
-  { id: 3, name: "Shivanee", initials: "SH", points: 43, gradient: "linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)", rank: 3 },
-  { id: 4, name: "Bhavya Bhargav", initials: "BB", points: 41, gradient: "linear-gradient(135deg, #f6d365 0%, #fda085 100%)", rank: 4 },
-  { id: 5, name: "Kalpak Agrawal", initials: "KA", points: 35, gradient: "linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)", rank: 5 },
-  { id: 6, name: "Sanket Bansal", initials: "SB", points: 32, gradient: "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)", rank: 6 }
+interface CourseModule {
+  week: string;
+  title: string;
+  duration: string;
+  description: string;
+  topics: string[];
+  lessons: { title: string; duration: string }[];
+}
+
+const ACCELERATOR_MODULES: CourseModule[] = [
+  {
+    week: "Week 0",
+    title: "Profile Repositioning & PM Mindset Transition",
+    duration: "3 hrs",
+    description: "Translate engineering, consulting, or analytics backgrounds into a compelling Product Management story.",
+    topics: ["Resume rewriting for PM roles", "LinkedIn positioning", "Framing past achievements as product impact"],
+    lessons: [
+      { title: "Repositioning Your Background into Product Language", duration: "45 mins" },
+      { title: "High-Signal PM Resume Deep Dive & Live Edits", duration: "60 mins" },
+      { title: "LinkedIn Storytelling & Cold Outreach Strategy", duration: "45 mins" }
+    ]
+  },
+  {
+    week: "Week 1",
+    title: "Product Fundamentals & Problem vs. Solution Space",
+    duration: "4 hrs",
+    description: "Learn how senior PMs distinguish user pain points from superficial feature requests and map customer journeys.",
+    topics: ["Problem space discovery", "Jobs to be Done (JTBD) framework", "User personas & journey mapping"],
+    lessons: [
+      { title: "Problem Definition: Why 80% of Features Fail", duration: "50 mins" },
+      { title: "Applying JTBD to Real Consumer Apps (Swiggy / Spotify)", duration: "60 mins" },
+      { title: "Mapping Customer Pain Points to Value Propositions", duration: "45 mins" }
+    ]
+  },
+  {
+    week: "Week 2",
+    title: "User Research, Discovery & Market Validation",
+    duration: "4 hrs",
+    description: "Conduct high-signal user interviews without leading questions. Synthesize customer insights into actionable roadmaps.",
+    topics: ["Mom Test principles", "Competitor matrix breakdown", "TAM / SAM / SOM market sizing"],
+    lessons: [
+      { title: "Unbiased User Discovery: The Mom Test in Practice", duration: "55 mins" },
+      { title: "Competitive Moats & Positioning Analysis", duration: "50 mins" },
+      { title: "Market Sizing & Opportunity Trees", duration: "40 mins" }
+    ]
+  },
+  {
+    week: "Week 3",
+    title: "Product Strategy, Moats & Growth Loops",
+    duration: "4.5 hrs",
+    description: "Build sustainable competitive moats, examine network effects, and model product-led growth (PLG) loops.",
+    topics: ["Hamilton Helmer's 7 Powers", "Retention curves & cohort decay", "Monetization & unit economics"],
+    lessons: [
+      { title: "7 Powers: Building Sustainable Competitive Moats", duration: "65 mins" },
+      { title: "Cohort Analysis & Healthy Retention Curves", duration: "55 mins" },
+      { title: "Growth Loops vs Traditional Funnels", duration: "45 mins" }
+    ]
+  },
+  {
+    week: "Week 4",
+    title: "Metrics, North Star & Root Cause Analysis (RCA)",
+    duration: "5 hrs",
+    description: "Master the metrics that drive product decisions. Structure end-to-end RCAs for drops in conversion or revenue.",
+    topics: ["North Star vs Guardrail metrics", "AARRR pirate metrics", "Live 7-step RCA diagnostic framework"],
+    lessons: [
+      { title: "Choosing the Right North Star & Guardrail Metrics", duration: "60 mins" },
+      { title: "7-Step Root Cause Analysis Framework (Live Case)", duration: "75 mins" },
+      { title: "A/B Testing, Experimentation & Statistical Significance", duration: "50 mins" }
+    ]
+  },
+  {
+    week: "Week 5",
+    title: "PRD Writing & Technical Architecture for PMs",
+    duration: "5 hrs",
+    description: "Draft production-grade PRDs ready for engineering handoff. Understand APIs, system design, and database relationships.",
+    topics: ["Industry-standard PRD templates", "User stories & acceptance criteria", "System architecture & APIs for non-engineers"],
+    lessons: [
+      { title: "Writing a Production-Grade PRD (Line-by-Line Review)", duration: "70 mins" },
+      { title: "APIs, Webhooks & Microservices Explained for PMs", duration: "60 mins" },
+      { title: "Sprint Planning & Engineering Trade-Off Discussions", duration: "45 mins" }
+    ]
+  },
+  {
+    week: "Week 6",
+    title: "Mock Interview Loops, Referrals & Offer Negotiation",
+    duration: "6 hrs",
+    description: "Crack tough PM interview rounds: Product Sense, Analytical RCA, Behavioral, and System Architecture.",
+    topics: ["1:1 mock interviews with Senior PMs", "Curated referral introductions", "Compensation benchmarking & negotiation"],
+    lessons: [
+      { title: "Cracking Product Sense Interviews (Live Demo)", duration: "75 mins" },
+      { title: "Behavioral & Leadership Stories (SAR Framework)", duration: "60 mins" },
+      { title: "Offer Evaluation & Salary Negotiation Tactics", duration: "45 mins" }
+    ]
+  }
+];
+
+const FIRST_STEP_MODULES: CourseModule[] = [
+  {
+    week: "Week 0",
+    title: "Introduction to Tech Products & APM Career Paths",
+    duration: "2.5 hrs",
+    description: "Understand the roles of PMs, designers, and software engineers in tech companies. Set up your learning roadmap.",
+    topics: ["What an Associate PM does", "Startup PM vs Big Tech APM", "The college student advantage"],
+    lessons: [
+      { title: "Decoding the APM Role: What Tech Giants Expect", duration: "45 mins" },
+      { title: "Building a Standout Student Tech Profile", duration: "50 mins" }
+    ]
+  },
+  {
+    week: "Week 1",
+    title: "Breaking Down Everyday Apps (Product Teardowns)",
+    duration: "3.5 hrs",
+    description: "Analyze products like WhatsApp, Zepto, and Instagram like a PM. Identify UI friction and missed opportunities.",
+    topics: ["Product teardown frameworks", "UI/UX heuristics (Nielsen Norman)", "User flow diagramming"],
+    lessons: [
+      { title: "How to Build a High-Signal Product Teardown", duration: "60 mins" },
+      { title: "Heuristic Evaluations of Popular Consumer Apps", duration: "45 mins" }
+    ]
+  },
+  {
+    week: "Week 2",
+    title: "User Empathy & Problem Validation for Freshers",
+    duration: "3.5 hrs",
+    description: "Learn how to talk to real customers, synthesize insights, and build user persona archetypes.",
+    topics: ["Student user research methods", "Drafting interview scripts", "Customer empathy maps"],
+    lessons: [
+      { title: "Running Real Customer Interviews on Campus", duration: "50 mins" },
+      { title: "Synthesizing Insights into Problem Statements", duration: "45 mins" }
+    ]
+  },
+  {
+    week: "Week 3",
+    title: "Writing Your First PRD & Feature Prototype",
+    duration: "4 hrs",
+    description: "Write a complete Product Requirement Document for a feature idea and build an interactive prototype.",
+    topics: ["PRD templates for APMs", "Feature scoping & MVP definition", "No-code wireframing & prototyping"],
+    lessons: [
+      { title: "Writing Your First Mini-PRD", duration: "60 mins" },
+      { title: "Wireframing & Prototyping Essentials for Non-Designers", duration: "55 mins" }
+    ]
+  },
+  {
+    week: "Week 4",
+    title: "Basic Product Metrics & Data Analysis with SQL/Sheets",
+    duration: "4 hrs",
+    description: "Understand churn, retention, conversion rates, and run basic queries to answer product health questions.",
+    topics: ["Core product KPIs", "Cohort tables in Google Sheets", "Basic SQL queries for PMs"],
+    lessons: [
+      { title: "Product Analytics 101: DAU, MAU, Churn & CAC", duration: "60 mins" },
+      { title: "Hands-on SQL for Answering Product Questions", duration: "60 mins" }
+    ]
+  },
+  {
+    week: "Week 5",
+    title: "APM Placement Preparation & Case Competitions",
+    duration: "5 hrs",
+    description: "Win campus product case competitions and clear campus placement APM hiring tests and panel interviews.",
+    topics: ["Winning product case challenges", "Guesstimates & market sizing", "Campus APM interview loops"],
+    lessons: [
+      { title: "Frameworks for Campus Product Competitions", duration: "65 mins" },
+      { title: "Guesstimates & Market Sizing Drills", duration: "55 mins" }
+    ]
+  }
 ];
 
 function SidebarIcon({ kind }: { kind: string }) {
@@ -84,7 +246,7 @@ function SidebarIcon({ kind }: { kind: string }) {
   return <Settings size={20} strokeWidth={2} />;
 }
 
-// ─── Style Dictionary extracted directly from LMS DashboardPage.js ───
+// ─── Exact LMS Stylesheet & Tokens (matches LMS primary colors) ───
 const s = {
   page: {
     minHeight: '100vh',
@@ -93,7 +255,7 @@ const s = {
     color: '#0f172a',
   },
   sidebar: {
-    background: 'linear-gradient(180deg, #094866 0%, #027A9B 100%)',
+    background: 'linear-gradient(180deg, #0d6c8c 0%, #1089b1 100%)',
     color: '#fff',
     padding: '1.5rem 1rem',
     display: 'flex',
@@ -237,7 +399,7 @@ const s = {
   },
   headerEyebrow: {
     fontSize: '0.75rem',
-    fontWeight: 600,
+    fontWeight: 700,
     letterSpacing: '0.05em',
     textTransform: 'uppercase' as const,
     color: '#027A9B',
@@ -250,177 +412,71 @@ const s = {
     color: '#0f172a',
     marginBottom: '0.35rem',
   },
-  courseTabs: {
-    display: 'flex',
-    flexWrap: 'wrap' as const,
-    gap: '0.6rem',
-    alignItems: 'center',
-  },
-  courseTab: {
-    border: '1px solid #cbd5e1',
-    background: 'rgba(255,255,255,0.76)',
-    color: '#64748b',
-    borderRadius: '999px',
-    padding: '0.55rem 1.15rem',
-    fontWeight: 600,
-    fontSize: '0.825rem',
-    cursor: 'pointer',
-    backdropFilter: 'blur(8px)',
-  },
-  courseTabActive: {
-    background: '#027A9B',
-    borderColor: '#027A9B',
-    color: '#fff',
-    boxShadow: '0 2px 8px rgba(2, 122, 155, 0.25)',
-  },
-  dashboardHero: {
-    display: 'grid',
-    gap: '1.25rem',
-    gridTemplateColumns: 'minmax(0, 1fr) 320px',
-    alignItems: 'start',
-  },
-  dashboardLeft: {
-    flex: 1,
-    minWidth: 0,
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '1.25rem',
-  },
-  dashboardRight: {
+  courseCard: {
     background: '#ffffff',
     border: '1px solid rgba(20, 49, 86, 0.08)',
     borderRadius: '22px',
-    padding: '1.25rem',
-    boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
-    boxSizing: 'border-box' as const,
-  },
-  metricCards: {
-    display: 'grid',
-    gap: '1rem',
-    gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-  },
-  continueCard: {
-    background: '#ffffff',
-    border: '1px solid rgba(20, 49, 86, 0.08)',
-    borderRadius: '20px',
-    padding: '1.35rem 1.5rem',
+    padding: '1.75rem',
     boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
     display: 'flex',
     flexDirection: 'column' as const,
     justifyContent: 'space-between',
-    minHeight: '230px',
+    transition: 'all 0.2s ease',
   },
-  activeCourse: {
-    color: '#0f172a',
-    fontSize: '0.8125rem',
-    fontWeight: 600,
-    letterSpacing: '0.01em',
-    marginBottom: '0.85rem',
-  },
-  continueTitle: {
-    color: '#0f172a',
-    fontSize: '1.15rem',
-    fontWeight: 700,
-    letterSpacing: '-0.02em',
-    marginBottom: '0.9rem',
-  },
-  segmentedTrack: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
-    gap: '0.35rem',
-    marginBottom: '1.1rem',
-  },
-  segmentedBar: {
-    height: '8px',
-    borderRadius: '999px',
-    background: '#d3e2ea',
-    overflow: 'hidden',
-  },
-  segmentedFill: {
-    height: '100%',
-    borderRadius: '999px',
-    background: '#1786ad',
-  },
-  resumeButton: {
+  courseBadge: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '0.55rem',
-    border: 'none',
-    borderRadius: '12px',
-    padding: '0.8rem 1.3rem',
-    background: 'linear-gradient(180deg, #1388b0 0%, #0f789e 100%)',
-    color: '#fff',
-    fontSize: '0.875rem',
-    fontWeight: 600,
-    cursor: 'pointer',
-    textDecoration: 'none',
-    letterSpacing: '0.01em',
-    width: 'fit-content',
-    boxShadow: '0 2px 6px rgba(19, 136, 176, 0.25)',
-  },
-  upNext: {
-    marginTop: '0.85rem',
-    color: '#475569',
-    fontSize: '0.8125rem',
-    fontWeight: 500,
-  },
-  railHeaderTitle: {
-    color: '#111827',
-    fontSize: '1.05rem',
+    gap: '0.35rem',
+    fontSize: '0.75rem',
     fontWeight: 700,
-    letterSpacing: '-0.01em',
-    lineHeight: 1,
-    marginBottom: '0.35rem',
+    padding: '0.3rem 0.75rem',
+    borderRadius: '999px',
+    width: 'fit-content',
+    marginBottom: '0.85rem',
   },
-  railHeaderSub: {
-    color: '#64748b',
-    fontSize: '0.8rem',
-    lineHeight: 1.4,
-    marginBottom: '0.9rem',
-  },
-  railRow: {
-    display: 'grid',
-    gridTemplateColumns: '44px minmax(0, 1fr) auto',
-    alignItems: 'center',
-    gap: '0.75rem',
-    padding: '0.75rem 0',
-    borderBottom: '1px solid rgba(20, 49, 86, 0.07)',
-  },
-  railAvatar: {
-    width: '42px',
-    height: '42px',
-    borderRadius: '50%',
-    background: '#e7edf1',
-    color: '#1e293b',
-    display: 'flex',
+  primaryBtn: {
+    display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '0.95rem',
+    gap: '0.5rem',
+    background: 'linear-gradient(180deg, #1388b0 0%, #0f789e 100%)',
+    color: '#ffffff',
+    padding: '0.8rem 1.4rem',
+    borderRadius: '12px',
     fontWeight: 700,
-  },
-  railName: {
     fontSize: '0.875rem',
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'all 0.15s ease',
+    boxShadow: '0 2px 8px rgba(19, 136, 176, 0.25)',
+    textDecoration: 'none',
+  },
+  outlineBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.5rem',
+    background: '#ffffff',
+    color: '#334155',
+    border: '1px solid #cbd5e1',
+    padding: '0.8rem 1.25rem',
+    borderRadius: '12px',
     fontWeight: 600,
-    color: '#0f172a',
-    marginBottom: '0.1rem',
-    lineHeight: 1.2,
-  },
-  railMeta: {
-    fontSize: '0.8125rem',
-    color: '#64748b',
-    fontWeight: 500,
-  },
+    fontSize: '0.875rem',
+    cursor: 'pointer',
+    transition: 'all 0.15s ease',
+  }
 };
 
 export function LandingPortalDashboard() {
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState<string>('dashboard');
-  const [selectedCourseId, setSelectedCourseId] = useState<string>('course-002');
+  const [selectedCourseTab, setSelectedCourseTab] = useState<'accelerator' | 'first-step'>('accelerator');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   // Student info from session
   const [displayName, setDisplayName] = useState<string>('Parth');
-  const [userEmail, setUserEmail] = useState<string>('parth@stepsmart.net');
+  const [userEmail, setUserEmail] = useState<string>('learner@stepsmart.net');
 
   // PM Gym state
   const [todayQuestion, setTodayQuestion] = useState<GymQuestion>(FALLBACK_QUESTION);
@@ -435,7 +491,8 @@ export function LandingPortalDashboard() {
 
   // Locked feature upgrade modal
   const [showLockModal, setShowLockModal] = useState<boolean>(false);
-  const [lockedFeatureName, setLockedFeatureName] = useState<string>('PM-X Full Course');
+  const [lockedFeatureName, setLockedFeatureName] = useState<string>('PM-X Accelerator Program');
+  const [lockedFeatureDesc, setLockedFeatureDesc] = useState<string>('Join the live StepSmart cohort to unlock live mentorship, case reviews, and verified referrals.');
 
   const todayStr = new Date().toISOString().split('T')[0];
 
@@ -502,14 +559,17 @@ export function LandingPortalDashboard() {
     navigate('/');
   };
 
-  const handleOpenLock = (feature: string) => {
+  const handleOpenLock = (feature: string, desc?: string) => {
     setLockedFeatureName(feature);
+    if (desc) setLockedFeatureDesc(desc);
     setShowLockModal(true);
   };
 
   const handleTabClick = (tabId: string) => {
     if (tabId === 'dashboard') {
       setActiveView('dashboard');
+    } else if (tabId === 'courses') {
+      setActiveView('courses');
     } else {
       const item = NAV_ITEMS.find(n => n.id === tabId);
       handleOpenLock(item ? item.label : tabId);
@@ -552,23 +612,6 @@ export function LandingPortalDashboard() {
     }
   };
 
-  // Calendar cells generation for current month
-  const todayDate = new Date();
-  const currentYear = todayDate.getFullYear();
-  const currentMonth = todayDate.getMonth();
-  const currentDay = todayDate.getDate();
-  const monthName = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(todayDate);
-  const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
-  const totalDaysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-  const calendarCells = [];
-  for (let i = 0; i < firstDayIndex; i++) {
-    calendarCells.push(null);
-  }
-  for (let d = 1; d <= totalDaysInMonth; d++) {
-    calendarCells.push(d);
-  }
-
   const weeklyDays = [
     { label: 'M', active: hasSolvedToday },
     { label: 'T', active: false },
@@ -585,7 +628,7 @@ export function LandingPortalDashboard() {
       {/* ─── DESKTOP & TABLET SHELL ─── */}
       <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
         
-        {/* ─── SIDEBAR: Exactly matches LMS screenshot ─── */}
+        {/* ─── SIDEBAR: Exact LMS deep cyan-to-teal gradient ─── */}
         <aside
           style={s.sidebar}
           className={`${isMobileMenuOpen ? 'fixed inset-0 z-50 flex' : 'hidden lg:flex'}`}
@@ -626,6 +669,9 @@ export function LandingPortalDashboard() {
                     <SidebarIcon kind={item.icon} />
                   </span>
                   <span>{item.label}</span>
+                  {item.id !== 'dashboard' && item.id !== 'courses' && (
+                    <Lock size={12} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+                  )}
                 </button>
               );
             })}
@@ -637,7 +683,7 @@ export function LandingPortalDashboard() {
             <button
               type="button"
               style={s.adminLink}
-              onClick={() => handleOpenLock("Admin Portal")}
+              onClick={() => handleOpenLock("Admin Portal", "Log in to the StepSmart mentor & admin console.")}
             >
               Open Admin
             </button>
@@ -651,459 +697,574 @@ export function LandingPortalDashboard() {
           </div>
         </aside>
 
-        {/* ─── MAIN CONTENT AREA ─── */}
+        {/* ─── MAIN CONTENT CANVAS ─── */}
         <main style={s.main}>
           
-          {/* Header Bar matching LMS screenshot */}
+          {/* Header Bar matching LMS design (Batch pills removed as requested) */}
           <div style={s.header}>
-            <div>
-              <div style={s.headerEyebrow}>STUDENT DASHBOARD</div>
-              <div style={s.headerTitle}>Welcome back, {displayName}</div>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="lg:hidden p-2 rounded-lg text-slate-700 bg-white border border-slate-200"
+              >
+                <Menu size={20} />
+              </button>
+              <div>
+                <div style={s.headerEyebrow}>STUDENT DASHBOARD</div>
+                <div style={s.headerTitle}>Welcome back, {displayName}</div>
+              </div>
             </div>
 
-            {/* Course Switcher Pills on the right */}
-            <div style={s.courseTabs}>
-              <button
-                type="button"
+            {/* Clean Right Actions */}
+            <div className="flex items-center gap-3">
+              <a
+                href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I am on the student portal and want to speak with admissions regarding the PM-X cohorts.")}`}
+                target="_blank"
+                rel="noreferrer"
                 style={{
-                  ...s.courseTab,
-                  ...(selectedCourseId === 'course-001' ? s.courseTabActive : {})
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  padding: '0.55rem 1.15rem',
+                  borderRadius: '999px',
+                  background: '#25D366',
+                  color: '#ffffff',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  boxShadow: '0 2px 6px rgba(37, 211, 102, 0.25)',
                 }}
-                onClick={() => setSelectedCourseId('course-001')}
               >
-                PM -X Accelerator Batch 2
-              </button>
-              <button
-                type="button"
+                <MessageSquare size={14} fill="#ffffff" />
+                <span>Chat Admissions</span>
+              </a>
+
+              <a
+                href="/learn"
                 style={{
-                  ...s.courseTab,
-                  ...(selectedCourseId === 'course-002' ? s.courseTabActive : {})
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  padding: '0.55rem 1rem',
+                  borderRadius: '999px',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#475569',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
                 }}
-                onClick={() => setSelectedCourseId('course-002')}
               >
-                PM -X First Step (Cohort 1)
-              </button>
-              <button
-                type="button"
-                style={{
-                  ...s.courseTab,
-                  ...(selectedCourseId === 'course-pm' ? s.courseTabActive : {})
-                }}
-                onClick={() => handleOpenLock("Product Management Track")}
-              >
-                Product Management
-              </button>
+                <span>Enrolled LMS</span>
+                <ExternalLink size={12} />
+              </a>
             </div>
           </div>
 
           {/* ═════════════════════════════════════════════════════════ */}
-          {/* HOME VIEW: PM GYM + METRIC CARDS + TOP PEERS             */}
+          {/* VIEW 1: HOME (PM GYM + 2 FLAGSHIP COURSES)                */}
           {/* ═════════════════════════════════════════════════════════ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
-            
-            {/* ─── PM GYM BANNER (1:1 with LMS Screenshot) ─── */}
-            <div
-              style={{
-                background: 'linear-gradient(135deg, #015D77 0%, #027A9B 100%)',
-                borderRadius: '24px',
-                padding: '1.25rem 2rem',
-                color: '#ffffff',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                boxShadow: '0 10px 30px rgba(2, 122, 155, 0.15)',
-                gap: '1.25rem',
-                flexWrap: 'wrap',
-                boxSizing: 'border-box',
-              }}
-            >
-              {/* Mascot & Question */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1, minWidth: '280px' }}>
-                <img
-                  src="/pm_gym_brain.png"
-                  alt="PM Gym Brain mascot"
-                  style={{ width: '80px', height: '80px', objectFit: 'contain', flexShrink: 0 }}
-                />
-                <div>
-                  <h3 style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.35rem 0', letterSpacing: '-0.02em', color: '#ffffff' }}>
-                    PM Gym
-                  </h3>
-                  <p style={{ fontSize: '0.9rem', color: '#e0f2fe', margin: 0, opacity: 0.95, lineHeight: 1.4 }}>
-                    {todayQuestion?.text || "No daily question scheduled for today. Check back later!"}
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Button & Weekly Goal Progress */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.75rem', flexWrap: 'wrap' }}>
-                {hasSolvedToday ? (
-                  <button
-                    type="button"
-                    disabled
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      color: '#ffffff',
-                      border: 'none',
-                      borderRadius: '999px',
-                      padding: '0.75rem 1.5rem',
-                      fontSize: '0.925rem',
-                      fontWeight: 700,
-                      cursor: 'default',
-                    }}
-                  >
-                    Completed ✓
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setShowGymModal(true)}
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.18)',
-                      color: '#ffffff',
-                      border: '1px solid rgba(255, 255, 255, 0.28)',
-                      borderRadius: '999px',
-                      padding: '0.75rem 1.6rem',
-                      fontSize: '0.925rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                    }}
-                  >
-                    Solve Today's Gym
-                  </button>
-                )}
-
-                {/* Weekly Goal circles */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', minWidth: '180px' }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe', opacity: 0.9, textAlign: 'center' }}>
-                    Weekly Goal
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.35rem' }}>
-                    {weeklyDays.map((d, idx) => (
-                      <div
-                        key={idx}
-                        style={{
-                          width: '24px',
-                          height: '24px',
-                          borderRadius: '50%',
-                          background: d.active ? '#ffffff' : 'rgba(255, 255, 255, 0.22)',
-                          color: d.active ? '#027A9B' : '#ffffff',
-                          fontSize: '0.7rem',
-                          fontWeight: 700,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        {d.active ? '✓' : d.label}
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ height: '4px', background: 'rgba(255, 255, 255, 0.25)', borderRadius: '999px', overflow: 'hidden' }}>
-                    <div style={{ height: '100%', background: '#ffffff', width: hasSolvedToday ? '25%' : '0%', transition: 'width 0.3s ease' }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* ─── MAIN HERO SPLIT: Metric Cards + Continue Learning + Top Peers ─── */}
-            <div style={s.dashboardHero}>
+          {activeView === 'dashboard' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', width: '100%' }}>
               
-              {/* Left Column */}
-              <div style={s.dashboardLeft}>
+              {/* ─── PM GYM BANNER (1:1 with LMS) ─── */}
+              <div
+                style={{
+                  background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)',
+                  borderRadius: '24px',
+                  padding: '1.5rem 2rem',
+                  color: '#ffffff',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  boxShadow: '0 10px 30px rgba(2, 122, 155, 0.15)',
+                  gap: '1.25rem',
+                  flexWrap: 'wrap',
+                  boxSizing: 'border-box',
+                }}
+              >
+                {/* Mascot & Question */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1, minWidth: '280px' }}>
+                  <img
+                    src="/pm_gym_brain.png"
+                    alt="PM Gym Brain mascot"
+                    style={{ width: '84px', height: '84px', objectFit: 'contain', flexShrink: 0 }}
+                  />
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                      <h3 style={{ fontSize: '1.6rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
+                        PM Gym
+                      </h3>
+                      <span style={{ background: '#f59e0b', color: '#000', fontSize: '0.7rem', fontWeight: 800, padding: '0.15rem 0.6rem', borderRadius: '999px' }}>
+                        DAILY DRILL
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '0.925rem', color: '#e0f2fe', margin: 0, opacity: 0.95, lineHeight: 1.45, maxWidth: '620px' }}>
+                      {todayQuestion?.text || "No daily question scheduled for today. Check back later!"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Action Buttons & Weekly Goal Progress */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.75rem', flexWrap: 'wrap' }}>
+                  {hasSolvedToday ? (
+                    <button
+                      type="button"
+                      disabled
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.22)',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '999px',
+                        padding: '0.75rem 1.6rem',
+                        fontSize: '0.925rem',
+                        fontWeight: 700,
+                        cursor: 'default',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                      }}
+                    >
+                      <CheckCircle2 size={16} />
+                      <span>Completed Today ✓</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setShowGymModal(true)}
+                      style={{
+                        background: '#ffffff',
+                        color: '#027A9B',
+                        border: 'none',
+                        borderRadius: '999px',
+                        padding: '0.8rem 1.75rem',
+                        fontSize: '0.925rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.45rem',
+                      }}
+                    >
+                      <Zap size={16} fill="#027A9B" />
+                      <span>Solve Today's Challenge</span>
+                    </button>
+                  )}
+
+                  {/* Weekly Goal Circles */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', minWidth: '180px' }}>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe', opacity: 0.9, textAlign: 'center' }}>
+                      Weekly Goal
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.35rem' }}>
+                      {weeklyDays.map((d, idx) => (
+                        <div
+                          key={idx}
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            background: d.active ? '#ffffff' : 'rgba(255, 255, 255, 0.22)',
+                            color: d.active ? '#027A9B' : '#ffffff',
+                            fontSize: '0.7rem',
+                            fontWeight: 700,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          {d.active ? '✓' : d.label}
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ height: '4px', background: 'rgba(255, 255, 255, 0.25)', borderRadius: '999px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', background: '#ffffff', width: hasSolvedToday ? '25%' : '0%', transition: 'width 0.3s ease' }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ─── SECTION TITLE: OUR 2 FLAGSHIP COURSES ─── */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                <div style={s.headerEyebrow}>FLAGSHIP COHORTS</div>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', margin: 0, letterSpacing: '-0.02em' }}>
+                  Explore Our StepSmart Programs
+                </h2>
+                <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>
+                  Structured cohort curriculum with live masterclasses by PMs from Microsoft & Mastercard, 1:1 portfolio reviews, and guaranteed referrals.
+                </p>
+              </div>
+
+              {/* ─── 2 COURSES SIDE-BY-SIDE: PM-X ACCELERATOR & PM-X FIRST STEP ─── */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.5rem', alignItems: 'stretch' }}>
                 
-                {/* 4 Metric Cards */}
-                <div style={s.metricCards}>
-                  
-                  {/* Card 1: Lessons */}
-                  <div
-                    style={{
-                      background: '#ffffff',
-                      border: '1px solid rgba(20, 49, 86, 0.08)',
-                      borderRadius: '20px',
-                      padding: '1.25rem',
-                      boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      height: '170px',
-                      boxSizing: 'border-box',
-                    }}
-                  >
-                    <div>
-                      <div style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
-                        Lessons
-                      </div>
-                      <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'baseline' }}>
-                        <span>0</span>
-                        <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/36</span>
-                      </div>
+                {/* ── COURSE 1: PM-X ACCELERATOR ── */}
+                <div style={s.courseCard}>
+                  <div>
+                    {/* Badge */}
+                    <div style={{ ...s.courseBadge, background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd' }}>
+                      <Briefcase size={13} />
+                      <span>Working Professionals • 6 Weeks Live</span>
                     </div>
-                    <div>
-                      <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
-                        <div style={{ height: '100%', borderRadius: '999px', background: '#027A9B', width: '0%' }} />
-                      </div>
-                      <div style={{ color: '#64748b', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                        <Clock size={13} style={{ opacity: 0.7 }} />
-                        <span>1 lesson from 1.2</span>
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Card 2: Assignments */}
-                  <div
-                    style={{
-                      background: '#ffffff',
-                      border: '1px solid rgba(20, 49, 86, 0.08)',
-                      borderRadius: '20px',
-                      padding: '1.25rem',
-                      boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      height: '170px',
-                      boxSizing: 'border-box',
-                    }}
-                  >
-                    <div>
-                      <div style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
-                        Assignments
-                      </div>
-                      <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'baseline' }}>
-                        <span>0</span>
-                        <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/7</span>
-                      </div>
-                    </div>
-                    <div>
-                      <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
-                        <div style={{ height: '100%', borderRadius: '999px', background: '#027A9B', width: '0%' }} />
-                      </div>
-                      <div style={{ color: '#64748b', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                        <Clock size={13} style={{ opacity: 0.7 }} />
-                        <span>Submit soon</span>
-                      </div>
-                    </div>
-                  </div>
+                    <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.4rem 0' }}>
+                      PM-X Accelerator
+                    </h3>
+                    <p style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.5, margin: '0 0 1.25rem 0' }}>
+                      Fast-track your transition from Software Engineering, Analytics, QA, or Consulting to a High-Growth Product Manager role.
+                    </p>
 
-                  {/* Card 3: Streak */}
-                  <div
-                    style={{
-                      background: '#ffffff',
-                      border: '1px solid rgba(20, 49, 86, 0.08)',
-                      borderRadius: '20px',
-                      padding: '1.25rem',
-                      boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      height: '170px',
-                      boxSizing: 'border-box',
-                    }}
-                  >
-                    <div>
-                      <div style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
-                        Streak
+                    {/* Program Stats */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', padding: '0.85rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', marginBottom: '1.25rem', textAlign: 'center' }}>
+                      <div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#027A9B' }}>6 Wks</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Live Masterclasses</div>
                       </div>
-                      <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>
-                        {streak} {streak === 1 ? 'day' : 'days'}
+                      <div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#027A9B' }}>15+</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Real Case Studies</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#027A9B' }}>1:1</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Senior PM Mocks</div>
                       </div>
                     </div>
-                    <div>
-                      <div style={{ color: '#64748b', fontSize: '0.8125rem' }}>
-                        Total Streaks: 1 day
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Card 4: Daily Calendar */}
-                  <div
-                    style={{
-                      background: '#ffffff',
-                      border: '1px solid rgba(20, 49, 86, 0.08)',
-                      borderRadius: '20px',
-                      padding: '0.65rem 0.75rem',
-                      boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      height: '170px',
-                      boxSizing: 'border-box',
-                    }}
-                  >
-                    <div>
-                      <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'baseline', marginBottom: '0.25rem', paddingLeft: '0.1rem' }}>
-                        <span style={{ color: '#64748b', fontSize: '0.75rem', fontWeight: 500 }}>
-                          {monthName}
-                        </span>
-                        <span style={{ color: '#027A9B', fontSize: '0.75rem', fontWeight: 700 }}>
-                          Daily Calendar
-                        </span>
+                    {/* Key Modules Overview */}
+                    <div style={{ marginBottom: '1.25rem' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#64748b', letterSpacing: '0.04em', marginBottom: '0.65rem' }}>
+                        Curriculum Highlights:
                       </div>
-
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', fontWeight: 600, color: '#94a3b8', fontSize: '0.625rem', marginBottom: '0.2rem' }}>
-                        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((w, i) => (
-                          <div key={i}>{w}</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                        {ACCELERATOR_MODULES.slice(0, 4).map((m) => (
+                          <div key={m.week} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.55rem 0.75rem', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', fontSize: '0.8125rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <span style={{ fontWeight: 700, color: '#027A9B', fontSize: '0.75rem', background: '#e0f2fe', padding: '0.15rem 0.45rem', borderRadius: '6px' }}>
+                                {m.week}
+                              </span>
+                              <span style={{ fontWeight: 600, color: '#1e293b' }}>{m.title}</span>
+                            </div>
+                            <Lock size={12} style={{ color: '#94a3b8' }} />
+                          </div>
                         ))}
                       </div>
+                    </div>
+                  </div>
 
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', rowGap: '2px' }}>
-                        {calendarCells.map((d, idx) => {
-                          if (d === null) return <div key={idx} style={{ height: '16px' }} />;
-                          const isToday = d === currentDay;
-                          return (
-                            <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16px' }}>
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  height: '16px',
-                                  width: '16px',
-                                  borderRadius: '50%',
-                                  fontSize: '0.6rem',
-                                  fontWeight: isToday ? 700 : 500,
-                                  background: isToday ? '#027A9B' : 'transparent',
-                                  color: isToday ? '#ffffff' : '#334155',
-                                  boxShadow: isToday ? '0 2px 6px rgba(2, 122, 155, 0.3)' : 'none',
-                                }}
-                              >
-                                {d}
-                              </div>
+                  {/* CTAs */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
+                    <a
+                      href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I want to enroll in the PM-X Accelerator cohort for working professionals. Please share batch dates and curriculum details.")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={s.primaryBtn}
+                    >
+                      <MessageSquare size={16} fill="#ffffff" />
+                      <span>Apply for PM-X Accelerator</span>
+                    </a>
+                    <button
+                      type="button"
+                      style={s.outlineBtn}
+                      onClick={() => {
+                        setSelectedCourseTab('accelerator');
+                        setActiveView('courses');
+                      }}
+                    >
+                      <span>View Full 6-Week Syllabus</span>
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* ── COURSE 2: PM-X FIRST STEP ── */}
+                <div style={s.courseCard}>
+                  <div>
+                    {/* Badge */}
+                    <div style={{ ...s.courseBadge, background: '#fdf4ff', color: '#86198f', border: '1px solid #f5d0fe' }}>
+                      <GraduationCap size={14} />
+                      <span>College Students & Freshers • 6 Weeks Live</span>
+                    </div>
+
+                    <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.4rem 0' }}>
+                      PM-X First Step
+                    </h3>
+                    <p style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.5, margin: '0 0 1.25rem 0' }}>
+                      Campus-to-corporate Associate Product Manager (APM) program to crack your dream PM placements and internships.
+                    </p>
+
+                    {/* Program Stats */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', padding: '0.85rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', marginBottom: '1.25rem', textAlign: 'center' }}>
+                      <div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#86198f' }}>6 Wks</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Campus Roadmaps</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#86198f' }}>10+</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>App Teardowns</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#86198f' }}>1:1</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>APM Placements</div>
+                      </div>
+                    </div>
+
+                    {/* Key Modules Overview */}
+                    <div style={{ marginBottom: '1.25rem' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#64748b', letterSpacing: '0.04em', marginBottom: '0.65rem' }}>
+                        Curriculum Highlights:
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                        {FIRST_STEP_MODULES.slice(0, 4).map((m) => (
+                          <div key={m.week} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.55rem 0.75rem', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', fontSize: '0.8125rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <span style={{ fontWeight: 700, color: '#86198f', fontSize: '0.75rem', background: '#fdf4ff', padding: '0.15rem 0.45rem', borderRadius: '6px' }}>
+                                {m.week}
+                              </span>
+                              <span style={{ fontWeight: 600, color: '#1e293b' }}>{m.title}</span>
                             </div>
-                          );
-                        })}
+                            <Lock size={12} style={{ color: '#94a3b8' }} />
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
 
+                  {/* CTAs */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
+                    <a
+                      href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I want to enroll in the PM-X First Step cohort for college students and APM placement preparation.")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ ...s.primaryBtn, background: 'linear-gradient(180deg, #86198f 0%, #701a75 100%)' }}
+                    >
+                      <MessageSquare size={16} fill="#ffffff" />
+                      <span>Apply for PM-X First Step</span>
+                    </a>
+                    <button
+                      type="button"
+                      style={s.outlineBtn}
+                      onClick={() => {
+                        setSelectedCourseTab('first-step');
+                        setActiveView('courses');
+                      }}
+                    >
+                      <span>View Full 6-Week Syllabus</span>
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
                 </div>
 
-                {/* Row 2: Continue Learning & Weekly Reminder */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: '1.25rem', alignItems: 'stretch' }}>
-                  
-                  {/* Continue Learning Card */}
-                  <div style={s.continueCard}>
-                    <div>
-                      <div style={s.activeCourse}>ACTIVE COURSE: PM -X First Step (Cohort 1) (Week 1)</div>
-                      <div style={s.headerEyebrow}>CONTINUE LEARNING</div>
-                      <div style={s.continueTitle}>1.2 • Introduction to Product Management</div>
+              </div>
+            </div>
+          )}
 
-                      {/* 5 Segmented Dashes */}
-                      <div style={s.segmentedTrack}>
-                        <div style={s.segmentedBar}>
-                          <div style={{ ...s.segmentedFill, width: '100%' }} />
-                        </div>
-                        <div style={s.segmentedBar}>
-                          <div style={{ ...s.segmentedFill, width: '0%' }} />
-                        </div>
-                        <div style={s.segmentedBar}>
-                          <div style={{ ...s.segmentedFill, width: '0%' }} />
-                        </div>
-                        <div style={s.segmentedBar}>
-                          <div style={{ ...s.segmentedFill, width: '0%' }} />
-                        </div>
-                        <div style={s.segmentedBar}>
-                          <div style={{ ...s.segmentedFill, width: '0%' }} />
-                        </div>
+          {/* ═════════════════════════════════════════════════════════ */}
+          {/* VIEW 2: COURSES TAB (FULL SYLLABUS & LESSON BREAKDOWN)    */}
+          {/* ═════════════════════════════════════════════════════════ */}
+          {activeView === 'courses' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
+              
+              {/* Course Switcher Header */}
+              <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                  <div style={s.headerEyebrow}>COURSE SYLLABUS</div>
+                  <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                    {selectedCourseTab === 'accelerator' ? 'PM-X Accelerator (Working Professionals)' : 'PM-X First Step (College & APM Placements)'}
+                  </h2>
+                </div>
+
+                <div style={{ display: 'flex', gap: '0.5rem', background: '#f1f5f9', padding: '0.3rem', borderRadius: '12px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCourseTab('accelerator')}
+                    style={{
+                      border: 'none',
+                      padding: '0.55rem 1.15rem',
+                      borderRadius: '9px',
+                      fontSize: '0.8125rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      background: selectedCourseTab === 'accelerator' ? '#027A9B' : 'transparent',
+                      color: selectedCourseTab === 'accelerator' ? '#ffffff' : '#64748b',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    PM-X Accelerator
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCourseTab('first-step')}
+                    style={{
+                      border: 'none',
+                      padding: '0.55rem 1.15rem',
+                      borderRadius: '9px',
+                      fontSize: '0.8125rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      background: selectedCourseTab === 'first-step' ? '#027A9B' : 'transparent',
+                      color: selectedCourseTab === 'first-step' ? '#ffffff' : '#64748b',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    PM-X First Step
+                  </button>
+                </div>
+              </div>
+
+              {/* Modules List */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {(selectedCourseTab === 'accelerator' ? ACCELERATOR_MODULES : FIRST_STEP_MODULES).map((mod) => (
+                  <div
+                    key={mod.week}
+                    style={{
+                      background: '#ffffff',
+                      border: '1px solid rgba(20, 49, 86, 0.08)',
+                      borderRadius: '20px',
+                      padding: '1.5rem',
+                      boxShadow: '0 4px 12px rgba(15, 40, 80, 0.03)',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ fontWeight: 800, fontSize: '0.8125rem', color: '#027A9B', background: '#e0f2fe', padding: '0.2rem 0.65rem', borderRadius: '8px' }}>
+                          {mod.week}
+                        </span>
+                        <span style={{ fontSize: '0.8125rem', color: '#64748b', fontWeight: 600 }}>
+                          • {mod.duration}
+                        </span>
                       </div>
 
                       <button
                         type="button"
-                        style={s.resumeButton}
-                        onClick={() => handleOpenLock("1.2 Introduction to Product Management Lesson")}
+                        onClick={() => handleOpenLock(`Unlock ${mod.title}`, mod.description)}
+                        style={{
+                          border: 'none',
+                          background: 'transparent',
+                          color: '#027A9B',
+                          fontSize: '0.8125rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.35rem',
+                        }}
                       >
-                        <span>▶</span>
-                        <span>Resume Lesson</span>
+                        <Lock size={12} />
+                        <span>Unlock Module</span>
                       </button>
                     </div>
 
-                    <div style={s.upNext}>
-                      Up next: 1.1 • Synthesizing your Research
-                    </div>
-                  </div>
+                    <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.4rem 0' }}>
+                      {mod.title}
+                    </h3>
+                    <p style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.5, margin: '0 0 1rem 0' }}>
+                      {mod.description}
+                    </p>
 
-                  {/* Weekly Reminder Card */}
-                  <div
-                    style={{
-                      background: '#ffffff',
-                      border: '1px solid rgba(20, 49, 86, 0.08)',
-                      borderRadius: '20px',
-                      padding: '1.35rem 1.5rem',
-                      boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      minHeight: '230px',
-                      boxSizing: 'border-box',
-                    }}
-                  >
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                        <span style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 600 }}>
-                          Weekly Reminder
+                    {/* Topics Checklist */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem', marginBottom: '1rem' }}>
+                      {mod.topics.map((t) => (
+                        <span key={t} style={{ fontSize: '0.78rem', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#334155', padding: '0.25rem 0.65rem', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <Check size={12} color="#059669" />
+                          <span>{t}</span>
                         </span>
-                        <span style={{ fontSize: '1rem' }}>⏰</span>
-                      </div>
+                      ))}
+                    </div>
 
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {/* Lessons list */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid #f1f5f9' }}>
+                      {mod.lessons.map((lesson, idx) => (
                         <div
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => handleOpenLock("Problem Selection & Assignment Discussion")}
+                          key={idx}
+                          onClick={() => handleOpenLock(`Lecture: ${lesson.title}`, "Join the StepSmart cohort to stream all live & recorded lectures with Q&A.")}
+                          style={{
+                            padding: '0.65rem 0.85rem',
+                            borderRadius: '10px',
+                            background: '#f8fafc',
+                            border: '1px solid #e2e8f0',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            cursor: 'pointer',
+                            fontSize: '0.8125rem',
+                          }}
                         >
-                          <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#0f172a', lineHeight: 1.3 }}>
-                            • Problem Selection & Assignment Discussion
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
+                            <Video size={14} color="#027A9B" style={{ flexShrink: 0 }} />
+                            <span style={{ fontWeight: 600, color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {lesson.title}
+                            </span>
                           </div>
-                          <span style={{ fontSize: '0.72rem', color: '#027A9B', fontWeight: 600, paddingLeft: '0.65rem' }}>
-                            29/08/2026
-                          </span>
+                          <Lock size={12} color="#94a3b8" style={{ flexShrink: 0, marginLeft: '0.5rem' }} />
                         </div>
-
-                        <div
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => handleOpenLock("Solution Space Module")}
-                        >
-                          <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#0f172a', lineHeight: 1.3 }}>
-                            • Solution Space
-                          </div>
-                          <span style={{ fontSize: '0.72rem', color: '#027A9B', fontWeight: 600, paddingLeft: '0.65rem' }}>
-                            27/08/2026
-                          </span>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
-
-                </div>
-
-              </div>
-
-              {/* Right Column: Top Peers Leaderboard (Exact match with screenshot) */}
-              <div style={s.dashboardRight}>
-                <div style={s.railHeaderTitle}>Top Peers</div>
-                <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
-
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  {TOP_PEERS.map((peer) => (
-                    <div key={peer.id} style={s.railRow}>
-                      <div style={{ ...s.railAvatar, background: peer.gradient }}>
-                        {peer.initials}
-                      </div>
-                      <div style={{ minWidth: 0 }}>
-                        <div style={s.railName}>{peer.name}</div>
-                        <div style={s.railMeta}>{peer.points} pts</div>
-                      </div>
-                      <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', minWidth: '24px', textAlign: 'right' }}>
-                        {peer.rank}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                ))}
               </div>
 
             </div>
+          )}
 
-          </div>
+          {/* ═════════════════════════════════════════════════════════ */}
+          {/* VIEW 3: PROFILE / SETTINGS                                */}
+          {/* ═════════════════════════════════════════════════════════ */}
+          {activeView === 'settings' && (
+            <div style={{ maxWidth: '640px', background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '22px', padding: '2rem', boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)' }}>
+              <div style={s.headerEyebrow}>ACCOUNT PREFERENCES</div>
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: '0 0 1.25rem 0' }}>
+                Student Profile
+              </h2>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1.25rem', marginBottom: '1.5rem', fontSize: '0.875rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.75rem', borderBottom: '1px solid #f1f5f9' }}>
+                  <span style={{ color: '#64748b', fontWeight: 500 }}>Full Name</span>
+                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{displayName}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.75rem', borderBottom: '1px solid #f1f5f9' }}>
+                  <span style={{ color: '#64748b', fontWeight: 500 }}>Email Address</span>
+                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{userEmail}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.75rem', borderBottom: '1px solid #f1f5f9' }}>
+                  <span style={{ color: '#64748b', fontWeight: 500 }}>Access Tier</span>
+                  <span style={{ fontWeight: 700, color: '#027A9B', background: '#e0f2fe', padding: '0.15rem 0.65rem', borderRadius: '999px', fontSize: '0.75rem' }}>
+                    Free PM Gym Explorer
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  style={{
+                    border: '1px solid #fecaca',
+                    background: '#fff',
+                    color: '#dc2626',
+                    padding: '0.65rem 1.2rem',
+                    borderRadius: '10px',
+                    fontWeight: 600,
+                    fontSize: '0.8125rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Sign Out
+                </button>
+
+                <a
+                  href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I want to upgrade to full cohort membership.")}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={s.primaryBtn}
+                >
+                  <span>Enroll in Cohort ➜</span>
+                </a>
+              </div>
+            </div>
+          )}
 
         </main>
       </div>
@@ -1345,13 +1506,13 @@ export function LandingPortalDashboard() {
                 gap: '0.35rem',
               }}>
                 <Lock size={12} />
-                <span>Locked Cohort Content</span>
+                <span>Locked Cohort Feature</span>
               </span>
               <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0f172a', margin: '0.65rem 0 0.35rem 0' }}>
                 Unlock {lockedFeatureName}
               </h3>
               <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
-                This module is exclusively available for enrolled StepSmart cohort students with live sessions, mentor reviews, and verified referrals.
+                {lockedFeatureDesc}
               </p>
             </div>
 
