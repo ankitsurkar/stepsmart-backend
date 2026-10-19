@@ -77,62 +77,25 @@ def get_fresh_daily_jobs(jobs, max_age_days=2.0, target_count=50):
     return fresh_batch
 
 def generate_markdown_digest(daily_items):
-    """Formats jobs into clean Markdown suitable for Google Docs."""
+    """Formats jobs into clean LinkedIn-ready lines suitable for Google Docs."""
     today_readable = datetime.now().strftime('%B %d, %Y')
     total_count = len(daily_items)
 
     lines = [
-        f"# StepSmart Daily PM Job Board Digest",
-        f"**Date:** {today_readable} | **Total Fresh Openings:** {total_count} Verified Roles",
-        f"**Sources:** LinkedIn, Naukri, Instahyre, Glassdoor, Indeed, YC Startups",
+        f"# StepSmart Daily PM Job Board Digest — {today_readable}",
+        f"**Total Fresh Openings:** {total_count} Verified Roles",
         f"",
         f"---",
         f"",
-        f"## 📋 Verified Product Management Jobs",
-        f"",
-        f"| # | Company | Job Title | Location | Source | Post Date | Apply Link |",
-        f"|---|---------|-----------|----------|--------|-----------|------------|"
+        f"## 📲 LinkedIn-Ready Format (Direct Copy-Paste)",
+        f""
     ]
 
-    for idx, item in enumerate(daily_items, 1):
-        apply_link = f"[Apply Here]({item['apply_url']})" if item['apply_url'] else "N/A"
-        loc = item['location'].replace('|', '/')
-        title = item['title'].replace('|', '/')
-        comp = item['company'].replace('|', '/')
-        lines.append(f"| {idx} | **{comp}** | {title} | {loc} | {item['source']} | {item['posted_at']} | {apply_link} |")
-
-    lines.extend([
-        f"",
-        f"---",
-        f"",
-        f"## 🚀 Role Breakdown by Category",
-        f""
-    ])
-
-    # Group by category
-    categories = {
-        "⚡ Associate PM / Entry-Level (0-2 yrs)": [],
-        "💼 Product Manager / Mid-Level": [],
-        "👑 Senior, Lead & Director Roles": []
-    }
-
     for item in daily_items:
-        t = item['title'].lower()
-        if any(k in t for k in ['associate', 'apm', 'analyst', 'intern']):
-            categories["⚡ Associate PM / Entry-Level (0-2 yrs)"].append(item)
-        elif any(k in t for k in ['senior', 'lead', 'director', 'principal', 'head', 'vp', 'group']):
-            categories["👑 Senior, Lead & Director Roles"].append(item)
-        else:
-            categories["💼 Product Manager / Mid-Level"].append(item)
-
-    for cat_name, cat_items in categories.items():
-        if cat_items:
-            lines.append(f"### {cat_name} ({len(cat_items)} openings)")
-            for itm in cat_items:
-                link_text = f"[Apply Now]({itm['apply_url']})" if itm['apply_url'] else ""
-                email_text = f" • Email: `{itm['email']}`" if itm['email'] else ""
-                lines.append(f"- **{itm['company']}** — {itm['title']} ({itm['location']} | {itm['source']}) {link_text}{email_text}")
-            lines.append("")
+        comp = item['company'].strip()
+        title = item['title'].strip()
+        url = item['apply_url'].strip()
+        lines.append(f"{comp} - {title} - {url}")
 
     return "\n".join(lines)
 
@@ -149,55 +112,26 @@ def generate_html_digest(daily_items):
   <style>
     body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.6; color: #1e293b; max-width: 900px; margin: 20px auto; padding: 0 16px; }}
     h1 {{ color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 8px; }}
-    h2 {{ color: #0369a1; margin-top: 28px; }}
     .meta {{ font-size: 14px; color: #64748b; margin-bottom: 20px; }}
-    table {{ width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }}
-    th, td {{ border: 1px solid #cbd5e1; padding: 10px 12px; text-align: left; }}
-    th {{ background-color: #f1f5f9; color: #0f172a; font-weight: 600; }}
-    tr:nth-child(even) {{ background-color: #f8fafc; }}
-    a {{ color: #0284c7; text-decoration: none; font-weight: 500; }}
-    a:hover {{ text-decoration: underline; }}
-    .badge {{ display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #e0f2fe; color: #0369a1; }}
+    .job-item {{ margin: 6px 0; font-size: 13px; }}
+    a {{ color: #0284c7; text-decoration: none; }}
   </style>
 </head>
 <body>
   <h1>StepSmart Daily Product Management Job Board</h1>
   <div class="meta">
     <strong>Date:</strong> {today_readable} &bull; 
-    <strong>Total Openings:</strong> {total_count} Verified Roles &bull; 
-    <strong>Sources:</strong> LinkedIn, Naukri, Instahyre, Glassdoor, Indeed
+    <strong>Total Openings:</strong> {total_count} Verified Roles
   </div>
-
-  <h2>Daily Verified PM Job Openings Table</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Company</th>
-        <th>Job Title</th>
-        <th>Location</th>
-        <th>Source</th>
-        <th>Post Date</th>
-        <th>Apply Link</th>
-      </tr>
-    </thead>
-    <tbody>
+  <h2>LinkedIn-Ready Jobs</h2>
 """
-    for idx, item in enumerate(daily_items, 1):
-        link_html = f'<a href="{item["apply_url"]}" target="_blank">Apply</a>' if item['apply_url'] else 'N/A'
-        html += f"""      <tr>
-        <td>{idx}</td>
-        <td><strong>{item['company']}</strong></td>
-        <td>{item['title']}</td>
-        <td>{item['location']}</td>
-        <td><span class="badge">{item['source']}</span></td>
-        <td>{item['posted_at']}</td>
-        <td>{link_html}</td>
-      </tr>\n"""
+    for item in daily_items:
+        comp = item['company'].strip()
+        title = item['title'].strip()
+        url = item['apply_url'].strip()
+        html += f'  <p class="job-item"><strong>{comp}</strong> - {title} - <a href="{url}" target="_blank">{url}</a></p>\n'
 
-    html += """    </tbody>
-  </table>
-</body>
+    html += """</body>
 </html>"""
     return html
 

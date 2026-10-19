@@ -204,72 +204,44 @@ function appendJobsToGoogleDoc(jobs, dateStr) {
   heading.editAsText().setForegroundColor("#0f172a");
 
   // Add Subtitle
-  var subText = "Verified Daily PM Roles (" + jobs.length + " Openings) • Sources: LinkedIn, Naukri, Instahyre, Glassdoor, Indeed";
+  var subText = "Verified Daily PM Roles (" + jobs.length + " Openings) • LinkedIn-Ready Format";
   var sub = body.appendParagraph(subText);
   sub.editAsText()
      .setFontSize(10)
      .setForegroundColor("#64748b")
      .setItalic(true);
 
-  // Build Table
-  var tableData = [
-    ["#", "Company", "Job Title", "Location", "Source", "Date", "Apply Link"]
-  ];
+  body.appendParagraph("");
 
+  // Output each job in the exact format:
+  // Company name - Senior Product manager - https://...
   for (var k = 0; k < jobs.length; k++) {
     var item = jobs[k];
-    tableData.push([
-      (k + 1).toString(),
-      item.company || "Hiring Company",
-      item.title || "Product Manager",
-      item.location || "India",
-      item.source || "Portal",
-      item.posted_at || dateStr,
-      item.apply_url ? "Apply Now" : "N/A"
-    ]);
-  }
+    var comp = (item.company || "Company").trim();
+    var title = (item.title || "Product Manager").trim();
+    var url = (item.apply_url || item.job_url || item.post_url || "").trim();
 
-  var table = body.appendTable(tableData);
-  try {
-    table.setBorderColor("#cbd5e1");
-  } catch (_) {}
+    var lineText = comp + " - " + title + " - " + url;
+    var p = body.appendParagraph(lineText);
+    p.setLineSpacing(1.15);
 
-  // Style Header Row
-  var headerRow = table.getRow(0);
-  for (var col = 0; col < headerRow.getNumCells(); col++) {
-    var cell = headerRow.getCell(col);
-    cell.setBackgroundColor("#f1f5f9");
-    cell.editAsText()
-        .setBold(true)
-        .setForegroundColor("#0f172a")
-        .setFontSize(10);
-  }
+    var textObj = p.editAsText();
+    textObj.setFontSize(10);
+    textObj.setForegroundColor("#1e293b");
 
-  // Style Data Rows & Hyperlinks
-  for (var rowIdx = 1; rowIdx < table.getNumRows(); rowIdx++) {
-    var row = table.getRow(rowIdx);
-    var jobData = jobs[rowIdx - 1];
-
-    for (var cIdx = 0; cIdx < row.getNumCells(); cIdx++) {
-      var dCell = row.getCell(cIdx);
-      var text = dCell.editAsText();
-      text.setFontSize(9);
-
-      // Make Company bold
-      if (cIdx === 1) {
-        text.setBold(true);
-      }
-
-      // Make Apply Link clickable
-      if (cIdx === 6 && jobData && jobData.apply_url) {
-        text.setLinkUrl(jobData.apply_url);
-        text.setForegroundColor("#0284c7");
-        text.setUnderline(true);
+    // Hyperlink the URL portion so it is clickable while keeping full URL text visible
+    if (url) {
+      var urlStart = lineText.indexOf(url);
+      if (urlStart !== -1) {
+        var urlEnd = urlStart + url.length - 1;
+        textObj.setLinkUrl(urlStart, urlEnd, url);
+        textObj.setForegroundColor(urlStart, urlEnd, "#0284c7");
+        textObj.setUnderline(urlStart, urlEnd, true);
       }
     }
   }
 
-  // Add spacing after table
+  // Spacing after date batch
   body.appendParagraph("");
   doc.saveAndClose();
 }
