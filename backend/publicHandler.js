@@ -1,12 +1,16 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, PutCommand, UpdateCommand, QueryCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient, PutCommand, UpdateCommand, QueryCommand, DeleteCommand, ScanCommand, GetCommand } = require('@aws-sdk/lib-dynamodb');
+const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 
 const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(ddbClient);
+const ses = new SESClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 
 const ENROLLMENTS_TABLE = process.env.ENROLLMENTS_TABLE || 'lms-enrollments';
 const ANALYTICS_TABLE = process.env.ANALYTICS_TABLE || 'lms-analytics';
 const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
+const PEER_SESSIONS_TABLE = process.env.PEER_SESSIONS_TABLE || 'lms-peer-sessions';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'admin@stepsmart.net';
 
 exports.handler = async (event) => {
   console.log('Event:', JSON.stringify(event));
@@ -103,6 +107,201 @@ exports.handler = async (event) => {
         }
 
         return response(200, { success: true, message: 'Gym challenge submitted successfully' });
+      }
+
+      if (page === 'get_peer_sessions') {
+        const nowIso = new Date().toISOString();
+        const scanRes = await docClient.send(new ScanCommand({
+          TableName: PEER_SESSIONS_TABLE,
+          FilterExpression: '#status = :open AND scheduledStartTime >= :now',
+          ExpressionAttributeNames: { '#status': 'status' },
+          ExpressionAttributeValues: {
+            ':open': 'OPEN',
+            ':now': nowIso,
+          },
+        })).catch((err) => {
+          console.error('Scan peer sessions error:', err);
+          return { Items: [] };
+        });
+
+        const sessions = (scanRes.Items || [])
+          .map((item) => ({
+            sessionId: item.sessionId,
+            courseId: item.courseId,
+            courseName: item.courseName || item.batchName || 'PM Cohort',
+            hostName: item.hostName || 'Classmate',
+            scheduledStartTime: item.scheduledStartTime,
+            scheduledEndTime: item.scheduledEndTime,
+            topic: item.topic || 'General Discussion',
+            notes: item.notes || '',
+            meetingUrl: item.meetingUrl,
+            status: item.status,
+            createdAt: item.createdAt,
+          }))
+          .sort((a, b) => (a.scheduledStartTime || '').localeCompare(b.scheduledStartTime || ''));
+
+        return response(200, { success: true, sessions });
+      }
+
+      if (page === 'book_peer_session') {
+        const { sessionId, name, email } = data;
+        if (!sessionId || !email) {
+          return response(400, { error: 'Session ID and email are required.' });
+        }
+
+        const getRes = await docClient.send(new GetCommand({
+          TableName: PEER_SESSIONS_TABLE,
+          Key: { sessionId },
+        })).catch((err) => {
+          console.error('Get peer session error:', err);
+          return { Item: null };
+        });
+
+        const session = getRes.Item;
+        if (!session) {
+          return response(404, { error: 'Study slot not found.' });
+        }
+
+        if (session.status !== 'OPEN') {
+          return response(409, { error: 'This study slot has already been booked by another student.' });
+        }
+
+        const nowIso = new Date().toISOString();
+        const updateRes = await docClient.send(new UpdateCommand({
+          TableName: PEER_SESSIONS_TABLE,
+          Key: { sessionId },
+          UpdateExpression: 'SET #status = :booked, peerUserId = :pUid, peerName = :pName, peerEmail = :pEmail, bookedAt = :now',
+          ConditionExpression: 'attribute_exists(sessionId) AND #status = :open',
+          ExpressionAttributeNames: { '#status': 'status' },
+          ExpressionAttributeValues: {
+            ':booked': 'BOOKED',
+            ':pUid': `visitor_${email}`,
+            ':pName': name || 'StepSmart Member',
+            ':pEmail': email,
+            ':now': nowIso,
+          },
+          ReturnValues: 'ALL_NEW',
+        }));
+
+        const updated = updateRes.Attributes || session;
+        const hostName = updated.hostName || 'Classmate';
+        const hostEmail = updated.hostEmail;
+        const peerName = updated.peerName || name || 'Student';
+        const peerEmail = updated.peerEmail || email;
+        const courseName = updated.courseName || updated.batchName || 'StepSmart Cohort';
+        const topic = updated.topic || 'General Discussion';
+        const meetingUrl = updated.meetingUrl || 'https://meet.jit.si';
+
+        // Format date
+        let formattedStart = updated.scheduledStartTime;
+        try {
+          formattedStart = new Date(updated.scheduledStartTime).toLocaleString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+          });
+        } catch (_) {}
+
+        // Send confirmation emails via SES
+        const tasks = [];
+        if (hostEmail) {
+          tasks.push(
+            ses.send(new SendEmailCommand({
+              Source: FROM_EMAIL,
+              Destination: { ToAddresses: [hostEmail] },
+              Message: {
+                Subject: { Data: `Peer Study Session Confirmed: ${peerName} joined your slot! 🚀` },
+                Body: {
+                  Html: {
+                    Data: `
+                      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 8px;">
+                        <h2 style="font-size: 20px; font-weight: 800; margin-top: 0; color: #111;">Peer Study Session Confirmed! 🚀</h2>
+                        <p style="font-size: 15px; color: #333; line-height: 1.5;">Hi <strong>${hostName}</strong>,</p>
+                        <p style="font-size: 15px; color: #333; line-height: 1.5;"><strong>${peerName}</strong> (${peerEmail}) has joined your study slot for <strong>${courseName}</strong>.</p>
+                        <div style="background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; padding: 16px; margin: 20px 0;">
+                          <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Topic:</strong> ${topic}</p>
+                          <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Date & Time:</strong> ${formattedStart}</p>
+                          <p style="margin: 0; font-size: 14px;"><strong>Meeting Link:</strong> <a href="${meetingUrl}" target="_blank" style="color: #027A9B; font-weight: 600;">${meetingUrl}</a></p>
+                        </div>
+                        <p style="font-size: 14px; color: #666; line-height: 1.5;">See you on the call!</p>
+                        <hr style="border: none; border-top: 1px solid #e4e4e7; margin: 24px 0;" />
+                        <p style="font-size: 12px; color: #888; margin: 0;">StepSmart LMS — Peer-to-Peer Learning Network</p>
+                      </div>
+                    `
+                  }
+                }
+              }
+            })).catch(err => console.error('Host mail error:', err))
+          );
+        }
+
+        if (peerEmail) {
+          tasks.push(
+            ses.send(new SendEmailCommand({
+              Source: FROM_EMAIL,
+              Destination: { ToAddresses: [peerEmail] },
+              Message: {
+                Subject: { Data: `You're Booked for a Peer Session with ${hostName}! 🚀` },
+                Body: {
+                  Html: {
+                    Data: `
+                      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 8px;">
+                        <h2 style="font-size: 20px; font-weight: 800; margin-top: 0; color: #111;">You're Booked for a Peer Session 🚀</h2>
+                        <p style="font-size: 15px; color: #333; line-height: 1.5;">Hi <strong>${peerName}</strong>,</p>
+                        <p style="font-size: 15px; color: #333; line-height: 1.5;">You have successfully connected with <strong>${hostName}</strong>${hostEmail ? ` (${hostEmail})` : ''} for <strong>${courseName}</strong>.</p>
+                        <div style="background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; padding: 16px; margin: 20px 0;">
+                          <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Topic:</strong> ${topic}</p>
+                          <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Date & Time:</strong> ${formattedStart}</p>
+                          <p style="margin: 0; font-size: 14px;"><strong>Meeting Link:</strong> <a href="${meetingUrl}" target="_blank" style="color: #027A9B; font-weight: 600;">${meetingUrl}</a></p>
+                        </div>
+                        <p style="font-size: 14px; color: #666; line-height: 1.5;">Reach out if you need to coordinate anything prior to the call.</p>
+                        <hr style="border: none; border-top: 1px solid #e4e4e7; margin: 24px 0;" />
+                        <p style="font-size: 12px; color: #888; margin: 0;">StepSmart LMS — Peer-to-Peer Learning Network</p>
+                      </div>
+                    `
+                  }
+                }
+              }
+            })).catch(err => console.error('Peer mail error:', err))
+          );
+        }
+
+        // Admin alert
+        tasks.push(
+          ses.send(new SendEmailCommand({
+            Source: FROM_EMAIL,
+            Destination: { ToAddresses: [FROM_EMAIL] },
+            Message: {
+              Subject: { Data: `[Booking Alert] ${peerName} booked study session with ${hostName}` },
+              Body: {
+                Html: {
+                  Data: `
+                    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px;">
+                      <h2>New Peer Study Session Booked!</h2>
+                      <p><strong>Host:</strong> ${hostName} (${hostEmail || 'N/A'})</p>
+                      <p><strong>Peer:</strong> ${peerName} (${peerEmail || 'N/A'})</p>
+                      <p><strong>Course:</strong> ${courseName}</p>
+                      <p><strong>Topic:</strong> ${topic}</p>
+                      <p><strong>Scheduled Time:</strong> ${formattedStart}</p>
+                      <p><strong>Meeting Room:</strong> <a href="${meetingUrl}">${meetingUrl}</a></p>
+                    </div>
+                  `
+                }
+              }
+            }
+          })).catch(err => console.error('Admin mail error:', err))
+        );
+
+        await Promise.allSettled(tasks);
+
+        return response(200, {
+          success: true,
+          session: updated,
+          message: 'Connected successfully! Confirmation emails sent to both participants.',
+        });
       }
 
       if (page === 'save_event' && data.event && data.event.id) {

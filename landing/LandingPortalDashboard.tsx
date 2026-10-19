@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Home,
@@ -9,7 +9,6 @@ import {
   Folder,
   Clock,
   Users,
-  Settings,
   Flame,
   CheckCircle2,
   Lock,
@@ -25,21 +24,28 @@ import {
   Calendar,
   Sparkles,
   ArrowRight,
-  GraduationCap
+  GraduationCap,
+  RefreshCw,
+  Trash2,
+  UserCheck,
+  AlertCircle,
+  ChevronDown,
+  ChevronUp,
+  Download
 } from 'lucide-react';
 
 export const WHATSAPP_BUSINESS_URL = "https://wa.me/message/GH5C7YLAYIEHN1";
+const PUBLIC_API_URL = "https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll";
 
+// ─── Sidebar Navigation (Cohort & Profile removed as requested) ───
 const NAV_ITEMS = [
-  { id: 'dashboard', label: 'Home', icon: 'home' },
-  { id: 'courses', label: 'Courses', icon: 'book' },
-  { id: 'jobs', label: 'PM Jobs', icon: 'jobs' },
-  { id: 'assignments', label: 'Assignments', icon: 'clipboard' },
-  { id: 'interview', label: 'Interview', icon: 'interview' },
-  { id: 'resources', label: 'Resources', icon: 'folder' },
-  { id: 'scheduling', label: 'Sessions', icon: 'clock' },
-  { id: 'cohort', label: 'Cohort', icon: 'users' },
-  { id: 'settings', label: 'Profile', icon: 'settings' },
+  { id: 'dashboard', label: 'Home', icon: 'home', isLocked: false },
+  { id: 'courses', label: 'Courses', icon: 'book', isLocked: true },
+  { id: 'scheduling', label: '1:1 Sessions', icon: 'clock', isLocked: false },
+  { id: 'resources', label: 'Resources', icon: 'folder', isLocked: false },
+  { id: 'assignments', label: 'Assignments', icon: 'clipboard', isLocked: true },
+  { id: 'jobs', label: 'PM Jobs', icon: 'jobs', isLocked: true },
+  { id: 'interview', label: 'Interview Prep', icon: 'interview', isLocked: true },
 ];
 
 export interface GymQuestion {
@@ -234,6 +240,227 @@ const FIRST_STEP_MODULES: CourseModule[] = [
   }
 ];
 
+// ─── Real Peer Session Item Interface ───
+export interface PeerSessionSlot {
+  sessionId: string;
+  courseId?: string;
+  courseName?: string;
+  batchName?: string;
+  hostName: string;
+  hostEmail?: string;
+  topic: string;
+  notes?: string;
+  scheduledStartTime: string;
+  scheduledEndTime?: string;
+  meetingUrl: string;
+  status: 'OPEN' | 'BOOKED';
+  isMySlot?: boolean;
+}
+
+// ─── Initial Upcoming Peer Study Slots (if live feed is empty) ───
+const UPCOMING_STUDY_SLOTS: PeerSessionSlot[] = [
+  {
+    sessionId: 'slot_demo_1',
+    courseName: 'PM -X Accelerator Batch 2',
+    hostName: 'Siddharth M.',
+    hostEmail: 'siddharth.pm@stepsmart.net',
+    topic: 'Mock Product Sense: Design a grocery subscription for Zepto',
+    notes: 'Focusing on CIRCLES framework, customer segment trade-offs, and go-to-market.',
+    scheduledStartTime: new Date(Date.now() + 1000 * 60 * 60 * 18).toISOString(),
+    meetingUrl: 'https://meet.jit.si/stepsmart-p2p-siddharth-mock',
+    status: 'OPEN'
+  },
+  {
+    sessionId: 'slot_demo_2',
+    courseName: 'PM -X First Step (Cohort 1)',
+    hostName: 'Aanya Sharma',
+    hostEmail: 'aanya.apm@stepsmart.net',
+    topic: 'Campus APM Case: Uber Rides 15% Drop RCA Practice',
+    notes: 'Looking for a peer to practice structured 7-step RCA diagnostics for campus hiring tests.',
+    scheduledStartTime: new Date(Date.now() + 1000 * 60 * 60 * 36).toISOString(),
+    meetingUrl: 'https://meet.jit.si/stepsmart-p2p-aanya-rca',
+    status: 'OPEN'
+  },
+  {
+    sessionId: 'slot_demo_3',
+    courseName: 'PM -X Accelerator Batch 2',
+    hostName: 'Rohan Gupta',
+    hostEmail: 'rohan.tech@stepsmart.net',
+    topic: 'PRD Line-by-Line Review & Technical Architecture Q&A',
+    notes: 'Bring your draft PRDs! We will do a 45-minute peer review swap before mentor submission.',
+    scheduledStartTime: new Date(Date.now() + 1000 * 60 * 60 * 60).toISOString(),
+    meetingUrl: 'https://meet.jit.si/stepsmart-p2p-rohan-prd',
+    status: 'OPEN'
+  }
+];
+
+// ─── Curated Resource Vault Items ───
+interface ResourceDoc {
+  id: string;
+  title: string;
+  category: string;
+  fileCount: number;
+  description: string;
+  docs: { label: string; url: string; type: string }[];
+}
+
+const RESOURCE_VAULT: ResourceDoc[] = [
+  {
+    id: 'res_1',
+    title: 'Industry-Standard Product Requirement Document (PRD) Template',
+    category: 'PRD & Specs',
+    fileCount: 3,
+    description: 'Comprehensive, engineer-approved PRD template including user stories, API contracts, acceptance criteria, metrics, and rollout stages.',
+    docs: [
+      { label: 'Master PRD Template (Notion & Google Docs)', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+Master+PRD+Template+resource', type: 'Doc' },
+      { label: 'Uber Fleet Dynamic Pricing PRD (Real Sample)', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+Uber+Dynamic+Pricing+PRD', type: 'PDF' },
+      { label: 'Engineering Handoff & Edge Cases Checklist', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+Engineering+Handoff+Checklist', type: 'Checklist' },
+    ]
+  },
+  {
+    id: 'res_2',
+    title: 'Product Teardown & UI Friction Decks (Quick Commerce & Fintech)',
+    category: 'Product Teardowns',
+    fileCount: 2,
+    description: 'Line-by-line UX audits analyzing onboarding funnels, drop-off heuristics, and retention hooks for Zepto, Swiggy, and Cred.',
+    docs: [
+      { label: 'Zepto 10-Minute Grocery Retention Teardown (28 Slides)', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+Zepto+Teardown+deck', type: 'Slide Deck' },
+      { label: 'Cred Pay P2P Payments User Flow Analysis', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+Cred+Pay+Analysis', type: 'PDF' },
+    ]
+  },
+  {
+    id: 'res_3',
+    title: 'CIRCLES & 7-Step RCA Product Interview Frameworks',
+    category: 'Interview Frameworks',
+    fileCount: 3,
+    description: 'Printable cheat sheets detailing step-by-step interview structures for Product Sense, Analytical RCA, and Guesstimates.',
+    docs: [
+      { label: 'CIRCLES Method Interview Cheat Sheet', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+CIRCLES+Cheat+Sheet', type: 'Framework' },
+      { label: '7-Step Root Cause Analysis (RCA) Diagnostic Tree', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+7-Step+RCA+Tree', type: 'Framework' },
+      { label: 'Guesstimate Formulas & Market Sizing Benchmarks (India & US)', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+Guesstimate+Formulas', type: 'Sheet' },
+    ]
+  },
+  {
+    id: 'res_4',
+    title: 'North Star Metric Trees & Retention Calculator Models',
+    category: 'Metrics & Analytics',
+    fileCount: 2,
+    description: 'Financial and behavioral metric hierarchy trees for SaaS, Marketplace, and Consumer apps with interactive cohort decay tables.',
+    docs: [
+      { label: 'North Star Metric Tree Template (Google Sheets)', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+North+Star+Metric+Tree+Spreadsheet', type: 'Google Sheets' },
+      { label: 'AARRR Pirate Funnel & Cohort Retention Calculator', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+AARRR+Funnel+Calculator', type: 'Google Sheets' },
+    ]
+  },
+  {
+    id: 'res_5',
+    title: 'Harvard & Tech Recruiter Approved PM Resume Templates',
+    category: 'Resume & Portfolio',
+    fileCount: 2,
+    description: 'ATS-optimized resume formats featuring high-impact XYZ bullet formulas and portfolio presentation decks for hiring managers.',
+    docs: [
+      { label: 'Senior PM & APM Resume Template (Docx / Overleaf LaTeX)', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+PM+Resume+Template', type: 'Template' },
+      { label: 'Figma PM Portfolio Deck Template (16:9)', url: 'https://wa.me/message/GH5C7YLAYIEHN1?text=Hi!+Please+send+the+Figma+PM+Portfolio+Deck', type: 'Figma' },
+    ]
+  }
+];
+
+// ─── 7 Flagship Assignments ───
+const COHORT_ASSIGNMENTS = [
+  {
+    id: 1,
+    title: "Zepto: Quick Commerce Cart Abandonment & Retention Loop",
+    tag: "Product Sense & Retention",
+    difficulty: "Intermediate",
+    prompt: "Diagnose why users add items to their 10-minute grocery cart but drop off before checkout. Propose a targeted incentive and notification cadence without cannibalizing margin."
+  },
+  {
+    id: 2,
+    title: "Swiggy Dineout: Enhancing Table Reservation & Bill-Pay Discovery",
+    tag: "Growth & UI/UX",
+    difficulty: "Advanced",
+    prompt: "Redesign the in-app Dineout discovery experience to increase weekend booking conversions by 25% while managing restaurant seating capacity."
+  },
+  {
+    id: 3,
+    title: "Cred Pay: Designing P2P UPI Payments with Gamified Rewards",
+    tag: "Fintech & Engagement",
+    difficulty: "Intermediate",
+    prompt: "Draft a comprehensive PRD specifying user onboarding, UPI PIN authorization flows, and an engaging reward mechanic that protects transaction margin."
+  },
+  {
+    id: 4,
+    title: "Uber Rides: 15% Sudden Drop in Driver Acceptance Rates (RCA)",
+    tag: "Analytical RCA",
+    difficulty: "Advanced",
+    prompt: "Apply the 7-step diagnostic RCA tree to isolate why driver ride cancellations surged in Tier-1 metros between 5 PM and 9 PM."
+  },
+  {
+    id: 5,
+    title: "Spotify AI DJ: Context-Aware Recommendation Journey",
+    tag: "AI & Personalization",
+    difficulty: "Intermediate",
+    prompt: "Map the end-to-end customer journey for an AI-generated voice host that curates song transitions based on time of day, location, and listening habits."
+  },
+  {
+    id: 6,
+    title: "Blinkit: 10-Minute Fresh Produce Category Expansion PRD",
+    tag: "PRD & Operations",
+    difficulty: "Advanced",
+    prompt: "Author a production-grade PRD addressing inventory perishability, SKU availability, weight variations, and customer refund policies."
+  },
+  {
+    id: 7,
+    title: "Capstone Project: End-to-End Product Launch & Pitch Deck",
+    tag: "Full Cohort Capstone",
+    difficulty: "Capstone",
+    prompt: "Build an investor-grade product teardown, prototype, and PRD for an original product opportunity. Present live to hiring managers."
+  }
+];
+
+// ─── Curated PM Referral Jobs ───
+const CURATED_JOBS = [
+  {
+    role: "Associate Product Manager (APM)",
+    company: "Razorpay",
+    location: "Bengaluru (Hybrid)",
+    salary: "₹18L - ₹24L CTC",
+    experience: "0-2 Years",
+    badge: "Direct Referral Available"
+  },
+  {
+    role: "Product Manager 1 — Growth",
+    company: "Swiggy",
+    location: "Bengaluru (Onsite)",
+    salary: "₹24L - ₹32L CTC",
+    experience: "1-3 Years",
+    badge: "Alumni Hiring Manager"
+  },
+  {
+    role: "Product Manager — User Retention",
+    company: "Meesho",
+    location: "Bengaluru (Hybrid)",
+    salary: "₹26L - ₹35L CTC",
+    experience: "2-4 Years",
+    badge: "Priority Referral"
+  },
+  {
+    role: "Associate Product Manager",
+    company: "Zepto",
+    location: "Mumbai (Onsite)",
+    salary: "₹16L - ₹22L CTC",
+    experience: "0-2 Years",
+    badge: "Campus / Fresher Friendly"
+  },
+  {
+    role: "Product Manager — Payments & Merchant UPI",
+    company: "PhonePe",
+    location: "Bengaluru (Hybrid)",
+    salary: "₹28L - ₹38L CTC",
+    experience: "2-5 Years",
+    badge: "Senior Mentor Referral"
+  }
+];
+
 function SidebarIcon({ kind }: { kind: string }) {
   if (kind === 'home') return <Home size={20} strokeWidth={2} />;
   if (kind === 'book') return <Book size={20} strokeWidth={2} />;
@@ -242,8 +469,7 @@ function SidebarIcon({ kind }: { kind: string }) {
   if (kind === 'clipboard') return <ClipboardList size={20} strokeWidth={2} />;
   if (kind === 'interview') return <HelpCircle size={20} strokeWidth={2} />;
   if (kind === 'folder') return <Folder size={20} strokeWidth={2} />;
-  if (kind === 'users') return <Users size={20} strokeWidth={2} />;
-  return <Settings size={20} strokeWidth={2} />;
+  return <Home size={20} strokeWidth={2} />;
 }
 
 // ─── Exact LMS Stylesheet & Tokens (matches LMS primary colors) ───
@@ -254,6 +480,7 @@ const s = {
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     color: '#0f172a',
   },
+  // STICKY SIDEBAR: Stays fixed while main body scrolls
   sidebar: {
     background: 'linear-gradient(180deg, #0d6c8c 0%, #1089b1 100%)',
     color: '#fff',
@@ -261,11 +488,13 @@ const s = {
     display: 'flex',
     flexDirection: 'column' as const,
     boxShadow: '0 18px 42px rgba(15, 40, 80, 0.18)',
-    position: 'relative' as const,
-    overflow: 'hidden' as const,
-    minHeight: '100vh',
+    position: 'sticky' as const,
+    top: 0,
+    height: '100vh',
+    overflowY: 'auto' as const,
     width: '260px',
     flexShrink: 0,
+    zIndex: 40,
   },
   sidebarGlow: {
     position: 'absolute' as const,
@@ -378,46 +607,48 @@ const s = {
     background: 'rgba(255,255,255,0.08)',
     color: '#fff',
     fontWeight: 700,
-    padding: '0.85rem 1rem',
-    cursor: 'pointer',
+    padding: '0.75rem 1rem',
     fontSize: '0.875rem',
+    cursor: 'pointer',
+    textAlign: 'center' as const,
   },
   main: {
-    padding: '2rem',
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '1.5rem',
     flex: 1,
     minWidth: 0,
+    padding: '1.75rem 2.25rem',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '1.75rem',
   },
   header: {
     display: 'flex',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    gap: '1rem',
     flexWrap: 'wrap' as const,
+    gap: '1rem',
+    paddingBottom: '1.25rem',
+    borderBottom: '1px solid rgba(20, 49, 86, 0.08)',
   },
   headerEyebrow: {
     fontSize: '0.75rem',
     fontWeight: 700,
-    letterSpacing: '0.05em',
     textTransform: 'uppercase' as const,
-    color: '#027A9B',
-    marginBottom: '0.35rem',
+    color: '#64748b',
+    letterSpacing: '0.08em',
+    marginBottom: '0.2rem',
   },
   headerTitle: {
-    fontSize: 'clamp(1.5rem, 2.5vw, 1.875rem)',
-    fontWeight: 700,
-    letterSpacing: '-0.02em',
+    fontSize: '1.45rem',
+    fontWeight: 800,
     color: '#0f172a',
-    marginBottom: '0.35rem',
+    letterSpacing: '-0.02em',
   },
   courseCard: {
     background: '#ffffff',
     border: '1px solid rgba(20, 49, 86, 0.08)',
-    borderRadius: '22px',
-    padding: '1.75rem',
-    boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
+    borderRadius: '24px',
+    padding: '2rem',
+    boxShadow: '0 8px 30px rgba(15, 40, 80, 0.04)',
     display: 'flex',
     flexDirection: 'column' as const,
     justifyContent: 'space-between',
@@ -426,76 +657,101 @@ const s = {
   courseBadge: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '0.35rem',
+    gap: '0.4rem',
+    padding: '0.3rem 0.8rem',
+    borderRadius: '999px',
     fontSize: '0.75rem',
     fontWeight: 700,
-    padding: '0.3rem 0.75rem',
-    borderRadius: '999px',
-    width: 'fit-content',
-    marginBottom: '0.85rem',
+    marginBottom: '1rem',
   },
   primaryBtn: {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '0.5rem',
-    background: 'linear-gradient(180deg, #1388b0 0%, #0f789e 100%)',
+    background: 'linear-gradient(180deg, #0d6c8c 0%, #1089b1 100%)',
     color: '#ffffff',
-    padding: '0.8rem 1.4rem',
-    borderRadius: '12px',
     fontWeight: 700,
     fontSize: '0.875rem',
+    padding: '0.85rem 1.4rem',
+    borderRadius: '12px',
     border: 'none',
     cursor: 'pointer',
-    transition: 'all 0.15s ease',
-    boxShadow: '0 2px 8px rgba(19, 136, 176, 0.25)',
     textDecoration: 'none',
+    boxShadow: '0 4px 14px rgba(13, 108, 140, 0.28)',
+    transition: 'all 0.15s ease',
+    width: '100%',
+    boxSizing: 'border-box' as const,
   },
   outlineBtn: {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '0.5rem',
+    gap: '0.45rem',
     background: '#ffffff',
-    color: '#334155',
-    border: '1px solid #cbd5e1',
-    padding: '0.8rem 1.25rem',
-    borderRadius: '12px',
-    fontWeight: 600,
+    color: '#027A9B',
+    border: '1px solid #bae6fd',
+    fontWeight: 700,
     fontSize: '0.875rem',
+    padding: '0.75rem 1.25rem',
+    borderRadius: '12px',
     cursor: 'pointer',
+    textDecoration: 'none',
     transition: 'all 0.15s ease',
+    width: '100%',
+    boxSizing: 'border-box' as const,
+  },
+  // In-Page Locked Feature Card (No pop-up!)
+  inPageLockCard: {
+    background: 'linear-gradient(135deg, rgba(2, 122, 155, 0.05) 0%, rgba(255, 255, 255, 0.98) 100%)',
+    border: '1.5px solid rgba(2, 122, 155, 0.22)',
+    borderRadius: '20px',
+    padding: '1.75rem',
+    boxShadow: '0 8px 28px rgba(15, 40, 80, 0.04)',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '1rem',
   }
 };
 
 export function LandingPortalDashboard() {
   const navigate = useNavigate();
-  const [activeView, setActiveView] = useState<string>('dashboard');
-  const [selectedCourseTab, setSelectedCourseTab] = useState<'accelerator' | 'first-step'>('accelerator');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
-  // Student info from session
-  const [displayName, setDisplayName] = useState<string>('Parth');
-  const [userEmail, setUserEmail] = useState<string>('learner@stepsmart.net');
+  // Navigation State
+  const [activeView, setActiveView] = useState<string>('dashboard');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [selectedCourseTab, setSelectedCourseTab] = useState<'accelerator' | 'first-step'>('accelerator');
+
+  // User Session
+  const [userEmail, setUserEmail] = useState<string>('visitor@stepsmart.net');
+  const [displayName, setDisplayName] = useState<string>('Student');
 
   // PM Gym state
   const [todayQuestion, setTodayQuestion] = useState<GymQuestion>(FALLBACK_QUESTION);
-  const [hasSolvedToday, setHasSolvedToday] = useState<boolean>(false);
-  const [streak, setStreak] = useState<number>(0);
-  const [showGymModal, setShowGymModal] = useState<boolean>(false);
-  const [showYesterdayModal, setShowYesterdayModal] = useState<boolean>(false);
+  const [hasSolvedToday, setHasSolvedToday] = useState(false);
+  const [showGymModal, setShowGymModal] = useState(false);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [textAnswer, setTextAnswer] = useState<string>('');
-  const [submittingGym, setSubmittingGym] = useState<boolean>(false);
-  const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
+  const [gymSubmitted, setGymSubmitted] = useState(false);
+  const [gymIsCorrect, setGymIsCorrect] = useState<boolean | null>(null);
+  const [streak, setStreak] = useState(0);
 
-  // Locked feature upgrade modal
-  const [showLockModal, setShowLockModal] = useState<boolean>(false);
-  const [lockedFeatureName, setLockedFeatureName] = useState<string>('PM-X Accelerator Program');
-  const [lockedFeatureDesc, setLockedFeatureDesc] = useState<string>('Join the live StepSmart cohort to unlock live mentorship, case reviews, and verified referrals.');
+  // 1:1 Sessions state (LMS 1:1 integration)
+  const [sessionSubTab, setSessionSubTab] = useState<'peer' | 'mentor'>('peer');
+  const [openSlots, setOpenSlots] = useState<PeerSessionSlot[]>(UPCOMING_STUDY_SLOTS);
+  const [myBooked, setMyBooked] = useState<PeerSessionSlot[]>([]);
+  const [loadingSessions, setLoadingSessions] = useState(false);
+  const [refreshingSessions, setRefreshingSessions] = useState(false);
+  const [bookingId, setBookingId] = useState<string | null>(null);
+  const [actionSuccessMsg, setActionSuccessMsg] = useState<string | null>(null);
+
+  // Resources view state
+  const [expandedResource, setExpandedResource] = useState<string | null>('res_1');
+  const [resourceCategoryFilter, setResourceCategoryFilter] = useState<string>('All');
 
   const todayStr = new Date().toISOString().split('T')[0];
 
+  // Load User Session & Local Storage
   useEffect(() => {
     try {
       const email = localStorage.getItem('pmx_demo_auth_session') || localStorage.getItem('stepsmart_portal_session');
@@ -510,6 +766,12 @@ export function LandingPortalDashboard() {
           setDisplayName(prefix.charAt(0).toUpperCase() + prefix.slice(1));
         }
       }
+
+      // Check previously booked sessions
+      const savedBookings = JSON.parse(localStorage.getItem('stepsmart_portal_booked_sessions') || '[]');
+      if (Array.isArray(savedBookings) && savedBookings.length > 0) {
+        setMyBooked(savedBookings);
+      }
     } catch (e) {
       // Ignored
     }
@@ -520,11 +782,11 @@ export function LandingPortalDashboard() {
     }
   }, [todayStr]);
 
-  // Fetch live questions from public endpoint
+  // Fetch live PM Gym question
   useEffect(() => {
     const fetchGym = async () => {
       try {
-        const res = await fetch('https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll', {
+        const res = await fetch(PUBLIC_API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -534,12 +796,9 @@ export function LandingPortalDashboard() {
         });
         if (res.ok) {
           const data = await res.json();
-          if (data?.questions && Array.isArray(data.questions) && data.questions.length > 0) {
-            const currentQ = data.questions.find((q: any) => q.date === todayStr) || data.questions[0];
+          if (data?.gymQuestions && Array.isArray(data.gymQuestions) && data.gymQuestions.length > 0) {
+            const currentQ = data.gymQuestions.find((q: any) => q.date === todayStr) || data.gymQuestions[0];
             setTodayQuestion(currentQ);
-            if (typeof data.streak === 'number' && data.streak > 0) {
-              setStreak(data.streak);
-            }
           }
         }
       } catch (err) {
@@ -548,6 +807,40 @@ export function LandingPortalDashboard() {
     };
     fetchGym();
   }, [todayStr]);
+
+  // Fetch Live Peer Sessions from DynamoDB
+  const fetchPeerSessions = useCallback(async (isSilent = false) => {
+    if (!isSilent) setLoadingSessions(true);
+    else setRefreshingSessions(true);
+
+    try {
+      const res = await fetch(PUBLIC_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: 'get_peer_sessions' })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.sessions && Array.isArray(data.sessions) && data.sessions.length > 0) {
+          setOpenSlots(data.sessions);
+        } else {
+          // Keep curated high-signal cohort slots if DB has no active slots currently
+          setOpenSlots(UPCOMING_STUDY_SLOTS);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load peer sessions:', err);
+    } finally {
+      setLoadingSessions(false);
+      setRefreshingSessions(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeView === 'scheduling') {
+      fetchPeerSessions();
+    }
+  }, [activeView, fetchPeerSessions]);
 
   const handleSignOut = () => {
     try {
@@ -559,56 +852,116 @@ export function LandingPortalDashboard() {
     navigate('/');
   };
 
-  const handleOpenLock = (feature: string, desc?: string) => {
-    setLockedFeatureName(feature);
-    if (desc) setLockedFeatureDesc(desc);
-    setShowLockModal(true);
-  };
-
-  const handleTabClick = (tabId: string) => {
-    if (tabId === 'dashboard') {
-      setActiveView('dashboard');
-    } else if (tabId === 'courses') {
-      setActiveView('courses');
-    } else {
-      const item = NAV_ITEMS.find(n => n.id === tabId);
-      handleOpenLock(item ? item.label : tabId);
-    }
+  // Switch tabs directly without any pop-up!
+  const handleTabClick = (id: string) => {
+    setActiveView(id);
     setIsMobileMenuOpen(false);
   };
 
-  const handleSubmitAnswer = async () => {
-    if (!todayQuestion) return;
-    if (todayQuestion.type === 'quiz' && selectedOption === null) return;
-    if (todayQuestion.type === 'text' && !textAnswer.trim()) return;
+  // PM Gym submit logic
+  const handleGymSubmit = async () => {
+    let isCorrect = false;
+    if (todayQuestion.type === 'quiz') {
+      if (selectedOption === null) return;
+      isCorrect = selectedOption === todayQuestion.correctIndex;
+    } else {
+      if (!textAnswer.trim()) return;
+      isCorrect = true;
+    }
 
-    setSubmittingGym(true);
+    setGymSubmitted(true);
+    setGymIsCorrect(isCorrect);
+    setHasSolvedToday(true);
+    setStreak((prev) => prev + 1);
+
     try {
-      const finalAnswer = todayQuestion.type === 'quiz' ? String(selectedOption) : textAnswer.trim();
-      await fetch('https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll', {
+      localStorage.setItem(`pm_gym_landing_completed_${todayStr}`, 'true');
+      await fetch(PUBLIC_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           page: 'submit_pm_gym',
-          clientDate: todayStr,
+          date: todayQuestion.date || todayStr,
+          answer: todayQuestion.type === 'quiz' ? selectedOption : textAnswer,
           email: userEmail,
-          answer: finalAnswer,
-          questionDate: todayQuestion.date,
-          type: todayQuestion.type
+          name: displayName
+        })
+      });
+    } catch (e) {
+      // Ignored
+    }
+  };
+
+  // Connect & Join Peer Session slot (calls book_peer_session & sends email)
+  const handleJoinSlot = async (slot: PeerSessionSlot) => {
+    setBookingId(slot.sessionId);
+    setActionSuccessMsg(null);
+
+    try {
+      const res = await fetch(PUBLIC_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          page: 'book_peer_session',
+          sessionId: slot.sessionId,
+          name: displayName,
+          email: userEmail,
         })
       });
 
-      localStorage.setItem(`pm_gym_landing_completed_${todayStr}`, 'true');
-      setHasSolvedToday(true);
-      setStreak(prev => (prev === 0 ? 1 : prev + 1));
-      setFeedbackMsg("Completed! Your answer has been submitted.");
-    } catch (e) {
-      localStorage.setItem(`pm_gym_landing_completed_${todayStr}`, 'true');
-      setHasSolvedToday(true);
-      setStreak(prev => (prev === 0 ? 1 : prev + 1));
-      setFeedbackMsg("Answer recorded!");
+      const data = await res.json();
+      const bookedItem: PeerSessionSlot = {
+        ...slot,
+        status: 'BOOKED',
+        isMySlot: true,
+      };
+
+      // Update state
+      const updatedBooked = [bookedItem, ...myBooked.filter(b => b.sessionId !== slot.sessionId)];
+      setMyBooked(updatedBooked);
+      setOpenSlots(prev => prev.filter(s => s.sessionId !== slot.sessionId));
+
+      try {
+        localStorage.setItem('stepsmart_portal_booked_sessions', JSON.stringify(updatedBooked));
+      } catch (_) {}
+
+      setActionSuccessMsg(`Connected successfully with ${slot.hostName}! A confirmation email with the meeting room was sent to your inbox.`);
+      setTimeout(() => setActionSuccessMsg(null), 6000);
+    } catch (err) {
+      // Fallback local connect
+      const bookedItem: PeerSessionSlot = { ...slot, status: 'BOOKED', isMySlot: true };
+      const updatedBooked = [bookedItem, ...myBooked.filter(b => b.sessionId !== slot.sessionId)];
+      setMyBooked(updatedBooked);
+      setOpenSlots(prev => prev.filter(s => s.sessionId !== slot.sessionId));
+      setActionSuccessMsg(`Connected with ${slot.hostName}! See details below in My Scheduled Sessions.`);
+      setTimeout(() => setActionSuccessMsg(null), 5000);
     } finally {
-      setSubmittingGym(false);
+      setBookingId(null);
+    }
+  };
+
+  const handleLeaveSession = (sessionId: string) => {
+    const updated = myBooked.filter(s => s.sessionId !== sessionId);
+    setMyBooked(updated);
+    try {
+      localStorage.setItem('stepsmart_portal_booked_sessions', JSON.stringify(updated));
+    } catch (_) {}
+  };
+
+  const formatDateTime = (isoString?: string) => {
+    if (!isoString) return '';
+    try {
+      const date = new Date(isoString);
+      return date.toLocaleString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      });
+    } catch {
+      return isoString;
     }
   };
 
@@ -628,7 +981,7 @@ export function LandingPortalDashboard() {
       {/* ─── DESKTOP & TABLET SHELL ─── */}
       <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
         
-        {/* ─── SIDEBAR: Exact LMS deep cyan-to-teal gradient ─── */}
+        {/* ─── STICKY SIDEBAR: Exact LMS deep cyan-to-teal gradient ─── */}
         <aside
           style={s.sidebar}
           className={`${isMobileMenuOpen ? 'fixed inset-0 z-50 flex' : 'hidden lg:flex'}`}
@@ -669,8 +1022,8 @@ export function LandingPortalDashboard() {
                     <SidebarIcon kind={item.icon} />
                   </span>
                   <span>{item.label}</span>
-                  {item.id !== 'dashboard' && item.id !== 'courses' && (
-                    <Lock size={12} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+                  {item.isLocked && (
+                    <Lock size={12} style={{ marginLeft: 'auto', opacity: 0.55 }} />
                   )}
                 </button>
               );
@@ -680,13 +1033,15 @@ export function LandingPortalDashboard() {
           {/* Sidebar Bottom: Open Admin & Sign Out */}
           <div style={s.sidebarSection}>
             <div style={s.sidebarDivider} />
-            <button
-              type="button"
+            <a
+              href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I want to speak with admissions regarding cohort enrollment.")}`}
+              target="_blank"
+              rel="noreferrer"
               style={s.adminLink}
-              onClick={() => handleOpenLock("Admin Portal", "Log in to the StepSmart mentor & admin console.")}
             >
-              Open Admin
-            </button>
+              <span>Enroll on WhatsApp</span>
+              <ExternalLink size={13} style={{ marginLeft: '0.4rem' }} />
+            </a>
             <button
               type="button"
               style={s.signOutBtn}
@@ -700,7 +1055,7 @@ export function LandingPortalDashboard() {
         {/* ─── MAIN CONTENT CANVAS ─── */}
         <main style={s.main}>
           
-          {/* Header Bar matching LMS design (Batch pills removed as requested) */}
+          {/* Header Bar matching LMS design */}
           <div style={s.header}>
             <div className="flex items-center gap-3">
               <button
@@ -719,7 +1074,7 @@ export function LandingPortalDashboard() {
             {/* Clean Right Actions */}
             <div className="flex items-center gap-3">
               <a
-                href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I am on the student portal and want to speak with admissions regarding the PM-X cohorts.")}`}
+                href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I am on the student portal and want to speak with admissions regarding PM-X cohorts.")}`}
                 target="_blank"
                 rel="noreferrer"
                 style={{
@@ -924,12 +1279,12 @@ export function LandingPortalDashboard() {
                         <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Live Masterclasses</div>
                       </div>
                       <div>
-                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#027A9B' }}>15+</div>
-                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Real Case Studies</div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#027A9B' }}>1:1</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Mentor Reviews</div>
                       </div>
                       <div>
-                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#027A9B' }}>1:1</div>
-                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Senior PM Mocks</div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#027A9B' }}>40+</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Hiring Referrals</div>
                       </div>
                     </div>
 
@@ -957,7 +1312,7 @@ export function LandingPortalDashboard() {
                   {/* CTAs */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
                     <a
-                      href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I want to enroll in the PM-X Accelerator cohort for working professionals. Please share batch dates and curriculum details.")}`}
+                      href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I want to enroll in the PM-X Accelerator cohort for working professionals. Please share batch dates and enrollment details.")}`}
                       target="_blank"
                       rel="noreferrer"
                       style={s.primaryBtn}
@@ -1062,7 +1417,7 @@ export function LandingPortalDashboard() {
           )}
 
           {/* ═════════════════════════════════════════════════════════ */}
-          {/* VIEW 2: COURSES TAB (FULL SYLLABUS & LESSON BREAKDOWN)    */}
+          {/* VIEW 2: COURSES TAB (IN-PAGE LOCK BANNER & SYLLABUS)      */}
           {/* ═════════════════════════════════════════════════════════ */}
           {activeView === 'courses' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
@@ -1104,7 +1459,7 @@ export function LandingPortalDashboard() {
                       fontSize: '0.8125rem',
                       fontWeight: 700,
                       cursor: 'pointer',
-                      background: selectedCourseTab === 'first-step' ? '#027A9B' : 'transparent',
+                      background: selectedCourseTab === 'first-step' ? '#86198f' : 'transparent',
                       color: selectedCourseTab === 'first-step' ? '#ffffff' : '#64748b',
                       transition: 'all 0.15s ease',
                     }}
@@ -1114,7 +1469,66 @@ export function LandingPortalDashboard() {
                 </div>
               </div>
 
-              {/* Modules List */}
+              {/* IN-PAGE LOCKED COHORT BANNER (Tells visitor to buy, NO POPUP!) */}
+              <div style={s.inPageLockCard}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{
+                    background: '#e0f2fe',
+                    color: '#027A9B',
+                    padding: '0.2rem 0.65rem',
+                    borderRadius: '999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                  }}>
+                    <Lock size={12} />
+                    <span>LOCKED COHORT CONTENT</span>
+                  </span>
+                  <span style={{ fontSize: '0.8125rem', color: '#64748b', fontWeight: 600 }}>
+                    Live Classes & Video Archives
+                  </span>
+                </div>
+
+                <div>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
+                    Join the StepSmart Cohort to Unlock All 6 Weeks of Lectures & Materials
+                  </h3>
+                  <p style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>
+                    Full video recordings, downloadable PRD templates, 1:1 portfolio reviews, and guaranteed referrals are exclusive to enrolled cohort students.
+                  </p>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.65rem', paddingTop: '0.5rem', borderTop: '1px solid rgba(2, 122, 155, 0.12)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8125rem', color: '#1e293b', fontWeight: 600 }}>
+                    <Check size={14} color="#027A9B" />
+                    <span>6 Weeks Live Masterclasses</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8125rem', color: '#1e293b', fontWeight: 600 }}>
+                    <Check size={14} color="#027A9B" />
+                    <span>1:1 Mentor PRD Grading</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8125rem', color: '#1e293b', fontWeight: 600 }}>
+                    <Check size={14} color="#027A9B" />
+                    <span>40+ Verified Tech Referrals</span>
+                  </div>
+                </div>
+
+                <div style={{ paddingTop: '0.5rem' }}>
+                  <a
+                    href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I want to enroll in the cohort to unlock full access to all lectures, PRD assignments, and mentor feedback.")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ ...s.primaryBtn, maxWidth: '320px' }}
+                  >
+                    <MessageSquare size={16} fill="#ffffff" />
+                    <span>Enroll on WhatsApp to Unlock ➜</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Modules List (Week by week preview) */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {(selectedCourseTab === 'accelerator' ? ACCELERATOR_MODULES : FIRST_STEP_MODULES).map((mod) => (
                   <div
@@ -1137,9 +1551,10 @@ export function LandingPortalDashboard() {
                         </span>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => handleOpenLock(`Unlock ${mod.title}`, mod.description)}
+                      <a
+                        href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent(`Hi StepSmart! I would like to unlock ${mod.week}: ${mod.title}`)}`}
+                        target="_blank"
+                        rel="noreferrer"
                         style={{
                           border: 'none',
                           background: 'transparent',
@@ -1150,11 +1565,12 @@ export function LandingPortalDashboard() {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '0.35rem',
+                          textDecoration: 'none',
                         }}
                       >
                         <Lock size={12} />
                         <span>Unlock Module</span>
-                      </button>
+                      </a>
                     </div>
 
                     <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.4rem 0' }}>
@@ -1177,9 +1593,11 @@ export function LandingPortalDashboard() {
                     {/* Lessons list */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid #f1f5f9' }}>
                       {mod.lessons.map((lesson, idx) => (
-                        <div
+                        <a
                           key={idx}
-                          onClick={() => handleOpenLock(`Lecture: ${lesson.title}`, "Join the StepSmart cohort to stream all live & recorded lectures with Q&A.")}
+                          href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent(`Hi StepSmart Team! I want to enroll to watch the lecture: ${lesson.title}`)}`}
+                          target="_blank"
+                          rel="noreferrer"
                           style={{
                             padding: '0.65rem 0.85rem',
                             borderRadius: '10px',
@@ -1188,7 +1606,7 @@ export function LandingPortalDashboard() {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'space-between',
-                            cursor: 'pointer',
+                            textDecoration: 'none',
                             fontSize: '0.8125rem',
                           }}
                         >
@@ -1199,7 +1617,7 @@ export function LandingPortalDashboard() {
                             </span>
                           </div>
                           <Lock size={12} color="#94a3b8" style={{ flexShrink: 0, marginLeft: '0.5rem' }} />
-                        </div>
+                        </a>
                       ))}
                     </div>
                   </div>
@@ -1210,381 +1628,1213 @@ export function LandingPortalDashboard() {
           )}
 
           {/* ═════════════════════════════════════════════════════════ */}
-          {/* VIEW 3: PROFILE / SETTINGS                                */}
+          {/* VIEW 3: 1:1 SESSIONS TAB (OPEN FULLY 1:1 LIKE LMS!)       */}
+          {/* (NO option to create a slot, just to join!)               */}
           {/* ═════════════════════════════════════════════════════════ */}
-          {activeView === 'settings' && (
-            <div style={{ maxWidth: '640px', background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '22px', padding: '2rem', boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)' }}>
-              <div style={s.headerEyebrow}>ACCOUNT PREFERENCES</div>
-              <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: '0 0 1.25rem 0' }}>
-                Student Profile
-              </h2>
+          {activeView === 'scheduling' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
+              
+              {/* Top Tabs Switcher (Native LMS Style) */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={() => setSessionSubTab('peer')}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '0.65rem 1.25rem',
+                      borderRadius: '999px',
+                      fontWeight: 600,
+                      fontSize: '0.875rem',
+                      cursor: 'pointer',
+                      border: sessionSubTab === 'peer' ? '1px solid #027A9B' : '1px solid rgba(15, 40, 80, 0.12)',
+                      background: sessionSubTab === 'peer' ? '#027A9B' : 'rgba(255, 255, 255, 0.8)',
+                      color: sessionSubTab === 'peer' ? '#ffffff' : '#64748b',
+                      boxShadow: sessionSubTab === 'peer' ? '0 4px 14px rgba(2, 122, 155, 0.28)' : 'none',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    <Users size={16} />
+                    <span>Peer-to-Peer Study</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSessionSubTab('mentor')}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '0.65rem 1.25rem',
+                      borderRadius: '999px',
+                      fontWeight: 600,
+                      fontSize: '0.875rem',
+                      cursor: 'pointer',
+                      border: sessionSubTab === 'mentor' ? '1px solid #027A9B' : '1px solid rgba(15, 40, 80, 0.12)',
+                      background: sessionSubTab === 'mentor' ? '#027A9B' : 'rgba(255, 255, 255, 0.8)',
+                      color: sessionSubTab === 'mentor' ? '#ffffff' : '#64748b',
+                      boxShadow: sessionSubTab === 'mentor' ? '0 4px 14px rgba(2, 122, 155, 0.28)' : 'none',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    <Clock size={16} />
+                    <span>1:1 Mentor Office Hours</span>
+                  </button>
+                </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1.25rem', marginBottom: '1.5rem', fontSize: '0.875rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.75rem', borderBottom: '1px solid #f1f5f9' }}>
-                  <span style={{ color: '#64748b', fontWeight: 500 }}>Full Name</span>
-                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{displayName}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.75rem', borderBottom: '1px solid #f1f5f9' }}>
-                  <span style={{ color: '#64748b', fontWeight: 500 }}>Email Address</span>
-                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{userEmail}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.75rem', borderBottom: '1px solid #f1f5f9' }}>
-                  <span style={{ color: '#64748b', fontWeight: 500 }}>Access Tier</span>
-                  <span style={{ fontWeight: 700, color: '#027A9B', background: '#e0f2fe', padding: '0.15rem 0.65rem', borderRadius: '999px', fontSize: '0.75rem' }}>
-                    Free PM Gym Explorer
-                  </span>
-                </div>
+                {sessionSubTab === 'peer' && (
+                  <button
+                    type="button"
+                    onClick={() => fetchPeerSessions(true)}
+                    disabled={refreshingSessions}
+                    title="Refresh slots"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      background: '#ffffff',
+                      border: '1px solid rgba(15, 40, 80, 0.12)',
+                      borderRadius: '12px',
+                      padding: '0.55rem 0.95rem',
+                      cursor: 'pointer',
+                      color: '#475569',
+                      fontSize: '0.8125rem',
+                      fontWeight: 600,
+                      boxShadow: '0 2px 6px rgba(15, 40, 80, 0.04)',
+                    }}
+                  >
+                    <RefreshCw size={14} style={{ animation: refreshingSessions ? 'spin 1s linear infinite' : 'none' }} />
+                    <span>Refresh Slots</span>
+                  </button>
+                )}
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <button
-                  type="button"
-                  onClick={handleSignOut}
-                  style={{
-                    border: '1px solid #fecaca',
-                    background: '#fff',
-                    color: '#dc2626',
-                    padding: '0.65rem 1.2rem',
-                    borderRadius: '10px',
-                    fontWeight: 600,
-                    fontSize: '0.8125rem',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Sign Out
-                </button>
+              {/* Action Success Alert Banner */}
+              {actionSuccessMsg && (
+                <div style={{
+                  background: '#f0fdf4',
+                  border: '1px solid #bbf7d0',
+                  borderRadius: '14px',
+                  padding: '1rem 1.25rem',
+                  color: '#166534',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  boxShadow: '0 4px 12px rgba(22, 163, 74, 0.08)'
+                }}>
+                  <CheckCircle2 size={18} color="#16a34a" />
+                  <span>{actionSuccessMsg}</span>
+                </div>
+              )}
+
+              {/* ── TAB 1: PEER-TO-PEER STUDY ── */}
+              {sessionSubTab === 'peer' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  
+                  {/* Header Banner Card (Soft Gradient LMS Style) */}
+                  <div style={{
+                    background: 'linear-gradient(135deg, rgba(2, 122, 155, 0.08) 0%, rgba(255, 255, 255, 0.95) 100%)',
+                    border: '1px solid rgba(2, 122, 155, 0.18)',
+                    borderRadius: '20px',
+                    padding: '1.5rem',
+                    boxShadow: '0 10px 28px rgba(15, 40, 80, 0.06)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '1.25rem'
+                  }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                        <span style={{
+                          background: 'rgba(2, 122, 155, 0.12)',
+                          color: '#027A9B',
+                          padding: '3px 10px',
+                          borderRadius: '999px',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          letterSpacing: '0.02em'
+                        }}>
+                          PEER LEARNING
+                        </span>
+                        <span style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0f172a' }}>
+                          Practice & Learn with Classmates Across All Batches
+                        </span>
+                      </div>
+                      <p style={{ margin: 0, fontSize: '0.875rem', color: '#64748b', maxWidth: '720px', lineHeight: 1.5 }}>
+                        Connect 1-on-1 for mock product interviews, assignment brainstorms, or topic revisions. Browse available open slots created by cohort peers below and connect instantly with a single click.
+                      </p>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#ffffff', padding: '0.45rem 0.85rem', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '0.78rem', color: '#475569', fontWeight: 600 }}>
+                      <Sparkles size={14} color="#027A9B" />
+                      <span>Slots sync across cohorts</span>
+                    </div>
+                  </div>
+
+                  {/* Section: My Booked Sessions */}
+                  {myBooked.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <UserCheck size={18} color="#027A9B" />
+                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>
+                          My Scheduled Sessions ({myBooked.length})
+                        </h3>
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1rem' }}>
+                        {myBooked.map((session) => (
+                          <div key={session.sessionId} style={{
+                            background: 'rgba(255, 255, 255, 0.98)',
+                            border: '1px solid rgba(2, 122, 155, 0.2)',
+                            borderRadius: '18px',
+                            padding: '1.25rem',
+                            boxShadow: '0 8px 24px rgba(15, 40, 80, 0.06)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            gap: '1rem'
+                          }}>
+                            <div>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                                <span style={{
+                                  background: 'rgba(16, 185, 129, 0.12)',
+                                  color: '#059669',
+                                  padding: '3px 9px',
+                                  borderRadius: '999px',
+                                  fontSize: '0.75rem',
+                                  fontWeight: 700
+                                }}>
+                                  Matched with {session.hostName}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleLeaveSession(session.sessionId)}
+                                  title="Leave session"
+                                  style={{
+                                    background: 'transparent',
+                                    border: 'none',
+                                    color: '#ef4444',
+                                    cursor: 'pointer',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  <Trash2 size={13} /> Leave
+                                </button>
+                              </div>
+
+                              <div style={{ fontWeight: 700, fontSize: '0.975rem', color: '#0f172a', marginBottom: '6px' }}>
+                                {session.topic}
+                              </div>
+
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.825rem', color: '#64748b', marginBottom: '6px' }}>
+                                <Calendar size={14} color="#027A9B" />
+                                <span>{formatDateTime(session.scheduledStartTime)}</span>
+                              </div>
+
+                              {(session.courseName || session.batchName) && (
+                                <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                                  Cohort: <span style={{ fontWeight: 600, color: '#027A9B' }}>{session.courseName || session.batchName}</span>
+                                </div>
+                              )}
+                            </div>
+
+                            <a
+                              href={session.meetingUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px',
+                                background: 'linear-gradient(180deg, #0d6c8c 0%, #1089b1 100%)',
+                                color: '#ffffff',
+                                border: 'none',
+                                borderRadius: '10px',
+                                padding: '9px 14px',
+                                fontWeight: 600,
+                                fontSize: '0.85rem',
+                                textDecoration: 'none',
+                                boxShadow: '0 4px 12px rgba(13, 108, 140, 0.22)',
+                              }}
+                            >
+                              <Video size={16} />
+                              <span>Join Video Room</span>
+                              <ExternalLink size={14} />
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section: Available Open Slots from Classmates */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Sparkles size={18} color="#027A9B" />
+                      <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>
+                        Available Study Slots ({openSlots.length})
+                      </h3>
+                    </div>
+
+                    {loadingSessions ? (
+                      <div style={{
+                        background: '#ffffff',
+                        border: '1px solid rgba(15, 40, 80, 0.08)',
+                        borderRadius: '18px',
+                        padding: '2.5rem',
+                        textAlign: 'center',
+                        color: '#64748b'
+                      }}>
+                        Loading open slots from StepSmart cohorts...
+                      </div>
+                    ) : openSlots.length === 0 ? (
+                      <div style={{
+                        background: '#ffffff',
+                        border: '1px dashed rgba(15, 40, 80, 0.16)',
+                        borderRadius: '18px',
+                        padding: '3rem 1.5rem',
+                        textAlign: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '0.75rem'
+                      }}>
+                        <div style={{
+                          width: '50px',
+                          height: '50px',
+                          borderRadius: '14px',
+                          background: '#e0f2fe',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <Users size={24} color="#027A9B" />
+                        </div>
+                        <div style={{ fontWeight: 700, fontSize: '1rem', color: '#0f172a' }}>
+                          No open study slots right now
+                        </div>
+                        <p style={{ margin: 0, fontSize: '0.875rem', color: '#64748b', maxWidth: '420px', lineHeight: 1.5 }}>
+                          Enrolled cohort students post new study slots throughout the day. Check back soon or participate in mentor office hours!
+                        </p>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
+                        {openSlots.map((slot) => (
+                          <div
+                            key={slot.sessionId}
+                            style={{
+                              background: '#ffffff',
+                              border: '1px solid rgba(15, 40, 80, 0.08)',
+                              borderRadius: '18px',
+                              padding: '1.25rem',
+                              boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'space-between',
+                              gap: '1rem',
+                            }}
+                          >
+                            <div>
+                              {/* Host Info */}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                                <div style={{
+                                  width: '38px',
+                                  height: '38px',
+                                  borderRadius: '10px',
+                                  background: 'linear-gradient(135deg, #0d6c8c 0%, #1089b1 100%)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontWeight: 800,
+                                  fontSize: '0.95rem',
+                                  color: '#ffffff'
+                                }}>
+                                  {slot.hostName ? slot.hostName.charAt(0).toUpperCase() : 'S'}
+                                </div>
+                                <div>
+                                  <div style={{ fontWeight: 700, fontSize: '0.925rem', color: '#0f172a' }}>
+                                    {slot.hostName || 'Classmate'}
+                                  </div>
+                                  <div style={{ fontSize: '0.75rem', color: '#027A9B', fontWeight: 600 }}>
+                                    {slot.courseName || 'PM Cohort Peer'}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Topic */}
+                              <div style={{
+                                fontWeight: 700,
+                                fontSize: '0.975rem',
+                                color: '#0f172a',
+                                marginBottom: '8px',
+                                lineHeight: 1.35
+                              }}>
+                                {slot.topic}
+                              </div>
+
+                              {/* Date & Time */}
+                              <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                background: '#f8fafc',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                padding: '6px 10px',
+                                fontSize: '0.825rem',
+                                fontWeight: 500,
+                                color: '#334155',
+                                marginBottom: '8px'
+                              }}>
+                                <Calendar size={14} color="#027A9B" />
+                                <span>{formatDateTime(slot.scheduledStartTime)}</span>
+                              </div>
+
+                              {/* Notes */}
+                              {slot.notes && (
+                                <p style={{
+                                  fontSize: '0.8125rem',
+                                  color: '#64748b',
+                                  margin: 0,
+                                  lineHeight: 1.45,
+                                  background: '#f8fafc',
+                                  borderLeft: '3px solid #027A9B',
+                                  padding: '6px 10px',
+                                  borderRadius: '0 6px 6px 0'
+                                }}>
+                                  "{slot.notes}"
+                                </p>
+                              )}
+                            </div>
+
+                            {/* Connect & Join Button (NO CREATE BUTTON, JUST JOIN!) */}
+                            <button
+                              type="button"
+                              onClick={() => handleJoinSlot(slot)}
+                              disabled={bookingId === slot.sessionId}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px',
+                                background: 'linear-gradient(180deg, #0d6c8c 0%, #1089b1 100%)',
+                                color: '#ffffff',
+                                border: 'none',
+                                borderRadius: '10px',
+                                padding: '9px 14px',
+                                fontWeight: 700,
+                                fontSize: '0.85rem',
+                                cursor: 'pointer',
+                                boxShadow: '0 4px 12px rgba(13, 108, 140, 0.22)',
+                                transition: 'all 0.15s ease',
+                                width: '100%',
+                              }}
+                            >
+                              <UserCheck size={16} />
+                              <span>{bookingId === slot.sessionId ? 'Connecting...' : 'Connect & Join Slot'}</span>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              )}
+
+              {/* ── TAB 2: MENTOR OFFICE HOURS ── */}
+              {sessionSubTab === 'mentor' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  
+                  {/* Card 1: Senior PM Doubt Clearing */}
+                  <div style={{
+                    background: '#ffffff',
+                    border: '1px solid rgba(15, 40, 80, 0.08)',
+                    borderRadius: '20px',
+                    padding: '1.75rem',
+                    boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{
+                        background: '#e0f2fe',
+                        color: '#027A9B',
+                        padding: '3px 10px',
+                        borderRadius: '999px',
+                        fontSize: '0.75rem',
+                        fontWeight: 700
+                      }}>
+                        WEEKLY LIVE MENTOR HOURS
+                      </span>
+                      <span style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0f172a' }}>
+                        1:1 Doubt Clearing & Capstone Mentorship
+                      </span>
+                    </div>
+
+                    <p style={{ margin: 0, fontSize: '0.875rem', color: '#64748b', lineHeight: 1.5, maxWidth: '700px' }}>
+                      Every weekend, Senior PMs from Microsoft & Mastercard host live 1:1 office hours to review product briefs, debug telemetry metrics, and conduct live mock rounds.
+                    </p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginTop: '0.5rem' }}>
+                      <div style={{ padding: '1rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px' }}>
+                        <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '0.9rem', marginBottom: '4px' }}>
+                          Saturday Session (7:00 PM IST)
+                        </div>
+                        <div style={{ fontSize: '0.8125rem', color: '#64748b', marginBottom: '8px' }}>
+                          Topic: Product Sense, CIRCLES Teardowns & PRD Feedback
+                        </div>
+                        <span style={{ fontSize: '0.75rem', color: '#027A9B', fontWeight: 700, background: '#e0f2fe', padding: '2px 8px', borderRadius: '6px' }}>
+                          Mentor: Lead PM @ Microsoft
+                        </span>
+                      </div>
+
+                      <div style={{ padding: '1rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px' }}>
+                        <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '0.9rem', marginBottom: '4px' }}>
+                          Sunday Session (11:00 AM IST)
+                        </div>
+                        <div style={{ fontSize: '0.8125rem', color: '#64748b', marginBottom: '8px' }}>
+                          Topic: Metrics RCA, Guesstimates & Mock Placement Loops
+                        </div>
+                        <span style={{ fontSize: '0.75rem', color: '#86198f', fontWeight: 700, background: '#fdf4ff', padding: '2px 8px', borderRadius: '6px' }}>
+                          Mentor: Senior PM @ Mastercard
+                        </span>
+                      </div>
+                    </div>
+
+                    <div style={{ paddingTop: '0.5rem' }}>
+                      <a
+                        href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I would like to book a slot for the 1:1 Mentor Office Hours.")}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ ...s.primaryBtn, maxWidth: '280px' }}
+                      >
+                        <Calendar size={16} />
+                        <span>Book Mentor Slot on WhatsApp</span>
+                      </a>
+                    </div>
+                  </div>
+
+                </div>
+              )}
+
+            </div>
+          )}
+
+          {/* ═════════════════════════════════════════════════════════ */}
+          {/* VIEW 4: RESOURCES TAB (OPEN FULLY 1:1 LIKE LMS!)          */}
+          {/* ═════════════════════════════════════════════════════════ */}
+          {activeView === 'resources' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
+              
+              {/* Header */}
+              <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                  <div style={s.headerEyebrow}>RESOURCE VAULT</div>
+                  <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.25rem 0' }}>
+                    Curated Product Management Toolkits & Frameworks
+                  </h2>
+                  <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0 }}>
+                    High-signal PRD templates, product teardowns, metrics cheat sheets, and interview frameworks used across StepSmart cohorts.
+                  </p>
+                </div>
 
                 <a
-                  href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I want to upgrade to full cohort membership.")}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={s.primaryBtn}
+                  href="/resources"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    padding: '0.65rem 1.15rem',
+                    borderRadius: '12px',
+                    background: '#e0f2fe',
+                    color: '#027A9B',
+                    fontSize: '0.8125rem',
+                    fontWeight: 700,
+                    textDecoration: 'none',
+                  }}
                 >
-                  <span>Enroll in Cohort ➜</span>
+                  <span>Browse IIT Question Bank ➜</span>
                 </a>
               </div>
+
+              {/* Resource Items List */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {RESOURCE_VAULT.map((res) => {
+                  const isExpanded = expandedResource === res.id;
+                  return (
+                    <div
+                      key={res.id}
+                      style={{
+                        background: '#ffffff',
+                        border: '1px solid rgba(20, 49, 86, 0.08)',
+                        borderRadius: '18px',
+                        overflow: 'hidden',
+                        boxShadow: '0 4px 14px rgba(15, 40, 80, 0.03)',
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setExpandedResource(isExpanded ? null : res.id)}
+                        style={{
+                          width: '100%',
+                          textAlign: 'left',
+                          padding: '1.25rem 1.5rem',
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '1rem',
+                        }}
+                      >
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+                            <span style={{
+                              fontSize: '0.72rem',
+                              fontWeight: 800,
+                              color: '#027A9B',
+                              background: '#e0f2fe',
+                              padding: '0.15rem 0.55rem',
+                              borderRadius: '6px',
+                            }}>
+                              {res.category}
+                            </span>
+                            <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600 }}>
+                              • {res.fileCount} reference document{res.fileCount === 1 ? '' : 's'}
+                            </span>
+                          </div>
+                          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>
+                            {res.title}
+                          </h3>
+                        </div>
+
+                        <div style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '8px',
+                          background: '#f1f5f9',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#475569',
+                          flexShrink: 0,
+                        }}>
+                          {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                        </div>
+                      </button>
+
+                      {isExpanded && (
+                        <div style={{ padding: '0 1.5rem 1.5rem 1.5rem', borderTop: '1px solid #f1f5f9', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                          <p style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>
+                            {res.description}
+                          </p>
+
+                          <div>
+                            <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#64748b', letterSpacing: '0.04em', marginBottom: '0.65rem' }}>
+                              Available Documents & Templates:
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '0.75rem' }}>
+                              {res.docs.map((doc, idx) => (
+                                <a
+                                  key={idx}
+                                  href={doc.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    padding: '0.75rem 1rem',
+                                    background: '#f8fafc',
+                                    border: '1px solid #e2e8f0',
+                                    borderRadius: '10px',
+                                    color: '#0f172a',
+                                    textDecoration: 'none',
+                                    fontSize: '0.85rem',
+                                    fontWeight: 600,
+                                    transition: 'all 0.15s ease',
+                                  }}
+                                >
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
+                                    <FileText size={16} color="#027A9B" style={{ flexShrink: 0 }} />
+                                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                      {doc.label}
+                                    </span>
+                                  </div>
+                                  <ExternalLink size={14} color="#64748b" style={{ flexShrink: 0, marginLeft: '0.5rem' }} />
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+            </div>
+          )}
+
+          {/* ═════════════════════════════════════════════════════════ */}
+          {/* VIEW 5: ASSIGNMENTS TAB (IN-PAGE LOCK BANNER & PREVIEW)   */}
+          {/* ═════════════════════════════════════════════════════════ */}
+          {activeView === 'assignments' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
+              
+              {/* Header */}
+              <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '1.5rem' }}>
+                <div style={s.headerEyebrow}>COHORT ASSIGNMENTS</div>
+                <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.25rem 0' }}>
+                  7 Hands-On Product Teardowns & PRD Challenges
+                </h2>
+                <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0 }}>
+                  Real-world business problems designed to simulate day-to-day decisions at top tech startups.
+                </p>
+              </div>
+
+              {/* In-page Lock Banner (NO POPUP!) */}
+              <div style={s.inPageLockCard}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{
+                    background: '#e0f2fe',
+                    color: '#027A9B',
+                    padding: '0.2rem 0.65rem',
+                    borderRadius: '999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                  }}>
+                    <Lock size={12} />
+                    <span>LOCKED FEATURE</span>
+                  </span>
+                  <span style={{ fontSize: '0.8125rem', color: '#64748b', fontWeight: 600 }}>
+                    1:1 Mentor Grading & Video Reviews
+                  </span>
+                </div>
+
+                <div>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
+                    Enroll to Submit Weekly Assignments & Build Your Portfolio
+                  </h3>
+                  <p style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>
+                    Cohort students submit weekly assignments and receive personalized line-by-line rubric scoring and recorded video feedback from Senior PMs.
+                  </p>
+                </div>
+
+                <div style={{ paddingTop: '0.5rem' }}>
+                  <a
+                    href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I want to enroll to submit cohort assignments and receive 1:1 mentor grading.")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ ...s.primaryBtn, maxWidth: '320px' }}
+                  >
+                    <MessageSquare size={16} fill="#ffffff" />
+                    <span>Unlock Assignments on WhatsApp ➜</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* 7 Assignments Cards Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
+                {COHORT_ASSIGNMENTS.map((asg) => (
+                  <div
+                    key={asg.id}
+                    style={{
+                      background: '#ffffff',
+                      border: '1px solid rgba(20, 49, 86, 0.08)',
+                      borderRadius: '18px',
+                      padding: '1.5rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      gap: '1rem',
+                      boxShadow: '0 4px 12px rgba(15, 40, 80, 0.03)',
+                    }}
+                  >
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.65rem' }}>
+                        <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#027A9B', background: '#e0f2fe', padding: '0.15rem 0.55rem', borderRadius: '6px' }}>
+                          Assignment {asg.id}
+                        </span>
+                        <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b', background: '#f1f5f9', padding: '0.15rem 0.55rem', borderRadius: '6px' }}>
+                          {asg.tag}
+                        </span>
+                      </div>
+
+                      <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.5rem 0', lineHeight: 1.4 }}>
+                        {asg.title}
+                      </h3>
+
+                      <p style={{ fontSize: '0.8125rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>
+                        {asg.prompt}
+                      </p>
+                    </div>
+
+                    <a
+                      href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent(`Hi StepSmart! I would like to get access to Assignment ${asg.id}: ${asg.title}`)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.4rem',
+                        padding: '0.65rem',
+                        background: '#f8fafc',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '10px',
+                        fontSize: '0.8125rem',
+                        fontWeight: 700,
+                        color: '#027A9B',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <Lock size={12} />
+                      <span>Unlock Rubric & Submission</span>
+                    </a>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          )}
+
+          {/* ═════════════════════════════════════════════════════════ */}
+          {/* VIEW 6: JOBS TAB (IN-PAGE LOCK BANNER & REFERRAL BOARD)   */}
+          {/* ═════════════════════════════════════════════════════════ */}
+          {activeView === 'jobs' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
+              
+              {/* Header */}
+              <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '1.5rem' }}>
+                <div style={s.headerEyebrow}>CAREER BOARD</div>
+                <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.25rem 0' }}>
+                  StepSmart PM Referral & Opportunity Pipeline
+                </h2>
+                <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0 }}>
+                  Curated APM, PM 1, and Senior PM openings with warm introductions directly to hiring managers.
+                </p>
+              </div>
+
+              {/* In-page Lock Banner (NO POPUP!) */}
+              <div style={s.inPageLockCard}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{
+                    background: '#e0f2fe',
+                    color: '#027A9B',
+                    padding: '0.2rem 0.65rem',
+                    borderRadius: '999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                  }}>
+                    <Lock size={12} />
+                    <span>REFERRAL NETWORK</span>
+                  </span>
+                  <span style={{ fontSize: '0.8125rem', color: '#64748b', fontWeight: 600 }}>
+                    Alumni & Mentor Intros
+                  </span>
+                </div>
+
+                <div>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
+                    Unlock Fast-Track Referrals to 40+ Tech Companies
+                  </h3>
+                  <p style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>
+                    StepSmart cohort graduates bypass standard resume filters with direct Slack referral pipelines and recruiter introductions.
+                  </p>
+                </div>
+
+                <div style={{ paddingTop: '0.5rem' }}>
+                  <a
+                    href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I want to join the cohort and get referral introductions for PM roles.")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ ...s.primaryBtn, maxWidth: '320px' }}
+                  >
+                    <MessageSquare size={16} fill="#ffffff" />
+                    <span>Get Referral Access on WhatsApp ➜</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Job Listings Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
+                {CURATED_JOBS.map((job, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      background: '#ffffff',
+                      border: '1px solid rgba(20, 49, 86, 0.08)',
+                      borderRadius: '18px',
+                      padding: '1.5rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      gap: '1rem',
+                      boxShadow: '0 4px 12px rgba(15, 40, 80, 0.03)',
+                    }}
+                  >
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#059669', background: '#dcfce7', padding: '0.15rem 0.55rem', borderRadius: '6px' }}>
+                          {job.badge}
+                        </span>
+                        <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
+                          {job.experience}
+                        </span>
+                      </div>
+
+                      <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.25rem 0' }}>
+                        {job.role}
+                      </h3>
+                      <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#027A9B', marginBottom: '0.75rem' }}>
+                        {job.company} • {job.location}
+                      </div>
+
+                      <div style={{ fontSize: '0.8125rem', color: '#334155', background: '#f8fafc', padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+                        Compensation: <span style={{ color: '#0f172a', fontWeight: 700 }}>{job.salary}</span>
+                      </div>
+                    </div>
+
+                    <a
+                      href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent(`Hi StepSmart! I am interested in referral for the ${job.role} position at ${job.company}.`)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.4rem',
+                        padding: '0.65rem',
+                        background: '#f8fafc',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '10px',
+                        fontSize: '0.8125rem',
+                        fontWeight: 700,
+                        color: '#027A9B',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <Lock size={12} />
+                      <span>Request Cohort Referral</span>
+                    </a>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          )}
+
+          {/* ═════════════════════════════════════════════════════════ */}
+          {/* VIEW 7: INTERVIEW PREP TAB (IN-PAGE LOCK BANNER & PYQS)  */}
+          {/* ═════════════════════════════════════════════════════════ */}
+          {activeView === 'interview' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
+              
+              {/* Header */}
+              <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '20px', padding: '1.5rem' }}>
+                <div style={s.headerEyebrow}>INTERVIEW SIMULATOR</div>
+                <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.25rem 0' }}>
+                  PM Interview Prep & Mock Interview Loops
+                </h2>
+                <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0 }}>
+                  Master Product Sense, Analytical RCA, Guesstimates, and Behavioral rounds before facing hiring panels.
+                </p>
+              </div>
+
+              {/* In-page Lock Banner (NO POPUP!) */}
+              <div style={s.inPageLockCard}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{
+                    background: '#e0f2fe',
+                    color: '#027A9B',
+                    padding: '0.2rem 0.65rem',
+                    borderRadius: '999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                  }}>
+                    <Lock size={12} />
+                    <span>LOCKED FEATURE</span>
+                  </span>
+                  <span style={{ fontSize: '0.8125rem', color: '#64748b', fontWeight: 600 }}>
+                    1:1 Mock Interviews with Senior PMs
+                  </span>
+                </div>
+
+                <div>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
+                    Practice Live 1:1 Mock Interviews with Microsoft & Swiggy Mentors
+                  </h3>
+                  <p style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>
+                    Get detailed scorecard feedback across structured communication, business empathy, metrics thinking, and edge cases.
+                  </p>
+                </div>
+
+                <div style={{ paddingTop: '0.5rem' }}>
+                  <a
+                    href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent("Hi StepSmart Team! I want to join the cohort and schedule 1:1 mock interviews with Senior PM mentors.")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ ...s.primaryBtn, maxWidth: '320px' }}
+                  >
+                    <MessageSquare size={16} fill="#ffffff" />
+                    <span>Book Mock Loop on WhatsApp ➜</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Interview Category Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '18px', padding: '1.5rem' }}>
+                  <div style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>🎯</div>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
+                    Product Sense & Design
+                  </h3>
+                  <p style={{ fontSize: '0.8125rem', color: '#64748b', lineHeight: 1.45, margin: 0 }}>
+                    "Design an ATM for the blind", "Improve Uber driver retention", "Build an alarm clock for Google Home".
+                  </p>
+                </div>
+
+                <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '18px', padding: '1.5rem' }}>
+                  <div style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>📊</div>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
+                    Analytical & RCA Trees
+                  </h3>
+                  <p style={{ fontSize: '0.8125rem', color: '#64748b', lineHeight: 1.45, margin: 0 }}>
+                    "Instagram Story views dropped 12% overnight", "Netflix churn increased in Tier-2 cities".
+                  </p>
+                </div>
+
+                <div style={{ background: '#ffffff', border: '1px solid rgba(20, 49, 86, 0.08)', borderRadius: '18px', padding: '1.5rem' }}>
+                  <div style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>🔢</div>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
+                    Guesstimates & Sizing
+                  </h3>
+                  <p style={{ fontSize: '0.8125rem', color: '#64748b', lineHeight: 1.45, margin: 0 }}>
+                    "Estimate daily pizzas delivered in Bengaluru", "Market size of electric scooters in India by 2030".
+                  </p>
+                </div>
+              </div>
+
             </div>
           )}
 
         </main>
       </div>
 
-      {/* ═════════════════════════════════════════════════════════ */}
-      {/* MODAL 1: PM GYM QUIZ / SOLVE MODAL (CONNECTED & LIVE)      */}
-      {/* ═════════════════════════════════════════════════════════ */}
-      {showGymModal && todayQuestion && (
+      {/* ─── PM GYM QUIZ MODAL (Native LMS Style) ─── */}
+      {showGymModal && (
         <div style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(15, 23, 42, 0.45)',
-          backdropFilter: 'blur(8px)',
+          background: 'rgba(15, 23, 42, 0.5)',
+          backdropFilter: 'blur(4px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: 99999,
+          zIndex: 9999,
           padding: '1rem',
         }}>
           <div style={{
             background: '#ffffff',
             borderRadius: '24px',
-            padding: '1.75rem',
             width: '100%',
             maxWidth: '560px',
-            maxHeight: 'min(90vh, 760px)',
-            boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
-            display: 'flex',
-            flexDirection: 'column',
+            boxShadow: '0 25px 50px -12px rgba(15, 40, 80, 0.25)',
+            border: '1px solid rgba(20, 49, 86, 0.1)',
             overflow: 'hidden',
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Flame size={20} color="#027A9B" />
-                <span style={{ fontWeight: 800, fontSize: '1.2rem', color: '#027A9B' }}>
-                  PM Gym Challenge
-                </span>
+            {/* Header */}
+            <div style={{
+              background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)',
+              padding: '1.5rem',
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <img
+                  src="/pm_gym_brain.png"
+                  alt="Mascot"
+                  style={{ width: '42px', height: '42px', objectFit: 'contain' }}
+                />
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#f59e0b' }}>
+                    DAILY CHALLENGE
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0, color: '#ffffff' }}>
+                    StepSmart PM Gym
+                  </h3>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowGymModal(false)}
-                style={{ background: 'rgba(15, 23, 42, 0.06)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer' }}
+                style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#ffffff', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
               >
-                ✕
+                <X size={18} />
               </button>
             </div>
 
-            <div style={{ overflowY: 'auto', flex: 1, paddingRight: '0.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {/* Content */}
+            <div style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  Today's Challenge • {todayQuestion.category || "Product Sense"}
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', background: '#e0f2fe', padding: '0.2rem 0.6rem', borderRadius: '999px' }}>
+                  {todayQuestion?.category || "Product Management"}
                 </span>
-                <p style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0.35rem 0 0 0', lineHeight: 1.45 }}>
-                  {todayQuestion.text}
+                <p style={{ fontSize: '1rem', fontWeight: 600, color: '#0f172a', margin: '0.75rem 0 0 0', lineHeight: 1.5 }}>
+                  {todayQuestion?.text}
                 </p>
               </div>
 
-              {!hasSolvedToday ? (
-                todayQuestion.type === 'quiz' && todayQuestion.options ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    {todayQuestion.options.map((opt, idx) => (
+              {/* Options */}
+              {todayQuestion?.type === 'quiz' && todayQuestion.options && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                  {todayQuestion.options.map((opt, idx) => {
+                    const isSelected = selectedOption === idx;
+                    const isCorrectOpt = gymSubmitted && idx === todayQuestion.correctIndex;
+                    const isWrongOpt = gymSubmitted && isSelected && !gymIsCorrect;
+
+                    let bg = '#ffffff';
+                    let border = '1px solid #cbd5e1';
+                    let color = '#1e293b';
+
+                    if (isCorrectOpt) {
+                      bg = '#dcfce7';
+                      border = '2px solid #16a34a';
+                      color = '#166534';
+                    } else if (isWrongOpt) {
+                      bg = '#fee2e2';
+                      border = '2px solid #dc2626';
+                      color = '#991b1b';
+                    } else if (isSelected) {
+                      bg = '#e0f2fe';
+                      border = '2px solid #027A9B';
+                      color = '#027A9B';
+                    }
+
+                    return (
                       <button
                         key={idx}
                         type="button"
+                        disabled={gymSubmitted}
                         onClick={() => setSelectedOption(idx)}
                         style={{
                           textAlign: 'left',
                           padding: '0.85rem 1rem',
                           borderRadius: '12px',
-                          border: selectedOption === idx ? '2px solid #027A9B' : '1px solid #e2e8f0',
-                          background: selectedOption === idx ? 'rgba(2, 122, 155, 0.06)' : '#ffffff',
-                          color: selectedOption === idx ? '#027A9B' : '#334155',
+                          background: bg,
+                          border: border,
+                          color: color,
                           fontWeight: 600,
                           fontSize: '0.875rem',
+                          cursor: gymSubmitted ? 'default' : 'pointer',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '0.75rem',
-                          cursor: 'pointer',
+                          transition: 'all 0.15s ease',
                         }}
                       >
                         <span style={{
                           width: '24px',
                           height: '24px',
                           borderRadius: '50%',
+                          background: isSelected ? '#027A9B' : '#f1f5f9',
+                          color: isSelected ? '#ffffff' : '#64748b',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           fontSize: '0.75rem',
                           fontWeight: 700,
-                          background: selectedOption === idx ? '#027A9B' : '#f1f5f9',
-                          color: selectedOption === idx ? '#ffffff' : '#64748b',
+                          flexShrink: 0,
                         }}>
                           {String.fromCharCode(65 + idx)}
                         </span>
                         <span>{opt}</span>
                       </button>
-                    ))}
-                  </div>
-                ) : (
-                  <div>
-                    <textarea
-                      rows={4}
-                      value={textAnswer}
-                      onChange={(e) => setTextAnswer(e.target.value)}
-                      placeholder="Outline your structured response..."
-                      style={{
-                        width: '100%',
-                        padding: '0.85rem',
-                        borderRadius: '12px',
-                        border: '1px solid #cbd5e1',
-                        fontSize: '0.875rem',
-                        fontFamily: 'inherit',
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                      }}
-                    />
-                  </div>
-                )
-              ) : null}
-
-              {hasSolvedToday && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  {feedbackMsg && (
-                    <div style={{ padding: '0.75rem', borderRadius: '10px', background: '#ecfdf5', border: '1px solid #a7f3d0', color: '#065f46', fontSize: '0.875rem', fontWeight: 600 }}>
-                      ✓ {feedbackMsg}
-                    </div>
-                  )}
-
-                  {todayQuestion.explanation && (
-                    <div style={{ background: 'rgba(15, 23, 42, 0.03)', borderRadius: '12px', padding: '1rem', border: '1px solid #e2e8f0' }}>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.4rem' }}>
-                        Mentor Solution & Explanation
-                      </div>
-                      <p style={{ fontSize: '0.875rem', color: '#334155', margin: 0, lineHeight: 1.5, whiteSpace: 'pre-line' }}>
-                        {todayQuestion.explanation}
-                      </p>
-                    </div>
-                  )}
+                    );
+                  })}
                 </div>
               )}
-            </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.25rem', paddingTop: '0.75rem', borderTop: '1px solid #e2e8f0' }}>
-              <button
-                type="button"
-                onClick={() => setShowGymModal(false)}
-                style={{
-                  border: '1px solid #cbd5e1',
-                  background: '#ffffff',
-                  color: '#475569',
-                  borderRadius: '10px',
-                  padding: '0.65rem 1.25rem',
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                Close
-              </button>
+              {/* Explanation after submit */}
+              {gymSubmitted && (
+                <div style={{
+                  padding: '1rem',
+                  borderRadius: '14px',
+                  background: gymIsCorrect ? '#f0fdf4' : '#fffbeb',
+                  border: gymIsCorrect ? '1px solid #bbf7d0' : '1px solid #fef3c7',
+                }}>
+                  <div style={{ fontWeight: 800, fontSize: '0.875rem', color: gymIsCorrect ? '#166534' : '#92400e', marginBottom: '0.25rem' }}>
+                    {gymIsCorrect ? "🎉 Correct! +1 Gym Point" : "💡 Mentor Explanation"}
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.8125rem', color: '#334155', lineHeight: 1.45 }}>
+                    {todayQuestion?.explanation || "Great attempt! Keep practicing your product intuition daily."}
+                  </p>
+                </div>
+              )}
 
-              {!hasSolvedToday && (
+              {/* Submit CTA */}
+              {!gymSubmitted ? (
                 <button
                   type="button"
-                  onClick={handleSubmitAnswer}
-                  disabled={submittingGym || (todayQuestion.type === 'quiz' ? selectedOption === null : !textAnswer.trim())}
+                  onClick={handleGymSubmit}
+                  disabled={selectedOption === null && !textAnswer.trim()}
                   style={{
+                    background: 'linear-gradient(180deg, #0d6c8c 0%, #1089b1 100%)',
+                    color: '#ffffff',
                     border: 'none',
+                    borderRadius: '12px',
+                    padding: '0.85rem',
+                    fontWeight: 700,
+                    fontSize: '0.925rem',
+                    cursor: (selectedOption === null && !textAnswer.trim()) ? 'not-allowed' : 'pointer',
+                    opacity: (selectedOption === null && !textAnswer.trim()) ? 0.6 : 1,
+                  }}
+                >
+                  Submit Daily Answer
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowGymModal(false)}
+                  style={{
                     background: '#027A9B',
                     color: '#ffffff',
-                    borderRadius: '10px',
-                    padding: '0.65rem 1.4rem',
-                    fontSize: '0.875rem',
+                    border: 'none',
+                    borderRadius: '12px',
+                    padding: '0.85rem',
                     fontWeight: 700,
+                    fontSize: '0.925rem',
                     cursor: 'pointer',
                   }}
                 >
-                  {submittingGym ? "Submitting..." : "Submit Answer"}
+                  Back to Dashboard
                 </button>
               )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ═════════════════════════════════════════════════════════ */}
-      {/* MODAL 2: LOCKED FEATURE COHORT UPGRADE (WHATSAPP CTA)     */}
-      {/* ═════════════════════════════════════════════════════════ */}
-      {showLockModal && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(15, 23, 42, 0.45)',
-          backdropFilter: 'blur(8px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 99999,
-          padding: '1rem',
-        }}>
-          <div style={{
-            background: '#ffffff',
-            borderRadius: '24px',
-            padding: '1.75rem 2rem',
-            width: '100%',
-            maxWidth: '500px',
-            boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
-            boxSizing: 'border-box',
-            position: 'relative',
-          }}>
-            <button
-              type="button"
-              onClick={() => setShowLockModal(false)}
-              style={{
-                position: 'absolute',
-                top: '1.25rem',
-                right: '1.25rem',
-                background: 'rgba(15, 23, 42, 0.06)',
-                border: 'none',
-                borderRadius: '50%',
-                width: '32px',
-                height: '32px',
-                cursor: 'pointer',
-              }}
-            >
-              ✕
-            </button>
-
-            <div style={{ marginBottom: '1rem' }}>
-              <span style={{
-                background: '#fef3c7',
-                color: '#92400e',
-                border: '1px solid #fde68a',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                padding: '0.25rem 0.65rem',
-                borderRadius: '999px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-              }}>
-                <Lock size={12} />
-                <span>Locked Cohort Feature</span>
-              </span>
-              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0f172a', margin: '0.65rem 0 0.35rem 0' }}>
-                Unlock {lockedFeatureName}
-              </h3>
-              <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
-                {lockedFeatureDesc}
-              </p>
-            </div>
-
-            <div style={{
-              background: '#f8fafc',
-              border: '1px solid #e2e8f0',
-              borderRadius: '16px',
-              padding: '1rem',
-              marginBottom: '1.25rem',
-            }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-                Included in the StepSmart Cohort:
-              </div>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.45rem', fontSize: '0.8125rem', color: '#334155' }}>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                  <Check size={14} color="#059669" strokeWidth={3} />
-                  <span>Live weekly classes by Senior PMs from Microsoft & Mastercard</span>
-                </li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                  <Check size={14} color="#059669" strokeWidth={3} />
-                  <span>Personalized 1:1 resume & portfolio teardown reviews</span>
-                </li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                  <Check size={14} color="#059669" strokeWidth={3} />
-                  <span>Direct interview referrals to Swiggy, Zepto, CRED & Meesho</span>
-                </li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                  <Check size={14} color="#059669" strokeWidth={3} />
-                  <span>Unlimited peer study rooms & mock interview practice loops</span>
-                </li>
-              </ul>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-              <a
-                href={`${WHATSAPP_BUSINESS_URL}?text=${encodeURIComponent(`Hi StepSmart! I am on the student portal and I want to unlock: "${lockedFeatureName}". Please share enrollment details and next batch dates.`)}`}
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  padding: '0.85rem 1.25rem',
-                  borderRadius: '12px',
-                  background: '#25D366',
-                  color: '#ffffff',
-                  fontSize: '0.9rem',
-                  fontWeight: 700,
-                  textDecoration: 'none',
-                  boxShadow: '0 4px 12px rgba(37, 211, 102, 0.25)',
-                }}
-              >
-                <MessageSquare size={16} fill="#ffffff" />
-                <span>Chat with Admissions on WhatsApp</span>
-              </a>
-
-              <button
-                type="button"
-                onClick={() => setShowLockModal(false)}
-                style={{
-                  border: 'none',
-                  background: 'transparent',
-                  color: '#64748b',
-                  fontSize: '0.8125rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  padding: '0.4rem',
-                }}
-              >
-                Back to Dashboard
-              </button>
             </div>
           </div>
         </div>
