@@ -55,6 +55,56 @@ exports.handler = async (event) => {
         return response(200, { success: true, events });
       }
 
+      if (page === 'get_pm_gym') {
+        const targetCourseId = data.courseId || 'course-003';
+        const clientDate = data.clientDate || new Date().toISOString().split('T')[0];
+
+        const gymQuestionsResult = await docClient.send(new QueryCommand({
+          TableName: COURSES_TABLE,
+          KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+          ExpressionAttributeValues: {
+            ':pk': `COURSE#${targetCourseId}`,
+            ':prefix': 'GYM#',
+          },
+        }));
+
+        // Mask future questions so future answers are not revealed
+        const gymQuestions = (gymQuestionsResult.Items || []).map((q) => {
+          if (q.date > clientDate) {
+            const { correctIndex, correctAnswer, explanation, ...stripped } = q;
+            return stripped;
+          }
+          return q;
+        }).sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+
+        return response(200, { success: true, gymQuestions, clientDate });
+      }
+
+      if (page === 'submit_pm_gym') {
+        const { date, answer, email, name, courseId = 'course-003' } = data;
+        if (!date || answer === undefined) {
+          return response(400, { error: 'Date and answer are required' });
+        }
+
+        if (email) {
+          await docClient.send(new PutCommand({
+            TableName: ENROLLMENTS_TABLE,
+            Item: {
+              enrollmentId: `gym#${date}#${email}`,
+              email,
+              name: name || 'Visitor',
+              source: 'pm_gym',
+              gymDate: date,
+              answer: String(answer),
+              timestamp: new Date().toISOString(),
+              masterclassId: `pm-gym-${date}`,
+            },
+          })).catch(err => console.error('Gym lead save error:', err));
+        }
+
+        return response(200, { success: true, message: 'Gym challenge submitted successfully' });
+      }
+
       if (page === 'save_event' && data.event && data.event.id) {
         const { event: ev } = data;
         const sk = `EVENT#${ev.id}`;

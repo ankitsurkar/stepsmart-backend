@@ -30,7 +30,8 @@ import {
   Flag,
   UserCheck,
   Clock,
-  Dumbbell
+  Dumbbell,
+  Flame
 } from 'lucide-react';
 import {
   Logo,
@@ -205,6 +206,9 @@ export function StudentsLandingPage() {
               <NavLink href="#student-benefits">Cohort Perks</NavLink>
               <NavLink href="/#mentors">Mentors</NavLink>
               <NavLink to="/resources">Resources</NavLink>
+              <NavLink to="/gym" className="flex items-center gap-1.5 text-[#0f6f8f]">
+                <Flame className="h-4 w-4 text-[#EA580C]" /> PM Gym
+              </NavLink>
               <NavLink href="https://wa.me/message/GH5C7YLAYIEHN1" target="_blank" rel="noreferrer">Chat 1:1</NavLink>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
               <Button variant="primary" className="px-5 py-2 text-sm" onClick={() => scrollToSection('enroll-student')}>
@@ -223,6 +227,9 @@ export function StudentsLandingPage() {
             <a href="#student-benefits" onClick={(e) => handleMobileLinkClick(e, 'student-benefits')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
             <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
             <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Resources</Link>
+            <Link to="/gym" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 flex items-center gap-2 text-[#0f6f8f]">
+              <Flame className="h-5 w-5 text-[#EA580C]" /> PM Gym (Daily Challenge)
+            </Link>
             <a href="https://wa.me/message/GH5C7YLAYIEHN1" target="_blank" rel="noreferrer" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Chat 1:1</a>
             <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
             <Button variant="primary" className="w-full px-5 py-2 text-sm" onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}>Apply Now</Button>

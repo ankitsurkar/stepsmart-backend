@@ -113,6 +113,18 @@ const STATIC_SEO: Record<string, Omit<SeoData, 'canonical'>> = {
       'Company-by-company APM and PM interview guides for IIT campus placements — shortlisting criteria, deck assignments, interview loops and previous year questions (PYQs).',
     ogType: 'website',
   },
+  '/gym': {
+    title: 'PM Gym — Daily Product Management Interview Practice & Challenge | StepSmart',
+    description:
+      'Practice real-world Product Management questions daily. Build your streak, master product frameworks, and sharpen your product sense with StepSmart PM Gym.',
+    ogType: 'website',
+  },
+  '/pm-gym': {
+    title: 'PM Gym — Daily Product Management Interview Practice & Challenge | StepSmart',
+    description:
+      'Practice real-world Product Management questions daily. Build your streak, master product frameworks, and sharpen your product sense with StepSmart PM Gym.',
+    ogType: 'website',
+  },
 };
 
 function toTitleCase(slug: string): string {
