@@ -390,7 +390,7 @@ export function EventsPage() {
             <NavLink to="/events">Events</NavLink>
             <NavLink to="/blog">Blog</NavLink>
             <NavLink to="/resources">Resources</NavLink>
-            <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
+            <Link to="/dashboard" className="ml-2 px-4 py-2 border-[3px] border-[#111111] bg-[#FFF3A7] hover:bg-[#FDE047] text-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-black text-xs uppercase">Student Portal</Link>
             <Button variant="primary" onClick={() => navigate('/#enroll')}>
               Apply Now
             </Button>
@@ -410,7 +410,7 @@ export function EventsPage() {
           <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Events</Link>
           <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
           <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Resources</Link>
-          <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
+          <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] bg-[#FFF3A7] text-[#111111] hover:bg-[#FDE047] font-black uppercase text-sm transition-all">Student Portal</Link>
           <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
         </div>
       )}
