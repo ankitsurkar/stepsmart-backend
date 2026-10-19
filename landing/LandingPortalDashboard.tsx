@@ -254,45 +254,11 @@ export interface PeerSessionSlot {
   scheduledEndTime?: string;
   meetingUrl: string;
   status: 'OPEN' | 'BOOKED';
+  peerName?: string;
+  peerEmail?: string;
   isMySlot?: boolean;
+  isHost?: boolean;
 }
-
-// ─── Initial Upcoming Peer Study Slots (if live feed is empty) ───
-const UPCOMING_STUDY_SLOTS: PeerSessionSlot[] = [
-  {
-    sessionId: 'slot_demo_1',
-    courseName: 'PM -X Accelerator Batch 2',
-    hostName: 'Siddharth M.',
-    hostEmail: 'siddharth.pm@stepsmart.net',
-    topic: 'Mock Product Sense: Design a grocery subscription for Zepto',
-    notes: 'Focusing on CIRCLES framework, customer segment trade-offs, and go-to-market.',
-    scheduledStartTime: new Date(Date.now() + 1000 * 60 * 60 * 18).toISOString(),
-    meetingUrl: 'https://meet.jit.si/stepsmart-p2p-siddharth-mock',
-    status: 'OPEN'
-  },
-  {
-    sessionId: 'slot_demo_2',
-    courseName: 'PM -X First Step (Cohort 1)',
-    hostName: 'Aanya Sharma',
-    hostEmail: 'aanya.apm@stepsmart.net',
-    topic: 'Campus APM Case: Uber Rides 15% Drop RCA Practice',
-    notes: 'Looking for a peer to practice structured 7-step RCA diagnostics for campus hiring tests.',
-    scheduledStartTime: new Date(Date.now() + 1000 * 60 * 60 * 36).toISOString(),
-    meetingUrl: 'https://meet.jit.si/stepsmart-p2p-aanya-rca',
-    status: 'OPEN'
-  },
-  {
-    sessionId: 'slot_demo_3',
-    courseName: 'PM -X Accelerator Batch 2',
-    hostName: 'Rohan Gupta',
-    hostEmail: 'rohan.tech@stepsmart.net',
-    topic: 'PRD Line-by-Line Review & Technical Architecture Q&A',
-    notes: 'Bring your draft PRDs! We will do a 45-minute peer review swap before mentor submission.',
-    scheduledStartTime: new Date(Date.now() + 1000 * 60 * 60 * 60).toISOString(),
-    meetingUrl: 'https://meet.jit.si/stepsmart-p2p-rohan-prd',
-    status: 'OPEN'
-  }
-];
 
 // ─── Curated Resource Vault Items ───
 interface ResourceDoc {
@@ -736,9 +702,9 @@ export function LandingPortalDashboard() {
   const [gymIsCorrect, setGymIsCorrect] = useState<boolean | null>(null);
   const [streak, setStreak] = useState(0);
 
-  // 1:1 Sessions state (LMS 1:1 integration)
+  // 1:1 Sessions state (Real LMS Integration)
   const [sessionSubTab, setSessionSubTab] = useState<'peer' | 'mentor'>('peer');
-  const [openSlots, setOpenSlots] = useState<PeerSessionSlot[]>(UPCOMING_STUDY_SLOTS);
+  const [openSlots, setOpenSlots] = useState<PeerSessionSlot[]>([]);
   const [myBooked, setMyBooked] = useState<PeerSessionSlot[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
   const [refreshingSessions, setRefreshingSessions] = useState(false);
@@ -808,28 +774,42 @@ export function LandingPortalDashboard() {
     fetchGym();
   }, [todayStr]);
 
-  // Fetch Live Peer Sessions from DynamoDB
+  // Fetch Live Real Peer Sessions from DynamoDB (Exact LMS Data, zero fake slots)
   const fetchPeerSessions = useCallback(async (isSilent = false) => {
     if (!isSilent) setLoadingSessions(true);
     else setRefreshingSessions(true);
 
     try {
-      const res = await fetch(PUBLIC_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ page: 'get_peer_sessions' })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data?.sessions && Array.isArray(data.sessions) && data.sessions.length > 0) {
-          setOpenSlots(data.sessions);
-        } else {
-          // Keep curated high-signal cohort slots if DB has no active slots currently
-          setOpenSlots(UPCOMING_STUDY_SLOTS);
+      const email = localStorage.getItem('pmx_demo_auth_session') || localStorage.getItem('stepsmart_portal_session') || '';
+      const [openRes, myRes] = await Promise.all([
+        fetch(PUBLIC_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ page: 'get_peer_sessions' })
+        }),
+        email ? fetch(PUBLIC_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ page: 'get_my_peer_sessions', email })
+        }) : Promise.resolve(null)
+      ]);
+
+      if (openRes.ok) {
+        const data = await openRes.json();
+        setOpenSlots(Array.isArray(data?.sessions) ? data.sessions : []);
+      } else {
+        setOpenSlots([]);
+      }
+
+      if (myRes && myRes.ok) {
+        const myData = await myRes.json();
+        if (Array.isArray(myData?.sessions) && myData.sessions.length > 0) {
+          setMyBooked(myData.sessions);
         }
       }
     } catch (err) {
       console.error('Failed to load peer sessions:', err);
+      setOpenSlots([]);
     } finally {
       setLoadingSessions(false);
       setRefreshingSessions(false);

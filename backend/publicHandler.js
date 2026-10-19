@@ -110,14 +110,12 @@ exports.handler = async (event) => {
       }
 
       if (page === 'get_peer_sessions') {
-        const nowIso = new Date().toISOString();
         const scanRes = await docClient.send(new ScanCommand({
           TableName: PEER_SESSIONS_TABLE,
-          FilterExpression: '#status = :open AND scheduledStartTime >= :now',
+          FilterExpression: '#status = :open',
           ExpressionAttributeNames: { '#status': 'status' },
           ExpressionAttributeValues: {
             ':open': 'OPEN',
-            ':now': nowIso,
           },
         })).catch((err) => {
           console.error('Scan peer sessions error:', err);
@@ -129,7 +127,9 @@ exports.handler = async (event) => {
             sessionId: item.sessionId,
             courseId: item.courseId,
             courseName: item.courseName || item.batchName || 'PM Cohort',
+            hostUserId: item.hostUserId,
             hostName: item.hostName || 'Classmate',
+            hostEmail: item.hostEmail,
             scheduledStartTime: item.scheduledStartTime,
             scheduledEndTime: item.scheduledEndTime,
             topic: item.topic || 'General Discussion',
@@ -138,7 +138,47 @@ exports.handler = async (event) => {
             status: item.status,
             createdAt: item.createdAt,
           }))
-          .sort((a, b) => (a.scheduledStartTime || '').localeCompare(b.scheduledStartTime || ''));
+          .sort((a, b) => (b.scheduledStartTime || '').localeCompare(a.scheduledStartTime || ''));
+
+        return response(200, { success: true, sessions });
+      }
+
+      if (page === 'get_my_peer_sessions') {
+        const userEmail = (data.email || '').toLowerCase().trim();
+        if (!userEmail) {
+          return response(200, { success: true, sessions: [] });
+        }
+
+        const scanRes = await docClient.send(new ScanCommand({
+          TableName: PEER_SESSIONS_TABLE,
+          FilterExpression: 'hostEmail = :email OR peerEmail = :email',
+          ExpressionAttributeValues: {
+            ':email': userEmail,
+          },
+        })).catch((err) => {
+          console.error('Scan my sessions error:', err);
+          return { Items: [] };
+        });
+
+        const sessions = (scanRes.Items || [])
+          .map((item) => ({
+            sessionId: item.sessionId,
+            courseId: item.courseId,
+            courseName: item.courseName || item.batchName || 'PM Cohort',
+            hostName: item.hostName || 'Classmate',
+            hostEmail: item.hostEmail,
+            peerName: item.peerName,
+            peerEmail: item.peerEmail,
+            scheduledStartTime: item.scheduledStartTime,
+            scheduledEndTime: item.scheduledEndTime,
+            topic: item.topic || 'General Discussion',
+            notes: item.notes || '',
+            meetingUrl: item.meetingUrl,
+            status: item.status,
+            createdAt: item.createdAt,
+            isHost: (item.hostEmail || '').toLowerCase() === userEmail,
+          }))
+          .sort((a, b) => (b.scheduledStartTime || '').localeCompare(a.scheduledStartTime || ''));
 
         return response(200, { success: true, sessions });
       }
