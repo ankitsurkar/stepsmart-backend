@@ -93,10 +93,31 @@ function doPost(e) {
  * Automatically catches up on all missing dates and prevents duplicates!
  */
 function fetchDailyJobsFromGitHub() {
-  var rawJsonUrl = "https://raw.githubusercontent.com/ankitsurkar/stepsmart-backend/main/StepSmart-website-final/data/jobs.json";
+  var rawJsonUrls = [
+    "https://raw.githubusercontent.com/ankitsurkar/stepsmart-backend/main/frontend/public/jobs/data/jobs.json",
+    "https://raw.githubusercontent.com/ankitsurkar/stepsmart-backend/main/StepSmart-website-final/data/jobs.json",
+    "https://raw.githubusercontent.com/74Sanket/StepSmart-website-final/main/data/jobs.json"
+  ];
+
   try {
-    var response = UrlFetchApp.fetch(rawJsonUrl);
-    var allJobs = JSON.parse(response.getContentText());
+    var allJobs = [];
+    for (var u = 0; u < rawJsonUrls.length; u++) {
+      try {
+        var resp = UrlFetchApp.fetch(rawJsonUrls[u], { muteHttpExceptions: true });
+        if (resp.getResponseCode() === 200) {
+          var parsed = JSON.parse(resp.getContentText());
+          if (parsed && parsed.length > allJobs.length) {
+            allJobs = parsed;
+          }
+        }
+      } catch (fetchErr) {
+        Logger.log("Notice fetching " + rawJsonUrls[u] + ": " + fetchErr.toString());
+      }
+    }
+
+    if (allJobs.length === 0) {
+      throw new Error("Unable to fetch job data from any GitHub source. Please verify internet connection or repository permissions.");
+    }
 
     var doc = getTargetDoc();
     var existingText = doc.getBody().getText();
