@@ -733,10 +733,7 @@ function ProfessionalsLandingPage() {
               <NavLink href="#who-is-it-for">Who is it for?</NavLink>
               <NavLink href="#mentors">Mentors</NavLink>
               <NavLink to="/resources">Resources</NavLink>
-              <NavLink to="/gym" className="flex items-center gap-1.5 text-[#0f6f8f]">
-                <Flame className="h-4 w-4 text-[#EA580C]" /> PM Gym
-              </NavLink>
-              <Link to="/dashboard" className="ml-2 px-4 py-2 border-[3px] border-[#111111] bg-[#FFF3A7] hover:bg-[#FDE047] text-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-black text-xs uppercase">Student Portal</Link>
+              <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
               <button 
                 type="button"
                 onClick={() => handleActionClick('enroll')}
@@ -758,10 +755,7 @@ function ProfessionalsLandingPage() {
             <a href="#who-is-it-for" onClick={(e) => handleMobileLinkClick(e, 'who-is-it-for')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
             <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
             <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Resources</Link>
-            <Link to="/gym" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 flex items-center gap-2 text-[#0f6f8f]">
-              <Flame className="h-5 w-5 text-[#EA580C]" /> PM Gym (Daily Challenge)
-            </Link>
-            <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] bg-[#FFF3A7] text-[#111111] hover:bg-[#FDE047] font-black uppercase text-sm transition-all">Student Portal</Link>
+            <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
             <button 
               type="button"
               onClick={() => { setIsMenuOpen(false); handleActionClick('enroll'); }}
@@ -3306,7 +3300,7 @@ function BlogPage() {
                   <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
                 </Link>
                 <Link to="/resources" className="font-extrabold text-sm text-[#111111] hover:text-[#188ab2] transition-colors">Resources</Link>
-                <Link to="/dashboard" className="ml-2 px-4 py-2 border-[3px] border-[#111111] bg-[#FFF3A7] hover:bg-[#FDE047] text-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-black text-xs uppercase">Student Portal</Link>
+                <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
                 <Button variant="primary" onClick={() => navigate('/#enroll')}>
                   Apply Now
                 </Button>
@@ -3326,7 +3320,7 @@ function BlogPage() {
               <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
               <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Blog</Link>
               <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Resources</Link>
-              <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] bg-[#FFF3A7] text-[#111111] hover:bg-[#FDE047] font-black uppercase text-sm transition-all">Student Portal</Link>
+              <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
               <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
             </div>
           )}
@@ -3394,7 +3388,7 @@ function BlogPage() {
                 <span className="absolute left-0 right-0 bottom-[-2px] h-1.5 bg-[#FFF3A7] z-0"></span>
               </Link>
               <Link to="/resources" className="font-extrabold text-sm text-[#111111] hover:text-[#188ab2] transition-colors">Resources</Link>
-              <Link to="/dashboard" className="ml-2 px-4 py-2 border-[3px] border-[#111111] bg-[#FFF3A7] hover:bg-[#FDE047] text-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-black text-xs uppercase">Student Portal</Link>
+              <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
               <Button variant="primary" onClick={() => navigate('/#enroll')}>
                 Apply Now
               </Button>
@@ -3414,7 +3408,7 @@ function BlogPage() {
             <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
             <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Blog</Link>
             <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Resources</Link>
-            <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] bg-[#FFF3A7] text-[#111111] hover:bg-[#FDE047] font-black uppercase text-sm transition-all">Student Portal</Link>
+            <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
             <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
           </div>
         )}
@@ -3634,10 +3628,7 @@ function PortalPage() {
               <NavLink to="/events">Events</NavLink>
               <NavLink to="/blog">Blog</NavLink>
               <NavLink to="/resources">Resources</NavLink>
-              <NavLink to="/gym" className="flex items-center gap-1.5 text-[#0f6f8f]">
-                <Flame className="h-4 w-4 text-[#EA580C]" /> PM Gym
-              </NavLink>
-              <Link to="/dashboard" className="ml-2 px-4 py-2 border-[3px] border-[#111111] bg-[#FFF3A7] hover:bg-[#FDE047] text-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-black text-xs uppercase">Student Portal</Link>
+              <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
               <Button variant="primary" onClick={() => scrollToSection('programs')}>
                 Explore Cohorts
               </Button>
@@ -3655,10 +3646,7 @@ function PortalPage() {
             <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
             <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
             <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Resources</Link>
-            <Link to="/gym" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 flex items-center gap-2 text-[#0f6f8f]">
-              <Flame className="h-5 w-5 text-[#EA580C]" /> PM Gym (Daily Challenge)
-            </Link>
-            <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] bg-[#FFF3A7] text-[#111111] hover:bg-[#FDE047] font-black uppercase text-sm transition-all">Student Portal</Link>
+            <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
             <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); scrollToSection('programs'); }}>Explore Cohorts</Button>
           </div>
         )}
@@ -3799,46 +3787,6 @@ function PortalPage() {
         </div>
       </section>
 
-      {/* PM Gym Daily Challenge Spotlight Section */}
-      <section className="py-16 bg-[#FFF3A7] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <div className="bg-white border-[3px] border-[#111111] p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="space-y-4 max-w-2xl text-left">
-              <div className="inline-flex items-center gap-2">
-                <span className="bg-[#111111] text-white px-3 py-1 text-xs font-black uppercase tracking-wider">
-                  🔥 Free Daily Resource
-                </span>
-                <span className="bg-[#D1FAE5] text-[#065F46] border border-[#111111] px-2 py-0.5 text-xs font-black uppercase">
-                  Live Today
-                </span>
-              </div>
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] leading-tight">
-                Master PM Thinking at the{' '}
-                <span className="bg-[#FFF3A7] px-3 py-0.5 border-[2px] border-[#111111] rotate-[-1deg] inline-block">
-                  PM Gym
-                </span>
-              </h2>
-              <p className="text-base md:text-lg font-bold text-slate-700 leading-relaxed">
-                Solve 1 real-world Product Management challenge every day. Practice case questions, metric breakdowns, and behavioral scenarios directly in your browser. Build your streak without fluff.
-              </p>
-            </div>
-            <div className="shrink-0 flex flex-col sm:flex-row lg:flex-col gap-3 w-full lg:w-auto">
-              <Link
-                to="/gym"
-                className="px-8 py-4 bg-[#0f6f8f] hover:bg-[#188ab2] text-white border-[3px] border-[#111111] font-black text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all text-center"
-              >
-                Start Today's Workout ➜
-              </Link>
-              <Link
-                to="/resources"
-                className="px-8 py-4 bg-white hover:bg-slate-50 text-[#111111] border-[3px] border-[#111111] font-black text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all text-center"
-              >
-                Browse All Resources
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Mentors Section */}
       <section id="mentors" className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111] scroll-mt-[77px]">
@@ -4238,9 +4186,9 @@ export default function App() {
           <Route path="/blog/:blogId" element={<BlogPage />} />
           <Route path="/resources" element={<ResourcesPage />} />
           <Route path="/resources/:resourceId" element={<ResourcesPage />} />
-          <Route path="/gym" element={<ResourcesPage defaultTab="gym" />} />
-          <Route path="/pm-gym" element={<ResourcesPage defaultTab="gym" />} />
-          <Route path="/resources/gym" element={<ResourcesPage defaultTab="gym" />} />
+          <Route path="/gym" element={<Navigate to="/resources" replace />} />
+          <Route path="/pm-gym" element={<Navigate to="/resources" replace />} />
+          <Route path="/resources/gym" element={<Navigate to="/resources" replace />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route
             path="/dashboard"
