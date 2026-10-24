@@ -1809,23 +1809,6 @@ export function AppExecutive() {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-mono font-black text-[#111111] uppercase mb-1">
-                      Current Background
-                    </label>
-                    <select
-                      value={brochureFormData.currentRole}
-                      onChange={(e) => setBrochureFormData({ ...brochureFormData, currentRole: e.target.value })}
-                      className="w-full p-3 border-2 border-[#111111] font-medium text-sm bg-white shadow-[2px_2px_0px_0px_#111111] focus:outline-none"
-                    >
-                      <option value="Software Engineer / Developer">Software Engineer / Developer</option>
-                      <option value="Business Analyst / Consultant">Business Analyst / Consultant</option>
-                      <option value="QA / Operations / Product Operations">QA / Operations / Product Operations</option>
-                      <option value="Undergraduate / Postgrad Student">Undergraduate / Postgrad Student</option>
-                      <option value="Other">Other Role</option>
-                    </select>
-                  </div>
-
                   <button
                     type="submit"
                     disabled={brochureFormStatus === 'loading'}
