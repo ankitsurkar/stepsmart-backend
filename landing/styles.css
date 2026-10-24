@@ -5,7 +5,15 @@ body,
   min-height: 100%;
 }
 
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 body {
   font-family: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
   background-color: #FFFFFF;
+  color: #111111;
 }

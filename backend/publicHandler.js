@@ -382,7 +382,7 @@ exports.handler = async (event) => {
         return response(200, { success: true, id: data.id });
       }
 
-      const { name, email, phone, masterclassId = 'default' } = data;
+      const { name, email, phone, masterclassId = 'default', currentRole, role, source, cohortTrack } = data;
       if (!name || !email) {
         return response(400, { error: 'Name and email are required.' });
       }
@@ -394,6 +394,9 @@ exports.handler = async (event) => {
           email,
           name,
           phone: phone || 'N/A',
+          currentRole: currentRole || role || 'N/A',
+          source: source || (masterclassId.includes('brochure') ? 'brochure_download' : 'enrollment_form'),
+          cohortTrack: cohortTrack || 'PM-X Accelerator',
           timestamp: new Date().toISOString(),
           masterclassId,
         },

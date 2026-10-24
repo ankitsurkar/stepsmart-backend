@@ -10,6 +10,7 @@ const StudentsLandingPage = lazy(() => import('./StudentsBrutalism').then(m => (
 const EventsPage = lazy(() => import('./EventsBrutalism').then(m => ({ default: m.EventsPage })));
 const ResourcesPage = lazy(() => import('./ResourcesBrutalism').then(m => ({ default: m.ResourcesPage })));
 const LandingPortalDashboard = lazy(() => import('./LandingPortalDashboard').then(m => ({ default: m.LandingPortalDashboard })));
+const AppExecutive = lazy(() => import('./AppExecutive').then(m => ({ default: m.AppExecutive })));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center p-8">
@@ -3591,8 +3592,20 @@ const HeroCarousel = () => {
 };
 
 function PortalPage() {
+  const [searchParams] = useSearchParams();
+
+  // Allow fallback to legacy multi-track portal only if explicitly requested
+  if (searchParams.get('legacy') === 'true') {
+    return <LegacyPortalPage />;
+  }
+
+  return <AppExecutive />;
+}
+
+function LegacyPortalPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const handleMobileLinkClick = (e: React.MouseEvent, targetId: string) => {
     e.preventDefault();
@@ -4178,6 +4191,8 @@ export default function App() {
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<PortalPage />} />
+          <Route path="/executive" element={<AppExecutive />} />
+          <Route path="/preview" element={<AppExecutive />} />
           <Route path="/professionals" element={<ProfessionalsLandingPage />} />
           <Route path="/accelerator" element={<ProfessionalsLandingPage />} />
           <Route path="/students" element={<StudentsLandingPage />} />
