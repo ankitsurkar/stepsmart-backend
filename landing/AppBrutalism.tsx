@@ -4183,6 +4183,13 @@ function SeoManager() {
   return null;
 }
 
+function ExternalRedirect({ to }: { to: string }) {
+  useEffect(() => {
+    window.location.href = to;
+  }, [to]);
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -4204,7 +4211,8 @@ export default function App() {
           <Route path="/gym" element={<Navigate to="/resources" replace />} />
           <Route path="/pm-gym" element={<Navigate to="/resources" replace />} />
           <Route path="/resources/gym" element={<Navigate to="/resources" replace />} />
-          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/auth" element={<ExternalRedirect to="/learn" />} />
+          <Route path="/login" element={<ExternalRedirect to="/learn" />} />
           <Route
             path="/dashboard"
             element={

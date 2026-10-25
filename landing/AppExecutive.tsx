@@ -205,12 +205,12 @@ export function AppExecutive() {
 
           {/* Right Action Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Link
-              to="/auth"
+            <a
+              href="/learn"
               className="px-5 py-2 border-2 border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] transition-all font-extrabold text-sm"
             >
               Login
-            </Link>
+            </a>
             <button
               onClick={() => scrollToSection('pricing')}
               className="px-6 py-2.5 font-black border-2 border-[#111111] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[3.5px_3.5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] transition-all text-sm uppercase cursor-pointer"
@@ -254,13 +254,13 @@ export function AppExecutive() {
               >
                 Reserve Seat ➜
               </button>
-              <Link
-                to="/auth"
+              <a
+                href="/learn"
                 onClick={() => setIsMenuOpen(false)}
-                className="w-full py-2.5 border-2 border-[#111111] bg-white text-[#111111] text-center font-black text-sm shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)]"
+                className="w-full py-2.5 border-2 border-[#111111] bg-white text-[#111111] text-center font-black text-sm shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] block"
               >
                 Learner Login
-              </Link>
+              </a>
             </div>
           </div>
         )}
