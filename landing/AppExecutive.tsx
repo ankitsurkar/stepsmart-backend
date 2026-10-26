@@ -383,7 +383,7 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 4. THE 3 TRANSITION PATHWAYS (FIG 0.1, 0.2, 0.3 In Neobrutalism) */}
+        {/* 4. THE 3 TRANSITION PATHWAYS */}
         <section className="py-20 bg-slate-50 border-b-2 border-[#111111]">
           <div className="container mx-auto px-6 max-w-7xl">
             
@@ -398,81 +398,57 @@ export function AppExecutive() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               
-              {/* FIG 0.1 */}
+              {/* Card 01 - Non-Tech */}
               <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-mono font-black text-xs uppercase shadow-[1.5px_1.5px_0px_0px_#111111]">
-                      FIG 0.1 // NON-TECH
-                    </span>
-                  </div>
-                  <div className="w-full aspect-[16/10] border-2 border-[#111111] overflow-hidden mb-6 bg-slate-100 shadow-[2px_2px_0px_0px_#111111]">
+                  <div className="w-full aspect-[16/9] border-2 border-[#111111] overflow-hidden mb-6 bg-slate-100 shadow-[2px_2px_0px_0px_#111111]">
                     <img
                       src="/hero-slide-1.webp"
                       alt="Non-tech to PM"
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <h3 className="text-lg font-black text-[#111111] mb-3 leading-snug">
+                  <h3 className="text-lg font-black text-[#111111] mb-6 leading-snug">
                     "I switched into PM with zero product experience. No CS degree. No MBA."
                   </h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed mb-6">
-                    For business analysts, operations leads, and consultants. We break down how to translate your domain knowledge into executive product strategy without ₹25L+ MBA debt.
-                  </p>
                 </div>
                 <div className="pt-4 border-t-2 border-slate-100 text-[11px] font-black uppercase text-[#188ab2]">
                   PATH: OPERATIONS / QA / BA → PM
                 </div>
               </div>
 
-              {/* FIG 0.2 */}
+              {/* Card 02 - Tech & SDE */}
               <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="bg-[#e0f2fe] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-mono font-black text-xs uppercase shadow-[1.5px_1.5px_0px_0px_#111111]">
-                      FIG 0.2 // TECH &amp; SDE
-                    </span>
-                  </div>
-                  <div className="w-full aspect-[16/10] border-2 border-[#111111] overflow-hidden mb-6 bg-slate-100 shadow-[2px_2px_0px_0px_#111111]">
+                  <div className="w-full aspect-[16/9] border-2 border-[#111111] overflow-hidden mb-6 bg-slate-100 shadow-[2px_2px_0px_0px_#111111]">
                     <img
                       src="/hero-slide-2.webp"
                       alt="Engineer to PM"
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <h3 className="text-lg font-black text-[#111111] mb-3 leading-snug">
+                  <h3 className="text-lg font-black text-[#111111] mb-6 leading-snug">
                     "I took the conventional but not so conventional path from an SDE to MBA to PM."
                   </h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed mb-6">
-                    For software developers, tech leads, and data engineers. Learn to bridge technical architecture with user empathy, unit economics, and roadmap prioritisation.
-                  </p>
                 </div>
                 <div className="pt-4 border-t-2 border-slate-100 text-[11px] font-black uppercase text-[#188ab2]">
                   PATH: SDE / TECH LEAD → PM
                 </div>
               </div>
 
-              {/* FIG 0.3 */}
+              {/* Card 03 - Campus */}
               <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="bg-[#fef08a] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-mono font-black text-xs uppercase shadow-[1.5px_1.5px_0px_0px_#111111]">
-                      FIG 0.3 // CAMPUS
-                    </span>
-                  </div>
-                  <div className="w-full aspect-[16/10] border-2 border-[#111111] overflow-hidden mb-6 bg-slate-100 shadow-[2px_2px_0px_0px_#111111]">
+                  <div className="w-full aspect-[16/9] border-2 border-[#111111] overflow-hidden mb-6 bg-slate-100 shadow-[2px_2px_0px_0px_#111111]">
                     <img
                       src="/hero-slide-3.webp"
                       alt="College to PM"
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <h3 className="text-lg font-black text-[#111111] mb-3 leading-snug">
+                  <h3 className="text-lg font-black text-[#111111] mb-6 leading-snug">
                     "No experience. No roadmap. Just a college grad who became a PM."
                   </h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed mb-6">
-                    For final-year undergrads targeting campus placements. Build real proof-of-work portfolio deliverables that cut through the noise in APM and Analyst hiring drives.
-                  </p>
                 </div>
                 <div className="pt-4 border-t-2 border-slate-100 text-[11px] font-black uppercase text-[#188ab2]">
                   PATH: UNDERGRADUATE → APM
