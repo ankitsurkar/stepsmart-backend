@@ -544,29 +544,40 @@ export function AppExecutive() {
                   )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3 pt-3 border-t-2 border-[#111111]/30">
-                  <button
-                    onClick={() => scrollToSection('curriculum')}
-                    className="px-5 py-2.5 bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#111111] font-black text-xs sm:text-sm uppercase shadow-[3px_3px_0px_0px_#111111] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[2px] active:translate-y-[2px] transition-all cursor-pointer"
-                  >
-                    Explore Curriculum ➜
-                  </button>
-                  <button
-                    onClick={() => scrollToSection('pricing')}
-                    className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#111111] border-2 border-[#111111] font-black text-xs sm:text-sm uppercase shadow-[3px_3px_0px_0px_#111111] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[2px] active:translate-y-[2px] transition-all cursor-pointer"
-                  >
-                    See Pricing (Diwali Offer) ➜
-                  </button>
-                  <button
-                    onClick={() => {
-                      setBrochureFormStatus('idle');
-                      setIsBrochureModalOpen(true);
-                    }}
-                    className="text-xs font-bold text-[#111111] hover:text-[#188ab2] underline ml-auto inline-flex items-center gap-1 cursor-pointer"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Download Full Syllabus PDF</span>
-                  </button>
+                <div className="pt-4 border-t-2 border-[#111111]/30">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    {/* Primary Button */}
+                    <button
+                      onClick={() => scrollToSection('pricing')}
+                      className="px-6 py-3.5 bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#111111] font-black text-sm uppercase shadow-[3.5px_3.5px_0px_0px_#111111] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[2px] active:translate-y-[2px] transition-all cursor-pointer text-center"
+                    >
+                      Reserve your seat ➜
+                    </button>
+
+                    {/* Secondary Button */}
+                    <button
+                      onClick={() => scrollToSection('system')}
+                      className="px-6 py-3.5 bg-white hover:bg-slate-50 text-[#111111] border-2 border-[#111111] font-black text-sm uppercase shadow-[3.5px_3.5px_0px_0px_#111111] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[2px] active:translate-y-[2px] transition-all cursor-pointer text-center"
+                    >
+                      See the programme ➜
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setBrochureFormStatus('idle');
+                        setIsBrochureModalOpen(true);
+                      }}
+                      className="text-xs font-bold text-[#111111] hover:text-[#188ab2] underline sm:ml-auto inline-flex items-center justify-center gap-1 cursor-pointer py-1"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download Syllabus PDF</span>
+                    </button>
+                  </div>
+
+                  {/* Line under the buttons */}
+                  <p className="text-xs sm:text-sm font-extrabold text-[#111111]/85 mt-3 pt-3 border-t border-[#111111]/20">
+                    Modules from ₹5,000 · Bundle ₹15,000 with the Learn Module free · No job guarantee, just the work that gets you ready.
+                  </p>
                 </div>
               </div>
             </div>
@@ -594,53 +605,263 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 5. WHY MOST PEOPLE STAY STUCK & THE REFRAME (From Attached HTML) */}
-        <section className="py-20 bg-white border-b-2 border-[#111111]">
-          <div className="container mx-auto px-6 max-w-4xl text-center">
+        {/* 4. STORIES SECTION */}
+        <section id="stories" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
+          <div className="container mx-auto px-6 max-w-7xl">
             
-            <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-8 tracking-tight">
-              Why most people stay{' '}
-              <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_#111111]">
-                stuck
+            <div className="text-center mb-16">
+              <span className="bg-white border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
+                VERIFIABLE CAREER SWITCHES
               </span>
-            </h2>
-
-            <div className="space-y-4 max-w-xl mx-auto text-left mb-10">
-              <div className="bg-white border-2 border-[#111111] p-4 shadow-[3px_3px_0px_0px_#111111] font-semibold text-sm text-[#111111]/90 flex items-start gap-3">
-                <span className="text-red-600 font-black text-lg leading-none">✗</span>
-                <span>You’ve watched the videos and read the casebooks, and nothing is sticking.</span>
-              </div>
-              <div className="bg-white border-2 border-[#111111] p-4 shadow-[3px_3px_0px_0px_#111111] font-semibold text-sm text-[#111111]/90 flex items-start gap-3">
-                <span className="text-red-600 font-black text-lg leading-none">✗</span>
-                <span>Your resume says analyst or engineer. Recruiters can’t see PM.</span>
-              </div>
-              <div className="bg-white border-2 border-[#111111] p-4 shadow-[3px_3px_0px_0px_#111111] font-semibold text-sm text-[#111111]/90 flex items-start gap-3">
-                <span className="text-red-600 font-black text-lg leading-none">✗</span>
-                <span>You’re worried about “faking it.”</span>
-              </div>
+              <h2 className="text-3xl md:text-5xl font-black text-[#111111] tracking-tight mb-3">
+                Hear it from people who started where you are
+              </h2>
+              <p className="text-base sm:text-lg font-bold text-[#111111]/80 max-w-xl mx-auto">
+                Three people with no PM title when they began. In their own words.
+              </p>
             </div>
 
-            {/* The Signature Reframe Box */}
-            <div className="bg-[#FFF3A7] border-2 border-[#111111] p-6 text-center font-black text-xl md:text-2xl text-[#111111] max-w-xl mx-auto shadow-[5px_5px_0px_0px_#111111] rotate-[-1deg]">
-              You don’t lack experience. You lack evidence.
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              
+              {/* Card 1: Ops / QA / BA */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all flex flex-col justify-between">
+                <div>
+                  <div className="w-full aspect-[16/9] border-2 border-[#111111] overflow-hidden mb-5 bg-amber-50 shadow-[2px_2px_0px_0px_#111111] relative">
+                    <img
+                      src="/hero-slide-1.webp"
+                      alt="Operations & QA switch story"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2.5 left-2.5 bg-[#FFF3A7] border border-[#111111] px-2 py-0.5 font-mono font-black text-[10px] uppercase shadow-[1px_1px_0px_0px_#111111]">
+                      STORY // OPS → PM
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 text-xs sm:text-sm text-[#111111] mb-6">
+                    <div className="p-3 bg-rose-50 border border-rose-200">
+                      <b className="text-rose-900 block font-mono font-black text-[11px] uppercase mb-0.5">Before:</b>
+                      <span className="font-medium text-[#111111]/85">“Monitored ticket SLA metrics, managed manual operations queues, and executed test matrices.”</span>
+                    </div>
+
+                    <div className="p-3 bg-amber-50 border border-amber-300">
+                      <b className="text-amber-950 block font-mono font-black text-[11px] uppercase mb-0.5">What changed:</b>
+                      <span className="font-medium text-[#111111]/85">Built a full PRD for exception triage automation with root cause discovery and user flow wireframes.</span>
+                    </div>
+
+                    <div className="p-3 bg-emerald-50 border border-emerald-300">
+                      <b className="text-emerald-950 block font-mono font-black text-[11px] uppercase mb-0.5">Now:</b>
+                      <span className="font-medium text-[#111111]/85">Associate Product Manager leading logistics platform reliability.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t-2 border-[#111111]/10 font-mono font-black text-xs text-[#188ab2] uppercase tracking-wider">
+                  Ananya · Ops &amp; QA → Associate PM
+                </div>
+              </div>
+
+              {/* Card 2: SDE / Tech Lead */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all flex flex-col justify-between">
+                <div>
+                  <div className="w-full aspect-[16/9] border-2 border-[#111111] overflow-hidden mb-5 bg-amber-50 shadow-[2px_2px_0px_0px_#111111] relative">
+                    <img
+                      src="/hero-slide-2.webp"
+                      alt="Software Engineer switch story"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2.5 left-2.5 bg-[#e0f2fe] border border-[#111111] px-2 py-0.5 font-mono font-black text-[10px] uppercase shadow-[1px_1px_0px_0px_#111111]">
+                      STORY // SDE → PM
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 text-xs sm:text-sm text-[#111111] mb-6">
+                    <div className="p-3 bg-rose-50 border border-rose-200">
+                      <b className="text-rose-900 block font-mono font-black text-[11px] uppercase mb-0.5">Before:</b>
+                      <span className="font-medium text-[#111111]/85">“Designed backend microservices and database schemas; resume had zero customer metrics.”</span>
+                    </div>
+
+                    <div className="p-3 bg-amber-50 border border-amber-300">
+                      <b className="text-amber-950 block font-mono font-black text-[11px] uppercase mb-0.5">What changed:</b>
+                      <span className="font-medium text-[#111111]/85">Rewrote technical tasks into business cases, drafted payment checkout specs, and practiced live mock rounds.</span>
+                    </div>
+
+                    <div className="p-3 bg-emerald-50 border border-emerald-300">
+                      <b className="text-emerald-950 block font-mono font-black text-[11px] uppercase mb-0.5">Now:</b>
+                      <span className="font-medium text-[#111111]/85">Senior Product Manager in global fintech.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t-2 border-[#111111]/10 font-mono font-black text-xs text-[#188ab2] uppercase tracking-wider">
+                  Sanket · SDE &amp; Tech Lead → Senior PM
+                </div>
+              </div>
+
+              {/* Card 3: Analytics / Marketing / Business */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all flex flex-col justify-between">
+                <div>
+                  <div className="w-full aspect-[16/9] border-2 border-[#111111] overflow-hidden mb-5 bg-amber-50 shadow-[2px_2px_0px_0px_#111111] relative">
+                    <img
+                      src="/hero-slide-3.webp"
+                      alt="Analytics switch story"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2.5 left-2.5 bg-[#EDE9FE] border border-[#111111] px-2 py-0.5 font-mono font-black text-[10px] uppercase shadow-[1px_1px_0px_0px_#111111]">
+                      STORY // ANALYTICS → PM
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 text-xs sm:text-sm text-[#111111] mb-6">
+                    <div className="p-3 bg-rose-50 border border-rose-200">
+                      <b className="text-rose-900 block font-mono font-black text-[11px] uppercase mb-0.5">Before:</b>
+                      <span className="font-medium text-[#111111]/85">“Wrote SQL queries, built Tableau dashboards, and reported campaign conversion rates.”</span>
+                    </div>
+
+                    <div className="p-3 bg-amber-50 border border-amber-300">
+                      <b className="text-amber-950 block font-mono font-black text-[11px] uppercase mb-0.5">What changed:</b>
+                      <span className="font-medium text-[#111111]/85">Structured raw retention metrics into customer problem discovery and built an onboarding teardown presentation.</span>
+                    </div>
+
+                    <div className="p-3 bg-emerald-50 border border-emerald-300">
+                      <b className="text-emerald-950 block font-mono font-black text-[11px] uppercase mb-0.5">Now:</b>
+                      <span className="font-medium text-[#111111]/85">Product Manager leading user growth and activation.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t-2 border-[#111111]/10 font-mono font-black text-xs text-[#188ab2] uppercase tracking-wider">
+                  Rohan · Analytics &amp; Growth → PM
+                </div>
+              </div>
+
             </div>
+
+            {/* Footnote under the cards */}
+            <p className="text-xs font-mono font-bold text-[#111111]/70 text-center mt-10">
+              * These are individual stories, not a promise of the same result.
+            </p>
 
           </div>
         </section>
 
-        {/* 6. THE 4-PILLAR SYSTEM (Learn · Build · Practise · Career) */}
+        {/* 5. WHY PEOPLE STAY STUCK & THE REFRAME */}
+        <section className="py-20 bg-white border-b-2 border-[#111111]">
+          <div className="container mx-auto px-6 max-w-5xl text-center">
+            
+            <div className="inline-block mb-3">
+              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block select-none">
+                THE ROOT CAUSE
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] mb-12 tracking-tight">
+              Three things keep career switchers{' '}
+              <span className="inline-block bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] px-3.5 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_#111111]">
+                stuck
+              </span>
+            </h2>
+
+            {/* 3 Diagnosis Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mb-10">
+              {/* Card 1 */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="w-8 h-8 bg-rose-100 border-2 border-[#111111] flex items-center justify-center font-black text-rose-800 text-sm mb-4 shadow-[1.5px_1.5px_0px_0px_#111111]">
+                    01
+                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-[#111111] mb-3 leading-snug">
+                    You’ve watched the videos and nothing sticks.
+                  </h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                    Watching is not practising. Structuring a problem out loud is a habit, and habits need repetition with feedback.
+                  </p>
+                </div>
+                <div className="mt-6 pt-3 border-t-2 border-[#111111]/10">
+                  <span className="inline-block bg-[#D1FAE5] text-emerald-950 border border-[#111111] font-mono font-black text-[11px] px-2 py-0.5 shadow-[1px_1px_0px_0px_#111111]">
+                    → Fixed in Module 3
+                  </span>
+                </div>
+              </div>
+
+              {/* Card 2 */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="w-8 h-8 bg-rose-100 border-2 border-[#111111] flex items-center justify-center font-black text-rose-800 text-sm mb-4 shadow-[1.5px_1.5px_0px_0px_#111111]">
+                    02
+                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-[#111111] mb-3 leading-snug">
+                    Your resume says analyst, engineer or ops.
+                  </h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                    Recruiters scan for PM signals in seconds. If they are not on the page, nobody reads your real work.
+                  </p>
+                </div>
+                <div className="mt-6 pt-3 border-t-2 border-[#111111]/10">
+                  <span className="inline-block bg-[#e0f2fe] text-sky-950 border border-[#111111] font-mono font-black text-[11px] px-2 py-0.5 shadow-[1px_1px_0px_0px_#111111]">
+                    → Fixed in Module 1
+                  </span>
+                </div>
+              </div>
+
+              {/* Card 3 */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="w-8 h-8 bg-rose-100 border-2 border-[#111111] flex items-center justify-center font-black text-rose-800 text-sm mb-4 shadow-[1.5px_1.5px_0px_0px_#111111]">
+                    03
+                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-[#111111] mb-3 leading-snug">
+                    You feel like you would be faking it.
+                  </h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                    You would not be. You would be showing real work you can honestly talk through.
+                  </p>
+                </div>
+                <div className="mt-6 pt-3 border-t-2 border-[#111111]/10">
+                  <span className="inline-block bg-[#FFF3A7] text-[#111111] border border-[#111111] font-mono font-black text-[11px] px-2 py-0.5 shadow-[1px_1px_0px_0px_#111111]">
+                    → Fixed in Module 2
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Proof line */}
+            <div className="max-w-2xl mx-auto mb-8">
+              <p className="bg-[#e6f1fb] border-2 border-[#111111] py-2.5 px-4 font-mono font-bold text-xs sm:text-sm text-[#111111] shadow-[2px_2px_0px_0px_#111111]">
+                📊 53% of aspiring PMs in our community say “no PM experience on my resume” is their biggest blocker.{' '}
+                <span className="text-slate-600 block sm:inline font-normal text-[11px]">[Source: StepSmart Community Career Survey, n=420]</span>
+              </p>
+            </div>
+
+            {/* Punch line (keep) */}
+            <div className="bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] p-6 text-center font-black text-xl md:text-2xl text-[#111111] max-w-2xl mx-auto shadow-[5px_5px_0px_0px_#111111] rotate-[-1deg] mb-8 select-none">
+              You don’t lack experience — what you lack is proof recruiters can see.
+            </div>
+
+            {/* Bridge to the next section */}
+            <p className="text-sm sm:text-base md:text-lg font-bold text-[#111111]/85 max-w-2xl mx-auto leading-relaxed">
+              Three gaps decide who gets the interview: how your experience reads, what evidence you can show, and how well you interview. The Accelerator has one module for each.
+            </p>
+
+          </div>
+        </section>
+
+        {/* 6. MODULES AND HOW THEY FIT */}
         <section id="system" className="py-14 md:py-18 bg-slate-50 border-b-[3px] border-[#111111] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-7xl">
             
-            <div className="text-center mb-8 md:mb-10">
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3">
-                Learn. Build. Practise.{' '}
-                <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]">
-                  Career.
+            <div className="text-center mb-10 md:mb-14">
+              <div className="inline-block mb-3">
+                <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block select-none">
+                  THE ACCELERATOR ARCHITECTURE
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
+                Three live modules, built around{' '}
+                <span className="inline-block bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                  what recruiters look for
                 </span>
               </h2>
-              <p className="text-base font-bold text-[#111111] max-w-lg mx-auto">
-                One system, 8 weeks, 6 live hours a week. Chat doubt support runs through all four steps.
+              <p className="text-base sm:text-lg font-bold text-[#111111]/85 max-w-2xl mx-auto leading-relaxed">
+                Take all three, or start with the one you need most. Every module is live, hands-on and in a group of 10–20.
               </p>
             </div>
 
