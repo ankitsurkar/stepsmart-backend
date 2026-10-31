@@ -11,6 +11,7 @@ const EventsPage = lazy(() => import('./EventsBrutalism').then(m => ({ default: 
 const ResourcesPage = lazy(() => import('./ResourcesBrutalism').then(m => ({ default: m.ResourcesPage })));
 const LandingPortalDashboard = lazy(() => import('./LandingPortalDashboard').then(m => ({ default: m.LandingPortalDashboard })));
 const AppExecutive = lazy(() => import('./AppExecutive').then(m => ({ default: m.AppExecutive })));
+const PrototypeHeroPage = lazy(() => import('./prototype-hero/PrototypeHeroPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center p-8">
@@ -4200,6 +4201,7 @@ export default function App() {
           <Route path="/" element={<PortalPage />} />
           <Route path="/executive" element={<AppExecutive />} />
           <Route path="/preview" element={<AppExecutive />} />
+          <Route path="/prototype-hero" element={<PrototypeHeroPage />} />
           <Route path="/professionals" element={<ProfessionalsLandingPage />} />
           <Route path="/accelerator" element={<ProfessionalsLandingPage />} />
           <Route path="/students" element={<StudentsLandingPage />} />
