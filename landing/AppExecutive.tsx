@@ -621,6 +621,90 @@ export function AppExecutive() {
           </div>
         </section>
 
+        {/* 4. REAL PEOPLE. REAL TRANSITIONS. (Moved Here After Hero) */}
+        <section id="outcomes" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
+          <div className="container mx-auto px-6 max-w-7xl">
+            
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
+                Real people.{' '}
+                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
+                  Real transitions.
+                </span>
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+              
+              {/* Triya */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
+                <div>
+                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
+                    T
+                  </div>
+                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
+                    “PM-X gave me the clarity and confidence I needed to make the transition.”
+                  </p>
+                </div>
+                <div className="pt-4 border-t-2 border-slate-100">
+                  <b className="block text-[#111111] text-sm font-black">Triya</b>
+                  <small className="text-[#111111]/70 font-medium text-xs block">Business Analyst → PM at ACKO</small>
+                </div>
+              </div>
+
+              {/* Nishant */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
+                <div>
+                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
+                    N
+                  </div>
+                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
+                    “From zero interview calls to landing a PM internship in under a month.”
+                  </p>
+                </div>
+                <div className="pt-4 border-t-2 border-slate-100">
+                  <b className="block text-[#111111] text-sm font-black">Nishant</b>
+                  <small className="text-[#111111]/70 font-medium text-xs block">Student → APM Intern, Surepass</small>
+                </div>
+              </div>
+
+              {/* Gauri T. */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
+                <div>
+                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
+                    G
+                  </div>
+                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
+                    “Watching peers articulate product thinking made me believe I could become a PM.”
+                  </p>
+                </div>
+                <div className="pt-4 border-t-2 border-slate-100">
+                  <b className="block text-[#111111] text-sm font-black">Gauri T.</b>
+                  <small className="text-[#111111]/70 font-medium text-xs block">Product Manager</small>
+                </div>
+              </div>
+
+              {/* Nishtha */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
+                <div>
+                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
+                    N
+                  </div>
+                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
+                    “PM-X helped me break overwhelming case studies into clear, actionable chunks.”
+                  </p>
+                </div>
+                <div className="pt-4 border-t-2 border-slate-100">
+                  <b className="block text-[#111111] text-sm font-black">Nishtha</b>
+                  <small className="text-[#111111]/70 font-medium text-xs block">Product Manager, Amex</small>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
         {/* 5. WHY PEOPLE STAY STUCK & THE REFRAME */}
         <section className="py-20 bg-white border-b-2 border-[#111111]">
           <div className="container mx-auto px-6 max-w-5xl text-center">
@@ -1612,90 +1696,6 @@ export function AppExecutive() {
                   <p className="font-medium text-sm text-[#111111]/85 leading-relaxed">
                     Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
                   </p>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </section>
-
-        {/* 11. REAL PEOPLE. REAL TRANSITIONS. (From Attached HTML) */}
-        <section id="outcomes" className="py-20 bg-white border-b-2 border-[#111111] scroll-mt-20">
-          <div className="container mx-auto px-6 max-w-7xl">
-            
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
-                Real people.{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
-                  Real transitions.
-                </span>
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
-              
-              {/* Triya */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
-                <div>
-                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
-                    T
-                  </div>
-                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
-                    “PM-X gave me the clarity and confidence I needed to make the transition.”
-                  </p>
-                </div>
-                <div className="pt-4 border-t-2 border-slate-100">
-                  <b className="block text-[#111111] text-sm font-black">Triya</b>
-                  <small className="text-[#111111]/70 font-medium text-xs block">Business Analyst → PM at ACKO</small>
-                </div>
-              </div>
-
-              {/* Nishant */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
-                <div>
-                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
-                    N
-                  </div>
-                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
-                    “From zero interview calls to landing a PM internship in under a month.”
-                  </p>
-                </div>
-                <div className="pt-4 border-t-2 border-slate-100">
-                  <b className="block text-[#111111] text-sm font-black">Nishant</b>
-                  <small className="text-[#111111]/70 font-medium text-xs block">Student → APM Intern, Surepass</small>
-                </div>
-              </div>
-
-              {/* Gauri T. */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
-                <div>
-                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
-                    G
-                  </div>
-                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
-                    “Watching peers articulate product thinking made me believe I could become a PM.”
-                  </p>
-                </div>
-                <div className="pt-4 border-t-2 border-slate-100">
-                  <b className="block text-[#111111] text-sm font-black">Gauri T.</b>
-                  <small className="text-[#111111]/70 font-medium text-xs block">Product Manager</small>
-                </div>
-              </div>
-
-              {/* Nishtha */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
-                <div>
-                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
-                    N
-                  </div>
-                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
-                    “PM-X helped me break overwhelming case studies into clear, actionable chunks.”
-                  </p>
-                </div>
-                <div className="pt-4 border-t-2 border-slate-100">
-                  <b className="block text-[#111111] text-sm font-black">Nishtha</b>
-                  <small className="text-[#111111]/70 font-medium text-xs block">Product Manager, Amex</small>
                 </div>
               </div>
 
