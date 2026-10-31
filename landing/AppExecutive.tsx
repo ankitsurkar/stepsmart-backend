@@ -366,13 +366,13 @@ export function AppExecutive() {
               </div>
             </div>
 
-            {/* Hero Image of Sanket with the statement earlier */}
+            {/* Hero Image with Statement (Blue Image) */}
             <div className="max-w-4xl mx-auto mb-14 text-left">
               <div className="bg-white border-2 sm:border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_#111111] overflow-hidden">
-                <div className="w-full aspect-[16/9] sm:aspect-[16/8] overflow-hidden bg-[#FAF3DD]">
+                <div className="w-full aspect-[16/9] sm:aspect-[16/8] overflow-hidden bg-[#188ab2]">
                   <img
-                    src="/hero-slide-2.webp"
-                    alt="Sanket Katore — PM at Mastercard: 'I took the conventional but not so conventional path from an SDE to MBA to PM.'"
+                    src="/hero-slide-1.webp"
+                    alt="PM Switch Story: 'I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation.'"
                     className="w-full h-full object-cover"
                     loading="eager"
                   />
@@ -654,15 +654,10 @@ export function AppExecutive() {
               {/* Card 1: Ops / QA / BA */}
               <div className="bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all flex flex-col justify-between">
                 <div>
-                  <div className="w-full aspect-[16/9] border-2 border-[#111111] overflow-hidden mb-5 bg-amber-50 shadow-[2px_2px_0px_0px_#111111] relative">
-                    <img
-                      src="/hero-slide-1.webp"
-                      alt="Operations & QA switch story"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-2.5 left-2.5 bg-[#FFF3A7] border border-[#111111] px-2 py-0.5 font-mono font-black text-[10px] uppercase shadow-[1px_1px_0px_0px_#111111]">
+                  <div className="mb-5 flex items-center justify-between">
+                    <span className="bg-[#FFF3A7] border-2 border-[#111111] px-2.5 py-1 font-mono font-black text-[11px] uppercase shadow-[1.5px_1.5px_0px_0px_#111111]">
                       STORY // OPS → PM
-                    </div>
+                    </span>
                   </div>
 
                   <div className="space-y-3 text-xs sm:text-sm text-[#111111] mb-6">
@@ -691,15 +686,10 @@ export function AppExecutive() {
               {/* Card 2: SDE / Tech Lead */}
               <div className="bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all flex flex-col justify-between">
                 <div>
-                  <div className="w-full aspect-[16/9] border-2 border-[#111111] overflow-hidden mb-5 bg-amber-50 shadow-[2px_2px_0px_0px_#111111] relative">
-                    <img
-                      src="/hero-slide-2.webp"
-                      alt="Software Engineer switch story"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-2.5 left-2.5 bg-[#e0f2fe] border border-[#111111] px-2 py-0.5 font-mono font-black text-[10px] uppercase shadow-[1px_1px_0px_0px_#111111]">
+                  <div className="mb-5 flex items-center justify-between">
+                    <span className="bg-[#e0f2fe] border-2 border-[#111111] px-2.5 py-1 font-mono font-black text-[11px] uppercase shadow-[1.5px_1.5px_0px_0px_#111111]">
                       STORY // SDE → PM
-                    </div>
+                    </span>
                   </div>
 
                   <div className="space-y-3 text-xs sm:text-sm text-[#111111] mb-6">
@@ -728,15 +718,10 @@ export function AppExecutive() {
               {/* Card 3: Analytics / Marketing / Business */}
               <div className="bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all flex flex-col justify-between">
                 <div>
-                  <div className="w-full aspect-[16/9] border-2 border-[#111111] overflow-hidden mb-5 bg-amber-50 shadow-[2px_2px_0px_0px_#111111] relative">
-                    <img
-                      src="/hero-slide-3.webp"
-                      alt="Analytics switch story"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-2.5 left-2.5 bg-[#EDE9FE] border border-[#111111] px-2 py-0.5 font-mono font-black text-[10px] uppercase shadow-[1px_1px_0px_0px_#111111]">
+                  <div className="mb-5 flex items-center justify-between">
+                    <span className="bg-[#EDE9FE] border-2 border-[#111111] px-2.5 py-1 font-mono font-black text-[11px] uppercase shadow-[1.5px_1.5px_0px_0px_#111111]">
                       STORY // ANALYTICS → PM
-                    </div>
+                    </span>
                   </div>
 
                   <div className="space-y-3 text-xs sm:text-sm text-[#111111] mb-6">
@@ -1682,85 +1667,6 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 9. WHY THIS IS DIFFERENT (Matching Is PM-X For You Layout: Left Card with ✓, Right Canvas with ✕) */}
-        <section className="py-20 bg-white border-b-2 border-[#111111]">
-          <div className="container mx-auto px-6 max-w-5xl">
-            
-            {/* Centered Heading */}
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
-                Why this is{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
-                  different.
-                </span>
-              </h2>
-            </div>
-
-            {/* Seamless Side-by-Side Comparison Container */}
-            <div className="relative max-w-5xl mx-auto text-left">
-              {/* Soft Slate Card for Left Column (PM-X by StepSmart) */}
-              <div className="hidden md:block absolute top-0 bottom-0 left-0 w-1/2 bg-slate-50 rounded-2xl shadow-sm border border-black/5 pointer-events-none" />
-
-              <div className="relative z-10 py-4 sm:py-6">
-                {/* Header Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 items-center mb-2">
-                  <div className="py-4 sm:py-5 px-6 sm:px-10 border-b border-[#111111]/10 flex items-center justify-between">
-                    <span className="text-xs font-mono font-black tracking-widest text-[#111111] uppercase">
-                      PM-X BY STEPSMART
-                    </span>
-                    <span className="bg-[#FFF3A7] text-[#111111] text-[10px] font-mono font-black px-2 py-0.5 uppercase tracking-wider border border-[#111111]/20">
-                      PROVEN
-                    </span>
-                  </div>
-                  <div className="py-4 sm:py-5 px-4 sm:px-8 border-b border-[#111111]/15">
-                    <span className="text-xs font-mono font-black tracking-widest text-[#111111]/65 uppercase block">
-                      MOST PM COURSES
-                    </span>
-                  </div>
-                </div>
-
-                {/* Paired Rows: Generous Vertical Spacing & Guaranteed Horizontal Alignment */}
-                {[
-                  {
-                    pmx: "Small batch, 30 seats",
-                    others: "Hundreds of students"
-                  },
-                  {
-                    pmx: "24 live classes, 48 live hours",
-                    others: "Videos only"
-                  },
-                  {
-                    pmx: "Real production project portfolios",
-                    others: "Generic templates"
-                  },
-                  {
-                    pmx: "Live practice classes & question banks",
-                    others: "No mock interviews"
-                  },
-                  {
-                    pmx: "Chat doubt support & 3 months of job board",
-                    others: "Support ends at payment"
-                  }
-                ].map((item, idx, arr) => (
-                  <div key={idx} className="grid grid-cols-1 md:grid-cols-2 items-center">
-                    {/* Left Column: PM-X by StepSmart (Inside White Card with ✓) */}
-                    <div className="py-6 sm:py-7 px-6 sm:px-10 text-sm sm:text-base font-bold text-[#111111] flex items-center gap-4">
-                      <span className="text-[#188ab2] font-black text-base shrink-0">✓</span>
-                      <span>{item.pmx}</span>
-                    </div>
-                    {/* Right Column: Most PM Courses (Canvas with Hairline Divider with ✕) */}
-                    <div className={`py-6 sm:py-7 px-4 sm:px-8 text-sm sm:text-base font-bold text-[#111111]/70 flex items-center gap-4 ${idx !== arr.length - 1 ? 'border-b border-[#111111]/10' : ''}`}>
-                      <span className="text-red-500 font-black text-base shrink-0">✕</span>
-                      <span>{item.others}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
-        </section>
-
         {/* 10. MEET YOUR INSTRUCTORS (Mentors) */}
         <section id="mentors" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-5xl">
@@ -2321,61 +2227,6 @@ export function AppExecutive() {
                 </button>
               </div>
 
-            </div>
-
-          </div>
-        </section>
-
-        {/* 14. SMALL BATCHES, BY CHOICE (Moved Here Right Before How to Join As Requested) */}
-        <section className="py-20 bg-slate-50 border-b-2 border-[#111111]">
-          <div className="container mx-auto px-6 max-w-4xl text-center">
-            
-            <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
-              Small batches,{' '}
-              <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
-                by choice
-              </span>
-            </h2>
-            <p className="text-base font-medium text-[#111111]/80 mb-12 max-w-lg mx-auto">
-              We cap every batch on purpose, so every project gets real 1:1 mentor feedback.
-            </p>
-
-            <div className="bg-white border-2 border-[#111111] p-8 shadow-[5px_5px_0px_0px_#111111]">
-              {/* Bar Chart Matching Attached HTML */}
-              <div className="h-48 border-b-2 border-[#111111] flex items-end justify-center gap-6 sm:gap-12 px-4 pb-0">
-                <div className="flex-1 max-w-[100px] flex flex-col justify-end h-full text-center">
-                  <div className="bg-[#188ab2] text-white border-2 border-[#111111] font-mono font-black text-sm py-1 shadow-[2px_2px_0px_0px_#111111]" style={{ height: '20%' }}>
-                    6
-                  </div>
-                </div>
-                <div className="flex-1 max-w-[100px] flex flex-col justify-end h-full text-center">
-                  <div className="bg-[#188ab2] text-white border-2 border-[#111111] font-mono font-black text-sm py-1 shadow-[2px_2px_0px_0px_#111111]" style={{ height: '20%' }}>
-                    6
-                  </div>
-                </div>
-                <div className="flex-1 max-w-[100px] flex flex-col justify-end h-full text-center">
-                  <div className="bg-[#188ab2] text-white border-2 border-[#111111] font-mono font-black text-sm py-1 shadow-[2px_2px_0px_0px_#111111]" style={{ height: '50%' }}>
-                    15
-                  </div>
-                </div>
-                <div className="flex-1 max-w-[100px] flex flex-col justify-end h-full text-center">
-                  <div className="bg-[#FFF3A7] text-[#111111] border-2 border-dashed border-[#111111] font-mono font-black text-xs sm:text-sm py-1 shadow-[2px_2px_0px_0px_#111111] flex items-center justify-center" style={{ height: '100%' }}>
-                    30 (MAX)
-                  </div>
-                </div>
-              </div>
-
-              {/* Labels Row */}
-              <div className="flex justify-center gap-6 sm:gap-12 px-4 pt-3 font-mono font-black text-xs sm:text-sm text-[#111111]">
-                <span className="flex-1 max-w-[100px] text-center">Batch 1</span>
-                <span className="flex-1 max-w-[100px] text-center">Batch 2</span>
-                <span className="flex-1 max-w-[100px] text-center">Batch 3</span>
-                <span className="flex-1 max-w-[100px] text-center text-[#188ab2]">Next batch</span>
-              </div>
-
-              <p className="font-bold text-[#111111]/85 mt-8 text-sm">
-                Students per batch. Next batch: 30 seats, not one more.
-              </p>
             </div>
 
           </div>
