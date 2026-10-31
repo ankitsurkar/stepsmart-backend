@@ -105,19 +105,19 @@ export function AppExecutive() {
     const targetEnd = new Date('2026-11-05T23:59:59+05:30').getTime();
     const updateCountdown = () => {
       const now = Date.now();
-      let left = targetEnd - now;
+      const left = targetEnd - now;
       if (left <= 0) {
-        // Rolling 48-hour active urgency window if deadline has passed
-        const rollingWindow = 48 * 3600 * 1000;
-        left = rollingWindow - (Math.abs(left) % rollingWindow);
+        setIsEarlyBird(false);
+        setCountdownTimer('Offer ended');
+      } else {
+        setIsEarlyBird(true);
+        const d = Math.floor(left / 864e5);
+        const h = Math.floor((left % 864e5) / 36e5);
+        const m = Math.floor((left % 36e5) / 6e4);
+        const s = Math.floor((left % 6e4) / 1000);
+        const pad = (n: number) => String(n).padStart(2, '0');
+        setCountdownTimer(`${pad(d)}d ${pad(h)}h ${pad(m)}m ${pad(s)}s`);
       }
-      setIsEarlyBird(true);
-      const d = Math.floor(left / 864e5);
-      const h = Math.floor((left % 864e5) / 36e5);
-      const m = Math.floor((left % 36e5) / 6e4);
-      const s = Math.floor((left % 6e4) / 1000);
-      const pad = (n: number) => String(n).padStart(2, '0');
-      setCountdownTimer(`${pad(d)}d ${pad(h)}h ${pad(m)}m ${pad(s)}s`);
     };
     updateCountdown();
     const timer = setInterval(updateCountdown, 1000);
@@ -132,9 +132,10 @@ export function AppExecutive() {
     }
   };
 
-  // Modular selection calculation (Diwali Offer: ₹5,000 per live module)
+  // Modular selection calculation (Diwali Offer: ₹5,000 per live module, Regular: ₹7,000)
   const modularItemCount = (selectedMod1 ? 1 : 0) + (selectedMod2 ? 1 : 0) + (selectedMod3 ? 1 : 0);
-  const modularTotal = (modularItemCount * 5000) + (selected1to1 ? 5000 : 0);
+  const modulePrice = isEarlyBird ? 5000 : 7000;
+  const modularTotal = (modularItemCount * modulePrice) + (selected1to1 ? 5000 : 0);
   const modularLabel = [
     selectedMod1 ? 'Evidence Builder (Mod 1)' : '',
     selectedMod2 ? 'Profile Enhancer (Mod 2)' : '',
@@ -143,12 +144,16 @@ export function AppExecutive() {
   ].filter(Boolean).join(' + ');
 
   const handleModularEnroll = () => {
-    const intent = `Hi, I want to enroll for modular PM-X: ${modularLabel} (₹${modularTotal.toLocaleString('en-IN')}) - Diwali Special Offer`;
+    const intent = isEarlyBird
+      ? `Hi, I want to enroll for modular PM-X: ${modularLabel} (₹${modularTotal.toLocaleString('en-IN')}) - Diwali Special Offer`
+      : `Hi, I want to enroll for modular PM-X: ${modularLabel} (₹${modularTotal.toLocaleString('en-IN')})`;
     window.open(`https://wa.me/message/GH5C7YLAYIEHN1?text=${encodeURIComponent(intent)}`, '_blank', 'noopener,noreferrer');
   };
 
   const handleMainEnroll = () => {
-    const intent = `Hi, I want to reserve my seat for the full PM-X Accelerator cohort with the Diwali Offer (₹15,000 with Learn Module Free)`;
+    const intent = isEarlyBird
+      ? `Hi, I want to reserve my seat for the full PM-X Accelerator cohort with the Diwali Offer (₹15,000 with Learn Module Free)`
+      : `Hi, I want to reserve my seat for the full PM-X Accelerator cohort (₹21,000 with Learn Module Free)`;
     window.open(`https://wa.me/message/GH5C7YLAYIEHN1?text=${encodeURIComponent(intent)}`, '_blank', 'noopener,noreferrer');
   };
 
@@ -159,13 +164,26 @@ export function AppExecutive() {
       <aside aria-label="Announcement Banner" className="sticky top-0 z-50 w-full bg-[#FFF3A7] border-b-2 border-[#111111] text-xs py-2 px-4 font-black">
         <div className="container mx-auto max-w-7xl flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] inline-flex items-center gap-1.5 font-black shrink-0">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              🪔 DIWALI OFFER
-            </span>
-            <span className="text-[#111111] font-black text-xs sm:text-sm">
-              Diwali offer: modules ₹5,000 (regular ₹7,000), bundle ₹15,000 with the Learn Module free. Ends in <span className="font-mono bg-white px-1.5 py-0.5 border border-[#111111] shadow-[1px_1px_0px_0px_#111111] inline-block font-black">{countdownTimer}</span>
-            </span>
+            {isEarlyBird ? (
+              <>
+                <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] inline-flex items-center gap-1.5 font-black shrink-0">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  🪔 DIWALI OFFER
+                </span>
+                <span className="text-[#111111] font-black text-xs sm:text-sm">
+                  Diwali offer: modules ₹5,000 (regular ₹7,000), bundle ₹15,000 with the Learn Module free. Ends in <span className="font-mono bg-white px-1.5 py-0.5 border border-[#111111] shadow-[1px_1px_0px_0px_#111111] inline-block font-black">{countdownTimer}</span>
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] inline-flex items-center gap-1.5 font-black shrink-0">
+                  PM-X ACCELERATOR
+                </span>
+                <span className="text-[#111111] font-black text-xs sm:text-sm">
+                  Module ₹7,000 each · Bundle ₹21,000 · Cohort Starts 23 Nov
+                </span>
+              </>
+            )}
           </div>
           <button
             onClick={() => scrollToSection('pricing')}
@@ -584,7 +602,9 @@ export function AppExecutive() {
 
                   {/* Line under the buttons */}
                   <p className="text-xs sm:text-sm font-extrabold text-[#111111]/85 mt-3 pt-3 border-t border-[#111111]/20">
-                    Modules from ₹5,000 · Bundle ₹15,000 with the Learn Module free · No job guarantee, just the work that gets you ready.
+                    {isEarlyBird
+                      ? "Modules from ₹5,000 · Bundle ₹15,000 with the Learn Module free · No job guarantee, just the work that gets you ready."
+                      : "Module ₹7,000 each · Bundle ₹21,000 · No job guarantee, just the work that gets you ready."}
                   </p>
                 </div>
               </div>
@@ -1932,7 +1952,15 @@ export function AppExecutive() {
             </h2>
             
             <p className="text-sm sm:text-base font-bold text-[#111111]/80 max-w-xl mx-auto mb-12">
-              The Diwali offer ends 5 Nov, 11:59 PM IST · <span className="font-mono bg-amber-100 px-2 py-0.5 border border-[#111111] shadow-[1px_1px_0px_0px_#111111] font-black text-[#111111]">{countdownTimer}</span>
+              {isEarlyBird ? (
+                <>
+                  The Diwali offer ends 5 Nov, 11:59 PM IST · <span className="font-mono bg-amber-100 px-2 py-0.5 border border-[#111111] shadow-[1px_1px_0px_0px_#111111] font-black text-[#111111]">{countdownTimer}</span>
+                </>
+              ) : (
+                <>
+                  Module ₹7,000 each · Bundle ₹21,000
+                </>
+              )}
             </p>
 
             {/* Two Side-by-Side Pricing Cards: Single Module vs Bundle */}
@@ -1956,14 +1984,18 @@ export function AppExecutive() {
 
                   <div className="flex items-baseline gap-2 mb-4">
                     <span className="font-mono font-black text-4xl text-[#111111]">
-                      ₹5,000
+                      {isEarlyBird ? '₹5,000' : '₹7,000'}
                     </span>
-                    <span className="font-mono font-bold text-slate-400 line-through text-lg">
-                      ₹7,000
-                    </span>
-                    <span className="bg-amber-100 text-amber-900 border border-amber-300 font-mono font-black text-[10px] px-1.5 py-0.5 uppercase ml-1">
-                      Save ₹2,000
-                    </span>
+                    {isEarlyBird && (
+                      <>
+                        <span className="font-mono font-bold text-slate-400 line-through text-lg">
+                          ₹7,000
+                        </span>
+                        <span className="bg-amber-100 text-amber-900 border border-amber-300 font-mono font-black text-[10px] px-1.5 py-0.5 uppercase ml-1">
+                          Save ₹2,000
+                        </span>
+                      </>
+                    )}
                   </div>
 
                   <div className="border-t-2 border-[#111111]/15 pt-5 mb-6">
@@ -1996,7 +2028,7 @@ export function AppExecutive() {
                     Reserve a module ➜
                   </button>
                   <p className="text-[11px] font-bold text-[#111111]/70 text-center mt-2.5">
-                    Buying one module? You join the same live group for that module and can add others later.
+                    Buying one module? You join the same live group for that module and can add the others later at 7k.
                   </p>
                 </div>
               </div>
@@ -2025,18 +2057,24 @@ export function AppExecutive() {
 
                   <div className="flex items-baseline gap-2 mb-2">
                     <span className="font-mono font-black text-4xl text-[#188ab2]">
-                      ₹15,000
+                      {isEarlyBird ? '₹15,000' : '₹21,000'}
                     </span>
-                    <span className="font-mono font-bold text-slate-400 line-through text-lg">
-                      ₹21,000
-                    </span>
-                    <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 font-mono font-black text-[10px] px-1.5 py-0.5 uppercase ml-1">
-                      Save ₹6,000
-                    </span>
+                    {isEarlyBird && (
+                      <>
+                        <span className="font-mono font-bold text-slate-400 line-through text-lg">
+                          ₹21,000
+                        </span>
+                        <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 font-mono font-black text-[10px] px-1.5 py-0.5 uppercase ml-1">
+                          Save ₹6,000
+                        </span>
+                      </>
+                    )}
                   </div>
 
                   <p className="text-xs font-bold text-[#111111]/85 mb-4 leading-snug">
-                    That is the price of three modules at the Diwali offer, with the Learn Module added at no cost.
+                    {isEarlyBird
+                      ? "That is the price of three modules at the Diwali offer, with the Learn Module added at no cost."
+                      : "That is the price of three modules, with the Learn Module added at no cost."}
                   </p>
 
                   <div className="border-t-2 border-[#111111]/15 pt-5 mb-6">
@@ -2128,7 +2166,7 @@ export function AppExecutive() {
               {/* Header Pill */}
               <div className="inline-block mb-4">
                 <span className="bg-white border-2 border-[#111111] px-4 py-1 font-mono font-black text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#111111] inline-block select-none">
-                  MODULAR UNBUNDLING · DIWALI OFFER
+                  {isEarlyBird ? 'MODULAR UNBUNDLING · DIWALI OFFER' : 'MODULAR ENROLLMENT · PM-X ACCELERATOR'}
                 </span>
               </div>
 
@@ -2142,7 +2180,9 @@ export function AppExecutive() {
 
               {/* Subtitle */}
               <p className="text-xs sm:text-sm font-semibold text-[#111111]/80 max-w-xl mx-auto mb-10 leading-relaxed">
-                Diwali Offer: ₹5,000 each (regular ₹7,000). Groups of 10–20. PM Gym and class recordings included, no certificate.
+                {isEarlyBird
+                  ? 'Diwali Offer: ₹5,000 each (regular ₹7,000). Groups of 8–10. PM Gym and class recordings included, no certificate.'
+                  : 'Module ₹7,000 each. Groups of 8–10. PM Gym and class recordings included, no certificate.'}
               </p>
 
               {/* Three Modular Options Side-by-Side */}
@@ -2167,7 +2207,7 @@ export function AppExecutive() {
                     </div>
 
                     <div className="font-mono font-black text-2xl text-[#188ab2] mb-2">
-                      ₹5,000
+                      {isEarlyBird ? '₹5,000' : '₹7,000'}
                     </div>
 
                     <p className="text-xs font-medium text-[#111111]/80 leading-relaxed">
@@ -2196,7 +2236,7 @@ export function AppExecutive() {
                     </div>
 
                     <div className="font-mono font-black text-2xl text-[#188ab2] mb-2">
-                      ₹5,000
+                      {isEarlyBird ? '₹5,000' : '₹7,000'}
                     </div>
 
                     <p className="text-xs font-medium text-[#111111]/80 leading-relaxed">
@@ -2225,7 +2265,7 @@ export function AppExecutive() {
                     </div>
 
                     <div className="font-mono font-black text-2xl text-[#188ab2] mb-2">
-                      ₹5,000
+                      {isEarlyBird ? '₹5,000' : '₹7,000'}
                     </div>
 
                     <p className="text-xs font-medium text-[#111111]/80 leading-relaxed">
@@ -2432,7 +2472,7 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 16. QUESTIONS, ANSWERED (The 8 FAQs from Attached HTML) */}
+        {/* 16. QUESTIONS, ANSWERED (11 Rewritten FAQs) */}
         <section id="faq" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-4xl">
             
@@ -2449,36 +2489,50 @@ export function AppExecutive() {
             <div className="border-t border-b border-[#111111]/30 divide-y divide-[#111111]/30 text-left bg-transparent">
               {[
                 {
-                  q: "Can I do this with a full-time job?",
-                  a: "Yes. Live classes are on Wednesday, Saturday and Sunday, and every class is recorded. Plan for about 6 live hours a week plus assignments. Timings are shared when you enrol."
+                  q: "Do I need an MBA, an IIT degree or a tech background?",
+                  a: "No. The Accelerator starts from your real experience and what you can show. People come from ops, QA, analytics, engineering, marketing, design and other fields."
                 },
                 {
-                  q: "I have no PM experience. Is this for me?",
-                  a: "Yes. Learn is built for beginners, and Build creates the evidence your resume is missing."
+                  q: "I’m not from tech. Is this still for me?",
+                  a: "Yes, if you have no PM title yet. Module 1 maps your current work to PM skills, whatever your field, using real job descriptions."
+                },
+                {
+                  q: "Can I do this with a full-time job?",
+                  a: "Sessions are live on Saturdays and Sundays (7:00 PM – 9:00 PM IST), with about 4–6 hours a week of project work. All live sessions are recorded and shared within hours so you never fall behind."
+                },
+                {
+                  q: "What if I miss a session?",
+                  a: "Every live session is recorded and uploaded within hours, and you can get any doubts answered directly by mentors on WhatsApp before the next session."
+                },
+                {
+                  q: "Can I buy just one module?",
+                  a: isEarlyBird
+                    ? "Yes. Each module is ₹5,000 in the Diwali offer (₹7,000 regular). The bundle is ₹15,000 for all three and adds the Learn Module free."
+                    : "Yes. Each module is ₹7,000. The bundle is ₹21,000 for all three and adds the Learn Module free."
+                },
+                {
+                  q: "Which module should I pick?",
+                  a: "If your resume gets no replies, start with Module 1. If you have nothing to show, Module 2. If you freeze in interviews, Module 3. If more than one is true, the bundle."
+                },
+                {
+                  q: "What is in the Learn Module?",
+                  a: "Recorded lectures, a question bank, case resources, company-wise resources and PM Gym. It comes free with the bundle and is not sold separately."
+                },
+                {
+                  q: "How is this different from watching videos on my own?",
+                  a: "You work live, in a group of 8–10, on your own resume, projects and answers, and you get feedback on them."
+                },
+                {
+                  q: "Who gives me feedback?",
+                  a: "Two instructors. You get group feedback in sessions and 1:1 feedback on your 2 mock interviews. Mentor support continues on WhatsApp."
                 },
                 {
                   q: "Will I get a job?",
-                  a: "We can’t promise one, and nobody honest can. You get a real project, a PM resume and LinkedIn, interview practice and a job board to apply from."
+                  a: "No guarantee, and we won’t pretend otherwise. You finish with a PM-ready resume, two portfolio projects and interview practice, and what you do with them is up to you."
                 },
                 {
-                  q: "What if I miss a class?",
-                  a: "Every live class is recorded and available to you."
-                },
-                {
-                  q: "Do PMs need to code?",
-                  a: "No. PMs need technical fluency, not coding. Week 7 covers APIs and system design."
-                },
-                {
-                  q: "How do I pay?",
-                  a: "One-time payment, GST included. No EMI."
-                },
-                {
-                  q: "What do Build or Practice buyers get?",
-                  a: "The 8 live classes for that piece, recordings, PM Gym, chat doubt support and the job board for 3 months. No certificate."
-                },
-                {
-                  q: "When does it start?",
-                  a: "Classes are Wednesday, Saturday and Sunday, starting in November. We confirm exact dates when you enrol."
+                  q: "Do I keep access afterwards?",
+                  a: "You retain lifetime access to class recordings and the Learn Module library. The PM Gym, job board access, and the WhatsApp group stay active for 3 months after the cohort ends."
                 }
               ].map((faq, idx) => {
                 const isOpen = openFaq === idx;
@@ -2512,16 +2566,20 @@ export function AppExecutive() {
         </section>
 
         {/* 17. FINAL CONVERSION CARD (From Attached HTML) */}
-        <section className="py-20 bg-white border-b-2 border-[#111111]">
+        <section id="final-cta" className="py-20 bg-white border-b-2 border-[#111111] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-4xl text-center">
             
             <div className="bg-[#FFF3A7] border-2 border-[#111111] p-10 sm:p-14 shadow-[6px_6px_0px_0px_#111111] text-center">
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-2 leading-tight tracking-tight">
-                Your seat, your project,{' '}
-                <span className="underline decoration-[#188ab2] decoration-[4px]">your price</span>
+              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 leading-tight tracking-tight">
+                Switching into PM without a PM title?{' '}
+                <span className="underline decoration-[#188ab2] decoration-[4px]">Build the proof with us.</span>
               </h2>
               <p className="text-sm sm:text-base font-black text-[#111111] mb-8 font-mono">
-                🪔 Diwali Offer: Modules ₹5,000 · Bundle ₹15,000 (Learn Module Free) · Ends in {countdownTimer}
+                {isEarlyBird ? (
+                  <>🪔 Diwali Offer: Modules ₹5,000 (regular ₹7,000) · Bundle ₹15,000 with Learn Module Free · Ends in {countdownTimer}</>
+                ) : (
+                  <>Module ₹7,000 each · Bundle ₹21,000 · Starts 23 Nov</>
+                )}
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
@@ -2529,7 +2587,7 @@ export function AppExecutive() {
                   onClick={handleMainEnroll}
                   className="w-full sm:w-auto px-10 py-5 font-black text-base sm:text-lg uppercase border-2 border-[#111111] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#111111] transition-all cursor-pointer"
                 >
-                  Reserve my seat for ₹15,000 (Diwali Offer) ➜
+                  {isEarlyBird ? 'Reserve the bundle for ₹15,000 ➜' : 'Reserve the bundle for ₹21,000 ➜'}
                 </button>
                 <a
                   href="https://wa.me/message/GH5C7YLAYIEHN1"
@@ -2540,6 +2598,13 @@ export function AppExecutive() {
                   <span>Talk to us on WhatsApp</span>
                 </a>
               </div>
+
+              {/* Line under the buttons */}
+              <p className="text-xs sm:text-sm font-extrabold text-[#111111]/85 mt-6 max-w-xl mx-auto">
+                {isEarlyBird
+                  ? 'Modules from ₹5,000 · Bundle ₹15,000 with the Learn Module free · No job guarantee, just the work that gets you ready.'
+                  : 'Module ₹7,000 each · Bundle ₹21,000 · No job guarantee, just the work that gets you ready.'}
+              </p>
 
               <div className="mt-8 pt-6 border-t-2 border-[#111111]/20">
                 <button
