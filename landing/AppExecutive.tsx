@@ -630,10 +630,10 @@ export function AppExecutive() {
                 VERIFIABLE CAREER SWITCHES
               </span>
               <h2 className="text-3xl md:text-5xl font-black text-[#111111] tracking-tight mb-3">
-                Hear it from people who started where you are
+                Testimonials
               </h2>
               <p className="text-base sm:text-lg font-bold text-[#111111]/80 max-w-xl mx-auto">
-                Three people with no PM title when they began. In their own words.
+                Hear it from people who started where you are. Three people with no PM title when they began. In their own words.
               </p>
             </div>
 
