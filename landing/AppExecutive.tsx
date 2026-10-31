@@ -369,25 +369,13 @@ export function AppExecutive() {
             {/* Hero Image with Statement (Blue Image) */}
             <div className="max-w-4xl mx-auto mb-14 text-left">
               <div className="bg-white border-2 sm:border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_#111111] overflow-hidden">
-                <div className="w-full aspect-[16/9] sm:aspect-[16/8] overflow-hidden bg-[#188ab2]">
+                <div className="w-full aspect-[1024/536] overflow-hidden bg-[#188ab2]">
                   <img
                     src="/hero-slide-1.webp"
                     alt="PM Switch Story: 'I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation.'"
                     className="w-full h-full object-cover"
                     loading="eager"
                   />
-                </div>
-                <div className="p-4 sm:p-5 bg-white border-t-2 border-[#111111] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs sm:text-sm font-bold text-[#111111]">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="bg-[#FFF3A7] border border-[#111111] px-2 py-0.5 text-[10px] font-black uppercase shadow-[1px_1px_0px_0px_#111111]">
-                      FOUNDER &amp; PM MENTOR
-                    </span>
-                    <span className="font-black text-[#111111]">Sanket Katore</span>
-                    <span className="text-[#188ab2] font-black uppercase text-xs">Senior PM, Mastercard</span>
-                  </div>
-                  <div className="text-[#111111]/75 font-mono text-xs">
-                    Ex-Software Engineer · IIT Roorkee · ISB
-                  </div>
                 </div>
               </div>
             </div>
