@@ -28,9 +28,10 @@ export function AppExecutive() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [batchConfig, setBatchConfig] = useState<BatchConfig>(() => getStoredBatchConfig());
 
-  // Interactive modular checkboxes from attached HTML
-  const [selectedBuild, setSelectedBuild] = useState(false);
-  const [selectedPractice, setSelectedPractice] = useState(false);
+  // Interactive modular checkboxes for Modules 1, 2, 3 + 1:1 mentoring
+  const [selectedMod1, setSelectedMod1] = useState(false);
+  const [selectedMod2, setSelectedMod2] = useState(false);
+  const [selectedMod3, setSelectedMod3] = useState(false);
   const [selected1to1, setSelected1to1] = useState(false);
 
   // Diwali offer countdown state
@@ -131,12 +132,13 @@ export function AppExecutive() {
     }
   };
 
-  // Modular selection calculation
-  const modularItemCount = (selectedBuild ? 1 : 0) + (selectedPractice ? 1 : 0);
+  // Modular selection calculation (Diwali Offer: ₹5,000 per live module)
+  const modularItemCount = (selectedMod1 ? 1 : 0) + (selectedMod2 ? 1 : 0) + (selectedMod3 ? 1 : 0);
   const modularTotal = (modularItemCount * 5000) + (selected1to1 ? 5000 : 0);
   const modularLabel = [
-    selectedBuild ? 'Build' : '',
-    selectedPractice ? 'Practice' : '',
+    selectedMod1 ? 'Evidence Builder (Mod 1)' : '',
+    selectedMod2 ? 'Profile Enhancer (Mod 2)' : '',
+    selectedMod3 ? 'Interview Practice (Mod 3)' : '',
     selected1to1 ? '1:1 Mentoring' : ''
   ].filter(Boolean).join(' + ');
 
@@ -195,9 +197,12 @@ export function AppExecutive() {
           </Link>
 
           {/* Clean Desktop Navigation Anchors */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
+          <nav className="hidden md:flex items-center gap-7 text-sm font-extrabold text-[#111111]">
             <button onClick={() => scrollToSection('system')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Cohort
+            </button>
+            <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
+              How it works
             </button>
             <button onClick={() => scrollToSection('curriculum')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Curriculum
@@ -243,7 +248,10 @@ export function AppExecutive() {
         {isMenuOpen && (
           <div className="md:hidden w-full bg-[#FDFCF7] border-b-2 border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
             <button onClick={() => scrollToSection('system')} className="text-left font-black text-lg py-2 border-b-2 border-[#111111]/20">
-              Cohort
+              Cohort Modules
+            </button>
+            <button onClick={() => scrollToSection('how-it-works')} className="text-left font-black text-lg py-2 border-b-2 border-[#111111]/20">
+              How It Works
             </button>
             <button onClick={() => scrollToSection('curriculum')} className="text-left font-black text-lg py-2 border-b-2 border-[#111111]/20">
               Curriculum (8 Weeks)
@@ -866,127 +874,357 @@ export function AppExecutive() {
             </div>
 
             {/* Clean, Uniform 4-Column Grid with Equal Height and Perfect Alignment */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch mb-16">
               
-              {/* Pillar 01: LEARN */}
-              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full">
+              {/* Module 1: Evidence Builder */}
+              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_#111111] transition-all">
                 <div>
                   <div className="p-3 bg-[#188ab2] text-white border-b-[3px] border-[#111111] font-mono font-black flex items-center justify-between">
-                    <span className="text-base tracking-wider">01</span>
-                    <div className="flex items-center gap-1.5">
-                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-1.5 py-0.5 text-[10px] font-black uppercase">
-                        Start here
-                      </span>
-                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-1.5 py-0.5 text-[10px] font-black">
-                        03 items
-                      </span>
+                    <span className="text-xs sm:text-sm tracking-wider">MODULE 01</span>
+                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 text-[10px] font-black uppercase">
+                      5 live sessions
+                    </span>
+                  </div>
+                  <div className="p-5 pb-2">
+                    <h3 className="font-mono font-black text-xl text-[#111111] tracking-tight mb-1">
+                      Evidence Builder
+                    </h3>
+                    <p className="text-xs font-bold text-[#188ab2] leading-snug">
+                      Build proof you can show.
+                    </p>
+                  </div>
+                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#111111]">
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>PRD writing</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Product teardown</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Market and user research</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>A data analysis project</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Prototype building</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="m-4 mt-auto border-2 border-[#111111] bg-[#e6f1fb] p-3 text-left shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                  <div className="font-mono font-black text-[10px] uppercase text-[#188ab2] mb-0.5">
+                    5 LIVE SESSIONS · YOU LEAVE WITH:
+                  </div>
+                  <p className="text-xs font-black text-[#111111] leading-tight">
+                    2 portfolio projects you can show and talk through in interviews.
+                  </p>
+                </div>
+              </div>
+
+              {/* Module 2: Profile Enhancer */}
+              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="p-3 bg-[#188ab2] text-white border-b-[3px] border-[#111111] font-mono font-black flex items-center justify-between">
+                    <span className="text-xs sm:text-sm tracking-wider">MODULE 02</span>
+                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 text-[10px] font-black uppercase">
+                      5 live sessions
+                    </span>
+                  </div>
+                  <div className="p-5 pb-2">
+                    <h3 className="font-mono font-black text-xl text-[#111111] tracking-tight mb-1">
+                      Profile Enhancer
+                    </h3>
+                    <p className="text-xs font-bold text-[#188ab2] leading-snug">
+                      Make your experience read like a PM’s.
+                    </p>
+                  </div>
+                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#111111]">
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Map the work you already do to PM skills</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Rewrite your resume and overhaul your LinkedIn</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Build your PM story</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Plan your applications around your profile</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Get access to stepsmart job board [Daily most recent PM jobs across all the portals at your disposle]</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="m-4 mt-auto border-2 border-[#111111] bg-[#fef3c7] p-3 text-left shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                  <div className="font-mono font-black text-[10px] uppercase text-amber-900 mb-0.5">
+                    5 LIVE SESSIONS · YOU LEAVE WITH:
+                  </div>
+                  <p className="text-xs font-black text-[#111111] leading-tight">
+                    A PM-ready resume, an updated LinkedIn and a target list of companies you should apply for.
+                  </p>
+                </div>
+              </div>
+
+              {/* Module 3: Interview Practice */}
+              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="p-3 bg-[#188ab2] text-white border-b-[3px] border-[#111111] font-mono font-black flex items-center justify-between">
+                    <span className="text-xs sm:text-sm tracking-wider">MODULE 03</span>
+                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 text-[10px] font-black uppercase">
+                      8 sessions + 2 mocks
+                    </span>
+                  </div>
+                  <div className="p-5 pb-2">
+                    <h3 className="font-mono font-black text-xl text-[#111111] tracking-tight mb-1">
+                      Interview Practice
+                    </h3>
+                    <p className="text-xs font-bold text-[#188ab2] leading-snug">
+                      Practise out loud and get feedback.
+                    </p>
+                  </div>
+                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#111111]">
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Analytics</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Product sense</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Product strategy</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Behavioural rounds</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                      <span>Root cause analysis (RCA)</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="m-4 mt-auto border-2 border-[#111111] bg-[#D1FAE5] p-3 text-left shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                  <div className="font-mono font-black text-[10px] uppercase text-emerald-900 mb-0.5">
+                    8 LIVE SESSIONS + 2 MOCKS · YOU LEAVE WITH:
+                  </div>
+                  <p className="text-xs font-black text-[#111111] leading-tight">
+                    1:1 feedback from your 2 live mock interviews.
+                  </p>
+                </div>
+              </div>
+
+              {/* Learn Module (comes free with the bundle) */}
+              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="p-3 bg-[#111111] text-white border-b-[3px] border-[#111111] font-mono font-black flex items-center justify-between">
+                    <span className="text-xs sm:text-sm tracking-wider">LEARN MODULE</span>
+                    <span className="bg-emerald-300 text-emerald-950 border-2 border-[#111111] px-2 py-0.5 text-[10px] font-black uppercase">
+                      Free with bundle
+                    </span>
+                  </div>
+                  <div className="p-5 pb-2">
+                    <h3 className="font-mono font-black text-xl text-[#111111] tracking-tight mb-1">
+                      Learn Module
+                    </h3>
+                    <p className="text-xs font-bold text-[#111111]/80 leading-snug">
+                      Your self-paced library behind the three live modules.
+                    </p>
+                  </div>
+                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#111111]">
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-700 font-black mt-0.5">•</span>
+                      <span>Recorded lectures</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-700 font-black mt-0.5">•</span>
+                      <span>Question bank</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-700 font-black mt-0.5">•</span>
+                      <span>Case Resources</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-700 font-black mt-0.5">•</span>
+                      <span>Company-wise resources</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-700 font-black mt-0.5">•</span>
+                      <span>PM Gym</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="m-4 mt-auto border-2 border-[#111111] bg-[#FFF3A7] p-3 text-left shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                  <div className="font-mono font-black text-[10px] uppercase text-[#111111] mb-0.5">
+                    SELF-PACED LIBRARY · NOT SOLD SEPARATELY
+                  </div>
+                  <p className="text-xs font-black text-[#111111] leading-tight">
+                    Recorded lectures · Question bank · Case Resources · Company-wise resources · PM Gym. Not sold separately.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* NEW BLOCK: HOW THE MODULES FIT TOGETHER (SIMPLE GRAPHIC) */}
+            <div className="bg-white border-2 sm:border-[3px] border-[#111111] p-6 sm:p-10 shadow-[6px_6px_0px_0px_#111111] text-left max-w-5xl mx-auto">
+              
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block select-none">
+                  COHORT TIMELINE · STARTS 23 NOV
+                </span>
+                <span className="font-mono font-black text-xs uppercase text-[#188ab2] bg-[#e0f2fe] border border-[#111111] px-2.5 py-1 shadow-[1px_1px_0px_0px_#111111]">
+                  10 Weeks · 2 Parallel Tracks
+                </span>
+              </div>
+
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#111111] tracking-tight mb-3">
+                Your path through the Accelerator
+              </h3>
+              
+              <p className="text-xs sm:text-sm md:text-base font-bold text-[#111111]/85 max-w-3xl mb-8 leading-relaxed">
+                Modules 1 and 2 run one after the other: first your evident and then your resume and story. Module 3 runs alongside them, so you practise interviews while you build. Each module takes 5–8 weeks; the whole programme takes about 10. Mentor support continues on WhatsApp throughout.
+              </p>
+
+              {/* TIMELINE GRAPHIC CONTAINER */}
+              <div className="border-2 sm:border-[3px] border-[#111111] bg-slate-50 p-4 sm:p-6 shadow-[4px_4px_0px_0px_#111111] overflow-x-auto">
+                <div className="min-w-[620px]">
+                  
+                  {/* Header: Weeks 1 to 10 */}
+                  <div className="grid grid-cols-10 gap-1 mb-3 text-center">
+                    {Array.from({ length: 10 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`py-1 text-[11px] font-mono font-black border border-[#111111] ${
+                          i < 5 ? 'bg-sky-100 text-[#188ab2]' : 'bg-amber-100 text-amber-900'
+                        }`}
+                      >
+                        WK {i + 1}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Lane A: Module 1 then Module 2 */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between text-xs font-mono font-black uppercase text-[#111111] mb-1.5">
+                      <span>LANE A: BUILD PROOF & PROFILE (SEQUENTIAL)</span>
+                      <span className="text-[#188ab2]">Weeks 1–10</span>
+                    </div>
+                    <div className="grid grid-cols-10 gap-1.5 h-16">
+                      {/* Module 1: Weeks 1–5 */}
+                      <div className="col-span-5 bg-[#e0f2fe] border-2 border-[#111111] p-2.5 flex flex-col justify-between shadow-[2px_2px_0px_0px_#111111]">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono font-black text-xs text-[#188ab2] uppercase">
+                            MODULE 1: EVIDENCE BUILDER
+                          </span>
+                          <span className="bg-white border border-[#111111] font-mono font-black text-[10px] px-1.5 py-0.2">
+                            5 live sessions
+                          </span>
+                        </div>
+                        <p className="text-[11px] font-bold text-[#111111]/85 truncate">
+                          Teardowns, PRD writing, user research, data project & prototype
+                        </p>
+                      </div>
+
+                      {/* Module 2: Weeks 6–10 */}
+                      <div className="col-span-5 bg-[#fef3c7] border-2 border-[#111111] p-2.5 flex flex-col justify-between shadow-[2px_2px_0px_0px_#111111]">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono font-black text-xs text-amber-900 uppercase">
+                            MODULE 2: PROFILE ENHANCER
+                          </span>
+                          <span className="bg-white border border-[#111111] font-mono font-black text-[10px] px-1.5 py-0.2">
+                            5 live sessions
+                          </span>
+                        </div>
+                        <p className="text-[11px] font-bold text-[#111111]/85 truncate">
+                          PM resume rewrite, LinkedIn overhaul, story & StepSmart job board
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <h3 className="font-mono font-black text-xl text-[#111111] p-4 pb-2 tracking-wider">LEARN</h3>
-                  <ul className="p-4 pt-0 space-y-3 font-bold text-xs sm:text-sm text-[#111111] flex-1">
-                    <li className="pt-2 border-t-2 border-slate-100">
-                      <b className="text-[#111111] text-sm block mb-0.5 font-black">Pre-recorded PM modules</b>
-                      Core concepts and frameworks, at your pace.
-                    </li>
-                    <li className="pt-2 border-t-2 border-slate-100">
-                      <b className="text-[#111111] text-sm block mb-0.5 font-black">8 live Learn classes</b>
-                      Wednesday, 16 live hours.
-                    </li>
-                    <li className="pt-2 border-t-2 border-slate-100">
-                      <b className="text-[#111111] text-sm block mb-0.5 font-black">Recording of every class</b>
-                      Miss one, catch up within hours.
-                    </li>
-                  </ul>
-                </div>
-                <div className="m-4 mt-auto border-[3px] border-[#111111] bg-[#e6f1fb] p-2.5 text-center font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] text-[#111111]">
-                  Wednesday Live · 16 hrs
+
+                  {/* Lane B: Module 3 with Mock Dots */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between text-xs font-mono font-black uppercase text-[#111111] mb-1.5">
+                      <span>LANE B: INTERVIEW PRACTICE (CONCURRENT RUN)</span>
+                      <span className="text-emerald-800">8 Live Sessions + 2 Live Mocks</span>
+                    </div>
+                    
+                    <div className="relative bg-[#D1FAE5] border-2 border-[#111111] p-3 shadow-[2px_2px_0px_0px_#111111]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-mono font-black text-xs text-emerald-950 uppercase">
+                          MODULE 3: INTERVIEW PRACTICE (WEEKS 1–10)
+                        </span>
+                        <span className="bg-white border border-[#111111] font-mono font-black text-[10px] px-1.5 py-0.2 text-emerald-900">
+                          8 live sessions + 2 live mock interviews
+                        </span>
+                      </div>
+                      
+                      <p className="text-[11px] font-bold text-[#111111]/80 mb-3">
+                        Practise product sense, analytics, RCA, strategy & behavioral rounds out loud every week.
+                      </p>
+
+                      {/* Timeline dot tracks inside Lane B */}
+                      <div className="relative h-7 bg-white/80 border border-[#111111] flex items-center px-4">
+                        <div className="w-full h-1 bg-emerald-300 rounded" />
+                        
+                        {/* Dot 1: Week 5 Mock */}
+                        <div className="absolute left-[48%] -translate-x-1/2 flex items-center gap-1 bg-[#111111] text-white px-2 py-0.5 border border-white font-mono font-black text-[10px] shadow-[1px_1px_0px_0px_#111111]">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
+                          <span>● MOCK 1 (1:1)</span>
+                        </div>
+
+                        {/* Dot 2: Week 9/10 Mock */}
+                        <div className="absolute right-[4%] flex items-center gap-1 bg-[#188ab2] text-white px-2 py-0.5 border border-white font-mono font-black text-[10px] shadow-[1px_1px_0px_0px_#111111]">
+                          <span className="w-2 h-2 rounded-full bg-[#FFF3A7] inline-block" />
+                          <span>● MOCK 2 (1:1)</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WhatsApp Support & Learn Library Underpinning */}
+                  <div className="bg-[#FFF3A7] border-2 border-[#111111] p-2.5 flex items-center justify-between shadow-[2px_2px_0px_0px_#111111]">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base">💬</span>
+                      <span className="font-mono font-black text-xs text-[#111111] uppercase">
+                        Continuous Mentor Support on WhatsApp + Daily PM Gym + Learn Library
+                      </span>
+                    </div>
+                    <span className="font-mono font-bold text-[10px] text-[#111111]/70 uppercase">
+                      Active throughout all 10 weeks
+                    </span>
+                  </div>
+
                 </div>
               </div>
 
-              {/* Pillar 02: BUILD */}
-              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full">
-                <div>
-                  <div className="p-3 bg-[#188ab2] text-white border-b-[3px] border-[#111111] font-mono font-black flex items-center justify-between">
-                    <span className="text-base tracking-wider">02</span>
-                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-1.5 py-0.5 text-[10px] font-black">
-                      03 items
-                    </span>
-                  </div>
-                  <h3 className="font-mono font-black text-xl text-[#111111] p-4 pb-2 tracking-wider">BUILD</h3>
-                  <ul className="p-4 pt-0 space-y-3 font-bold text-xs sm:text-sm text-[#111111] flex-1">
-                    <li className="pt-2 border-t-2 border-slate-100">
-                      <b className="text-[#111111] text-sm block mb-0.5 font-black">8 live Build classes</b>
-                      Sunday, 16 live hours.
-                    </li>
-                    <li className="pt-2 border-t-2 border-slate-100">
-                      <b className="text-[#111111] text-sm block mb-0.5 font-black">One real project</b>
-                      Teardown to prototype, with mentor review.
-                    </li>
-                    <li className="pt-2 border-t-2 border-slate-100">
-                      <b className="text-[#111111] text-sm block mb-0.5 font-black">Graded assignments</b>
-                      Real deliverables, rubric feedback.
-                    </li>
-                  </ul>
+              {/* Start Date Confirmation Banner */}
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 pt-4 border-t-2 border-[#111111]/20">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-xs sm:text-sm font-extrabold text-[#111111]">
+                    Cohort Starts <span className="bg-[#FFF3A7] px-1.5 py-0.5 border border-[#111111] font-mono font-black">23 November 2026</span> · Strictly capped to 10–20 seats
+                  </span>
                 </div>
-                <div className="m-4 mt-auto border-[3px] border-[#111111] bg-[#e6f1fb] p-2.5 text-center font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] text-[#111111]">
-                  Sunday Live · 16 hrs
-                </div>
-              </div>
-
-              {/* Pillar 03: PRACTISE */}
-              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full">
-                <div>
-                  <div className="p-3 bg-[#188ab2] text-white border-b-[3px] border-[#111111] font-mono font-black flex items-center justify-between">
-                    <span className="text-base tracking-wider">03</span>
-                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-1.5 py-0.5 text-[10px] font-black">
-                      03 items
-                    </span>
-                  </div>
-                  <h3 className="font-mono font-black text-xl text-[#111111] p-4 pb-2 tracking-wider">PRACTISE</h3>
-                  <ul className="p-4 pt-0 space-y-3 font-bold text-xs sm:text-sm text-[#111111] flex-1">
-                    <li className="pt-2 border-t-2 border-slate-100">
-                      <b className="text-[#111111] text-sm block mb-0.5 font-black">8 live Practice classes</b>
-                      Saturday, 16 live hours, with mock rounds.
-                    </li>
-                    <li className="pt-2 border-t-2 border-slate-100">
-                      <b className="text-[#111111] text-sm block mb-0.5 font-black">Interview question banks</b>
-                      Product design, RCA, metrics, behavioural.
-                    </li>
-                    <li className="pt-2 border-t-2 border-slate-100">
-                      <b className="text-[#111111] text-sm block mb-0.5 font-black">Daily PM Gym</b>
-                      A bite-sized product question every day.
-                    </li>
-                  </ul>
-                </div>
-                <div className="m-4 mt-auto border-[3px] border-[#111111] bg-[#e6f1fb] p-2.5 text-center font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] text-[#111111]">
-                  Saturday Live · 16 hrs
-                </div>
-              </div>
-
-              {/* Pillar 04: CAREER */}
-              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full">
-                <div>
-                  <div className="p-3 bg-[#188ab2] text-white border-b-[3px] border-[#111111] font-mono font-black flex items-center justify-between">
-                    <span className="text-base tracking-wider">04</span>
-                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-1.5 py-0.5 text-[10px] font-black">
-                      02 items
-                    </span>
-                  </div>
-                  <h3 className="font-mono font-black text-xl text-[#111111] p-4 pb-2 tracking-wider">CAREER</h3>
-                  <ul className="p-4 pt-0 space-y-3 font-bold text-xs sm:text-sm text-[#111111] flex-1">
-                    <li className="pt-2 border-t-2 border-slate-100">
-                      <b className="text-[#111111] text-sm block mb-0.5 font-black">Job board access</b>
-                      Fresh PM roles, free for 3 months after cohort.
-                    </li>
-                    <li className="pt-2 border-t-2 border-slate-100">
-                      <b className="text-[#111111] text-sm block mb-0.5 font-black">Completion certificate</b>
-                      For verified attendance and assignment scores.
-                    </li>
-                  </ul>
-                </div>
-                <div className="m-4 mt-auto border-[3px] border-[#111111] bg-[#C6F6D5] p-2.5 text-center font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] text-green-950">
-                  Transition-Ready
-                </div>
+                <button
+                  onClick={() => scrollToSection('pricing')}
+                  className="text-xs font-black text-[#188ab2] hover:underline uppercase font-mono cursor-pointer"
+                >
+                  Reserve Your Seat for ₹15,000 ➜
+                </button>
               </div>
 
             </div>
@@ -994,13 +1232,125 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 7. WHAT YOU'LL WALK AWAY WITH */}
-        <section className="py-20 bg-white border-b-2 border-[#111111]">
+        {/* 7. HOW IT WORKS */}
+        <section id="how-it-works" className="py-20 bg-white border-b-2 border-[#111111] scroll-mt-20">
+          <div className="container mx-auto px-6 max-w-6xl text-left">
+            
+            <div className="text-center mb-14">
+              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
+                HOW IT WORKS
+              </span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] tracking-tight mb-3">
+                Built around a{' '}
+                <span className="inline-block bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_#111111]">
+                  full-time job
+                </span>
+              </h2>
+              <p className="text-sm sm:text-base font-bold text-[#111111]/80 max-w-xl mx-auto">
+                No quitting your job. Everything is designed around evening and weekend momentum.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              
+              {/* Point 1 */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">01 // DURATION</div>
+                  <h3 className="text-lg font-black text-[#111111] mb-2">About 10 weeks</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                    About 10 weeks. Modules run 5–8 weeks each.
+                  </p>
+                </div>
+              </div>
+
+              {/* Point 2 */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">02 // LAUNCH DATE</div>
+                  <h3 className="text-lg font-black text-[#111111] mb-2">Starts 23 Nov</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                    Starts 23 Nov. Intake strictly capped for the upcoming cohort.
+                  </p>
+                </div>
+              </div>
+
+              {/* Point 3 */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">03 // BATCH SIZE</div>
+                  <h3 className="text-lg font-black text-[#111111] mb-2">Groups of 10–20</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                    Live, in groups of 10–20. Everyone gets feedback, not just the loudest voice.
+                  </p>
+                </div>
+              </div>
+
+              {/* Point 4 */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">04 // INSTRUCTORS</div>
+                  <h3 className="text-lg font-black text-[#111111] mb-2">Two working PM instructors</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                    Two instructors, both working in product.
+                  </p>
+                </div>
+              </div>
+
+              {/* Point 5 */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">05 // FEEDBACK</div>
+                  <h3 className="text-lg font-black text-[#111111] mb-2">1:1 feedback on 2 mock interviews</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                    1:1 feedback on your 2 mock interviews. Everything else is live group work.
+                  </p>
+                </div>
+              </div>
+
+              {/* Point 6 */}
+              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">06 // DIRECT MENTORSHIP</div>
+                  <h3 className="text-lg font-black text-[#111111] mb-2">Mentor support on WhatsApp</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                    Mentor support on WhatsApp between sessions.
+                  </p>
+                </div>
+              </div>
+
+              {/* Point 7 */}
+              <div className="bg-[#FFF3A7] border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] md:col-span-2 lg:col-span-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <div className="font-mono font-black text-xs text-[#111111] uppercase mb-1">07 // WEEKEND SCHEDULE</div>
+                  <h3 className="text-xl font-black text-[#111111] mb-1">Saturday & Sunday live sessions</h3>
+                  <p className="text-xs sm:text-sm font-bold text-[#111111]/85">
+                    Saturday & Sunday live sessions (4–6 hours/week, designed for working professionals).
+                  </p>
+                </div>
+                <button
+                  onClick={() => scrollToSection('pricing')}
+                  className="px-6 py-3 bg-[#188ab2] text-white border-2 border-[#111111] font-black text-xs sm:text-sm uppercase shadow-[3px_3px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#111111] transition-all shrink-0 cursor-pointer"
+                >
+                  Reserve Your Seat ➜
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        {/* 8. WHAT YOU'LL WALK AWAY WITH (OUTCOMES) */}
+        <section id="outcomes" className="py-20 bg-white border-b-2 border-[#111111] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
               
               {/* Left Column: Pure Floating Title Anchor */}
               <div className="lg:col-span-5 lg:sticky lg:top-36 text-left">
+                <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
+                  OUTCOMES
+                </span>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] tracking-tight leading-[1.15]">
                   What you’ll{' '}
                   <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
@@ -1057,6 +1407,84 @@ export function AppExecutive() {
               </div>
 
             </div>
+          </div>
+        </section>
+
+        {/* 9. IS PM-X FOR YOU? (WHO IT IS FOR) */}
+        <section id="who-it-is-for" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
+          <div className="container mx-auto px-6 max-w-5xl">
+            
+            {/* Centered Heading */}
+            <div className="text-center mb-16">
+              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
+                WHO IT IS FOR
+              </span>
+              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
+                Is PM-X{' '}
+                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
+                  for you?
+                </span>
+              </h2>
+            </div>
+
+            {/* Seamless Side-by-Side Comparison Container */}
+            <div className="relative max-w-5xl mx-auto text-left">
+              {/* Soft neutral background card for the left column */}
+              <div className="hidden md:block absolute top-0 bottom-0 left-0 w-1/2 bg-white rounded-2xl shadow-sm border border-black/5 pointer-events-none" />
+
+              <div className="relative z-10 py-4 sm:py-6">
+                {/* Header Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 items-center mb-2">
+                  <div className="py-4 sm:py-5 px-6 sm:px-10 border-b border-[#111111]/10 flex items-center justify-between">
+                    <span className="text-xs font-mono font-black tracking-widest text-[#111111] uppercase">
+                      THIS IS FOR YOU IF
+                    </span>
+                    <span className="bg-[#FFF3A7] text-[#111111] text-[10px] font-mono font-black px-2 py-0.5 uppercase tracking-wider border border-[#111111]/20">
+                      IDEAL FIT
+                    </span>
+                  </div>
+                  <div className="py-4 sm:py-5 px-4 sm:px-8 border-b border-[#111111]/15">
+                    <span className="text-xs font-mono font-black tracking-widest text-[#111111]/65 uppercase block">
+                      THIS ISN’T FOR YOU IF
+                    </span>
+                  </div>
+                </div>
+
+                {/* Paired Rows: Generous Vertical Spacing & Guaranteed Horizontal Alignment */}
+                {[
+                  {
+                    left: "You want to move into product management",
+                    right: "You’re looking for a shortcut"
+                  },
+                  {
+                    left: "You want mentorship, not just content",
+                    right: "You want passive learning"
+                  },
+                  {
+                    left: "You’re ready to learn by doing",
+                    right: "You won’t do the assignments"
+                  },
+                  {
+                    left: "You can give about 6 live hours a week plus assignments",
+                    right: "You want a placement guarantee. We don’t offer one, just structured preparation."
+                  }
+                ].map((item, idx, arr) => (
+                  <div key={idx} className="grid grid-cols-1 md:grid-cols-2 items-start">
+                    {/* Left Column (Inside Soft Card, Generous Spacing) */}
+                    <div className="py-6 sm:py-7 px-6 sm:px-10 text-sm sm:text-base font-bold text-[#111111] flex items-start gap-4">
+                      <span className="text-[#188ab2] font-black text-base shrink-0 mt-0.5">✓</span>
+                      <span>{item.left}</span>
+                    </div>
+                    {/* Right Column (Canvas with Hairline Divider, Generous Spacing) */}
+                    <div className={`py-6 sm:py-7 px-4 sm:px-8 text-sm sm:text-base font-bold text-[#111111]/70 flex items-start gap-4 ${idx !== arr.length - 1 ? 'border-b border-[#111111]/10' : ''}`}>
+                      <span className="text-red-500 font-black text-base shrink-0 mt-0.5">✕</span>
+                      <span>{item.right}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
         </section>
 
@@ -1459,81 +1887,6 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 12. IS PM-X FOR YOU? (Seamless Paired-Row Comparison - Guaranteed Side-by-Side Alignment) */}
-        <section className="py-20 bg-slate-50 border-b-2 border-[#111111]">
-          <div className="container mx-auto px-6 max-w-5xl">
-            
-            {/* Centered Heading */}
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
-                Is PM-X{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
-                  for you?
-                </span>
-              </h2>
-            </div>
-
-            {/* Seamless Side-by-Side Comparison Container */}
-            <div className="relative max-w-5xl mx-auto text-left">
-              {/* Soft neutral background card for the left column */}
-              <div className="hidden md:block absolute top-0 bottom-0 left-0 w-1/2 bg-white rounded-2xl shadow-sm border border-black/5 pointer-events-none" />
-
-              <div className="relative z-10 py-4 sm:py-6">
-                {/* Header Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 items-center mb-2">
-                  <div className="py-4 sm:py-5 px-6 sm:px-10 border-b border-[#111111]/10 flex items-center justify-between">
-                    <span className="text-xs font-mono font-black tracking-widest text-[#111111] uppercase">
-                      THIS IS FOR YOU IF
-                    </span>
-                    <span className="bg-[#FFF3A7] text-[#111111] text-[10px] font-mono font-black px-2 py-0.5 uppercase tracking-wider border border-[#111111]/20">
-                      IDEAL FIT
-                    </span>
-                  </div>
-                  <div className="py-4 sm:py-5 px-4 sm:px-8 border-b border-[#111111]/15">
-                    <span className="text-xs font-mono font-black tracking-widest text-[#111111]/65 uppercase block">
-                      THIS ISN’T FOR YOU IF
-                    </span>
-                  </div>
-                </div>
-
-                {/* Paired Rows: Generous Vertical Spacing & Guaranteed Horizontal Alignment */}
-                {[
-                  {
-                    left: "You want to move into product management",
-                    right: "You’re looking for a shortcut"
-                  },
-                  {
-                    left: "You want mentorship, not just content",
-                    right: "You want passive learning"
-                  },
-                  {
-                    left: "You’re ready to learn by doing",
-                    right: "You won’t do the assignments"
-                  },
-                  {
-                    left: "You can give about 6 live hours a week plus assignments",
-                    right: "You want a placement guarantee. We don’t offer one, just structured preparation."
-                  }
-                ].map((item, idx, arr) => (
-                  <div key={idx} className="grid grid-cols-1 md:grid-cols-2 items-start">
-                    {/* Left Column (Inside Soft Card, Generous Spacing) */}
-                    <div className="py-6 sm:py-7 px-6 sm:px-10 text-sm sm:text-base font-bold text-[#111111] flex items-start gap-4">
-                      <span className="text-[#188ab2] font-black text-base shrink-0 mt-0.5">✓</span>
-                      <span>{item.left}</span>
-                    </div>
-                    {/* Right Column (Canvas with Hairline Divider, Generous Spacing) */}
-                    <div className={`py-6 sm:py-7 px-4 sm:px-8 text-sm sm:text-base font-bold text-[#111111]/70 flex items-start gap-4 ${idx !== arr.length - 1 ? 'border-b border-[#111111]/10' : ''}`}>
-                      <span className="text-red-500 font-black text-base shrink-0 mt-0.5">✕</span>
-                      <span>{item.right}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
-        </section>
-
         {/* 13. WHAT YOU GET, STACKED (Full Cohort Pricing from Attached HTML) */}
         <section id="pricing" className="py-20 bg-white border-b-2 border-[#111111] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-4xl text-center">
@@ -1568,12 +1921,12 @@ export function AppExecutive() {
                 <div className="flex justify-between items-center p-5 sm:p-6">
                   <div>
                     <div className="flex items-center gap-2">
-                      <b className="text-[#111111] block text-base font-black">Learn (Module 1)</b>
+                      <b className="text-[#111111] block text-base font-black">Learn Module</b>
                       <span className="bg-emerald-100 text-emerald-800 border border-emerald-600 font-mono font-black text-[10px] px-2 py-0.5 uppercase">
                         FREE WITH BUNDLE
                       </span>
                     </div>
-                    <span className="text-[#111111]/75 text-xs font-medium">8 live classes (16 hrs, Wednesday), pre-recorded modules, assignments, PM Gym</span>
+                    <span className="text-[#111111]/75 text-xs font-medium">Recorded lectures, question bank, case resources, company-wise resources & PM Gym. Not sold separately.</span>
                   </div>
                   <div className="text-right">
                     <span className="font-mono font-bold text-slate-400 line-through text-xs block">₹7,000</span>
@@ -1583,8 +1936,8 @@ export function AppExecutive() {
 
                 <div className="flex justify-between items-center p-5 sm:p-6">
                   <div>
-                    <b className="text-[#111111] block text-base font-black">Build (Module 2)</b>
-                    <span className="text-[#111111]/75 text-xs font-medium">8 live classes (16 hrs, Sunday), one real project, resume and LinkedIn</span>
+                    <b className="text-[#111111] block text-base font-black">Module 1: Evidence Builder</b>
+                    <span className="text-[#111111]/75 text-xs font-medium">5 live sessions · PRD writing, product teardown, market & user research, data project, prototype building</span>
                   </div>
                   <div className="text-right">
                     <span className="font-mono font-bold text-slate-400 line-through text-xs block">₹7,000</span>
@@ -1594,8 +1947,8 @@ export function AppExecutive() {
 
                 <div className="flex justify-between items-center p-5 sm:p-6">
                   <div>
-                    <b className="text-[#111111] block text-base font-black">Practice (Module 3)</b>
-                    <span className="text-[#111111]/75 text-xs font-medium">8 live classes (16 hrs, Saturday), interview question banks, mock rounds</span>
+                    <b className="text-[#111111] block text-base font-black">Module 2: Profile Enhancer</b>
+                    <span className="text-[#111111]/75 text-xs font-medium">5 live sessions · Map work to PM skills, rewrite resume, LinkedIn overhaul, story & StepSmart job board</span>
                   </div>
                   <div className="text-right">
                     <span className="font-mono font-bold text-slate-400 line-through text-xs block">₹7,000</span>
@@ -1605,8 +1958,19 @@ export function AppExecutive() {
 
                 <div className="flex justify-between items-center p-5 sm:p-6">
                   <div>
-                    <b className="text-[#111111] block text-base font-black">Career and support</b>
-                    <span className="text-[#111111]/75 text-xs font-medium">Job board for 3 months, certificate, class recordings, chat doubt support</span>
+                    <b className="text-[#111111] block text-base font-black">Module 3: Interview Practice</b>
+                    <span className="text-[#111111]/75 text-xs font-medium">8 live sessions + 2 live mock interviews with 1:1 feedback · Analytics, product sense, strategy, RCA</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-mono font-bold text-slate-400 line-through text-xs block">₹7,000</span>
+                    <span className="font-mono font-black text-[#111111] text-base">₹5,000</span>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center p-5 sm:p-6">
+                  <div>
+                    <b className="text-[#111111] block text-base font-black">Mentor support & Community</b>
+                    <span className="text-[#111111]/75 text-xs font-medium">WhatsApp mentor support between sessions, daily PM Gym, completion certificate</span>
                   </div>
                   <span className="font-mono font-black text-[#188ab2] text-xs uppercase bg-[#e0f2fe] border-2 border-[#111111] px-2 py-0.5">
                     Included
@@ -1647,7 +2011,7 @@ export function AppExecutive() {
                     onClick={() => scrollToSection('modular')}
                     className="text-xs font-black text-[#188ab2] hover:underline cursor-pointer inline-flex items-center gap-1"
                   >
-                    <span>Only need Build or Practice? Choose modular options at ₹5,000 (regular ₹7,000) below ⬇</span>
+                    <span>Only need one module? Choose modular options at ₹5,000 (regular ₹7,000) below ⬇</span>
                   </button>
                 </div>
               </div>
@@ -1676,62 +2040,91 @@ export function AppExecutive() {
                 Diwali Offer: ₹5,000 each (regular ₹7,000). Groups of 10–20. PM Gym and class recordings included, no certificate.
               </p>
 
-              {/* Two Modular Options Side-by-Side */}
-              <div className="grid md:grid-cols-2 gap-6 text-left">
-                {/* BUILD Card */}
+              {/* Three Modular Options Side-by-Side */}
+              <div className="grid md:grid-cols-3 gap-6 text-left">
+                {/* Module 1: Evidence Builder Card */}
                 <div
-                  onClick={() => setSelectedBuild(!selectedBuild)}
-                  className={`bg-white border-2 border-[#111111] p-6 sm:p-7 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all cursor-pointer flex flex-col justify-between select-none ${
-                    selectedBuild ? 'ring-2 ring-[#188ab2] bg-sky-50/40' : ''
+                  onClick={() => setSelectedMod1(!selectedMod1)}
+                  className={`bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all cursor-pointer flex flex-col justify-between select-none ${
+                    selectedMod1 ? 'ring-2 ring-[#188ab2] bg-sky-50/50' : ''
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-xl sm:text-2xl font-black tracking-tight text-[#111111]">
-                        BUILD
+                      <h4 className="text-lg font-black tracking-tight text-[#111111]">
+                        MOD 1: EVIDENCE
                       </h4>
-                      <div className={`w-7 h-7 border-2 border-[#111111] flex items-center justify-center font-black transition-colors ${
-                        selectedBuild ? 'bg-[#188ab2] text-white' : 'bg-white'
+                      <div className={`w-6 h-6 border-2 border-[#111111] flex items-center justify-center font-black transition-colors ${
+                        selectedMod1 ? 'bg-[#188ab2] text-white' : 'bg-white'
                       }`}>
-                        {selectedBuild ? '✓' : ''}
+                        {selectedMod1 ? '✓' : ''}
                       </div>
                     </div>
 
-                    <div className="font-mono font-black text-2xl text-[#188ab2] mb-3">
+                    <div className="font-mono font-black text-2xl text-[#188ab2] mb-2">
                       ₹5,000
                     </div>
 
-                    <p className="text-xs sm:text-sm font-medium text-[#111111]/80 leading-relaxed">
-                      8 live Sunday classes (16 hrs). Build one real project from teardown to prototype, with mentor review, plus your resume and LinkedIn.
+                    <p className="text-xs font-medium text-[#111111]/80 leading-relaxed">
+                      5 live sessions. PRDs, teardowns, user research, data project, and prototype. Leave with 2 portfolio projects.
                     </p>
                   </div>
                 </div>
 
-                {/* PRACTICE Card */}
+                {/* Module 2: Profile Enhancer Card */}
                 <div
-                  onClick={() => setSelectedPractice(!selectedPractice)}
-                  className={`bg-white border-2 border-[#111111] p-6 sm:p-7 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all cursor-pointer flex flex-col justify-between select-none ${
-                    selectedPractice ? 'ring-2 ring-[#188ab2] bg-sky-50/40' : ''
+                  onClick={() => setSelectedMod2(!selectedMod2)}
+                  className={`bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all cursor-pointer flex flex-col justify-between select-none ${
+                    selectedMod2 ? 'ring-2 ring-[#188ab2] bg-sky-50/50' : ''
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-xl sm:text-2xl font-black tracking-tight text-[#111111]">
-                        PRACTICE
+                      <h4 className="text-lg font-black tracking-tight text-[#111111]">
+                        MOD 2: PROFILE
                       </h4>
-                      <div className={`w-7 h-7 border-2 border-[#111111] flex items-center justify-center font-black transition-colors ${
-                        selectedPractice ? 'bg-[#188ab2] text-white' : 'bg-white'
+                      <div className={`w-6 h-6 border-2 border-[#111111] flex items-center justify-center font-black transition-colors ${
+                        selectedMod2 ? 'bg-[#188ab2] text-white' : 'bg-white'
                       }`}>
-                        {selectedPractice ? '✓' : ''}
+                        {selectedMod2 ? '✓' : ''}
                       </div>
                     </div>
 
-                    <div className="font-mono font-black text-2xl text-[#188ab2] mb-3">
+                    <div className="font-mono font-black text-2xl text-[#188ab2] mb-2">
                       ₹5,000
                     </div>
 
-                    <p className="text-xs sm:text-sm font-medium text-[#111111]/80 leading-relaxed">
-                      8 live Saturday classes (16 hrs). Mock rounds, your switch story, and interview question banks.
+                    <p className="text-xs font-medium text-[#111111]/80 leading-relaxed">
+                      5 live sessions. Map work to PM skills, resume rewrite, LinkedIn overhaul, story, and daily StepSmart job board access.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Module 3: Interview Practice Card */}
+                <div
+                  onClick={() => setSelectedMod3(!selectedMod3)}
+                  className={`bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all cursor-pointer flex flex-col justify-between select-none ${
+                    selectedMod3 ? 'ring-2 ring-[#188ab2] bg-sky-50/50' : ''
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-lg font-black tracking-tight text-[#111111]">
+                        MOD 3: PRACTICE
+                      </h4>
+                      <div className={`w-6 h-6 border-2 border-[#111111] flex items-center justify-center font-black transition-colors ${
+                        selectedMod3 ? 'bg-[#188ab2] text-white' : 'bg-white'
+                      }`}>
+                        {selectedMod3 ? '✓' : ''}
+                      </div>
+                    </div>
+
+                    <div className="font-mono font-black text-2xl text-[#188ab2] mb-2">
+                      ₹5,000
+                    </div>
+
+                    <p className="text-xs font-medium text-[#111111]/80 leading-relaxed">
+                      8 live sessions + 2 live mock interviews with 1:1 feedback. Analytics, product sense, strategy, behavioral rounds, RCA.
                     </p>
                   </div>
                 </div>
