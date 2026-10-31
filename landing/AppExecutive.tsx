@@ -1332,7 +1332,7 @@ export function AppExecutive() {
                   },
                   {
                     num: "02",
-                    title: "A target list of 30 companies",
+                    title: "A target list of companies",
                     desc: "Tailored to your current domain, seniority, and switch goals with active PM openings."
                   },
                   {
