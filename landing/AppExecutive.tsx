@@ -1078,6 +1078,16 @@ export function AppExecutive() {
 
             </div>
 
+            {/* Single-module note */}
+            <div className="max-w-5xl mx-auto mb-10">
+              <div className="bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] p-4 sm:p-5 text-center font-bold text-xs sm:text-sm text-[#111111] shadow-[4px_4px_0px_0px_#111111]">
+                <span className="font-mono font-black uppercase text-xs bg-white px-2.5 py-1 border border-[#111111] mr-2 inline-block mb-1 sm:mb-0 shadow-[1px_1px_0px_0px_#111111]">
+                  SINGLE-MODULE NOTE
+                </span>
+                Buying one module? You join the same live group for that module and can add the others later at 7k.
+              </div>
+            </div>
+
             {/* NEW BLOCK: HOW THE MODULES FIT TOGETHER (SIMPLE GRAPHIC) */}
             <div className="bg-white border-2 sm:border-[3px] border-[#111111] p-6 sm:p-10 shadow-[6px_6px_0px_0px_#111111] text-left max-w-5xl mx-auto">
               
@@ -1341,7 +1351,7 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 8. WHAT YOU'LL WALK AWAY WITH (OUTCOMES) */}
+        {/* 8. WHAT YOU WALK AWAY WITH */}
         <section id="outcomes" className="py-20 bg-white border-b-2 border-[#111111] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
@@ -1349,56 +1359,55 @@ export function AppExecutive() {
               {/* Left Column: Pure Floating Title Anchor */}
               <div className="lg:col-span-5 lg:sticky lg:top-36 text-left">
                 <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
-                  OUTCOMES
+                  WHAT YOU WALK AWAY WITH
                 </span>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] tracking-tight leading-[1.15]">
-                  What you’ll{' '}
+                  What you will have in your{' '}
                   <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
-                    walk away with.
+                    hands
                   </span>
                 </h2>
               </div>
 
-              {/* Right Column: 5 Core Outcomes with High-Energy ✦ Markers */}
-              <div className="lg:col-span-7 space-y-8 sm:space-y-10 text-left">
+              {/* Right Column: 5 Core Deliverables */}
+              <div className="lg:col-span-7 space-y-6 sm:space-y-7 text-left">
                 {[
                   {
                     num: "01",
-                    title: "Real-World Case Portfolio",
-                    desc: "An end-to-end product teardown, market validation, user research, data analysis, PRD, and a clickable prototype built from scratch."
+                    title: "A PM-ready resume and an updated LinkedIn",
+                    desc: "Overhauled to showcase product signals, user metrics, and business outcomes that pass recruiter screening."
                   },
                   {
                     num: "02",
-                    title: "Recruiter-Vetted Case Study",
-                    desc: "A mentor-reviewed case study with rubric feedback that you can directly submit to hiring managers and recruiters as undeniable proof of competence."
+                    title: "A target list of 30 companies",
+                    desc: "Tailored to your current domain, seniority, and switch goals with active PM openings."
                   },
                   {
                     num: "03",
-                    title: "PM-Positioned Resume & LinkedIn",
-                    desc: "A fully overhauled resume and LinkedIn profile engineered to translate your prior engineering, data, or operations background into executive product strategy."
+                    title: "2 portfolio projects you can show and talk through",
+                    desc: "End-to-end teardowns, PRDs, prototypes, and data analysis deliverables ready for interview rounds."
                   },
                   {
                     num: "04",
-                    title: "Interview War-Chest",
-                    desc: "Scripted and tested frameworks for behavioral rounds, product sense, root cause analysis, estimation, and your personalized 'Why I'm switching' story."
+                    title: "Feedback from 2 live mock interviews",
+                    desc: "1:1 rubric evaluation with actionable notes on product sense, strategy, RCA, and behavioral responses."
                   },
                   {
                     num: "05",
-                    title: "Verified Credential & Job Pipeline",
-                    desc: "A verified completion certificate based on evaluated assignment scores, plus 3 full months of access to our active PM hiring job board."
+                    title: "With the bundle: the Learn Module",
+                    desc: "Recorded lectures, question bank, case and company-wise resources, and daily PM Gym included at no extra cost."
                   }
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-4 sm:gap-6 group">
+                  <div key={idx} className="flex items-start gap-4 sm:gap-6 bg-slate-50 border-2 border-[#111111] p-5 sm:p-6 shadow-[3px_3px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#111111] transition-all group">
                     {/* Number Badge */}
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#188ab2] text-white flex items-center justify-center font-mono font-black text-xs sm:text-sm shrink-0 mt-0.5 border-2 border-[#111111] shadow-[2px_2px_0px_0px_#111111]">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#188ab2] text-white flex items-center justify-center font-mono font-black text-xs sm:text-sm shrink-0 mt-0.5 border-2 border-[#111111] shadow-[1.5px_1.5px_0px_0px_#111111]">
                       {item.num}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-lg sm:text-xl font-black text-[#111111] tracking-tight group-hover:text-[#188ab2] transition-colors mb-1 flex items-center gap-2">
-                        <span className="text-[#188ab2] text-xs font-black select-none">✦</span>
-                        <span>{item.title}</span>
+                      <h3 className="text-base sm:text-lg font-black text-[#111111] tracking-tight group-hover:text-[#188ab2] transition-colors mb-1">
+                        {item.title}
                       </h3>
-                      <p className="text-sm font-medium text-[#111111]/80 leading-relaxed">
+                      <p className="text-xs sm:text-sm font-medium text-[#111111]/80 leading-relaxed">
                         {item.desc}
                       </p>
                     </div>
@@ -1410,14 +1419,14 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 9. IS PM-X FOR YOU? (WHO IT IS FOR) */}
+        {/* 9. WHO THIS IS FOR / WHO THIS IS NOT FOR */}
         <section id="who-it-is-for" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-5xl">
             
             {/* Centered Heading */}
-            <div className="text-center mb-16">
+            <div className="text-center mb-14">
               <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
-                WHO IT IS FOR
+                FIT &amp; COMMITMENT
               </span>
               <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
                 Is PM-X{' '}
@@ -1427,61 +1436,76 @@ export function AppExecutive() {
               </h2>
             </div>
 
-            {/* Seamless Side-by-Side Comparison Container */}
+            {/* Side-by-Side Comparison Container */}
             <div className="relative max-w-5xl mx-auto text-left">
-              {/* Soft neutral background card for the left column */}
-              <div className="hidden md:block absolute top-0 bottom-0 left-0 w-1/2 bg-white rounded-2xl shadow-sm border border-black/5 pointer-events-none" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                
+                {/* Left Card: Who this is for */}
+                <div className="bg-white border-2 sm:border-[3px] border-[#111111] p-6 sm:p-8 shadow-[5px_5px_0px_0px_#111111] flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between pb-4 mb-6 border-b-2 border-[#111111]/15">
+                      <h3 className="text-xl sm:text-2xl font-black text-[#111111]">
+                        Who this is for
+                      </h3>
+                      <span className="bg-[#D1FAE5] text-emerald-950 text-xs font-mono font-black px-2.5 py-0.5 uppercase tracking-wider border border-[#111111] shadow-[1px_1px_0px_0px_#111111]">
+                        IDEAL FIT ✓
+                      </span>
+                    </div>
 
-              <div className="relative z-10 py-4 sm:py-6">
-                {/* Header Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 items-center mb-2">
-                  <div className="py-4 sm:py-5 px-6 sm:px-10 border-b border-[#111111]/10 flex items-center justify-between">
-                    <span className="text-xs font-mono font-black tracking-widest text-[#111111] uppercase">
-                      THIS IS FOR YOU IF
-                    </span>
-                    <span className="bg-[#FFF3A7] text-[#111111] text-[10px] font-mono font-black px-2 py-0.5 uppercase tracking-wider border border-[#111111]/20">
-                      IDEAL FIT
-                    </span>
+                    <ul className="space-y-4">
+                      {[
+                        "Working professionals moving into product management",
+                        "People with no PM title or PM experience yet",
+                        "People ready to do the work, not just watch it"
+                      ].map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-3.5 text-sm sm:text-base font-bold text-[#111111]">
+                          <span className="w-6 h-6 rounded-full bg-[#188ab2] text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 border border-[#111111]">
+                            ✓
+                          </span>
+                          <span className="leading-snug">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="py-4 sm:py-5 px-4 sm:px-8 border-b border-[#111111]/15">
-                    <span className="text-xs font-mono font-black tracking-widest text-[#111111]/65 uppercase block">
-                      THIS ISN’T FOR YOU IF
-                    </span>
+
+                  <div className="mt-8 pt-4 border-t border-[#111111]/15 text-xs font-bold text-[#188ab2]">
+                    Designed specifically for career switchers seeking verifiable product proof.
                   </div>
                 </div>
 
-                {/* Paired Rows: Generous Vertical Spacing & Guaranteed Horizontal Alignment */}
-                {[
-                  {
-                    left: "You want to move into product management",
-                    right: "You’re looking for a shortcut"
-                  },
-                  {
-                    left: "You want mentorship, not just content",
-                    right: "You want passive learning"
-                  },
-                  {
-                    left: "You’re ready to learn by doing",
-                    right: "You won’t do the assignments"
-                  },
-                  {
-                    left: "You can give about 6 live hours a week plus assignments",
-                    right: "You want a placement guarantee. We don’t offer one, just structured preparation."
-                  }
-                ].map((item, idx, arr) => (
-                  <div key={idx} className="grid grid-cols-1 md:grid-cols-2 items-start">
-                    {/* Left Column (Inside Soft Card, Generous Spacing) */}
-                    <div className="py-6 sm:py-7 px-6 sm:px-10 text-sm sm:text-base font-bold text-[#111111] flex items-start gap-4">
-                      <span className="text-[#188ab2] font-black text-base shrink-0 mt-0.5">✓</span>
-                      <span>{item.left}</span>
+                {/* Right Card: Who this is not for */}
+                <div className="bg-slate-100/90 border-2 sm:border-[3px] border-[#111111] p-6 sm:p-8 shadow-[5px_5px_0px_0px_#111111] flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between pb-4 mb-6 border-b-2 border-[#111111]/15">
+                      <h3 className="text-xl sm:text-2xl font-black text-[#111111]/85">
+                        Who this is not for
+                      </h3>
+                      <span className="bg-rose-100 text-rose-950 text-xs font-mono font-black px-2.5 py-0.5 uppercase tracking-wider border border-[#111111] shadow-[1px_1px_0px_0px_#111111]">
+                        NOT A FIT ✕
+                      </span>
                     </div>
-                    {/* Right Column (Canvas with Hairline Divider, Generous Spacing) */}
-                    <div className={`py-6 sm:py-7 px-4 sm:px-8 text-sm sm:text-base font-bold text-[#111111]/70 flex items-start gap-4 ${idx !== arr.length - 1 ? 'border-b border-[#111111]/10' : ''}`}>
-                      <span className="text-red-500 font-black text-base shrink-0 mt-0.5">✕</span>
-                      <span>{item.right}</span>
-                    </div>
+
+                    <ul className="space-y-4">
+                      {[
+                        "Working PMs",
+                        "Anyone who only wants job listings",
+                        "Anyone expecting a guaranteed job"
+                      ].map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-3.5 text-sm sm:text-base font-bold text-[#111111]/75">
+                          <span className="w-6 h-6 rounded-full bg-rose-200 text-rose-900 flex items-center justify-center font-black text-xs shrink-0 mt-0.5 border border-[#111111]">
+                            ✕
+                          </span>
+                          <span className="leading-snug">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                ))}
+
+                  <div className="mt-8 pt-4 border-t border-[#111111]/15 text-xs font-bold text-[#111111]/60">
+                    We focus on rigorous, live execution — not passive shortcut guarantees.
+                  </div>
+                </div>
+
               </div>
             </div>
 
@@ -1717,15 +1741,18 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 10. LEARN FROM WORKING PMS (Mentors) */}
+        {/* 10. MEET YOUR INSTRUCTORS (Mentors) */}
         <section id="mentors" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-5xl">
             
             <div className="text-center mb-16">
+              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
+                FACULTY
+              </span>
               <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
-                Learn from{' '}
+                Meet your{' '}
                 <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[-1deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
-                  working PMs
+                  instructors
                 </span>
               </h2>
             </div>
@@ -1887,133 +1914,211 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 13. WHAT YOU GET, STACKED (Full Cohort Pricing from Attached HTML) */}
+        {/* 11. CHOOSE YOUR PLAN (PRICING) */}
         <section id="pricing" className="py-20 bg-white border-b-2 border-[#111111] scroll-mt-20">
-          <div className="container mx-auto px-6 max-w-4xl text-center">
+          <div className="container mx-auto px-6 max-w-5xl text-center">
+            
+            <div className="inline-block mb-3">
+              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block select-none">
+                🪔 DIWALI SPECIAL OFFER
+              </span>
+            </div>
             
             <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
-              What you get,{' '}
-              <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
-                stacked
+              Choose your{' '}
+              <span className="inline-block bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
+                plan
               </span>
             </h2>
-            <p className="text-base font-medium text-[#111111]/80 mb-12">
-              Everything is live and mentor-led. Nothing here is a video library.
+            
+            <p className="text-sm sm:text-base font-bold text-[#111111]/80 max-w-xl mx-auto mb-12">
+              The Diwali offer ends 5 Nov, 11:59 PM IST · <span className="font-mono bg-amber-100 px-2 py-0.5 border border-[#111111] shadow-[1px_1px_0px_0px_#111111] font-black text-[#111111]">{countdownTimer}</span>
             </p>
 
-            {/* Stacked Value Breakdown Table */}
-            <div className="bg-white border-2 border-[#111111] shadow-[6px_6px_0px_0px_#111111] overflow-hidden text-left mb-6">
-              <div className="bg-[#FFF3A7] border-b-2 border-[#111111] p-4 flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="bg-[#188ab2] text-white border border-[#111111] text-[10px] font-black uppercase px-2 py-0.5 shadow-[1px_1px_0px_0px_#111111]">
-                    🪔 DIWALI SPECIAL
-                  </span>
-                  <span className="font-black text-xs sm:text-sm text-[#111111]">
-                    Modules ₹5,000 (regular ₹7,000) · Bundle ₹15,000 with Learn Module FREE
-                  </span>
-                </div>
-                <span className="font-mono text-xs font-black bg-white px-2 py-0.5 border border-[#111111]">
-                  Ends in {countdownTimer}
-                </span>
-              </div>
-
-              <div className="divide-y-2 border-slate-100 text-xs sm:text-sm text-[#111111]">
-                <div className="flex justify-between items-center p-5 sm:p-6">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <b className="text-[#111111] block text-base font-black">Learn Module</b>
-                      <span className="bg-emerald-100 text-emerald-800 border border-emerald-600 font-mono font-black text-[10px] px-2 py-0.5 uppercase">
-                        FREE WITH BUNDLE
-                      </span>
-                    </div>
-                    <span className="text-[#111111]/75 text-xs font-medium">Recorded lectures, question bank, case resources, company-wise resources & PM Gym. Not sold separately.</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-mono font-bold text-slate-400 line-through text-xs block">₹7,000</span>
-                    <span className="font-mono font-black text-emerald-600 text-base">FREE</span>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center p-5 sm:p-6">
-                  <div>
-                    <b className="text-[#111111] block text-base font-black">Module 1: Evidence Builder</b>
-                    <span className="text-[#111111]/75 text-xs font-medium">5 live sessions · PRD writing, product teardown, market & user research, data project, prototype building</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-mono font-bold text-slate-400 line-through text-xs block">₹7,000</span>
-                    <span className="font-mono font-black text-[#111111] text-base">₹5,000</span>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center p-5 sm:p-6">
-                  <div>
-                    <b className="text-[#111111] block text-base font-black">Module 2: Profile Enhancer</b>
-                    <span className="text-[#111111]/75 text-xs font-medium">5 live sessions · Map work to PM skills, rewrite resume, LinkedIn overhaul, story & StepSmart job board</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-mono font-bold text-slate-400 line-through text-xs block">₹7,000</span>
-                    <span className="font-mono font-black text-[#111111] text-base">₹5,000</span>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center p-5 sm:p-6">
-                  <div>
-                    <b className="text-[#111111] block text-base font-black">Module 3: Interview Practice</b>
-                    <span className="text-[#111111]/75 text-xs font-medium">8 live sessions + 2 live mock interviews with 1:1 feedback · Analytics, product sense, strategy, RCA</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-mono font-bold text-slate-400 line-through text-xs block">₹7,000</span>
-                    <span className="font-mono font-black text-[#111111] text-base">₹5,000</span>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center p-5 sm:p-6">
-                  <div>
-                    <b className="text-[#111111] block text-base font-black">Mentor support & Community</b>
-                    <span className="text-[#111111]/75 text-xs font-medium">WhatsApp mentor support between sessions, daily PM Gym, completion certificate</span>
-                  </div>
-                  <span className="font-mono font-black text-[#188ab2] text-xs uppercase bg-[#e0f2fe] border-2 border-[#111111] px-2 py-0.5">
-                    Included
-                  </span>
-                </div>
-
-                <div className="flex justify-between items-center p-5 sm:p-6 bg-slate-50">
-                  <span className="text-[#111111] font-black">Bought separately (Regular tuition)</span>
-                  <span className="font-mono font-bold text-slate-400 line-through">₹21,000</span>
-                </div>
-
-                <div className="flex justify-between items-center p-6 bg-[#e6f1fb] border-t-2 border-[#111111]">
-                  <div>
-                    <b className="text-[#111111] text-lg sm:text-xl block font-black">Diwali Bundle Price</b>
-                    <span className="text-[#188ab2] text-xs font-mono font-black uppercase">Learn Module Free · Ends in {countdownTimer}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-sm text-slate-400 line-through font-bold block font-mono">₹21,000</span>
-                    <span className="text-3xl font-mono font-black text-[#111111]">
-                      ₹15,000
+            {/* Two Side-by-Side Pricing Cards: Single Module vs Bundle */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left items-stretch mb-10">
+              
+              {/* Single Module Card */}
+              <div className="bg-white border-2 sm:border-[3px] border-[#111111] p-6 sm:p-8 shadow-[6px_6px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_#111111] transition-all">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="bg-white text-[#111111] border-2 border-[#111111] px-3 py-1 font-mono font-black text-xs uppercase shadow-[1.5px_1.5px_0px_0px_#111111]">
+                      One module
+                    </span>
+                    <span className="text-xs font-mono font-bold text-slate-500 uppercase">
+                      FLEXIBLE ENTRY
                     </span>
                   </div>
+
+                  <h3 className="text-2xl font-black text-[#111111] mb-2 tracking-tight">
+                    Single module
+                  </h3>
+
+                  <div className="flex items-baseline gap-2 mb-4">
+                    <span className="font-mono font-black text-4xl text-[#111111]">
+                      ₹5,000
+                    </span>
+                    <span className="font-mono font-bold text-slate-400 line-through text-lg">
+                      ₹7,000
+                    </span>
+                    <span className="bg-amber-100 text-amber-900 border border-amber-300 font-mono font-black text-[10px] px-1.5 py-0.5 uppercase ml-1">
+                      Save ₹2,000
+                    </span>
+                  </div>
+
+                  <div className="border-t-2 border-[#111111]/15 pt-5 mb-6">
+                    <ul className="space-y-3 text-xs sm:text-sm font-bold text-[#111111]">
+                      <li className="flex items-start gap-2.5">
+                        <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                        <span>Pick one: Profile Enhancer, Evidence Builder or Interview Practice</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                        <span>Live in a group of 8–10</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                        <span>Mentor support on WhatsApp</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="text-[#188ab2] font-black mt-0.5">•</span>
+                        <span>Add the other modules later at ₹7,000</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t-2 border-[#111111]/15">
+                  <button
+                    onClick={() => scrollToSection('modular')}
+                    className="w-full py-4 bg-white hover:bg-slate-50 text-[#111111] border-2 border-[#111111] font-black text-sm uppercase shadow-[3px_3px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#111111] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#111111] transition-all cursor-pointer text-center block"
+                  >
+                    Reserve a module ➜
+                  </button>
+                  <p className="text-[11px] font-bold text-[#111111]/70 text-center mt-2.5">
+                    Buying one module? You join the same live group for that module and can add others later.
+                  </p>
                 </div>
               </div>
 
-              <div className="p-6 text-center border-t-2 border-[#111111] bg-white">
-                <button
-                  onClick={handleMainEnroll}
-                  className="w-full sm:w-auto px-12 py-5 font-black text-base sm:text-lg uppercase border-2 border-[#111111] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#111111] transition-all cursor-pointer"
-                >
-                  Reserve my seat for ₹15,000 (Diwali Offer) ➜
-                </button>
-                <p className="text-xs font-bold text-[#111111]/80 mt-4">
-                  One-time payment, GST included, no EMI. Groups of 10-20 strictly capped.
-                </p>
-                <div className="mt-3">
-                  <button
-                    onClick={() => scrollToSection('modular')}
-                    className="text-xs font-black text-[#188ab2] hover:underline cursor-pointer inline-flex items-center gap-1"
-                  >
-                    <span>Only need one module? Choose modular options at ₹5,000 (regular ₹7,000) below ⬇</span>
-                  </button>
+              {/* Bundle Card (Featured) */}
+              <div className="bg-[#FFFDF5] border-2 sm:border-[3px] border-[#111111] p-6 sm:p-8 shadow-[8px_8px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[10px_10px_0px_0px_#111111] transition-all relative">
+                
+                {/* Popular Badge Top Right */}
+                <div className="absolute -top-3.5 right-6 bg-[#FFF3A7] border-2 border-[#111111] px-3 py-0.5 font-mono font-black text-[11px] uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[1.5deg]">
+                  BEST VALUE · COMPLETE SWITCH
                 </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-1 font-mono font-black text-xs uppercase shadow-[1.5px_1.5px_0px_0px_#111111]">
+                      Learn Module free
+                    </span>
+                    <span className="text-xs font-mono font-black text-emerald-700 uppercase">
+                      ALL 3 MODULES
+                    </span>
+                  </div>
+
+                  <h3 className="text-2xl font-black text-[#111111] mb-2 tracking-tight">
+                    Bundle
+                  </h3>
+
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="font-mono font-black text-4xl text-[#188ab2]">
+                      ₹15,000
+                    </span>
+                    <span className="font-mono font-bold text-slate-400 line-through text-lg">
+                      ₹21,000
+                    </span>
+                    <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 font-mono font-black text-[10px] px-1.5 py-0.5 uppercase ml-1">
+                      Save ₹6,000
+                    </span>
+                  </div>
+
+                  <p className="text-xs font-bold text-[#111111]/85 mb-4 leading-snug">
+                    That is the price of three modules at the Diwali offer, with the Learn Module added at no cost.
+                  </p>
+
+                  <div className="border-t-2 border-[#111111]/15 pt-5 mb-6">
+                    <ul className="space-y-3 text-xs sm:text-sm font-bold text-[#111111]">
+                      <li className="flex items-start gap-2.5">
+                        <span className="text-emerald-600 font-black mt-0.5">✓</span>
+                        <span>All 3 live modules: Profile Enhancer, Evidence Builder, Interview Practice</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="text-emerald-600 font-black mt-0.5">✓</span>
+                        <span>Learn Module free: recorded lectures, question bank, case and company-wise resources, PM Gym</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="text-emerald-600 font-black mt-0.5">✓</span>
+                        <span>2 live mock interviews with 1:1 feedback</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="text-emerald-600 font-black mt-0.5">✓</span>
+                        <span>Mentor support on WhatsApp</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t-2 border-[#111111]/15">
+                  <button
+                    onClick={handleMainEnroll}
+                    className="w-full py-4 bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#111111] font-black text-sm uppercase shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#111111] transition-all cursor-pointer text-center block"
+                  >
+                    Reserve the bundle ➜
+                  </button>
+                  <p className="text-[11px] font-bold text-[#188ab2] text-center mt-2.5">
+                    Includes all 3 live cohorts + full permanent resource library + 2 1:1 mocks
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Under both cards */}
+            <div className="bg-white border-2 sm:border-[3px] border-[#111111] p-6 sm:p-8 shadow-[5px_5px_0px_0px_#111111] text-left max-w-5xl mx-auto mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 divide-y-2 md:divide-y-0 md:divide-x-2 divide-[#111111]/15">
+                
+                {/* Payment */}
+                <div className="pt-4 md:pt-0 md:px-4 first:pt-0 first:pl-0">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-base">💳</span>
+                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#111111]">
+                      Payment
+                    </h4>
+                  </div>
+                  <p className="text-xs sm:text-sm font-bold text-[#111111]/85 leading-relaxed">
+                    UPI, card, EMI. Direct net banking, credit/debit cards, and zero-cost installments supported.
+                  </p>
+                </div>
+
+                {/* Refund */}
+                <div className="pt-4 md:pt-0 md:px-4">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-base">🛡️</span>
+                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#111111]">
+                      Refund
+                    </h4>
+                  </div>
+                  <p className="text-xs sm:text-sm font-bold text-[#111111]/85 leading-relaxed">
+                    If you leave after the first week, receive a complete full refund — no friction, no hassle.
+                  </p>
+                </div>
+
+                {/* No promises */}
+                <div className="pt-4 md:pt-0 md:px-4">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-base">🤝</span>
+                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#111111]">
+                      No promises
+                    </h4>
+                  </div>
+                  <p className="text-xs sm:text-sm font-bold text-[#111111]/85 leading-relaxed">
+                    We don’t guarantee a job. We give you the resume, projects and practice that prepare you for interviews.
+                  </p>
+                </div>
+
               </div>
             </div>
 
