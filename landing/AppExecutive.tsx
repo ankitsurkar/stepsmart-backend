@@ -328,12 +328,7 @@ export function AppExecutive() {
                     Build the proof
                   </span>
                   with us.
-                  <span className="inline-flex items-center align-middle mx-2.5 -space-x-2.5">
-                    <img src="/mentor-sanket.webp" alt="Sanket (Mastercard PM)" className="w-9 h-9 sm:w-11 sm:h-11 rounded-full border-2 border-[#141413] object-cover ring-2 ring-white shadow-[1px_1px_0px_0px_#141413]" />
-                    <img src="/mentor-ankit.webp" alt="Ankit (Microsoft PM)" className="w-9 h-9 sm:w-11 sm:h-11 rounded-full border-2 border-[#141413] object-cover ring-2 ring-white shadow-[1px_1px_0px_0px_#141413]" />
-                    <img src="/mentor-pankaj.webp" alt="Pankaj (Shopdeck PM)" className="w-9 h-9 sm:w-11 sm:h-11 rounded-full border-2 border-[#141413] object-cover ring-2 ring-white shadow-[1px_1px_0px_0px_#141413]" />
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FEF08A] border-2 border-[#141413] text-[10px] sm:text-xs font-mono font-black uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[2deg] align-middle">
+                  <span className="inline-flex items-center gap-1.5 ml-2.5 px-3 py-1 rounded-full bg-[#FEF08A] border-2 border-[#141413] text-[10px] sm:text-xs font-mono font-black uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[2deg] align-middle">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     10–20 SEATS · LIVE
                   </span>
@@ -1355,16 +1350,9 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 8. WHAT YOU WALK AWAY WITH (Image 6 GitBrush Full-Bleed Indigo Band) */}
-        <section id="outcomes" className="py-20 md:py-24 bg-[#4F46E5] text-white border-b-2 border-[#141413] relative overflow-hidden scroll-mt-20">
-          
-          {/* Fun GitBrush-style decorative neo-brutalist sparks & starbursts */}
-          <div className="absolute top-8 left-8 text-yellow-300 font-mono text-3xl select-none opacity-80 pointer-events-none animate-pulse">✦</div>
-          <div className="absolute top-12 right-12 text-pink-300 font-mono text-4xl select-none opacity-80 pointer-events-none">★</div>
-          <div className="absolute bottom-10 left-12 text-cyan-300 font-mono text-3xl select-none opacity-80 pointer-events-none">✦</div>
-          <div className="absolute bottom-8 right-16 text-yellow-300 font-mono text-4xl select-none opacity-80 pointer-events-none">✳</div>
-
-          <div className="container mx-auto px-6 max-w-6xl relative z-10 text-center">
+        {/* 8. WHAT YOU WALK AWAY WITH */}
+        <section id="outcomes" className="py-20 bg-white border-b-2 border-[#141413] scroll-mt-20">
+          <div className="container mx-auto px-6 max-w-6xl text-center">
             
             {/* Header */}
             <div className="inline-block mb-3">
@@ -1372,17 +1360,17 @@ export function AppExecutive() {
                 WHAT YOU WALK AWAY WITH
               </span>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#141413] tracking-tight mb-4">
               What you will have in your{' '}
-              <span className="inline-block bg-[#FEF08A] text-[#141413] rounded-xl border-2 border-[#141413] px-3.5 py-0.5 rotate-[1.5deg] shadow-[0px_4px_0px_0px_#141413]">
+              <span className="inline-block bg-[#FEF08A] text-[#141413] rounded-xl border-2 border-[#141413] px-3.5 py-0.5 rotate-[1.5deg] shadow-[0px_3px_0px_0px_#141413]">
                 hands
               </span>
             </h2>
-            <p className="text-sm sm:text-base font-bold text-white/90 max-w-xl mx-auto mb-14">
+            <p className="text-sm sm:text-base font-bold text-[#141413]/80 max-w-xl mx-auto mb-14">
               Five tangible, production-grade deliverables recruiters and hiring managers can directly evaluate.
             </p>
 
-            {/* 5 Deliverable Bento Cards with Overlapping Floating Circular Badges (GitBrush Style) */}
+            {/* 5 Deliverable Bento Cards with Overlapping Floating Circular Badges */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left items-stretch">
               {[
                 {
@@ -1418,9 +1406,9 @@ export function AppExecutive() {
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="relative bg-white text-[#141413] rounded-2xl border-2 border-[#141413] p-6 pt-8 shadow-[0px_5px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all flex flex-col justify-between"
+                  className="relative bg-slate-50 text-[#141413] rounded-2xl border-2 border-[#141413] p-6 pt-8 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between"
                 >
-                  {/* Floating Circular Badge Overlapping Top-Left (Image 6 GitBrush) */}
+                  {/* Floating Circular Badge Overlapping Top-Left */}
                   <div className={`w-10 h-10 rounded-full border-2 border-[#141413] ${item.badgeBg} text-[#141413] flex items-center justify-center font-mono font-black text-xs shadow-[0px_2px_0px_0px_#141413] absolute -top-4 left-6`}>
                     {item.num}
                   </div>
@@ -1437,9 +1425,9 @@ export function AppExecutive() {
               ))}
             </div>
 
-            {/* Bottom Pill matching GitBrush "Hosted on Slack" */}
+            {/* Bottom Pill */}
             <div className="text-center mt-12">
-              <div className="inline-flex items-center gap-2 bg-white rounded-full border-2 border-[#141413] px-6 py-2.5 shadow-[0px_4px_0px_0px_#141413] font-mono font-black text-xs uppercase text-[#141413] select-none">
+              <div className="inline-flex items-center gap-2 bg-[#FEF08A] rounded-full border-2 border-[#141413] px-6 py-2.5 shadow-[0px_3px_0px_0px_#141413] font-mono font-black text-xs uppercase text-[#141413] select-none">
                 <span>🎓 5 Verifiable Portfolio Assets</span>
                 <span className="text-[#188ab2]">· Zero Filler</span>
               </div>
