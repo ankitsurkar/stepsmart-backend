@@ -193,7 +193,7 @@ export function WalkAwayEditorial() {
               className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-[-0.03em] text-[#16171A] leading-tight mb-3"
             >
               What you’ll{' '}
-              <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
+              <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block">
                 walk away with.
               </span>
             </motion.h2>
@@ -313,10 +313,10 @@ export function CurriculumEditorial({ onOpenBrochure }: CurriculumEditorialProps
             transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
             className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A] mb-2"
           >
-            The 8 weeks,{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
-              week by week.
-            </span>
+            <span className="font-editorial italic font-normal text-[#D97706] text-[1.12em] tracking-normal inline-block">
+              The 8 weeks,
+            </span>{' '}
+            week by week.
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 16 }}
@@ -632,7 +632,7 @@ export function WhyDifferentEditorial() {
             className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A]"
           >
             Why this is{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
+            <span className="font-editorial italic font-normal text-[#6E6A63] text-[1.12em] tracking-normal inline-block">
               different.
             </span>
           </motion.h2>

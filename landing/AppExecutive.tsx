@@ -158,28 +158,28 @@ export function AppExecutive() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCF7] text-[#111111] font-sans selection:bg-[#FFF3A7] selection:text-[#111111] font-medium">
+    <div className="min-h-screen bg-[#FDFCF7] text-[#141413] font-sans selection:bg-[#FFF3A7] selection:text-[#141413] font-medium">
       
-      {/* 1. TOP ANNOUNCEMENT TICKER (Neobrutalist Yellow Banner) */}
-      <aside aria-label="Announcement Banner" className="sticky top-0 z-50 w-full bg-[#FFF3A7] border-b-2 border-[#111111] text-xs py-2 px-4 font-black">
+      {/* 1. TOP ANNOUNCEMENT TICKER (Soft Neo-Brutalist Banner) */}
+      <aside aria-label="Announcement Banner" className="sticky top-0 z-50 w-full bg-[#FEF08A] border-b-2 border-[#141413] text-xs py-2 px-4 font-black">
         <div className="container mx-auto max-w-7xl flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2 flex-wrap">
             {isEarlyBird ? (
               <>
-                <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] inline-flex items-center gap-1.5 font-black shrink-0">
+                <span className="bg-[#188ab2] text-white rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_#141413] inline-flex items-center gap-1.5 font-black shrink-0">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   🪔 DIWALI OFFER
                 </span>
-                <span className="text-[#111111] font-black text-xs sm:text-sm">
-                  Diwali offer: modules ₹5,000 (regular ₹7,000), bundle ₹15,000 with the Learn Module free. Ends in <span className="font-mono bg-white px-1.5 py-0.5 border border-[#111111] shadow-[1px_1px_0px_0px_#111111] inline-block font-black">{countdownTimer}</span>
+                <span className="text-[#141413] font-black text-xs sm:text-sm">
+                  Diwali offer: modules ₹5,000 (regular ₹7,000), bundle ₹15,000 with the Learn Module free. Ends in <span className="font-mono bg-white px-2 py-0.5 rounded-md border border-[#141413] shadow-[1px_1px_0px_0px_#141413] inline-block font-black">{countdownTimer}</span>
                 </span>
               </>
             ) : (
               <>
-                <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-2 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] inline-flex items-center gap-1.5 font-black shrink-0">
+                <span className="bg-[#188ab2] text-white rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_#141413] inline-flex items-center gap-1.5 font-black shrink-0">
                   PM-X ACCELERATOR
                 </span>
-                <span className="text-[#111111] font-black text-xs sm:text-sm">
+                <span className="text-[#141413] font-black text-xs sm:text-sm">
                   Module ₹7,000 each · Bundle ₹21,000 · Cohort Starts 23 Nov
                 </span>
               </>
@@ -187,7 +187,7 @@ export function AppExecutive() {
           </div>
           <button
             onClick={() => scrollToSection('pricing')}
-            className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#111111] px-3.5 py-1 text-xs uppercase font-black shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all cursor-pointer inline-flex items-center gap-1 shrink-0"
+            className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white rounded-full border-2 border-[#141413] px-4 py-1 text-xs uppercase font-black shadow-[2px_2px_0px_0px_#141413] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#141413] active:translate-x-[2px] active:translate-y-[2px] transition-all cursor-pointer inline-flex items-center gap-1 shrink-0"
           >
             <span>See pricing</span>
             <span>→</span>
@@ -195,8 +195,8 @@ export function AppExecutive() {
         </div>
       </aside>
 
-      {/* 2. NEOBRUTALIST NAVBAR */}
-      <header className="w-full bg-[#FDFCF7] border-b-2 border-[#111111] relative z-40">
+      {/* 2. SOFT ARCHITECTURAL NEO-BRUTALIST NAVBAR (Image 5 & 6 Pill Style) */}
+      <header className="w-full bg-[#FDFCF7] border-b-2 border-[#141413] relative z-40">
         <div className="container mx-auto px-6 h-20 max-w-7xl flex items-center justify-between">
           
           {/* Brand Wordmark (Clean logo without box, plain StepSmart text) */}
@@ -209,13 +209,13 @@ export function AppExecutive() {
               width="32"
               height="32"
             />
-            <span className="font-black text-2xl tracking-tight text-[#111111]">
+            <span className="font-black text-2xl tracking-tight text-[#141413]">
               StepSmart
             </span>
           </Link>
 
           {/* Clean Desktop Navigation Anchors */}
-          <nav className="hidden md:flex items-center gap-7 text-sm font-extrabold text-[#111111]">
+          <nav className="hidden md:flex items-center gap-7 text-sm font-extrabold text-[#141413]">
             <button onClick={() => scrollToSection('system')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Cohort
             </button>
@@ -236,64 +236,65 @@ export function AppExecutive() {
             </button>
           </nav>
 
-          {/* Right Action Buttons */}
+          {/* Right Action Buttons: Rounded Pill Buttons (Image 5 & 6) */}
           <div className="hidden md:flex items-center gap-4">
             <a
               href="/learn"
-              className="px-5 py-2 border-2 border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] transition-all font-extrabold text-sm"
+              className="px-5 py-2 rounded-full border-2 border-[#141413] bg-white text-[#141413] hover:bg-[#FEF08A] shadow-[2px_2px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all font-extrabold text-sm"
             >
               Login
             </a>
             <button
               onClick={() => scrollToSection('pricing')}
-              className="px-6 py-2.5 font-black border-2 border-[#111111] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[3.5px_3.5px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] transition-all text-sm uppercase cursor-pointer"
+              className="px-6 py-2.5 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[2.5px_2.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all text-sm uppercase cursor-pointer inline-flex items-center gap-1.5"
             >
-              Reserve Seat ➜
+              <span>Reserve Seat</span>
+              <span>➜</span>
             </button>
           </div>
 
           {/* Mobile Menu Trigger */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 border-2 border-[#111111] bg-white shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)]"
+            className="md:hidden p-2 rounded-xl border-2 border-[#141413] bg-white shadow-[2px_2px_0px_0px_#141413]"
             aria-label="Toggle menu"
           >
-            {isMenuOpen ? <X className="w-6 h-6 text-[#111111]" /> : <Menu className="w-6 h-6 text-[#111111]" />}
+            {isMenuOpen ? <X className="w-6 h-6 text-[#141413]" /> : <Menu className="w-6 h-6 text-[#141413]" />}
           </button>
         </div>
 
         {/* Mobile Nav Menu */}
         {isMenuOpen && (
-          <div className="md:hidden w-full bg-[#FDFCF7] border-b-2 border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-            <button onClick={() => scrollToSection('system')} className="text-left font-black text-lg py-2 border-b-2 border-[#111111]/20">
+          <div className="md:hidden w-full bg-[#FDFCF7] border-b-2 border-[#141413] p-6 flex flex-col gap-4 shadow-[0px_4px_0px_0px_#141413]">
+            <button onClick={() => scrollToSection('system')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               Cohort Modules
             </button>
-            <button onClick={() => scrollToSection('how-it-works')} className="text-left font-black text-lg py-2 border-b-2 border-[#111111]/20">
+            <button onClick={() => scrollToSection('how-it-works')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               How It Works
             </button>
-            <button onClick={() => scrollToSection('curriculum')} className="text-left font-black text-lg py-2 border-b-2 border-[#111111]/20">
+            <button onClick={() => scrollToSection('curriculum')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               Curriculum (8 Weeks)
             </button>
-            <button onClick={() => scrollToSection('mentors')} className="text-left font-black text-lg py-2 border-b-2 border-[#111111]/20">
+            <button onClick={() => scrollToSection('mentors')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               Mentors
             </button>
-            <button onClick={() => scrollToSection('pricing')} className="text-left font-black text-lg py-2 border-b-2 border-[#111111]/20">
+            <button onClick={() => scrollToSection('pricing')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               Pricing
             </button>
-            <button onClick={() => scrollToSection('faq')} className="text-left font-black text-lg py-2 border-b-2 border-[#111111]/20">
+            <button onClick={() => scrollToSection('faq')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               FAQ
             </button>
             <div className="flex flex-col gap-3 pt-3">
               <button
                 onClick={() => scrollToSection('pricing')}
-                className="w-full py-3.5 border-2 border-[#111111] bg-[#188ab2] text-white font-black text-sm uppercase shadow-[3px_3px_0px_0px_rgba(17,17,17,1)]"
+                className="w-full py-3.5 rounded-full border-2 border-[#141413] bg-[#188ab2] text-white font-black text-sm uppercase shadow-[3px_3px_0px_0px_#141413]"
               >
                 Reserve Seat ➜
               </button>
               <a
                 href="/learn"
                 onClick={() => setIsMenuOpen(false)}
-                className="w-full py-2.5 border-2 border-[#111111] bg-white text-[#111111] text-center font-black text-sm shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] block"
+                className="w-full py-2.5 rounded-full border-2 border-[#141413] bg-white text-[#141413] text-center font-black text-sm shadow-[2px_2px_0px_0px_#141413] block"
               >
                 Learner Login
               </a>
@@ -303,72 +304,114 @@ export function AppExecutive() {
       </header>
 
       <main>
-        {/* 3. HERO SECTION */}
-        <section className="pt-20 pb-16 md:pt-28 md:pb-24 bg-[#FDFCF7] border-b-2 border-[#111111]">
-          <div className="container mx-auto px-6 max-w-5xl text-center">
+        {/* 3. HERO SECTION (Framed Bento Container with Soft Pastel Mesh Wash) */}
+        <section className="pt-12 pb-20 md:pt-16 md:pb-28 bg-[#FDFCF7] border-b-2 border-[#141413] relative overflow-hidden">
+          <div className="container mx-auto px-6 max-w-5xl text-center relative z-10">
             
             {/* Top Eyebrow Sticker */}
-            <div className="inline-block mb-6">
-              <span className="bg-white border-2 border-[#111111] px-4 py-1.5 font-mono font-bold text-xs uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] inline-block tracking-wider select-none">
+            <div className="inline-block mb-8">
+              <span className="bg-white rounded-full border-2 border-[#141413] px-4 sm:px-5 py-1.5 font-mono font-bold text-xs uppercase shadow-[2px_2px_0px_0px_#141413] inline-flex items-center gap-2 tracking-wider select-none">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 ★ PM-X ACCELERATOR · LIVE AND HANDS-ON · GROUPS OF 10-20 · STARTS 23 NOV
               </span>
             </div>
 
-            {/* Headline */}
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-8 leading-[1.12] text-[#111111] max-w-4xl mx-auto">
-              Switching into PM without a PM title?{' '}
-              <span className="inline-block bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] px-3.5 py-1 rotate-[-1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] select-none">
-                Build the proof with us.
-              </span>
-            </h1>
+            {/* Headline with Inline Pill & Avatar Stack (Image 6 & Image 5) */}
+            <div className="relative mb-8 max-w-5xl mx-auto">
+              {/* Soft Dreamy Radial Mesh Wash behind Headline (Image 5 Chorke Style) */}
+              <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-full max-w-3xl h-72 bg-[radial-gradient(ellipse_at_top,rgba(233,213,255,0.45)_0%,rgba(254,240,138,0.4)_45%,rgba(253,252,247,0)_75%)] pointer-events-none blur-2xl -z-10" />
+
+              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[64px] font-black tracking-tight leading-[1.2] text-[#141413] max-w-5xl mx-auto">
+                Switching into PM without a PM title?{' '}
+                <span className="inline-block mt-1 sm:mt-2">
+                  <span className="inline-block rounded-full border-2 border-[#141413] bg-[#FDE047] px-4 sm:px-6 py-1 sm:py-1.5 shadow-[3px_3px_0px_0px_#141413] -rotate-1 font-black text-[#141413] mx-1 sm:mx-2 align-middle">
+                    Build the proof
+                  </span>
+                  with us.
+                  <span className="inline-flex items-center align-middle mx-2.5 -space-x-2.5">
+                    <img src="/mentor-sanket.webp" alt="Sanket (Mastercard PM)" className="w-9 h-9 sm:w-11 sm:h-11 rounded-full border-2 border-[#141413] object-cover ring-2 ring-white shadow-[1px_1px_0px_0px_#141413]" />
+                    <img src="/mentor-ankit.webp" alt="Ankit (Microsoft PM)" className="w-9 h-9 sm:w-11 sm:h-11 rounded-full border-2 border-[#141413] object-cover ring-2 ring-white shadow-[1px_1px_0px_0px_#141413]" />
+                    <img src="/mentor-pankaj.webp" alt="Pankaj (Shopdeck PM)" className="w-9 h-9 sm:w-11 sm:h-11 rounded-full border-2 border-[#141413] object-cover ring-2 ring-white shadow-[1px_1px_0px_0px_#141413]" />
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FEF08A] border-2 border-[#141413] text-[10px] sm:text-xs font-mono font-black uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[2deg] align-middle">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    10–20 SEATS · LIVE
+                  </span>
+                </span>
+              </h1>
+            </div>
 
             {/* Subheading */}
-            <p className="text-base sm:text-lg md:text-xl text-[#111111]/85 mb-10 max-w-3xl mx-auto leading-relaxed font-medium">
-              You don’t need a PM title to start. You need a <strong className="font-black text-[#111111]">resume that reads like a PM’s</strong>, <strong className="font-black text-[#111111]">projects you can talk through</strong>, and <strong className="font-black text-[#111111]">interview practice</strong>. Do all three in about 10 weeks, live, with 10–20 people making the same switch.
+            <p className="text-base sm:text-lg md:text-xl text-[#141413]/85 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
+              You don’t need a PM title to start. You need a <strong className="font-black text-[#141413]">resume that reads like a PM’s</strong>, <strong className="font-black text-[#141413]">projects you can talk through</strong>, and <strong className="font-black text-[#141413]">interview practice</strong>. Do all three in about 10 weeks, live, with 10–20 people making the same switch.
             </p>
 
-            {/* Three Outcomes in a row */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto mb-10 text-left">
-              <div className="bg-white border-2 border-[#111111] p-4 sm:p-5 shadow-[3.5px_3.5px_0px_0px_#111111] flex items-center gap-3.5 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#111111] transition-all">
-                <div className="w-10 h-10 bg-[#FFF3A7] border-2 border-[#111111] flex items-center justify-center shrink-0 shadow-[1.5px_1.5px_0px_0px_#111111]">
-                  <FileText className="w-5 h-5 text-[#111111]" />
-                </div>
+            {/* 1. Three Bottom Outcome Cards Like Image 5's Bento Row (Chorke Style) */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-5xl mx-auto mb-14 text-left">
+              {/* Outcome 01: Warm Butter Yellow */}
+              <div className="bg-[#FEF08A] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
                 <div>
-                  <span className="text-[10px] font-mono font-black uppercase text-[#188ab2] block tracking-wider">OUTCOME 01</span>
-                  <p className="text-sm font-black text-[#111111] leading-snug">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
+                      <FileText className="w-5 h-5 text-[#141413]" />
+                    </div>
+                    <span className="rounded-full border-2 border-[#141413] bg-[#141413] text-white px-3 py-0.5 text-[10px] font-mono font-black uppercase tracking-wider">
+                      OUTCOME 01
+                    </span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-[#141413] leading-snug mb-1.5">
                     A PM-ready resume and LinkedIn
+                  </h3>
+                  <p className="text-xs sm:text-sm font-semibold text-[#141413]/80 leading-relaxed">
+                    Overhauled to showcase product signals &amp; recruiter-clearing metrics.
                   </p>
                 </div>
               </div>
 
-              <div className="bg-white border-2 border-[#111111] p-4 sm:p-5 shadow-[3.5px_3.5px_0px_0px_#111111] flex items-center gap-3.5 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#111111] transition-all">
-                <div className="w-10 h-10 bg-[#e0f2fe] border-2 border-[#111111] flex items-center justify-center shrink-0 shadow-[1.5px_1.5px_0px_0px_#111111]">
-                  <Layers className="w-5 h-5 text-[#188ab2]" />
-                </div>
+              {/* Outcome 02: StepSmart Mint/Cyan */}
+              <div className="bg-[#BAE6FD] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
                 <div>
-                  <span className="text-[10px] font-mono font-black uppercase text-[#188ab2] block tracking-wider">OUTCOME 02</span>
-                  <p className="text-sm font-black text-[#111111] leading-snug">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
+                      <Layers className="w-5 h-5 text-[#0284c7]" />
+                    </div>
+                    <span className="rounded-full border-2 border-[#141413] bg-[#141413] text-white px-3 py-0.5 text-[10px] font-mono font-black uppercase tracking-wider">
+                      OUTCOME 02
+                    </span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-[#141413] leading-snug mb-1.5">
                     2 portfolio projects you can show
+                  </h3>
+                  <p className="text-xs sm:text-sm font-semibold text-[#141413]/80 leading-relaxed">
+                    End-to-end teardowns, PRDs, prototypes &amp; data analysis case studies.
                   </p>
                 </div>
               </div>
 
-              <div className="bg-white border-2 border-[#111111] p-4 sm:p-5 shadow-[3.5px_3.5px_0px_0px_#111111] flex items-center gap-3.5 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#111111] transition-all">
-                <div className="w-10 h-10 bg-[#D1FAE5] border-2 border-[#111111] flex items-center justify-center shrink-0 shadow-[1.5px_1.5px_0px_0px_#111111]">
-                  <MessageSquare className="w-5 h-5 text-emerald-700" />
-                </div>
+              {/* Outcome 03: Soft Lavender */}
+              <div className="bg-[#E9D5FF] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
                 <div>
-                  <span className="text-[10px] font-mono font-black uppercase text-[#188ab2] block tracking-wider">OUTCOME 03</span>
-                  <p className="text-sm font-black text-[#111111] leading-snug">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
+                      <MessageSquare className="w-5 h-5 text-[#7c3aed]" />
+                    </div>
+                    <span className="rounded-full border-2 border-[#141413] bg-[#141413] text-white px-3 py-0.5 text-[10px] font-mono font-black uppercase tracking-wider">
+                      OUTCOME 03
+                    </span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-[#141413] leading-snug mb-1.5">
                     Feedback from 2 live mock interviews
+                  </h3>
+                  <p className="text-xs sm:text-sm font-semibold text-[#141413]/80 leading-relaxed">
+                    1:1 rubric evaluation across product sense, strategy, RCA &amp; behavioural.
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Hero Image with Statement (Blue Image) */}
+            {/* Hero Image with Statement (Blue Image) in Rounded 2XL Frame */}
             <div className="max-w-4xl mx-auto mb-14 text-left">
-              <div className="bg-white border-2 sm:border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_#111111] overflow-hidden">
+              <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[0px_6px_0px_0px_#141413] overflow-hidden">
                 <div className="w-full aspect-[1024/536] overflow-hidden bg-[#188ab2]">
                   <img
                     src="/hero-slide-1.webp"
@@ -383,44 +426,44 @@ export function AppExecutive() {
             {/* Path Picker (Replaces scroll to stories) */}
             <div className="mb-14 max-w-4xl mx-auto text-left">
               <div className="text-center mb-8">
-                <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
+                <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block mb-3 select-none">
                   PATH PICKER
                 </span>
-                <h3 className="text-2xl sm:text-4xl font-black text-[#111111] tracking-tight">
+                <h3 className="text-2xl sm:text-4xl font-black text-[#141413] tracking-tight">
                   Where are you starting from?
                 </h3>
-                <p className="text-xs sm:text-sm font-semibold text-[#111111]/75 mt-2">
+                <p className="text-xs sm:text-sm font-semibold text-[#141413]/75 mt-2">
                   Select your current background to see your exact gap and recommended modules.
                 </p>
               </div>
 
-              {/* 4 Path Options */}
+              {/* 4 Path Options with Rounded Corners */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mb-6">
                 {/* Option 1: Ops, QA, BA */}
                 <button
                   type="button"
                   onClick={() => setSelectedRolePath('ops')}
-                  className={`w-full text-left p-5 sm:p-6 border-2 border-[#111111] transition-all cursor-pointer group flex flex-col justify-between select-none ${
+                  className={`w-full text-left p-5 sm:p-6 rounded-2xl border-2 border-[#141413] transition-all cursor-pointer group flex flex-col justify-between select-none ${
                     selectedRolePath === 'ops'
-                      ? 'bg-[#188ab2] text-white shadow-[6px_6px_0px_0px_#111111] translate-x-[-1px] translate-y-[-1px]'
-                      : 'bg-white hover:bg-slate-50 text-[#111111] shadow-[3.5px_3.5px_0px_0px_#111111] active:translate-x-[2px] active:translate-y-[2px]'
+                      ? 'bg-[#188ab2] text-white shadow-[0px_5px_0px_0px_#141413] translate-y-[-2px]'
+                      : 'bg-white hover:bg-slate-50 text-[#141413] shadow-[0px_3px_0px_0px_#141413] active:translate-y-[2px] active:shadow-none'
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`text-base sm:text-lg font-black ${selectedRolePath === 'ops' ? 'text-white' : 'text-[#111111]'}`}>
+                      <span className={`text-base sm:text-lg font-black ${selectedRolePath === 'ops' ? 'text-white' : 'text-[#141413]'}`}>
                         Ops, QA or business analyst
                       </span>
-                      <span className={`text-xs font-mono font-black px-2 py-0.5 border ${
+                      <span className={`text-xs font-mono font-black px-2.5 py-0.5 rounded-full border ${
                         selectedRolePath === 'ops'
-                          ? 'bg-[#FFF3A7] text-[#111111] border-[#111111] shadow-[1px_1px_0px_0px_#111111]'
+                          ? 'bg-[#FEF08A] text-[#141413] border-[#141413] shadow-[1px_1px_0px_0px_#141413]'
                           : 'bg-slate-100 text-slate-700 border-slate-300'
                       }`}>
                         {selectedRolePath === 'ops' ? 'SELECTED ✓' : 'SELECT'}
                       </span>
                     </div>
                     <p className={`text-xs sm:text-sm font-medium leading-relaxed italic ${
-                      selectedRolePath === 'ops' ? 'text-white/95' : 'text-[#111111]/80'
+                      selectedRolePath === 'ops' ? 'text-white/95' : 'text-[#141413]/80'
                     }`}>
                       “I deliver products every day, but my title says otherwise.”
                     </p>
@@ -431,27 +474,27 @@ export function AppExecutive() {
                 <button
                   type="button"
                   onClick={() => setSelectedRolePath('swe')}
-                  className={`w-full text-left p-5 sm:p-6 border-2 border-[#111111] transition-all cursor-pointer group flex flex-col justify-between select-none ${
+                  className={`w-full text-left p-5 sm:p-6 rounded-2xl border-2 border-[#141413] transition-all cursor-pointer group flex flex-col justify-between select-none ${
                     selectedRolePath === 'swe'
-                      ? 'bg-[#188ab2] text-white shadow-[6px_6px_0px_0px_#111111] translate-x-[-1px] translate-y-[-1px]'
-                      : 'bg-white hover:bg-slate-50 text-[#111111] shadow-[3.5px_3.5px_0px_0px_#111111] active:translate-x-[2px] active:translate-y-[2px]'
+                      ? 'bg-[#188ab2] text-white shadow-[0px_5px_0px_0px_#141413] translate-y-[-2px]'
+                      : 'bg-white hover:bg-slate-50 text-[#141413] shadow-[0px_3px_0px_0px_#141413] active:translate-y-[2px] active:shadow-none'
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`text-base sm:text-lg font-black ${selectedRolePath === 'swe' ? 'text-white' : 'text-[#111111]'}`}>
+                      <span className={`text-base sm:text-lg font-black ${selectedRolePath === 'swe' ? 'text-white' : 'text-[#141413]'}`}>
                         Software engineer or tech lead
                       </span>
-                      <span className={`text-xs font-mono font-black px-2 py-0.5 border ${
+                      <span className={`text-xs font-mono font-black px-2.5 py-0.5 rounded-full border ${
                         selectedRolePath === 'swe'
-                          ? 'bg-[#FFF3A7] text-[#111111] border-[#111111] shadow-[1px_1px_0px_0px_#111111]'
+                          ? 'bg-[#FEF08A] text-[#141413] border-[#141413] shadow-[1px_1px_0px_0px_#141413]'
                           : 'bg-slate-100 text-slate-700 border-slate-300'
                       }`}>
                         {selectedRolePath === 'swe' ? 'SELECTED ✓' : 'SELECT'}
                       </span>
                     </div>
                     <p className={`text-xs sm:text-sm font-medium leading-relaxed italic ${
-                      selectedRolePath === 'swe' ? 'text-white/95' : 'text-[#111111]/80'
+                      selectedRolePath === 'swe' ? 'text-white/95' : 'text-[#141413]/80'
                     }`}>
                       “I build it. I want to own the what and why.”
                     </p>
@@ -462,27 +505,27 @@ export function AppExecutive() {
                 <button
                   type="button"
                   onClick={() => setSelectedRolePath('analytics')}
-                  className={`w-full text-left p-5 sm:p-6 border-2 border-[#111111] transition-all cursor-pointer group flex flex-col justify-between select-none ${
+                  className={`w-full text-left p-5 sm:p-6 rounded-2xl border-2 border-[#141413] transition-all cursor-pointer group flex flex-col justify-between select-none ${
                     selectedRolePath === 'analytics'
-                      ? 'bg-[#188ab2] text-white shadow-[6px_6px_0px_0px_#111111] translate-x-[-1px] translate-y-[-1px]'
-                      : 'bg-white hover:bg-slate-50 text-[#111111] shadow-[3.5px_3.5px_0px_0px_#111111] active:translate-x-[2px] active:translate-y-[2px]'
+                      ? 'bg-[#188ab2] text-white shadow-[0px_5px_0px_0px_#141413] translate-y-[-2px]'
+                      : 'bg-white hover:bg-slate-50 text-[#141413] shadow-[0px_3px_0px_0px_#141413] active:translate-y-[2px] active:shadow-none'
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`text-base sm:text-lg font-black ${selectedRolePath === 'analytics' ? 'text-white' : 'text-[#111111]'}`}>
+                      <span className={`text-base sm:text-lg font-black ${selectedRolePath === 'analytics' ? 'text-white' : 'text-[#141413]'}`}>
                         Analytics, marketing or design
                       </span>
-                      <span className={`text-xs font-mono font-black px-2 py-0.5 border ${
+                      <span className={`text-xs font-mono font-black px-2.5 py-0.5 rounded-full border ${
                         selectedRolePath === 'analytics'
-                          ? 'bg-[#FFF3A7] text-[#111111] border-[#111111] shadow-[1px_1px_0px_0px_#111111]'
+                          ? 'bg-[#FEF08A] text-[#141413] border-[#141413] shadow-[1px_1px_0px_0px_#141413]'
                           : 'bg-slate-100 text-slate-700 border-slate-300'
                       }`}>
                         {selectedRolePath === 'analytics' ? 'SELECTED ✓' : 'SELECT'}
                       </span>
                     </div>
                     <p className={`text-xs sm:text-sm font-medium leading-relaxed italic ${
-                      selectedRolePath === 'analytics' ? 'text-white/95' : 'text-[#111111]/80'
+                      selectedRolePath === 'analytics' ? 'text-white/95' : 'text-[#141413]/80'
                     }`}>
                       “I work close to users and data. I need the PM story.”
                     </p>
@@ -493,27 +536,27 @@ export function AppExecutive() {
                 <button
                   type="button"
                   onClick={() => setSelectedRolePath('other')}
-                  className={`w-full text-left p-5 sm:p-6 border-2 border-[#111111] transition-all cursor-pointer group flex flex-col justify-between select-none ${
+                  className={`w-full text-left p-5 sm:p-6 rounded-2xl border-2 border-[#141413] transition-all cursor-pointer group flex flex-col justify-between select-none ${
                     selectedRolePath === 'other'
-                      ? 'bg-[#188ab2] text-white shadow-[6px_6px_0px_0px_#111111] translate-x-[-1px] translate-y-[-1px]'
-                      : 'bg-white hover:bg-slate-50 text-[#111111] shadow-[3.5px_3.5px_0px_0px_#111111] active:translate-x-[2px] active:translate-y-[2px]'
+                      ? 'bg-[#188ab2] text-white shadow-[0px_5px_0px_0px_#141413] translate-y-[-2px]'
+                      : 'bg-white hover:bg-slate-50 text-[#141413] shadow-[0px_3px_0px_0px_#141413] active:translate-y-[2px] active:shadow-none'
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`text-base sm:text-lg font-black ${selectedRolePath === 'other' ? 'text-white' : 'text-[#111111]'}`}>
+                      <span className={`text-base sm:text-lg font-black ${selectedRolePath === 'other' ? 'text-white' : 'text-[#141413]'}`}>
                         Sales, finance, consulting or something else
                       </span>
-                      <span className={`text-xs font-mono font-black px-2 py-0.5 border ${
+                      <span className={`text-xs font-mono font-black px-2.5 py-0.5 rounded-full border ${
                         selectedRolePath === 'other'
-                          ? 'bg-[#FFF3A7] text-[#111111] border-[#111111] shadow-[1px_1px_0px_0px_#111111]'
+                          ? 'bg-[#FEF08A] text-[#141413] border-[#141413] shadow-[1px_1px_0px_0px_#141413]'
                           : 'bg-slate-100 text-slate-700 border-slate-300'
                       }`}>
                         {selectedRolePath === 'other' ? 'SELECTED ✓' : 'SELECT'}
                       </span>
                     </div>
                     <p className={`text-xs sm:text-sm font-medium leading-relaxed italic ${
-                      selectedRolePath === 'other' ? 'text-white/95' : 'text-[#111111]/80'
+                      selectedRolePath === 'other' ? 'text-white/95' : 'text-[#141413]/80'
                     }`}>
                       “I don’t fit a box. Show me how my work maps to PM.”
                     </p>
@@ -521,10 +564,10 @@ export function AppExecutive() {
                 </button>
               </div>
 
-              {/* What appears after a choice (In-place Diagnosis & Resolution Card) */}
-              <div className="bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] p-6 sm:p-8 shadow-[5px_5px_0px_0px_#111111]">
+              {/* What appears after a choice (In-place Diagnosis & Resolution Card in Rounded 2XL Frame) */}
+              <div className="bg-[#FEF08A] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                  <span className="bg-white text-[#111111] border-2 border-[#111111] px-3 py-0.5 text-xs font-mono font-black uppercase shadow-[1.5px_1.5px_0px_0px_#111111]">
+                  <span className="bg-white text-[#141413] rounded-full border-2 border-[#141413] px-3.5 py-1 text-xs font-mono font-black uppercase shadow-[1.5px_1.5px_0px_0px_#141413]">
                     ★ YOUR DIAGNOSIS &amp; RECOMMENDED MODULES
                   </span>
                   <span className="text-xs font-black uppercase text-[#188ab2]">
@@ -535,35 +578,35 @@ export function AppExecutive() {
                   </span>
                 </div>
 
-                <div className="text-base sm:text-xl font-black text-[#111111] leading-relaxed mb-6">
+                <div className="text-base sm:text-xl font-black text-[#141413] leading-relaxed mb-6">
                   {selectedRolePath === 'ops' && (
                     <p>
-                      Your gap is the label, not the work. <span className="bg-white px-2 py-0.5 border-2 border-[#111111] inline-block shadow-[1px_1px_0px_0px_#111111]">Module 1</span> maps what you already do to PM skills; <span className="bg-white px-2 py-0.5 border-2 border-[#111111] inline-block shadow-[1px_1px_0px_0px_#111111]">Module 2</span> turns it into two projects.
+                      Your gap is the label, not the work. <span className="bg-white rounded-lg px-2.5 py-0.5 border-2 border-[#141413] inline-block shadow-[1px_1px_0px_0px_#141413]">Module 1</span> maps what you already do to PM skills; <span className="bg-white rounded-lg px-2.5 py-0.5 border-2 border-[#141413] inline-block shadow-[1px_1px_0px_0px_#141413]">Module 2</span> turns it into two projects.
                     </p>
                   )}
                   {selectedRolePath === 'swe' && (
                     <p>
-                      Your gap is showing you can lead with the user and the business case. Start with <span className="bg-white px-2 py-0.5 border-2 border-[#111111] inline-block shadow-[1px_1px_0px_0px_#111111]">Module 2</span>; add <span className="bg-white px-2 py-0.5 border-2 border-[#111111] inline-block shadow-[1px_1px_0px_0px_#111111]">Module 3</span> for product sense and strategy rounds.
+                      Your gap is showing you can lead with the user and the business case. Start with <span className="bg-white rounded-lg px-2.5 py-0.5 border-2 border-[#141413] inline-block shadow-[1px_1px_0px_0px_#141413]">Module 2</span>; add <span className="bg-white rounded-lg px-2.5 py-0.5 border-2 border-[#141413] inline-block shadow-[1px_1px_0px_0px_#141413]">Module 3</span> for product sense and strategy rounds.
                     </p>
                   )}
                   {selectedRolePath === 'analytics' && (
                     <p>
-                      Your gap is telling it as a product story. <span className="bg-white px-2 py-0.5 border-2 border-[#111111] inline-block shadow-[1px_1px_0px_0px_#111111]">Module 1</span> builds it; <span className="bg-white px-2 py-0.5 border-2 border-[#111111] inline-block shadow-[1px_1px_0px_0px_#111111]">Module 3</span> makes you comfortable saying it out loud.
+                      Your gap is telling it as a product story. <span className="bg-white rounded-lg px-2.5 py-0.5 border-2 border-[#141413] inline-block shadow-[1px_1px_0px_0px_#141413]">Module 1</span> builds it; <span className="bg-white rounded-lg px-2.5 py-0.5 border-2 border-[#141413] inline-block shadow-[1px_1px_0px_0px_#141413]">Module 3</span> makes you comfortable saying it out loud.
                     </p>
                   )}
                   {selectedRolePath === 'other' && (
                     <p>
-                      Your gap is translation. <span className="bg-white px-2 py-0.5 border-2 border-[#111111] inline-block shadow-[1px_1px_0px_0px_#111111]">Module 1</span> shows you how to map your work to PM skills with a real job description in front of you.
+                      Your gap is translation. <span className="bg-white rounded-lg px-2.5 py-0.5 border-2 border-[#141413] inline-block shadow-[1px_1px_0px_0px_#141413]">Module 1</span> shows you how to map your work to PM skills with a real job description in front of you.
                     </p>
                   )}
                 </div>
 
-                <div className="pt-4 border-t-2 border-[#111111]/30">
+                <div className="pt-4 border-t-2 border-[#141413]/20">
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                     {/* Primary Button */}
                     <button
                       onClick={() => scrollToSection('pricing')}
-                      className="px-6 py-3.5 bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#111111] font-black text-sm uppercase shadow-[3.5px_3.5px_0px_0px_#111111] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[2px] active:translate-y-[2px] transition-all cursor-pointer text-center"
+                      className="px-7 py-3.5 rounded-full bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#141413] font-black text-sm uppercase shadow-[0px_4px_0px_0px_#141413] hover:translate-y-[-1px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer text-center"
                     >
                       Reserve your seat ➜
                     </button>
@@ -571,7 +614,7 @@ export function AppExecutive() {
                     {/* Secondary Button */}
                     <button
                       onClick={() => scrollToSection('system')}
-                      className="px-6 py-3.5 bg-white hover:bg-slate-50 text-[#111111] border-2 border-[#111111] font-black text-sm uppercase shadow-[3.5px_3.5px_0px_0px_#111111] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[2px] active:translate-y-[2px] transition-all cursor-pointer text-center"
+                      className="px-7 py-3.5 rounded-full bg-white hover:bg-slate-50 text-[#141413] border-2 border-[#141413] font-black text-sm uppercase shadow-[0px_4px_0px_0px_#141413] hover:translate-y-[-1px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer text-center"
                     >
                       See the programme ➜
                     </button>
@@ -581,7 +624,7 @@ export function AppExecutive() {
                         setBrochureFormStatus('idle');
                         setIsBrochureModalOpen(true);
                       }}
-                      className="text-xs font-bold text-[#111111] hover:text-[#188ab2] underline sm:ml-auto inline-flex items-center justify-center gap-1 cursor-pointer py-1"
+                      className="text-xs font-bold text-[#141413] hover:text-[#188ab2] underline sm:ml-auto inline-flex items-center justify-center gap-1 cursor-pointer py-1"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>Download Syllabus PDF</span>
@@ -589,7 +632,7 @@ export function AppExecutive() {
                   </div>
 
                   {/* Line under the buttons */}
-                  <p className="text-xs sm:text-sm font-extrabold text-[#111111]/85 mt-3 pt-3 border-t border-[#111111]/20">
+                  <p className="text-xs sm:text-sm font-extrabold text-[#141413]/85 mt-3 pt-3 border-t border-[#141413]/15">
                     {isEarlyBird
                       ? "Modules from ₹5,000 · Bundle ₹15,000 with the Learn Module free · No job guarantee, just the work that gets you ready."
                       : "Module ₹7,000 each · Bundle ₹21,000 · No job guarantee, just the work that gets you ready."}
@@ -598,105 +641,113 @@ export function AppExecutive() {
               </div>
             </div>
 
-            {/* Spec Bar (2px borders, tactile shadow) */}
-            <div className="bg-[#e6f1fb] border-2 border-[#111111] p-4 shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-black uppercase text-[#111111]">
+            {/* Spec Bar (Rounded 2XL, tactile shadow) */}
+            <div className="bg-[#e6f1fb] rounded-2xl border-2 border-[#141413] p-5 shadow-[0px_4px_0px_0px_#141413] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-black uppercase text-[#141413]">
               <div>
-                <span className="text-[#111111] opacity-75 block text-[10px] font-black">NEXT COHORT</span>
-                <span className="text-[#111111] font-black">STARTS 23 NOV</span>
+                <span className="text-[#141413] opacity-75 block text-[10px] font-black">NEXT COHORT</span>
+                <span className="text-[#141413] font-black">STARTS 23 NOV</span>
               </div>
               <div>
-                <span className="text-[#111111] opacity-75 block text-[10px] font-black">SCHEDULE</span>
-                <span className="text-[#111111] font-black">WED, SAT &amp; SUN</span>
+                <span className="text-[#141413] opacity-75 block text-[10px] font-black">SCHEDULE</span>
+                <span className="text-[#141413] font-black">WED, SAT &amp; SUN</span>
               </div>
               <div>
-                <span className="text-[#111111] opacity-75 block text-[10px] font-black">BATCH SIZE</span>
+                <span className="text-[#141413] opacity-75 block text-[10px] font-black">BATCH SIZE</span>
                 <span className="text-[#188ab2] font-black">10-20 SEATS</span>
               </div>
               <div>
-                <span className="text-[#111111] opacity-75 block text-[10px] font-black">MENTORS</span>
-                <span className="text-[#111111] font-black">MSFT &amp; MASTERCARD</span>
+                <span className="text-[#141413] opacity-75 block text-[10px] font-black">MENTORS</span>
+                <span className="text-[#141413] font-black">MSFT &amp; MASTERCARD</span>
               </div>
             </div>
 
           </div>
         </section>
 
-        {/* 4. REAL PEOPLE. REAL TRANSITIONS. (Moved Here After Hero) */}
-        <section id="outcomes" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
+        {/* 4. REAL PEOPLE. REAL TRANSITIONS. (Testimonials) */}
+        <section id="outcomes" className="py-20 bg-[#FAF9F5] border-b-2 border-[#141413] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-7xl">
             
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
+              <div className="inline-block mb-3">
+                <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_#141413] rotate-[-1deg] inline-block select-none">
+                  TESTIMONIALS
+                </span>
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black text-[#141413] mb-3 tracking-tight">
                 Real people.{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
+                <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[1.5deg] shadow-[0px_3px_0px_0px_#141413]">
                   Real transitions.
                 </span>
               </h2>
+              <p className="text-sm sm:text-base font-bold text-[#141413]/75 max-w-xl mx-auto">
+                Hear it from people who started where you are. In their own words.
+              </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
               
               {/* Triya */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
                 <div>
-                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
+                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] grid place-items-center font-black text-lg mb-4 shadow-[0px_2px_0px_0px_#141413]">
                     T
                   </div>
-                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
+                  <p className="font-medium text-sm text-[#141413]/90 leading-relaxed mb-6 italic">
                     “PM-X gave me the clarity and confidence I needed to make the transition.”
                   </p>
                 </div>
-                <div className="pt-4 border-t-2 border-slate-100">
-                  <b className="block text-[#111111] text-sm font-black">Triya</b>
-                  <small className="text-[#111111]/70 font-medium text-xs block">Business Analyst → PM at ACKO</small>
+                <div className="pt-4 border-t-2 border-[#141413]/10">
+                  <b className="block text-[#141413] text-sm font-black">Triya</b>
+                  <small className="text-[#141413]/70 font-medium text-xs block">Business Analyst → PM at ACKO</small>
                 </div>
               </div>
 
               {/* Nishant */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
                 <div>
-                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
+                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] grid place-items-center font-black text-lg mb-4 shadow-[0px_2px_0px_0px_#141413]">
                     N
                   </div>
-                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
+                  <p className="font-medium text-sm text-[#141413]/90 leading-relaxed mb-6 italic">
                     “From zero interview calls to landing a PM internship in under a month.”
                   </p>
                 </div>
-                <div className="pt-4 border-t-2 border-slate-100">
-                  <b className="block text-[#111111] text-sm font-black">Nishant</b>
-                  <small className="text-[#111111]/70 font-medium text-xs block">Student → APM Intern, Surepass</small>
+                <div className="pt-4 border-t-2 border-[#141413]/10">
+                  <b className="block text-[#141413] text-sm font-black">Nishant</b>
+                  <small className="text-[#141413]/70 font-medium text-xs block">Student → APM Intern, Surepass</small>
                 </div>
               </div>
 
               {/* Gauri T. */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
                 <div>
-                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
+                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] grid place-items-center font-black text-lg mb-4 shadow-[0px_2px_0px_0px_#141413]">
                     G
                   </div>
-                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
+                  <p className="font-medium text-sm text-[#141413]/90 leading-relaxed mb-6 italic">
                     “Watching peers articulate product thinking made me believe I could become a PM.”
                   </p>
                 </div>
-                <div className="pt-4 border-t-2 border-slate-100">
-                  <b className="block text-[#111111] text-sm font-black">Gauri T.</b>
-                  <small className="text-[#111111]/70 font-medium text-xs block">Product Manager</small>
+                <div className="pt-4 border-t-2 border-[#141413]/10">
+                  <b className="block text-[#141413] text-sm font-black">Gauri T.</b>
+                  <small className="text-[#141413]/70 font-medium text-xs block">Product Manager</small>
                 </div>
               </div>
 
               {/* Nishtha */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
                 <div>
-                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#111111] grid place-items-center font-black text-lg mb-4 shadow-[2px_2px_0px_0px_#111111]">
+                  <div className="w-12 h-12 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] grid place-items-center font-black text-lg mb-4 shadow-[0px_2px_0px_0px_#141413]">
                     N
                   </div>
-                  <p className="font-medium text-sm text-[#111111]/90 leading-relaxed mb-6 italic">
+                  <p className="font-medium text-sm text-[#141413]/90 leading-relaxed mb-6 italic">
                     “PM-X helped me break overwhelming case studies into clear, actionable chunks.”
                   </p>
                 </div>
-                <div className="pt-4 border-t-2 border-slate-100">
-                  <b className="block text-[#111111] text-sm font-black">Nishtha</b>
-                  <small className="text-[#111111]/70 font-medium text-xs block">Product Manager, Amex</small>
+                <div className="pt-4 border-t-2 border-[#141413]/10">
+                  <b className="block text-[#141413] text-sm font-black">Nishtha</b>
+                  <small className="text-[#141413]/70 font-medium text-xs block">Product Manager, Amex</small>
                 </div>
               </div>
 
@@ -706,78 +757,78 @@ export function AppExecutive() {
         </section>
 
         {/* 5. WHY PEOPLE STAY STUCK & THE REFRAME */}
-        <section className="py-20 bg-white border-b-2 border-[#111111]">
+        <section className="py-20 bg-white border-b-2 border-[#141413]">
           <div className="container mx-auto px-6 max-w-5xl text-center">
             
             <div className="inline-block mb-3">
-              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block select-none">
+              <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block select-none">
                 THE ROOT CAUSE
               </span>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] mb-12 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#141413] mb-12 tracking-tight">
               Three things keep career switchers{' '}
-              <span className="inline-block bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] px-3.5 py-0.5 rotate-[-1.5deg] shadow-[3px_3px_0px_0px_#111111]">
+              <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[-1.5deg] shadow-[0px_3px_0px_0px_#141413]">
                 stuck
               </span>
             </h2>
 
-            {/* 3 Diagnosis Cards */}
+            {/* 3 Diagnosis Cards (Soft Architectural Neo-Brutalism) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mb-10">
               {/* Card 1 */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
                 <div>
-                  <div className="w-8 h-8 bg-rose-100 border-2 border-[#111111] flex items-center justify-center font-black text-rose-800 text-sm mb-4 shadow-[1.5px_1.5px_0px_0px_#111111]">
+                  <div className="w-8 h-8 rounded-lg bg-rose-100 border-2 border-[#141413] flex items-center justify-center font-black text-rose-800 text-sm mb-4 shadow-[0px_2px_0px_0px_#141413]">
                     01
                   </div>
-                  <h3 className="text-base sm:text-lg font-black text-[#111111] mb-3 leading-snug">
+                  <h3 className="text-base sm:text-lg font-black text-[#141413] mb-3 leading-snug">
                     You’ve watched the videos and nothing sticks.
                   </h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
                     Watching is not practising. Structuring a problem out loud is a habit, and habits need repetition with feedback.
                   </p>
                 </div>
-                <div className="mt-6 pt-3 border-t-2 border-[#111111]/10">
-                  <span className="inline-block bg-[#D1FAE5] text-emerald-950 border border-[#111111] font-mono font-black text-[11px] px-2 py-0.5 shadow-[1px_1px_0px_0px_#111111]">
+                <div className="mt-6 pt-3 border-t-2 border-[#141413]/10">
+                  <span className="inline-block rounded-full bg-[#D1FAE5] text-emerald-950 border border-[#141413] font-mono font-black text-[11px] px-3 py-0.5 shadow-[0px_1.5px_0px_0px_#141413]">
                     → Fixed in Module 3
                   </span>
                 </div>
               </div>
 
               {/* Card 2 */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
                 <div>
-                  <div className="w-8 h-8 bg-rose-100 border-2 border-[#111111] flex items-center justify-center font-black text-rose-800 text-sm mb-4 shadow-[1.5px_1.5px_0px_0px_#111111]">
+                  <div className="w-8 h-8 rounded-lg bg-rose-100 border-2 border-[#141413] flex items-center justify-center font-black text-rose-800 text-sm mb-4 shadow-[0px_2px_0px_0px_#141413]">
                     02
                   </div>
-                  <h3 className="text-base sm:text-lg font-black text-[#111111] mb-3 leading-snug">
+                  <h3 className="text-base sm:text-lg font-black text-[#141413] mb-3 leading-snug">
                     Your resume says analyst, engineer or ops.
                   </h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
                     Recruiters scan for PM signals in seconds. If they are not on the page, nobody reads your real work.
                   </p>
                 </div>
-                <div className="mt-6 pt-3 border-t-2 border-[#111111]/10">
-                  <span className="inline-block bg-[#e0f2fe] text-sky-950 border border-[#111111] font-mono font-black text-[11px] px-2 py-0.5 shadow-[1px_1px_0px_0px_#111111]">
+                <div className="mt-6 pt-3 border-t-2 border-[#141413]/10">
+                  <span className="inline-block rounded-full bg-[#e0f2fe] text-sky-950 border border-[#141413] font-mono font-black text-[11px] px-3 py-0.5 shadow-[0px_1.5px_0px_0px_#141413]">
                     → Fixed in Module 1
                   </span>
                 </div>
               </div>
 
               {/* Card 3 */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
                 <div>
-                  <div className="w-8 h-8 bg-rose-100 border-2 border-[#111111] flex items-center justify-center font-black text-rose-800 text-sm mb-4 shadow-[1.5px_1.5px_0px_0px_#111111]">
+                  <div className="w-8 h-8 rounded-lg bg-rose-100 border-2 border-[#141413] flex items-center justify-center font-black text-rose-800 text-sm mb-4 shadow-[0px_2px_0px_0px_#141413]">
                     03
                   </div>
-                  <h3 className="text-base sm:text-lg font-black text-[#111111] mb-3 leading-snug">
+                  <h3 className="text-base sm:text-lg font-black text-[#141413] mb-3 leading-snug">
                     You feel like you would be faking it.
                   </h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
                     You would not be. You would be showing real work you can honestly talk through.
                   </p>
                 </div>
-                <div className="mt-6 pt-3 border-t-2 border-[#111111]/10">
-                  <span className="inline-block bg-[#FFF3A7] text-[#111111] border border-[#111111] font-mono font-black text-[11px] px-2 py-0.5 shadow-[1px_1px_0px_0px_#111111]">
+                <div className="mt-6 pt-3 border-t-2 border-[#141413]/10">
+                  <span className="inline-block rounded-full bg-[#FEF08A] text-[#141413] border border-[#141413] font-mono font-black text-[11px] px-3 py-0.5 shadow-[0px_1.5px_0px_0px_#141413]">
                     → Fixed in Module 2
                   </span>
                 </div>
@@ -786,19 +837,19 @@ export function AppExecutive() {
 
             {/* Proof line */}
             <div className="max-w-2xl mx-auto mb-8">
-              <p className="bg-[#e6f1fb] border-2 border-[#111111] py-2.5 px-4 font-mono font-bold text-xs sm:text-sm text-[#111111] shadow-[2px_2px_0px_0px_#111111]">
+              <p className="bg-[#e6f1fb] rounded-xl border-2 border-[#141413] py-3 px-5 font-mono font-bold text-xs sm:text-sm text-[#141413] shadow-[0px_3px_0px_0px_#141413]">
                 📊 53% of aspiring PMs in our community say “no PM experience on my resume” is their biggest blocker.{' '}
                 <span className="text-slate-600 block sm:inline font-normal text-[11px]">[Source: StepSmart Community Career Survey, n=420]</span>
               </p>
             </div>
 
-            {/* Punch line (keep) */}
-            <div className="bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] p-6 text-center font-black text-xl md:text-2xl text-[#111111] max-w-2xl mx-auto shadow-[5px_5px_0px_0px_#111111] rotate-[-1deg] mb-8 select-none">
+            {/* Punch line */}
+            <div className="bg-[#FEF08A] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 text-center font-black text-xl md:text-2xl text-[#141413] max-w-2xl mx-auto shadow-[0px_5px_0px_0px_#141413] rotate-[-0.5deg] mb-8 select-none">
               You don’t lack experience — what you lack is proof recruiters can see.
             </div>
 
             {/* Bridge to the next section */}
-            <p className="text-sm sm:text-base md:text-lg font-bold text-[#111111]/85 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg font-bold text-[#141413]/85 max-w-2xl mx-auto leading-relaxed">
               Three gaps decide who gets the interview: how your experience reads, what evidence you can show, and how well you interview. The Accelerator has one module for each.
             </p>
 
@@ -806,47 +857,47 @@ export function AppExecutive() {
         </section>
 
         {/* 6. MODULES AND HOW THEY FIT */}
-        <section id="system" className="py-14 md:py-18 bg-slate-50 border-b-[3px] border-[#111111] scroll-mt-20">
+        <section id="system" className="py-14 md:py-18 bg-slate-50 border-b-2 border-[#141413] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-7xl">
             
             <div className="text-center mb-10 md:mb-14">
               <div className="inline-block mb-3">
-                <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block select-none">
+                <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block select-none">
                   THE ACCELERATOR ARCHITECTURE
                 </span>
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#141413] mb-3 tracking-tight">
                 Three live modules, built around{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
+                <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[1.5deg] shadow-[0px_3px_0px_0px_#141413] select-none">
                   what recruiters look for
                 </span>
               </h2>
-              <p className="text-base sm:text-lg font-bold text-[#111111]/85 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-lg font-bold text-[#141413]/85 max-w-2xl mx-auto leading-relaxed">
                 Take all three, or start with the one you need most. Every module is live, hands-on and in a group of 10–20.
               </p>
             </div>
 
-            {/* Clean, Uniform 4-Column Grid with Equal Height and Perfect Alignment */}
+            {/* Clean, Uniform 4-Column Grid with Soft Neo-Brutalist Bento styling */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch mb-16">
               
               {/* Module 1: Evidence Builder */}
-              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] shadow-[0px_5px_0px_0px_#141413] flex flex-col justify-between h-full hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all overflow-hidden">
                 <div>
-                  <div className="p-3 bg-[#188ab2] text-white border-b-[3px] border-[#111111] font-mono font-black flex items-center justify-between">
+                  <div className="p-3.5 bg-[#188ab2] text-white border-b-2 border-[#141413] font-mono font-black flex items-center justify-between">
                     <span className="text-xs sm:text-sm tracking-wider">MODULE 01</span>
-                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 text-[10px] font-black uppercase">
+                    <span className="bg-[#FEF08A] text-[#141413] rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[0px_1.5px_0px_0px_#141413]">
                       5 live sessions
                     </span>
                   </div>
                   <div className="p-5 pb-2">
-                    <h3 className="font-mono font-black text-xl text-[#111111] tracking-tight mb-1">
+                    <h3 className="font-mono font-black text-xl text-[#141413] tracking-tight mb-1">
                       Evidence Builder
                     </h3>
                     <p className="text-xs font-bold text-[#188ab2] leading-snug">
                       Build proof you can show.
                     </p>
                   </div>
-                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#111111]">
+                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#141413]">
                     <li className="flex items-start gap-2">
                       <span className="text-[#188ab2] font-black mt-0.5">•</span>
                       <span>PRD writing</span>
@@ -869,34 +920,34 @@ export function AppExecutive() {
                     </li>
                   </ul>
                 </div>
-                <div className="m-4 mt-auto border-2 border-[#111111] bg-[#e6f1fb] p-3 text-left shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                <div className="m-4 mt-auto rounded-xl border-2 border-[#141413] bg-[#e6f1fb] p-3.5 text-left shadow-[0px_2px_0px_0px_#141413]">
                   <div className="font-mono font-black text-[10px] uppercase text-[#188ab2] mb-0.5">
                     5 LIVE SESSIONS · YOU LEAVE WITH:
                   </div>
-                  <p className="text-xs font-black text-[#111111] leading-tight">
+                  <p className="text-xs font-black text-[#141413] leading-tight">
                     2 portfolio projects you can show and talk through in interviews.
                   </p>
                 </div>
               </div>
 
               {/* Module 2: Profile Enhancer */}
-              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] shadow-[0px_5px_0px_0px_#141413] flex flex-col justify-between h-full hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all overflow-hidden">
                 <div>
-                  <div className="p-3 bg-[#188ab2] text-white border-b-[3px] border-[#111111] font-mono font-black flex items-center justify-between">
+                  <div className="p-3.5 bg-[#188ab2] text-white border-b-2 border-[#141413] font-mono font-black flex items-center justify-between">
                     <span className="text-xs sm:text-sm tracking-wider">MODULE 02</span>
-                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 text-[10px] font-black uppercase">
+                    <span className="bg-[#FEF08A] text-[#141413] rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[0px_1.5px_0px_0px_#141413]">
                       5 live sessions
                     </span>
                   </div>
                   <div className="p-5 pb-2">
-                    <h3 className="font-mono font-black text-xl text-[#111111] tracking-tight mb-1">
+                    <h3 className="font-mono font-black text-xl text-[#141413] tracking-tight mb-1">
                       Profile Enhancer
                     </h3>
                     <p className="text-xs font-bold text-[#188ab2] leading-snug">
                       Make your experience read like a PM’s.
                     </p>
                   </div>
-                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#111111]">
+                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#141413]">
                     <li className="flex items-start gap-2">
                       <span className="text-[#188ab2] font-black mt-0.5">•</span>
                       <span>Map the work you already do to PM skills</span>
@@ -919,34 +970,34 @@ export function AppExecutive() {
                     </li>
                   </ul>
                 </div>
-                <div className="m-4 mt-auto border-2 border-[#111111] bg-[#fef3c7] p-3 text-left shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                <div className="m-4 mt-auto rounded-xl border-2 border-[#141413] bg-[#fef3c7] p-3.5 text-left shadow-[0px_2px_0px_0px_#141413]">
                   <div className="font-mono font-black text-[10px] uppercase text-amber-900 mb-0.5">
                     5 LIVE SESSIONS · YOU LEAVE WITH:
                   </div>
-                  <p className="text-xs font-black text-[#111111] leading-tight">
+                  <p className="text-xs font-black text-[#141413] leading-tight">
                     A PM-ready resume, an updated LinkedIn and a target list of companies you should apply for.
                   </p>
                 </div>
               </div>
 
               {/* Module 3: Interview Practice */}
-              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] shadow-[0px_5px_0px_0px_#141413] flex flex-col justify-between h-full hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all overflow-hidden">
                 <div>
-                  <div className="p-3 bg-[#188ab2] text-white border-b-[3px] border-[#111111] font-mono font-black flex items-center justify-between">
+                  <div className="p-3.5 bg-[#188ab2] text-white border-b-2 border-[#141413] font-mono font-black flex items-center justify-between">
                     <span className="text-xs sm:text-sm tracking-wider">MODULE 03</span>
-                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 text-[10px] font-black uppercase">
+                    <span className="bg-[#FEF08A] text-[#141413] rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[0px_1.5px_0px_0px_#141413]">
                       8 sessions + 2 mocks
                     </span>
                   </div>
                   <div className="p-5 pb-2">
-                    <h3 className="font-mono font-black text-xl text-[#111111] tracking-tight mb-1">
+                    <h3 className="font-mono font-black text-xl text-[#141413] tracking-tight mb-1">
                       Interview Practice
                     </h3>
                     <p className="text-xs font-bold text-[#188ab2] leading-snug">
                       Practise out loud and get feedback.
                     </p>
                   </div>
-                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#111111]">
+                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#141413]">
                     <li className="flex items-start gap-2">
                       <span className="text-[#188ab2] font-black mt-0.5">•</span>
                       <span>Analytics</span>
@@ -969,34 +1020,34 @@ export function AppExecutive() {
                     </li>
                   </ul>
                 </div>
-                <div className="m-4 mt-auto border-2 border-[#111111] bg-[#D1FAE5] p-3 text-left shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                <div className="m-4 mt-auto rounded-xl border-2 border-[#141413] bg-[#D1FAE5] p-3.5 text-left shadow-[0px_2px_0px_0px_#141413]">
                   <div className="font-mono font-black text-[10px] uppercase text-emerald-900 mb-0.5">
                     8 LIVE SESSIONS + 2 MOCKS · YOU LEAVE WITH:
                   </div>
-                  <p className="text-xs font-black text-[#111111] leading-tight">
+                  <p className="text-xs font-black text-[#141413] leading-tight">
                     1:1 feedback from your 2 live mock interviews.
                   </p>
                 </div>
               </div>
 
               {/* Learn Module (comes free with the bundle) */}
-              <div className="bg-white border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] flex flex-col justify-between h-full hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] shadow-[0px_5px_0px_0px_#141413] flex flex-col justify-between h-full hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all overflow-hidden">
                 <div>
-                  <div className="p-3 bg-[#111111] text-white border-b-[3px] border-[#111111] font-mono font-black flex items-center justify-between">
+                  <div className="p-3.5 bg-[#141413] text-white border-b-2 border-[#141413] font-mono font-black flex items-center justify-between">
                     <span className="text-xs sm:text-sm tracking-wider">LEARN MODULE</span>
-                    <span className="bg-emerald-300 text-emerald-950 border-2 border-[#111111] px-2 py-0.5 text-[10px] font-black uppercase">
+                    <span className="bg-[#A7F3D0] text-emerald-950 rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[0px_1.5px_0px_0px_#141413]">
                       Free with bundle
                     </span>
                   </div>
                   <div className="p-5 pb-2">
-                    <h3 className="font-mono font-black text-xl text-[#111111] tracking-tight mb-1">
+                    <h3 className="font-mono font-black text-xl text-[#141413] tracking-tight mb-1">
                       Learn Module
                     </h3>
-                    <p className="text-xs font-bold text-[#111111]/80 leading-snug">
+                    <p className="text-xs font-bold text-[#141413]/80 leading-snug">
                       Your self-paced library behind the three live modules.
                     </p>
                   </div>
-                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#111111]">
+                  <ul className="p-5 pt-1 space-y-2.5 font-bold text-xs sm:text-sm text-[#141413]">
                     <li className="flex items-start gap-2">
                       <span className="text-emerald-700 font-black mt-0.5">•</span>
                       <span>Recorded lectures</span>
@@ -1019,11 +1070,11 @@ export function AppExecutive() {
                     </li>
                   </ul>
                 </div>
-                <div className="m-4 mt-auto border-2 border-[#111111] bg-[#FFF3A7] p-3 text-left shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                  <div className="font-mono font-black text-[10px] uppercase text-[#111111] mb-0.5">
+                <div className="m-4 mt-auto rounded-xl border-2 border-[#141413] bg-[#FEF08A] p-3.5 text-left shadow-[0px_2px_0px_0px_#141413]">
+                  <div className="font-mono font-black text-[10px] uppercase text-[#141413] mb-0.5">
                     SELF-PACED LIBRARY · NOT SOLD SEPARATELY
                   </div>
-                  <p className="text-xs font-black text-[#111111] leading-tight">
+                  <p className="text-xs font-black text-[#141413] leading-tight">
                     Recorded lectures · Question bank · Case Resources · Company-wise resources · PM Gym. Not sold separately.
                   </p>
                 </div>
@@ -1033,8 +1084,8 @@ export function AppExecutive() {
 
             {/* Single-module note */}
             <div className="max-w-5xl mx-auto mb-10">
-              <div className="bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] p-4 sm:p-5 text-center font-bold text-xs sm:text-sm text-[#111111] shadow-[4px_4px_0px_0px_#111111]">
-                <span className="font-mono font-black uppercase text-xs bg-white px-2.5 py-1 border border-[#111111] mr-2 inline-block mb-1 sm:mb-0 shadow-[1px_1px_0px_0px_#111111]">
+              <div className="bg-[#FEF08A] rounded-2xl border-2 border-[#141413] p-4 sm:p-5 text-center font-bold text-xs sm:text-sm text-[#141413] shadow-[0px_4px_0px_0px_#141413]">
+                <span className="font-mono font-black uppercase text-xs bg-white rounded-full px-3 py-1 border-2 border-[#141413] mr-2 inline-block mb-1 sm:mb-0 shadow-[0px_1.5px_0px_0px_#141413]">
                   SINGLE-MODULE NOTE
                 </span>
                 Buying one module? You join the same live group for that module and can add the others later at 7k.
@@ -1042,35 +1093,35 @@ export function AppExecutive() {
             </div>
 
             {/* NEW BLOCK: HOW THE MODULES FIT TOGETHER (SIMPLE GRAPHIC) */}
-            <div className="bg-white border-2 sm:border-[3px] border-[#111111] p-6 sm:p-10 shadow-[6px_6px_0px_0px_#111111] text-left max-w-5xl mx-auto">
+            <div className="bg-white rounded-3xl border-2 border-[#141413] p-6 sm:p-10 shadow-[0px_6px_0px_0px_#141413] text-left max-w-5xl mx-auto">
               
               <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block select-none">
+                <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block select-none">
                   COHORT TIMELINE · STARTS 23 NOV
                 </span>
-                <span className="font-mono font-black text-xs uppercase text-[#188ab2] bg-[#e0f2fe] border border-[#111111] px-2.5 py-1 shadow-[1px_1px_0px_0px_#111111]">
+                <span className="font-mono font-black text-xs uppercase text-[#188ab2] bg-[#e0f2fe] rounded-full border-2 border-[#141413] px-3 py-1 shadow-[0px_1.5px_0px_0px_#141413]">
                   10 Weeks · 2 Parallel Tracks
                 </span>
               </div>
 
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#111111] tracking-tight mb-3">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#141413] tracking-tight mb-3">
                 Your path through the Accelerator
               </h3>
               
-              <p className="text-xs sm:text-sm md:text-base font-bold text-[#111111]/85 max-w-3xl mb-8 leading-relaxed">
+              <p className="text-xs sm:text-sm md:text-base font-bold text-[#141413]/85 max-w-3xl mb-8 leading-relaxed">
                 Modules 1 and 2 run one after the other: first your evident and then your resume and story. Module 3 runs alongside them, so you practise interviews while you build. Each module takes 5–8 weeks; the whole programme takes about 10. Mentor support continues on WhatsApp throughout.
               </p>
 
               {/* TIMELINE GRAPHIC CONTAINER */}
-              <div className="border-2 sm:border-[3px] border-[#111111] bg-slate-50 p-4 sm:p-6 shadow-[4px_4px_0px_0px_#111111] overflow-x-auto">
+              <div className="rounded-2xl border-2 border-[#141413] bg-slate-50 p-4 sm:p-6 shadow-[0px_4px_0px_0px_#141413] overflow-x-auto">
                 <div className="min-w-[620px]">
                   
                   {/* Header: Weeks 1 to 10 */}
-                  <div className="grid grid-cols-10 gap-1 mb-3 text-center">
+                  <div className="grid grid-cols-10 gap-1.5 mb-3 text-center">
                     {Array.from({ length: 10 }).map((_, i) => (
                       <div
                         key={i}
-                        className={`py-1 text-[11px] font-mono font-black border border-[#111111] ${
+                        className={`py-1 rounded-md text-[11px] font-mono font-black border border-[#141413] ${
                           i < 5 ? 'bg-sky-100 text-[#188ab2]' : 'bg-amber-100 text-amber-900'
                         }`}
                       >
@@ -1081,38 +1132,38 @@ export function AppExecutive() {
 
                   {/* Lane A: Module 1 then Module 2 */}
                   <div className="mb-4">
-                    <div className="flex items-center justify-between text-xs font-mono font-black uppercase text-[#111111] mb-1.5">
-                      <span>LANE A: BUILD PROOF & PROFILE (SEQUENTIAL)</span>
+                    <div className="flex items-center justify-between text-xs font-mono font-black uppercase text-[#141413] mb-1.5">
+                      <span>LANE A: BUILD PROOF &amp; PROFILE (SEQUENTIAL)</span>
                       <span className="text-[#188ab2]">Weeks 1–10</span>
                     </div>
                     <div className="grid grid-cols-10 gap-1.5 h-16">
                       {/* Module 1: Weeks 1–5 */}
-                      <div className="col-span-5 bg-[#e0f2fe] border-2 border-[#111111] p-2.5 flex flex-col justify-between shadow-[2px_2px_0px_0px_#111111]">
+                      <div className="col-span-5 bg-[#e0f2fe] rounded-xl border-2 border-[#141413] p-2.5 flex flex-col justify-between shadow-[0px_2px_0px_0px_#141413]">
                         <div className="flex items-center justify-between">
                           <span className="font-mono font-black text-xs text-[#188ab2] uppercase">
                             MODULE 1: EVIDENCE BUILDER
                           </span>
-                          <span className="bg-white border border-[#111111] font-mono font-black text-[10px] px-1.5 py-0.2">
+                          <span className="bg-white rounded-full border border-[#141413] font-mono font-black text-[10px] px-2 py-0.2">
                             5 live sessions
                           </span>
                         </div>
-                        <p className="text-[11px] font-bold text-[#111111]/85 truncate">
-                          Teardowns, PRD writing, user research, data project & prototype
+                        <p className="text-[11px] font-bold text-[#141413]/85 truncate">
+                          Teardowns, PRD writing, user research, data project &amp; prototype
                         </p>
                       </div>
 
                       {/* Module 2: Weeks 6–10 */}
-                      <div className="col-span-5 bg-[#fef3c7] border-2 border-[#111111] p-2.5 flex flex-col justify-between shadow-[2px_2px_0px_0px_#111111]">
+                      <div className="col-span-5 bg-[#fef3c7] rounded-xl border-2 border-[#141413] p-2.5 flex flex-col justify-between shadow-[0px_2px_0px_0px_#141413]">
                         <div className="flex items-center justify-between">
                           <span className="font-mono font-black text-xs text-amber-900 uppercase">
                             MODULE 2: PROFILE ENHANCER
                           </span>
-                          <span className="bg-white border border-[#111111] font-mono font-black text-[10px] px-1.5 py-0.2">
+                          <span className="bg-white rounded-full border border-[#141413] font-mono font-black text-[10px] px-2 py-0.2">
                             5 live sessions
                           </span>
                         </div>
-                        <p className="text-[11px] font-bold text-[#111111]/85 truncate">
-                          PM resume rewrite, LinkedIn overhaul, story & StepSmart job board
+                        <p className="text-[11px] font-bold text-[#141413]/85 truncate">
+                          PM resume rewrite, LinkedIn overhaul, story &amp; StepSmart job board
                         </p>
                       </div>
                     </div>
@@ -1120,38 +1171,38 @@ export function AppExecutive() {
 
                   {/* Lane B: Module 3 with Mock Dots */}
                   <div className="mb-4">
-                    <div className="flex items-center justify-between text-xs font-mono font-black uppercase text-[#111111] mb-1.5">
+                    <div className="flex items-center justify-between text-xs font-mono font-black uppercase text-[#141413] mb-1.5">
                       <span>LANE B: INTERVIEW PRACTICE (CONCURRENT RUN)</span>
                       <span className="text-emerald-800">8 Live Sessions + 2 Live Mocks</span>
                     </div>
                     
-                    <div className="relative bg-[#D1FAE5] border-2 border-[#111111] p-3 shadow-[2px_2px_0px_0px_#111111]">
+                    <div className="relative bg-[#D1FAE5] rounded-xl border-2 border-[#141413] p-3 shadow-[0px_2px_0px_0px_#141413]">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-mono font-black text-xs text-emerald-950 uppercase">
                           MODULE 3: INTERVIEW PRACTICE (WEEKS 1–10)
                         </span>
-                        <span className="bg-white border border-[#111111] font-mono font-black text-[10px] px-1.5 py-0.2 text-emerald-900">
+                        <span className="bg-white rounded-full border border-[#141413] font-mono font-black text-[10px] px-2.5 py-0.5 text-emerald-900">
                           8 live sessions + 2 live mock interviews
                         </span>
                       </div>
                       
-                      <p className="text-[11px] font-bold text-[#111111]/80 mb-3">
-                        Practise product sense, analytics, RCA, strategy & behavioral rounds out loud every week.
+                      <p className="text-[11px] font-bold text-[#141413]/80 mb-3">
+                        Practise product sense, analytics, RCA, strategy &amp; behavioral rounds out loud every week.
                       </p>
 
                       {/* Timeline dot tracks inside Lane B */}
-                      <div className="relative h-7 bg-white/80 border border-[#111111] flex items-center px-4">
+                      <div className="relative h-7 bg-white/80 rounded-lg border border-[#141413] flex items-center px-4">
                         <div className="w-full h-1 bg-emerald-300 rounded" />
                         
                         {/* Dot 1: Week 5 Mock */}
-                        <div className="absolute left-[48%] -translate-x-1/2 flex items-center gap-1 bg-[#111111] text-white px-2 py-0.5 border border-white font-mono font-black text-[10px] shadow-[1px_1px_0px_0px_#111111]">
+                        <div className="absolute left-[48%] -translate-x-1/2 flex items-center gap-1 bg-[#141413] text-white rounded-full px-2.5 py-0.5 border border-white font-mono font-black text-[10px] shadow-[0px_1.5px_0px_0px_#141413]">
                           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
                           <span>● MOCK 1 (1:1)</span>
                         </div>
 
                         {/* Dot 2: Week 9/10 Mock */}
-                        <div className="absolute right-[4%] flex items-center gap-1 bg-[#188ab2] text-white px-2 py-0.5 border border-white font-mono font-black text-[10px] shadow-[1px_1px_0px_0px_#111111]">
-                          <span className="w-2 h-2 rounded-full bg-[#FFF3A7] inline-block" />
+                        <div className="absolute right-[4%] flex items-center gap-1 bg-[#188ab2] text-white rounded-full px-2.5 py-0.5 border border-white font-mono font-black text-[10px] shadow-[0px_1.5px_0px_0px_#141413]">
+                          <span className="w-2 h-2 rounded-full bg-[#FEF08A] inline-block" />
                           <span>● MOCK 2 (1:1)</span>
                         </div>
                       </div>
@@ -1159,14 +1210,14 @@ export function AppExecutive() {
                   </div>
 
                   {/* WhatsApp Support & Learn Library Underpinning */}
-                  <div className="bg-[#FFF3A7] border-2 border-[#111111] p-2.5 flex items-center justify-between shadow-[2px_2px_0px_0px_#111111]">
+                  <div className="bg-[#FEF08A] rounded-xl border-2 border-[#141413] p-2.5 flex items-center justify-between shadow-[0px_2px_0px_0px_#141413]">
                     <div className="flex items-center gap-2">
                       <span className="text-base">💬</span>
-                      <span className="font-mono font-black text-xs text-[#111111] uppercase">
+                      <span className="font-mono font-black text-xs text-[#141413] uppercase">
                         Continuous Mentor Support on WhatsApp + Daily PM Gym + Learn Library
                       </span>
                     </div>
-                    <span className="font-mono font-bold text-[10px] text-[#111111]/70 uppercase">
+                    <span className="font-mono font-bold text-[10px] text-[#141413]/70 uppercase">
                       Active throughout all 10 weeks
                     </span>
                   </div>
@@ -1175,16 +1226,16 @@ export function AppExecutive() {
               </div>
 
               {/* Start Date Confirmation Banner */}
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 pt-4 border-t-2 border-[#111111]/20">
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 pt-4 border-t-2 border-[#141413]/20">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-xs sm:text-sm font-extrabold text-[#111111]">
-                    Cohort Starts <span className="bg-[#FFF3A7] px-1.5 py-0.5 border border-[#111111] font-mono font-black">23 November 2026</span> · Strictly capped to 10–20 seats
+                  <span className="text-xs sm:text-sm font-extrabold text-[#141413]">
+                    Cohort Starts <span className="bg-[#FEF08A] rounded-md px-2 py-0.5 border border-[#141413] font-mono font-black">23 November 2026</span> · Strictly capped to 10–20 seats
                   </span>
                 </div>
                 <button
                   onClick={() => scrollToSection('pricing')}
-                  className="text-xs font-black text-[#188ab2] hover:underline uppercase font-mono cursor-pointer"
+                  className="px-5 py-2 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer"
                 >
                   Reserve Your Seat for ₹15,000 ➜
                 </button>
@@ -1196,20 +1247,20 @@ export function AppExecutive() {
         </section>
 
         {/* 7. HOW IT WORKS */}
-        <section id="how-it-works" className="py-20 bg-white border-b-2 border-[#111111] scroll-mt-20">
+        <section id="how-it-works" className="py-20 bg-white border-b-2 border-[#141413] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-6xl text-left">
             
             <div className="text-center mb-14">
-              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
+              <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block mb-3 select-none">
                 HOW IT WORKS
               </span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] tracking-tight mb-3">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#141413] tracking-tight mb-3">
                 Built around a{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_#111111]">
+                <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[1.5deg] shadow-[0px_3px_0px_0px_#141413]">
                   full-time job
                 </span>
               </h2>
-              <p className="text-sm sm:text-base font-bold text-[#111111]/80 max-w-xl mx-auto">
+              <p className="text-sm sm:text-base font-bold text-[#141413]/80 max-w-xl mx-auto">
                 No quitting your job. Everything is designed around evening and weekend momentum.
               </p>
             </div>
@@ -1217,83 +1268,83 @@ export function AppExecutive() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               
               {/* Point 1 */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
                 <div>
                   <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">01 // DURATION</div>
-                  <h3 className="text-lg font-black text-[#111111] mb-2">About 10 weeks</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                  <h3 className="text-lg font-black text-[#141413] mb-2">About 10 weeks</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
                     About 10 weeks. Modules run 5–8 weeks each.
                   </p>
                 </div>
               </div>
 
               {/* Point 2 */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
                 <div>
                   <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">02 // LAUNCH DATE</div>
-                  <h3 className="text-lg font-black text-[#111111] mb-2">Starts 23 Nov</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                  <h3 className="text-lg font-black text-[#141413] mb-2">Starts 23 Nov</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
                     Starts 23 Nov. Intake strictly capped for the upcoming cohort.
                   </p>
                 </div>
               </div>
 
               {/* Point 3 */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
                 <div>
                   <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">03 // BATCH SIZE</div>
-                  <h3 className="text-lg font-black text-[#111111] mb-2">Groups of 10–20</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                  <h3 className="text-lg font-black text-[#141413] mb-2">Groups of 10–20</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
                     Live, in groups of 10–20. Everyone gets feedback, not just the loudest voice.
                   </p>
                 </div>
               </div>
 
               {/* Point 4 */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
                 <div>
                   <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">04 // INSTRUCTORS</div>
-                  <h3 className="text-lg font-black text-[#111111] mb-2">Two working PM instructors</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                  <h3 className="text-lg font-black text-[#141413] mb-2">Two working PM instructors</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
                     Two instructors, both working in product.
                   </p>
                 </div>
               </div>
 
               {/* Point 5 */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
                 <div>
                   <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">05 // FEEDBACK</div>
-                  <h3 className="text-lg font-black text-[#111111] mb-2">1:1 feedback on 2 mock interviews</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                  <h3 className="text-lg font-black text-[#141413] mb-2">1:1 feedback on 2 mock interviews</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
                     1:1 feedback on your 2 mock interviews. Everything else is live group work.
                   </p>
                 </div>
               </div>
 
               {/* Point 6 */}
-              <div className="bg-white border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
                 <div>
                   <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">06 // DIRECT MENTORSHIP</div>
-                  <h3 className="text-lg font-black text-[#111111] mb-2">Mentor support on WhatsApp</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/85 leading-relaxed">
+                  <h3 className="text-lg font-black text-[#141413] mb-2">Mentor support on WhatsApp</h3>
+                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
                     Mentor support on WhatsApp between sessions.
                   </p>
                 </div>
               </div>
 
               {/* Point 7 */}
-              <div className="bg-[#FFF3A7] border-2 border-[#111111] p-6 shadow-[4px_4px_0px_0px_#111111] md:col-span-2 lg:col-span-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="bg-[#FEF08A] rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] md:col-span-2 lg:col-span-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                  <div className="font-mono font-black text-xs text-[#111111] uppercase mb-1">07 // WEEKEND SCHEDULE</div>
-                  <h3 className="text-xl font-black text-[#111111] mb-1">Saturday & Sunday live sessions</h3>
-                  <p className="text-xs sm:text-sm font-bold text-[#111111]/85">
-                    Saturday & Sunday live sessions (4–6 hours/week, designed for working professionals).
+                  <div className="font-mono font-black text-xs text-[#141413] uppercase mb-1">07 // WEEKEND SCHEDULE</div>
+                  <h3 className="text-xl font-black text-[#141413] mb-1">Saturday &amp; Sunday live sessions</h3>
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85">
+                    Saturday &amp; Sunday live sessions (4–6 hours/week, designed for working professionals).
                   </p>
                 </div>
                 <button
                   onClick={() => scrollToSection('pricing')}
-                  className="px-6 py-3 bg-[#188ab2] text-white border-2 border-[#111111] font-black text-xs sm:text-sm uppercase shadow-[3px_3px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#111111] transition-all shrink-0 cursor-pointer"
+                  className="px-7 py-3.5 bg-[#188ab2] hover:bg-[#0f6f8f] text-white rounded-full border-2 border-[#141413] font-black text-xs sm:text-sm uppercase shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] transition-all shrink-0 cursor-pointer"
                 >
                   Reserve Your Seat ➜
                 </button>
@@ -1304,86 +1355,111 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 8. WHAT YOU WALK AWAY WITH */}
-        <section id="outcomes" className="py-20 bg-white border-b-2 border-[#111111] scroll-mt-20">
-          <div className="container mx-auto px-6 max-w-7xl">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-              
-              {/* Left Column: Pure Floating Title Anchor */}
-              <div className="lg:col-span-5 lg:sticky lg:top-36 text-left">
-                <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
-                  WHAT YOU WALK AWAY WITH
-                </span>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] tracking-tight leading-[1.15]">
-                  What you will have in your{' '}
-                  <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
-                    hands
-                  </span>
-                </h2>
-              </div>
+        {/* 8. WHAT YOU WALK AWAY WITH (Image 6 GitBrush Full-Bleed Indigo Band) */}
+        <section id="outcomes" className="py-20 md:py-24 bg-[#4F46E5] text-white border-b-2 border-[#141413] relative overflow-hidden scroll-mt-20">
+          
+          {/* Fun GitBrush-style decorative neo-brutalist sparks & starbursts */}
+          <div className="absolute top-8 left-8 text-yellow-300 font-mono text-3xl select-none opacity-80 pointer-events-none animate-pulse">✦</div>
+          <div className="absolute top-12 right-12 text-pink-300 font-mono text-4xl select-none opacity-80 pointer-events-none">★</div>
+          <div className="absolute bottom-10 left-12 text-cyan-300 font-mono text-3xl select-none opacity-80 pointer-events-none">✦</div>
+          <div className="absolute bottom-8 right-16 text-yellow-300 font-mono text-4xl select-none opacity-80 pointer-events-none">✳</div>
 
-              {/* Right Column: 5 Core Deliverables */}
-              <div className="lg:col-span-7 space-y-6 sm:space-y-7 text-left">
-                {[
-                  {
-                    num: "01",
-                    title: "A PM-ready resume and an updated LinkedIn",
-                    desc: "Overhauled to showcase product signals, user metrics, and business outcomes that pass recruiter screening."
-                  },
-                  {
-                    num: "02",
-                    title: "A target list of companies",
-                    desc: "Tailored to your current domain, seniority, and switch goals with active PM openings."
-                  },
-                  {
-                    num: "03",
-                    title: "2 portfolio projects you can show and talk through",
-                    desc: "End-to-end teardowns, PRDs, prototypes, and data analysis deliverables ready for interview rounds."
-                  },
-                  {
-                    num: "04",
-                    title: "Feedback from 2 live mock interviews",
-                    desc: "1:1 rubric evaluation with actionable notes on product sense, strategy, RCA, and behavioral responses."
-                  },
-                  {
-                    num: "05",
-                    title: "With the bundle: the Learn Module",
-                    desc: "Recorded lectures, question bank, case and company-wise resources, and daily PM Gym included at no extra cost."
-                  }
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-4 sm:gap-6 bg-slate-50 border-2 border-[#111111] p-5 sm:p-6 shadow-[3px_3px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#111111] transition-all group">
-                    {/* Number Badge */}
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#188ab2] text-white flex items-center justify-center font-mono font-black text-xs sm:text-sm shrink-0 mt-0.5 border-2 border-[#111111] shadow-[1.5px_1.5px_0px_0px_#111111]">
-                      {item.num}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-base sm:text-lg font-black text-[#111111] tracking-tight group-hover:text-[#188ab2] transition-colors mb-1">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs sm:text-sm font-medium text-[#111111]/80 leading-relaxed">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
+          <div className="container mx-auto px-6 max-w-6xl relative z-10 text-center">
+            
+            {/* Header */}
+            <div className="inline-block mb-3">
+              <span className="bg-[#FEF08A] text-[#141413] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block select-none">
+                WHAT YOU WALK AWAY WITH
+              </span>
             </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-4">
+              What you will have in your{' '}
+              <span className="inline-block bg-[#FEF08A] text-[#141413] rounded-xl border-2 border-[#141413] px-3.5 py-0.5 rotate-[1.5deg] shadow-[0px_4px_0px_0px_#141413]">
+                hands
+              </span>
+            </h2>
+            <p className="text-sm sm:text-base font-bold text-white/90 max-w-xl mx-auto mb-14">
+              Five tangible, production-grade deliverables recruiters and hiring managers can directly evaluate.
+            </p>
+
+            {/* 5 Deliverable Bento Cards with Overlapping Floating Circular Badges (GitBrush Style) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left items-stretch">
+              {[
+                {
+                  num: "01",
+                  badgeBg: "bg-[#FEF08A]",
+                  title: "A PM-ready resume and an updated LinkedIn",
+                  desc: "Overhauled to showcase product signals, user metrics, and business outcomes that pass recruiter screening."
+                },
+                {
+                  num: "02",
+                  badgeBg: "bg-[#BAE6FD]",
+                  title: "A target list of companies",
+                  desc: "Tailored to your current domain, seniority, and switch goals with active PM openings."
+                },
+                {
+                  num: "03",
+                  badgeBg: "bg-[#FED7AA]",
+                  title: "2 portfolio projects you can show and talk through",
+                  desc: "End-to-end teardowns, PRDs, prototypes, and data analysis deliverables ready for interview rounds."
+                },
+                {
+                  num: "04",
+                  badgeBg: "bg-[#A7F3D0]",
+                  title: "Feedback from 2 live mock interviews",
+                  desc: "1:1 rubric evaluation with actionable notes on product sense, strategy, RCA, and behavioral responses."
+                },
+                {
+                  num: "05",
+                  badgeBg: "bg-[#E9D5FF]",
+                  title: "With the bundle: the Learn Module",
+                  desc: "Recorded lectures, question bank, case and company-wise resources, and daily PM Gym included at no extra cost."
+                }
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="relative bg-white text-[#141413] rounded-2xl border-2 border-[#141413] p-6 pt-8 shadow-[0px_5px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all flex flex-col justify-between"
+                >
+                  {/* Floating Circular Badge Overlapping Top-Left (Image 6 GitBrush) */}
+                  <div className={`w-10 h-10 rounded-full border-2 border-[#141413] ${item.badgeBg} text-[#141413] flex items-center justify-center font-mono font-black text-xs shadow-[0px_2px_0px_0px_#141413] absolute -top-4 left-6`}>
+                    {item.num}
+                  </div>
+
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-[#141413] tracking-tight mb-2 mt-1 leading-snug">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm font-medium text-[#141413]/80 leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Bottom Pill matching GitBrush "Hosted on Slack" */}
+            <div className="text-center mt-12">
+              <div className="inline-flex items-center gap-2 bg-white rounded-full border-2 border-[#141413] px-6 py-2.5 shadow-[0px_4px_0px_0px_#141413] font-mono font-black text-xs uppercase text-[#141413] select-none">
+                <span>🎓 5 Verifiable Portfolio Assets</span>
+                <span className="text-[#188ab2]">· Zero Filler</span>
+              </div>
+            </div>
+
           </div>
         </section>
 
-        {/* 9. WHO THIS IS FOR / WHO THIS IS NOT FOR */}
-        <section id="who-it-is-for" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
+        {/* 9. WHO THIS IS FOR / WHO THIS IS NOT FOR (GitBrush Soft Mint Bento Cards) */}
+        <section id="who-it-is-for" className="py-20 bg-slate-50 border-b-2 border-[#141413] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-5xl">
             
             {/* Centered Heading */}
             <div className="text-center mb-14">
-              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
+              <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block mb-3 select-none">
                 FIT &amp; COMMITMENT
               </span>
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
+              <h2 className="text-3xl md:text-5xl font-black text-[#141413] mb-3 tracking-tight">
                 Is PM-X{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
+                <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[1.5deg] shadow-[0px_3px_0px_0px_#141413]">
                   for you?
                 </span>
               </h2>
@@ -1391,17 +1467,23 @@ export function AppExecutive() {
 
             {/* Side-by-Side Comparison Container */}
             <div className="relative max-w-5xl mx-auto text-left">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
                 
-                {/* Left Card: Who this is for */}
-                <div className="bg-white border-2 sm:border-[3px] border-[#111111] p-6 sm:p-8 shadow-[5px_5px_0px_0px_#111111] flex flex-col justify-between">
+                {/* Left Card: Who this is for (Image 6 GitBrush Soft Mint Bento Card with Floating Stamp) */}
+                <div className="relative bg-[#DCFCE7] rounded-3xl border-2 border-[#141413] p-7 sm:p-9 shadow-[0px_6px_0px_0px_#141413] flex flex-col justify-between">
+                  {/* Floating Circular Stamp on Top-Right Corner (Image 6 GitBrush) */}
+                  <div className="absolute -top-5 -right-3 sm:-right-4 w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-[#F97316] text-white border-2 border-[#141413] shadow-[0px_3px_0px_0px_#141413] flex flex-col items-center justify-center text-center rotate-12 leading-tight p-1 select-none z-10">
+                    <span className="text-[9px] font-black uppercase tracking-wider">IDEAL</span>
+                    <span className="text-[11px] font-black uppercase">FIT ★</span>
+                  </div>
+
                   <div>
-                    <div className="flex items-center justify-between pb-4 mb-6 border-b-2 border-[#111111]/15">
-                      <h3 className="text-xl sm:text-2xl font-black text-[#111111]">
+                    <div className="flex items-center justify-between pb-4 mb-6 border-b-2 border-[#141413]/15">
+                      <h3 className="text-xl sm:text-2xl font-black text-[#141413]">
                         Who this is for
                       </h3>
-                      <span className="bg-[#D1FAE5] text-emerald-950 text-xs font-mono font-black px-2.5 py-0.5 uppercase tracking-wider border border-[#111111] shadow-[1px_1px_0px_0px_#111111]">
-                        IDEAL FIT ✓
+                      <span className="bg-white text-emerald-950 text-xs font-mono font-black px-3 py-1 rounded-full uppercase tracking-wider border-2 border-[#141413] shadow-[0px_1.5px_0px_0px_#141413]">
+                        TARGET
                       </span>
                     </div>
 
@@ -1411,8 +1493,8 @@ export function AppExecutive() {
                         "People with no PM title or PM experience yet",
                         "People ready to do the work, not just watch it"
                       ].map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-3.5 text-sm sm:text-base font-bold text-[#111111]">
-                          <span className="w-6 h-6 rounded-full bg-[#188ab2] text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 border border-[#111111]">
+                        <li key={idx} className="flex items-start gap-3.5 text-sm sm:text-base font-bold text-[#141413]">
+                          <span className="w-6 h-6 rounded-full bg-[#188ab2] text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 border border-[#141413] shadow-[0px_1px_0px_0px_#141413]">
                             ✓
                           </span>
                           <span className="leading-snug">{item}</span>
@@ -1421,20 +1503,26 @@ export function AppExecutive() {
                     </ul>
                   </div>
 
-                  <div className="mt-8 pt-4 border-t border-[#111111]/15 text-xs font-bold text-[#188ab2]">
+                  <div className="mt-8 pt-4 border-t border-[#141413]/15 text-xs font-bold text-[#188ab2]">
                     Designed specifically for career switchers seeking verifiable product proof.
                   </div>
                 </div>
 
-                {/* Right Card: Who this is not for */}
-                <div className="bg-slate-100/90 border-2 sm:border-[3px] border-[#111111] p-6 sm:p-8 shadow-[5px_5px_0px_0px_#111111] flex flex-col justify-between">
+                {/* Right Card: Who this is not for (Soft Rose Bento Card with Floating Stamp) */}
+                <div className="relative bg-[#FFF1F2] rounded-3xl border-2 border-[#141413] p-7 sm:p-9 shadow-[0px_6px_0px_0px_#141413] flex flex-col justify-between">
+                  {/* Floating Circular Stamp on Top-Right Corner */}
+                  <div className="absolute -top-5 -right-3 sm:-right-4 w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-rose-500 text-white border-2 border-[#141413] shadow-[0px_3px_0px_0px_#141413] flex flex-col items-center justify-center text-center -rotate-12 leading-tight p-1 select-none z-10">
+                    <span className="text-[9px] font-black uppercase tracking-wider">NOT A</span>
+                    <span className="text-[11px] font-black uppercase">FIT ✕</span>
+                  </div>
+
                   <div>
-                    <div className="flex items-center justify-between pb-4 mb-6 border-b-2 border-[#111111]/15">
-                      <h3 className="text-xl sm:text-2xl font-black text-[#111111]/85">
+                    <div className="flex items-center justify-between pb-4 mb-6 border-b-2 border-[#141413]/15">
+                      <h3 className="text-xl sm:text-2xl font-black text-[#141413]">
                         Who this is not for
                       </h3>
-                      <span className="bg-rose-100 text-rose-950 text-xs font-mono font-black px-2.5 py-0.5 uppercase tracking-wider border border-[#111111] shadow-[1px_1px_0px_0px_#111111]">
-                        NOT A FIT ✕
+                      <span className="bg-white text-rose-950 text-xs font-mono font-black px-3 py-1 rounded-full uppercase tracking-wider border-2 border-[#141413] shadow-[0px_1.5px_0px_0px_#141413]">
+                        SKIP IF
                       </span>
                     </div>
 
@@ -1444,8 +1532,8 @@ export function AppExecutive() {
                         "Anyone who only wants job listings",
                         "Anyone expecting a guaranteed job"
                       ].map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-3.5 text-sm sm:text-base font-bold text-[#111111]/75">
-                          <span className="w-6 h-6 rounded-full bg-rose-200 text-rose-900 flex items-center justify-center font-black text-xs shrink-0 mt-0.5 border border-[#111111]">
+                        <li key={idx} className="flex items-start gap-3.5 text-sm sm:text-base font-bold text-[#141413]/85">
+                          <span className="w-6 h-6 rounded-full bg-rose-200 text-rose-900 flex items-center justify-center font-black text-xs shrink-0 mt-0.5 border border-[#141413]">
                             ✕
                           </span>
                           <span className="leading-snug">{item}</span>
@@ -1454,7 +1542,7 @@ export function AppExecutive() {
                     </ul>
                   </div>
 
-                  <div className="mt-8 pt-4 border-t border-[#111111]/15 text-xs font-bold text-[#111111]/60">
+                  <div className="mt-8 pt-4 border-t border-[#141413]/15 text-xs font-bold text-[#141413]/70">
                     We focus on rigorous, live execution — not passive shortcut guarantees.
                   </div>
                 </div>
@@ -1465,24 +1553,24 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 8. THE 8 WEEKS, WEEK BY WEEK */}
-        <section id="curriculum" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
+        {/* 10. THE 8 WEEKS, WEEK BY WEEK */}
+        <section id="curriculum" className="py-20 bg-slate-50 border-b-2 border-[#141413] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-4xl">
             
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
+              <h2 className="text-3xl md:text-5xl font-black text-[#141413] mb-3 tracking-tight">
                 The 8 weeks,{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[-1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
+                <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[-1.5deg] shadow-[0px_3px_0px_0px_#141413]">
                   week by week
                 </span>
               </h2>
-              <p className="text-base font-medium text-[#111111]/80">
+              <p className="text-base font-medium text-[#141413]/80">
                 Wednesday learn, Sunday build, Saturday practise.
               </p>
             </div>
 
-            {/* Minimal Editorial Single-Line Separator Layout with Naked Numeric Headings */}
-            <div className="border-t border-b border-[#111111]/20 divide-y divide-[#111111]/20 text-left bg-transparent">
+            {/* Rounded Editorial Container for Curriculum */}
+            <div className="bg-white rounded-3xl border-2 border-[#141413] shadow-[0px_5px_0px_0px_#141413] divide-y divide-[#141413]/15 text-left overflow-hidden">
               {[
                 { 
                   week: 1, 
@@ -1520,7 +1608,7 @@ export function AppExecutive() {
                   <div key={w.week} className="transition-colors hover:bg-black/[0.02]">
                     <button
                       onClick={() => setOpenWeek(isOpen ? null : w.week)}
-                      className="w-full py-5 sm:py-6 px-1 sm:px-2 flex items-center justify-between text-left cursor-pointer group"
+                      className="w-full py-5 sm:py-6 px-4 sm:px-6 flex items-center justify-between text-left cursor-pointer group"
                     >
                       <div className="flex items-center gap-4 sm:gap-6 flex-1 min-w-0 pr-4">
                         {/* Naked Numeric Headings (01, 02) */}
@@ -1530,42 +1618,42 @@ export function AppExecutive() {
 
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2.5 flex-wrap">
-                            <span className="text-lg sm:text-xl font-black text-[#111111] group-hover:text-[#188ab2] transition-colors tracking-tight">
+                            <span className="text-lg sm:text-xl font-black text-[#141413] group-hover:text-[#188ab2] transition-colors tracking-tight">
                               {w.title}
                             </span>
                             {w.isGraded && (
-                              <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] text-[10px] font-mono font-black px-2 py-0.5 uppercase">
+                              <span className="bg-[#FEF08A] text-[#141413] rounded-full border border-[#141413] text-[10px] font-mono font-black px-2.5 py-0.5 uppercase shadow-[0px_1px_0px_#141413]">
                                 GRADED
                               </span>
                             )}
                           </div>
-                          <p className="text-xs sm:text-sm font-medium text-[#111111]/70 truncate mt-0.5">
+                          <p className="text-xs sm:text-sm font-medium text-[#141413]/70 truncate mt-0.5">
                             {w.subtitle}
                           </p>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[11px] font-mono font-bold text-[#111111]/50 uppercase hidden sm:inline">
+                        <span className="text-[11px] font-mono font-bold text-[#141413]/50 uppercase hidden sm:inline">
                           {isOpen ? 'Close' : 'View Syllabus'}
                         </span>
-                        <ChevronDown className={`w-5 h-5 text-[#111111] stroke-[2.5] transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#188ab2]' : ''}`} />
+                        <ChevronDown className={`w-5 h-5 text-[#141413] stroke-[2.5] transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#188ab2]' : ''}`} />
                       </div>
                     </button>
 
                     {isOpen && (
-                      <div className="pb-6 pt-1 px-1 sm:px-2 pl-12 sm:pl-15 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm font-medium text-[#111111]/85 border-t border-[#111111]/10 mt-1">
-                        <div className="p-3 bg-white/90 border-l-2 border-[#188ab2]">
-                          <b className="text-[#111111] block mb-1 font-black text-xs uppercase tracking-wide">Learn · Wednesday</b>
-                          <span className="text-[#111111]/80">{w.learn}</span>
+                      <div className="pb-6 pt-1 px-4 sm:px-6 pl-14 sm:pl-16 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm font-medium text-[#141413]/85 border-t border-[#141413]/10 mt-1">
+                        <div className="p-3.5 bg-slate-50 rounded-xl border-l-4 border-[#188ab2]">
+                          <b className="text-[#141413] block mb-1 font-black text-xs uppercase tracking-wide">Learn · Wednesday</b>
+                          <span className="text-[#141413]/80">{w.learn}</span>
                         </div>
-                        <div className="p-3 bg-white/90 border-l-2 border-[#111111]">
-                          <b className="text-[#111111] block mb-1 font-black text-xs uppercase tracking-wide">Build · Sunday</b>
-                          <span className="text-[#111111]/80">{w.build}</span>
+                        <div className="p-3.5 bg-slate-50 rounded-xl border-l-4 border-[#141413]">
+                          <b className="text-[#141413] block mb-1 font-black text-xs uppercase tracking-wide">Build · Sunday</b>
+                          <span className="text-[#141413]/80">{w.build}</span>
                         </div>
-                        <div className="p-3 bg-white/90 border-l-2 border-[#FFF3A7]">
-                          <b className="text-[#111111] block mb-1 font-black text-xs uppercase tracking-wide">Practise · Saturday</b>
-                          <span className="text-[#111111]/80">{w.practice}</span>
+                        <div className="p-3.5 bg-slate-50 rounded-xl border-l-4 border-[#FEF08A]">
+                          <b className="text-[#141413] block mb-1 font-black text-xs uppercase tracking-wide">Practise · Saturday</b>
+                          <span className="text-[#141413]/80">{w.practice}</span>
                         </div>
                       </div>
                     )}
@@ -1574,13 +1662,13 @@ export function AppExecutive() {
               })}
             </div>
 
-            {/* Minimal Apple-Style Curriculum Brochure Unlock Bar */}
+            {/* Curriculum Brochure Unlock Bar */}
             <div
               onClick={() => {
                 setBrochureFormStatus('idle');
                 setIsBrochureModalOpen(true);
               }}
-              className="mt-8 bg-white border-2 border-[#111111] p-4 sm:p-5 shadow-[3px_3px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#111111] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 group select-none"
+              className="mt-8 bg-white rounded-2xl border-2 border-[#141413] p-4 sm:p-5 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 group select-none"
             >
               <div className="flex items-center gap-3.5 min-w-0">
                 <div className="w-10 h-10 rounded-full bg-[#188ab2]/10 border border-[#188ab2] text-[#188ab2] flex items-center justify-center shrink-0 group-hover:bg-[#188ab2] group-hover:text-white transition-colors">
@@ -1588,14 +1676,14 @@ export function AppExecutive() {
                 </div>
                 <div className="min-w-0 text-left">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h4 className="text-sm sm:text-base font-black text-[#111111] tracking-tight">
+                    <h4 className="text-sm sm:text-base font-black text-[#141413] tracking-tight">
                       Want the full 8-week syllabus?
                     </h4>
-                    <span className="text-[10px] font-mono font-bold text-[#188ab2] uppercase bg-[#e0f2fe] border border-[#188ab2]/30 px-1.5 py-0.5">
+                    <span className="text-[10px] font-mono font-bold text-[#188ab2] uppercase bg-[#e0f2fe] rounded-full border border-[#188ab2]/30 px-2 py-0.5">
                       WEEKS 04–08 · PDF
                     </span>
                   </div>
-                  <p className="text-xs font-medium text-[#111111]/70 truncate mt-0.5">
+                  <p className="text-xs font-medium text-[#141413]/70 truncate mt-0.5">
                     Data analysis, PRD, prototype, APIs, system design, and AI mock rubrics.
                   </p>
                 </div>
@@ -1604,7 +1692,7 @@ export function AppExecutive() {
               <div className="shrink-0 flex items-center self-start sm:self-auto">
                 <button
                   type="button"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#188ab2] group-hover:bg-[#0f6f8f] text-white text-xs font-black uppercase border-2 border-[#111111] shadow-[2px_2px_0px_0px_#111111] group-hover:shadow-[3px_3px_0px_0px_#111111] transition-all pointer-events-none"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#188ab2] group-hover:bg-[#0f6f8f] text-white text-xs font-black uppercase rounded-full border-2 border-[#141413] shadow-[0px_3px_0px_0px_#141413] group-hover:shadow-[0px_4px_0px_0px_#141413] transition-all pointer-events-none"
                 >
                   <Download className="w-3.5 h-3.5 stroke-[2.5]" />
                   <span>Get Full Brochure ➜</span>
@@ -1615,17 +1703,17 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 10. MEET YOUR INSTRUCTORS (Mentors) */}
-        <section id="mentors" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
+        {/* 11. MEET YOUR INSTRUCTORS (Mentors) */}
+        <section id="mentors" className="py-20 bg-white border-b-2 border-[#141413] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-5xl">
             
             <div className="text-center mb-16">
-              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3 select-none">
+              <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block mb-3 select-none">
                 FACULTY
               </span>
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
+              <h2 className="text-3xl md:text-5xl font-black text-[#141413] mb-3 tracking-tight">
                 Meet your{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[-1deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
+                <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[-1deg] shadow-[0px_3px_0px_0px_#141413]">
                   instructors
                 </span>
               </h2>
@@ -1634,14 +1722,14 @@ export function AppExecutive() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
               
               {/* Sanket */}
-              <div className="bg-white border-2 border-[#111111] p-8 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-3xl border-2 border-[#141413] p-8 shadow-[0px_5px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-full border-2 border-[#111111] overflow-hidden bg-[#188ab2] shadow-[2.5px_2.5px_0px_0px_#111111] shrink-0">
+                    <div className="w-16 h-16 rounded-full border-2 border-[#141413] overflow-hidden bg-[#188ab2] shadow-[0px_3px_0px_0px_#141413] shrink-0">
                       <img src="/mentor-sanket.webp" alt="Sanket" className="w-full h-full object-cover object-top" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-black text-[#111111]">Sanket</h3>
+                      <h3 className="text-2xl font-black text-[#141413]">Sanket</h3>
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <span className="font-mono font-black text-[#188ab2] text-xs uppercase tracking-wider">
                           SENIOR PM - MASTERCARD
@@ -1660,21 +1748,21 @@ export function AppExecutive() {
                       </div>
                     </div>
                   </div>
-                  <p className="font-medium text-sm text-[#111111]/85 leading-relaxed">
+                  <p className="font-medium text-sm text-[#141413]/85 leading-relaxed">
                     Expert in behavioral interviews and product sense frameworks, with deep specialization in scaling fintech products for the global market.
                   </p>
                 </div>
               </div>
 
               {/* Ankit */}
-              <div className="bg-white border-2 border-[#111111] p-8 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-3xl border-2 border-[#141413] p-8 shadow-[0px_5px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-full border-2 border-[#111111] overflow-hidden bg-[#188ab2] shadow-[2.5px_2.5px_0px_0px_#111111] shrink-0">
+                    <div className="w-16 h-16 rounded-full border-2 border-[#141413] overflow-hidden bg-[#188ab2] shadow-[0px_3px_0px_0px_#141413] shrink-0">
                       <img src="/mentor-ankit.webp" alt="Ankit" className="w-full h-full object-cover object-top" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-black text-[#111111]">Ankit</h3>
+                      <h3 className="text-2xl font-black text-[#141413]">Ankit</h3>
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <span className="font-mono font-black text-[#188ab2] text-xs uppercase tracking-wider">
                           PRODUCT MANAGER 2 - MICROSOFT
@@ -1693,7 +1781,7 @@ export function AppExecutive() {
                       </div>
                     </div>
                   </div>
-                  <p className="font-medium text-sm text-[#111111]/85 leading-relaxed">
+                  <p className="font-medium text-sm text-[#141413]/85 leading-relaxed">
                     Leads enterprise-grade AI product development at Microsoft. Expert at turning ambiguity into clarity for complex product strategy, with a focus on scaling AI-native products from 0 to 1.
                   </p>
                 </div>
@@ -1704,27 +1792,27 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 11. CHOOSE YOUR PLAN (PRICING) */}
-        <section id="pricing" className="py-20 bg-white border-b-2 border-[#111111] scroll-mt-20">
+        {/* 12. CHOOSE YOUR PLAN (PRICING) */}
+        <section id="pricing" className="py-20 bg-slate-50 border-b-2 border-[#141413] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-5xl text-center">
             
             <div className="inline-block mb-3">
-              <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block select-none">
+              <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block select-none">
                 🪔 DIWALI SPECIAL OFFER
               </span>
             </div>
             
-            <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-black text-[#141413] mb-3 tracking-tight">
               Choose your{' '}
-              <span className="inline-block bg-[#FFF3A7] border-2 sm:border-[3px] border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
+              <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[1.5deg] shadow-[0px_3px_0px_0px_#141413]">
                 plan
               </span>
             </h2>
             
-            <p className="text-sm sm:text-base font-bold text-[#111111]/80 max-w-xl mx-auto mb-12">
+            <p className="text-sm sm:text-base font-bold text-[#141413]/80 max-w-xl mx-auto mb-12">
               {isEarlyBird ? (
                 <>
-                  The Diwali offer ends 5 Nov, 11:59 PM IST · <span className="font-mono bg-amber-100 px-2 py-0.5 border border-[#111111] shadow-[1px_1px_0px_0px_#111111] font-black text-[#111111]">{countdownTimer}</span>
+                  The Diwali offer ends 5 Nov, 11:59 PM IST · <span className="font-mono bg-amber-100 rounded-full px-3 py-0.5 border border-[#141413] shadow-[0px_1.5px_0px_0px_#141413] font-black text-[#141413]">{countdownTimer}</span>
                 </>
               ) : (
                 <>
@@ -1737,10 +1825,10 @@ export function AppExecutive() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left items-stretch mb-10">
               
               {/* Single Module Card */}
-              <div className="bg-white border-2 sm:border-[3px] border-[#111111] p-6 sm:p-8 shadow-[6px_6px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_#111111] transition-all">
+              <div className="bg-white rounded-3xl border-2 border-[#141413] p-7 sm:p-9 shadow-[0px_6px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_9px_0px_0px_#141413] transition-all">
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="bg-white text-[#111111] border-2 border-[#111111] px-3 py-1 font-mono font-black text-xs uppercase shadow-[1.5px_1.5px_0px_0px_#111111]">
+                    <span className="bg-white text-[#141413] rounded-full border-2 border-[#141413] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[0px_1.5px_0px_0px_#141413]">
                       One module
                     </span>
                     <span className="text-xs font-mono font-bold text-slate-500 uppercase">
@@ -1748,12 +1836,12 @@ export function AppExecutive() {
                     </span>
                   </div>
 
-                  <h3 className="text-2xl font-black text-[#111111] mb-2 tracking-tight">
+                  <h3 className="text-2xl font-black text-[#141413] mb-2 tracking-tight">
                     Single module
                   </h3>
 
                   <div className="flex items-baseline gap-2 mb-4">
-                    <span className="font-mono font-black text-4xl text-[#111111]">
+                    <span className="font-mono font-black text-4xl text-[#141413]">
                       {isEarlyBird ? '₹5,000' : '₹7,000'}
                     </span>
                     {isEarlyBird && (
@@ -1761,15 +1849,15 @@ export function AppExecutive() {
                         <span className="font-mono font-bold text-slate-400 line-through text-lg">
                           ₹7,000
                         </span>
-                        <span className="bg-amber-100 text-amber-900 border border-amber-300 font-mono font-black text-[10px] px-1.5 py-0.5 uppercase ml-1">
+                        <span className="bg-amber-100 text-amber-900 rounded-full border border-amber-300 font-mono font-black text-[10px] px-2 py-0.5 uppercase ml-1">
                           Save ₹2,000
                         </span>
                       </>
                     )}
                   </div>
 
-                  <div className="border-t-2 border-[#111111]/15 pt-5 mb-6">
-                    <ul className="space-y-3 text-xs sm:text-sm font-bold text-[#111111]">
+                  <div className="border-t-2 border-[#141413]/15 pt-5 mb-6">
+                    <ul className="space-y-3 text-xs sm:text-sm font-bold text-[#141413]">
                       <li className="flex items-start gap-2.5">
                         <span className="text-[#188ab2] font-black mt-0.5">•</span>
                         <span>Pick one: Profile Enhancer, Evidence Builder or Interview Practice</span>
@@ -1790,30 +1878,30 @@ export function AppExecutive() {
                   </div>
                 </div>
 
-                <div className="pt-4 border-t-2 border-[#111111]/15">
+                <div className="pt-4 border-t-2 border-[#141413]/15">
                   <button
                     onClick={() => scrollToSection('modular')}
-                    className="w-full py-4 bg-white hover:bg-slate-50 text-[#111111] border-2 border-[#111111] font-black text-sm uppercase shadow-[3px_3px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#111111] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#111111] transition-all cursor-pointer text-center block"
+                    className="w-full py-4 bg-white hover:bg-slate-50 text-[#141413] rounded-full border-2 border-[#141413] font-black text-sm uppercase shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer text-center block"
                   >
                     Reserve a module ➜
                   </button>
-                  <p className="text-[11px] font-bold text-[#111111]/70 text-center mt-2.5">
+                  <p className="text-[11px] font-bold text-[#141413]/70 text-center mt-2.5">
                     Buying one module? You join the same live group for that module and can add the others later at 7k.
                   </p>
                 </div>
               </div>
 
               {/* Bundle Card (Featured) */}
-              <div className="bg-[#FFFDF5] border-2 sm:border-[3px] border-[#111111] p-6 sm:p-8 shadow-[8px_8px_0px_0px_#111111] flex flex-col justify-between hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[10px_10px_0px_0px_#111111] transition-all relative">
+              <div className="bg-[#FFFDF5] rounded-3xl border-2 sm:border-[2.5px] border-[#141413] p-7 sm:p-9 shadow-[0px_8px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_11px_0px_0px_#141413] transition-all relative">
                 
                 {/* Popular Badge Top Right */}
-                <div className="absolute -top-3.5 right-6 bg-[#FFF3A7] border-2 border-[#111111] px-3 py-0.5 font-mono font-black text-[11px] uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[1.5deg]">
+                <div className="absolute -top-3.5 right-6 bg-[#FEF08A] rounded-full border-2 border-[#141413] px-3.5 py-0.5 font-mono font-black text-[11px] uppercase shadow-[0px_2px_0px_0px_#141413] rotate-[1.5deg]">
                   BEST VALUE · COMPLETE SWITCH
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-1 font-mono font-black text-xs uppercase shadow-[1.5px_1.5px_0px_0px_#111111]">
+                    <span className="bg-[#188ab2] text-white rounded-full border-2 border-[#141413] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[0px_1.5px_0px_0px_#141413]">
                       Learn Module free
                     </span>
                     <span className="text-xs font-mono font-black text-emerald-700 uppercase">
@@ -1821,7 +1909,7 @@ export function AppExecutive() {
                     </span>
                   </div>
 
-                  <h3 className="text-2xl font-black text-[#111111] mb-2 tracking-tight">
+                  <h3 className="text-2xl font-black text-[#141413] mb-2 tracking-tight">
                     Bundle
                   </h3>
 
@@ -1834,21 +1922,21 @@ export function AppExecutive() {
                         <span className="font-mono font-bold text-slate-400 line-through text-lg">
                           ₹21,000
                         </span>
-                        <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 font-mono font-black text-[10px] px-1.5 py-0.5 uppercase ml-1">
+                        <span className="bg-emerald-100 text-emerald-900 rounded-full border border-emerald-300 font-mono font-black text-[10px] px-2 py-0.5 uppercase ml-1">
                           Save ₹6,000
                         </span>
                       </>
                     )}
                   </div>
 
-                  <p className="text-xs font-bold text-[#111111]/85 mb-4 leading-snug">
+                  <p className="text-xs font-bold text-[#141413]/85 mb-4 leading-snug">
                     {isEarlyBird
                       ? "That is the price of three modules at the Diwali offer, with the Learn Module added at no cost."
                       : "That is the price of three modules, with the Learn Module added at no cost."}
                   </p>
 
-                  <div className="border-t-2 border-[#111111]/15 pt-5 mb-6">
-                    <ul className="space-y-3 text-xs sm:text-sm font-bold text-[#111111]">
+                  <div className="border-t-2 border-[#141413]/15 pt-5 mb-6">
+                    <ul className="space-y-3 text-xs sm:text-sm font-bold text-[#141413]">
                       <li className="flex items-start gap-2.5">
                         <span className="text-emerald-600 font-black mt-0.5">✓</span>
                         <span>All 3 live modules: Profile Enhancer, Evidence Builder, Interview Practice</span>
@@ -1869,10 +1957,10 @@ export function AppExecutive() {
                   </div>
                 </div>
 
-                <div className="pt-4 border-t-2 border-[#111111]/15">
+                <div className="pt-4 border-t-2 border-[#141413]/15">
                   <button
                     onClick={handleMainEnroll}
-                    className="w-full py-4 bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#111111] font-black text-sm uppercase shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#111111] transition-all cursor-pointer text-center block"
+                    className="w-full py-4 bg-[#188ab2] hover:bg-[#0f6f8f] text-white rounded-full border-2 border-[#141413] font-black text-sm uppercase shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer text-center block"
                   >
                     Reserve the bundle ➜
                   </button>
@@ -1885,18 +1973,18 @@ export function AppExecutive() {
             </div>
 
             {/* Under both cards */}
-            <div className="bg-white border-2 sm:border-[3px] border-[#111111] p-6 sm:p-8 shadow-[5px_5px_0px_0px_#111111] text-left max-w-5xl mx-auto mb-10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 divide-y-2 md:divide-y-0 md:divide-x-2 divide-[#111111]/15">
+            <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 sm:p-8 shadow-[0px_4px_0px_0px_#141413] text-left max-w-5xl mx-auto mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 divide-y-2 md:divide-y-0 md:divide-x-2 divide-[#141413]/15">
                 
                 {/* Payment */}
                 <div className="pt-4 md:pt-0 md:px-4 first:pt-0 first:pl-0">
                   <div className="flex items-center gap-2 mb-1.5">
                     <span className="text-base">💳</span>
-                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#111111]">
+                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#141413]">
                       Payment
                     </h4>
                   </div>
-                  <p className="text-xs sm:text-sm font-bold text-[#111111]/85 leading-relaxed">
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 leading-relaxed">
                     UPI, card, EMI. Direct net banking, credit/debit cards, and zero-cost installments supported.
                   </p>
                 </div>
@@ -1905,11 +1993,11 @@ export function AppExecutive() {
                 <div className="pt-4 md:pt-0 md:px-4">
                   <div className="flex items-center gap-2 mb-1.5">
                     <span className="text-base">🛡️</span>
-                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#111111]">
+                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#141413]">
                       Refund
                     </h4>
                   </div>
-                  <p className="text-xs sm:text-sm font-bold text-[#111111]/85 leading-relaxed">
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 leading-relaxed">
                     If you leave after the first week, receive a complete full refund — no friction, no hassle.
                   </p>
                 </div>
@@ -1918,11 +2006,11 @@ export function AppExecutive() {
                 <div className="pt-4 md:pt-0 md:px-4">
                   <div className="flex items-center gap-2 mb-1.5">
                     <span className="text-base">🤝</span>
-                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#111111]">
+                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#141413]">
                       No promises
                     </h4>
                   </div>
-                  <p className="text-xs sm:text-sm font-bold text-[#111111]/85 leading-relaxed">
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 leading-relaxed">
                     We don’t guarantee a job. We give you the resume, projects and practice that prepare you for interviews.
                   </p>
                 </div>
@@ -1930,26 +2018,26 @@ export function AppExecutive() {
               </div>
             </div>
 
-            {/* ONLY NEED ONE PIECE? (Image 1: Modular Unbundling Section) */}
-            <div id="modular" className="mt-16 pt-12 border-t-2 border-dashed border-[#111111]/30 scroll-mt-20">
+            {/* 13. ONLY NEED ONE PIECE? (Modular Unbundling Section) */}
+            <div id="modular" className="mt-16 pt-12 border-t-2 border-dashed border-[#141413]/30 scroll-mt-20">
               
               {/* Header Pill */}
               <div className="inline-block mb-4">
-                <span className="bg-white border-2 border-[#111111] px-4 py-1 font-mono font-black text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#111111] inline-block select-none">
+                <span className="bg-white rounded-full border-2 border-[#141413] px-4 py-1.5 font-mono font-black text-xs uppercase tracking-wider shadow-[0px_2px_0px_0px_#141413] inline-block select-none">
                   {isEarlyBird ? 'MODULAR UNBUNDLING · DIWALI OFFER' : 'MODULAR ENROLLMENT · PM-X ACCELERATOR'}
                 </span>
               </div>
 
               {/* Title with Signature Yellow Highlighter Box */}
-              <h3 className="text-3xl sm:text-5xl font-black text-[#111111] tracking-tight mb-3">
+              <h3 className="text-3xl sm:text-5xl font-black text-[#141413] tracking-tight mb-3">
                 Only need{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_#111111] select-none">
+                <span className="inline-block bg-[#FEF08A] rounded-xl border-2 border-[#141413] px-3.5 py-0.5 rotate-[1.5deg] shadow-[0px_3px_0px_0px_#141413] select-none">
                   one piece?
                 </span>
               </h3>
 
               {/* Subtitle */}
-              <p className="text-xs sm:text-sm font-semibold text-[#111111]/80 max-w-xl mx-auto mb-10 leading-relaxed">
+              <p className="text-xs sm:text-sm font-semibold text-[#141413]/80 max-w-xl mx-auto mb-10 leading-relaxed">
                 {isEarlyBird
                   ? 'Diwali Offer: ₹5,000 each (regular ₹7,000). Groups of 8–10. PM Gym and class recordings included, no certificate.'
                   : 'Module ₹7,000 each. Groups of 8–10. PM Gym and class recordings included, no certificate.'}
@@ -1960,16 +2048,16 @@ export function AppExecutive() {
                 {/* Module 1: Evidence Builder Card */}
                 <div
                   onClick={() => setSelectedMod1(!selectedMod1)}
-                  className={`bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all cursor-pointer flex flex-col justify-between select-none ${
+                  className={`bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_7px_0px_0px_#141413] transition-all cursor-pointer flex flex-col justify-between select-none ${
                     selectedMod1 ? 'ring-2 ring-[#188ab2] bg-sky-50/50' : ''
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-lg font-black tracking-tight text-[#111111]">
+                      <h4 className="text-lg font-black tracking-tight text-[#141413]">
                         MOD 1: EVIDENCE
                       </h4>
-                      <div className={`w-6 h-6 border-2 border-[#111111] flex items-center justify-center font-black transition-colors ${
+                      <div className={`w-6 h-6 rounded-md border-2 border-[#141413] flex items-center justify-center font-black transition-colors ${
                         selectedMod1 ? 'bg-[#188ab2] text-white' : 'bg-white'
                       }`}>
                         {selectedMod1 ? '✓' : ''}
@@ -1980,7 +2068,7 @@ export function AppExecutive() {
                       {isEarlyBird ? '₹5,000' : '₹7,000'}
                     </div>
 
-                    <p className="text-xs font-medium text-[#111111]/80 leading-relaxed">
+                    <p className="text-xs font-medium text-[#141413]/80 leading-relaxed">
                       5 live sessions. PRDs, teardowns, user research, data project, and prototype. Leave with 2 portfolio projects.
                     </p>
                   </div>
@@ -1989,16 +2077,16 @@ export function AppExecutive() {
                 {/* Module 2: Profile Enhancer Card */}
                 <div
                   onClick={() => setSelectedMod2(!selectedMod2)}
-                  className={`bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all cursor-pointer flex flex-col justify-between select-none ${
+                  className={`bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_7px_0px_0px_#141413] transition-all cursor-pointer flex flex-col justify-between select-none ${
                     selectedMod2 ? 'ring-2 ring-[#188ab2] bg-sky-50/50' : ''
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-lg font-black tracking-tight text-[#111111]">
+                      <h4 className="text-lg font-black tracking-tight text-[#141413]">
                         MOD 2: PROFILE
                       </h4>
-                      <div className={`w-6 h-6 border-2 border-[#111111] flex items-center justify-center font-black transition-colors ${
+                      <div className={`w-6 h-6 rounded-md border-2 border-[#141413] flex items-center justify-center font-black transition-colors ${
                         selectedMod2 ? 'bg-[#188ab2] text-white' : 'bg-white'
                       }`}>
                         {selectedMod2 ? '✓' : ''}
@@ -2009,7 +2097,7 @@ export function AppExecutive() {
                       {isEarlyBird ? '₹5,000' : '₹7,000'}
                     </div>
 
-                    <p className="text-xs font-medium text-[#111111]/80 leading-relaxed">
+                    <p className="text-xs font-medium text-[#141413]/80 leading-relaxed">
                       5 live sessions. Map work to PM skills, resume rewrite, LinkedIn overhaul, story, and daily StepSmart job board access.
                     </p>
                   </div>
@@ -2018,16 +2106,16 @@ export function AppExecutive() {
                 {/* Module 3: Interview Practice Card */}
                 <div
                   onClick={() => setSelectedMod3(!selectedMod3)}
-                  className={`bg-white border-2 border-[#111111] p-6 shadow-[5px_5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0px_0px_#111111] transition-all cursor-pointer flex flex-col justify-between select-none ${
+                  className={`bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_7px_0px_0px_#141413] transition-all cursor-pointer flex flex-col justify-between select-none ${
                     selectedMod3 ? 'ring-2 ring-[#188ab2] bg-sky-50/50' : ''
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-lg font-black tracking-tight text-[#111111]">
+                      <h4 className="text-lg font-black tracking-tight text-[#141413]">
                         MOD 3: PRACTICE
                       </h4>
-                      <div className={`w-6 h-6 border-2 border-[#111111] flex items-center justify-center font-black transition-colors ${
+                      <div className={`w-6 h-6 rounded-md border-2 border-[#141413] flex items-center justify-center font-black transition-colors ${
                         selectedMod3 ? 'bg-[#188ab2] text-white' : 'bg-white'
                       }`}>
                         {selectedMod3 ? '✓' : ''}
@@ -2038,7 +2126,7 @@ export function AppExecutive() {
                       {isEarlyBird ? '₹5,000' : '₹7,000'}
                     </div>
 
-                    <p className="text-xs font-medium text-[#111111]/80 leading-relaxed">
+                    <p className="text-xs font-medium text-[#141413]/80 leading-relaxed">
                       8 live sessions + 2 live mock interviews with 1:1 feedback. Analytics, product sense, strategy, behavioral rounds, RCA.
                     </p>
                   </div>
@@ -2048,16 +2136,16 @@ export function AppExecutive() {
               {/* 1:1 Mentoring Add-on Full-Width Row */}
               <div
                 onClick={() => setSelected1to1(!selected1to1)}
-                className={`mt-6 bg-white border-2 border-[#111111] p-4 sm:p-5 shadow-[4px_4px_0px_0px_#111111] flex items-center gap-3 sm:gap-4 cursor-pointer text-left hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all select-none ${
+                className={`mt-6 bg-white rounded-2xl border-2 border-[#141413] p-4 sm:p-5 shadow-[0px_4px_0px_0px_#141413] flex items-center gap-3 sm:gap-4 cursor-pointer text-left hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] transition-all select-none ${
                   selected1to1 ? 'ring-2 ring-[#188ab2] bg-sky-50/40' : ''
                 }`}
               >
-                <div className={`w-6 h-6 border-2 border-[#111111] flex items-center justify-center font-black shrink-0 transition-colors ${
+                <div className={`w-6 h-6 rounded-md border-2 border-[#141413] flex items-center justify-center font-black shrink-0 transition-colors ${
                   selected1to1 ? 'bg-[#188ab2] text-white' : 'bg-white'
                 }`}>
                   {selected1to1 ? '✓' : ''}
                 </div>
-                <div className="flex-1 text-xs sm:text-sm font-bold text-[#111111]">
+                <div className="flex-1 text-xs sm:text-sm font-bold text-[#141413]">
                   Add 1:1 mentoring: 5 dedicated private sessions for ₹5,000. Limited seats, with any option.
                 </div>
               </div>
@@ -2067,14 +2155,14 @@ export function AppExecutive() {
                 {modularTotal > 0 ? (
                   <button
                     onClick={handleModularEnroll}
-                    className="w-full sm:w-auto px-10 py-4 font-black uppercase text-xs sm:text-sm border-2 border-[#111111] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#111111] transition-all cursor-pointer"
+                    className="w-full sm:w-auto px-10 py-4.5 rounded-full font-black uppercase text-xs sm:text-sm border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
                   >
                     Enroll in {modularLabel} for ₹{modularTotal.toLocaleString('en-IN')} ➜
                   </button>
                 ) : (
                   <button
                     disabled
-                    className="w-full sm:w-auto px-10 py-4 font-black uppercase text-xs sm:text-sm border-2 border-[#111111]/30 bg-[#F1F3F5] text-[#111111]/40 shadow-[4px_4px_0px_0px_#111111]/20 cursor-not-allowed select-none"
+                    className="w-full sm:w-auto px-10 py-4.5 rounded-full font-black uppercase text-xs sm:text-sm border-2 border-[#141413]/30 bg-[#F1F3F5] text-[#141413]/40 shadow-[0px_4px_0px_0px_#141413]/20 cursor-not-allowed select-none"
                   >
                     SELECT BUILD OR PRACTICE ABOVE TO CONTINUE
                   </button>
@@ -2085,9 +2173,9 @@ export function AppExecutive() {
               <div className="mt-6">
                 <button
                   onClick={() => scrollToSection('pricing')}
-                  className="text-xs sm:text-sm font-bold text-[#111111] underline hover:text-[#188ab2] cursor-pointer inline-flex items-center gap-1.5"
+                  className="text-xs sm:text-sm font-bold text-[#141413] underline hover:text-[#188ab2] cursor-pointer inline-flex items-center gap-1.5"
                 >
-                  <span>Looking for the full 8-week cohort instead? Jump to full cohort details & pricing ↑</span>
+                  <span>Looking for the full 8-week cohort instead? Jump to full cohort details &amp; pricing ↑</span>
                 </button>
               </div>
 
@@ -2096,18 +2184,18 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 15. HOW TO JOIN (Exact Live Site Neobrutalist Design Matching Image 1) */}
-        <section className="py-20 bg-white border-b-2 border-[#111111]">
+        {/* 14. HOW TO JOIN */}
+        <section className="py-20 bg-white border-b-2 border-[#141413]">
           <div className="container mx-auto px-6 max-w-7xl">
             
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-black text-[#111111] mb-4 tracking-tight">
+              <h2 className="text-4xl md:text-5xl font-black text-[#141413] mb-4 tracking-tight">
                 How to{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[2.5px_2.5px_0px_0px_#111111] select-none">
+                <span className="inline-block bg-[#FEF08A] rounded-xl border-2 border-[#141413] px-4 py-0.5 rotate-[1.5deg] shadow-[0px_3px_0px_0px_#141413] select-none">
                   join?
                 </span>
               </h2>
-              <p className="text-base sm:text-lg font-medium text-[#111111]/80 mt-4">
+              <p className="text-base sm:text-lg font-medium text-[#141413]/80 mt-4">
                 No automated gateways, no automated rejections. We screen for alignment at every step.
               </p>
             </div>
@@ -2118,14 +2206,14 @@ export function AppExecutive() {
                   num: "01",
                   title: "Apply Online",
                   desc: "Choose a cohort track and complete your application form.",
-                  shadow: "shadow-[4px_4px_0px_0px_#111111]",
+                  shadow: "shadow-[0px_4px_0px_0px_#141413]",
                   tilt: "rotate-[-1deg]"
                 },
                 {
                   num: "02",
                   title: "Message Us on WhatsApp",
                   desc: "Drop us a message with your background and goals.",
-                  shadow: "shadow-[4px_4px_0px_0px_#111111]",
+                  shadow: "shadow-[0px_4px_0px_0px_#141413]",
                   tilt: "rotate-[2deg]",
                   action: (
                     <div className="mt-4">
@@ -2133,11 +2221,11 @@ export function AppExecutive() {
                         href="https://wa.me/message/GH5C7YLAYIEHN1"
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-block bg-[#188ab2] text-white border-2 border-[#111111] px-3 py-1 font-mono font-black text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[2.5px_2.5px_0px_0px_#111111] transition-all cursor-pointer select-none"
+                        className="inline-block bg-[#188ab2] text-white rounded-full border-2 border-[#141413] px-4 py-1.5 font-mono font-black text-[10px] uppercase shadow-[0px_2px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_3px_0px_0px_#141413] transition-all cursor-pointer select-none"
                       >
                         CHAT WITH US →
                       </a>
-                      <div className="mt-3 inline-block bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2 py-0.5 font-mono font-bold text-[8px] uppercase rotate-[-2deg] shadow-[1px_1px_0px_0px_#111111]">
+                      <div className="mt-3 inline-block bg-[#FEF08A] text-[#141413] rounded-full border border-[#141413] px-2.5 py-0.5 font-mono font-bold text-[8px] uppercase rotate-[-2deg] shadow-[0px_1px_0px_0px_#141413]">
                         REPLIES WITHIN A FEW HOURS / NO COMMITMENT
                       </div>
                     </div>
@@ -2147,36 +2235,36 @@ export function AppExecutive() {
                   num: "03",
                   title: "Get Decision",
                   desc: "We confirm fit over WhatsApp and follow up with your application status and next steps.",
-                  shadow: "shadow-[4px_4px_0px_0px_#111111]",
+                  shadow: "shadow-[0px_4px_0px_0px_#141413]",
                   tilt: "rotate-[-1.5deg]"
                 },
                 {
                   num: "04",
                   title: "Batch Starts",
                   desc: "Secure your slot. Onboarding details are shared over WhatsApp before the cohort begins.",
-                  shadow: "shadow-[4px_4px_0px_0px_#111111]",
+                  shadow: "shadow-[0px_4px_0px_0px_#141413]",
                   tilt: "rotate-[1deg]"
                 },
                 {
                   num: "05",
                   title: "Lifetime Access",
                   desc: "Join our active alumni network",
-                  shadow: "shadow-[4px_4px_0px_0px_#111111]",
+                  shadow: "shadow-[0px_4px_0px_0px_#141413]",
                   tilt: "rotate-[-2deg]"
                 }
               ].map((step, i) => (
                 <div 
                   key={i} 
-                  className={`bg-white border-2 border-[#111111] p-6 pt-10 ${step.shadow} flex flex-col justify-between h-full relative hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] transition-all duration-100 select-none`}
+                  className={`bg-white rounded-2xl border-2 border-[#141413] p-6 pt-10 ${step.shadow} flex flex-col justify-between h-full relative hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all select-none`}
                 >
-                  {/* Number Badge (Tilted Floating Block Exactly Matching Image 1) */}
-                  <div className={`absolute -top-3.5 -left-3.5 bg-[#188ab2] text-white border-2 border-[#111111] w-8 h-8 flex items-center justify-center font-mono font-black text-xs shadow-[2px_2px_0px_0px_#111111] ${step.tilt}`}>
+                  {/* Number Badge */}
+                  <div className={`absolute -top-3.5 -left-3.5 bg-[#188ab2] text-white rounded-xl border-2 border-[#141413] w-9 h-9 flex items-center justify-center font-mono font-black text-xs shadow-[0px_2px_0px_0px_#141413] ${step.tilt}`}>
                     {step.num}
                   </div>
                   
                   <div>
-                    <h3 className="font-black text-lg text-[#111111] mb-2">{step.title}</h3>
-                    <p className="text-xs text-[#111111]/80 leading-relaxed font-medium">{step.desc}</p>
+                    <h3 className="font-black text-lg text-[#141413] mb-2">{step.title}</h3>
+                    <p className="text-xs text-[#141413]/80 leading-relaxed font-medium">{step.desc}</p>
                   </div>
                   
                   {step.action && step.action}
@@ -2187,21 +2275,21 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 16. QUESTIONS, ANSWERED (11 Rewritten FAQs) */}
-        <section id="faq" className="py-20 bg-slate-50 border-b-2 border-[#111111] scroll-mt-20">
+        {/* 15. QUESTIONS, ANSWERED (11 Rewritten FAQs) */}
+        <section id="faq" className="py-20 bg-slate-50 border-b-2 border-[#141413] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-4xl">
             
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 tracking-tight">
+              <h2 className="text-3xl md:text-5xl font-black text-[#141413] mb-3 tracking-tight">
                 Questions,{' '}
-                <span className="inline-block bg-[#FFF3A7] border-2 border-[#111111] px-3.5 py-0.5 rotate-[-1deg] shadow-[2.5px_2.5px_0px_0px_#111111]">
+                <span className="inline-block bg-[#FEF08A] rounded-xl border-2 border-[#141413] px-3.5 py-0.5 rotate-[-1deg] shadow-[0px_3px_0px_0px_#141413]">
                   answered
                 </span>
               </h2>
             </div>
 
-            {/* Minimal Editorial Single-Line Separator Layout for FAQs */}
-            <div className="border-t border-b border-[#111111]/30 divide-y divide-[#111111]/30 text-left bg-transparent">
+            {/* Rounded Editorial Container for FAQs */}
+            <div className="bg-white rounded-3xl border-2 border-[#141413] shadow-[0px_5px_0px_0px_#141413] divide-y divide-[#141413]/15 text-left overflow-hidden">
               {[
                 {
                   q: "Do I need an MBA, an IIT degree or a tech background?",
@@ -2255,20 +2343,20 @@ export function AppExecutive() {
                   <div key={idx} className="transition-colors hover:bg-black/[0.02]">
                     <button
                       onClick={() => setOpenFaq(isOpen ? null : idx)}
-                      className="w-full py-5 px-1 sm:px-3 flex items-center justify-between text-left cursor-pointer group"
+                      className="w-full py-5 px-4 sm:px-6 flex items-center justify-between text-left cursor-pointer group"
                     >
                       <div className="flex items-center gap-4 flex-1 pr-4">
                         <span className="font-mono text-xs font-black text-[#188ab2] shrink-0">
                           {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
                         </span>
-                        <span className="font-black text-base sm:text-lg text-[#111111] group-hover:text-[#188ab2] transition-colors tracking-tight">
+                        <span className="font-black text-base sm:text-lg text-[#141413] group-hover:text-[#188ab2] transition-colors tracking-tight">
                           {faq.q}
                         </span>
                       </div>
-                      <ChevronDown className={`w-5 h-5 text-[#111111] stroke-[2.5] transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180 text-[#188ab2]' : ''}`} />
+                      <ChevronDown className={`w-5 h-5 text-[#141413] stroke-[2.5] transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180 text-[#188ab2]' : ''}`} />
                     </button>
                     {isOpen && (
-                      <div className="pb-6 pt-1 px-1 sm:px-3 pl-8 sm:pl-10 font-medium text-xs sm:text-sm text-[#111111]/85 leading-relaxed">
+                      <div className="pb-6 pt-1 px-4 sm:px-6 pl-10 sm:pl-14 font-medium text-xs sm:text-sm text-[#141413]/85 leading-relaxed">
                         {faq.a}
                       </div>
                     )}
@@ -2280,16 +2368,16 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 17. FINAL CONVERSION CARD (From Attached HTML) */}
-        <section id="final-cta" className="py-20 bg-white border-b-2 border-[#111111] scroll-mt-20">
+        {/* 16. FINAL CONVERSION CARD */}
+        <section id="final-cta" className="py-20 bg-white border-b-2 border-[#141413] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-4xl text-center">
             
-            <div className="bg-[#FFF3A7] border-2 border-[#111111] p-10 sm:p-14 shadow-[6px_6px_0px_0px_#111111] text-center">
-              <h2 className="text-3xl md:text-5xl font-black text-[#111111] mb-3 leading-tight tracking-tight">
+            <div className="bg-[#FEF08A] rounded-3xl border-2 border-[#141413] p-10 sm:p-14 shadow-[0px_8px_0px_0px_#141413] text-center">
+              <h2 className="text-3xl md:text-5xl font-black text-[#141413] mb-3 leading-tight tracking-tight">
                 Switching into PM without a PM title?{' '}
                 <span className="underline decoration-[#188ab2] decoration-[4px]">Build the proof with us.</span>
               </h2>
-              <p className="text-sm sm:text-base font-black text-[#111111] mb-8 font-mono">
+              <p className="text-sm sm:text-base font-black text-[#141413] mb-8 font-mono">
                 {isEarlyBird ? (
                   <>🪔 Diwali Offer: Modules ₹5,000 (regular ₹7,000) · Bundle ₹15,000 with Learn Module Free · Ends in {countdownTimer}</>
                 ) : (
@@ -2300,7 +2388,7 @@ export function AppExecutive() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
                 <button
                   onClick={handleMainEnroll}
-                  className="w-full sm:w-auto px-10 py-5 font-black text-base sm:text-lg uppercase border-2 border-[#111111] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#111111] transition-all cursor-pointer"
+                  className="w-full sm:w-auto px-10 py-5 font-black text-base sm:text-lg uppercase rounded-full border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
                 >
                   {isEarlyBird ? 'Reserve the bundle for ₹15,000 ➜' : 'Reserve the bundle for ₹21,000 ➜'}
                 </button>
@@ -2308,26 +2396,26 @@ export function AppExecutive() {
                   href="https://wa.me/message/GH5C7YLAYIEHN1"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full sm:w-auto px-8 py-5 font-black text-base sm:text-lg uppercase border-2 border-[#111111] bg-white hover:bg-[#fef08a] text-[#111111] shadow-[4px_4px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#111111] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#111111] transition-all inline-flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-8 py-5 font-black text-base sm:text-lg uppercase rounded-full border-2 border-[#141413] bg-white hover:bg-slate-50 text-[#141413] shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all inline-flex items-center justify-center gap-2"
                 >
                   <span>Talk to us on WhatsApp</span>
                 </a>
               </div>
 
               {/* Line under the buttons */}
-              <p className="text-xs sm:text-sm font-extrabold text-[#111111]/85 mt-6 max-w-xl mx-auto">
+              <p className="text-xs sm:text-sm font-extrabold text-[#141413]/85 mt-6 max-w-xl mx-auto">
                 {isEarlyBird
                   ? 'Modules from ₹5,000 · Bundle ₹15,000 with the Learn Module free · No job guarantee, just the work that gets you ready.'
                   : 'Module ₹7,000 each · Bundle ₹21,000 · No job guarantee, just the work that gets you ready.'}
               </p>
 
-              <div className="mt-8 pt-6 border-t-2 border-[#111111]/20">
+              <div className="mt-8 pt-6 border-t-2 border-[#141413]/20">
                 <button
                   onClick={() => {
                     setBrochureFormStatus('idle');
                     setIsBrochureModalOpen(true);
                   }}
-                  className="font-black text-sm text-[#111111] underline hover:text-[#188ab2] transition-colors cursor-pointer inline-flex items-center gap-2"
+                  className="font-black text-sm text-[#141413] underline hover:text-[#188ab2] transition-colors cursor-pointer inline-flex items-center gap-2"
                 >
                   <Download className="w-4 h-4 stroke-[2.5]" />
                   <span>Download the detailed curriculum brochure (PDF)</span>
@@ -2341,23 +2429,23 @@ export function AppExecutive() {
       </main>
 
       {/* 18. FOOTER */}
-      <footer className="bg-white py-12 text-center text-xs font-bold text-[#111111]/80">
+      <footer className="bg-white py-12 text-center text-xs font-bold text-[#141413]/80">
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="mb-4">
-            <span className="font-black text-[#111111] text-sm">StepSmart Fellowship</span> · admin@stepsmart.net · stepsmart.net
+            <span className="font-black text-[#141413] text-sm">StepSmart Fellowship</span> · admin@stepsmart.net · stepsmart.net
           </div>
           <div>No placement guarantee. Structured preparation &amp; verifiable proof of work.</div>
         </div>
       </footer>
 
-      {/* 20. POP-UP BROCHURE MODAL */}
+      {/* 19. POP-UP BROCHURE MODAL */}
       {isBrochureModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#111111]/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="w-full max-w-lg bg-white border-2 border-[#111111] p-6 sm:p-8 shadow-[8px_8px_0px_0px_#111111] relative animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 z-50 bg-[#141413]/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-white rounded-3xl border-2 border-[#141413] p-6 sm:p-8 shadow-[0px_8px_0px_0px_#141413] relative animate-in fade-in zoom-in duration-200">
             {/* Close Button */}
             <button
               onClick={() => setIsBrochureModalOpen(false)}
-              className="absolute top-4 right-4 w-9 h-9 border-2 border-[#111111] bg-white hover:bg-[#FFF3A7] flex items-center justify-center font-black text-base shadow-[2px_2px_0px_0px_#111111] cursor-pointer transition-colors"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full border-2 border-[#141413] bg-white hover:bg-[#FEF08A] flex items-center justify-center font-black text-base shadow-[0px_2px_0px_0px_#141413] cursor-pointer transition-colors"
               aria-label="Close modal"
             >
               ✕
@@ -2365,25 +2453,25 @@ export function AppExecutive() {
 
             {brochureFormStatus === 'success' ? (
               <div className="text-center py-6">
-                <div className="w-16 h-16 bg-[#C6F6D5] border-2 border-[#111111] flex items-center justify-center mx-auto mb-5 shadow-[3px_3px_0px_0px_#111111]">
+                <div className="w-16 h-16 rounded-2xl bg-[#C6F6D5] border-2 border-[#141413] flex items-center justify-center mx-auto mb-5 shadow-[0px_3px_0px_0px_#141413]">
                   <Check className="w-9 h-9 text-green-800 stroke-[3]" />
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-black text-[#111111] mb-2 tracking-tight">
+                <h3 className="text-2xl sm:text-3xl font-black text-[#141413] mb-2 tracking-tight">
                   Brochure on its way!
                 </h3>
-                <p className="text-sm font-medium text-[#111111]/85 mb-6">
+                <p className="text-sm font-medium text-[#141413]/85 mb-6">
                   Your PM-X Accelerator Brochure download has started automatically.
                 </p>
                 <div className="space-y-3">
                   <button
                     onClick={() => startBrochureDownload(false)}
-                    className="w-full py-3.5 border-2 border-[#111111] bg-[#FFF3A7] font-black text-sm uppercase shadow-[3px_3px_0px_0px_#111111] hover:bg-[#ffe566] transition-colors cursor-pointer"
+                    className="w-full py-3.5 rounded-full border-2 border-[#141413] bg-[#FEF08A] font-black text-sm uppercase shadow-[0px_3px_0px_0px_#141413] hover:bg-[#ffe566] transition-colors cursor-pointer"
                   >
                     Click here if download didn't start ➜
                   </button>
                   <button
                     onClick={() => setIsBrochureModalOpen(false)}
-                    className="w-full py-2.5 border-2 border-[#111111] bg-white font-black text-xs uppercase shadow-[2px_2px_0px_0px_#111111] hover:bg-slate-100 transition-colors cursor-pointer"
+                    className="w-full py-2.5 rounded-full border-2 border-[#141413] bg-white font-black text-xs uppercase shadow-[0px_2px_0px_0px_#141413] hover:bg-slate-100 transition-colors cursor-pointer"
                   >
                     Close
                   </button>
@@ -2392,20 +2480,20 @@ export function AppExecutive() {
             ) : (
               <div>
                 <div className="mb-6 text-left">
-                  <span className="bg-[#FFF3A7] border-2 border-[#111111] px-3 py-0.5 text-xs font-mono font-black uppercase shadow-[2px_2px_0px_0px_#111111] rotate-[-1deg] inline-block mb-3">
+                  <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-3.5 py-1 text-xs font-mono font-black uppercase shadow-[0px_2px_0px_0px_#141413] rotate-[-1deg] inline-block mb-3">
                     ★ OFFICIAL SYLLABUS
                   </span>
-                  <h3 className="text-2xl sm:text-3xl font-black text-[#111111] mb-2 leading-tight tracking-tight">
+                  <h3 className="text-2xl sm:text-3xl font-black text-[#141413] mb-2 leading-tight tracking-tight">
                     Download Full 8-Week Brochure
                   </h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#111111]/80 leading-relaxed">
+                  <p className="text-xs sm:text-sm font-medium text-[#141413]/80 leading-relaxed">
                     Get instant access to the complete week-by-week timetable, real project deliverables, live class schedule, and mentor review rubric.
                   </p>
                 </div>
 
                 <form onSubmit={handleBrochureSubmit} className="space-y-4 text-left">
                   <div>
-                    <label className="block text-xs font-mono font-black text-[#111111] uppercase mb-1">
+                    <label className="block text-xs font-mono font-black text-[#141413] uppercase mb-1">
                       Full Name *
                     </label>
                     <input
@@ -2414,12 +2502,12 @@ export function AppExecutive() {
                       value={brochureFormData.name}
                       onChange={(e) => setBrochureFormData({ ...brochureFormData, name: e.target.value })}
                       placeholder="e.g. Rahul Sharma"
-                      className="w-full p-3 border-2 border-[#111111] font-medium text-sm bg-white shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:bg-amber-50/50"
+                      className="w-full p-3 rounded-xl border-2 border-[#141413] font-medium text-sm bg-white shadow-[0px_2px_0px_0px_#141413] focus:outline-none focus:bg-amber-50/50"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono font-black text-[#111111] uppercase mb-1">
+                    <label className="block text-xs font-mono font-black text-[#141413] uppercase mb-1">
                       Email Address *
                     </label>
                     <input
@@ -2428,12 +2516,12 @@ export function AppExecutive() {
                       value={brochureFormData.email}
                       onChange={(e) => setBrochureFormData({ ...brochureFormData, email: e.target.value })}
                       placeholder="e.g. rahul@example.com"
-                      className="w-full p-3 border-2 border-[#111111] font-medium text-sm bg-white shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:bg-amber-50/50"
+                      className="w-full p-3 rounded-xl border-2 border-[#141413] font-medium text-sm bg-white shadow-[0px_2px_0px_0px_#141413] focus:outline-none focus:bg-amber-50/50"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono font-black text-[#111111] uppercase mb-1">
+                    <label className="block text-xs font-mono font-black text-[#141413] uppercase mb-1">
                       WhatsApp Number *
                     </label>
                     <input
@@ -2442,20 +2530,20 @@ export function AppExecutive() {
                       value={brochureFormData.phone}
                       onChange={(e) => setBrochureFormData({ ...brochureFormData, phone: e.target.value })}
                       placeholder="e.g. 9876543210"
-                      className="w-full p-3 border-2 border-[#111111] font-medium text-sm bg-white shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:bg-amber-50/50"
+                      className="w-full p-3 rounded-xl border-2 border-[#141413] font-medium text-sm bg-white shadow-[0px_2px_0px_0px_#141413] focus:outline-none focus:bg-amber-50/50"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={brochureFormStatus === 'loading'}
-                    className="w-full py-4 border-2 border-[#111111] bg-[#188ab2] hover:bg-[#0f6f8f] text-white font-black text-sm uppercase shadow-[3px_3px_0px_0px_#111111] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#111111] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer mt-2 flex items-center justify-center gap-2"
+                    className="w-full py-4 rounded-full border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white font-black text-sm uppercase shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer mt-2 flex items-center justify-center gap-2"
                   >
                     <Download className="w-4 h-4 stroke-[2.5]" />
                     <span>{brochureFormStatus === 'loading' ? 'Preparing Download...' : 'Download Curriculum PDF ➜'}</span>
                   </button>
 
-                  <p className="text-[11px] font-medium text-[#111111]/70 text-center mt-2">
+                  <p className="text-[11px] font-medium text-[#141413]/70 text-center mt-2">
                     Instant PDF download · No spam guaranteed
                   </p>
                 </form>

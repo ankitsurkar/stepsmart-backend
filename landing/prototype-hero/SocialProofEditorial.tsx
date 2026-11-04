@@ -73,10 +73,10 @@ export function MentorsEditorial() {
             transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
             className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A] mb-3"
           >
-            Learn from{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
-              working PMs.
-            </span>
+            <span className="font-editorial italic font-normal text-[#D97706] text-[1.12em] tracking-normal inline-block">
+              Learn directly
+            </span>{' '}
+            from working PMs.
           </motion.h2>
 
           <motion.p 
@@ -423,7 +423,8 @@ export function TestimonialsEditorial() {
   ];
 
   return (
-    <section id="outcomes" className="py-12 md:py-16 bg-white border-b border-stone-200/90 scroll-mt-20 relative overflow-hidden">
+    <section id="reviews" className="py-12 md:py-16 bg-white border-b border-stone-200/90 scroll-mt-20 relative overflow-hidden">
+      <div id="outcomes" className="absolute -top-20" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
         
         {/* Section Header */}
@@ -445,10 +446,10 @@ export function TestimonialsEditorial() {
             transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
             className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A]"
           >
-            Real people.{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
-              Real transitions.
-            </span>
+            <span className="font-editorial italic font-normal text-[#D97706] text-[1.12em] tracking-normal inline-block">
+              Real people.
+            </span>{' '}
+            Real transitions.
           </motion.h2>
         </div>
 
@@ -582,7 +583,7 @@ export function FitAssessmentEditorial() {
             className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A] mb-2.5"
           >
             Is PM-X{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
+            <span className="font-editorial italic font-normal text-[#6E6A63] text-[1.12em] tracking-normal inline-block">
               for you?
             </span>
           </motion.h2>

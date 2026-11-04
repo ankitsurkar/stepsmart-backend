@@ -32,7 +32,7 @@ export function TransitionStoriesEditorial() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-6 md:mb-8">
+        <div className="text-center max-w-4xl mx-auto mb-6 md:mb-8">
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -50,9 +50,12 @@ export function TransitionStoriesEditorial() {
             transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
             className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-[-0.03em] text-[#16171A] leading-tight"
           >
-            There is no single formula for entering{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
-              product.
+            <span className="md:whitespace-nowrap">
+              There is no{' '}
+              <span className="font-editorial italic font-normal text-[#D97706] text-[1.12em] tracking-normal inline-block">
+                single formula
+              </span>{' '}
+              for entering product.
             </span>
           </motion.h2>
         </div>
@@ -168,7 +171,7 @@ export function StuckReframeEditorial() {
             className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A]"
           >
             Why most people stay{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
+            <span className="font-editorial italic font-normal text-[#6E6A63] text-[1.12em] tracking-normal inline-block">
               stuck.
             </span>
           </motion.h2>
@@ -500,7 +503,8 @@ export function PillarSystemEditorial() {
   ];
 
   return (
-    <section id="system" className="py-12 md:py-16 bg-white border-b border-stone-200/90 scroll-mt-20">
+    <section id="blueprint" className="py-12 md:py-16 bg-white border-b border-stone-200/90 scroll-mt-20 relative">
+      <div id="system" className="absolute -top-20" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         
         {/* Header */}
@@ -522,7 +526,7 @@ export function PillarSystemEditorial() {
             className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A] mb-2"
           >
             Learn. Build. Practice.{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
+            <span className="font-editorial italic font-normal text-[#D97706] text-[1.12em] tracking-normal inline-block">
               Career.
             </span>
           </motion.h2>

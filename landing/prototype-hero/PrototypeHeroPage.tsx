@@ -26,6 +26,8 @@ import {
   FaqEditorial,
   FooterEditorial
 } from './PricingAndFaqEditorial';
+import { StickyPillNavbar } from './StickyPillNavbar';
+import { StepSmartLogoIcon } from './StepSmartLogoIcon';
 
 export function PrototypeHeroPage() {
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
@@ -48,7 +50,7 @@ export function PrototypeHeroPage() {
         const mins = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
         setCountdownText(`Early bird ₹15,000 ends in ${days}d ${hours}h ${mins}m · Then ₹20,000`);
       } else {
-        setCountdownText('Seats strictly capped at 30 · Standard tuition applies');
+        setCountdownText('Batch 02 Cohort · ₹15,000 Fellowship Tuition (Save ₹5,000)');
       }
     };
     updateCountdown();
@@ -95,10 +97,13 @@ export function PrototypeHeroPage() {
         </div>
       </div>
 
+      {/* FLOATING EDITORIAL PILL NAVBAR (SLIDES DOWN PAST HERO & SCROLL PROGRESS) */}
+      <StickyPillNavbar />
+
       {/* 1. TOP ANNOUNCEMENT BANNER */}
       <aside 
         aria-label="Announcement Banner" 
-        className="sticky top-0 z-50 w-full bg-[#16171A] text-white text-xs py-2.5 px-4 font-mono border-b border-stone-800"
+        className="w-full bg-[#16171A] text-white text-xs py-2.5 px-4 font-mono border-b border-stone-800 relative z-30"
       >
         <div className="container mx-auto max-w-7xl flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2.5">
@@ -112,7 +117,7 @@ export function PrototypeHeroPage() {
           </div>
           <button
             onClick={() => {
-              const el = document.getElementById('pricing');
+              const el = document.getElementById('pricing') || document.getElementById('tuition');
               el?.scrollIntoView({ behavior: 'smooth' });
             }}
             className="bg-white hover:bg-stone-100 text-[#16171A] px-4 py-1.5 text-xs uppercase font-mono font-medium tracking-[0.05em] rounded transition-all cursor-pointer shadow-sm"
@@ -122,45 +127,106 @@ export function PrototypeHeroPage() {
         </div>
       </aside>
 
-      {/* 2. HEADER / NAVBAR */}
-      <header className="w-full bg-[#FBF9F5]/90 backdrop-blur-md border-b border-stone-200/90 relative z-40">
-        <div className="container mx-auto px-6 h-20 max-w-7xl flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 select-none">
+      {/* 2. HEADER / NAVBAR (State 1: At Top of Page - scrollY < 100px) */}
+      <header className="w-full bg-[#FBF9F5]/90 backdrop-blur-md border-b border-stone-200/90 relative z-30">
+        <div className="container mx-auto px-6 h-20 max-w-7xl relative flex items-center justify-between">
+          {/* Left: StepSmart Official Sky Blue Logo */}
+          <Link to="/" className="flex items-center gap-3 select-none shrink-0 z-10">
             <img 
               src="/stepsmart-logo.webp" 
               alt="StepSmart Logo" 
-              className="w-8 h-8 object-contain"
+              className="w-8 h-8 object-contain shrink-0"
               width="32" 
               height="32" 
             />
-            <span className="font-extrabold text-2xl tracking-tight text-[#16171A]">
+            <span className="font-extrabold text-2xl tracking-tight text-[#141413]">
               StepSmart
             </span>
           </Link>
           
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-stone-600">
-            <a href="#system" className="hover:text-stone-900 transition-colors">Cohort</a>
-            <a href="#curriculum" className="hover:text-stone-900 transition-colors">Curriculum</a>
-            <a href="#mentors" className="hover:text-stone-900 transition-colors">Mentors</a>
-            <a href="#outcomes" className="hover:text-stone-900 transition-colors">Outcomes</a>
-            <a href="#pricing" className="hover:text-stone-900 transition-colors">Tuition</a>
-            <a href="#faq" className="hover:text-stone-900 transition-colors">FAQ</a>
+          {/* Center: Exact 5 Section Links (Centered with Smooth Glide) */}
+          <nav className="hidden md:flex items-center gap-7 lg:gap-8 text-sm font-medium text-stone-600 absolute left-1/2 -translate-x-1/2">
+            <a 
+              href="#blueprint" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('blueprint')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-stone-900 transition-colors cursor-pointer"
+            >
+              Cohort
+            </a>
+            <a 
+              href="#curriculum" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('curriculum')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-stone-900 transition-colors cursor-pointer"
+            >
+              Curriculum
+            </a>
+            <a 
+              href="#mentors" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('mentors')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-stone-900 transition-colors cursor-pointer"
+            >
+              Mentors
+            </a>
+            <a 
+              href="#pricing" 
+              onClick={(e) => {
+                e.preventDefault();
+                const el = document.getElementById('pricing') || document.getElementById('tuition');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-stone-900 transition-colors cursor-pointer"
+            >
+              Pricing
+            </a>
+            <a 
+              href="#faq" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-stone-900 transition-colors cursor-pointer"
+            >
+              FAQ
+            </a>
+          </nav>
+
+          {/* Right: Login + Chat + RESERVE SEAT · ₹15K → */}
+          <div className="flex items-center gap-3 shrink-0 z-10">
             <a 
               href="/learn" 
-              className="border border-stone-300 px-4 py-1.5 rounded-full text-stone-700 hover:text-stone-900 hover:bg-white transition-all text-xs font-semibold"
+              className="border border-[#38BDF8]/40 bg-[#E0F2FE]/50 text-[#0284C7] hover:bg-[#E0F2FE] px-4 py-1.5 rounded-full transition-all text-xs font-semibold cursor-pointer"
             >
               Login
             </a>
+            <a
+              href="https://wa.me/message/GH5C7YLAYIEHN1"
+              target="_blank"
+              rel="noreferrer"
+              className="text-stone-700 hover:text-emerald-800 font-mono text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-stone-100/80 transition-colors inline-flex items-center gap-1.5"
+            >
+              <MessageCircle className="w-4 h-4 text-emerald-600" />
+              <span className="hidden lg:inline">Chat</span>
+            </a>
             <button 
               onClick={() => {
-                const el = document.getElementById('pricing');
+                const el = document.getElementById('pricing') || document.getElementById('tuition');
                 el?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#16171A] hover:bg-black text-white px-5 py-2 uppercase font-mono font-medium text-xs tracking-[0.05em] rounded-full shadow-md transition-all cursor-pointer"
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-[#141413] px-4 sm:px-5 py-2 sm:py-2.5 uppercase font-mono font-semibold text-xs tracking-wider rounded-full shadow-md transition-all cursor-pointer inline-flex items-center gap-1.5"
             >
-              Reserve Seat ➜
+              <span>Reserve Seat · ₹15K</span>
+              <span>→</span>
             </button>
-          </nav>
+          </div>
         </div>
       </header>
 

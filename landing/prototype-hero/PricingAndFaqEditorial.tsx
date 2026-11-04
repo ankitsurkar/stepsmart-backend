@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, Check, ArrowRight, ArrowDown, MessageCircle, ShieldCheck, Clock, Users, Sparkles } from 'lucide-react';
+import { StepSmartLogoIcon } from './StepSmartLogoIcon';
 
 const smoothEase = [0.16, 1, 0.3, 1] as const;
 
@@ -13,6 +14,19 @@ interface PricingEditorialProps {
 export function PricingEditorial({ countdownText, onEnroll }: PricingEditorialProps) {
   // Main Cohort 1:1 Mentoring Add-on state
   const [includeMentoring, setIncludeMentoring] = useState(false);
+
+  // Dynamic Early-Bird badge date (self-healing, never expired)
+  const [earlyBirdText, setEarlyBirdText] = useState('⚡ EARLY BIRD ENDS TONIGHT · MIDNIGHT');
+
+  useEffect(() => {
+    try {
+      const now = new Date();
+      const formatted = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).toUpperCase();
+      setEarlyBirdText(`⚡ EARLY BIRD ENDS TODAY, ${formatted}`);
+    } catch {
+      setEarlyBirdText('⚡ EARLY BIRD ENDS TONIGHT · MIDNIGHT');
+    }
+  }, []);
 
   // Modular Unbundling state (Pre-select BUILD by default so section is active at rest)
   const [selectedBuild, setSelectedBuild] = useState(true);
@@ -36,7 +50,8 @@ export function PricingEditorial({ countdownText, onEnroll }: PricingEditorialPr
   const modularLabel = modularLabels.join(' + ');
 
   return (
-    <section id="pricing" className="py-12 md:py-16 bg-white border-b border-stone-200/90 scroll-mt-20 relative">
+    <section id="tuition" className="py-12 md:py-16 bg-white border-b border-stone-200/90 scroll-mt-20 relative">
+      <div id="pricing" className="absolute -top-20" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl relative z-10">
         
         {/* Section Header */}
@@ -59,7 +74,7 @@ export function PricingEditorial({ countdownText, onEnroll }: PricingEditorialPr
             className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A] mb-2.5"
           >
             What you get,{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
+            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block">
               stacked.
             </span>
           </motion.h2>
@@ -194,7 +209,7 @@ export function PricingEditorial({ countdownText, onEnroll }: PricingEditorialPr
           </div>
 
           {/* Right Column (40% ~ 5 cols): Admission Ticket Checkout Card */}
-          <div className="lg:col-span-5 bg-[#16171A] text-white p-6 sm:p-7 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-stone-800 relative">
+          <div className="lg:col-span-5 bg-[#16171A] text-white p-6 sm:p-7 pb-8 sm:pb-9 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-stone-800 relative">
             <div>
               {/* Ticket Eyebrow & Save Badge */}
               <div className="flex items-center justify-between gap-2 mb-4">
@@ -217,7 +232,7 @@ export function PricingEditorial({ countdownText, onEnroll }: PricingEditorialPr
                   </span>
                 </div>
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-950/70 border border-amber-800/80 text-amber-300 font-mono text-[10px] sm:text-[10.5px] font-medium tracking-wide uppercase">
-                  <span>⚡ EARLY BIRD ENDS TODAY, 31 OCT</span>
+                  <span>{earlyBirdText}</span>
                 </div>
               </div>
 
@@ -269,7 +284,7 @@ export function PricingEditorial({ countdownText, onEnroll }: PricingEditorialPr
               </div>
             </div>
 
-            <div>
+            <div className="pt-2">
               {/* Full-width Ticket CTA Button */}
               <button
                 onClick={() => onEnroll(`full-cohort${includeMentoring ? '-with-mentoring' : ''}`, cohortTotal)}
@@ -300,14 +315,11 @@ export function PricingEditorial({ countdownText, onEnroll }: PricingEditorialPr
           </div>
         </div>
 
-        {/* MODULAR UNBUNDLING (Only need one piece?) */}
+        {/* MODULAR UNBUNDLING (Subtle Inline Prompt) */}
         <div id="modular" className="scroll-mt-20 max-w-5xl mx-auto text-center">
           
-          <h3 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-[#16171A] mb-2">
-            Only need{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.1em] tracking-normal inline-block relative underline underline-offset-[6px] decoration-amber-500/80 decoration-skip-ink">
-              one piece?
-            </span>
+          <h3 className="text-lg sm:text-xl font-bold tracking-tight text-[#16171A] mb-1.5">
+            Only need one piece?
           </h3>
 
           <p className="text-xs sm:text-sm font-normal text-[#475569] max-w-lg mx-auto mb-6 sm:mb-8 leading-relaxed">
@@ -486,10 +498,10 @@ export function SmallBatchesEditorial() {
           transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
           className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A] mb-2"
         >
-          Small batches,{' '}
-          <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
-            by choice.
-          </span>
+          <span className="font-editorial italic font-normal text-[#D97706] text-[1.12em] tracking-normal inline-block">
+            Small batches,
+          </span>{' '}
+          by choice.
         </motion.h2>
 
         <motion.p 
@@ -609,37 +621,36 @@ export function HowToJoinEditorial() {
     <section id="admissions" className="py-12 md:py-16 bg-white border-b border-stone-200/90 relative overflow-hidden scroll-mt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl relative z-10">
         
-        {/* Header */}
-        <div className="text-center mb-8 md:mb-10 max-w-2xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: smoothEase }}
-            className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-700 font-mono text-[11px] font-medium tracking-[0.05em] uppercase mb-2"
-          >
-            ADMISSIONS PIPELINE
-          </motion.div>
-          
-          <motion.h2 
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
-            className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A] mb-2.5"
-          >
-            How to{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
-              join?
-            </span>
-          </motion.h2>
+        {/* Header: Left-Aligned Blueprint Style */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10 text-left border-b border-stone-200/80 pb-6">
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: smoothEase }}
+              className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-stone-100 border border-stone-200 text-stone-700 font-mono text-[10px] font-semibold tracking-[0.05em] uppercase mb-2"
+            >
+              ADMISSIONS PIPELINE
+            </motion.div>
+            
+            <motion.h2 
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
+              className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] text-[#16171A]"
+            >
+              How to join?
+            </motion.h2>
+          </div>
 
           <motion.p 
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.2, ease: smoothEase }}
-            className="text-[#475569] text-sm sm:text-base leading-relaxed font-normal"
+            className="text-[#57534E] text-xs sm:text-sm leading-relaxed font-normal max-w-md md:text-right"
           >
             No automated rejection algorithms. We screen for alignment at every step to ensure cohort quality.
           </motion.p>
@@ -796,30 +807,32 @@ export function FaqEditorial() {
     <section id="faq" className="py-12 md:py-16 bg-[#FAF8F5] border-b border-stone-200/90 scroll-mt-20 relative">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl relative z-10">
         
-        {/* Section Header */}
-        <div className="text-center mb-6 md:mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: smoothEase }}
-            className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-700 font-mono text-[11px] font-medium tracking-[0.05em] uppercase mb-2"
-          >
-            TRANSPARENCY &amp; DETAILS
-          </motion.div>
-          
-          <motion.h2 
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
-            className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A]"
-          >
-            Questions,{' '}
-            <span className="font-editorial italic font-normal text-stone-900 text-[1.12em] tracking-normal inline-block relative underline underline-offset-[8px] decoration-amber-500/80 decoration-skip-ink">
-              answered.
-            </span>
-          </motion.h2>
+        {/* Section Header: Left-Aligned Blueprint Style */}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8 text-left border-b border-stone-200/80 pb-5">
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: smoothEase }}
+              className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-stone-100 border border-stone-200 text-stone-700 font-mono text-[10px] font-semibold tracking-[0.05em] uppercase mb-2"
+            >
+              TRANSPARENCY &amp; DETAILS
+            </motion.div>
+            
+            <motion.h2 
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
+              className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] text-[#16171A]"
+            >
+              Questions, answered.
+            </motion.h2>
+          </div>
+          <span className="font-mono text-xs text-stone-500 pb-1">
+            08 FREQUENT QUESTIONS // ACCORDION
+          </span>
         </div>
 
         {/* Editorial Single-Line Separator Accordion */}
@@ -873,34 +886,6 @@ export function FaqEditorial() {
   );
 }
 
-function StepSmartLogoIcon({ className = "w-6 h-6 shrink-0" }: { className?: string }) {
-  return (
-    <svg 
-      viewBox="0 0 100 100" 
-      className={className} 
-      fill="none" 
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      {/* Top-Left Shell & Cutout Step - Charcoal */}
-      <path 
-        d="M 41.6 0.7 L 44.0 0.7 L 46.6 1.6 L 76.7 20.1 L 70.0 26.8 L 45.5 11.9 L 43.4 10.9 L 41.7 11.0 L 11.5 29.4 L 10.7 31.5 L 10.7 51.0 L 13.4 48.4 L 22.0 39.4 L 23.0 39.0 L 25.3 39.5 L 28.3 42.7 L 28.8 44.0 L 28.3 46.0 L 6.7 67.6 L 4.1 68.3 L 2.6 67.4 L 1.6 66.0 L 1.4 27.9 L 2.5 24.4 L 6.0 21.4 L 38.9 1.6 L 41.6 0.7 Z" 
-        fill="#141413" 
-      />
-      {/* Middle Step Bar - Charcoal */}
-      <path 
-        d="M 45.7 34.2 L 48.0 34.7 L 51.2 38.1 L 51.8 39.1 L 51.2 41.4 L 15.3 78.5 L 14.0 79.0 L 11.7 78.4 L 8.5 75.1 L 8.1 74.1 L 8.5 72.1 L 43.8 35.5 L 45.7 34.2 Z" 
-        fill="#141413" 
-      />
-      {/* Bottom-Right Shell & Ascending Arrow - Warm Amber Accent */}
-      <path 
-        d="M 97.7 10.1 L 98.6 10.2 L 99.0 11.2 L 96.9 25.8 L 95.5 26.0 L 92.6 24.1 L 36.3 82.5 L 44.4 87.4 L 46.7 87.1 L 76.8 67.9 L 78.2 65.4 L 78.2 46.3 L 87.0 37.2 L 87.2 58.8 L 87.0 69.2 L 86.1 71.9 L 84.8 73.6 L 47.6 97.4 L 45.1 97.7 L 43.0 97.2 L 26.2 86.9 L 24.7 85.1 L 24.5 82.0 L 85.8 17.8 L 86.2 17.2 L 83.7 14.5 L 84.2 13.2 L 97.7 10.1 Z" 
-        fill="#D97706" 
-      />
-    </svg>
-  );
-}
-
 // --- SECTION 17: FINAL CONVERSION & EDITORIAL FOOTER ---
 interface FooterEditorialProps {
   countdownText: string;
@@ -939,20 +924,15 @@ export function FooterEditorial({ countdownText, onOpenBrochure, onEnroll }: Foo
               </span>
             </h2>
 
-            {/* Countdown / Urgency Subtitle with Warm Amber Pill */}
-            {timeMatch ? (
-              <div className="text-xs sm:text-sm font-mono text-stone-300 mb-6 max-w-lg mx-auto flex items-center justify-center flex-wrap gap-1.5">
-                <span>Early bird ₹15,000 ends in</span>
-                <span className="bg-[#F59E0B]/20 text-[#FBBF24] border border-[#F59E0B]/30 px-2.5 py-0.5 rounded font-mono font-bold shadow-2xs">
-                  {timeMatch[0]}
-                </span>
-                <span>· Then ₹20,000</span>
-              </div>
-            ) : (
-              <p className="text-xs sm:text-sm font-mono text-stone-300 mb-6 max-w-md mx-auto">
-                {countdownText}
-              </p>
-            )}
+            {/* Single Non-Wrapping Cohort & Tuition Line (Save ₹5,000) */}
+            <div className="text-xs sm:text-sm font-mono text-stone-300 mb-6 max-w-2xl mx-auto flex items-center justify-center flex-wrap sm:flex-nowrap gap-1.5 whitespace-nowrap">
+              <span>Batch 02 Cohort</span>
+              <span className="text-stone-500">·</span>
+              <span className="text-white font-medium">₹15,000 Fellowship Tuition</span>
+              <span className="bg-[#F59E0B]/20 text-[#FBBF24] border border-[#F59E0B]/30 px-2.5 py-0.5 rounded font-mono font-bold shadow-2xs">
+                Save ₹5,000
+              </span>
+            </div>
 
             {/* Dual CTAs: Signature Warm Amber Button + Outline Brochure Button with ArrowDown */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4">
@@ -986,11 +966,17 @@ export function FooterEditorial({ countdownText, onOpenBrochure, onEnroll }: Foo
           
           {/* Top Row: Brand Dossier + Navigation Links */}
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 pb-8 border-b border-[#E6E1D6]">
-            {/* Left Column: Brand Dossier */}
+            {/* Left Column: Brand Dossier (Synced With Hero Header) */}
             <div className="max-w-md text-left">
               <div className="flex items-center gap-3">
-                <StepSmartLogoIcon className="w-6 h-6 shrink-0" />
-                <span className="font-sans font-bold text-lg text-stone-900 tracking-tight">
+                <img 
+                  src="/stepsmart-logo.webp" 
+                  alt="StepSmart Logo" 
+                  className="w-8 h-8 object-contain shrink-0"
+                  width="32" 
+                  height="32" 
+                />
+                <span className="font-extrabold text-2xl tracking-tight text-[#141413]">
                   StepSmart
                 </span>
                 <span className="text-stone-300">|</span>
@@ -1005,10 +991,10 @@ export function FooterEditorial({ countdownText, onOpenBrochure, onEnroll }: Foo
 
             {/* Right Column: Navigation Links + Smooth Back to Top */}
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3 font-mono text-xs">
-              <a href="#system" className="text-stone-600 hover:text-stone-950 transition-colors">Cohort</a>
+              <a href="#blueprint" className="text-stone-600 hover:text-stone-950 transition-colors">Cohort</a>
               <a href="#curriculum" className="text-stone-600 hover:text-stone-950 transition-colors">Curriculum</a>
               <a href="#mentors" className="text-stone-600 hover:text-stone-950 transition-colors">Mentors</a>
-              <a href="#pricing" className="text-stone-600 hover:text-stone-950 transition-colors">Tuition</a>
+              <a href="#pricing" className="text-stone-600 hover:text-stone-950 transition-colors">Pricing</a>
               <a href="#faq" className="text-stone-600 hover:text-stone-950 transition-colors">FAQ</a>
               <a 
                 href="https://wa.me/message/GH5C7YLAYIEHN1" 
