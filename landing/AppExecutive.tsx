@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import {
   Menu,
   X,
-  Calendar,
   Clock,
   Check,
   CheckCircle2,
@@ -340,16 +339,6 @@ export function AppExecutive() {
           {/* Exposed Structural Container: Vertical Swiss Framing Lines connecting to Navbar */}
           <div className="hidden lg:block absolute inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-6xl border-l-2 border-r-2 border-[#141413]/15 pointer-events-none" />
 
-          {/* Corner Architectural Registration Marks */}
-          <div className="hidden lg:flex justify-between absolute top-2 left-1/2 -translate-x-1/2 w-full max-w-6xl px-3 font-mono text-[10px] text-[#141413]/35 select-none pointer-events-none">
-            <span>+ 01 / HERO_GRID</span>
-            <span>1280PX SWISS FRAME +</span>
-          </div>
-          <div className="hidden lg:flex justify-between absolute bottom-2 left-1/2 -translate-x-1/2 w-full max-w-6xl px-3 font-mono text-[10px] text-[#141413]/35 select-none pointer-events-none">
-            <span>+ ARCHITECTURAL CONTAINER</span>
-            <span>SEC.01 / PROOF_LAB +</span>
-          </div>
-
           <div className="container mx-auto px-6 max-w-5xl text-center relative z-10">
             
             {/* Top Eyebrow Sticker */}
@@ -360,69 +349,17 @@ export function AppExecutive() {
               </span>
             </div>
 
-            {/* Headline with Flanking Floating Proof Artifacts */}
+            {/* Headline Area (100% Clean, No Overlapping Cards) */}
             <div className="relative mb-6 max-w-5xl mx-auto">
               
               {/* Soft Dreamy Radial Mesh Wash behind Headline */}
               <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-full max-w-3xl h-72 bg-[radial-gradient(ellipse_at_top,rgba(233,213,255,0.45)_0%,rgba(254,240,138,0.4)_45%,rgba(253,252,247,0)_75%)] pointer-events-none blur-2xl -z-10" />
 
-              {/* Left Flanking Proof Artifact (Before/After Resume Bullet + ATS Score) */}
-              <div className="hidden xl:block absolute top-1 -left-12 2xl:-left-20 -rotate-3 z-20 pointer-events-none select-none">
-                <div className="w-56 bg-white rounded-xl border-2 border-[#141413] p-3 shadow-[4px_4px_0px_0px_#141413] text-left">
-                  <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-[#141413]/15">
-                    <span className="text-[10px] font-mono font-black uppercase text-[#141413] flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      RESUME AUDIT
-                    </span>
-                    <span className="bg-[#A7F3D0] text-[#064e3b] text-[9px] font-mono font-black px-1.5 py-0.5 rounded border border-[#141413]">
-                      VERIFIED ✓
-                    </span>
-                  </div>
-                  <div className="space-y-1 text-[11px] leading-snug">
-                    <div className="text-rose-700/80 line-through font-mono text-[10px]">
-                      “Monitored ticket SLA queues”
-                    </div>
-                    <div className="font-bold text-[#141413]">
-                      ➔ “Cut triage latency by 42% via automated exception routing”
-                    </div>
-                  </div>
-                  <div className="mt-2 pt-1 border-t border-dashed border-[#141413]/20 flex items-center justify-between text-[9px] font-mono text-[#141413]/70 font-bold">
-                    <span>ATS SCORE</span>
-                    <span className="text-emerald-700 font-black">94 / 100</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Flanking Proof Artifact (Live Lab Calendar & Batch Cap) */}
-              <div className="hidden xl:block absolute top-3 -right-12 2xl:-right-20 rotate-3 z-20 pointer-events-none select-none">
-                <div className="w-56 bg-[#FEF08A] rounded-xl border-2 border-[#141413] p-3 shadow-[4px_4px_0px_0px_#141413] text-left">
-                  <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-[#141413]/15">
-                    <span className="text-[10px] font-mono font-black uppercase text-[#141413] flex items-center gap-1.5">
-                      <Calendar className="w-3 h-3 text-[#141413]" />
-                      NEXT LIVE LAB
-                    </span>
-                    <span className="bg-[#141413] text-white text-[9px] font-mono font-black px-1.5 py-0.5 rounded-full">
-                      LIVE
-                    </span>
-                  </div>
-                  <div className="text-xs font-black text-[#141413] leading-snug">
-                    Sat 11:00 AM IST
-                  </div>
-                  <div className="text-[11px] font-semibold text-[#141413]/85 mt-0.5">
-                    Unscripted PRD Defense Sprint with MSFT &amp; Mastercard PMs
-                  </div>
-                  <div className="mt-2 pt-1.5 border-t border-dashed border-[#141413]/20 flex items-center justify-between text-[9px] font-mono font-black text-[#141413]">
-                    <span>BATCH 14</span>
-                    <span className="text-emerald-800">10–20 SEATS CAP</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Balanced Headline (Fixes orphan "title?") */}
-              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[60px] font-black tracking-tight leading-[1.14] text-[#141413] max-w-4xl mx-auto">
-                Switching into PM without a PM title?<br className="hidden sm:inline" />{' '}
+              {/* Balanced Headline (Clean 2-line flow without orphan "title?") */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black tracking-tight leading-[1.18] text-[#141413] max-w-5xl mx-auto">
+                <span className="block sm:inline">Switching into PM without a PM title?</span>{' '}
                 <span className="inline-block mt-2 sm:mt-2.5">
-                  <span className="inline-block rounded-full border-2 border-[#141413] bg-[#FDE047] px-5 sm:px-6 py-1 sm:py-1.5 shadow-[3px_3px_0px_0px_#141413] -rotate-1 font-black text-[#141413] mr-2 align-middle">
+                  <span className="inline-block rounded-full border-2 border-[#141413] bg-[#FDE047] px-4 sm:px-6 py-1 sm:py-1.5 shadow-[3px_3px_0px_0px_#141413] -rotate-1 font-black text-[#141413] mr-2 align-middle">
                     Build the proof
                   </span>
                   <span className="align-middle">with us.</span>
@@ -573,119 +510,18 @@ export function AppExecutive() {
               </div>
             </div>
 
-            {/* 5. RE-ENGINEERED FOUNDER'S CASE FILE COMPONENT */}
-            <div className="max-w-5xl mx-auto mb-14 text-left relative">
-              
-              {/* Overlapping Top-Left Badge */}
-              <div className="absolute -top-3.5 left-5 sm:left-7 bg-[#FEF08A] text-[#141413] border-2 border-[#141413] rounded-full px-3.5 py-1 text-[11px] font-mono font-black uppercase shadow-[2px_2px_0px_0px_#141413] z-20 flex items-center gap-1.5 select-none">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>FOUNDER’S CASE FILE · THE TRANSITION STORY</span>
-              </div>
-
-              {/* Overlapping Top-Right Badge */}
-              <div className="hidden sm:inline-flex items-center gap-2 absolute -top-3.5 right-5 sm:right-7 bg-white border-2 border-[#141413] rounded-full px-3.5 py-1 text-[11px] font-mono font-black text-[#141413] shadow-[2px_2px_0px_0px_#141413] rotate-1 z-20 select-none">
-                <span className="text-emerald-600 font-black">✓</span> No MBA
-                <span className="text-[#141413]/30 font-normal">|</span>
-                <span className="text-emerald-600 font-black">✓</span> No CS Degree
-              </div>
-
-              {/* Main Neo-Brutalist Split Container with 8px Offset Shadow */}
-              <div className="bg-[#188ab2] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[0px_8px_0px_0px_#141413] overflow-hidden relative">
-                <div className="grid grid-cols-1 md:grid-cols-12 items-stretch">
-                  
-                  {/* Left Column (60%): Live HTML Typography, Highlights & Founder Credential Strip */}
-                  <div className="md:col-span-7 p-6 sm:p-8 md:p-10 flex flex-col justify-between text-white relative z-10">
-                    <div>
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 border border-white/30 text-[10px] font-mono font-black uppercase tracking-wider text-white mb-4">
-                        VERIFIED TRANSITION
-                      </div>
-
-                      {/* Live Editorial Quote */}
-                      <blockquote className="text-xl sm:text-2xl md:text-3xl font-black text-white leading-snug tracking-tight">
-                        “I switched into PM with{' '}
-                        <span className="inline-block bg-[#FEF08A] text-[#141413] px-2.5 py-0.5 rounded-lg border-2 border-[#141413] shadow-[2.5px_2.5px_0px_0px_#141413] -rotate-1 font-black my-1">
-                          zero product experience
-                        </span>
-                        . No CS degree. No MBA.{' '}
-                        <span className="inline-block bg-white text-[#141413] px-2.5 py-0.5 rounded-lg border-2 border-[#141413] shadow-[2.5px_2.5px_0px_0px_#141413] rotate-1 font-black my-1">
-                          Just the right preparation.
-                        </span>”
-                      </blockquote>
-
-                      <p className="text-xs sm:text-sm text-white/90 font-medium leading-relaxed mt-4 max-w-lg">
-                        Every framework, live teardown, and resume bullet in PM-X is reverse-engineered from this exact transition—tested across 50+ successful alumni switches.
-                      </p>
-                    </div>
-
-                    {/* Founder Credential Strip */}
-                    <div className="mt-8 pt-5 border-t-2 border-white/20 flex flex-wrap items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-full border-2 border-[#141413] bg-white overflow-hidden shadow-[2px_2px_0px_0px_#141413] shrink-0">
-                          <img
-                            src="/mentor-sanket.webp"
-                            alt="Sanket Katore"
-                            className="w-full h-full object-cover object-top"
-                          />
-                        </div>
-                        <div>
-                          <div className="font-black text-sm sm:text-base text-white leading-tight flex items-center gap-1.5">
-                            <span>Sanket Katore</span>
-                            <span className="bg-[#FEF08A] text-[#141413] text-[9px] font-mono font-black px-1.5 py-0.5 rounded border border-[#141413]">
-                              FOUNDER
-                            </span>
-                          </div>
-                          <div className="text-xs text-white/85 font-medium mt-0.5">
-                            Senior PM, Mastercard · Ex-Software Engineer · IIT Roorkee · ISB
-                          </div>
-                        </div>
-                      </div>
-                      <span className="px-3 py-1 rounded-full bg-[#141413] text-white text-[10px] font-mono font-black uppercase tracking-wider border border-white/30 shrink-0">
-                        50+ PMs Mentored
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Right Column (40%): Tactile Polaroid / Architectural Photo Container */}
-                  <div className="md:col-span-5 p-6 sm:p-8 flex items-center justify-center bg-[#0e6f8f]/40 border-t-2 md:border-t-0 md:border-l-2 border-[#141413] relative overflow-hidden">
-                    <div className="relative w-full max-w-[270px]">
-                      
-                      {/* Polaroid Frame */}
-                      <div className="bg-white rounded-xl border-2 border-[#141413] p-2.5 pb-3.5 shadow-[5px_5px_0px_0px_#141413] rotate-1">
-                        <div className="w-full aspect-[4/5] rounded-lg border-2 border-[#141413] overflow-hidden bg-slate-100 relative">
-                          <img
-                            src="/mentor-sanket.webp"
-                            alt="Sanket Katore - Founder & PM Mentor"
-                            className="w-full h-full object-cover object-top"
-                            loading="eager"
-                          />
-                          <div className="absolute bottom-2 left-2 right-2 bg-[#141413]/90 text-white rounded-md py-1 px-2 text-[10px] font-mono font-black uppercase tracking-wide flex items-center justify-between backdrop-blur-xs">
-                            <span>CASE FILE #001</span>
-                            <span className="text-[#FEF08A]">EX-SWE ➔ SR. PM</span>
-                          </div>
-                        </div>
-                        <div className="mt-2.5 flex items-center justify-between text-[11px] font-black text-[#141413] px-1">
-                          <span>SANKET KATORE</span>
-                          <span className="font-mono text-[9px] text-[#141413]/70 font-bold uppercase">MASTERCARD</span>
-                        </div>
-                      </div>
-
-                      {/* Scalloped / Tactile Stamp Badge */}
-                      <div className="absolute -bottom-3 -right-3 bg-[#FEF08A] text-[#141413] border-2 border-[#141413] rounded-full w-14 h-14 flex items-center justify-center font-mono text-[9px] font-black uppercase text-center leading-tight shadow-[2px_2px_0px_0px_#141413] -rotate-12 select-none">
-                        VERIFIED<br />SWITCH
-                      </div>
-                    </div>
-                  </div>
-
+            {/* 5. Original Founder Image Graphic (Aligned to max-w-5xl Outcome Cards grid) */}
+            <div className="max-w-5xl mx-auto mb-14 text-left">
+              <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[0px_4px_0px_0px_#141413] overflow-hidden">
+                <div className="w-full aspect-[1024/536] overflow-hidden bg-[#188ab2]">
+                  <img
+                    src="/hero-slide-1.webp"
+                    alt="PM Switch Story: 'I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation.'"
+                    className="w-full h-full object-cover"
+                    loading="eager"
+                  />
                 </div>
               </div>
-
-              {/* Overlapping Bottom-Left Proof Sticker */}
-              <div className="hidden sm:inline-flex items-center gap-2 absolute -bottom-3.5 left-6 bg-white border-2 border-[#141413] rounded-xl px-3.5 py-1.5 text-xs font-mono font-black text-[#141413] shadow-[3px_3px_0px_0px_#141413] -rotate-2 z-20 select-none">
-                <span className="text-rose-600">SWE / Non-Tech</span>
-                <span>➔</span>
-                <span className="text-emerald-700">Senior PM in 10 Wks</span>
-              </div>
-
             </div>
 
             {/* Ramayana Chronicle Featured Banner (Soft Neo-Brutalist Case Study Card) */}
