@@ -339,6 +339,24 @@ export function AppExecutive() {
           {/* Exposed Structural Container: Vertical Swiss Framing Lines connecting to Navbar */}
           <div className="hidden lg:block absolute inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-6xl border-l-2 border-r-2 border-[#141413]/15 pointer-events-none" />
 
+          {/* Subtle Decorative Geometric Shapes in Background Margins (from Reference IMG_7449) */}
+          <div className="hidden md:block absolute top-24 left-8 lg:left-14 pointer-events-none select-none -rotate-12">
+            <span className="text-[#F59E0B] text-lg lg:text-xl font-black drop-shadow-[1.5px_1.5px_0px_#141413]">
+              ✦
+            </span>
+          </div>
+          <div className="hidden md:block absolute top-52 left-10 lg:left-20 pointer-events-none select-none">
+            <div className="w-3.5 h-3.5 bg-[#A7F3D0] border-2 border-[#141413] rotate-45 shadow-[1.5px_1.5px_0px_#141413]" />
+          </div>
+          <div className="hidden md:block absolute top-28 right-10 lg:right-16 pointer-events-none select-none">
+            <div className="w-3.5 h-3.5 bg-[#FECDD3] border-2 border-[#141413] rotate-12 shadow-[1.5px_1.5px_0px_#141413]" />
+          </div>
+          <div className="hidden md:block absolute top-56 right-8 lg:right-22 pointer-events-none select-none rotate-6">
+            <span className="text-[#A855F7] text-lg lg:text-xl font-black drop-shadow-[1.5px_1.5px_0px_#141413]">
+              ✦
+            </span>
+          </div>
+
           <div className="container mx-auto px-6 max-w-5xl text-center relative z-10">
             
             {/* Top Eyebrow Sticker */}
@@ -349,15 +367,33 @@ export function AppExecutive() {
               </span>
             </div>
 
-            {/* Headline Area (100% Clean, No Overlapping Cards) */}
+            {/* Headline Area with GitBrush Inline Badges */}
             <div className="relative mb-6 max-w-5xl mx-auto">
               
               {/* Soft Dreamy Radial Mesh Wash behind Headline */}
               <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-full max-w-3xl h-72 bg-[radial-gradient(ellipse_at_top,rgba(233,213,255,0.45)_0%,rgba(254,240,138,0.4)_45%,rgba(253,252,247,0)_75%)] pointer-events-none blur-2xl -z-10" />
 
-              {/* Balanced Headline (Clean 2-line flow without orphan "title?") */}
+              {/* Balanced Headline (Clean 2-line flow with GitBrush inline avatar stack & spark) */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black tracking-tight leading-[1.18] text-[#141413] max-w-5xl mx-auto">
-                <span className="block sm:inline">Switching into PM without a PM title?</span>{' '}
+                <span className="inline-block sm:inline">Switching into PM without a PM title?</span>
+                {/* Inline Avatar Cluster + Spark (GitBrush style) */}
+                <span className="inline-flex items-center gap-1.5 align-middle ml-2 sm:ml-3 select-none">
+                  <span className="inline-flex items-center -space-x-2">
+                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-[#141413] bg-[#FEF08A] text-[#141413] font-mono font-black text-[11px] sm:text-xs grid place-items-center shadow-[1px_1px_0px_#141413]">
+                      T
+                    </span>
+                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-[#141413] bg-[#BAE6FD] text-[#141413] font-mono font-black text-[11px] sm:text-xs grid place-items-center shadow-[1px_1px_0px_#141413]">
+                      S
+                    </span>
+                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-[#141413] bg-[#E9D5FF] text-[#141413] font-mono font-black text-[11px] sm:text-xs grid place-items-center shadow-[1px_1px_0px_#141413]">
+                      R
+                    </span>
+                  </span>
+                  <span className="text-[#F59E0B] text-lg sm:text-2xl font-black drop-shadow-[1px_1px_0px_#141413] -rotate-6">
+                    ✦
+                  </span>
+                </span>
+                <br className="hidden sm:inline" />{' '}
                 <span className="inline-block mt-2 sm:mt-2.5">
                   <span className="inline-block rounded-full border-2 border-[#141413] bg-[#FDE047] px-4 sm:px-6 py-1 sm:py-1.5 shadow-[3px_3px_0px_0px_#141413] -rotate-1 font-black text-[#141413] mr-2 align-middle">
                     Build the proof
@@ -416,112 +452,153 @@ export function AppExecutive() {
               </div>
             </div>
 
-            {/* 4. Three Outcome Cards with UI Micro-Previews */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-5xl mx-auto mb-14 text-left">
-              {/* Outcome 01: Warm Butter Yellow */}
-              <div className="bg-[#FEF08A] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
-                      <FileText className="w-5 h-5 text-[#141413]" />
+            {/* 4. Unified Bento Showcase Grid: 3 Outcome Cards (Row 1) + Founder Transition Banner (Row 2) */}
+            <div className="max-w-5xl mx-auto mb-14 flex flex-col gap-5 text-left">
+              
+              {/* Row 1: The 3 Outcome Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                {/* Outcome 01: Warm Butter Yellow */}
+                <div className="bg-[#FEF08A] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
+                        <FileText className="w-5 h-5 text-[#141413]" />
+                      </div>
+                      <span className="rounded-full border-2 border-[#141413] bg-[#141413] text-white px-3 py-0.5 text-[10px] font-mono font-black uppercase tracking-wider">
+                        OUTCOME 01
+                      </span>
                     </div>
-                    <span className="rounded-full border-2 border-[#141413] bg-[#141413] text-white px-3 py-0.5 text-[10px] font-mono font-black uppercase tracking-wider">
-                      OUTCOME 01
+                    <h3 className="text-base sm:text-lg font-black text-[#141413] leading-snug mb-1.5">
+                      A PM-ready resume and LinkedIn
+                    </h3>
+                    <p className="text-xs sm:text-sm font-semibold text-[#141413]/80 leading-relaxed">
+                      Overhauled to showcase product signals &amp; recruiter-clearing metrics.
+                    </p>
+                  </div>
+                  {/* UI Micro-Preview: ATS Score & Signal Indicator */}
+                  <div className="mt-5 pt-3.5 border-t-2 border-[#141413]/15 flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border-2 border-[#141413] text-[10px] sm:text-[11px] font-mono font-black text-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      ATS Score: 92/100
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-[#141413]/70 uppercase">
+                      Screening ✓
                     </span>
                   </div>
-                  <h3 className="text-base sm:text-lg font-black text-[#141413] leading-snug mb-1.5">
-                    A PM-ready resume and LinkedIn
-                  </h3>
-                  <p className="text-xs sm:text-sm font-semibold text-[#141413]/80 leading-relaxed">
-                    Overhauled to showcase product signals &amp; recruiter-clearing metrics.
-                  </p>
                 </div>
-                {/* UI Micro-Preview: ATS Score & Signal Indicator */}
-                <div className="mt-5 pt-3.5 border-t-2 border-[#141413]/15 flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border-2 border-[#141413] text-[10px] sm:text-[11px] font-mono font-black text-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    ATS Score: 92/100
-                  </span>
-                  <span className="text-[10px] font-mono font-bold text-[#141413]/70 uppercase">
-                    Screening ✓
-                  </span>
+
+                {/* Outcome 02: StepSmart Mint/Cyan */}
+                <div className="bg-[#BAE6FD] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
+                        <Layers className="w-5 h-5 text-[#0284c7]" />
+                      </div>
+                      <span className="rounded-full border-2 border-[#141413] bg-[#141413] text-white px-3 py-0.5 text-[10px] font-mono font-black uppercase tracking-wider">
+                        OUTCOME 02
+                      </span>
+                    </div>
+                    <h3 className="text-base sm:text-lg font-black text-[#141413] leading-snug mb-1.5">
+                      2 portfolio projects you can show
+                    </h3>
+                    <p className="text-xs sm:text-sm font-semibold text-[#141413]/80 leading-relaxed">
+                      End-to-end teardowns, PRDs, prototypes &amp; data analysis case studies.
+                    </p>
+                  </div>
+                  {/* UI Micro-Preview: Miniature Capstone Pill Tags */}
+                  <div className="mt-5 pt-3.5 border-t-2 border-[#141413]/15 flex flex-wrap items-center gap-1.5">
+                    <span className="px-2 py-0.5 rounded-md bg-white border border-[#141413] text-[10px] font-mono font-black text-[#141413] shadow-[1px_1px_0px_0px_#141413]">
+                      Swiggy Teardown
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-white border border-[#141413] text-[10px] font-mono font-black text-[#141413] shadow-[1px_1px_0px_0px_#141413]">
+                      AI PRD
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md bg-white border border-[#141413] text-[10px] font-mono font-black text-[#141413] shadow-[1px_1px_0px_0px_#141413]">
+                      SQL Metrics
+                    </span>
+                  </div>
+                </div>
+
+                {/* Outcome 03: Soft Lavender */}
+                <div className="bg-[#E9D5FF] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
+                        <MessageSquare className="w-5 h-5 text-[#7c3aed]" />
+                      </div>
+                      <span className="rounded-full border-2 border-[#141413] bg-[#141413] text-white px-3 py-0.5 text-[10px] font-mono font-black uppercase tracking-wider">
+                        OUTCOME 03
+                      </span>
+                    </div>
+                    <h3 className="text-base sm:text-lg font-black text-[#141413] leading-snug mb-1.5">
+                      Feedback from 2 live mock interviews
+                    </h3>
+                    <p className="text-xs sm:text-sm font-semibold text-[#141413]/80 leading-relaxed">
+                      1:1 rubric evaluation across product sense, strategy, RCA &amp; behavioural.
+                    </p>
+                  </div>
+                  {/* UI Micro-Preview: Mini Rubric Score Bar */}
+                  <div className="mt-5 pt-3.5 border-t-2 border-[#141413]/15 flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border-2 border-[#141413] text-[10px] sm:text-[11px] font-mono font-black text-[#7c3aed] shadow-[1.5px_1.5px_0px_0px_#141413]">
+                      Product Sense: 4.8/5 ★
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-[#141413]/70 uppercase">
+                      2 Mock Loops
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              {/* Outcome 02: StepSmart Mint/Cyan */}
-              <div className="bg-[#BAE6FD] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
-                      <Layers className="w-5 h-5 text-[#0284c7]" />
-                    </div>
-                    <span className="rounded-full border-2 border-[#141413] bg-[#141413] text-white px-3 py-0.5 text-[10px] font-mono font-black uppercase tracking-wider">
-                      OUTCOME 02
-                    </span>
-                  </div>
-                  <h3 className="text-base sm:text-lg font-black text-[#141413] leading-snug mb-1.5">
-                    2 portfolio projects you can show
-                  </h3>
-                  <p className="text-xs sm:text-sm font-semibold text-[#141413]/80 leading-relaxed">
-                    End-to-end teardowns, PRDs, prototypes &amp; data analysis case studies.
-                  </p>
+              {/* Row 2: Full-Width Founder Transition Banner with Corner Badges (Chorke / GitBrush Style) */}
+              <div className="relative">
+                {/* Pinned 4-Point Brutalist Star on Top-Left Corner (GitBrush Style) */}
+                <div className="absolute -top-3.5 -left-3 sm:-top-4 sm:-left-4 z-20 pointer-events-none select-none">
+                  <svg
+                    className="w-8 h-8 sm:w-10 sm:h-10 text-[#E9D5FF] drop-shadow-[2px_2px_0px_#141413]"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    stroke="#141413"
+                    strokeWidth="2"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z" />
+                  </svg>
                 </div>
-                {/* UI Micro-Preview: Miniature Capstone Pill Tags */}
-                <div className="mt-5 pt-3.5 border-t-2 border-[#141413]/15 flex flex-wrap items-center gap-1.5">
-                  <span className="px-2 py-0.5 rounded-md bg-white border border-[#141413] text-[10px] font-mono font-black text-[#141413] shadow-[1px_1px_0px_0px_#141413]">
-                    Swiggy Teardown
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md bg-white border border-[#141413] text-[10px] font-mono font-black text-[#141413] shadow-[1px_1px_0px_0px_#141413]">
-                    AI PRD
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md bg-white border border-[#141413] text-[10px] font-mono font-black text-[#141413] shadow-[1px_1px_0px_0px_#141413]">
-                    SQL Metrics
-                  </span>
+
+                {/* Scalloped Yellow Stamp on Top-Right Corner (from Chorke & GitBrush) */}
+                <div className="absolute -top-5 -right-3 sm:-top-6 sm:-right-4 z-20 select-none rotate-[6deg] hover:rotate-12 transition-transform">
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center">
+                    <svg
+                      className="absolute inset-0 w-full h-full text-[#FEF08A] drop-shadow-[3px_3px_0px_#141413]"
+                      viewBox="0 0 100 100"
+                      fill="currentColor"
+                      stroke="#141413"
+                      strokeWidth="2.5"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M 39.65 11.36 Q 50.0 1.0 60.35 11.36 Q 74.5 7.56 78.28 21.72 Q 92.44 25.5 88.64 39.65 Q 99.0 50.0 88.64 60.35 Q 92.44 74.5 78.28 78.28 Q 74.5 92.44 60.35 88.64 Q 50.0 99.0 39.65 88.64 Q 25.5 92.44 21.72 78.28 Q 7.56 74.5 11.36 60.35 Q 1.0 50.0 11.36 39.65 Q 7.56 25.5 21.72 21.72 Q 25.5 7.56 39.65 11.36 Z" />
+                    </svg>
+                    <div className="relative z-10 text-center font-mono font-black text-[#141413] leading-none flex flex-col items-center justify-center px-1">
+                      <span className="text-[10px] sm:text-[11px] tracking-tight uppercase">ZERO MBA</span>
+                      <span className="text-[9px] sm:text-[10px] text-[#141413]/70 my-0.5">•</span>
+                      <span className="text-[10px] sm:text-[11px] tracking-tight uppercase">ZERO CS</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* The Clean Original Graphic Frame with Exact Same Border-Radius & Shadow */}
+                <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[0px_4px_0px_0px_#141413] overflow-hidden">
+                  <div className="w-full aspect-[1024/536] overflow-hidden bg-[#188ab2]">
+                    <img
+                      src="/hero-slide-1.webp"
+                      alt="PM Switch Story: 'I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation.'"
+                      className="w-full h-full object-cover"
+                      loading="eager"
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Outcome 03: Soft Lavender */}
-              <div className="bg-[#E9D5FF] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
-                      <MessageSquare className="w-5 h-5 text-[#7c3aed]" />
-                    </div>
-                    <span className="rounded-full border-2 border-[#141413] bg-[#141413] text-white px-3 py-0.5 text-[10px] font-mono font-black uppercase tracking-wider">
-                      OUTCOME 03
-                    </span>
-                  </div>
-                  <h3 className="text-base sm:text-lg font-black text-[#141413] leading-snug mb-1.5">
-                    Feedback from 2 live mock interviews
-                  </h3>
-                  <p className="text-xs sm:text-sm font-semibold text-[#141413]/80 leading-relaxed">
-                    1:1 rubric evaluation across product sense, strategy, RCA &amp; behavioural.
-                  </p>
-                </div>
-                {/* UI Micro-Preview: Mini Rubric Score Bar */}
-                <div className="mt-5 pt-3.5 border-t-2 border-[#141413]/15 flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border-2 border-[#141413] text-[10px] sm:text-[11px] font-mono font-black text-[#7c3aed] shadow-[1.5px_1.5px_0px_0px_#141413]">
-                    Product Sense: 4.8/5 ★
-                  </span>
-                  <span className="text-[10px] font-mono font-bold text-[#141413]/70 uppercase">
-                    2 Mock Loops
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* 5. Original Founder Image Graphic (Aligned to max-w-5xl Outcome Cards grid) */}
-            <div className="max-w-5xl mx-auto mb-14 text-left">
-              <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[0px_4px_0px_0px_#141413] overflow-hidden">
-                <div className="w-full aspect-[1024/536] overflow-hidden bg-[#188ab2]">
-                  <img
-                    src="/hero-slide-1.webp"
-                    alt="PM Switch Story: 'I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation.'"
-                    className="w-full h-full object-cover"
-                    loading="eager"
-                  />
-                </div>
-              </div>
             </div>
 
             {/* Ramayana Chronicle Featured Banner (Soft Neo-Brutalist Case Study Card) */}
