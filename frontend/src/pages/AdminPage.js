@@ -4532,11 +4532,11 @@ const DEFAULT_RAMAYANA_DROPS = [
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'Ayodhya at dawn: The King stands by the sacred balcony, awaiting your counsel.',
     video: {
-      youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      youtubeUrl: 'https://youtu.be/UDIcRkHsqOs',
       headline: '“I have no heir. Fix this.”',
       caption: 'King Dasharatha summons you to the royal court of Ayodhya.'
     },
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    youtubeUrl: 'https://youtu.be/UDIcRkHsqOs',
     poll: {
       question: 'Your first instinct?',
       options: [
@@ -4716,7 +4716,10 @@ function RamayanaChronicleTab({ courseId }) {
               try {
                 if (foundWeek.textContent) parsedDrop = JSON.parse(foundWeek.textContent);
               } catch (e) {}
-              const yt = foundWeek.youtubeUrl || parsedDrop.video?.youtubeUrl || parsedDrop.youtubeUrl || def.video?.youtubeUrl;
+              let yt = foundWeek.youtubeUrl || parsedDrop.video?.youtubeUrl || parsedDrop.youtubeUrl || def.video?.youtubeUrl;
+              if (def.dayNumber === 1 && (!yt || yt.includes('dQw4w9WgXcQ'))) {
+                yt = 'https://youtu.be/UDIcRkHsqOs';
+              }
               return {
                 ...def,
                 ...parsedDrop,
@@ -4738,7 +4741,23 @@ function RamayanaChronicleTab({ courseId }) {
         } else if (Array.isArray(savedLocalDrops) && savedLocalDrops.length > 0) {
           const merged = DEFAULT_RAMAYANA_DROPS.map(def => {
             const found = savedLocalDrops.find(d => Number(d.dayNumber) === Number(def.dayNumber));
-            return found ? { ...def, ...found } : def;
+            if (found) {
+              let yt = found.video?.youtubeUrl || found.youtubeUrl || def.video?.youtubeUrl;
+              if (def.dayNumber === 1 && (!yt || yt.includes('dQw4w9WgXcQ'))) {
+                yt = 'https://youtu.be/UDIcRkHsqOs';
+              }
+              return {
+                ...def,
+                ...found,
+                youtubeUrl: yt,
+                video: {
+                  ...def.video,
+                  ...(found.video || {}),
+                  youtubeUrl: yt
+                }
+              };
+            }
+            return def;
           });
           setDrops(merged);
           const active = merged.find(d => Number(d.dayNumber) === Number(selectedDay)) || merged[0];

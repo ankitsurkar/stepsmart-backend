@@ -124,11 +124,11 @@ const DEFAULT_DROPS: DropData[] = [
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'Ayodhya at dawn: The sacred palace courtyards before the King’s summons.',
     video: {
-      youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      youtubeUrl: 'https://youtu.be/UDIcRkHsqOs',
       headline: '“I have no heir. Fix this.”',
       caption: 'King Dasharatha summons you to the royal court of Ayodhya.'
     },
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    youtubeUrl: 'https://youtu.be/UDIcRkHsqOs',
     poll: {
       question: 'Your first instinct?',
       baselineNote: 'No wrong answer yet. This is your baseline.',
@@ -368,7 +368,8 @@ export function RamayanaChroniclePage() {
           setDrops(prev => prev.map(def => {
             const found = cached.find((c: any) => Number(c.dayNumber) === def.dayNumber);
             if (found) {
-              const yt = found.video?.youtubeUrl || found.youtubeUrl || def.video?.youtubeUrl;
+              const rawYt = found.video?.youtubeUrl || found.youtubeUrl || def.video?.youtubeUrl;
+              const yt = (def.dayNumber === 1 && (!rawYt || rawYt.includes('dQw4w9WgXcQ'))) ? 'https://youtu.be/UDIcRkHsqOs' : rawYt;
               return {
                 ...def,
                 ...found,
@@ -404,13 +405,16 @@ export function RamayanaChroniclePage() {
                 return prev.map(defaultDrop => {
                   const remote = data.drops.find((d: any) => Number(d.dayNumber) === defaultDrop.dayNumber);
                   if (remote) {
+                    const rawYt = remote.video?.youtubeUrl || remote.youtubeUrl || defaultDrop.video?.youtubeUrl;
+                    const yt = (defaultDrop.dayNumber === 1 && (!rawYt || rawYt.includes('dQw4w9WgXcQ'))) ? 'https://youtu.be/UDIcRkHsqOs' : rawYt;
                     return {
                       ...defaultDrop,
                       ...remote,
+                      youtubeUrl: yt,
                       video: {
                         ...defaultDrop.video,
                         ...(remote.video || {}),
-                        youtubeUrl: remote.video?.youtubeUrl || remote.youtubeUrl || defaultDrop.video?.youtubeUrl,
+                        youtubeUrl: yt,
                         headline: remote.video?.headline || defaultDrop.video?.headline,
                         caption: remote.video?.caption || defaultDrop.video?.caption
                       }
@@ -1050,21 +1054,28 @@ export function RamayanaChroniclePage() {
               {/* Responsive 16:9 YouTube Video Embed Card */}
               <div className="bg-white rounded-xl border-2 border-[#141413] p-3 sm:p-4 shadow-[3px_3px_0px_0px_#141413]">
                 <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-[#141413] bg-black shadow-[2px_2px_0px_0px_#141413]">
-                  {getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) ? (
-                    <iframe
-                      src={getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) || ''}
-                      title="King Dasharatha Summons - Video Briefing"
-                      className="w-full h-full border-0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white bg-slate-900">
-                      <Video className="w-10 h-10 mb-2 text-[#FEF08A]" />
-                      <p className="font-bold text-sm">Video briefing is being configured by the admin.</p>
-                      <p className="text-xs text-slate-400 mt-1">Check back shortly or update the link in the Admin Panel.</p>
-                    </div>
-                  )}
+                  {(() => {
+                    const rawYt = currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl;
+                    const finalYt = (currentDrop.dayNumber === 1 && (!rawYt || rawYt.includes('dQw4w9WgXcQ')))
+                      ? 'https://youtu.be/UDIcRkHsqOs'
+                      : (rawYt || (currentDrop.dayNumber === 1 ? 'https://youtu.be/UDIcRkHsqOs' : ''));
+                    const embedUrl = getYouTubeEmbedUrl(finalYt);
+                    return embedUrl ? (
+                      <iframe
+                        src={embedUrl}
+                        title="King Dasharatha Summons - Video Briefing"
+                        className="w-full h-full border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white bg-slate-900">
+                        <Video className="w-10 h-10 mb-2 text-[#FEF08A]" />
+                        <p className="font-bold text-sm">Video briefing is being configured by the admin.</p>
+                        <p className="text-xs text-slate-400 mt-1">Check back shortly or update the link in the Admin Panel.</p>
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div className="mt-3 flex items-center justify-between text-xs font-bold text-slate-600 px-1">
                   <span className="flex items-center gap-1.5">

@@ -596,11 +596,11 @@ async function updateRamayanaDrop(courseId, body) {
       introLines: Array.isArray(drop.introLines) ? drop.introLines : [],
       imageUrl: drop.imageUrl || '/ayodhya_dawn.jpg',
       video: drop.video || {
-        youtubeUrl: drop.youtubeUrl || drop.video?.youtubeUrl || '',
+        youtubeUrl: drop.youtubeUrl || drop.video?.youtubeUrl || (Number(drop.dayNumber) === 1 ? 'https://youtu.be/UDIcRkHsqOs' : ''),
         headline: drop.video?.headline || '“I have no heir. Fix this.”',
         caption: drop.video?.caption || 'King Dasharatha summons you to the royal court of Ayodhya.',
       },
-      youtubeUrl: drop.youtubeUrl || drop.video?.youtubeUrl || '',
+      youtubeUrl: drop.youtubeUrl || drop.video?.youtubeUrl || (Number(drop.dayNumber) === 1 ? 'https://youtu.be/UDIcRkHsqOs' : ''),
       poll: drop.poll || null,
       openQuestion: drop.openQuestion || null,
       cliffhanger: drop.cliffhanger || '',
