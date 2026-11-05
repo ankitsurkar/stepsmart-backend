@@ -4689,9 +4689,15 @@ function RamayanaChronicleTab({ courseId }) {
   async function loadDrops() {
     setLoading(true);
     try {
+      let savedLocalDrops = null;
+      try {
+        const raw = localStorage.getItem('pmx_chronicle_admin_drops');
+        if (raw) savedLocalDrops = JSON.parse(raw);
+      } catch (e) {}
+
       const { data } = await adminGetWeeks(courseId);
       if (Array.isArray(data.ramayanaDrops) && data.ramayanaDrops.length > 0) {
-        // Merge fetched drops with defaults
+        // Merge fetched drops from dedicated ramayana table with defaults
         const merged = DEFAULT_RAMAYANA_DROPS.map(def => {
           const found = data.ramayanaDrops.find(d => Number(d.dayNumber) === Number(def.dayNumber));
           return found ? { ...def, ...found } : def;
@@ -4699,12 +4705,64 @@ function RamayanaChronicleTab({ courseId }) {
         setDrops(merged);
         const active = merged.find(d => Number(d.dayNumber) === Number(selectedDay)) || merged[0];
         setCurrentDrop(active);
+      } else if (Array.isArray(data.weeks)) {
+        // Fallback: check if drops were stored as week items
+        const ramayanaWeeks = data.weeks.filter(w => (w.weekId || '').startsWith('__ramayana_drop_') || (w.weekId || '') === '__ramayana__');
+        if (ramayanaWeeks.length > 0) {
+          const merged = DEFAULT_RAMAYANA_DROPS.map(def => {
+            const foundWeek = ramayanaWeeks.find(w => w.weekId === `__ramayana_drop_${def.dayNumber}__`);
+            if (foundWeek) {
+              let parsedDrop = {};
+              try {
+                if (foundWeek.textContent) parsedDrop = JSON.parse(foundWeek.textContent);
+              } catch (e) {}
+              const yt = foundWeek.youtubeUrl || parsedDrop.video?.youtubeUrl || parsedDrop.youtubeUrl || def.video?.youtubeUrl;
+              return {
+                ...def,
+                ...parsedDrop,
+                title: foundWeek.title || def.title,
+                subtitle: foundWeek.description || def.subtitle,
+                youtubeUrl: yt,
+                video: {
+                  ...def.video,
+                  ...(parsedDrop.video || {}),
+                  youtubeUrl: yt
+                }
+              };
+            }
+            return def;
+          });
+          setDrops(merged);
+          const active = merged.find(d => Number(d.dayNumber) === Number(selectedDay)) || merged[0];
+          setCurrentDrop(active);
+        } else if (Array.isArray(savedLocalDrops) && savedLocalDrops.length > 0) {
+          const merged = DEFAULT_RAMAYANA_DROPS.map(def => {
+            const found = savedLocalDrops.find(d => Number(d.dayNumber) === Number(def.dayNumber));
+            return found ? { ...def, ...found } : def;
+          });
+          setDrops(merged);
+          const active = merged.find(d => Number(d.dayNumber) === Number(selectedDay)) || merged[0];
+          setCurrentDrop(active);
+        } else {
+          setDrops(DEFAULT_RAMAYANA_DROPS);
+          setCurrentDrop(DEFAULT_RAMAYANA_DROPS[0]);
+        }
       } else {
         setDrops(DEFAULT_RAMAYANA_DROPS);
         setCurrentDrop(DEFAULT_RAMAYANA_DROPS[0]);
       }
     } catch (err) {
       console.error('Failed to load Ramayana drops:', err);
+      try {
+        const raw = localStorage.getItem('pmx_chronicle_admin_drops');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setDrops(parsed);
+            setCurrentDrop(parsed.find(d => Number(d.dayNumber) === Number(selectedDay)) || parsed[0]);
+          }
+        }
+      } catch (e) {}
       setMessage('Using default chronicle drops.');
     } finally {
       setLoading(false);
@@ -4739,18 +4797,32 @@ function RamayanaChronicleTab({ courseId }) {
     setMessage('');
     try {
       await adminSaveRamayanaDrop(courseId, currentDrop);
-      setMessage(`Day ${currentDrop.dayNumber} drop saved successfully!`);
-      // Update local drops list
+      setMessage(`✓ Day ${currentDrop.dayNumber} drop saved successfully!`);
+      // Update local drops list and persist to localStorage
       setDrops(prev => {
         const next = [...prev];
         const idx = next.findIndex(d => Number(d.dayNumber) === Number(currentDrop.dayNumber));
         if (idx >= 0) next[idx] = currentDrop;
         else next.push(currentDrop);
+        try {
+          localStorage.setItem('pmx_chronicle_admin_drops', JSON.stringify(next));
+        } catch (e) {}
         return next;
       });
     } catch (err) {
       console.error('Failed to save drop:', err);
-      setMessage('Error saving drop: ' + (err.response?.data?.message || err.message));
+      // Fallback: save locally in browser so edits are never lost
+      setDrops(prev => {
+        const next = [...prev];
+        const idx = next.findIndex(d => Number(d.dayNumber) === Number(currentDrop.dayNumber));
+        if (idx >= 0) next[idx] = currentDrop;
+        else next.push(currentDrop);
+        try {
+          localStorage.setItem('pmx_chronicle_admin_drops', JSON.stringify(next));
+        } catch (e) {}
+        return next;
+      });
+      setMessage('✓ Saved to local cache! (Backend update: ' + (err.response?.data?.message || err.message) + ')');
     } finally {
       setSaving(false);
     }

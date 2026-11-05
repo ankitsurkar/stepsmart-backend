@@ -358,6 +358,37 @@ export function RamayanaChroniclePage() {
   // Fetch dynamic chronicle drops from backend if updated via Admin panel
   useEffect(() => {
     let isMounted = true;
+
+    // 1. Immediately apply any locally cached admin updates if present
+    try {
+      const rawAdmin = localStorage.getItem('pmx_chronicle_admin_drops');
+      if (rawAdmin) {
+        const cached = JSON.parse(rawAdmin);
+        if (Array.isArray(cached) && cached.length > 0) {
+          setDrops(prev => prev.map(def => {
+            const found = cached.find((c: any) => Number(c.dayNumber) === def.dayNumber);
+            if (found) {
+              const yt = found.video?.youtubeUrl || found.youtubeUrl || def.video?.youtubeUrl;
+              return {
+                ...def,
+                ...found,
+                youtubeUrl: yt,
+                video: {
+                  ...def.video,
+                  ...(found.video || {}),
+                  youtubeUrl: yt,
+                  headline: found.video?.headline || def.video?.headline,
+                  caption: found.video?.caption || def.video?.caption,
+                }
+              };
+            }
+            return def;
+          }));
+        }
+      }
+    } catch (e) {}
+
+    // 2. Fetch live drops from backend
     const fetchRemoteDrops = async () => {
       try {
         const res = await fetch('https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll', {

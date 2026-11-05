@@ -164,11 +164,26 @@ export const cancelPeerSession = (courseId, sessionId) =>
   api.post(`/courses/${courseId}/peer-sessions/${sessionId}/cancel`);
 
 // ─── Ramayana Chronicle ──────────────────────────────────────────────────────
-export const adminSaveRamayanaDrop = (courseId, drop) =>
-  api.patch(`/admin/courses/${courseId}/weeks/__ramayana__`, { action: 'save', drop });
+export const adminSaveRamayanaDrop = (courseId, drop) => {
+  const day = drop.dayNumber || 1;
+  const yt = drop.video?.youtubeUrl || drop.youtubeUrl || '';
+  return api.patch(`/admin/courses/${courseId}/weeks/__ramayana_drop_${day}__`, {
+    action: 'save',
+    drop,
+    youtubeUrl: yt,
+    title: drop.title || `Drop ${day}`,
+    description: drop.subtitle || '',
+    textContent: JSON.stringify(drop),
+  });
+};
 
 export const adminDeleteRamayanaDrop = (courseId, dayNumber) =>
-  api.patch(`/admin/courses/${courseId}/weeks/__ramayana__`, { action: 'delete', dayNumber });
+  api.patch(`/admin/courses/${courseId}/weeks/__ramayana_drop_${dayNumber}__`, {
+    action: 'delete',
+    dayNumber,
+    textContent: '',
+    youtubeUrl: ''
+  });
 
 export default api;
 

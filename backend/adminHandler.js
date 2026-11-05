@@ -644,7 +644,7 @@ async function updateWeek(courseId, weekId, body) {
     console.log('DEPLOY_CHECK_V2: Redirecting to updateEvent');
     return await updateEvent(courseId, body);
   }
-  if (weekId === '__ramayana__' || weekId === '__chronicle__') {
+  if (weekId === '__ramayana__' || weekId === '__chronicle__' || weekId.startsWith('__ramayana')) {
     console.log('DEPLOY_CHECK_V2: Redirecting to updateRamayanaDrop');
     return await updateRamayanaDrop(courseId, body);
   }
