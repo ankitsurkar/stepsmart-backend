@@ -336,29 +336,26 @@ export function AppExecutive() {
             }}
           />
 
-          {/* Exposed Structural Container: Vertical Swiss Framing Lines connecting to Navbar */}
-          <div className="hidden lg:block absolute inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-6xl border-l-2 border-r-2 border-[#141413]/15 pointer-events-none" />
-
-          {/* Subtle Decorative Geometric Shapes in Background Margins (from Reference IMG_7449) */}
-          <div className="hidden md:block absolute top-24 left-8 lg:left-14 pointer-events-none select-none -rotate-12">
-            <span className="text-[#F59E0B] text-lg lg:text-xl font-black drop-shadow-[1.5px_1.5px_0px_#141413]">
-              ✦
-            </span>
-          </div>
-          <div className="hidden md:block absolute top-52 left-10 lg:left-20 pointer-events-none select-none">
-            <div className="w-3.5 h-3.5 bg-[#A7F3D0] border-2 border-[#141413] rotate-45 shadow-[1.5px_1.5px_0px_#141413]" />
-          </div>
-          <div className="hidden md:block absolute top-28 right-10 lg:right-16 pointer-events-none select-none">
-            <div className="w-3.5 h-3.5 bg-[#FECDD3] border-2 border-[#141413] rotate-12 shadow-[1.5px_1.5px_0px_#141413]" />
-          </div>
-          <div className="hidden md:block absolute top-56 right-8 lg:right-22 pointer-events-none select-none rotate-6">
-            <span className="text-[#A855F7] text-lg lg:text-xl font-black drop-shadow-[1.5px_1.5px_0px_#141413]">
-              ✦
-            </span>
-          </div>
-
           <div className="container mx-auto px-6 max-w-5xl text-center relative z-10">
             
+            {/* Playful Neo-Brutalist Geometric Shapes (Brought in close to Content, from UI Component Library) */}
+            <div className="hidden sm:block absolute top-1 left-2 sm:-left-2 lg:-left-6 pointer-events-none select-none -rotate-12">
+              <span className="text-[#F59E0B] text-2xl lg:text-3xl font-black drop-shadow-[2px_2px_0px_#141413]">
+                ✦
+              </span>
+            </div>
+            <div className="hidden sm:block absolute top-40 left-3 sm:left-1 lg:-left-2 pointer-events-none select-none">
+              <div className="w-[18px] h-[18px] bg-[#A7F3D0] border-2 border-[#141413] rotate-45 shadow-[2px_2px_0px_#141413]" />
+            </div>
+            <div className="hidden sm:block absolute top-2 right-2 sm:-right-2 lg:-right-6 pointer-events-none select-none">
+              <div className="w-[18px] h-[18px] bg-[#FECDD3] border-2 border-[#141413] rotate-12 shadow-[2px_2px_0px_#141413]" />
+            </div>
+            <div className="hidden sm:block absolute top-44 right-3 sm:right-1 lg:-right-2 pointer-events-none select-none rotate-6">
+              <span className="text-[#A855F7] text-2xl lg:text-3xl font-black drop-shadow-[2px_2px_0px_#141413]">
+                ✦
+              </span>
+            </div>
+
             {/* Top Eyebrow Sticker */}
             <div className="inline-block mb-8">
               <span className="bg-white rounded-full border-2 border-[#141413] px-4 sm:px-5 py-1.5 font-mono font-bold text-xs uppercase shadow-[2px_2px_0px_0px_#141413] inline-flex items-center gap-2 tracking-wider select-none">
@@ -367,32 +364,15 @@ export function AppExecutive() {
               </span>
             </div>
 
-            {/* Headline Area with GitBrush Inline Badges */}
+            {/* Headline Area (Clean 2-line flow, no duplicate avatars) */}
             <div className="relative mb-6 max-w-5xl mx-auto">
               
               {/* Soft Dreamy Radial Mesh Wash behind Headline */}
               <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-full max-w-3xl h-72 bg-[radial-gradient(ellipse_at_top,rgba(233,213,255,0.45)_0%,rgba(254,240,138,0.4)_45%,rgba(253,252,247,0)_75%)] pointer-events-none blur-2xl -z-10" />
 
-              {/* Balanced Headline (Clean 2-line flow with GitBrush inline avatar stack & spark) */}
+              {/* Balanced Headline (Clean 2-line flow without duplicate avatars) */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black tracking-tight leading-[1.18] text-[#141413] max-w-5xl mx-auto">
                 <span className="inline-block sm:inline">Switching into PM without a PM title?</span>
-                {/* Inline Avatar Cluster + Spark (GitBrush style) */}
-                <span className="inline-flex items-center gap-1.5 align-middle ml-2 sm:ml-3 select-none">
-                  <span className="inline-flex items-center -space-x-2">
-                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-[#141413] bg-[#FEF08A] text-[#141413] font-mono font-black text-[11px] sm:text-xs grid place-items-center shadow-[1px_1px_0px_#141413]">
-                      T
-                    </span>
-                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-[#141413] bg-[#BAE6FD] text-[#141413] font-mono font-black text-[11px] sm:text-xs grid place-items-center shadow-[1px_1px_0px_#141413]">
-                      S
-                    </span>
-                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-[#141413] bg-[#E9D5FF] text-[#141413] font-mono font-black text-[11px] sm:text-xs grid place-items-center shadow-[1px_1px_0px_#141413]">
-                      R
-                    </span>
-                  </span>
-                  <span className="text-[#F59E0B] text-lg sm:text-2xl font-black drop-shadow-[1px_1px_0px_#141413] -rotate-6">
-                    ✦
-                  </span>
-                </span>
                 <br className="hidden sm:inline" />{' '}
                 <span className="inline-block mt-2 sm:mt-2.5">
                   <span className="inline-block rounded-full border-2 border-[#141413] bg-[#FDE047] px-4 sm:px-6 py-1 sm:py-1.5 shadow-[3px_3px_0px_0px_#141413] -rotate-1 font-black text-[#141413] mr-2 align-middle">
@@ -550,7 +530,7 @@ export function AppExecutive() {
               </div>
 
               {/* Row 2: Full-Width Founder Transition Banner with Corner Badges (Chorke / GitBrush Style) */}
-              <div className="relative">
+              <div className="relative mt-3 sm:mt-4">
                 {/* Pinned 4-Point Brutalist Star on Top-Left Corner (GitBrush Style) */}
                 <div className="absolute -top-3.5 -left-3 sm:-top-4 sm:-left-4 z-20 pointer-events-none select-none">
                   <svg
