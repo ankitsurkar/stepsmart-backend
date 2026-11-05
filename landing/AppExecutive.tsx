@@ -215,7 +215,15 @@ export function AppExecutive() {
           </Link>
 
           {/* Clean Desktop Navigation Anchors */}
-          <nav className="hidden md:flex items-center gap-7 text-sm font-extrabold text-[#141413]">
+          <nav className="hidden md:flex items-center gap-6 text-sm font-extrabold text-[#141413]">
+            <Link
+              to="/chronicle"
+              className="flex items-center gap-1.5 bg-[#FEF08A] hover:bg-[#fde047] text-[#141413] px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all font-black text-xs uppercase"
+            >
+              <span>🏹</span>
+              <span>Ramayana Chronicle</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            </Link>
             <button onClick={() => scrollToSection('system')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Cohort
             </button>
@@ -266,6 +274,19 @@ export function AppExecutive() {
         {/* Mobile Nav Menu */}
         {isMenuOpen && (
           <div className="md:hidden w-full bg-[#FDFCF7] border-b-2 border-[#141413] p-6 flex flex-col gap-4 shadow-[0px_4px_0px_0px_#141413]">
+            <Link
+              to="/chronicle"
+              onClick={() => setIsMenuOpen(false)}
+              className="text-left font-black text-lg py-2.5 px-3 rounded-xl border-2 border-[#141413] bg-[#FEF08A] shadow-[2px_2px_0px_0px_#141413] flex items-center justify-between text-[#141413]"
+            >
+              <span className="flex items-center gap-2">
+                <span className="text-xl">🏹</span>
+                <span>Ramayana Chronicle</span>
+              </span>
+              <span className="text-[10px] font-mono font-black uppercase bg-[#188ab2] text-white px-2 py-0.5 rounded-full border border-[#141413]">
+                Drop 1 Live
+              </span>
+            </Link>
             <button onClick={() => scrollToSection('system')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               Cohort Modules
             </button>
@@ -414,6 +435,77 @@ export function AppExecutive() {
                     className="w-full h-full object-cover"
                     loading="eager"
                   />
+                </div>
+              </div>
+            </div>
+
+            {/* Ramayana Chronicle Featured Banner (Soft Neo-Brutalist Case Study Card) */}
+            <div className="max-w-4xl mx-auto mb-14 text-left">
+              <div className="bg-[#FFFDF5] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[0px_6px_0px_0px_#141413] p-6 sm:p-8 relative overflow-hidden">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  {/* Thumbnail / Image with Architectural Border */}
+                  <div className="w-full md:w-56 shrink-0">
+                    <div className="relative rounded-xl border-2 border-[#141413] overflow-hidden shadow-[3px_3px_0px_0px_#141413] aspect-[4/3] bg-[#FEF08A]">
+                      <img
+                        src="/ayodhya_dawn.jpg"
+                        alt="Ayodhya at dawn - Ramayana Chronicle"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute top-2 left-2 bg-[#141413] text-[#FEF08A] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded-full border border-white">
+                        Drop 1 Live
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Copy & Timeline */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <span className="bg-[#FEF08A] text-[#141413] font-mono text-[11px] font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413] shadow-[1px_1px_0px_0px_#141413]">
+                        🏹 Ramayana Chronicle
+                      </span>
+                      <span className="text-xs font-bold text-[#141413]/70">
+                        3-Day Interactive Case Study · Nov 5–7
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight mb-2">
+                      Ayodhya at Dawn: You’ve been summoned as the King’s PM.
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#141413]/80 leading-relaxed mb-4">
+                      King Dasharatha has no heir and commands you to “Fix this.” Watch the King's royal video summons, make your initial decision, and test your product instincts before unlocking 3 stakeholder interviews tomorrow.
+                    </p>
+
+                    {/* Timeline Pills */}
+                    <div className="grid grid-cols-3 gap-2 mb-5 text-[11px]">
+                      <div className="p-2 rounded-lg border border-[#141413] bg-[#FEF08A] shadow-[1px_1px_0px_0px_#141413]">
+                        <div className="font-mono font-black text-[#141413]">DAY 1 · TODAY</div>
+                        <div className="font-semibold text-[#141413]/80 truncate">Hook & Instinct Poll</div>
+                      </div>
+                      <div className="p-2 rounded-lg border border-[#141413]/40 bg-white/70">
+                        <div className="font-mono font-bold text-slate-500">DAY 2 · NOV 6</div>
+                        <div className="font-semibold text-slate-400 truncate">3 Stakeholder Interviews</div>
+                      </div>
+                      <div className="p-2 rounded-lg border border-[#141413]/40 bg-white/70">
+                        <div className="font-mono font-bold text-slate-500">DAY 3 · NOV 7</div>
+                        <div className="font-semibold text-slate-400 truncate">Synthesis & Framework</div>
+                      </div>
+                    </div>
+
+                    {/* CTA Button */}
+                    <div className="flex items-center gap-3">
+                      <Link
+                        to="/chronicle"
+                        className="px-5 py-2.5 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[2.5px_2.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all text-xs sm:text-sm uppercase inline-flex items-center gap-2"
+                      >
+                        <span>Enter Chronicle (Day 1 Live)</span>
+                        <span>➜</span>
+                      </Link>
+                      <span className="text-xs text-[#141413]/60 font-semibold hidden sm:inline">
+                        Takes 3 minutes · Free interactive module
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

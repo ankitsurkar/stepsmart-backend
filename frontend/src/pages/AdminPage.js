@@ -19,6 +19,8 @@ import {
   adminDeleteBlogPost,
   adminSaveEvent,
   adminDeleteEvent,
+  adminSaveRamayanaDrop,
+  adminDeleteRamayanaDrop,
 } from '../utils/api';
 
 const COURSE_ID = 'course-001';
@@ -4496,6 +4498,738 @@ function EventsTab({ courseId }) {
 }
 
 // ────────────────────────────────────────────────────────────────────────────────
+// Ramayana Chronicle Tab
+// ────────────────────────────────────────────────────────────────────────────────
+function getYouTubeEmbedUrl(url) {
+  if (!url) return '';
+  const trimmed = String(url).trim();
+  if (!trimmed) return '';
+  if (trimmed.includes('youtube.com/embed/')) return trimmed;
+  const shortMatch = trimmed.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+  if (shortMatch && shortMatch[1]) return `https://www.youtube.com/embed/${shortMatch[1]}`;
+  const watchMatch = trimmed.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+  if (watchMatch && watchMatch[1]) return `https://www.youtube.com/embed/${watchMatch[1]}`;
+  const shortsMatch = trimmed.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
+  if (shortsMatch && shortsMatch[1]) return `https://www.youtube.com/embed/${shortsMatch[1]}`;
+  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) return `https://www.youtube.com/embed/${trimmed}`;
+  return trimmed;
+}
+
+const DEFAULT_RAMAYANA_DROPS = [
+  {
+    dayNumber: 1,
+    title: 'Drop 1: Hook and decision (Day 1)',
+    subtitle: 'The Royal Dilemma at Dawn',
+    theme: 'Problem Definition & First Instincts',
+    unlockDate: '2026-11-05',
+    isLocked: false,
+    introLines: [
+      'The mist rises over the Sarayu river as Ayodhya stirs in the golden dawn.',
+      'The palace corridors whisper with uneasy silence; the great halls feel unusually heavy.',
+      'You look down at your hands — no scroll, no sword, only the mindset of a modern builder.',
+      'You’ve been transported here as a Product Manager. The King summons you.'
+    ],
+    imageUrl: '/ayodhya_dawn.jpg',
+    imageCaption: 'Ayodhya at dawn: The King stands by the sacred balcony, awaiting your counsel.',
+    video: {
+      youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      headline: '“I have no heir. Fix this.”',
+      caption: 'King Dasharatha summons you to the royal court of Ayodhya.'
+    },
+    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    poll: {
+      question: 'Your first instinct?',
+      options: [
+        { key: 'A', text: 'Find a solution fast', archetype: 'The Fixer', explanation: 'Natural bias to action, but risks solving the wrong symptom before knowing the root cause.' },
+        { key: 'B', text: 'Understand the problem first', archetype: 'The Strategist', explanation: 'True product mindset: pause solutioning to diagnose underlying constraints and stakes.' },
+        { key: 'C', text: 'Ask who’s affected', archetype: 'The Stakeholder Mapper', explanation: 'Human-centric discovery: problems don’t live in vacuums, they affect people.' }
+      ],
+      baselineNote: 'No wrong answer yet. This is your baseline.'
+    },
+    openQuestion: {
+      prompt: 'In one line, what do YOU think the real problem is?',
+      helper: '(pre-test, saved for later comparison)',
+      placeholder: 'E.g., The King conflates emotional grief with state stability...'
+    },
+    cliffhanger: 'Tomorrow you can interview 3 people. Choose wisely.'
+  },
+  {
+    dayNumber: 2,
+    title: 'Drop 2: Discovery (Day 2)',
+    subtitle: 'Conflicting Stakeholder Voices',
+    theme: 'Stakeholder Interviews & Fact vs. Assumption',
+    unlockDate: '2026-11-06',
+    isLocked: false,
+    introLines: [
+      'Day 2 arrives in Ayodhya. The council chambers are already buzzing with quiet suspicion.',
+      'Three individuals hold distinct pieces of the puzzle: King Dasharatha, Sumantra the Chief Minister, and an Ayodhya Citizen.',
+      'Their accounts do not align.',
+      'Time to conduct stakeholder discovery interviews.'
+    ],
+    imageUrl: '/ayodhya_dawn.jpg',
+    imageCaption: 'The Inner Court: Dasharatha, Sumantra, and citizens gather under the palace archway.',
+    poll: {
+      question: 'Who do you interview first?',
+      options: [
+        { key: 'King', text: 'The King (Dasharatha)', role: 'The Sponsor / Executive' },
+        { key: 'Minister', text: 'The Chief Minister (Sumantra)', role: 'The Operator / Politician' },
+        { key: 'Citizen', text: 'The Citizen of Ayodhya', role: 'The End User' }
+      ]
+    },
+    interviews: {
+      King: {
+        speaker: 'King Dasharatha',
+        title: 'The Emotion',
+        messages: [
+          '“Everyone looks at my crown, but inside I am terrified.”',
+          '“Without an heir, the sacred fire of the Ikshvaku dynasty extinguishes with my breath.”',
+          '“The priests want another yajna, but can a ritual silence the dread that haunts my sleepless nights?”',
+          '“This is not merely statecraft. It is the raw weight of mortal legacy.”'
+        ]
+      },
+      Minister: {
+        speaker: 'Chief Minister Sumantra',
+        title: 'The Political Risk',
+        messages: [
+          '“Look beyond the King’s sorrow, PM. The northern border chieftains are whispering.”',
+          '“A throne without clear succession invites rival kings and ambitious vassals to circle like hawks.”',
+          '“The crisis is urgent because power abhors a vacuum. If stability fractures, Ayodhya fractures.”',
+          '“We must project strength and permanence immediately, whatever the ritual costs.”'
+        ]
+      },
+      Citizen: {
+        speaker: 'Ayodhya Citizen',
+        title: 'The Unspoken Anxiety',
+        messages: [
+          '“The royal palace worries about golden lineages and great crowns.”',
+          '“Out here in the marketplace, we just wonder if tomorrow’s taxes will double to fund another grand ceremony.”',
+          '“We love the King, but nobody in the streets is losing sleep over succession right now.”',
+          '“Our anxiety is silent: when rulers drown in their private worries, who manages the granaries and floods?”'
+        ]
+      }
+    },
+    openQuestion: {
+      prompt: 'Sort what you learned into: Fact / Assumption / Unknown.',
+      helper: 'Reply as 3 short lines',
+      fields: ['Fact', 'Assumption', 'Unknown']
+    },
+    conflictTwist: {
+      headline: 'The Conflicting-Input Moment',
+      question: 'The minister says the succession crisis is urgent. The citizen says nobody cares. Who’s right?',
+      insight: 'This is the conflicting-input moment, and it teaches the most. In product discovery, executive sponsors bring emotional weight, business leads identify macro risk, and users reflect ground reality. Neither is lying. Great PMs synthesize conflicting inputs into a coherent problem space rather than blindly trusting the loudest voice.'
+    },
+    cliffhanger: 'Tomorrow: Synthesis and the final reveal framework.'
+  },
+  {
+    dayNumber: 3,
+    title: 'Drop 3: Synthesis and reveal (Day 3)',
+    subtitle: 'From Chaos to Strategic Clarity',
+    theme: 'Problem Synthesis & Discovery Framework',
+    unlockDate: '2026-11-07',
+    isLocked: false,
+    introLines: [
+      'Day 3: The sun peaks over the golden temple domes of Ayodhya.',
+      'You have listened to the monarch, the statesman, and the citizen.',
+      'Now, the King stands waiting before the royal court for your definitive problem statement.',
+      'It is time to synthesize.'
+    ],
+    imageUrl: '/ayodhya_dawn.jpg',
+    imageCaption: 'The Grand Durbar: Time for the PM recommendation to the throne.',
+    synthesis: {
+      question: 'Write your problem statement in ONE sentence.',
+      sampleAnswer: '“Ayodhya’s leadership is paralyzed by the emotional burden of childlessness, mistaking dynastic succession anxiety for an immediate administrative emergency while neglecting the citizen confidence that truly protects the realm.”',
+      commonPatterns: [
+        { title: 'Pattern 1: The Solution Jump', desc: 'Focusing immediately on hiring priests or adopting an heir without diagnosing why the court feels unstable.' },
+        { title: 'Pattern 2: The Single Stakeholder Trap', desc: 'Accepting only the Minister’s urgency or only the King’s emotion, ignoring the end-user citizen impact.' },
+        { title: 'Pattern 3: The Systemic PM Frame', desc: 'Separating the emotional pain point from the governance risk and the operational reality.' }
+      ]
+    },
+    recommendationPoll: {
+      question: 'Your recommendation: A / B / C',
+      options: [
+        { key: 'A', text: 'Option A: Conduct the Putra Kameshti Yajna immediately to satisfy the King’s emotional need.' },
+        { key: 'B', text: 'Option B: Reassure the citizenry with economic reforms while stabilizing borders through military alliances.' },
+        { key: 'C', text: 'Option C: Execute a dual-track strategy: address dynastic continuity while decentralizing governance so Ayodhya thrives regardless.' }
+      ]
+    },
+    framework: {
+      headline: 'You just did Problem Discovery. Here’s the 3-line framework:',
+      lines: [
+        { step: '1. Separate Emotion from Constraint', text: 'The King felt dread; the system faced power-vacuum risk. Never mistake a stakeholder’s emotional expression for the actual system problem.' },
+        { step: '2. Triangulate Conflicting Stakeholders', text: 'Executive sponsor + Operations lead + End citizen will always disagree. Map them into Facts, Assumptions, and Unknowns before taking action.' },
+        { step: '3. Frame the Problem Before Designing the Solution', text: 'A well-scoped problem statement makes the right decision obvious, while premature solutions merely burn royal treasury and team energy.' }
+      ]
+    },
+    postTest: {
+      prompt: 'Post-test: In one line, what do YOU think the real problem is?',
+      compareWithDay1: true
+    },
+    feedback: {
+      ratingPrompt: 'How would you rate this 3-Day Problem Discovery Chronicle? (1-5)',
+      sharePrompt: 'Which moment would you tell a friend about?'
+    }
+  }
+];
+
+function RamayanaChronicleTab({ courseId }) {
+  const [drops, setDrops] = useState(DEFAULT_RAMAYANA_DROPS);
+  const [selectedDay, setSelectedDay] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+  const [previewMode, setPreviewMode] = useState(false);
+
+  // Form states for the selected drop
+  const [currentDrop, setCurrentDrop] = useState(DEFAULT_RAMAYANA_DROPS[0]);
+
+  useEffect(() => {
+    loadDrops();
+  }, [courseId]);
+
+  async function loadDrops() {
+    setLoading(true);
+    try {
+      const { data } = await adminGetWeeks(courseId);
+      if (Array.isArray(data.ramayanaDrops) && data.ramayanaDrops.length > 0) {
+        // Merge fetched drops with defaults
+        const merged = DEFAULT_RAMAYANA_DROPS.map(def => {
+          const found = data.ramayanaDrops.find(d => Number(d.dayNumber) === Number(def.dayNumber));
+          return found ? { ...def, ...found } : def;
+        });
+        setDrops(merged);
+        const active = merged.find(d => Number(d.dayNumber) === Number(selectedDay)) || merged[0];
+        setCurrentDrop(active);
+      } else {
+        setDrops(DEFAULT_RAMAYANA_DROPS);
+        setCurrentDrop(DEFAULT_RAMAYANA_DROPS[0]);
+      }
+    } catch (err) {
+      console.error('Failed to load Ramayana drops:', err);
+      setMessage('Using default chronicle drops.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleSelectDay = (dayNum) => {
+    setSelectedDay(dayNum);
+    const drop = drops.find(d => Number(d.dayNumber) === Number(dayNum));
+    if (drop) {
+      setCurrentDrop(JSON.parse(JSON.stringify(drop)));
+    }
+  };
+
+  const handleFieldChange = (field, value) => {
+    setCurrentDrop(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleNestedFieldChange = (parent, field, value) => {
+    setCurrentDrop(prev => ({
+      ...prev,
+      [parent]: {
+        ...(prev[parent] || {}),
+        [field]: value
+      }
+    }));
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setMessage('');
+    try {
+      await adminSaveRamayanaDrop(courseId, currentDrop);
+      setMessage(`Day ${currentDrop.dayNumber} drop saved successfully!`);
+      // Update local drops list
+      setDrops(prev => {
+        const next = [...prev];
+        const idx = next.findIndex(d => Number(d.dayNumber) === Number(currentDrop.dayNumber));
+        if (idx >= 0) next[idx] = currentDrop;
+        else next.push(currentDrop);
+        return next;
+      });
+    } catch (err) {
+      console.error('Failed to save drop:', err);
+      setMessage('Error saving drop: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const todayStr = '2026-11-05';
+  const isDropLive = (currentDrop.unlockDate || '') <= todayStr;
+
+  return (
+    <div>
+      {/* Tab Header Banner */}
+      <div style={{
+        ...s.card,
+        background: 'linear-gradient(135deg, #FFF9D2 0%, #FFF3A7 100%)',
+        border: '2px solid #111111',
+        boxShadow: '4px 4px 0px #111111',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '1rem'
+      }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.3rem' }}>
+            <span style={{ fontSize: '1.4rem' }}>🏹</span>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, color: '#111111' }}>
+              Ramayana Chronicle Manager
+            </h2>
+          </div>
+          <p style={{ margin: 0, fontSize: '0.85rem', color: '#444' }}>
+            Schedule and configure daily problem-discovery drops. <strong>Day 1</strong> goes live today (5th Nov); <strong>Day 2</strong> unlocks on 6th Nov; <strong>Day 3</strong> unlocks on 7th Nov.
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <button
+            type="button"
+            style={{
+              ...s.btn,
+              background: previewMode ? '#111111' : '#fff',
+              color: previewMode ? '#fff' : '#111111',
+              border: '2px solid #111111',
+              boxShadow: '2px 2px 0px #111111'
+            }}
+            onClick={() => setPreviewMode(!previewMode)}
+          >
+            {previewMode ? '✏️ Exit Preview' : '👁️ Preview Student View'}
+          </button>
+        </div>
+      </div>
+
+      {message && (
+        <div style={{
+          padding: '0.75rem 1rem',
+          borderRadius: '8px',
+          marginBottom: '1rem',
+          background: message.includes('Error') ? '#FEE2E2' : '#DCFCE7',
+          color: message.includes('Error') ? '#991B1B' : '#166534',
+          fontWeight: 600,
+          border: '1.5px solid currentColor'
+        }}>
+          {message}
+        </div>
+      )}
+
+      {/* Day Selector Pills */}
+      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem' }}>
+        {[1, 2, 3].map(day => {
+          const dropItem = drops.find(d => Number(d.dayNumber) === day) || {};
+          const isLive = (dropItem.unlockDate || '') <= todayStr;
+          const isSelected = selectedDay === day;
+          return (
+            <button
+              key={day}
+              type="button"
+              onClick={() => handleSelectDay(day)}
+              style={{
+                padding: '0.65rem 1.25rem',
+                borderRadius: '8px',
+                fontWeight: 700,
+                fontSize: '0.875rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                border: '2px solid #111111',
+                background: isSelected ? '#FF4F81' : '#fff',
+                color: isSelected ? '#fff' : '#111111',
+                boxShadow: isSelected ? '3px 3px 0px #111111' : '1px 1px 0px #111111',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <span>Day {day}</span>
+              <span style={{
+                fontSize: '0.7rem',
+                padding: '0.15rem 0.45rem',
+                borderRadius: '999px',
+                background: isSelected ? 'rgba(255,255,255,0.25)' : isLive ? '#DCFCE7' : '#FEF3C7',
+                color: isSelected ? '#fff' : isLive ? '#166534' : '#92400E'
+              }}>
+                {isLive ? 'LIVE' : `Unlocks ${dropItem.unlockDate || 'Soon'}`}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {previewMode ? (
+        /* Preview Card */
+        <div style={{
+          ...s.card,
+          border: '3px solid #111111',
+          boxShadow: '6px 6px 0px #111111',
+          background: '#FFFCEB',
+          padding: '2rem'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '2px dashed #111111', pb: '1rem' }}>
+            <div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, background: '#FF4F81', color: '#fff', padding: '0.2rem 0.6rem', border: '1px solid #111' }}>
+                DAY {currentDrop.dayNumber}
+              </span>
+              <h3 style={{ fontSize: '1.6rem', fontWeight: 900, margin: '0.5rem 0 0.2rem', color: '#111111' }}>
+                {currentDrop.title}
+              </h3>
+              <p style={{ margin: 0, color: '#666', fontWeight: 600 }}>{currentDrop.subtitle}</p>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <span style={{
+                display: 'inline-block',
+                padding: '0.4rem 0.8rem',
+                border: '2px solid #111111',
+                fontWeight: 800,
+                fontSize: '0.75rem',
+                background: isDropLive ? '#A7F3D0' : '#FDE68A',
+                boxShadow: '2px 2px 0px #111'
+              }}>
+                {isDropLive ? '🟢 LIVE ON SITE' : `🔒 UNLOCKS ON ${currentDrop.unlockDate}`}
+              </span>
+            </div>
+          </div>
+
+          {/* Intro Lines & Image */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+            <div style={{ background: '#fff', padding: '1.25rem', border: '2px solid #111', boxShadow: '3px 3px 0px #111' }}>
+              <h4 style={{ margin: '0 0 0.75rem', fontWeight: 800, color: '#FF4F81' }}>🎬 Scene Narrative:</h4>
+              {(currentDrop.introLines || []).map((line, idx) => (
+                <p key={idx} style={{ margin: '0 0 0.6rem', fontSize: '0.9rem', lineHeight: '1.5', color: '#222' }}>
+                  {line}
+                </p>
+              ))}
+            </div>
+            <div>
+              <img
+                src={currentDrop.imageUrl || '/ayodhya_dawn.jpg'}
+                alt="Scene"
+                style={{ width: '100%', height: '220px', objectFit: 'cover', border: '2px solid #111', boxShadow: '3px 3px 0px #111' }}
+              />
+              <p style={{ fontSize: '0.75rem', color: '#666', marginTop: '0.4rem', fontStyle: 'italic' }}>
+                {currentDrop.imageCaption}
+              </p>
+            </div>
+          </div>
+
+          {/* YouTube Video Preview if Day 1 (or if video exists) */}
+          {(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
+            <div style={{
+              background: '#fff',
+              border: '2px solid #111',
+              padding: '1.25rem',
+              marginBottom: '1.5rem',
+              boxShadow: '3px 3px 0px #111'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>🎥 The King's Video Briefing (YouTube)</span>
+                <span style={{ fontWeight: 800, color: '#188ab2' }}>{currentDrop.video?.headline || '“I have no heir. Fix this.”'}</span>
+              </div>
+              <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', border: '1.5px solid #111', background: '#000', borderRadius: '6px' }}>
+                <iframe
+                  src={getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl)}
+                  title="King Dasharatha's Video Brief"
+                  style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+              {currentDrop.video?.caption && (
+                <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: '#64748b', fontStyle: 'italic' }}>
+                  {currentDrop.video.caption}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Poll Preview */}
+          {currentDrop.poll && (
+            <div style={{ background: '#fff', border: '2px solid #111', padding: '1.25rem', marginBottom: '1.5rem', boxShadow: '3px 3px 0px #111' }}>
+              <h4 style={{ margin: '0 0 0.5rem', fontWeight: 800 }}>📊 Poll: {currentDrop.poll.question}</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
+                {(currentDrop.poll.options || []).map((opt, i) => (
+                  <div key={i} style={{ padding: '0.6rem 0.8rem', border: '1.5px solid #111', background: '#FFF3A7', fontWeight: 600 }}>
+                    {opt.key ? `(${opt.key}) ` : ''}{opt.text}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Cliffhanger */}
+          {currentDrop.cliffhanger && (
+            <div style={{ background: '#111', color: '#fff', padding: '1rem 1.5rem', fontWeight: 800, textAlign: 'center', boxShadow: '4px 4px 0px #FF4F81' }}>
+              🔮 {currentDrop.cliffhanger}
+            </div>
+          )}
+        </div>
+      ) : (
+        /* Edit Form */
+        <form onSubmit={handleSave} style={s.card}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+            <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>
+              Edit Details for Day {currentDrop.dayNumber}
+            </h3>
+            <span style={{
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              padding: '0.3rem 0.6rem',
+              borderRadius: '6px',
+              border: '1px solid #111',
+              background: isDropLive ? '#DCFCE7' : '#FEF3C7',
+              color: isDropLive ? '#166534' : '#92400E'
+            }}>
+              {isDropLive ? '🟢 Currently Active on Site' : `Scheduled for ${currentDrop.unlockDate}`}
+            </span>
+          </div>
+
+          <div style={s.grid2} className="admin-grid2">
+            <div>
+              <label style={s.label}>Title</label>
+              <input
+                type="text"
+                style={s.input}
+                value={currentDrop.title || ''}
+                onChange={(e) => handleFieldChange('title', e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label style={s.label}>Unlock Date (YYYY-MM-DD)</label>
+              <input
+                type="date"
+                style={s.input}
+                value={currentDrop.unlockDate || ''}
+                onChange={(e) => handleFieldChange('unlockDate', e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <div style={s.grid2} className="admin-grid2">
+            <div>
+              <label style={s.label}>Subtitle / Phase</label>
+              <input
+                type="text"
+                style={s.input}
+                value={currentDrop.subtitle || ''}
+                onChange={(e) => handleFieldChange('subtitle', e.target.value)}
+              />
+            </div>
+            <div>
+              <label style={s.label}>Learning Theme</label>
+              <input
+                type="text"
+                style={s.input}
+                value={currentDrop.theme || ''}
+                onChange={(e) => handleFieldChange('theme', e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* 4 lines of Ayodhya scene */}
+          <div style={{ marginTop: '0.5rem', marginBottom: '1.25rem' }}>
+            <label style={s.label}>🎬 4-Line Narrative Scene (One sentence per line)</label>
+            <textarea
+              style={{ ...s.textarea, minHeight: '110px' }}
+              value={(currentDrop.introLines || []).join('\n')}
+              onChange={(e) => handleFieldChange('introLines', e.target.value.split('\n'))}
+              placeholder="Enter 4 lines for the Ayodhya scene..."
+            />
+          </div>
+
+          {/* Image Config */}
+          <div style={s.grid2} className="admin-grid2">
+            <div>
+              <label style={s.label}>Scene Image URL</label>
+              <input
+                type="text"
+                style={s.input}
+                value={currentDrop.imageUrl || ''}
+                onChange={(e) => handleFieldChange('imageUrl', e.target.value)}
+                placeholder="/ayodhya_dawn.jpg"
+              />
+            </div>
+            <div>
+              <label style={s.label}>Image Caption</label>
+              <input
+                type="text"
+                style={s.input}
+                value={currentDrop.imageCaption || ''}
+                onChange={(e) => handleFieldChange('imageCaption', e.target.value)}
+                placeholder="Ayodhya at dawn..."
+              />
+            </div>
+          </div>
+
+          {/* YouTube Video Link settings (Day 1) */}
+          {Number(currentDrop.dayNumber) === 1 && (
+            <div style={{ ...s.qPanel, border: '2px solid #111', background: '#F8FAFC', marginBottom: '1.25rem' }}>
+              <div style={{ fontWeight: 800, fontSize: '0.9rem', marginBottom: '0.75rem', color: '#188ab2', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span>🎥 YouTube Video Briefing Settings (King Dasharatha's Summons)</span>
+              </div>
+              <div style={s.grid2} className="admin-grid2">
+                <div>
+                  <label style={s.label}>YouTube Video URL or Video ID</label>
+                  <input
+                    type="text"
+                    style={s.input}
+                    value={currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl || ''}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      handleFieldChange('youtubeUrl', val);
+                      handleNestedFieldChange('video', 'youtubeUrl', val);
+                    }}
+                    placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
+                  />
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem', display: 'block' }}>
+                    Paste standard YouTube link, short youtu.be link, or video ID. Update anytime from here!
+                  </span>
+                </div>
+                <div>
+                  <label style={s.label}>Headline Quote</label>
+                  <input
+                    type="text"
+                    style={s.input}
+                    value={currentDrop.video?.headline || ''}
+                    onChange={(e) => handleNestedFieldChange('video', 'headline', e.target.value)}
+                    placeholder="“I have no heir. Fix this.”"
+                  />
+                </div>
+              </div>
+              <div style={{ marginTop: '0.75rem' }}>
+                <label style={s.label}>Video Caption / Subtitle</label>
+                <input
+                  type="text"
+                  style={s.input}
+                  value={currentDrop.video?.caption || ''}
+                  onChange={(e) => handleNestedFieldChange('video', 'caption', e.target.value)}
+                  placeholder="King Dasharatha summons you to the royal court of Ayodhya..."
+                />
+              </div>
+
+              {/* Live Preview of YouTube Embed inside Admin Panel */}
+              {(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
+                <div style={{ marginTop: '1rem', borderTop: '1px dashed #cbd5e1', paddingTop: '0.75rem' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', marginBottom: '0.5rem' }}>
+                    Live YouTube Preview:
+                  </div>
+                  <div style={{ maxWidth: '480px', position: 'relative', paddingBottom: '270px', height: 0, overflow: 'hidden', border: '1.5px solid #111', background: '#000', borderRadius: '6px' }}>
+                    <iframe
+                      src={getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl)}
+                      title="YouTube Preview"
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Poll Settings */}
+          {currentDrop.poll && (
+            <div style={{ ...s.qPanel, border: '2px solid #111', background: '#FFFDE7', marginBottom: '1.25rem' }}>
+              <div style={{ fontWeight: 800, fontSize: '0.9rem', marginBottom: '0.75rem' }}>
+                📊 Poll Question & Options
+              </div>
+              <div>
+                <label style={s.label}>Poll Question</label>
+                <input
+                  type="text"
+                  style={s.input}
+                  value={currentDrop.poll.question || ''}
+                  onChange={(e) => handleNestedFieldChange('poll', 'question', e.target.value)}
+                />
+              </div>
+              {(currentDrop.poll.options || []).map((opt, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '60px 1fr 1fr', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <input
+                    type="text"
+                    style={s.input}
+                    value={opt.key || ''}
+                    disabled
+                  />
+                  <input
+                    type="text"
+                    style={s.input}
+                    placeholder="Option text..."
+                    value={opt.text || ''}
+                    onChange={(e) => {
+                      const nextOpts = [...currentDrop.poll.options];
+                      nextOpts[i].text = e.target.value;
+                      handleNestedFieldChange('poll', 'options', nextOpts);
+                    }}
+                  />
+                  <input
+                    type="text"
+                    style={s.input}
+                    placeholder="PM Archetype or Explanation..."
+                    value={opt.archetype || opt.role || ''}
+                    onChange={(e) => {
+                      const nextOpts = [...currentDrop.poll.options];
+                      if (opt.archetype !== undefined) nextOpts[i].archetype = e.target.value;
+                      else nextOpts[i].role = e.target.value;
+                      handleNestedFieldChange('poll', 'options', nextOpts);
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Cliffhanger */}
+          <div>
+            <label style={s.label}>🔮 Cliffhanger</label>
+            <input
+              type="text"
+              style={s.input}
+              value={currentDrop.cliffhanger || ''}
+              onChange={(e) => handleFieldChange('cliffhanger', e.target.value)}
+              placeholder="Tomorrow you can interview 3 people. Choose wisely."
+            />
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
+            <button
+              type="submit"
+              disabled={saving}
+              style={{
+                ...s.btn,
+                background: '#FF4F81',
+                color: '#fff',
+                border: '2px solid #111111',
+                boxShadow: '3px 3px 0px #111111',
+                padding: '0.75rem 1.75rem',
+                fontSize: '0.9rem',
+                fontWeight: 800,
+                cursor: saving ? 'wait' : 'pointer'
+              }}
+            >
+              {saving ? 'Saving...' : `💾 Save Day ${currentDrop.dayNumber} Drop`}
+            </button>
+            <button
+              type="button"
+              style={{
+                ...s.btnSecondary,
+                padding: '0.75rem 1.25rem',
+                fontWeight: 700
+              }}
+              onClick={() => handleSelectDay(selectedDay)}
+            >
+              Discard Changes
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
 // Main Admin Page
 // ────────────────────────────────────────────────────────────────────────────────
 export default function AdminPage() {
@@ -4618,6 +5352,7 @@ export default function AdminPage() {
     { id: 'leads', label: 'Leads', icon: '🎯' },
     { id: 'blogs', label: 'Blogs', icon: '✍️' },
     { id: 'events', label: 'Events', icon: '🎟️' },
+    { id: 'ramayana', label: 'Ramayana Chronicle', icon: '🏹' },
   ];
 
   return (
@@ -4818,6 +5553,7 @@ export default function AdminPage() {
           {tab === 'leads' && <LeadsTab />}
           {tab === 'blogs' && <BlogsTab courseId={currentCourseId} />}
           {tab === 'events' && <EventsTab courseId={currentCourseId} />}
+          {tab === 'ramayana' && <RamayanaChronicleTab courseId={currentCourseId} />}
         </div>
       </main>
 

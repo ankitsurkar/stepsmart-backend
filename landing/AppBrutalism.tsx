@@ -12,6 +12,7 @@ const ResourcesPage = lazy(() => import('./ResourcesBrutalism').then(m => ({ def
 const LandingPortalDashboard = lazy(() => import('./LandingPortalDashboard').then(m => ({ default: m.LandingPortalDashboard })));
 const AppExecutive = lazy(() => import('./AppExecutive').then(m => ({ default: m.AppExecutive })));
 const PrototypeHeroPage = lazy(() => import('./prototype-hero/PrototypeHeroPage'));
+const RamayanaChroniclePage = lazy(() => import('./RamayanaChroniclePage').then(m => ({ default: m.RamayanaChroniclePage })));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center p-8">
@@ -3638,6 +3639,7 @@ function LegacyPortalPage() {
           <div className="container mx-auto px-6 h-20 flex items-center justify-between">
             <Logo />
             <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
+              <NavLink to="/chronicle" className="text-[#188ab2] font-black">🏹 Chronicle</NavLink>
               <NavLink href="#mentors">Mentors</NavLink>
               <NavLink to="/events">Events</NavLink>
               <NavLink to="/blog">Blog</NavLink>
@@ -3656,6 +3658,7 @@ function LegacyPortalPage() {
         {/* Mobile Nav */}
         {isMenuOpen && (
           <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+            <Link to="/chronicle" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">🏹 Chronicle</Link>
             <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
             <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
             <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
@@ -4206,6 +4209,8 @@ export default function App() {
           <Route path="/accelerator" element={<ProfessionalsLandingPage />} />
           <Route path="/students" element={<StudentsLandingPage />} />
           <Route path="/events" element={<EventsPage />} />
+          <Route path="/chronicle" element={<RamayanaChroniclePage />} />
+          <Route path="/ramayana-chronicle" element={<Navigate to="/chronicle" replace />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:blogId" element={<BlogPage />} />
           <Route path="/resources" element={<ResourcesPage />} />

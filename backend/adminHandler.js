@@ -357,7 +357,7 @@ async function createStudent(body, event) {
 // GET /admin/courses/{courseId}/weeks
 // Returns all weeks (including hidden ones) with full quiz data including correctIndex.
 async function listWeeks(courseId) {
-  const [result, supplementalContent, gymResult, blogResult, eventResult] = await Promise.all([
+  const [result, supplementalContent, gymResult, blogResult, eventResult, ramayanaResult] = await Promise.all([
     ddb.send(new QueryCommand({
       TableName: COURSES_TABLE,
       KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
@@ -391,6 +391,14 @@ async function listWeeks(courseId) {
         ':prefix': 'EVENT#',
       },
     })),
+    ddb.send(new QueryCommand({
+      TableName: COURSES_TABLE,
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': 'RAMAYANA#GLOBAL',
+        ':prefix': 'DROP#',
+      },
+    })),
   ]);
 
   const rawWeeks = (result.Items || [])
@@ -408,7 +416,10 @@ async function listWeeks(courseId) {
   const events = (eventResult.Items || [])
     .sort((a, b) => (b.dateStr || '').localeCompare(a.dateStr || ''));
 
-  return res(200, { weeks: signedWeeks, supplementalContent, gymQuestions, blogs, events });
+  const ramayanaDrops = (ramayanaResult.Items || [])
+    .sort((a, b) => (Number(a.dayNumber) || 0) - (Number(b.dayNumber) || 0));
+
+  return res(200, { weeks: signedWeeks, supplementalContent, gymQuestions, blogs, events, ramayanaDrops });
 }
 
 // POST /admin/courses/{courseId}/weeks
@@ -565,6 +576,59 @@ async function updateEvent(courseId, body) {
   return res(400, { message: 'Invalid action for event content' });
 }
 
+async function updateRamayanaDrop(courseId, body) {
+  const { action } = body;
+  if (action === 'save') {
+    const { drop } = body;
+    if (!drop || !drop.dayNumber) {
+      return res(400, { message: 'Drop and dayNumber are required' });
+    }
+    const sk = `DROP#${drop.dayNumber}`;
+    const item = {
+      pk: 'RAMAYANA#GLOBAL',
+      sk,
+      dayNumber: Number(drop.dayNumber),
+      title: drop.title || `Day ${drop.dayNumber}`,
+      subtitle: drop.subtitle || '',
+      theme: drop.theme || '',
+      unlockDate: drop.unlockDate || new Date().toISOString().split('T')[0],
+      isLocked: drop.isLocked !== undefined ? drop.isLocked : false,
+      introLines: Array.isArray(drop.introLines) ? drop.introLines : [],
+      imageUrl: drop.imageUrl || '/ayodhya_dawn.jpg',
+      video: drop.video || {
+        youtubeUrl: drop.youtubeUrl || drop.video?.youtubeUrl || '',
+        headline: drop.video?.headline || '“I have no heir. Fix this.”',
+        caption: drop.video?.caption || 'King Dasharatha summons you to the royal court of Ayodhya.',
+      },
+      youtubeUrl: drop.youtubeUrl || drop.video?.youtubeUrl || '',
+      poll: drop.poll || null,
+      openQuestion: drop.openQuestion || null,
+      cliffhanger: drop.cliffhanger || '',
+      interviews: drop.interviews || null,
+      conflictTwist: drop.conflictTwist || null,
+      synthesis: drop.synthesis || null,
+      postTest: drop.postTest || null,
+      feedback: drop.feedback || null,
+      updatedAt: new Date().toISOString(),
+      createdAt: drop.createdAt || new Date().toISOString(),
+    };
+    await ddb.send(new PutCommand({
+      TableName: COURSES_TABLE,
+      Item: item,
+    }));
+    return res(200, { message: 'Ramayana drop saved successfully', drop: item });
+  } else if (action === 'delete') {
+    const { dayNumber } = body;
+    if (!dayNumber) return res(400, { message: 'dayNumber is required for delete' });
+    await ddb.send(new DeleteCommand({
+      TableName: COURSES_TABLE,
+      Key: { pk: 'RAMAYANA#GLOBAL', sk: `DROP#${dayNumber}` },
+    }));
+    return res(200, { message: 'Ramayana drop deleted successfully', dayNumber });
+  }
+  return res(400, { message: 'Invalid action for Ramayana chronicle' });
+}
+
 // Updates any subset of week fields. Commonly used to toggle visibility.
 async function updateWeek(courseId, weekId, body) {
   console.log('DEPLOY_CHECK_V2: updateWeek called with weekId =', weekId);
@@ -579,6 +643,10 @@ async function updateWeek(courseId, weekId, body) {
   if (weekId === '__event__') {
     console.log('DEPLOY_CHECK_V2: Redirecting to updateEvent');
     return await updateEvent(courseId, body);
+  }
+  if (weekId === '__ramayana__' || weekId === '__chronicle__') {
+    console.log('DEPLOY_CHECK_V2: Redirecting to updateRamayanaDrop');
+    return await updateRamayanaDrop(courseId, body);
   }
   // Guard: if this is actually a supplemental content update, redirect to the correct handler.
   // This ensures data is always saved to SUPPLEMENTAL#GLOBAL (not WEEK#__supplemental__).

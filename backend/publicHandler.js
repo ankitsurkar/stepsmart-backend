@@ -382,6 +382,65 @@ exports.handler = async (event) => {
         return response(200, { success: true, id: data.id });
       }
 
+      if (page === 'get_chronicle') {
+        const chronicleResult = await docClient.send(new QueryCommand({
+          TableName: COURSES_TABLE,
+          KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+          ExpressionAttributeValues: {
+            ':pk': 'RAMAYANA#GLOBAL',
+            ':prefix': 'DROP#',
+          },
+        }));
+
+        const drops = (chronicleResult.Items || [])
+          .sort((a, b) => (Number(a.dayNumber) || 0) - (Number(b.dayNumber) || 0));
+
+        return response(200, { success: true, drops });
+      }
+
+      if (page === 'save_chronicle_response') {
+        const { visitorId = 'anon', name = '', phone = '', dayNumber = 1, responseType = 'submission', responseData } = data;
+        const today = new Date().toISOString();
+        const leadId = phone ? phone.replace(/[^0-9]/g, '') : visitorId;
+
+        // Save detailed response to analytics table
+        await docClient.send(new PutCommand({
+          TableName: ANALYTICS_TABLE,
+          Item: {
+            pageId: `CHRONICLE_RESP#${leadId}#DAY${dayNumber}#${Date.now()}`,
+            visitorId,
+            name,
+            phone,
+            whatsappNumber: phone,
+            dayNumber,
+            responseType,
+            responseData,
+            timestamp: today,
+          },
+        }));
+
+        // Also save to enrollments so it appears on Admin leads tab
+        if (name && phone) {
+          await docClient.send(new PutCommand({
+            TableName: ENROLLMENTS_TABLE,
+            Item: {
+              enrollmentId: `chronicle#${leadId}`,
+              email: `${leadId}@chronicle.stepsmart.net`,
+              name,
+              phone,
+              currentRole: 'PM Chronicle Participant',
+              source: `ramayana_chronicle_day${dayNumber}`,
+              cohortTrack: `Ramayana Chronicle (Day ${dayNumber})`,
+              timestamp: today,
+              masterclassId: 'ramayana-chronicle',
+              lastAnswer: typeof responseData === 'string' ? responseData : JSON.stringify(responseData),
+            },
+          })).catch(err => console.error('Error saving chronicle lead:', err));
+        }
+
+        return response(200, { success: true, message: 'Chronicle response recorded' });
+      }
+
       const { name, email, phone, masterclassId = 'default', currentRole, role, source, cohortTrack } = data;
       if (!name || !email) {
         return response(400, { error: 'Name and email are required.' });

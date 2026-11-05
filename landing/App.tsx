@@ -23,6 +23,8 @@ import {
 } from 'lucide-react';
 import { Analytics } from '@vercel/analytics/react';
 
+const RamayanaChroniclePage = React.lazy(() => import('./RamayanaChroniclePage').then(m => ({ default: m.RamayanaChroniclePage })));
+
 // Firebase Imports
 import { initializeApp } from 'firebase/app';
 import {
@@ -267,6 +269,7 @@ function LandingPage() {
             <a href="#who-is-it-for" className="hover:text-[#188ab2] transition-colors">Who is it for?</a>
             <a href="https://calendly.com/sanket-stepsmart" target="_blank" rel="noreferrer" className="hover:text-[#188ab2] transition-colors">Book 1:1</a>
             <a href="#mentors" className="hover:text-[#188ab2] transition-colors">Mentors</a>
+            <Link to="/chronicle" className="hover:text-[#188ab2] transition-colors font-bold text-amber-700">🏹 Chronicle</Link>
             <Link to="/blog" className="hover:text-[#188ab2] transition-colors">Blog</Link>
             <a href="/learn" className="px-5 py-2 rounded-full border border-[#188ab2] text-[#188ab2] hover:bg-[#188ab2] hover:text-white transition-colors">Login</a>
             <Button variant="primary" onClick={() => document.getElementById('enroll')?.scrollIntoView({ behavior: 'smooth' })}>
@@ -1222,6 +1225,8 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:blogId" element={<BlogPage />} />
+        <Route path="/chronicle" element={<React.Suspense fallback={<div className="min-h-screen bg-[#FDFCF7]" />}><RamayanaChroniclePage /></React.Suspense>} />
+        <Route path="/ramayana-chronicle" element={<Navigate to="/chronicle" replace />} />
         {/* Preserved routes for later use */}
         {/* <Route path="/auth" element={<AuthPage />} />
         <Route

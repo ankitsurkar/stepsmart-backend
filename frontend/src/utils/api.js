@@ -163,5 +163,12 @@ export const bookPeerSession = (courseId, sessionId) =>
 export const cancelPeerSession = (courseId, sessionId) =>
   api.post(`/courses/${courseId}/peer-sessions/${sessionId}/cancel`);
 
+// ─── Ramayana Chronicle ──────────────────────────────────────────────────────
+export const adminSaveRamayanaDrop = (courseId, drop) =>
+  api.patch(`/admin/courses/${courseId}/weeks/__ramayana__`, { action: 'save', drop });
+
+export const adminDeleteRamayanaDrop = (courseId, dayNumber) =>
+  api.patch(`/admin/courses/${courseId}/weeks/__ramayana__`, { action: 'delete', dayNumber });
+
 export default api;
 
