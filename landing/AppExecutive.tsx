@@ -41,6 +41,26 @@ export function AppExecutive() {
   // Path picker role state ('ops' | 'swe' | 'analytics' | 'other')
   const [selectedRolePath, setSelectedRolePath] = useState<'ops' | 'swe' | 'analytics' | 'other'>('ops');
 
+  // Alumni proof card carousel state (Hero right column)
+  const [alumniIndex, setAlumniIndex] = useState(0);
+  const alumniSlides = [
+    {
+      tag: "STORY 01 / 03 · QA & OPS TO PM ↻",
+      img: "/hero-slide-1.webp",
+      alt: "PM Switch Story: I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation.",
+    },
+    {
+      tag: "STORY 02 / 03 · SDE TO PM ↻",
+      img: "/hero-slide-2.webp",
+      alt: "PM Switch Story: I took the conventional but not so conventional path from an SDE to MBA to PM.",
+    },
+    {
+      tag: "STORY 03 / 03 · ANALYTICS TO PM ↻",
+      img: "/hero-slide-3.webp",
+      alt: "PM Switch Story: No experience. No roadmap. Just a college grad who became a PM.",
+    },
+  ];
+
   // Brochure Pop-up Modal State
   const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
   const [brochureFormData, setBrochureFormData] = useState({
@@ -195,177 +215,303 @@ export function AppExecutive() {
         </div>
       </aside>
 
-      {/* 2. SOFT ARCHITECTURAL NEO-BRUTALIST NAVBAR (Image 5 & 6 Pill Style) */}
-      <header className="w-full bg-[#FDFCF7] border-b-2 border-[#141413] relative z-40">
-        <div className="container mx-auto px-6 h-20 max-w-7xl flex items-center justify-between">
+      {/* 2. OPTION B: THE CHORKE BENTO SPLIT (Above-the-fold Unit wrapped in Dark Grout Frame) */}
+      <section className="w-full bg-[#FAF9F5] pt-3 sm:pt-4 pb-10 sm:pb-14 border-b-2 border-[#141413]">
+        <div className="max-w-[1360px] mx-auto px-2.5 sm:px-4">
           
-          {/* Brand Wordmark (Clean logo without box, plain StepSmart text) */}
-          <Link to="/" className="flex items-center gap-3 select-none">
-            <img
-              src="/stepsmart-logo.webp"
-              alt="StepSmart Logo"
-              className="w-8 h-8 object-contain"
-              loading="eager"
-              width="32"
-              height="32"
-            />
-            <span className="font-black text-2xl tracking-tight text-[#141413]">
-              StepSmart
-            </span>
-          </Link>
-
-          {/* Clean Desktop Navigation Anchors */}
-          <nav className="hidden md:flex items-center gap-6 text-sm font-extrabold text-[#141413]">
-            <Link
-              to="/chronicle"
-              className="flex items-center gap-1.5 bg-[#FEF08A] hover:bg-[#fde047] text-[#141413] px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all font-black text-xs uppercase"
-            >
-              <span>🏹</span>
-              <span>Ramayana Chronicle</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            </Link>
-            <button onClick={() => scrollToSection('system')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
-              Cohort
-            </button>
-            <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
-              How it works
-            </button>
-            <button onClick={() => scrollToSection('curriculum')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
-              Curriculum
-            </button>
-            <button onClick={() => scrollToSection('mentors')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
-              Mentors
-            </button>
-            <button onClick={() => scrollToSection('pricing')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
-              Pricing
-            </button>
-            <button onClick={() => scrollToSection('faq')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
-              FAQ
-            </button>
-          </nav>
-
-          {/* Right Action Buttons: Rounded Pill Buttons (Image 5 & 6) */}
-          <div className="hidden md:flex items-center gap-4">
-            <a
-              href="/learn"
-              className="px-5 py-2 rounded-full border-2 border-[#141413] bg-white text-[#141413] hover:bg-[#FEF08A] shadow-[2px_2px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all font-extrabold text-sm"
-            >
-              Login
-            </a>
-            <button
-              onClick={() => scrollToSection('pricing')}
-              className="px-6 py-2.5 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[2.5px_2.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all text-sm uppercase cursor-pointer inline-flex items-center gap-1.5"
-            >
-              <span>Reserve Seat</span>
-              <span>➜</span>
-            </button>
-          </div>
-
-          {/* Mobile Menu Trigger */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-xl border-2 border-[#141413] bg-white shadow-[2px_2px_0px_0px_#141413]"
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X className="w-6 h-6 text-[#141413]" /> : <Menu className="w-6 h-6 text-[#141413]" />}
-          </button>
-        </div>
-
-        {/* Mobile Nav Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden w-full bg-[#FDFCF7] border-b-2 border-[#141413] p-6 flex flex-col gap-4 shadow-[0px_4px_0px_0px_#141413]">
-            <Link
-              to="/chronicle"
-              onClick={() => setIsMenuOpen(false)}
-              className="text-left font-black text-lg py-2.5 px-3 rounded-xl border-2 border-[#141413] bg-[#FEF08A] shadow-[2px_2px_0px_0px_#141413] flex items-center justify-between text-[#141413]"
-            >
-              <span className="flex items-center gap-2">
-                <span className="text-xl">🏹</span>
-                <span>Ramayana Chronicle</span>
-              </span>
-              <span className="text-[10px] font-mono font-black uppercase bg-[#188ab2] text-white px-2 py-0.5 rounded-full border border-[#141413]">
-                Drop 1 Live
-              </span>
-            </Link>
-            <button onClick={() => scrollToSection('system')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
-              Cohort Modules
-            </button>
-            <button onClick={() => scrollToSection('how-it-works')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
-              How It Works
-            </button>
-            <button onClick={() => scrollToSection('curriculum')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
-              Curriculum (8 Weeks)
-            </button>
-            <button onClick={() => scrollToSection('mentors')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
-              Mentors
-            </button>
-            <button onClick={() => scrollToSection('pricing')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
-              Pricing
-            </button>
-            <button onClick={() => scrollToSection('faq')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
-              FAQ
-            </button>
-            <div className="flex flex-col gap-3 pt-3">
-              <button
-                onClick={() => scrollToSection('pricing')}
-                className="w-full py-3.5 rounded-full border-2 border-[#141413] bg-[#188ab2] text-white font-black text-sm uppercase shadow-[3px_3px_0px_0px_#141413]"
-              >
-                Reserve Seat ➜
-              </button>
-              <a
-                href="/learn"
-                onClick={() => setIsMenuOpen(false)}
-                className="w-full py-2.5 rounded-full border-2 border-[#141413] bg-white text-[#141413] text-center font-black text-sm shadow-[2px_2px_0px_0px_#141413] block"
-              >
-                Learner Login
-              </a>
-            </div>
-          </div>
-        )}
-      </header>
-
-      <main>
-        {/* 3. HERO SECTION (Framed Bento Container with Soft Pastel Mesh Wash) */}
-        <section className="pt-12 pb-20 md:pt-16 md:pb-28 bg-[#FDFCF7] border-b-2 border-[#141413] relative overflow-hidden">
-          <div className="container mx-auto px-6 max-w-5xl text-center relative z-10">
+          {/* THE OUTER DARK BENTO FRAME (The "Grout" Wrapper #141413 with uniform ~10px inner spacing) */}
+          <div className="bg-[#141413] rounded-[24px] sm:rounded-[32px] md:rounded-[36px] p-2.5 sm:p-3 flex flex-col gap-2.5 sm:gap-3 shadow-[0px_8px_0px_0px_rgba(20,20,19,0.3)]">
             
-            {/* Top Eyebrow Sticker */}
-            <div className="inline-block mb-8">
-              <span className="bg-white rounded-full border-2 border-[#141413] px-4 sm:px-5 py-1.5 font-mono font-bold text-xs uppercase shadow-[2px_2px_0px_0px_#141413] inline-flex items-center gap-2 tracking-wider select-none">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                ★ PM-X ACCELERATOR · LIVE AND HANDS-ON · GROUPS OF 10-20 · STARTS 23 NOV
-              </span>
-            </div>
-
-            {/* Headline with Inline Pill & Avatar Stack (Image 6 & Image 5) */}
-            <div className="relative mb-8 max-w-5xl mx-auto">
-              {/* Soft Dreamy Radial Mesh Wash behind Headline (Image 5 Chorke Style) */}
-              <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-full max-w-3xl h-72 bg-[radial-gradient(ellipse_at_top,rgba(233,213,255,0.45)_0%,rgba(254,240,138,0.4)_45%,rgba(253,252,247,0)_75%)] pointer-events-none blur-2xl -z-10" />
-
-              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[64px] font-black tracking-tight leading-[1.2] text-[#141413] max-w-5xl mx-auto">
-                Switching into PM without a PM title?{' '}
-                <span className="inline-block mt-1 sm:mt-2">
-                  <span className="inline-block rounded-full border-2 border-[#141413] bg-[#FDE047] px-4 sm:px-6 py-1 sm:py-1.5 shadow-[3px_3px_0px_0px_#141413] -rotate-1 font-black text-[#141413] mx-1 sm:mx-2 align-middle">
-                    Build the proof
-                  </span>
-                  with us.
-                  <span className="inline-flex items-center gap-1.5 ml-2.5 px-3 py-1 rounded-full bg-[#FEF08A] border-2 border-[#141413] text-[10px] sm:text-xs font-mono font-black uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[2deg] align-middle">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    10–20 SEATS · LIVE
-                  </span>
+            {/* TOP ROW: The Framed Pill Navbar (Chorke Style) */}
+            <header className="w-full bg-white rounded-2xl sm:rounded-full border-2 border-[#141413] px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between z-30 shadow-sm relative">
+              
+              {/* Brand Wordmark (Clean logo & plain StepSmart text) */}
+              <Link to="/" className="flex items-center gap-3 select-none shrink-0">
+                <img
+                  src="/stepsmart-logo.webp"
+                  alt="StepSmart Logo"
+                  className="w-8 h-8 object-contain"
+                  loading="eager"
+                  width="32"
+                  height="32"
+                />
+                <span className="font-black text-2xl tracking-tight text-[#141413]">
+                  StepSmart
                 </span>
-              </h1>
+              </Link>
+
+              {/* Clean Desktop Navigation Anchors */}
+              <nav className="hidden lg:flex items-center gap-6 text-sm font-extrabold text-[#141413]">
+                <Link
+                  to="/chronicle"
+                  className="flex items-center gap-1.5 bg-[#FEF08A] hover:bg-[#fde047] text-[#141413] px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all font-black text-xs uppercase"
+                >
+                  <span>🏹</span>
+                  <span>Ramayana Chronicle</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                </Link>
+                <button onClick={() => scrollToSection('system')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
+                  Cohort
+                </button>
+                <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
+                  How it works
+                </button>
+                <button onClick={() => scrollToSection('curriculum')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
+                  Curriculum
+                </button>
+                <button onClick={() => scrollToSection('mentors')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
+                  Mentors
+                </button>
+                <button onClick={() => scrollToSection('pricing')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
+                  Pricing
+                </button>
+                <button onClick={() => scrollToSection('faq')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
+                  FAQ
+                </button>
+              </nav>
+
+              {/* Right Action Buttons: Rounded Pill Buttons (Image 5 & 6) */}
+              <div className="hidden sm:flex items-center gap-3 shrink-0">
+                <a
+                  href="/learn"
+                  className="px-5 py-2 rounded-full border-2 border-[#141413] bg-white text-[#141413] hover:bg-slate-100 shadow-[2px_2px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all font-extrabold text-xs uppercase"
+                >
+                  Login
+                </a>
+                <button
+                  onClick={() => scrollToSection('pricing')}
+                  className="px-5 py-2.5 rounded-full font-black border-2 border-[#141413] bg-[#FEF08A] hover:bg-[#FDE047] text-[#141413] shadow-[2.5px_2.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3.5px_3.5px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all text-xs uppercase cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  <span>Reserve Seat</span>
+                  <span>➜</span>
+                </button>
+              </div>
+
+              {/* Mobile Menu Trigger */}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="lg:hidden p-2 rounded-xl border-2 border-[#141413] bg-white shadow-[2px_2px_0px_0px_#141413]"
+                aria-label="Toggle menu"
+              >
+                {isMenuOpen ? <X className="w-6 h-6 text-[#141413]" /> : <Menu className="w-6 h-6 text-[#141413]" />}
+              </button>
+
+              {/* Mobile Nav Menu Dropdown */}
+              {isMenuOpen && (
+                <div className="lg:hidden absolute top-[calc(100%+8px)] left-0 right-0 bg-[#FDFCF7] border-2 border-[#141413] rounded-2xl p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_#141413] z-50">
+                  <Link
+                    to="/chronicle"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-left font-black text-lg py-2.5 px-3 rounded-xl border-2 border-[#141413] bg-[#FEF08A] shadow-[2px_2px_0px_0px_#141413] flex items-center justify-between text-[#141413]"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="text-xl">🏹</span>
+                      <span>Ramayana Chronicle</span>
+                    </span>
+                    <span className="text-[10px] font-mono font-black uppercase bg-[#188ab2] text-white px-2 py-0.5 rounded-full border border-[#141413]">
+                      Drop 1 Live
+                    </span>
+                  </Link>
+                  <button onClick={() => scrollToSection('system')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
+                    Cohort Modules
+                  </button>
+                  <button onClick={() => scrollToSection('how-it-works')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
+                    How It Works
+                  </button>
+                  <button onClick={() => scrollToSection('curriculum')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
+                    Curriculum (8 Weeks)
+                  </button>
+                  <button onClick={() => scrollToSection('mentors')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
+                    Mentors
+                  </button>
+                  <button onClick={() => scrollToSection('pricing')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
+                    Pricing
+                  </button>
+                  <button onClick={() => scrollToSection('faq')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
+                    FAQ
+                  </button>
+                  <div className="flex flex-col gap-3 pt-3">
+                    <button
+                      onClick={() => scrollToSection('pricing')}
+                      className="w-full py-3.5 rounded-full border-2 border-[#141413] bg-[#FEF08A] text-[#141413] font-black text-sm uppercase shadow-[3px_3px_0px_0px_#141413]"
+                    >
+                      Reserve Seat ➜
+                    </button>
+                    <a
+                      href="/learn"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="w-full py-2.5 rounded-full border-2 border-[#141413] bg-white text-[#141413] text-center font-black text-sm shadow-[2px_2px_0px_0px_#141413] block"
+                    >
+                      Learner Login
+                    </a>
+                  </div>
+                </div>
+              )}
+            </header>
+
+            {/* MIDDLE ROW: The 2-Column Split Hero Panel (With Soft Pastel Mesh Wash) */}
+            <div className="w-full bg-[#FDFCF7] rounded-2xl sm:rounded-[28px] border-2 border-[#141413] p-6 sm:p-8 md:p-10 lg:p-12 relative overflow-hidden">
+              
+              {/* Soft Dreamy Radial Mesh Wash inside Container (Image 5 Chorke Style) */}
+              <div
+                className="absolute inset-0 pointer-events-none -z-0"
+                style={{
+                  background:
+                    'radial-gradient(circle at 18% 25%, rgba(233, 213, 255, 0.42) 0%, rgba(254, 240, 138, 0.35) 38%, rgba(186, 230, 253, 0.22) 70%, transparent 100%)',
+                }}
+              />
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+                
+                {/* Left Column (55% / 7 cols): Typography, Pitch & CTAs */}
+                <div className="lg:col-span-7 flex flex-col items-start text-left">
+                  
+                  {/* Top Eyebrow Pill, flush left */}
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border-2 border-[#141413] font-mono font-bold text-xs uppercase shadow-[2px_2px_0px_0px_#141413] mb-6 select-none">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>PM-X ACCELERATOR · LIVE AND HANDS-ON · STARTS 23 NOV</span>
+                  </div>
+
+                  {/* Headline cleanly stacked on 3 lines */}
+                  <h1 className="text-3xl sm:text-5xl lg:text-[50px] xl:text-[56px] font-black tracking-tight leading-[1.12] text-[#141413]">
+                    Switching into PM<br />
+                    without a PM title?<br />
+                    <span className="inline-block mt-1 sm:mt-2">
+                      <span className="inline-block rounded-full border-2 border-[#141413] bg-[#FDE047] px-4 sm:px-5 py-0.5 sm:py-1 shadow-[3px_3px_0px_0px_#141413] -rotate-1 font-black text-[#141413] mr-2 align-middle">
+                        Build the proof
+                      </span>
+                      <span className="align-middle">with us.</span>
+                    </span>
+                  </h1>
+
+                  {/* Subtext left-aligned underneath */}
+                  <p className="text-sm sm:text-base md:text-lg text-[#141413]/85 leading-relaxed font-medium mt-5 max-w-xl">
+                    You don’t need a PM title to start. You need a <strong className="font-black text-[#141413]">resume that reads like a PM’s</strong>, <strong className="font-black text-[#141413]">projects you can talk through</strong>, and <strong className="font-black text-[#141413]">interview practice</strong>. Do all three in about 10 weeks, live, with 10–20 people making the same switch.
+                  </p>
+
+                  {/* Action Buttons Group */}
+                  <div className="flex flex-wrap items-center gap-3 mt-7">
+                    <button
+                      onClick={() => scrollToSection('pricing')}
+                      className="px-6 py-3 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[3px_3px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all text-xs sm:text-sm uppercase cursor-pointer inline-flex items-center gap-1.5"
+                    >
+                      <span>Reserve Seat</span>
+                      <span>➜</span>
+                    </button>
+                    <button
+                      onClick={() => scrollToSection('system')}
+                      className="px-5 py-3 rounded-full font-black border-2 border-[#141413] bg-white hover:bg-slate-50 text-[#141413] shadow-[2.5px_2.5px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all text-xs sm:text-sm uppercase cursor-pointer"
+                    >
+                      See Modules ➜
+                    </button>
+                    <button
+                      onClick={() => {
+                        setBrochureFormStatus('idle');
+                        setIsBrochureModalOpen(true);
+                      }}
+                      className="text-xs font-bold text-[#141413] hover:text-[#188ab2] underline ml-1 inline-flex items-center gap-1 cursor-pointer py-1"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Syllabus PDF</span>
+                    </button>
+                  </div>
+
+                  {/* Cohort detail note */}
+                  <p className="text-xs font-extrabold text-[#141413]/70 mt-3.5">
+                    {isEarlyBird
+                      ? "Diwali offer: ₹15,000 bundle · Free Learn Module · 10–20 seats per batch"
+                      : "Cohort starts 23 Nov · 10–20 seats per batch · Live on weekends"}
+                  </p>
+                </div>
+
+                {/* Right Column (45% / 5 cols): Alumni Proof Card + Overlapping Scalloped Stamp */}
+                <div className="lg:col-span-5 relative w-full max-w-lg mx-auto lg:max-w-none pt-4 lg:pt-0">
+                  
+                  {/* The Alumni Proof Card with thick Neo-Brutalist offset shadow */}
+                  <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[6px_6px_0px_0px_#141413] overflow-hidden relative z-10 transition-all">
+                    {/* Slide Image */}
+                    <div className="w-full aspect-[1024/536] overflow-hidden bg-[#188ab2] relative">
+                      <img
+                        key={alumniIndex}
+                        src={alumniSlides[alumniIndex].img}
+                        alt={alumniSlides[alumniIndex].alt}
+                        className="w-full h-full object-cover select-none"
+                        loading="eager"
+                      />
+                    </div>
+
+                    {/* Bottom interactive switcher tab */}
+                    <div className="bg-white border-t-2 border-[#141413] px-3.5 py-2.5 flex items-center justify-between gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setAlumniIndex((prev) => (prev + 1) % alumniSlides.length)}
+                        className="text-[10px] sm:text-xs font-mono font-black text-[#141413] hover:text-[#188ab2] flex items-center gap-1.5 cursor-pointer select-none transition-colors"
+                        title="Click to view next story"
+                      >
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span>{alumniSlides[alumniIndex].tag}</span>
+                      </button>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {alumniSlides.map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setAlumniIndex(i)}
+                            aria-label={`View story ${i + 1}`}
+                            className={`h-2 rounded-full transition-all cursor-pointer ${
+                              alumniIndex === i ? 'w-5 sm:w-6 bg-[#141413]' : 'w-2 bg-[#141413]/25 hover:bg-[#141413]/50'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* The Signature Chorke Badge: Overlapping Scalloped Stamp on bottom-left edge */}
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection('pricing')}
+                    aria-label="Reserve seat"
+                    className="absolute -bottom-4 -left-3 sm:-bottom-5 sm:-left-4 lg:-bottom-6 lg:-left-5 z-20 group cursor-pointer focus:outline-none"
+                  >
+                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-26 md:h-26 flex items-center justify-center transition-transform group-hover:scale-105 active:scale-95">
+                      {/* 12-lobed scalloped flower SVG matching Chorke badge */}
+                      <svg
+                        viewBox="0 0 100 100"
+                        className="w-full h-full drop-shadow-[3px_3px_0px_#141413]"
+                      >
+                        <path
+                          d="M 86.0 50.0 Q 96.4 62.4 81.2 68.0 Q 83.9 83.9 68.0 81.2 Q 62.4 96.4 50.0 86.0 Q 37.6 96.4 32.0 81.2 Q 16.1 83.9 18.8 68.0 Q 3.6 62.4 14.0 50.0 Q 3.6 37.6 18.8 32.0 Q 16.1 16.1 32.0 18.8 Q 37.6 3.6 50.0 14.0 Q 62.4 3.6 68.0 18.8 Q 83.9 16.1 81.2 32.0 Q 96.4 37.6 86.0 50.0 Z"
+                          fill="#FEF08A"
+                          stroke="#141413"
+                          strokeWidth="3.2"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-center select-none pointer-events-none p-1">
+                        <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-[#141413] leading-none">
+                          RESERVE
+                        </span>
+                        <span className="text-base sm:text-xl font-black text-[#141413] leading-tight my-0.5 group-hover:translate-x-0.5 transition-transform">
+                          ➜
+                        </span>
+                        <span className="text-[7.5px] sm:text-[8.5px] font-mono font-black uppercase text-[#141413] leading-none">
+                          LIVE SEATS
+                        </span>
+                      </div>
+                    </div>
+                  </button>
+
+                </div>
+
+              </div>
             </div>
 
-            {/* Subheading */}
-            <p className="text-base sm:text-lg md:text-xl text-[#141413]/85 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
-              You don’t need a PM title to start. You need a <strong className="font-black text-[#141413]">resume that reads like a PM’s</strong>, <strong className="font-black text-[#141413]">projects you can talk through</strong>, and <strong className="font-black text-[#141413]">interview practice</strong>. Do all three in about 10 weeks, live, with 10–20 people making the same switch.
-            </p>
-
-            {/* 1. Three Bottom Outcome Cards Like Image 5's Bento Row (Chorke Style) */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-5xl mx-auto mb-14 text-left">
+            {/* BOTTOM ROW: The 3 Pastel Outcome Cards (Locked into the Bento Grid) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3 text-left">
+              
               {/* Outcome 01: Warm Butter Yellow */}
-              <div className="bg-[#FEF08A] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
+              <div className="bg-[#FEF08A] rounded-2xl sm:rounded-[24px] border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all flex flex-col justify-between group">
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
@@ -382,10 +528,18 @@ export function AppExecutive() {
                     Overhauled to showcase product signals &amp; recruiter-clearing metrics.
                   </p>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('system')}
+                  className="mt-4 px-3.5 py-1.5 rounded-full bg-[#141413] text-white group-hover:bg-[#262624] text-[11px] font-mono font-black uppercase tracking-wide inline-flex items-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_rgba(255,255,255,0.4)] active:translate-y-[1px] transition-all cursor-pointer self-start"
+                >
+                  <span>1:1 Rewrite Included</span>
+                  <span>→</span>
+                </button>
               </div>
 
               {/* Outcome 02: StepSmart Mint/Cyan */}
-              <div className="bg-[#BAE6FD] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
+              <div className="bg-[#BAE6FD] rounded-2xl sm:rounded-[24px] border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all flex flex-col justify-between group">
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
@@ -402,10 +556,18 @@ export function AppExecutive() {
                     End-to-end teardowns, PRDs, prototypes &amp; data analysis case studies.
                   </p>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('system')}
+                  className="mt-4 px-3.5 py-1.5 rounded-full bg-[#141413] text-white group-hover:bg-[#262624] text-[11px] font-mono font-black uppercase tracking-wide inline-flex items-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_rgba(255,255,255,0.4)] active:translate-y-[1px] transition-all cursor-pointer self-start"
+                >
+                  <span>2 Live Capstones</span>
+                  <span>→</span>
+                </button>
               </div>
 
               {/* Outcome 03: Soft Lavender */}
-              <div className="bg-[#E9D5FF] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
+              <div className="bg-[#E9D5FF] rounded-2xl sm:rounded-[24px] border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all flex flex-col justify-between group">
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <div className="w-11 h-11 rounded-xl bg-white border-2 border-[#141413] flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_#141413]">
@@ -422,22 +584,26 @@ export function AppExecutive() {
                     1:1 rubric evaluation across product sense, strategy, RCA &amp; behavioural.
                   </p>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('system')}
+                  className="mt-4 px-3.5 py-1.5 rounded-full bg-[#141413] text-white group-hover:bg-[#262624] text-[11px] font-mono font-black uppercase tracking-wide inline-flex items-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_rgba(255,255,255,0.4)] active:translate-y-[1px] transition-all cursor-pointer self-start"
+                >
+                  <span>2 Mock Loops</span>
+                  <span>→</span>
+                </button>
               </div>
+
             </div>
 
-            {/* Hero Image with Statement (Blue Image) in Rounded 2XL Frame */}
-            <div className="max-w-4xl mx-auto mb-14 text-left">
-              <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[0px_6px_0px_0px_#141413] overflow-hidden">
-                <div className="w-full aspect-[1024/536] overflow-hidden bg-[#188ab2]">
-                  <img
-                    src="/hero-slide-1.webp"
-                    alt="PM Switch Story: 'I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation.'"
-                    className="w-full h-full object-cover"
-                    loading="eager"
-                  />
-                </div>
-              </div>
-            </div>
+          </div>
+        </div>
+      </section>
+
+      <main>
+        {/* 3. PATH PICKER & SPEC BAR */}
+        <section className="py-14 sm:py-20 bg-[#FDFCF7] border-b-2 border-[#141413]">
+          <div className="container mx-auto px-6 max-w-5xl">
 
             {/* Ramayana Chronicle Featured Banner (Soft Neo-Brutalist Case Study Card) */}
             <div className="max-w-4xl mx-auto mb-14 text-left">
