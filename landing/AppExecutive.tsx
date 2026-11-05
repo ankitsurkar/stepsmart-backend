@@ -325,8 +325,31 @@ export function AppExecutive() {
       </header>
 
       <main>
-        {/* 3. HERO SECTION (Framed Bento Container with Soft Pastel Mesh Wash) */}
+        {/* 3. HERO SECTION (Exposed Structural Container & Architectural Grid) */}
         <section className="pt-12 pb-20 md:pt-16 md:pb-28 bg-[#FDFCF7] border-b-2 border-[#141413] relative overflow-hidden">
+          
+          {/* Architectural Blueprint Dot Grid */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-[0.045]"
+            style={{
+              backgroundImage: 'radial-gradient(#141413 1.25px, transparent 1.25px)',
+              backgroundSize: '24px 24px',
+            }}
+          />
+
+          {/* Exposed Structural Container: Vertical Swiss Framing Lines connecting to Navbar */}
+          <div className="hidden lg:block absolute inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-6xl border-l-2 border-r-2 border-[#141413]/15 pointer-events-none" />
+
+          {/* Corner Architectural Registration Marks */}
+          <div className="hidden lg:flex justify-between absolute top-2 left-1/2 -translate-x-1/2 w-full max-w-6xl px-3 font-mono text-[10px] text-[#141413]/35 select-none pointer-events-none">
+            <span>+ 01 / HERO_GRID</span>
+            <span>1280PX SWISS FRAME +</span>
+          </div>
+          <div className="hidden lg:flex justify-between absolute bottom-2 left-1/2 -translate-x-1/2 w-full max-w-6xl px-3 font-mono text-[10px] text-[#141413]/35 select-none pointer-events-none">
+            <span>+ ARCHITECTURAL CONTAINER</span>
+            <span>SEC.01 / PROOF_LAB +</span>
+          </div>
+
           <div className="container mx-auto px-6 max-w-5xl text-center relative z-10">
             
             {/* Top Eyebrow Sticker */}
@@ -337,18 +360,72 @@ export function AppExecutive() {
               </span>
             </div>
 
-            {/* Headline with Inline Pill & Avatar Stack (Image 6 & Image 5) */}
-            <div className="relative mb-8 max-w-5xl mx-auto">
-              {/* Soft Dreamy Radial Mesh Wash behind Headline (Image 5 Chorke Style) */}
+            {/* Headline with Flanking Floating Proof Artifacts */}
+            <div className="relative mb-6 max-w-5xl mx-auto">
+              
+              {/* Soft Dreamy Radial Mesh Wash behind Headline */}
               <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-full max-w-3xl h-72 bg-[radial-gradient(ellipse_at_top,rgba(233,213,255,0.45)_0%,rgba(254,240,138,0.4)_45%,rgba(253,252,247,0)_75%)] pointer-events-none blur-2xl -z-10" />
 
-              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[64px] font-black tracking-tight leading-[1.2] text-[#141413] max-w-5xl mx-auto">
-                Switching into PM without a PM title?{' '}
-                <span className="inline-block mt-1 sm:mt-2">
-                  <span className="inline-block rounded-full border-2 border-[#141413] bg-[#FDE047] px-4 sm:px-6 py-1 sm:py-1.5 shadow-[3px_3px_0px_0px_#141413] -rotate-1 font-black text-[#141413] mx-1 sm:mx-2 align-middle">
+              {/* Left Flanking Proof Artifact (Before/After Resume Bullet + ATS Score) */}
+              <div className="hidden xl:block absolute top-1 -left-12 2xl:-left-20 -rotate-3 z-20 pointer-events-none select-none">
+                <div className="w-56 bg-white rounded-xl border-2 border-[#141413] p-3 shadow-[4px_4px_0px_0px_#141413] text-left">
+                  <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-[#141413]/15">
+                    <span className="text-[10px] font-mono font-black uppercase text-[#141413] flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      RESUME AUDIT
+                    </span>
+                    <span className="bg-[#A7F3D0] text-[#064e3b] text-[9px] font-mono font-black px-1.5 py-0.5 rounded border border-[#141413]">
+                      VERIFIED ✓
+                    </span>
+                  </div>
+                  <div className="space-y-1 text-[11px] leading-snug">
+                    <div className="text-rose-700/80 line-through font-mono text-[10px]">
+                      “Monitored ticket SLA queues”
+                    </div>
+                    <div className="font-bold text-[#141413]">
+                      ➔ “Cut triage latency by 42% via automated exception routing”
+                    </div>
+                  </div>
+                  <div className="mt-2 pt-1 border-t border-dashed border-[#141413]/20 flex items-center justify-between text-[9px] font-mono text-[#141413]/70 font-bold">
+                    <span>ATS SCORE</span>
+                    <span className="text-emerald-700 font-black">94 / 100</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Flanking Proof Artifact (Live Lab Calendar & Batch Cap) */}
+              <div className="hidden xl:block absolute top-3 -right-12 2xl:-right-20 rotate-3 z-20 pointer-events-none select-none">
+                <div className="w-56 bg-[#FEF08A] rounded-xl border-2 border-[#141413] p-3 shadow-[4px_4px_0px_0px_#141413] text-left">
+                  <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-[#141413]/15">
+                    <span className="text-[10px] font-mono font-black uppercase text-[#141413] flex items-center gap-1.5">
+                      <Calendar className="w-3 h-3 text-[#141413]" />
+                      NEXT LIVE LAB
+                    </span>
+                    <span className="bg-[#141413] text-white text-[9px] font-mono font-black px-1.5 py-0.5 rounded-full">
+                      LIVE
+                    </span>
+                  </div>
+                  <div className="text-xs font-black text-[#141413] leading-snug">
+                    Sat 11:00 AM IST
+                  </div>
+                  <div className="text-[11px] font-semibold text-[#141413]/85 mt-0.5">
+                    Unscripted PRD Defense Sprint with MSFT &amp; Mastercard PMs
+                  </div>
+                  <div className="mt-2 pt-1.5 border-t border-dashed border-[#141413]/20 flex items-center justify-between text-[9px] font-mono font-black text-[#141413]">
+                    <span>BATCH 14</span>
+                    <span className="text-emerald-800">10–20 SEATS CAP</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Balanced Headline (Fixes orphan "title?") */}
+              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[60px] font-black tracking-tight leading-[1.14] text-[#141413] max-w-4xl mx-auto">
+                Switching into PM without a PM title?<br className="hidden sm:inline" />{' '}
+                <span className="inline-block mt-2 sm:mt-2.5">
+                  <span className="inline-block rounded-full border-2 border-[#141413] bg-[#FDE047] px-5 sm:px-6 py-1 sm:py-1.5 shadow-[3px_3px_0px_0px_#141413] -rotate-1 font-black text-[#141413] mr-2 align-middle">
                     Build the proof
                   </span>
-                  with us.
+                  <span className="align-middle">with us.</span>
                   <span className="inline-flex items-center gap-1.5 ml-2.5 px-3 py-1 rounded-full bg-[#FEF08A] border-2 border-[#141413] text-[10px] sm:text-xs font-mono font-black uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[2deg] align-middle">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     10–20 SEATS · LIVE
@@ -358,11 +435,51 @@ export function AppExecutive() {
             </div>
 
             {/* Subheading */}
-            <p className="text-base sm:text-lg md:text-xl text-[#141413]/85 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
+            <p className="text-base sm:text-lg md:text-xl text-[#141413]/85 mb-8 max-w-3xl mx-auto leading-relaxed font-medium">
               You don’t need a PM title to start. You need a <strong className="font-black text-[#141413]">resume that reads like a PM’s</strong>, <strong className="font-black text-[#141413]">projects you can talk through</strong>, and <strong className="font-black text-[#141413]">interview practice</strong>. Do all three in about 10 weeks, live, with 10–20 people making the same switch.
             </p>
 
-            {/* 1. Three Bottom Outcome Cards Like Image 5's Bento Row (Chorke Style) */}
+            {/* 3. High-Converting CTA Action Bar & Micro-Trust Badge */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4">
+              <button
+                onClick={() => scrollToSection('pricing')}
+                className="w-full sm:w-auto px-7 py-3.5 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[4px_4px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[5px_5px_0px_0px_#141413] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#141413] transition-all text-xs sm:text-sm uppercase cursor-pointer inline-flex items-center justify-center gap-2"
+              >
+                <span>Apply for Nov 23 Cohort</span>
+                <span>➜</span>
+              </button>
+              <button
+                onClick={() => {
+                  setBrochureFormStatus('idle');
+                  setIsBrochureModalOpen(true);
+                }}
+                className="w-full sm:w-auto px-6 py-3.5 rounded-full font-black border-2 border-[#141413] bg-white hover:bg-slate-50 text-[#141413] shadow-[3px_3px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all text-xs sm:text-sm uppercase cursor-pointer inline-flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4 text-[#141413]" />
+                <span>Download Syllabus PDF</span>
+              </button>
+            </div>
+
+            {/* Micro-Trust Badge */}
+            <div className="flex items-center justify-center gap-3 mb-12 flex-wrap">
+              <div className="flex items-center -space-x-2">
+                <div className="w-7 h-7 rounded-full border-2 border-[#141413] bg-[#FEF08A] font-black text-[11px] grid place-items-center shadow-[1px_1px_0px_0px_#141413]">
+                  T
+                </div>
+                <div className="w-7 h-7 rounded-full border-2 border-[#141413] bg-[#BAE6FD] font-black text-[11px] grid place-items-center shadow-[1px_1px_0px_0px_#141413]">
+                  S
+                </div>
+                <div className="w-7 h-7 rounded-full border-2 border-[#141413] bg-[#E9D5FF] font-black text-[11px] grid place-items-center shadow-[1px_1px_0px_0px_#141413]">
+                  R
+                </div>
+              </div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#141413] text-xs font-mono font-bold text-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Only 6 seats left for Nov 23 cohort · Small batch of 10–20</span>
+              </div>
+            </div>
+
+            {/* 4. Three Outcome Cards with UI Micro-Previews */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-5xl mx-auto mb-14 text-left">
               {/* Outcome 01: Warm Butter Yellow */}
               <div className="bg-[#FEF08A] rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all flex flex-col justify-between">
@@ -381,6 +498,16 @@ export function AppExecutive() {
                   <p className="text-xs sm:text-sm font-semibold text-[#141413]/80 leading-relaxed">
                     Overhauled to showcase product signals &amp; recruiter-clearing metrics.
                   </p>
+                </div>
+                {/* UI Micro-Preview: ATS Score & Signal Indicator */}
+                <div className="mt-5 pt-3.5 border-t-2 border-[#141413]/15 flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border-2 border-[#141413] text-[10px] sm:text-[11px] font-mono font-black text-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    ATS Score: 92/100
+                  </span>
+                  <span className="text-[10px] font-mono font-bold text-[#141413]/70 uppercase">
+                    Screening ✓
+                  </span>
                 </div>
               </div>
 
@@ -402,6 +529,18 @@ export function AppExecutive() {
                     End-to-end teardowns, PRDs, prototypes &amp; data analysis case studies.
                   </p>
                 </div>
+                {/* UI Micro-Preview: Miniature Capstone Pill Tags */}
+                <div className="mt-5 pt-3.5 border-t-2 border-[#141413]/15 flex flex-wrap items-center gap-1.5">
+                  <span className="px-2 py-0.5 rounded-md bg-white border border-[#141413] text-[10px] font-mono font-black text-[#141413] shadow-[1px_1px_0px_0px_#141413]">
+                    Swiggy Teardown
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-white border border-[#141413] text-[10px] font-mono font-black text-[#141413] shadow-[1px_1px_0px_0px_#141413]">
+                    AI PRD
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-white border border-[#141413] text-[10px] font-mono font-black text-[#141413] shadow-[1px_1px_0px_0px_#141413]">
+                    SQL Metrics
+                  </span>
+                </div>
               </div>
 
               {/* Outcome 03: Soft Lavender */}
@@ -422,21 +561,131 @@ export function AppExecutive() {
                     1:1 rubric evaluation across product sense, strategy, RCA &amp; behavioural.
                   </p>
                 </div>
+                {/* UI Micro-Preview: Mini Rubric Score Bar */}
+                <div className="mt-5 pt-3.5 border-t-2 border-[#141413]/15 flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border-2 border-[#141413] text-[10px] sm:text-[11px] font-mono font-black text-[#7c3aed] shadow-[1.5px_1.5px_0px_0px_#141413]">
+                    Product Sense: 4.8/5 ★
+                  </span>
+                  <span className="text-[10px] font-mono font-bold text-[#141413]/70 uppercase">
+                    2 Mock Loops
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Hero Image with Statement (Blue Image) in Rounded 2XL Frame */}
-            <div className="max-w-4xl mx-auto mb-14 text-left">
-              <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[0px_6px_0px_0px_#141413] overflow-hidden">
-                <div className="w-full aspect-[1024/536] overflow-hidden bg-[#188ab2]">
-                  <img
-                    src="/hero-slide-1.webp"
-                    alt="PM Switch Story: 'I switched into PM with zero product experience. No CS degree. No MBA. Just the right preparation.'"
-                    className="w-full h-full object-cover"
-                    loading="eager"
-                  />
+            {/* 5. RE-ENGINEERED FOUNDER'S CASE FILE COMPONENT */}
+            <div className="max-w-5xl mx-auto mb-14 text-left relative">
+              
+              {/* Overlapping Top-Left Badge */}
+              <div className="absolute -top-3.5 left-5 sm:left-7 bg-[#FEF08A] text-[#141413] border-2 border-[#141413] rounded-full px-3.5 py-1 text-[11px] font-mono font-black uppercase shadow-[2px_2px_0px_0px_#141413] z-20 flex items-center gap-1.5 select-none">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>FOUNDER’S CASE FILE · THE TRANSITION STORY</span>
+              </div>
+
+              {/* Overlapping Top-Right Badge */}
+              <div className="hidden sm:inline-flex items-center gap-2 absolute -top-3.5 right-5 sm:right-7 bg-white border-2 border-[#141413] rounded-full px-3.5 py-1 text-[11px] font-mono font-black text-[#141413] shadow-[2px_2px_0px_0px_#141413] rotate-1 z-20 select-none">
+                <span className="text-emerald-600 font-black">✓</span> No MBA
+                <span className="text-[#141413]/30 font-normal">|</span>
+                <span className="text-emerald-600 font-black">✓</span> No CS Degree
+              </div>
+
+              {/* Main Neo-Brutalist Split Container with 8px Offset Shadow */}
+              <div className="bg-[#188ab2] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[0px_8px_0px_0px_#141413] overflow-hidden relative">
+                <div className="grid grid-cols-1 md:grid-cols-12 items-stretch">
+                  
+                  {/* Left Column (60%): Live HTML Typography, Highlights & Founder Credential Strip */}
+                  <div className="md:col-span-7 p-6 sm:p-8 md:p-10 flex flex-col justify-between text-white relative z-10">
+                    <div>
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 border border-white/30 text-[10px] font-mono font-black uppercase tracking-wider text-white mb-4">
+                        VERIFIED TRANSITION
+                      </div>
+
+                      {/* Live Editorial Quote */}
+                      <blockquote className="text-xl sm:text-2xl md:text-3xl font-black text-white leading-snug tracking-tight">
+                        “I switched into PM with{' '}
+                        <span className="inline-block bg-[#FEF08A] text-[#141413] px-2.5 py-0.5 rounded-lg border-2 border-[#141413] shadow-[2.5px_2.5px_0px_0px_#141413] -rotate-1 font-black my-1">
+                          zero product experience
+                        </span>
+                        . No CS degree. No MBA.{' '}
+                        <span className="inline-block bg-white text-[#141413] px-2.5 py-0.5 rounded-lg border-2 border-[#141413] shadow-[2.5px_2.5px_0px_0px_#141413] rotate-1 font-black my-1">
+                          Just the right preparation.
+                        </span>”
+                      </blockquote>
+
+                      <p className="text-xs sm:text-sm text-white/90 font-medium leading-relaxed mt-4 max-w-lg">
+                        Every framework, live teardown, and resume bullet in PM-X is reverse-engineered from this exact transition—tested across 50+ successful alumni switches.
+                      </p>
+                    </div>
+
+                    {/* Founder Credential Strip */}
+                    <div className="mt-8 pt-5 border-t-2 border-white/20 flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-full border-2 border-[#141413] bg-white overflow-hidden shadow-[2px_2px_0px_0px_#141413] shrink-0">
+                          <img
+                            src="/mentor-sanket.webp"
+                            alt="Sanket Katore"
+                            className="w-full h-full object-cover object-top"
+                          />
+                        </div>
+                        <div>
+                          <div className="font-black text-sm sm:text-base text-white leading-tight flex items-center gap-1.5">
+                            <span>Sanket Katore</span>
+                            <span className="bg-[#FEF08A] text-[#141413] text-[9px] font-mono font-black px-1.5 py-0.5 rounded border border-[#141413]">
+                              FOUNDER
+                            </span>
+                          </div>
+                          <div className="text-xs text-white/85 font-medium mt-0.5">
+                            Senior PM, Mastercard · Ex-Software Engineer · IIT Roorkee · ISB
+                          </div>
+                        </div>
+                      </div>
+                      <span className="px-3 py-1 rounded-full bg-[#141413] text-white text-[10px] font-mono font-black uppercase tracking-wider border border-white/30 shrink-0">
+                        50+ PMs Mentored
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Right Column (40%): Tactile Polaroid / Architectural Photo Container */}
+                  <div className="md:col-span-5 p-6 sm:p-8 flex items-center justify-center bg-[#0e6f8f]/40 border-t-2 md:border-t-0 md:border-l-2 border-[#141413] relative overflow-hidden">
+                    <div className="relative w-full max-w-[270px]">
+                      
+                      {/* Polaroid Frame */}
+                      <div className="bg-white rounded-xl border-2 border-[#141413] p-2.5 pb-3.5 shadow-[5px_5px_0px_0px_#141413] rotate-1">
+                        <div className="w-full aspect-[4/5] rounded-lg border-2 border-[#141413] overflow-hidden bg-slate-100 relative">
+                          <img
+                            src="/mentor-sanket.webp"
+                            alt="Sanket Katore - Founder & PM Mentor"
+                            className="w-full h-full object-cover object-top"
+                            loading="eager"
+                          />
+                          <div className="absolute bottom-2 left-2 right-2 bg-[#141413]/90 text-white rounded-md py-1 px-2 text-[10px] font-mono font-black uppercase tracking-wide flex items-center justify-between backdrop-blur-xs">
+                            <span>CASE FILE #001</span>
+                            <span className="text-[#FEF08A]">EX-SWE ➔ SR. PM</span>
+                          </div>
+                        </div>
+                        <div className="mt-2.5 flex items-center justify-between text-[11px] font-black text-[#141413] px-1">
+                          <span>SANKET KATORE</span>
+                          <span className="font-mono text-[9px] text-[#141413]/70 font-bold uppercase">MASTERCARD</span>
+                        </div>
+                      </div>
+
+                      {/* Scalloped / Tactile Stamp Badge */}
+                      <div className="absolute -bottom-3 -right-3 bg-[#FEF08A] text-[#141413] border-2 border-[#141413] rounded-full w-14 h-14 flex items-center justify-center font-mono text-[9px] font-black uppercase text-center leading-tight shadow-[2px_2px_0px_0px_#141413] -rotate-12 select-none">
+                        VERIFIED<br />SWITCH
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
+
+              {/* Overlapping Bottom-Left Proof Sticker */}
+              <div className="hidden sm:inline-flex items-center gap-2 absolute -bottom-3.5 left-6 bg-white border-2 border-[#141413] rounded-xl px-3.5 py-1.5 text-xs font-mono font-black text-[#141413] shadow-[3px_3px_0px_0px_#141413] -rotate-2 z-20 select-none">
+                <span className="text-rose-600">SWE / Non-Tech</span>
+                <span>➔</span>
+                <span className="text-emerald-700">Senior PM in 10 Wks</span>
+              </div>
+
             </div>
 
             {/* Ramayana Chronicle Featured Banner (Soft Neo-Brutalist Case Study Card) */}
