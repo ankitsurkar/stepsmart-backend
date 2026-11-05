@@ -21,6 +21,7 @@ import {
   adminDeleteEvent,
   adminSaveRamayanaDrop,
   adminDeleteRamayanaDrop,
+  getChronicleResponses,
 } from '../utils/api';
 
 const COURSE_ID = 'course-001';
@@ -1937,9 +1938,53 @@ function ProgressTab({ courseId }) {
 }
 
 // ────────────────────────────────────────────────────────────────────────────────
+// Submissions Nav Pills
+// ────────────────────────────────────────────────────────────────────────────────
+function SubmissionsNavPills({ currentTab, onSwitchTab }) {
+  if (!onSwitchTab) return null;
+  const items = [
+    { id: 'submissions', label: 'Project Submissions', icon: '📄' },
+    { id: 'gym-submissions', label: 'PM Gym Responses', icon: '💬' },
+    { id: 'chronicle-submissions', label: 'Ramayana Chronicle Responses', icon: '🏹' },
+  ];
+  return (
+    <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
+      {items.map(it => {
+        const active = currentTab === it.id;
+        return (
+          <button
+            key={it.id}
+            type="button"
+            onClick={() => onSwitchTab(it.id)}
+            style={{
+              padding: '0.45rem 0.9rem',
+              borderRadius: '8px',
+              border: active ? '1.5px solid var(--primary)' : '1px solid var(--border)',
+              background: active ? 'var(--primary)' : 'var(--card)',
+              color: active ? 'var(--primary-foreground)' : 'var(--muted-foreground)',
+              fontWeight: active ? 700 : 500,
+              fontSize: '0.825rem',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              boxShadow: active ? '0 2px 4px rgba(0,0,0,0.08)' : 'none',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <span>{it.icon}</span>
+            <span>{it.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
 // Submissions Tab
 // ────────────────────────────────────────────────────────────────────────────────
-function SubmissionsTab({ courseId }) {
+function SubmissionsTab({ courseId, onSwitchTab }) {
   const [submissions, setSubmissions] = useState([]);
   const [students, setStudents] = useState({});
   const [loading, setLoading] = useState(true);
@@ -1988,6 +2033,7 @@ function SubmissionsTab({ courseId }) {
 
   return (
     <div style={s.card}>
+      <SubmissionsNavPills currentTab="submissions" onSwitchTab={onSwitchTab} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
         <div style={s.cardTitle}>Student Submissions — {courseId}</div>
         <input 
@@ -2082,7 +2128,7 @@ function SubmissionsTab({ courseId }) {
 // ────────────────────────────────────────────────────────────────────────────────
 // PM Gym Responses Tab
 // ────────────────────────────────────────────────────────────────────────────────
-function GymSubmissionsTab({ courseId }) {
+function GymSubmissionsTab({ courseId, onSwitchTab }) {
   const [submissions, setSubmissions] = useState([]);
   const [students, setStudents] = useState({});
   const [gymQuestions, setGymQuestions] = useState({});
@@ -2208,6 +2254,7 @@ function GymSubmissionsTab({ courseId }) {
 
   return (
     <div style={s.card}>
+      <SubmissionsNavPills currentTab="gym-submissions" onSwitchTab={onSwitchTab} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
         <div style={s.cardTitle}>PM Gym Responses — {courseId}</div>
         <input 
@@ -2417,6 +2464,1426 @@ function GymSubmissionsTab({ courseId }) {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Ramayana Chronicle Submissions Tab
+// ────────────────────────────────────────────────────────────────────────────────
+function ChronicleSubmissionsTab({ courseId, onSwitchTab }) {
+  const [rawResponses, setRawResponses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
+  const [dayFilter, setDayFilter] = useState('all');
+  const [viewMode, setViewMode] = useState('candidates'); // 'candidates' | 'logs'
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [activeLogModal, setActiveLogModal] = useState(null);
+  const [copyFeedback, setCopyFeedback] = useState('');
+
+  useEffect(() => {
+    load();
+  }, [courseId]);
+
+  async function load() {
+    setLoading(true);
+    setError('');
+    try {
+      const publicPromise = getChronicleResponses().catch(() => ({ responses: [] }));
+      const leadsPromise = adminGetLeads().catch(() => ({ data: { leads: [] } }));
+
+      const [pubRes, leadsRes] = await Promise.all([publicPromise, leadsPromise]);
+
+      const combined = [];
+      const seenKeys = new Set();
+
+      // 1. Items from public handler / DynamoDB analytics table
+      const pubItems = (pubRes && pubRes.responses) ? pubRes.responses : [];
+      for (const item of pubItems) {
+        const key = `${item.phone || item.visitorId}_${item.dayNumber}_${item.responseType}_${item.timestamp}`;
+        if (!seenKeys.has(key)) {
+          seenKeys.add(key);
+          combined.push(item);
+        }
+      }
+
+      // 2. Items from leads / enrollments table
+      const leadItems = (leadsRes?.data?.leads || []).filter(l => 
+        l.masterclassId === 'ramayana-chronicle' ||
+        (l.enrollmentId || '').startsWith('chronicle#') ||
+        (l.source || '').includes('chronicle')
+      );
+      for (const lead of leadItems) {
+        const cleanPhone = (lead.phone || '').replace(/[^0-9]/g, '');
+        let parsedAnswer = lead.lastAnswer;
+        try {
+          if (typeof lead.lastAnswer === 'string' && (lead.lastAnswer.startsWith('{') || lead.lastAnswer.startsWith('['))) {
+            parsedAnswer = JSON.parse(lead.lastAnswer);
+          }
+        } catch (_) {}
+
+        const dayNum = Number((lead.source || '').replace(/[^0-9]/g, '')) || 1;
+        const key = `${cleanPhone || lead.email}_lead_${lead.timestamp}`;
+        if (!seenKeys.has(key)) {
+          seenKeys.add(key);
+          combined.push({
+            pageId: lead.enrollmentId || `lead_${Date.now()}`,
+            visitorId: cleanPhone || lead.email,
+            name: lead.name,
+            phone: lead.phone,
+            whatsappNumber: lead.phone,
+            dayNumber: dayNum,
+            responseType: 'chronicle_lead',
+            responseData: parsedAnswer,
+            timestamp: lead.timestamp,
+          });
+        }
+      }
+
+      // 3. Check client localStorage for instant local/offline test submissions
+      try {
+        const rawLocal = localStorage.getItem('pmx_chronicle_all_submissions');
+        if (rawLocal) {
+          const localItems = JSON.parse(rawLocal);
+          for (const item of localItems) {
+            const key = `${item.phone || item.visitorId}_${item.dayNumber}_${item.responseType}_${item.timestamp}`;
+            if (!seenKeys.has(key)) {
+              seenKeys.add(key);
+              combined.push(item);
+            }
+          }
+        }
+      } catch (_) {}
+
+      combined.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+      setRawResponses(combined);
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load Chronicle submissions.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Aggregate candidate dossier by normalized phone/name
+  const candidatesMap = {};
+  for (const item of rawResponses) {
+    const rawPhone = item.phone || item.whatsappNumber || '';
+    const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+    const phoneKey = cleanPhone || (item.name ? item.name.toLowerCase().trim() : 'anon_participant');
+
+    if (!candidatesMap[phoneKey]) {
+      candidatesMap[phoneKey] = {
+        id: phoneKey,
+        name: item.name && item.name !== 'Anonymous PM' ? item.name : (item.name || 'Anonymous PM'),
+        phone: rawPhone,
+        cleanPhone,
+        firstSeen: item.timestamp || new Date().toISOString(),
+        lastSeen: item.timestamp || new Date().toISOString(),
+        daysCompleted: new Set(),
+        activities: [],
+        day1Instinct: null,
+        day1OpenAnswer: null,
+        day2Interviewee: null,
+        day2Matrix: null,
+        day3ProblemStatement: null,
+        day3Recommendation: null,
+        day3Comparison: null,
+        rating: null,
+        favoriteMoment: null,
+      };
+    }
+    const cand = candidatesMap[phoneKey];
+    if (item.name && item.name !== 'Anonymous PM') cand.name = item.name;
+    if (rawPhone && !cand.phone) cand.phone = rawPhone;
+    if (cleanPhone && !cand.cleanPhone) cand.cleanPhone = cleanPhone;
+
+    if (item.timestamp && new Date(item.timestamp) > new Date(cand.lastSeen)) {
+      cand.lastSeen = item.timestamp;
+    }
+    if (item.timestamp && new Date(item.timestamp) < new Date(cand.firstSeen)) {
+      cand.firstSeen = item.timestamp;
+    }
+    if (item.dayNumber) {
+      cand.daysCompleted.add(Number(item.dayNumber));
+    }
+
+    cand.activities.push(item);
+
+    // Parse structured attributes
+    const res = item.responseData;
+    if (item.responseType === 'day1_poll_instinct') {
+      cand.day1Instinct = res?.selectedInstinct || res;
+    } else if (item.responseType === 'day1_open_problem') {
+      cand.day1OpenAnswer = res?.problemAnswer || (typeof res === 'string' ? res : JSON.stringify(res));
+    } else if (item.responseType === 'day2_interview_click') {
+      cand.day2Interviewee = res?.speaker || res;
+    } else if (item.responseType === 'day2_discovery_matrix') {
+      cand.day2Matrix = res;
+    } else if (item.responseType === 'day3_problem_statement') {
+      cand.day3ProblemStatement = res?.statement || res;
+    } else if (item.responseType === 'day3_recommendation_poll') {
+      cand.day3Recommendation = res?.recommendation || res;
+    } else if (item.responseType === 'day3_post_comparison') {
+      cand.day3Comparison = res;
+    } else if (item.responseType === 'chronicle_feedback') {
+      cand.rating = res?.rating;
+      cand.favoriteMoment = res?.favoriteMoment;
+    } else if (item.responseType === 'chronicle_lead') {
+      if (typeof res === 'string' && !cand.day1OpenAnswer) {
+        cand.day1OpenAnswer = res;
+      }
+    }
+  }
+
+  const allCandidates = Object.values(candidatesMap).sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen));
+
+  // Compute summary stats
+  const totalParticipants = allCandidates.length;
+  const day1Completions = allCandidates.filter(c => c.daysCompleted.has(1) || c.day1Instinct || c.day1OpenAnswer).length;
+  const day2Completions = allCandidates.filter(c => c.daysCompleted.has(2) || c.day2Interviewee || c.day2Matrix).length;
+  const day3Completions = allCandidates.filter(c => c.daysCompleted.has(3) || c.day3ProblemStatement || c.day3Recommendation).length;
+  const ratings = allCandidates.map(c => Number(c.rating)).filter(r => !isNaN(r) && r > 0);
+  const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : null;
+
+  // Helpers
+  const formatInstinct = (key) => {
+    if (key === 'A') return { text: 'A: Find a solution fast', badgeBg: '#fee2e2', textColor: '#991b1b' };
+    if (key === 'B') return { text: 'B: Understand the problem first', badgeBg: '#dcfce7', textColor: '#166534' };
+    if (key === 'C') return { text: 'C: Ask who’s affected', badgeBg: '#e0f2fe', textColor: '#075985' };
+    return { text: key || '—', badgeBg: '#f1f5f9', textColor: '#475569' };
+  };
+
+  const formatInterviewee = (key) => {
+    if (key === 'king') return { text: '👑 King Dasharatha', role: 'Emotional Urgency' };
+    if (key === 'minister') return { text: '📜 Minister Sumantra', role: 'Political Threat' };
+    if (key === 'citizen') return { text: '🏘️ Ayodhya Citizen', role: 'Unspoken Anxiety' };
+    return { text: key || '—', role: '' };
+  };
+
+  const formatRecommendation = (key) => {
+    if (key === 'A') return { text: 'Option A: Regent Council', badgeBg: '#fee2e2', textColor: '#991b1b' };
+    if (key === 'B') return { text: 'Option B: Succession Protocol', badgeBg: '#dcfce7', textColor: '#166534' };
+    if (key === 'C') return { text: 'Option C: Citizen Dialogue', badgeBg: '#fef3c7', textColor: '#92400e' };
+    return { text: key || '—', badgeBg: '#f1f5f9', textColor: '#475569' };
+  };
+
+  const formatActivityName = (type) => {
+    switch (type) {
+      case 'user_registration': return '👤 Candidate Registration';
+      case 'day1_poll_instinct': return '🎬 Day 1: Instinct Baseline Poll';
+      case 'day1_open_problem': return '📝 Day 1: Real Problem Diagnosis';
+      case 'day2_interview_click': return '🎙️ Day 2: Interviewee Selected';
+      case 'day2_discovery_matrix': return '🔍 Day 2: Fact/Assumption/Unknown Matrix';
+      case 'day3_problem_statement': return '💡 Day 3: 1-Line Problem Statement';
+      case 'day3_recommendation_poll': return '⚖️ Day 3: Recommendation Selected';
+      case 'day3_post_comparison': return '🔄 Day 3: Pre vs Post Diagnostic Comparison';
+      case 'chronicle_feedback': return '⭐ Day 3: Experience Rating & Feedback';
+      case 'chronicle_lead': return '🎯 Landing Page Lead Submission';
+      default: return type.replace(/_/g, ' ');
+    }
+  };
+
+  const formatActivitySnippet = (item) => {
+    const res = item.responseData;
+    if (!res) return '—';
+    if (typeof res === 'string') return res;
+    if (item.responseType === 'day1_poll_instinct') {
+      return formatInstinct(res.selectedInstinct || res).text;
+    }
+    if (item.responseType === 'day1_open_problem') {
+      return res.problemAnswer || JSON.stringify(res);
+    }
+    if (item.responseType === 'day2_interview_click') {
+      return formatInterviewee(res.speaker || res).text;
+    }
+    if (item.responseType === 'day2_discovery_matrix') {
+      return `Fact: "${res.fact || ''}" | Assumption: "${res.assumption || ''}" | Unknown: "${res.unknown || ''}"`;
+    }
+    if (item.responseType === 'day3_problem_statement') {
+      return res.statement || JSON.stringify(res);
+    }
+    if (item.responseType === 'day3_recommendation_poll') {
+      return formatRecommendation(res.recommendation || res).text;
+    }
+    if (item.responseType === 'day3_post_comparison') {
+      return `Day 1: "${res.day1InitialAnswer || ''}" ➔ Day 3: "${res.day3SynthesizedAnswer || ''}"`;
+    }
+    if (item.responseType === 'chronicle_feedback') {
+      return `Rating: ${res.rating}/5 — "${res.favoriteMoment || ''}"`;
+    }
+    return JSON.stringify(res);
+  };
+
+  // Filter candidates
+  const filteredCandidates = allCandidates.filter(c => {
+    const term = search.toLowerCase();
+    const matchSearch = (c.name || '').toLowerCase().includes(term) ||
+      (c.phone || '').toLowerCase().includes(term) ||
+      (c.day1OpenAnswer || '').toLowerCase().includes(term) ||
+      (c.day3ProblemStatement || '').toLowerCase().includes(term);
+
+    if (!matchSearch) return false;
+    if (dayFilter === '1') return c.daysCompleted.has(1) || c.day1Instinct || c.day1OpenAnswer;
+    if (dayFilter === '2') return c.daysCompleted.has(2) || c.day2Interviewee || c.day2Matrix;
+    if (dayFilter === '3') return c.daysCompleted.has(3) || c.day3ProblemStatement || c.day3Recommendation;
+    return true;
+  });
+
+  // Filter raw logs
+  const filteredLogs = rawResponses.filter(log => {
+    const term = search.toLowerCase();
+    const snippet = formatActivitySnippet(log).toLowerCase();
+    const matchSearch = (log.name || '').toLowerCase().includes(term) ||
+      (log.phone || '').toLowerCase().includes(term) ||
+      snippet.includes(term) ||
+      (log.responseType || '').toLowerCase().includes(term);
+
+    if (!matchSearch) return false;
+    if (dayFilter !== 'all' && Number(log.dayNumber) !== Number(dayFilter)) return false;
+    return true;
+  });
+
+  // CSV Export handler
+  const handleExportCsv = () => {
+    const headers = ['Participant Name', 'WhatsApp Number', 'Day', 'Response Type', 'Submitted Content', 'Timestamp'];
+    const rows = rawResponses.map(r => {
+      const cleanName = (r.name || 'Anonymous PM').replace(/"/g, '""');
+      const cleanPhone = (r.phone || r.whatsappNumber || '').replace(/"/g, '""');
+      const day = r.dayNumber || 1;
+      const type = (r.responseType || '').replace(/"/g, '""');
+      const snippet = formatActivitySnippet(r).replace(/"/g, '""').replace(/\n/g, ' ');
+      const time = r.timestamp || '';
+      return `"${cleanName}","${cleanPhone}","${day}","${type}","${snippet}","${time}"`;
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `ramayana_chronicle_responses_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Copy candidate summary
+  const handleCopyCandidate = (c) => {
+    const text = [
+      `=== RAMAYANA CHRONICLE CANDIDATE DOSSIER ===`,
+      `Name: ${c.name}`,
+      `WhatsApp: ${c.phone || 'N/A'}`,
+      `Days Completed: ${Array.from(c.daysCompleted).join(', ') || '1'}`,
+      `Last Active: ${new Date(c.lastSeen).toLocaleString()}`,
+      ``,
+      `[DAY 1: BASELINE HOOK]`,
+      `Instinct Poll: ${formatInstinct(c.day1Instinct).text}`,
+      `Problem Diagnosis: ${c.day1OpenAnswer || 'N/A'}`,
+      ``,
+      `[DAY 2: DISCOVERY MATRIX]`,
+      `Interviewee: ${formatInterviewee(c.day2Interviewee).text}`,
+      `Fact: ${c.day2Matrix?.fact || 'N/A'}`,
+      `Assumption: ${c.day2Matrix?.assumption || 'N/A'}`,
+      `Unknown: ${c.day2Matrix?.unknown || 'N/A'}`,
+      ``,
+      `[DAY 3: SYNTHESIS & REVEAL]`,
+      `Problem Statement: ${c.day3ProblemStatement || 'N/A'}`,
+      `Recommendation: ${formatRecommendation(c.day3Recommendation).text}`,
+      `Evolution (Before): ${c.day3Comparison?.day1InitialAnswer || c.day1OpenAnswer || 'N/A'}`,
+      `Evolution (After): ${c.day3Comparison?.day3SynthesizedAnswer || c.day3ProblemStatement || 'N/A'}`,
+      `Rating: ${c.rating ? `${c.rating}/5` : 'N/A'}`,
+      `Favorite Moment: ${c.favoriteMoment || 'N/A'}`,
+    ].join('\n');
+
+    navigator.clipboard.writeText(text);
+    setCopyFeedback('Copied dossier to clipboard!');
+    setTimeout(() => setCopyFeedback(''), 2500);
+  };
+
+  if (loading) return <p style={{ color: 'var(--muted-foreground)' }}>Loading Ramayana Chronicle submissions…</p>;
+  if (error) return <p style={{ color: 'var(--destructive)' }}>{error}</p>;
+
+  return (
+    <div>
+      {/* Submissions Nav Pills for smooth tab switching */}
+      <div style={s.card}>
+        <SubmissionsNavPills currentTab="chronicle-submissions" onSwitchTab={onSwitchTab} />
+
+        {/* Header & Export Row */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
+          <div>
+            <div style={{ ...s.cardTitle, marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>🏹</span>
+              <span>Ramayana Chronicle Responses</span>
+              <span style={{ ...s.badge, background: '#FEF08A', color: '#854D0E', fontSize: '0.75rem', fontWeight: 800 }}>
+                Live Case Study
+              </span>
+            </div>
+            <div style={{ fontSize: '0.825rem', color: 'var(--muted-foreground)' }}>
+              Candidate diagnostic submissions, discovery matrix entries, and problem statement recommendations.
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <button
+              type="button"
+              onClick={handleExportCsv}
+              style={{
+                ...s.btn,
+                ...s.btnSecondary,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.45rem 0.9rem',
+                fontSize: '0.8rem',
+              }}
+            >
+              <span>⬇️</span>
+              <span>Export CSV</span>
+            </button>
+            <button
+              type="button"
+              onClick={load}
+              style={{
+                ...s.btn,
+                ...s.btnSecondary,
+                padding: '0.45rem 0.75rem',
+                fontSize: '0.8rem',
+              }}
+              title="Refresh submissions"
+            >
+              🔄
+            </button>
+          </div>
+        </div>
+
+        {/* Quick KPI Stats Bar */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+          gap: '0.75rem',
+          padding: '1rem',
+          background: 'var(--background)',
+          borderRadius: '10px',
+          border: '1px solid var(--border)',
+          marginBottom: '1.25rem'
+        }}>
+          <div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+              Total Candidates
+            </div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--foreground)' }}>
+              {totalParticipants}
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+              Day 1 Baseline
+            </div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#16a34a' }}>
+              {day1Completions}
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+              Day 2 Discovery
+            </div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0284c7' }}>
+              {day2Completions}
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+              Day 3 Synthesis
+            </div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#7c3aed' }}>
+              {day3Completions}
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+              Avg Experience Rating
+            </div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#d97706' }}>
+              {avgRating ? `⭐ ${avgRating}/5` : '—'}
+            </div>
+          </div>
+        </div>
+
+        {/* Toolbar: View Switcher, Day Filter, Search */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.25rem' }}>
+          <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+            <div style={{ background: 'var(--background)', border: '1px solid var(--border)', borderRadius: '8px', padding: '0.2rem', display: 'flex' }}>
+              <button
+                type="button"
+                onClick={() => setViewMode('candidates')}
+                style={{
+                  padding: '0.35rem 0.75rem',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: viewMode === 'candidates' ? 'var(--primary)' : 'transparent',
+                  color: viewMode === 'candidates' ? 'var(--primary-foreground)' : 'var(--muted-foreground)',
+                  fontWeight: viewMode === 'candidates' ? 700 : 500,
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem'
+                }}
+              >
+                <span>👥</span>
+                <span>Candidates Dossier ({allCandidates.length})</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('logs')}
+                style={{
+                  padding: '0.35rem 0.75rem',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: viewMode === 'logs' ? 'var(--primary)' : 'transparent',
+                  color: viewMode === 'logs' ? 'var(--primary-foreground)' : 'var(--muted-foreground)',
+                  fontWeight: viewMode === 'logs' ? 700 : 500,
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem'
+                }}
+              >
+                <span>📋</span>
+                <span>All Activities ({rawResponses.length})</span>
+              </button>
+            </div>
+
+            <select
+              value={dayFilter}
+              onChange={(e) => setDayFilter(e.target.value)}
+              style={{
+                padding: '0.45rem 0.75rem',
+                borderRadius: '8px',
+                border: '1px solid var(--border)',
+                background: 'var(--background)',
+                color: 'var(--foreground)',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                outline: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="all">All Days (1–3)</option>
+              <option value="1">Day 1: Hook & Baseline</option>
+              <option value="2">Day 2: Discovery Matrix</option>
+              <option value="3">Day 3: Synthesis & Reveal</option>
+            </select>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <input
+              style={{ ...s.input, width: '270px', marginBottom: 0 }}
+              placeholder="Search candidate, WhatsApp, or response text..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* View 1: Grouped Candidates View */}
+        {viewMode === 'candidates' && (
+          <div>
+            {filteredCandidates.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '3rem 1.5rem', background: 'var(--background)', borderRadius: '12px', border: '1px dashed var(--border)', margin: '1rem 0' }}>
+                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🏹</div>
+                <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--foreground)', marginBottom: '0.35rem' }}>
+                  No candidate responses recorded yet
+                </div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', maxWidth: '440px', margin: '0 auto 1.25rem auto', lineHeight: '1.45' }}>
+                  Student and visitor product decisions from the Ramayana Chronicle will automatically synchronize here in real time.
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const demo = [
+                      {
+                        pageId: 'DEMO_1',
+                        visitorId: '9876543210',
+                        name: 'Sanket Agarwal',
+                        phone: '+91 9876543210',
+                        whatsappNumber: '+91 9876543210',
+                        dayNumber: 1,
+                        responseType: 'day1_poll_instinct',
+                        responseData: { selectedInstinct: 'B' },
+                        timestamp: '2026-11-05T09:30:00.000Z'
+                      },
+                      {
+                        pageId: 'DEMO_2',
+                        visitorId: '9876543210',
+                        name: 'Sanket Agarwal',
+                        phone: '+91 9876543210',
+                        whatsappNumber: '+91 9876543210',
+                        dayNumber: 1,
+                        responseType: 'day1_open_problem',
+                        responseData: { problemAnswer: 'The King believes it is an heir crisis, but it is an institutional trust and delegation problem.' },
+                        timestamp: '2026-11-05T09:35:00.000Z'
+                      },
+                      {
+                        pageId: 'DEMO_3',
+                        visitorId: '9876543210',
+                        name: 'Sanket Agarwal',
+                        phone: '+91 9876543210',
+                        whatsappNumber: '+91 9876543210',
+                        dayNumber: 2,
+                        responseType: 'day2_interview_click',
+                        responseData: { speaker: 'minister' },
+                        timestamp: '2026-11-05T10:00:00.000Z'
+                      },
+                      {
+                        pageId: 'DEMO_4',
+                        visitorId: '9876543210',
+                        name: 'Sanket Agarwal',
+                        phone: '+91 9876543210',
+                        whatsappNumber: '+91 9876543210',
+                        dayNumber: 2,
+                        responseType: 'day2_discovery_matrix',
+                        responseData: {
+                          fact: 'No direct biological heir exists; ministers fear external sovereign vulnerability.',
+                          assumption: 'The populace will immediately revolt if an interim succession council is named.',
+                          unknown: 'Whether neighboring kingdoms have military readiness or just opportunism.'
+                        },
+                        timestamp: '2026-11-05T10:15:00.000Z'
+                      },
+                      {
+                        pageId: 'DEMO_5',
+                        visitorId: '9876543210',
+                        name: 'Sanket Agarwal',
+                        phone: '+91 9876543210',
+                        whatsappNumber: '+91 9876543210',
+                        dayNumber: 3,
+                        responseType: 'day3_problem_statement',
+                        responseData: { statement: 'Ayodhya lacks an institutional succession protocol, creating royal anxiety and public uncertainty.' },
+                        timestamp: '2026-11-05T11:00:00.000Z'
+                      },
+                      {
+                        pageId: 'DEMO_6',
+                        visitorId: '9876543210',
+                        name: 'Sanket Agarwal',
+                        phone: '+91 9876543210',
+                        whatsappNumber: '+91 9876543210',
+                        dayNumber: 3,
+                        responseType: 'day3_recommendation_poll',
+                        responseData: { recommendation: 'B' },
+                        timestamp: '2026-11-05T11:10:00.000Z'
+                      },
+                      {
+                        pageId: 'DEMO_7',
+                        visitorId: '9876543210',
+                        name: 'Sanket Agarwal',
+                        phone: '+91 9876543210',
+                        whatsappNumber: '+91 9876543210',
+                        dayNumber: 3,
+                        responseType: 'day3_post_comparison',
+                        responseData: {
+                          day1InitialAnswer: 'The King thinks he has no successor.',
+                          day3SynthesizedAnswer: 'Ayodhya lacks an institutional succession protocol.'
+                        },
+                        timestamp: '2026-11-05T11:15:00.000Z'
+                      },
+                      {
+                        pageId: 'DEMO_8',
+                        visitorId: '9876543210',
+                        name: 'Sanket Agarwal',
+                        phone: '+91 9876543210',
+                        whatsappNumber: '+91 9876543210',
+                        dayNumber: 3,
+                        responseType: 'chronicle_feedback',
+                        responseData: {
+                          rating: 5,
+                          favoriteMoment: 'The conflicting signals between the anxious King and calm Minister Sumantra!'
+                        },
+                        timestamp: '2026-11-05T11:20:00.000Z'
+                      },
+                      {
+                        pageId: 'DEMO_9',
+                        visitorId: '9820012345',
+                        name: 'Priya Sharma',
+                        phone: '+91 9820012345',
+                        whatsappNumber: '+91 9820012345',
+                        dayNumber: 1,
+                        responseType: 'day1_poll_instinct',
+                        responseData: { selectedInstinct: 'C' },
+                        timestamp: '2026-11-05T11:45:00.000Z'
+                      },
+                      {
+                        pageId: 'DEMO_10',
+                        visitorId: '9820012345',
+                        name: 'Priya Sharma',
+                        phone: '+91 9820012345',
+                        whatsappNumber: '+91 9820012345',
+                        dayNumber: 1,
+                        responseType: 'day1_open_problem',
+                        responseData: { problemAnswer: 'The King is conflating his personal desire for parenthood with state succession strategy.' },
+                        timestamp: '2026-11-05T11:50:00.000Z'
+                      }
+                    ];
+                    setRawResponses(demo);
+                    localStorage.setItem('pmx_chronicle_all_submissions', JSON.stringify(demo));
+                  }}
+                  style={{
+                    ...s.btn,
+                    ...s.btnSecondary,
+                    padding: '0.5rem 1.15rem',
+                    fontSize: '0.825rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem'
+                  }}
+                >
+                  <span>✨</span>
+                  <span>Load Demo Submissions</span>
+                </button>
+              </div>
+            ) : (
+              <div className="responsive-table-container">
+                <table style={s.table}>
+                  <thead>
+                    <tr>
+                      <th style={s.th}>Candidate</th>
+                      <th style={s.th}>Stages</th>
+                      <th style={s.th}>Day 1 Baseline</th>
+                      <th style={s.th}>Day 2 Discovery</th>
+                      <th style={s.th}>Day 3 Synthesis</th>
+                      <th style={s.th}>Last Active</th>
+                      <th style={{ ...s.th, textAlign: 'right' }}>Dossier</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredCandidates.map((cand) => {
+                      const instinctInfo = cand.day1Instinct ? formatInstinct(cand.day1Instinct) : null;
+                      const interviewInfo = cand.day2Interviewee ? formatInterviewee(cand.day2Interviewee) : null;
+                      const cleanWa = (cand.phone || '').replace(/[^0-9]/g, '');
+                      const waLink = cleanWa ? `https://wa.me/${cleanWa.length === 10 ? '91' + cleanWa : cleanWa}` : null;
+
+                      return (
+                        <tr key={cand.id}>
+                          {/* Candidate info + WhatsApp link */}
+                          <td style={s.td}>
+                            <div style={{ fontWeight: 700, color: 'var(--foreground)', fontSize: '0.9rem' }}>
+                              {cand.name}
+                            </div>
+                            {cand.phone ? (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.2rem' }}>
+                                <span style={{ fontSize: '0.775rem', color: 'var(--muted-foreground)' }}>
+                                  {cand.phone}
+                                </span>
+                                {waLink && (
+                                  <a
+                                    href={waLink}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    style={{
+                                      fontSize: '0.7rem',
+                                      fontWeight: 700,
+                                      color: '#15803d',
+                                      background: '#dcfce7',
+                                      padding: '0.15rem 0.45rem',
+                                      borderRadius: '4px',
+                                      textDecoration: 'none',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '0.2rem'
+                                    }}
+                                  >
+                                    <span>💬</span>
+                                    <span>WhatsApp</span>
+                                  </a>
+                                )}
+                              </div>
+                            ) : (
+                              <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>No Phone</div>
+                            )}
+                          </td>
+
+                          {/* Stages completed */}
+                          <td style={s.td}>
+                            <div style={{ display: 'flex', gap: '0.3rem' }}>
+                              {[1, 2, 3].map((d) => {
+                                const isDone = cand.daysCompleted.has(d) ||
+                                  (d === 1 && (cand.day1Instinct || cand.day1OpenAnswer)) ||
+                                  (d === 2 && (cand.day2Interviewee || cand.day2Matrix)) ||
+                                  (d === 3 && (cand.day3ProblemStatement || cand.day3Recommendation));
+                                return (
+                                  <span
+                                    key={d}
+                                    style={{
+                                      padding: '0.15rem 0.45rem',
+                                      borderRadius: '4px',
+                                      fontSize: '0.7rem',
+                                      fontWeight: 700,
+                                      background: isDone ? '#dcfce7' : '#f1f5f9',
+                                      color: isDone ? '#15803d' : '#94a3b8',
+                                      border: isDone ? '1px solid #bbf7d0' : '1px solid #e2e8f0'
+                                    }}
+                                  >
+                                    D{d}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          </td>
+
+                          {/* Day 1: Instinct & Open Answer */}
+                          <td style={{ ...s.td, maxWidth: '240px' }}>
+                            {instinctInfo ? (
+                              <div style={{ marginBottom: '0.25rem' }}>
+                                <span style={{
+                                  padding: '0.15rem 0.45rem',
+                                  borderRadius: '4px',
+                                  fontSize: '0.7rem',
+                                  fontWeight: 700,
+                                  background: instinctInfo.badgeBg,
+                                  color: instinctInfo.textColor,
+                                }}>
+                                  {instinctInfo.text}
+                                </span>
+                              </div>
+                            ) : null}
+                            {cand.day1OpenAnswer ? (
+                              <div style={{
+                                fontSize: '0.775rem',
+                                color: 'var(--foreground)',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap'
+                              }}>
+                                “{cand.day1OpenAnswer}”
+                              </div>
+                            ) : (!instinctInfo && <span style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem' }}>—</span>)}
+                          </td>
+
+                          {/* Day 2: Interview choice & Matrix */}
+                          <td style={{ ...s.td, maxWidth: '200px' }}>
+                            {interviewInfo ? (
+                              <div>
+                                <div style={{ fontWeight: 600, fontSize: '0.8rem' }}>
+                                  {interviewInfo.text}
+                                </div>
+                                {cand.day2Matrix ? (
+                                  <div style={{ fontSize: '0.7rem', color: '#0369a1', fontWeight: 600, marginTop: '0.15rem' }}>
+                                    ✓ Discovery Matrix Logged
+                                  </div>
+                                ) : null}
+                              </div>
+                            ) : (
+                              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem' }}>—</span>
+                            )}
+                          </td>
+
+                          {/* Day 3: Statement & Rec */}
+                          <td style={{ ...s.td, maxWidth: '220px' }}>
+                            {cand.day3ProblemStatement ? (
+                              <div style={{
+                                fontSize: '0.775rem',
+                                fontWeight: 600,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap'
+                              }}>
+                                “{cand.day3ProblemStatement}”
+                              </div>
+                            ) : null}
+                            {cand.day3Recommendation ? (
+                              <div style={{ marginTop: '0.2rem' }}>
+                                <span style={{
+                                  padding: '0.1rem 0.4rem',
+                                  borderRadius: '4px',
+                                  fontSize: '0.675rem',
+                                  fontWeight: 700,
+                                  background: formatRecommendation(cand.day3Recommendation).badgeBg,
+                                  color: formatRecommendation(cand.day3Recommendation).textColor
+                                }}>
+                                  {formatRecommendation(cand.day3Recommendation).text}
+                                </span>
+                              </div>
+                            ) : null}
+                            {!cand.day3ProblemStatement && !cand.day3Recommendation && (
+                              <span style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem' }}>—</span>
+                            )}
+                          </td>
+
+                          {/* Last Active */}
+                          <td style={{ ...s.td, fontSize: '0.775rem', color: 'var(--muted-foreground)' }}>
+                            {cand.lastSeen ? new Date(cand.lastSeen).toLocaleDateString() : '—'}
+                          </td>
+
+                          {/* Action: Open dossier modal */}
+                          <td style={{ ...s.td, textAlign: 'right' }}>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedCandidate(cand)}
+                              style={{
+                                ...s.btn,
+                                padding: '0.35rem 0.75rem',
+                                fontSize: '0.775rem',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.35rem'
+                              }}
+                            >
+                              <span>👁️</span>
+                              <span>Dossier</span>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* View 2: Raw Activity Log View */}
+        {viewMode === 'logs' && (
+          <div>
+            {filteredLogs.length === 0 ? (
+              <p style={{ color: 'var(--muted-foreground)', textAlign: 'center', padding: '2rem 0' }}>
+                No activity logs found matching your filter.
+              </p>
+            ) : (
+              <div className="responsive-table-container">
+                <table style={s.table}>
+                  <thead>
+                    <tr>
+                      <th style={s.th}>Participant</th>
+                      <th style={s.th}>Day</th>
+                      <th style={s.th}>Activity</th>
+                      <th style={s.th}>Submitted Content</th>
+                      <th style={s.th}>Timestamp</th>
+                      <th style={{ ...s.th, textAlign: 'right' }}>Inspect</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredLogs.map((log, idx) => (
+                      <tr key={log.pageId || idx}>
+                        <td style={s.td}>
+                          <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{log.name || 'Anonymous PM'}</div>
+                          {log.phone && <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{log.phone}</div>}
+                        </td>
+                        <td style={s.td}>
+                          <span style={{
+                            padding: '0.2rem 0.5rem',
+                            borderRadius: '4px',
+                            fontWeight: 700,
+                            fontSize: '0.725rem',
+                            background: log.dayNumber === 1 ? '#fee2e2' : (log.dayNumber === 2 ? '#e0f2fe' : '#fef3c7'),
+                            color: log.dayNumber === 1 ? '#991b1b' : (log.dayNumber === 2 ? '#075985' : '#92400e'),
+                          }}>
+                            Day {log.dayNumber || 1}
+                          </span>
+                        </td>
+                        <td style={{ ...s.td, fontWeight: 600, fontSize: '0.8rem' }}>
+                          {formatActivityName(log.responseType)}
+                        </td>
+                        <td style={{ ...s.td, maxWidth: '340px' }}>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--foreground)', lineHeight: '1.4' }}>
+                            {formatActivitySnippet(log)}
+                          </div>
+                        </td>
+                        <td style={{ ...s.td, fontSize: '0.775rem', color: 'var(--muted-foreground)' }}>
+                          {log.timestamp ? new Date(log.timestamp).toLocaleString() : '—'}
+                        </td>
+                        <td style={{ ...s.td, textAlign: 'right' }}>
+                          <button
+                            type="button"
+                            onClick={() => setActiveLogModal(log)}
+                            style={{
+                              ...s.btn,
+                              ...s.btnSecondary,
+                              padding: '0.3rem 0.65rem',
+                              fontSize: '0.75rem'
+                            }}
+                          >
+                            Inspect
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Candidate Dossier Modal */}
+      {selectedCandidate && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(15, 23, 42, 0.55)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999,
+          padding: '1.25rem',
+          boxSizing: 'border-box'
+        }}>
+          <div style={{
+            background: 'var(--card, #ffffff)',
+            borderRadius: '16px',
+            padding: '1.75rem',
+            width: '100%',
+            maxWidth: '680px',
+            maxHeight: '90vh',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            border: '2px solid var(--border, #e2e8f0)'
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1.25rem',
+              borderBottom: '1px solid var(--border, #e2e8f0)',
+              paddingBottom: '1rem',
+              flexShrink: 0
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '10px',
+                  background: '#FEF08A',
+                  color: '#141413',
+                  fontWeight: 800,
+                  fontSize: '1.1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1.5px solid #141413'
+                }}>
+                  🏹
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: 'var(--foreground)' }}>
+                    {selectedCandidate.name}
+                  </h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.2rem' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>
+                      {selectedCandidate.phone || 'No phone provided'}
+                    </span>
+                    {selectedCandidate.cleanPhone && (
+                      <a
+                        href={`https://wa.me/${selectedCandidate.cleanPhone.length === 10 ? '91' + selectedCandidate.cleanPhone : selectedCandidate.cleanPhone}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          fontSize: '0.725rem',
+                          fontWeight: 700,
+                          color: '#15803d',
+                          background: '#dcfce7',
+                          padding: '0.2rem 0.5rem',
+                          borderRadius: '4px',
+                          textDecoration: 'none',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem'
+                        }}
+                      >
+                        <span>💬</span>
+                        <span>Chat on WhatsApp</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedCandidate(null)}
+                style={{
+                  background: 'var(--muted, #f1f5f9)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1rem',
+                  cursor: 'pointer',
+                  color: 'var(--foreground)'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingRight: '0.25rem' }}>
+              {/* Day 1 Section */}
+              <div style={{
+                background: 'var(--background)',
+                borderRadius: '10px',
+                padding: '1.1rem',
+                border: '1px solid var(--border)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#b91c1c' }}>
+                    🎬 Drop 1: Hook & Baseline Decision (Day 1)
+                  </span>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>Nov 5 (Dawn at Ayodhya)</span>
+                </div>
+
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', marginBottom: '0.25rem' }}>
+                    POLL: FIRST INSTINCT UPON SUMMONS
+                  </div>
+                  {selectedCandidate.day1Instinct ? (
+                    <span style={{
+                      padding: '0.25rem 0.6rem',
+                      borderRadius: '6px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      background: formatInstinct(selectedCandidate.day1Instinct).badgeBg,
+                      color: formatInstinct(selectedCandidate.day1Instinct).textColor,
+                      display: 'inline-block'
+                    }}>
+                      {formatInstinct(selectedCandidate.day1Instinct).text}
+                    </span>
+                  ) : (
+                    <span style={{ color: 'var(--muted-foreground)', fontSize: '0.8rem' }}>No poll answered</span>
+                  )}
+                </div>
+
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', marginBottom: '0.25rem' }}>
+                    OPEN QUESTION: “IN ONE LINE, WHAT DO YOU THINK THE REAL PROBLEM IS?”
+                  </div>
+                  {selectedCandidate.day1OpenAnswer ? (
+                    <div style={{
+                      padding: '0.75rem',
+                      background: 'var(--card)',
+                      borderRadius: '8px',
+                      borderLeft: '4px solid #ef4444',
+                      fontSize: '0.85rem',
+                      color: 'var(--foreground)',
+                      fontStyle: 'italic',
+                      lineHeight: '1.45'
+                    }}>
+                      “{selectedCandidate.day1OpenAnswer}”
+                    </div>
+                  ) : (
+                    <span style={{ color: 'var(--muted-foreground)', fontSize: '0.8rem' }}>No initial diagnosis submitted</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Day 2 Section */}
+              <div style={{
+                background: 'var(--background)',
+                borderRadius: '10px',
+                padding: '1.1rem',
+                border: '1px solid var(--border)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#0369a1' }}>
+                    🔍 Drop 2: Stakeholder Discovery (Day 2)
+                  </span>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>Nov 6 (Courtyard Interviews)</span>
+                </div>
+
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', marginBottom: '0.25rem' }}>
+                    FIRST INTERVIEW SELECTED
+                  </div>
+                  {selectedCandidate.day2Interviewee ? (
+                    <span style={{
+                      padding: '0.25rem 0.6rem',
+                      borderRadius: '6px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      background: '#e0f2fe',
+                      color: '#0369a1',
+                      display: 'inline-block'
+                    }}>
+                      {formatInterviewee(selectedCandidate.day2Interviewee).text} ({formatInterviewee(selectedCandidate.day2Interviewee).role})
+                    </span>
+                  ) : (
+                    <span style={{ color: 'var(--muted-foreground)', fontSize: '0.8rem' }}>No interview selected yet</span>
+                  )}
+                </div>
+
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', marginBottom: '0.35rem' }}>
+                    DISCOVERY MATRIX: FACT / ASSUMPTION / UNKNOWN
+                  </div>
+                  {selectedCandidate.day2Matrix ? (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.6rem' }}>
+                      <div style={{ padding: '0.6rem', background: 'var(--card)', borderRadius: '6px', border: '1px solid #bbf7d0' }}>
+                        <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#15803d', marginBottom: '0.2rem' }}>🟢 FACT</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--foreground)' }}>{selectedCandidate.day2Matrix.fact || '—'}</div>
+                      </div>
+                      <div style={{ padding: '0.6rem', background: 'var(--card)', borderRadius: '6px', border: '1px solid #fef08a' }}>
+                        <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#854d0e', marginBottom: '0.2rem' }}>🟡 ASSUMPTION</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--foreground)' }}>{selectedCandidate.day2Matrix.assumption || '—'}</div>
+                      </div>
+                      <div style={{ padding: '0.6rem', background: 'var(--card)', borderRadius: '6px', border: '1px solid #bfdbfe' }}>
+                        <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#1e40af', marginBottom: '0.2rem' }}>🔵 UNKNOWN</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--foreground)' }}>{selectedCandidate.day2Matrix.unknown || '—'}</div>
+                      </div>
+                    </div>
+                  ) : (
+                    <span style={{ color: 'var(--muted-foreground)', fontSize: '0.8rem' }}>No discovery matrix recorded</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Day 3 Section */}
+              <div style={{
+                background: 'var(--background)',
+                borderRadius: '10px',
+                padding: '1.1rem',
+                border: '1px solid var(--border)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#6d28d9' }}>
+                    💡 Drop 3: Synthesis & Framework Reveal (Day 3)
+                  </span>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>Nov 7 (Final Council)</span>
+                </div>
+
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', marginBottom: '0.25rem' }}>
+                    1-SENTENCE SYNTHESIZED PROBLEM STATEMENT
+                  </div>
+                  {selectedCandidate.day3ProblemStatement ? (
+                    <div style={{
+                      padding: '0.75rem',
+                      background: 'var(--card)',
+                      borderRadius: '8px',
+                      borderLeft: '4px solid #8b5cf6',
+                      fontSize: '0.85rem',
+                      color: 'var(--foreground)',
+                      fontWeight: 600,
+                      lineHeight: '1.45'
+                    }}>
+                      “{selectedCandidate.day3ProblemStatement}”
+                    </div>
+                  ) : (
+                    <span style={{ color: 'var(--muted-foreground)', fontSize: '0.8rem' }}>No synthesized problem statement submitted</span>
+                  )}
+                </div>
+
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', marginBottom: '0.25rem' }}>
+                    RECOMMENDATION
+                  </div>
+                  {selectedCandidate.day3Recommendation ? (
+                    <span style={{
+                      padding: '0.25rem 0.6rem',
+                      borderRadius: '6px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      background: formatRecommendation(selectedCandidate.day3Recommendation).badgeBg,
+                      color: formatRecommendation(selectedCandidate.day3Recommendation).textColor,
+                      display: 'inline-block'
+                    }}>
+                      {formatRecommendation(selectedCandidate.day3Recommendation).text}
+                    </span>
+                  ) : (
+                    <span style={{ color: 'var(--muted-foreground)', fontSize: '0.8rem' }}>No recommendation poll selected</span>
+                  )}
+                </div>
+
+                {/* Pre vs Post comparison */}
+                {selectedCandidate.day3Comparison && (
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', marginBottom: '0.35rem' }}>
+                      BEFORE VS. AFTER DISCOVERY DIAGNOSIS
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
+                      <div style={{ padding: '0.6rem', background: 'var(--card)', borderRadius: '6px', border: '1px solid var(--border)' }}>
+                        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#ef4444', marginBottom: '0.2rem' }}>BEFORE (DAY 1)</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--foreground)', fontStyle: 'italic' }}>
+                          “{selectedCandidate.day3Comparison.day1InitialAnswer || selectedCandidate.day1OpenAnswer || '—'}”
+                        </div>
+                      </div>
+                      <div style={{ padding: '0.6rem', background: 'var(--card)', borderRadius: '6px', border: '1px solid var(--border)' }}>
+                        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#10b981', marginBottom: '0.2rem' }}>AFTER (DAY 3)</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--foreground)', fontWeight: 600 }}>
+                          “{selectedCandidate.day3Comparison.day3SynthesizedAnswer || selectedCandidate.day3ProblemStatement || '—'}”
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Feedback */}
+                {(selectedCandidate.rating || selectedCandidate.favoriteMoment) && (
+                  <div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', marginBottom: '0.25rem' }}>
+                      CANDIDATE EXPERIENCE FEEDBACK
+                    </div>
+                    <div style={{ padding: '0.6rem', background: 'var(--card)', borderRadius: '6px', border: '1px solid var(--border)' }}>
+                      {selectedCandidate.rating && (
+                        <div style={{ fontWeight: 700, color: '#d97706', fontSize: '0.85rem', marginBottom: '0.2rem' }}>
+                          Rating: {'⭐'.repeat(Number(selectedCandidate.rating))} ({selectedCandidate.rating}/5)
+                        </div>
+                      )}
+                      {selectedCandidate.favoriteMoment && (
+                        <div style={{ fontSize: '0.8rem', color: 'var(--foreground)' }}>
+                          <strong>Favorite moment:</strong> “{selectedCandidate.favoriteMoment}”
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginTop: '1.25rem',
+              borderTop: '1px solid var(--border, #e2e8f0)',
+              paddingTop: '1rem',
+              flexShrink: 0
+            }}>
+              <div>
+                {copyFeedback && (
+                  <span style={{ fontSize: '0.8rem', color: '#16a34a', fontWeight: 700 }}>
+                    ✓ {copyFeedback}
+                  </span>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button
+                  type="button"
+                  onClick={() => handleCopyCandidate(selectedCandidate)}
+                  style={{
+                    ...s.btn,
+                    ...s.btnSecondary,
+                    fontSize: '0.8rem',
+                    padding: '0.5rem 0.9rem'
+                  }}
+                >
+                  📋 Copy Dossier
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedCandidate(null)}
+                  style={{
+                    ...s.btn,
+                    fontSize: '0.8rem',
+                    padding: '0.5rem 0.9rem'
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Raw Activity Inspector Modal */}
+      {activeLogModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(15, 23, 42, 0.45)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999,
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: 'var(--card, #ffffff)',
+            borderRadius: '16px',
+            padding: '1.5rem',
+            width: '100%',
+            maxWidth: '520px',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+            border: '1px solid var(--border)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>
+              <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>
+                {formatActivityName(activeLogModal.responseType)}
+              </h4>
+              <button
+                type="button"
+                onClick={() => setActiveLogModal(null)}
+                style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem' }}>
+              <div>
+                <strong>Candidate:</strong> {activeLogModal.name || 'Anonymous PM'}
+              </div>
+              {activeLogModal.phone && (
+                <div>
+                  <strong>WhatsApp Phone:</strong> {activeLogModal.phone}
+                </div>
+              )}
+              <div>
+                <strong>Day:</strong> Day {activeLogModal.dayNumber || 1}
+              </div>
+              <div>
+                <strong>Action:</strong> {activeLogModal.responseType}
+              </div>
+              <div>
+                <strong>Submitted Content:</strong>
+                <pre style={{
+                  background: 'var(--background)',
+                  padding: '0.75rem',
+                  borderRadius: '6px',
+                  border: '1px solid var(--border)',
+                  overflowX: 'auto',
+                  fontSize: '0.75rem',
+                  marginTop: '0.35rem',
+                  whiteSpace: 'pre-wrap'
+                }}>
+                  {typeof activeLogModal.responseData === 'string'
+                    ? activeLogModal.responseData
+                    : JSON.stringify(activeLogModal.responseData, null, 2)}
+                </pre>
+              </div>
+              <div>
+                <strong>Timestamp:</strong> {activeLogModal.timestamp ? new Date(activeLogModal.timestamp).toLocaleString() : '—'}
+              </div>
+            </div>
+
+            <div style={{ textAlign: 'right', marginTop: '1.25rem' }}>
+              <button
+                type="button"
+                onClick={() => setActiveLogModal(null)}
+                style={{ ...s.btn, fontSize: '0.8rem' }}
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
@@ -5324,7 +6791,14 @@ function RamayanaChronicleTab({ courseId }) {
 // Main Admin Page
 // ────────────────────────────────────────────────────────────────────────────────
 export default function AdminPage() {
-  const [tab, setTab] = useState('weeks');
+  const [tab, setTab] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('tab') || 'weeks';
+    } catch {
+      return 'weeks';
+    }
+  });
   const [supplementalSubSection, setSupplementalSubSection] = useState('all');
   const [openSubmenus, setOpenSubmenus] = useState({ supplemental: true, submissions: true });
 
@@ -5438,6 +6912,7 @@ export default function AdminPage() {
       subItems: [
         { id: 'submissions', label: 'Project Submissions', icon: '📄' },
         { id: 'gym-submissions', label: 'PM Gym Responses', icon: '💬' },
+        { id: 'chronicle-submissions', label: 'Ramayana Chronicle', icon: '🏹' },
       ]
     },
     { id: 'leads', label: 'Leads', icon: '🎯' },
@@ -5531,7 +7006,7 @@ export default function AdminPage() {
             MANAGEMENT NAV
           </div>
           {navItems.map((t) => {
-            const isParentActive = tab === t.id || (t.id === 'supplemental' && tab === 'supplemental') || (t.id === 'submissions' && (tab === 'submissions' || tab === 'gym-submissions'));
+            const isParentActive = tab === t.id || (t.id === 'supplemental' && tab === 'supplemental') || (t.id === 'submissions' && (tab === 'submissions' || tab === 'gym-submissions' || tab === 'chronicle-submissions'));
             const hasSub = t.subItems && t.subItems.length > 0;
             const isOpen = openSubmenus[t.id];
 
@@ -5639,8 +7114,9 @@ export default function AdminPage() {
           {tab === 'pm-gym' && <GymTab courseId={currentCourseId} />}
           {tab === 'students' && <StudentsTab courseId={currentCourseId} />}
           {tab === 'progress' && <ProgressTab courseId={currentCourseId} />}
-          {tab === 'submissions' && <SubmissionsTab courseId={currentCourseId} />}
-          {tab === 'gym-submissions' && <GymSubmissionsTab courseId={currentCourseId} />}
+          {tab === 'submissions' && <SubmissionsTab courseId={currentCourseId} onSwitchTab={setTab} />}
+          {tab === 'gym-submissions' && <GymSubmissionsTab courseId={currentCourseId} onSwitchTab={setTab} />}
+          {tab === 'chronicle-submissions' && <ChronicleSubmissionsTab courseId={currentCourseId} onSwitchTab={setTab} />}
           {tab === 'leads' && <LeadsTab />}
           {tab === 'blogs' && <BlogsTab courseId={currentCourseId} />}
           {tab === 'events' && <EventsTab courseId={currentCourseId} />}

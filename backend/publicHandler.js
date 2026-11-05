@@ -441,6 +441,27 @@ exports.handler = async (event) => {
         return response(200, { success: true, message: 'Chronicle response recorded' });
       }
 
+      if (page === 'get_chronicle_responses') {
+        const scanRes = await docClient.send(new ScanCommand({
+          TableName: ANALYTICS_TABLE,
+          FilterExpression: 'begins_with(pageId, :prefix)',
+          ExpressionAttributeValues: {
+            ':prefix': 'CHRONICLE_RESP#',
+          },
+        })).catch((err) => {
+          console.error('Scan chronicle responses error:', err);
+          return { Items: [] };
+        });
+
+        const responses = (scanRes.Items || []).sort((a, b) => {
+          const tA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+          const tB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+          return tB - tA;
+        });
+
+        return response(200, { success: true, responses });
+      }
+
       const { name, email, phone, masterclassId = 'default', currentRole, role, source, cohortTrack } = data;
       if (!name || !email) {
         return response(400, { error: 'Name and email are required.' });

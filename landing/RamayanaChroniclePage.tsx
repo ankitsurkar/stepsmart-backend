@@ -441,6 +441,25 @@ export function RamayanaChroniclePage() {
   const dispatchResponseToBackend = async (dayNumber: number, responseType: string, responseData: any) => {
     try {
       const cleanPhone = userPhone.replace(/[^0-9]/g, '');
+
+      // Also cache to local storage so admin running in same environment sees immediately
+      try {
+        const rawLocal = localStorage.getItem('pmx_chronicle_all_submissions');
+        const list = rawLocal ? JSON.parse(rawLocal) : [];
+        list.unshift({
+          pageId: `CHRONICLE_RESP#${cleanPhone || 'anon'}#DAY${dayNumber}#${Date.now()}`,
+          visitorId: cleanPhone || 'anon_visitor',
+          name: userName || 'Anonymous PM',
+          phone: userPhone,
+          whatsappNumber: userPhone,
+          dayNumber,
+          responseType,
+          responseData,
+          timestamp: new Date().toISOString()
+        });
+        localStorage.setItem('pmx_chronicle_all_submissions', JSON.stringify(list.slice(0, 200)));
+      } catch (e) {}
+
       await fetch('https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -448,10 +467,14 @@ export function RamayanaChroniclePage() {
           page: 'save_chronicle_response',
           visitorId: cleanPhone || 'anon_visitor',
           name: userName || 'Anonymous PM',
+          email: `${cleanPhone || 'anon'}@chronicle.stepsmart.net`,
           phone: userPhone,
+          masterclassId: 'ramayana-chronicle',
+          source: `ramayana_chronicle_day${dayNumber}`,
           dayNumber,
           responseType,
-          responseData
+          responseData,
+          lastAnswer: typeof responseData === 'string' ? responseData : JSON.stringify(responseData),
         })
       });
     } catch (err) {

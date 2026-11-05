@@ -185,5 +185,19 @@ export const adminDeleteRamayanaDrop = (courseId, dayNumber) =>
     youtubeUrl: ''
   });
 
+export const getChronicleResponses = async () => {
+  try {
+    const res = await fetch('https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page: 'get_chronicle_responses' }),
+    });
+    return await res.json();
+  } catch (err) {
+    console.error('getChronicleResponses error:', err);
+    return { success: false, responses: [] };
+  }
+};
+
 export default api;
 
