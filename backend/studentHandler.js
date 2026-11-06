@@ -3,6 +3,7 @@ const { DynamoDBDocumentClient, QueryCommand, GetCommand, UpdateCommand, ScanCom
 const { CognitoIdentityProviderClient, ListUsersCommand } = require('@aws-sdk/client-cognito-identity-provider');
 const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm');
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
+const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 
 const ssm = new SSMClient({ region: process.env.AWS_REGION || 'eu-north-1' });
@@ -41,6 +42,63 @@ const ASSIGNMENTS_TABLE = process.env.ASSIGNMENTS_TABLE || process.env.ASSIGNMEN
 const ENROLLMENTS_TABLE = process.env.ENROLLMENTS_TABLE || 'lms-enrollments';
 const PEER_SESSIONS_TABLE = process.env.PEER_SESSIONS_TABLE || 'lms-peer-sessions';
 const FROM_EMAIL = process.env.FROM_EMAIL || 'admin@stepsmart.net';
+const GMAIL_USER = process.env.GMAIL_USER || 'admin@stepsmart.net';
+const GMAIL_APP_PASSWORD = (process.env.GMAIL_APP_PASSWORD || 'xrnlzbaomictijlt').replace(/\s+/g, '');
+
+let mailTransporter = null;
+function getMailTransporter() {
+  if (mailTransporter) return mailTransporter;
+  if (GMAIL_USER && GMAIL_APP_PASSWORD) {
+    try {
+      mailTransporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: GMAIL_USER,
+          pass: GMAIL_APP_PASSWORD,
+        },
+      });
+    } catch (err) {
+      console.error('Failed to create nodemailer transporter:', err);
+    }
+  }
+  return mailTransporter;
+}
+
+async function sendEmailNotification({ to, subject, html }) {
+  if (!to) return;
+  const fromEmail = FROM_EMAIL || GMAIL_USER || 'admin@stepsmart.net';
+  const transporter = getMailTransporter();
+
+  if (transporter) {
+    try {
+      const info = await transporter.sendMail({
+        from: `"StepSmart LMS" <${fromEmail}>`,
+        to,
+        subject,
+        html,
+      });
+      console.log(`Email successfully delivered via Gmail SMTP to: ${to} (Message ID: ${info.messageId})`);
+      return info;
+    } catch (smtpErr) {
+      console.error(`Gmail SMTP delivery failed for ${to}, falling back to SES:`, smtpErr.message || smtpErr);
+    }
+  }
+
+  // Fallback to SES if SMTP is unavailable or failed
+  return ses.send(new SendEmailCommand({
+    Source: fromEmail,
+    Destination: { ToAddresses: Array.isArray(to) ? to : [to] },
+    Message: {
+      Subject: { Data: subject },
+      Body: { Html: { Data: html } },
+    },
+  })).then(() => {
+    console.log(`Confirmation email sent via SES fallback to: ${to}`);
+  }).catch((sesErr) => {
+    console.error(`Failed to send email to ${to} via SES fallback:`, sesErr.message || sesErr);
+    throw sesErr;
+  });
+}
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://stepsmart.net';
 const PASSING_PCT = 70;
 const HEARTBEAT_INTERVAL = 10;
@@ -1260,39 +1318,26 @@ async function sendPeerSessionConfirmationEmails({
   const tasks = [];
   if (hostEmail) {
     tasks.push(
-      ses.send(new SendEmailCommand({
-        Source: FROM_EMAIL,
-        Destination: { ToAddresses: [hostEmail] },
-        Message: {
-          Subject: { Data: hostSubject },
-          Body: { Html: { Data: hostHtml } },
-        },
-      })).then(() => {
-        console.log(`Confirmation email sent successfully to host: ${hostEmail}`);
-      }).catch((err) => {
-        console.error(`Failed to send email to host (${hostEmail}):`, err.message || err);
+      sendEmailNotification({
+        to: hostEmail,
+        subject: hostSubject,
+        html: hostHtml,
       })
     );
   }
   if (peerEmail) {
     tasks.push(
-      ses.send(new SendEmailCommand({
-        Source: FROM_EMAIL,
-        Destination: { ToAddresses: [peerEmail] },
-        Message: {
-          Subject: { Data: peerSubject },
-          Body: { Html: { Data: peerHtml } },
-        },
-      })).then(() => {
-        console.log(`Confirmation email sent successfully to peer: ${peerEmail}`);
-      }).catch((err) => {
-        console.error(`Failed to send email to peer (${peerEmail}):`, err.message || err);
+      sendEmailNotification({
+        to: peerEmail,
+        subject: peerSubject,
+        html: peerHtml,
       })
     );
   }
 
   // Also send an administrative booking record to admin@stepsmart.net
-  if (FROM_EMAIL) {
+  const adminTarget = FROM_EMAIL || GMAIL_USER || 'admin@stepsmart.net';
+  if (adminTarget) {
     const adminSubject = `[Booking Alert] ${peerName} booked study session with ${hostName}`;
     const adminHtml = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 8px;">
@@ -1306,17 +1351,10 @@ async function sendPeerSessionConfirmationEmails({
       </div>
     `;
     tasks.push(
-      ses.send(new SendEmailCommand({
-        Source: FROM_EMAIL,
-        Destination: { ToAddresses: [FROM_EMAIL] },
-        Message: {
-          Subject: { Data: adminSubject },
-          Body: { Html: { Data: adminHtml } },
-        },
-      })).then(() => {
-        console.log(`Admin copy sent successfully to ${FROM_EMAIL}`);
-      }).catch((err) => {
-        console.error(`Failed to send admin copy to ${FROM_EMAIL}:`, err.message || err);
+      sendEmailNotification({
+        to: adminTarget,
+        subject: adminSubject,
+        html: adminHtml,
       })
     );
   }

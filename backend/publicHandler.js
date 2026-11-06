@@ -1,6 +1,7 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, PutCommand, UpdateCommand, QueryCommand, DeleteCommand, ScanCommand, GetCommand } = require('@aws-sdk/lib-dynamodb');
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
+const nodemailer = require('nodemailer');
 
 const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(ddbClient);
@@ -11,6 +12,63 @@ const ANALYTICS_TABLE = process.env.ANALYTICS_TABLE || 'lms-analytics';
 const COURSES_TABLE = process.env.COURSES_TABLE || 'lms-courses';
 const PEER_SESSIONS_TABLE = process.env.PEER_SESSIONS_TABLE || 'lms-peer-sessions';
 const FROM_EMAIL = process.env.FROM_EMAIL || 'admin@stepsmart.net';
+const GMAIL_USER = process.env.GMAIL_USER || 'admin@stepsmart.net';
+const GMAIL_APP_PASSWORD = (process.env.GMAIL_APP_PASSWORD || 'xrnlzbaomictijlt').replace(/\s+/g, '');
+
+let mailTransporter = null;
+function getMailTransporter() {
+  if (mailTransporter) return mailTransporter;
+  if (GMAIL_USER && GMAIL_APP_PASSWORD) {
+    try {
+      mailTransporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: GMAIL_USER,
+          pass: GMAIL_APP_PASSWORD,
+        },
+      });
+    } catch (err) {
+      console.error('Failed to create nodemailer transporter in publicHandler:', err);
+    }
+  }
+  return mailTransporter;
+}
+
+async function sendEmailNotification({ to, subject, html }) {
+  if (!to) return;
+  const fromEmail = FROM_EMAIL || GMAIL_USER || 'admin@stepsmart.net';
+  const transporter = getMailTransporter();
+
+  if (transporter) {
+    try {
+      const info = await transporter.sendMail({
+        from: `"StepSmart LMS" <${fromEmail}>`,
+        to,
+        subject,
+        html,
+      });
+      console.log(`Email successfully delivered via Gmail SMTP to: ${to} (Message ID: ${info.messageId})`);
+      return info;
+    } catch (smtpErr) {
+      console.error(`Gmail SMTP delivery failed for ${to}, falling back to SES:`, smtpErr.message || smtpErr);
+    }
+  }
+
+  // Fallback to SES if SMTP is unavailable or failed
+  return ses.send(new SendEmailCommand({
+    Source: fromEmail,
+    Destination: { ToAddresses: Array.isArray(to) ? to : [to] },
+    Message: {
+      Subject: { Data: subject },
+      Body: { Html: { Data: html } },
+    },
+  })).then(() => {
+    console.log(`Confirmation email sent via SES fallback to: ${to}`);
+  }).catch((sesErr) => {
+    console.error(`Failed to send email to ${to} via SES fallback:`, sesErr.message || sesErr);
+    throw sesErr;
+  });
+}
 
 exports.handler = async (event) => {
   console.log('Event:', JSON.stringify(event));
@@ -245,94 +303,74 @@ exports.handler = async (event) => {
           });
         } catch (_) {}
 
-        // Send confirmation emails via SES
+        // Send confirmation emails via Gmail SMTP (with SES fallback)
         const tasks = [];
         if (hostEmail) {
           tasks.push(
-            ses.send(new SendEmailCommand({
-              Source: FROM_EMAIL,
-              Destination: { ToAddresses: [hostEmail] },
-              Message: {
-                Subject: { Data: `Peer Study Session Confirmed: ${peerName} joined your slot! 🚀` },
-                Body: {
-                  Html: {
-                    Data: `
-                      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 8px;">
-                        <h2 style="font-size: 20px; font-weight: 800; margin-top: 0; color: #111;">Peer Study Session Confirmed! 🚀</h2>
-                        <p style="font-size: 15px; color: #333; line-height: 1.5;">Hi <strong>${hostName}</strong>,</p>
-                        <p style="font-size: 15px; color: #333; line-height: 1.5;"><strong>${peerName}</strong> (${peerEmail}) has joined your study slot for <strong>${courseName}</strong>.</p>
-                        <div style="background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; padding: 16px; margin: 20px 0;">
-                          <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Topic:</strong> ${topic}</p>
-                          <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Date & Time:</strong> ${formattedStart}</p>
-                          <p style="margin: 0; font-size: 14px;"><strong>Meeting Link:</strong> <a href="${meetingUrl}" target="_blank" style="color: #027A9B; font-weight: 600;">${meetingUrl}</a></p>
-                        </div>
-                        <p style="font-size: 14px; color: #666; line-height: 1.5;">See you on the call!</p>
-                        <hr style="border: none; border-top: 1px solid #e4e4e7; margin: 24px 0;" />
-                        <p style="font-size: 12px; color: #888; margin: 0;">StepSmart LMS — Peer-to-Peer Learning Network</p>
-                      </div>
-                    `
-                  }
-                }
-              }
-            })).catch(err => console.error('Host mail error:', err))
+            sendEmailNotification({
+              to: hostEmail,
+              subject: `Peer Study Session Confirmed: ${peerName} joined your slot! 🚀`,
+              html: `
+                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 8px;">
+                  <h2 style="font-size: 20px; font-weight: 800; margin-top: 0; color: #111;">Peer Study Session Confirmed! 🚀</h2>
+                  <p style="font-size: 15px; color: #333; line-height: 1.5;">Hi <strong>${hostName}</strong>,</p>
+                  <p style="font-size: 15px; color: #333; line-height: 1.5;"><strong>${peerName}</strong> (${peerEmail}) has joined your study slot for <strong>${courseName}</strong>.</p>
+                  <div style="background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; padding: 16px; margin: 20px 0;">
+                    <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Topic:</strong> ${topic}</p>
+                    <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Date & Time:</strong> ${formattedStart}</p>
+                    <p style="margin: 0; font-size: 14px;"><strong>Meeting Link:</strong> <a href="${meetingUrl}" target="_blank" style="color: #027A9B; font-weight: 600;">${meetingUrl}</a></p>
+                  </div>
+                  <p style="font-size: 14px; color: #666; line-height: 1.5;">See you on the call!</p>
+                  <hr style="border: none; border-top: 1px solid #e4e4e7; margin: 24px 0;" />
+                  <p style="font-size: 12px; color: #888; margin: 0;">StepSmart LMS — Peer-to-Peer Learning Network</p>
+                </div>
+              `
+            })
           );
         }
 
         if (peerEmail) {
           tasks.push(
-            ses.send(new SendEmailCommand({
-              Source: FROM_EMAIL,
-              Destination: { ToAddresses: [peerEmail] },
-              Message: {
-                Subject: { Data: `You're Booked for a Peer Session with ${hostName}! 🚀` },
-                Body: {
-                  Html: {
-                    Data: `
-                      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 8px;">
-                        <h2 style="font-size: 20px; font-weight: 800; margin-top: 0; color: #111;">You're Booked for a Peer Session 🚀</h2>
-                        <p style="font-size: 15px; color: #333; line-height: 1.5;">Hi <strong>${peerName}</strong>,</p>
-                        <p style="font-size: 15px; color: #333; line-height: 1.5;">You have successfully connected with <strong>${hostName}</strong>${hostEmail ? ` (${hostEmail})` : ''} for <strong>${courseName}</strong>.</p>
-                        <div style="background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; padding: 16px; margin: 20px 0;">
-                          <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Topic:</strong> ${topic}</p>
-                          <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Date & Time:</strong> ${formattedStart}</p>
-                          <p style="margin: 0; font-size: 14px;"><strong>Meeting Link:</strong> <a href="${meetingUrl}" target="_blank" style="color: #027A9B; font-weight: 600;">${meetingUrl}</a></p>
-                        </div>
-                        <p style="font-size: 14px; color: #666; line-height: 1.5;">Reach out if you need to coordinate anything prior to the call.</p>
-                        <hr style="border: none; border-top: 1px solid #e4e4e7; margin: 24px 0;" />
-                        <p style="font-size: 12px; color: #888; margin: 0;">StepSmart LMS — Peer-to-Peer Learning Network</p>
-                      </div>
-                    `
-                  }
-                }
-              }
-            })).catch(err => console.error('Peer mail error:', err))
+            sendEmailNotification({
+              to: peerEmail,
+              subject: `You're Booked for a Peer Session with ${hostName}! 🚀`,
+              html: `
+                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 8px;">
+                  <h2 style="font-size: 20px; font-weight: 800; margin-top: 0; color: #111;">You're Booked for a Peer Session 🚀</h2>
+                  <p style="font-size: 15px; color: #333; line-height: 1.5;">Hi <strong>${peerName}</strong>,</p>
+                  <p style="font-size: 15px; color: #333; line-height: 1.5;">You have successfully connected with <strong>${hostName}</strong>${hostEmail ? ` (${hostEmail})` : ''} for <strong>${courseName}</strong>.</p>
+                  <div style="background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; padding: 16px; margin: 20px 0;">
+                    <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Topic:</strong> ${topic}</p>
+                    <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Date & Time:</strong> ${formattedStart}</p>
+                    <p style="margin: 0; font-size: 14px;"><strong>Meeting Link:</strong> <a href="${meetingUrl}" target="_blank" style="color: #027A9B; font-weight: 600;">${meetingUrl}</a></p>
+                  </div>
+                  <p style="font-size: 14px; color: #666; line-height: 1.5;">Reach out if you need to coordinate anything prior to the call.</p>
+                  <hr style="border: none; border-top: 1px solid #e4e4e7; margin: 24px 0;" />
+                  <p style="font-size: 12px; color: #888; margin: 0;">StepSmart LMS — Peer-to-Peer Learning Network</p>
+                </div>
+              `
+            })
           );
         }
 
         // Admin alert
+        const adminEmail = FROM_EMAIL || GMAIL_USER || 'admin@stepsmart.net';
         tasks.push(
-          ses.send(new SendEmailCommand({
-            Source: FROM_EMAIL,
-            Destination: { ToAddresses: [FROM_EMAIL] },
-            Message: {
-              Subject: { Data: `[Booking Alert] ${peerName} booked study session with ${hostName}` },
-              Body: {
-                Html: {
-                  Data: `
-                    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px;">
-                      <h2>New Peer Study Session Booked!</h2>
-                      <p><strong>Host:</strong> ${hostName} (${hostEmail || 'N/A'})</p>
-                      <p><strong>Peer:</strong> ${peerName} (${peerEmail || 'N/A'})</p>
-                      <p><strong>Course:</strong> ${courseName}</p>
-                      <p><strong>Topic:</strong> ${topic}</p>
-                      <p><strong>Scheduled Time:</strong> ${formattedStart}</p>
-                      <p><strong>Meeting Room:</strong> <a href="${meetingUrl}">${meetingUrl}</a></p>
-                    </div>
-                  `
-                }
-              }
-            }
-          })).catch(err => console.error('Admin mail error:', err))
+          sendEmailNotification({
+            to: adminEmail,
+            subject: `[Booking Alert] ${peerName} booked study session with ${hostName}`,
+            html: `
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px;">
+                <h2>New Peer Study Session Booked!</h2>
+                <p><strong>Host:</strong> ${hostName} (${hostEmail || 'N/A'})</p>
+                <p><strong>Peer:</strong> ${peerName} (${peerEmail || 'N/A'})</p>
+                <p><strong>Course:</strong> ${courseName}</p>
+                <p><strong>Topic:</strong> ${topic}</p>
+                <p><strong>Scheduled Time:</strong> ${formattedStart}</p>
+                <p><strong>Meeting Room:</strong> <a href="${meetingUrl}">${meetingUrl}</a></p>
+              </div>
+            `
+          })
         );
 
         await Promise.allSettled(tasks);

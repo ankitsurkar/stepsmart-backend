@@ -37,9 +37,20 @@ echo "Deploying $FUNCTION_KEY to Lambda $LAMBDA_NAME..."
 cd backend
 rm -rf deploy-package
 mkdir -p deploy-package
-cp $FUNCTION_KEY.js deploy-package/index.js
+
+if command -v npx >/dev/null 2>&1; then
+  echo "Bundling $FUNCTION_KEY with esbuild..."
+  npx esbuild $FUNCTION_KEY.js --bundle --platform=node --target=node20 '--external:@aws-sdk/*' --outfile=deploy-package/index.js
+else
+  echo "Copying $FUNCTION_KEY.js..."
+  cp $FUNCTION_KEY.js deploy-package/index.js
+  if [ -d "node_modules" ]; then
+    cp -r node_modules deploy-package/
+  fi
+fi
+
 cd deploy-package
-zip -q -r function.zip index.js
+zip -q -r function.zip .
 
 # Upload to AWS
 aws lambda update-function-code --function-name $LAMBDA_NAME --zip-file fileb://function.zip --region eu-north-1
