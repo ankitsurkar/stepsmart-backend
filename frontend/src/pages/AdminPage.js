@@ -5982,6 +5982,24 @@ function getYouTubeEmbedUrl(url) {
   return trimmed;
 }
 
+function getChronicleTodayStr() {
+  try {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    return formatter.format(new Date());
+  } catch {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+}
+
 const DEFAULT_RAMAYANA_DROPS = [
   {
     dayNumber: 1,
@@ -6156,7 +6174,11 @@ function RamayanaChronicleTab({ courseId }) {
     try {
       const params = new URLSearchParams(window.location.search);
       const d = parseInt(params.get('day'), 10);
-      return [1, 2, 3].includes(d) ? d : 1;
+      if ([1, 2, 3].includes(d)) return d;
+      const today = getChronicleTodayStr();
+      if (today >= '2026-11-07') return 3;
+      if (today >= '2026-11-06') return 2;
+      return 1;
     } catch {
       return 1;
     }
@@ -6175,7 +6197,8 @@ function RamayanaChronicleTab({ courseId }) {
     try {
       const params = new URLSearchParams(window.location.search);
       const d = parseInt(params.get('day'), 10);
-      const found = DEFAULT_RAMAYANA_DROPS.find(drop => Number(drop.dayNumber) === d);
+      const targetDay = [1, 2, 3].includes(d) ? d : (getChronicleTodayStr() >= '2026-11-07' ? 3 : getChronicleTodayStr() >= '2026-11-06' ? 2 : 1);
+      const found = DEFAULT_RAMAYANA_DROPS.find(drop => Number(drop.dayNumber) === targetDay);
       return found || DEFAULT_RAMAYANA_DROPS[0];
     } catch {
       return DEFAULT_RAMAYANA_DROPS[0];
@@ -6413,8 +6436,8 @@ function RamayanaChronicleTab({ courseId }) {
     }
   };
 
-  const todayStr = '2026-11-05';
-  const isDropLive = (currentDrop.unlockDate || '') <= todayStr;
+  const todayStr = getChronicleTodayStr();
+  const isDropLive = (Number(currentDrop.dayNumber) === 1) || ((currentDrop.unlockDate || '') <= todayStr);
 
   return (
     <div>
@@ -6438,7 +6461,7 @@ function RamayanaChronicleTab({ courseId }) {
             </h2>
           </div>
           <p style={{ margin: 0, fontSize: '0.85rem', color: '#444' }}>
-            Schedule and configure daily problem-discovery drops. <strong>Day 1</strong> goes live today (5th Nov); <strong>Day 2</strong> unlocks on 6th Nov; <strong>Day 3</strong> unlocks on 7th Nov.
+            Schedule and configure daily problem-discovery drops. <strong>Day 1</strong> and <strong>Day 2</strong> are LIVE; <strong>Day 3</strong> unlocks on 7th Nov. (Calendar synced to IST: <strong>{todayStr}</strong>).
           </p>
         </div>
 
@@ -6571,52 +6594,125 @@ function RamayanaChronicleTab({ courseId }) {
             </div>
           </div>
 
-          {/* YouTube Video Preview if Day 1 (or if video exists) */}
-          {(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
-            <div style={{
-              background: '#fff',
-              border: '2px solid #111',
-              padding: '1.25rem',
-              marginBottom: '1.5rem',
-              boxShadow: '3px 3px 0px #111'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>
-                  🎥 {Number(currentDrop.dayNumber) === 1 ? "The King's Video Briefing (YouTube)" : `Day ${currentDrop.dayNumber} Video Briefing (YouTube)`}
-                </span>
-                <span style={{ fontWeight: 800, color: '#188ab2' }}>
-                  {currentDrop.video?.headline || (Number(currentDrop.dayNumber) === 1 ? '“I have no heir. Fix this.”' : `Day ${currentDrop.dayNumber} Briefing`)}
-                </span>
-              </div>
-              <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', border: '1.5px solid #111', background: '#000', borderRadius: '6px' }}>
-                <iframe
-                  src={getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl)}
-                  title={`Day ${currentDrop.dayNumber} Video Brief`}
-                  style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              </div>
-              {currentDrop.video?.caption && (
-                <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: '#64748b', fontStyle: 'italic' }}>
-                  {currentDrop.video.caption}
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Poll Preview */}
-          {currentDrop.poll && (
-            <div style={{ background: '#fff', border: '2px solid #111', padding: '1.25rem', marginBottom: '1.5rem', boxShadow: '3px 3px 0px #111' }}>
-              <h4 style={{ margin: '0 0 0.5rem', fontWeight: 800 }}>📊 Poll: {currentDrop.poll.question}</h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
-                {(currentDrop.poll.options || []).map((opt, i) => (
-                  <div key={i} style={{ padding: '0.6rem 0.8rem', border: '1.5px solid #111', background: '#FFF3A7', fontWeight: 600 }}>
-                    {opt.key ? `(${opt.key}) ` : ''}{opt.text}
+          {/* If Day 2: Poll FIRST, then Callout Note, then Video Briefing */}
+          {Number(currentDrop.dayNumber) === 2 ? (
+            <>
+              {/* Poll Preview */}
+              {currentDrop.poll && (
+                <div style={{ background: '#fff', border: '2px solid #111', padding: '1.25rem', marginBottom: '1.5rem', boxShadow: '3px 3px 0px #111' }}>
+                  <h4 style={{ margin: '0 0 0.5rem', fontWeight: 800 }}>📊 Poll: {currentDrop.poll.question}</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
+                    {(currentDrop.poll.options || []).map((opt, i) => (
+                      <div key={i} style={{ padding: '0.6rem 0.8rem', border: '1.5px solid #111', background: '#FFF3A7', fontWeight: 600 }}>
+                        {opt.key ? `(${opt.key}) ` : ''}{opt.text}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+              )}
+
+              {/* Note below poll explaining that video has the interviews by each stakeholder */}
+              <div style={{
+                background: '#FEF08A',
+                border: '2px solid #111',
+                padding: '1rem 1.25rem',
+                marginBottom: '1.5rem',
+                boxShadow: '3px 3px 0px #111',
+                display: 'flex',
+                gap: '0.75rem',
+                alignItems: 'center'
+              }}>
+                <span style={{ fontSize: '1.5rem' }}>🎥</span>
+                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#111' }}>
+                  <span style={{ textTransform: 'uppercase', fontSize: '0.75rem', color: '#854d0e', display: 'block', fontWeight: 800 }}>
+                    Recorded Stakeholder Interviews
+                  </span>
+                  The video below contains the recorded interviews conducted with each stakeholder (King Dasharatha, Chief Minister Sumantra, and the Citizen of Ayodhya).
+                </div>
               </div>
-            </div>
+
+              {/* Day 2 Video Preview */}
+              <div style={{
+                background: '#fff',
+                border: '2px solid #111',
+                padding: '1.25rem',
+                marginBottom: '1.5rem',
+                boxShadow: '3px 3px 0px #111'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                  <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>
+                    🎥 Day 2 Stakeholder Video Briefing (YouTube)
+                  </span>
+                  <span style={{ fontWeight: 800, color: '#188ab2' }}>
+                    {currentDrop.video?.headline || '“Three voices. One throne. Who do you trust?”'}
+                  </span>
+                </div>
+                <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', border: '1.5px solid #111', background: '#000', borderRadius: '6px' }}>
+                  <iframe
+                    src={getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl || 'https://youtu.be/UDIcRkHsqOs')}
+                    title="Day 2 Video Brief"
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+                {currentDrop.video?.caption && (
+                  <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: '#64748b', fontStyle: 'italic' }}>
+                    {currentDrop.video.caption}
+                  </p>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              {/* YouTube Video Preview for Day 1 or Day 3 */}
+              {(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
+                <div style={{
+                  background: '#fff',
+                  border: '2px solid #111',
+                  padding: '1.25rem',
+                  marginBottom: '1.5rem',
+                  boxShadow: '3px 3px 0px #111'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                    <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>
+                      🎥 {Number(currentDrop.dayNumber) === 1 ? "The King's Video Briefing (YouTube)" : `Day ${currentDrop.dayNumber} Video Briefing (YouTube)`}
+                    </span>
+                    <span style={{ fontWeight: 800, color: '#188ab2' }}>
+                      {currentDrop.video?.headline || (Number(currentDrop.dayNumber) === 1 ? '“I have no heir. Fix this.”' : `Day ${currentDrop.dayNumber} Briefing`)}
+                    </span>
+                  </div>
+                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', border: '1.5px solid #111', background: '#000', borderRadius: '6px' }}>
+                    <iframe
+                      src={getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl)}
+                      title={`Day ${currentDrop.dayNumber} Video Brief`}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  </div>
+                  {currentDrop.video?.caption && (
+                    <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: '#64748b', fontStyle: 'italic' }}>
+                      {currentDrop.video.caption}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Poll Preview */}
+              {currentDrop.poll && (
+                <div style={{ background: '#fff', border: '2px solid #111', padding: '1.25rem', marginBottom: '1.5rem', boxShadow: '3px 3px 0px #111' }}>
+                  <h4 style={{ margin: '0 0 0.5rem', fontWeight: 800 }}>📊 Poll: {currentDrop.poll.question}</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
+                    {(currentDrop.poll.options || []).map((opt, i) => (
+                      <div key={i} style={{ padding: '0.6rem 0.8rem', border: '1.5px solid #111', background: '#FFF3A7', fontWeight: 600 }}>
+                        {opt.key ? `(${opt.key}) ` : ''}{opt.text}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {/* Cliffhanger */}

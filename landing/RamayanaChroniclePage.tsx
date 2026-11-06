@@ -40,6 +40,24 @@ export function getYouTubeEmbedUrl(url?: string): string | null {
   return trimmed;
 }
 
+export function getRealCalendarDateStr(): string {
+  try {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    return formatter.format(new Date());
+  } catch {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+}
+
 interface DropData {
   dayNumber: number;
   title: string;
@@ -320,30 +338,35 @@ const DEFAULT_DROPS: DropData[] = [
 
 export function RamayanaChroniclePage() {
   const [drops, setDrops] = useState<DropData[]>(DEFAULT_DROPS);
+  const [currentDateStr, setCurrentDateStr] = useState<string>(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const dateParam = params.get('date');
+      if (dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam)) return dateParam;
+      return getRealCalendarDateStr();
+    } catch {
+      return getRealCalendarDateStr();
+    }
+  });
+
   const [activeDay, setActiveDay] = useState<number>(() => {
     try {
       const params = new URLSearchParams(window.location.search);
       const d = parseInt(params.get('day') || '', 10);
-      return [1, 2, 3].includes(d) ? d : 1;
+      if ([1, 2, 3].includes(d)) return d;
+      const realToday = getRealCalendarDateStr();
+      if (realToday >= '2026-11-07') return 3;
+      if (realToday >= '2026-11-06') return 2;
+      return 1;
     } catch {
       return 1;
     }
   });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Time simulation state for previewing drops:
-  // Today is 2026-11-05 (Nov 5th).
-  const [simulatedDate, setSimulatedDate] = useState<string>(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const d = parseInt(params.get('day') || '', 10);
-      if (d === 2) return '2026-11-06';
-      if (d === 3) return '2026-11-07';
-      return '2026-11-05';
-    } catch {
-      return '2026-11-05';
-    }
-  });
+  // Time simulation state for previewing drops (synced to real calendar by default)
+  const simulatedDate = currentDateStr;
+  const setSimulatedDate = setCurrentDateStr;
 
   // User Identification & Contact (Name + WhatsApp Number)
   const [userName, setUserName] = useState<string>(() => localStorage.getItem('pmx_chronicle_user_name') || '');
@@ -548,9 +571,11 @@ export function RamayanaChroniclePage() {
   };
 
 
-  // Check if drop is unlocked on simulated date
+  // Check if drop is unlocked on simulated date (Day 1 is always unlocked; Day 2 unlocks Nov 6 IST; Day 3 unlocks Nov 7 IST)
   const isDropUnlocked = (drop: DropData) => {
-    return drop.unlockDate <= simulatedDate;
+    if (drop.dayNumber === 1) return true;
+    const effective = currentDateStr || getRealCalendarDateStr();
+    return drop.unlockDate <= effective;
   };
 
   // Day 1 submission handlers
@@ -770,41 +795,68 @@ export function RamayanaChroniclePage() {
             </span>
           </div>
 
-          {/* Date Switcher / Testing Preview Pill */}
+          {/* Calendar Sync / Testing Preview Pill */}
           <div className="flex items-center gap-1.5 bg-white rounded-full border-2 border-[#141413] p-1 shadow-[2px_2px_0px_0px_#141413] text-xs font-bold flex-wrap">
-            <span className="text-slate-500 uppercase px-2 text-[11px] font-mono">Date Preview:</span>
+            <span className="text-slate-500 uppercase px-2 text-[11px] font-mono flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              Calendar Sync:
+            </span>
             <button
               type="button"
-              onClick={() => setSimulatedDate('2026-11-05')}
+              onClick={() => {
+                const today = getRealCalendarDateStr();
+                setCurrentDateStr(today);
+                setActiveDay(today >= '2026-11-07' ? 3 : today >= '2026-11-06' ? 2 : 1);
+              }}
               className={`px-3 py-1 rounded-full border-2 transition-all text-xs font-black cursor-pointer ${
-                simulatedDate === '2026-11-05'
+                currentDateStr === getRealCalendarDateStr()
                   ? 'bg-[#188ab2] text-white border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
                   : 'bg-transparent text-slate-700 hover:bg-slate-100 border-transparent'
               }`}
             >
-              Today (5 Nov)
+              Today ({getRealCalendarDateStr() === '2026-11-06' ? 'Nov 6 · Day 2 Unlocked' : getRealCalendarDateStr()})
             </button>
             <button
               type="button"
-              onClick={() => setSimulatedDate('2026-11-06')}
-              className={`px-3 py-1 rounded-full border-2 transition-all text-xs font-black cursor-pointer ${
-                simulatedDate === '2026-11-06'
+              onClick={() => {
+                setCurrentDateStr('2026-11-05');
+                setActiveDay(1);
+              }}
+              className={`px-2.5 py-1 rounded-full border-2 transition-all text-[11px] font-bold cursor-pointer ${
+                currentDateStr === '2026-11-05'
                   ? 'bg-[#188ab2] text-white border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
-                  : 'bg-transparent text-slate-700 hover:bg-slate-100 border-transparent'
+                  : 'bg-transparent text-slate-600 hover:bg-slate-100 border-transparent'
               }`}
             >
-              Day 2 (6 Nov)
+              Nov 5 (Day 1)
             </button>
             <button
               type="button"
-              onClick={() => setSimulatedDate('2026-11-07')}
-              className={`px-3 py-1 rounded-full border-2 transition-all text-xs font-black cursor-pointer ${
-                simulatedDate === '2026-11-07'
+              onClick={() => {
+                setCurrentDateStr('2026-11-06');
+                setActiveDay(2);
+              }}
+              className={`px-2.5 py-1 rounded-full border-2 transition-all text-[11px] font-bold cursor-pointer ${
+                currentDateStr === '2026-11-06' && currentDateStr !== getRealCalendarDateStr()
                   ? 'bg-[#188ab2] text-white border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
-                  : 'bg-transparent text-slate-700 hover:bg-slate-100 border-transparent'
+                  : 'bg-transparent text-slate-600 hover:bg-slate-100 border-transparent'
               }`}
             >
-              Day 3 (7 Nov)
+              Nov 6 (Day 2)
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setCurrentDateStr('2026-11-07');
+                setActiveDay(3);
+              }}
+              className={`px-2.5 py-1 rounded-full border-2 transition-all text-[11px] font-bold cursor-pointer ${
+                currentDateStr === '2026-11-07'
+                  ? 'bg-[#188ab2] text-white border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
+                  : 'bg-transparent text-slate-600 hover:bg-slate-100 border-transparent'
+              }`}
+            >
+              Nov 7 (Day 3)
             </button>
           </div>
         </div>
@@ -977,7 +1029,12 @@ export function RamayanaChroniclePage() {
                   {d.theme}
                 </div>
                 <div className="text-[10px] text-slate-500 mt-2 font-mono font-semibold">
-                  {d.unlockDate === '2026-11-05' ? 'Nov 5 (Today)' : d.unlockDate === '2026-11-06' ? 'Nov 6 (Tomorrow)' : 'Nov 7 (Day 3)'}
+                  {(() => {
+                    const realToday = getRealCalendarDateStr();
+                    if (d.unlockDate === realToday) return `Nov ${d.dayNumber + 4} (Today · Live)`;
+                    if (d.unlockDate < realToday) return `Nov ${d.dayNumber + 4} (Day ${d.dayNumber})`;
+                    return `Nov ${d.dayNumber + 4} (${d.dayNumber === 3 ? 'Unlocks Tomorrow' : 'Scheduled'})`;
+                  })()}
                 </div>
               </button>
             );
@@ -1331,74 +1388,6 @@ export function RamayanaChroniclePage() {
               )}
             </div>
 
-            {/* 🎬 2. Day 2 Video Briefing (when configured) */}
-            {(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
-              <div className="bg-[#F0F9FF] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
-                <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#188ab2] border-2 border-[#141413] flex items-center justify-center text-white shadow-[1.5px_1.5px_0px_0px_#141413]">
-                      <Video className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
-                        Stakeholder Discovery Briefing
-                      </h3>
-                      <p className="text-xs font-bold text-[#0369A1]">
-                        Watch before interviewing • Three conflicting perspectives
-                      </p>
-                    </div>
-                  </div>
-                  <div className="bg-[#188ab2] text-white font-mono text-[11px] font-black uppercase px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                    DAY 2 VIDEO
-                  </div>
-                </div>
-
-                {/* Big Quote */}
-                <div className="bg-white rounded-xl border-2 border-[#141413] p-5 mb-5 shadow-[2px_2px_0px_0px_#141413] text-center">
-                  <p className="text-2xl sm:text-3xl font-black text-[#188ab2] tracking-tight">
-                    {currentDrop.video?.headline || '“Three voices. One throne. Who do you trust?”'}
-                  </p>
-                  {currentDrop.video?.caption && (
-                    <p className="text-xs font-bold text-slate-500 mt-1.5">
-                      {currentDrop.video.caption}
-                    </p>
-                  )}
-                </div>
-
-                {/* Responsive 16:9 YouTube Video Embed Card */}
-                <div className="bg-white rounded-xl border-2 border-[#141413] p-3 sm:p-4 shadow-[3px_3px_0px_0px_#141413]">
-                  <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-[#141413] bg-black shadow-[2px_2px_0px_0px_#141413]">
-                    {(() => {
-                      const ytUrl = currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl;
-                      const embedUrl = getYouTubeEmbedUrl(ytUrl);
-                      return embedUrl ? (
-                        <iframe
-                          src={embedUrl}
-                          title="Day 2 Stakeholder Discovery Video"
-                          className="w-full h-full border-0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                        />
-                      ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white bg-slate-900">
-                          <Video className="w-10 h-10 mb-2 text-[#FEF08A]" />
-                          <p className="font-bold text-sm">Video briefing is being configured by the admin.</p>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                  <div className="mt-3 flex items-center justify-between text-xs font-bold text-slate-600 px-1">
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                      HD Video Briefing • Ayodhya Council Chambers
-                    </span>
-                    <span className="font-mono text-slate-500 text-[11px]">DAY 2</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Header intro */}
             <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
               <div className="inline-block bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-3 py-1 rounded-full border border-[#141413] shadow-[1px_1px_0px_0px_#141413] mb-3">
@@ -1489,6 +1478,81 @@ export function RamayanaChroniclePage() {
                   <span className="font-mono bg-white px-2 py-0.5 rounded border border-[#141413]">
                     {interviewHistory.length}/3 Stakeholders Heard
                   </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 💡 Note: Video contains the recorded interviews by each stakeholder */}
+            <div className="p-4 sm:p-5 bg-[#FEF08A] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[3px_3px_0px_0px_#141413] flex items-start sm:items-center gap-3.5">
+              <span className="text-3xl flex-shrink-0">🎥</span>
+              <div className="text-xs sm:text-sm font-bold text-[#141413] leading-relaxed">
+                <span className="font-black uppercase tracking-wider block text-[11px] text-[#854d0e] mb-1">
+                  Stakeholder Discovery Video Briefing
+                </span>
+                The video below contains the recorded interviews conducted with each stakeholder — King Dasharatha (the emotional layer), Chief Minister Sumantra (the political risk layer), and the Citizen of Ayodhya (the unspoken anxiety layer). Watch the video below to hear all three perspectives before completing your discovery worksheet!
+              </div>
+            </div>
+
+            {/* 🎬 Day 2 Video Briefing (Recorded Stakeholder Interviews) */}
+            <div className="bg-[#F0F9FF] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
+              <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#188ab2] border-2 border-[#141413] flex items-center justify-center text-white shadow-[1.5px_1.5px_0px_0px_#141413]">
+                    <Video className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
+                      Stakeholder Discovery Briefing
+                    </h3>
+                    <p className="text-xs font-bold text-[#0369A1]">
+                      Recorded interviews of King Dasharatha, Chief Minister Sumantra & Ayodhya Citizen
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-[#188ab2] text-white font-mono text-[11px] font-black uppercase px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                  DAY 2 VIDEO
+                </div>
+              </div>
+
+              {/* Big Quote */}
+              <div className="bg-white rounded-xl border-2 border-[#141413] p-5 mb-5 shadow-[2px_2px_0px_0px_#141413] text-center">
+                <p className="text-2xl sm:text-3xl font-black text-[#188ab2] tracking-tight">
+                  {currentDrop.video?.headline || '“Three voices. One throne. Who do you trust?”'}
+                </p>
+                <p className="text-xs font-bold text-slate-500 mt-1.5">
+                  {currentDrop.video?.caption || 'This video contains the individual interviews of King Dasharatha, Chief Minister Sumantra, and the Citizen of Ayodhya.'}
+                </p>
+              </div>
+
+              {/* Responsive 16:9 YouTube Video Embed Card */}
+              <div className="bg-white rounded-xl border-2 border-[#141413] p-3 sm:p-4 shadow-[3px_3px_0px_0px_#141413]">
+                <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-[#141413] bg-black shadow-[2px_2px_0px_0px_#141413]">
+                  {(() => {
+                    const ytUrl = currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl || 'https://youtu.be/UDIcRkHsqOs';
+                    const embedUrl = getYouTubeEmbedUrl(ytUrl);
+                    return embedUrl ? (
+                      <iframe
+                        src={embedUrl}
+                        title="Day 2 Stakeholder Discovery Video"
+                        className="w-full h-full border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white bg-slate-900">
+                        <Video className="w-10 h-10 mb-2 text-[#FEF08A]" />
+                        <p className="font-bold text-sm">Video briefing is being configured by the admin.</p>
+                      </div>
+                    );
+                  })()}
+                </div>
+                <div className="mt-3 flex items-center justify-between text-xs font-bold text-slate-600 px-1">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    HD Video Briefing • Ayodhya Council Chambers
+                  </span>
+                  <span className="font-mono text-slate-500 text-[11px]">DAY 2</span>
                 </div>
               </div>
             </div>
