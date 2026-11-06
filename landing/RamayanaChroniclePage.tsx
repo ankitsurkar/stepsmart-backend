@@ -174,6 +174,12 @@ const DEFAULT_DROPS: DropData[] = [
     ],
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'The Inner Court: Dasharatha, Sumantra, and citizens gather under the palace archway.',
+    video: {
+      youtubeUrl: '',
+      headline: '“Three voices. One throne. Who do you trust?”',
+      caption: 'Stakeholder discovery briefing with King, Minister, and Citizen.'
+    },
+    youtubeUrl: '',
     poll: {
       question: 'Who do you interview first?',
       options: [
@@ -243,6 +249,12 @@ const DEFAULT_DROPS: DropData[] = [
     ],
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'The Grand Durbar: Time for the PM recommendation to the throne.',
+    video: {
+      youtubeUrl: '',
+      headline: '“The Grand Durbar: Deliver your strategic diagnosis.”',
+      caption: 'Synthesis and the Problem Discovery Framework reveal.'
+    },
+    youtubeUrl: '',
     synthesis: {
       question: 'Write your problem statement in ONE sentence.',
       sampleAnswer: '“Ayodhya’s leadership is paralyzed by the emotional burden of childlessness, mistaking dynastic succession anxiety for an immediate administrative emergency while neglecting the citizen confidence that truly protects the realm.”',
@@ -308,12 +320,30 @@ const DEFAULT_DROPS: DropData[] = [
 
 export function RamayanaChroniclePage() {
   const [drops, setDrops] = useState<DropData[]>(DEFAULT_DROPS);
-  const [activeDay, setActiveDay] = useState<number>(1);
+  const [activeDay, setActiveDay] = useState<number>(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const d = parseInt(params.get('day') || '', 10);
+      return [1, 2, 3].includes(d) ? d : 1;
+    } catch {
+      return 1;
+    }
+  });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Time simulation state for previewing drops:
   // Today is 2026-11-05 (Nov 5th).
-  const [simulatedDate, setSimulatedDate] = useState<string>('2026-11-05');
+  const [simulatedDate, setSimulatedDate] = useState<string>(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const d = parseInt(params.get('day') || '', 10);
+      if (d === 2) return '2026-11-06';
+      if (d === 3) return '2026-11-07';
+      return '2026-11-05';
+    } catch {
+      return '2026-11-05';
+    }
+  });
 
   // User Identification & Contact (Name + WhatsApp Number)
   const [userName, setUserName] = useState<string>(() => localStorage.getItem('pmx_chronicle_user_name') || '');
@@ -1261,6 +1291,114 @@ export function RamayanaChroniclePage() {
         {unlocked && activeDay === 2 && (
           <div className="space-y-8">
             
+            {/* 🎬 1. Ayodhya council chambers: intro lines + image */}
+            <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-2xl">🎬</span>
+                <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
+                  Scene 2: Council Chambers of Ayodhya
+                </h3>
+              </div>
+
+              {/* 4 Lines of Narrative */}
+              <div className="bg-[#FFFDF5] rounded-xl border-2 border-[#141413] p-6 mb-6 shadow-[2px_2px_0px_0px_#141413]">
+                {(currentDrop.introLines || []).map((line, idx) => (
+                  <p key={idx} className="text-base sm:text-lg font-medium leading-relaxed text-[#141413] mb-3 last:mb-0">
+                    {idx === (currentDrop.introLines?.length || 1) - 1 ? (
+                      <span className="bg-[#FEF08A] text-[#141413] px-2 py-0.5 rounded border border-[#141413] font-black inline-block mt-1">
+                        {line}
+                      </span>
+                    ) : (
+                      line
+                    )}
+                  </p>
+                ))}
+              </div>
+
+              {/* Scene Image */}
+              {currentDrop.imageUrl && (
+                <div className="rounded-xl border-2 border-[#141413] shadow-[3px_3px_0px_0px_#141413] overflow-hidden bg-black">
+                  <img
+                    src={currentDrop.imageUrl || '/ayodhya_dawn.jpg'}
+                    alt={currentDrop.imageCaption || "Ayodhya council chambers"}
+                    className="w-full h-72 sm:h-96 object-cover hover:scale-[1.01] transition-transform duration-500"
+                  />
+                  <div className="bg-[#FEF08A] p-3 border-t-2 border-[#141413] text-xs font-bold text-[#141413] flex items-center justify-between">
+                    <span>🏛️ {currentDrop.imageCaption || 'The Inner Court of Ayodhya'}</span>
+                    <span className="font-mono text-slate-600">8:45 AM IST</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 🎬 2. Day 2 Video Briefing (when configured) */}
+            {(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
+              <div className="bg-[#F0F9FF] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
+                <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#188ab2] border-2 border-[#141413] flex items-center justify-center text-white shadow-[1.5px_1.5px_0px_0px_#141413]">
+                      <Video className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
+                        Stakeholder Discovery Briefing
+                      </h3>
+                      <p className="text-xs font-bold text-[#0369A1]">
+                        Watch before interviewing • Three conflicting perspectives
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-[#188ab2] text-white font-mono text-[11px] font-black uppercase px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                    DAY 2 VIDEO
+                  </div>
+                </div>
+
+                {/* Big Quote */}
+                <div className="bg-white rounded-xl border-2 border-[#141413] p-5 mb-5 shadow-[2px_2px_0px_0px_#141413] text-center">
+                  <p className="text-2xl sm:text-3xl font-black text-[#188ab2] tracking-tight">
+                    {currentDrop.video?.headline || '“Three voices. One throne. Who do you trust?”'}
+                  </p>
+                  {currentDrop.video?.caption && (
+                    <p className="text-xs font-bold text-slate-500 mt-1.5">
+                      {currentDrop.video.caption}
+                    </p>
+                  )}
+                </div>
+
+                {/* Responsive 16:9 YouTube Video Embed Card */}
+                <div className="bg-white rounded-xl border-2 border-[#141413] p-3 sm:p-4 shadow-[3px_3px_0px_0px_#141413]">
+                  <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-[#141413] bg-black shadow-[2px_2px_0px_0px_#141413]">
+                    {(() => {
+                      const ytUrl = currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl;
+                      const embedUrl = getYouTubeEmbedUrl(ytUrl);
+                      return embedUrl ? (
+                        <iframe
+                          src={embedUrl}
+                          title="Day 2 Stakeholder Discovery Video"
+                          className="w-full h-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white bg-slate-900">
+                          <Video className="w-10 h-10 mb-2 text-[#FEF08A]" />
+                          <p className="font-bold text-sm">Video briefing is being configured by the admin.</p>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                  <div className="mt-3 flex items-center justify-between text-xs font-bold text-slate-600 px-1">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                      HD Video Briefing • Ayodhya Council Chambers
+                    </span>
+                    <span className="font-mono text-slate-500 text-[11px]">DAY 2</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Header intro */}
             <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
               <div className="inline-block bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-3 py-1 rounded-full border border-[#141413] shadow-[1px_1px_0px_0px_#141413] mb-3">
@@ -1470,6 +1608,114 @@ export function RamayanaChroniclePage() {
         {unlocked && activeDay === 3 && (
           <div className="space-y-8">
             
+            {/* 🎬 1. Ayodhya Grand Durbar: intro lines + image */}
+            <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-2xl">🎬</span>
+                <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
+                  Scene 3: The Grand Durbar
+                </h3>
+              </div>
+
+              {/* 4 Lines of Narrative */}
+              <div className="bg-[#FFFDF5] rounded-xl border-2 border-[#141413] p-6 mb-6 shadow-[2px_2px_0px_0px_#141413]">
+                {(currentDrop.introLines || []).map((line, idx) => (
+                  <p key={idx} className="text-base sm:text-lg font-medium leading-relaxed text-[#141413] mb-3 last:mb-0">
+                    {idx === (currentDrop.introLines?.length || 1) - 1 ? (
+                      <span className="bg-[#D1FAE5] text-[#065F46] px-2 py-0.5 rounded border border-[#141413] font-black inline-block mt-1">
+                        {line}
+                      </span>
+                    ) : (
+                      line
+                    )}
+                  </p>
+                ))}
+              </div>
+
+              {/* Scene Image */}
+              {currentDrop.imageUrl && (
+                <div className="rounded-xl border-2 border-[#141413] shadow-[3px_3px_0px_0px_#141413] overflow-hidden bg-black">
+                  <img
+                    src={currentDrop.imageUrl || '/ayodhya_dawn.jpg'}
+                    alt={currentDrop.imageCaption || "Ayodhya grand durbar"}
+                    className="w-full h-72 sm:h-96 object-cover hover:scale-[1.01] transition-transform duration-500"
+                  />
+                  <div className="bg-[#D1FAE5] p-3 border-t-2 border-[#141413] text-xs font-bold text-[#065F46] flex items-center justify-between">
+                    <span>🏛️ {currentDrop.imageCaption || 'The Grand Durbar of Ayodhya'}</span>
+                    <span className="font-mono text-slate-600">10:30 AM IST</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 🎬 2. Day 3 Video Briefing (when configured) */}
+            {(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
+              <div className="bg-[#F0FDF4] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
+                <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#059669] border-2 border-[#141413] flex items-center justify-center text-white shadow-[1.5px_1.5px_0px_0px_#141413]">
+                      <Video className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
+                        The Grand Durbar Address
+                      </h3>
+                      <p className="text-xs font-bold text-[#047857]">
+                        Final diagnosis before the throne • Deliver your synthesis
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-[#059669] text-white font-mono text-[11px] font-black uppercase px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                    DAY 3 VIDEO
+                  </div>
+                </div>
+
+                {/* Big Quote */}
+                <div className="bg-white rounded-xl border-2 border-[#141413] p-5 mb-5 shadow-[2px_2px_0px_0px_#141413] text-center">
+                  <p className="text-2xl sm:text-3xl font-black text-[#047857] tracking-tight">
+                    {currentDrop.video?.headline || '“The Grand Durbar: Deliver your strategic diagnosis.”'}
+                  </p>
+                  {currentDrop.video?.caption && (
+                    <p className="text-xs font-bold text-slate-500 mt-1.5">
+                      {currentDrop.video.caption}
+                    </p>
+                  )}
+                </div>
+
+                {/* Responsive 16:9 YouTube Video Embed Card */}
+                <div className="bg-white rounded-xl border-2 border-[#141413] p-3 sm:p-4 shadow-[3px_3px_0px_0px_#141413]">
+                  <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-[#141413] bg-black shadow-[2px_2px_0px_0px_#141413]">
+                    {(() => {
+                      const ytUrl = currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl;
+                      const embedUrl = getYouTubeEmbedUrl(ytUrl);
+                      return embedUrl ? (
+                        <iframe
+                          src={embedUrl}
+                          title="Day 3 Grand Durbar Video"
+                          className="w-full h-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white bg-slate-900">
+                          <Video className="w-10 h-10 mb-2 text-[#FEF08A]" />
+                          <p className="font-bold text-sm">Video briefing is being configured by the admin.</p>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                  <div className="mt-3 flex items-center justify-between text-xs font-bold text-slate-600 px-1">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                      HD Video Briefing • The Grand Durbar
+                    </span>
+                    <span className="font-mono text-slate-500 text-[11px]">DAY 3</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Header intro */}
             <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
               <div className="inline-block bg-[#D1FAE5] text-[#065F46] font-mono text-xs font-black uppercase px-3 py-1 rounded-full border border-[#141413] shadow-[1px_1px_0px_0px_#141413] mb-3">

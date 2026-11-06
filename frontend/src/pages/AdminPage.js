@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   adminGetStudents,
@@ -6035,6 +6035,12 @@ const DEFAULT_RAMAYANA_DROPS = [
     ],
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'The Inner Court: Dasharatha, Sumantra, and citizens gather under the palace archway.',
+    video: {
+      youtubeUrl: '',
+      headline: '“Three voices. One throne. Who do you trust?”',
+      caption: 'Stakeholder discovery briefing with King, Minister, and Citizen.'
+    },
+    youtubeUrl: '',
     poll: {
       question: 'Who do you interview first?',
       options: [
@@ -6102,6 +6108,12 @@ const DEFAULT_RAMAYANA_DROPS = [
     ],
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'The Grand Durbar: Time for the PM recommendation to the throne.',
+    video: {
+      youtubeUrl: '',
+      headline: '“The Grand Durbar: Deliver your strategic diagnosis.”',
+      caption: 'Synthesis and the Problem Discovery Framework reveal.'
+    },
+    youtubeUrl: '',
     synthesis: {
       question: 'Write your problem statement in ONE sentence.',
       sampleAnswer: '“Ayodhya’s leadership is paralyzed by the emotional burden of childlessness, mistaking dynastic succession anxiety for an immediate administrative emergency while neglecting the citizen confidence that truly protects the realm.”',
@@ -6140,14 +6152,101 @@ const DEFAULT_RAMAYANA_DROPS = [
 
 function RamayanaChronicleTab({ courseId }) {
   const [drops, setDrops] = useState(DEFAULT_RAMAYANA_DROPS);
-  const [selectedDay, setSelectedDay] = useState(1);
+  const [selectedDay, setSelectedDay] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const d = parseInt(params.get('day'), 10);
+      return [1, 2, 3].includes(d) ? d : 1;
+    } catch {
+      return 1;
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [previewMode, setPreviewMode] = useState(false);
+  const [imageUploadMode, setImageUploadMode] = useState('upload'); // 'upload' | 'url'
+  const [isDraggingImage, setIsDraggingImage] = useState(false);
+  const [imageCompressing, setImageCompressing] = useState(false);
+  const chronicleFileInputRef = useRef(null);
 
   // Form states for the selected drop
-  const [currentDrop, setCurrentDrop] = useState(DEFAULT_RAMAYANA_DROPS[0]);
+  const [currentDrop, setCurrentDrop] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const d = parseInt(params.get('day'), 10);
+      const found = DEFAULT_RAMAYANA_DROPS.find(drop => Number(drop.dayNumber) === d);
+      return found || DEFAULT_RAMAYANA_DROPS[0];
+    } catch {
+      return DEFAULT_RAMAYANA_DROPS[0];
+    }
+  });
+
+  const compressChronicleImage = (file, callback) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file (PNG, JPG, JPEG, WEBP, SVG).');
+      return;
+    }
+    setImageCompressing(true);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      if (file.type === 'image/svg+xml' || file.size < 40000) {
+        setImageCompressing(false);
+        callback(dataUrl);
+        return;
+      }
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const MAX_SIZE = 1200;
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height = Math.round((height * MAX_SIZE) / width);
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width = Math.round((width * MAX_SIZE) / height);
+              height = MAX_SIZE;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL('image/jpeg', 0.85);
+          setImageCompressing(false);
+          callback(compressed);
+        } catch (err) {
+          console.error('Error compressing image, fallback to raw dataUrl', err);
+          setImageCompressing(false);
+          callback(dataUrl);
+        }
+      };
+      img.onerror = () => {
+        setImageCompressing(false);
+        callback(dataUrl);
+      };
+      img.src = dataUrl;
+    };
+    reader.onerror = () => {
+      setImageCompressing(false);
+      alert('Failed to read image file.');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleChronicleFileSelect = (file) => {
+    if (!file) return;
+    compressChronicleImage(file, (dataUrl) => {
+      handleFieldChange('imageUrl', dataUrl);
+    });
+  };
 
   useEffect(() => {
     loadDrops();
@@ -6482,13 +6581,17 @@ function RamayanaChronicleTab({ courseId }) {
               boxShadow: '3px 3px 0px #111'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>🎥 The King's Video Briefing (YouTube)</span>
-                <span style={{ fontWeight: 800, color: '#188ab2' }}>{currentDrop.video?.headline || '“I have no heir. Fix this.”'}</span>
+                <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>
+                  🎥 {Number(currentDrop.dayNumber) === 1 ? "The King's Video Briefing (YouTube)" : `Day ${currentDrop.dayNumber} Video Briefing (YouTube)`}
+                </span>
+                <span style={{ fontWeight: 800, color: '#188ab2' }}>
+                  {currentDrop.video?.headline || (Number(currentDrop.dayNumber) === 1 ? '“I have no heir. Fix this.”' : `Day ${currentDrop.dayNumber} Briefing`)}
+                </span>
               </div>
               <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', border: '1.5px solid #111', background: '#000', borderRadius: '6px' }}>
                 <iframe
                   src={getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl)}
-                  title="King Dasharatha's Video Brief"
+                  title={`Day ${currentDrop.dayNumber} Video Brief`}
                   style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
@@ -6598,95 +6701,271 @@ function RamayanaChronicleTab({ courseId }) {
             />
           </div>
 
-          {/* Image Config */}
-          <div style={s.grid2} className="admin-grid2">
-            <div>
-              <label style={s.label}>Scene Image URL</label>
-              <input
-                type="text"
-                style={s.input}
-                value={currentDrop.imageUrl || ''}
-                onChange={(e) => handleFieldChange('imageUrl', e.target.value)}
-                placeholder="/ayodhya_dawn.jpg"
-              />
+          {/* Image Config & Upload for Day N */}
+          <div style={{ ...s.qPanel, border: '2px solid #111', background: '#F8FAFC', marginBottom: '1.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#111', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span>🖼️ Scene Image & Upload (Day {currentDrop.dayNumber})</span>
+              </div>
+              {/* Mode Toggles */}
+              <div style={{ display: 'flex', gap: '0.4rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setImageUploadMode('upload')}
+                  style={{
+                    padding: '0.3rem 0.7rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    borderRadius: '6px',
+                    border: '1.5px solid #111',
+                    background: imageUploadMode === 'upload' ? '#FEF08A' : '#fff',
+                    color: '#111',
+                    cursor: 'pointer',
+                    boxShadow: imageUploadMode === 'upload' ? '1.5px 1.5px 0px #111' : 'none'
+                  }}
+                >
+                  📁 Upload Image File
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setImageUploadMode('url')}
+                  style={{
+                    padding: '0.3rem 0.7rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    borderRadius: '6px',
+                    border: '1.5px solid #111',
+                    background: imageUploadMode === 'url' ? '#FEF08A' : '#fff',
+                    color: '#111',
+                    cursor: 'pointer',
+                    boxShadow: imageUploadMode === 'url' ? '1.5px 1.5px 0px #111' : 'none'
+                  }}
+                >
+                  🔗 Paste Image URL
+                </button>
+              </div>
             </div>
+
+            {imageUploadMode === 'upload' ? (
+              <div style={{ marginBottom: '0.75rem' }}>
+                <input
+                  ref={chronicleFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleChronicleFileSelect(e.target.files[0]);
+                    }
+                  }}
+                />
+                <div
+                  onDragOver={(e) => { e.preventDefault(); setIsDraggingImage(true); }}
+                  onDragLeave={() => setIsDraggingImage(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDraggingImage(false);
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                      handleChronicleFileSelect(e.dataTransfer.files[0]);
+                    }
+                  }}
+                  onClick={() => chronicleFileInputRef.current?.click()}
+                  style={{
+                    border: `2px dashed ${isDraggingImage ? '#FF4F81' : '#64748b'}`,
+                    borderRadius: '8px',
+                    padding: '1.25rem 1rem',
+                    textAlign: 'center',
+                    background: isDraggingImage ? '#FFF1F2' : '#ffffff',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <div style={{ fontSize: '1.8rem', marginBottom: '0.3rem' }}>
+                    {imageCompressing ? '⏳' : '📥'}
+                  </div>
+                  <div style={{ fontWeight: 700, fontSize: '0.875rem', color: '#111', marginBottom: '0.2rem' }}>
+                    {imageCompressing ? 'Processing image...' : 'Click to browse or drag & drop image file here'}
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                    Supports PNG, JPG, JPEG, WEBP, SVG • Auto-optimized for web
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div style={{ marginBottom: '0.75rem' }}>
+                <label style={s.label}>Direct Image URL</label>
+                <input
+                  type="text"
+                  style={s.input}
+                  value={currentDrop.imageUrl || ''}
+                  onChange={(e) => handleFieldChange('imageUrl', e.target.value)}
+                  placeholder="/ayodhya_dawn.jpg or https://images.unsplash.com/..."
+                />
+              </div>
+            )}
+
+            {/* Caption input */}
             <div>
-              <label style={s.label}>Image Caption</label>
+              <label style={s.label}>Scene Image Caption</label>
               <input
                 type="text"
                 style={s.input}
                 value={currentDrop.imageCaption || ''}
                 onChange={(e) => handleFieldChange('imageCaption', e.target.value)}
-                placeholder="Ayodhya at dawn..."
+                placeholder={
+                  Number(currentDrop.dayNumber) === 1
+                    ? 'Ayodhya at dawn: The sacred palace courtyards before the King’s summons.'
+                    : Number(currentDrop.dayNumber) === 2
+                    ? 'The Inner Court: Dasharatha, Sumantra, and citizens gather under the palace archway.'
+                    : 'The Grand Durbar: Courtiers and ministers await your strategic problem diagnosis.'
+                }
               />
             </div>
+
+            {/* Image Thumbnail Preview & Clear */}
+            {currentDrop.imageUrl && (
+              <div style={{ marginTop: '0.75rem', borderTop: '1px dashed #cbd5e1', paddingTop: '0.75rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div style={{ width: '120px', height: '75px', borderRadius: '6px', overflow: 'hidden', border: '1.5px solid #111', flexShrink: 0, background: '#000' }}>
+                  <img
+                    src={currentDrop.imageUrl}
+                    alt="Preview"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#111', marginBottom: '0.2rem' }}>
+                    Current Day {currentDrop.dayNumber} Image Loaded
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: '#64748b', wordBreak: 'break-all', maxHeight: '32px', overflow: 'hidden' }}>
+                    {currentDrop.imageUrl.startsWith('data:') ? 'Custom uploaded image (data URL)' : currentDrop.imageUrl}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleFieldChange('imageUrl', '')}
+                    style={{
+                      marginTop: '0.35rem',
+                      padding: '0.2rem 0.5rem',
+                      fontSize: '0.7rem',
+                      background: '#FEE2E2',
+                      color: '#991B1B',
+                      border: '1px solid #991B1B',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontWeight: 700
+                    }}
+                  >
+                    🗑️ Remove Image
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* YouTube Video Link settings (Day 1) */}
-          {Number(currentDrop.dayNumber) === 1 && (
-            <div style={{ ...s.qPanel, border: '2px solid #111', background: '#F8FAFC', marginBottom: '1.25rem' }}>
-              <div style={{ fontWeight: 800, fontSize: '0.9rem', marginBottom: '0.75rem', color: '#188ab2', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <span>🎥 YouTube Video Briefing Settings (King Dasharatha's Summons)</span>
+          {/* YouTube Video Link settings (For Day 1, 2, and 3) */}
+          <div style={{ ...s.qPanel, border: '2px solid #111', background: '#F8FAFC', marginBottom: '1.25rem' }}>
+            <div style={{ fontWeight: 800, fontSize: '0.9rem', marginBottom: '0.75rem', color: '#188ab2', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span>🎥 YouTube Video Briefing (Day {currentDrop.dayNumber})</span>
               </div>
-              <div style={s.grid2} className="admin-grid2">
-                <div>
-                  <label style={s.label}>YouTube Video URL or Video ID</label>
-                  <input
-                    type="text"
-                    style={s.input}
-                    value={currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl || ''}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      handleFieldChange('youtubeUrl', val);
-                      handleNestedFieldChange('video', 'youtubeUrl', val);
-                    }}
-                    placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
-                  />
-                  <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem', display: 'block' }}>
-                    Paste standard YouTube link, short youtu.be link, or video ID. Update anytime from here!
-                  </span>
-                </div>
-                <div>
-                  <label style={s.label}>Headline Quote</label>
-                  <input
-                    type="text"
-                    style={s.input}
-                    value={currentDrop.video?.headline || ''}
-                    onChange={(e) => handleNestedFieldChange('video', 'headline', e.target.value)}
-                    placeholder="“I have no heir. Fix this.”"
-                  />
-                </div>
-              </div>
-              <div style={{ marginTop: '0.75rem' }}>
-                <label style={s.label}>Video Caption / Subtitle</label>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, background: '#E0F2FE', color: '#0369A1', padding: '0.15rem 0.5rem', borderRadius: '999px', border: '1px solid #0369A1' }}>
+                {Number(currentDrop.dayNumber) === 1 ? 'King Dasharatha Summons' : Number(currentDrop.dayNumber) === 2 ? 'Stakeholder Discovery' : 'Synthesis & Reveal'}
+              </span>
+            </div>
+            <div style={s.grid2} className="admin-grid2">
+              <div>
+                <label style={s.label}>YouTube Video URL or Video ID</label>
                 <input
                   type="text"
                   style={s.input}
-                  value={currentDrop.video?.caption || ''}
-                  onChange={(e) => handleNestedFieldChange('video', 'caption', e.target.value)}
-                  placeholder="King Dasharatha summons you to the royal court of Ayodhya..."
+                  value={currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl || ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    handleFieldChange('youtubeUrl', val);
+                    handleNestedFieldChange('video', 'youtubeUrl', val);
+                  }}
+                  placeholder={Number(currentDrop.dayNumber) === 1 ? 'https://youtu.be/UDIcRkHsqOs' : 'https://www.youtube.com/watch?v=... or https://youtu.be/...'}
+                />
+                <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem', display: 'block' }}>
+                  Paste standard YouTube link, short youtu.be link, or video ID.
+                </span>
+              </div>
+              <div>
+                <label style={s.label}>Headline Quote</label>
+                <input
+                  type="text"
+                  style={s.input}
+                  value={currentDrop.video?.headline || ''}
+                  onChange={(e) => handleNestedFieldChange('video', 'headline', e.target.value)}
+                  placeholder={
+                    Number(currentDrop.dayNumber) === 1
+                      ? '“I have no heir. Fix this.”'
+                      : Number(currentDrop.dayNumber) === 2
+                      ? '“Three voices. One throne. Who do you trust?”'
+                      : '“The Grand Durbar: Deliver your strategic diagnosis.”'
+                  }
                 />
               </div>
-
-              {/* Live Preview of YouTube Embed inside Admin Panel */}
-              {(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
-                <div style={{ marginTop: '1rem', borderTop: '1px dashed #cbd5e1', paddingTop: '0.75rem' }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', marginBottom: '0.5rem' }}>
-                    Live YouTube Preview:
-                  </div>
-                  <div style={{ maxWidth: '480px', position: 'relative', paddingBottom: '270px', height: 0, overflow: 'hidden', border: '1.5px solid #111', background: '#000', borderRadius: '6px' }}>
-                    <iframe
-                      src={getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl)}
-                      title="YouTube Preview"
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    />
-                  </div>
-                </div>
-              )}
             </div>
-          )}
+            <div style={{ marginTop: '0.75rem' }}>
+              <label style={s.label}>Video Caption / Subtitle</label>
+              <input
+                type="text"
+                style={s.input}
+                value={currentDrop.video?.caption || ''}
+                onChange={(e) => handleNestedFieldChange('video', 'caption', e.target.value)}
+                placeholder={
+                  Number(currentDrop.dayNumber) === 1
+                    ? 'King Dasharatha summons you to the royal court of Ayodhya...'
+                    : Number(currentDrop.dayNumber) === 2
+                    ? 'Stakeholder discovery briefing with King, Minister, and Citizen.'
+                    : 'Final problem synthesis briefing before the royal court.'
+                }
+              />
+            </div>
+
+            {/* Live Preview of YouTube Embed inside Admin Panel */}
+            {(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) ? (
+              <div style={{ marginTop: '1rem', borderTop: '1px dashed #cbd5e1', paddingTop: '0.75rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>
+                    Live YouTube Preview (Day {currentDrop.dayNumber}):
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleFieldChange('youtubeUrl', '');
+                      handleNestedFieldChange('video', 'youtubeUrl', '');
+                    }}
+                    style={{
+                      fontSize: '0.7rem',
+                      padding: '0.15rem 0.45rem',
+                      background: '#FEE2E2',
+                      color: '#991B1B',
+                      border: '1px solid #991B1B',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontWeight: 700
+                    }}
+                  >
+                    Clear Video
+                  </button>
+                </div>
+                <div style={{ maxWidth: '480px', position: 'relative', paddingBottom: '270px', height: 0, overflow: 'hidden', border: '1.5px solid #111', background: '#000', borderRadius: '6px' }}>
+                  <iframe
+                    src={getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl)}
+                    title={`YouTube Preview Day ${currentDrop.dayNumber}`}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            ) : (
+              <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.8rem', background: '#fff', border: '1px dashed #cbd5e1', borderRadius: '6px', fontSize: '0.75rem', color: '#64748b' }}>
+                ℹ️ No video link configured for Day {currentDrop.dayNumber}. Paste a YouTube URL above to add a video briefing.
+              </div>
+            )}
+          </div>
 
           {/* Poll Settings */}
           {currentDrop.poll && (
