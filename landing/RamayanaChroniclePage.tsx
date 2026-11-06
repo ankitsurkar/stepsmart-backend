@@ -58,6 +58,13 @@ export function getRealCalendarDateStr(): string {
   }
 }
 
+export function isDayVideoEnabled(drop?: DropData | null): boolean {
+  if (!drop) return false;
+  if (drop.video?.enabled !== undefined) return Boolean(drop.video.enabled);
+  if ((drop as any).videoEnabled !== undefined) return Boolean((drop as any).videoEnabled);
+  return drop.dayNumber === 1; // Default: Day 1 enabled, others disabled unless enabled
+}
+
 interface DropData {
   dayNumber: number;
   title: string;
@@ -67,7 +74,9 @@ interface DropData {
   introLines: string[];
   imageUrl: string;
   imageCaption: string;
+  videoEnabled?: boolean;
   video?: {
+    enabled?: boolean;
     youtubeUrl?: string;
     headline?: string;
     caption?: string;
@@ -142,10 +151,12 @@ const DEFAULT_DROPS: DropData[] = [
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'Ayodhya at dawn: The sacred palace courtyards before the King’s summons.',
     video: {
+      enabled: true,
       youtubeUrl: 'https://youtu.be/UDIcRkHsqOs',
       headline: '“I have no heir. Fix this.”',
       caption: 'King Dasharatha summons you to the royal court of Ayodhya.'
     },
+    videoEnabled: true,
     youtubeUrl: 'https://youtu.be/UDIcRkHsqOs',
     poll: {
       question: 'Your first instinct?',
@@ -193,10 +204,12 @@ const DEFAULT_DROPS: DropData[] = [
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'The Inner Court: Dasharatha, Sumantra, and citizens gather under the palace archway.',
     video: {
+      enabled: false,
       youtubeUrl: '',
       headline: '“Three voices. One throne. Who do you trust?”',
       caption: 'Stakeholder discovery briefing with King, Minister, and Citizen.'
     },
+    videoEnabled: false,
     youtubeUrl: '',
     poll: {
       question: 'Who do you interview first?',
@@ -268,10 +281,12 @@ const DEFAULT_DROPS: DropData[] = [
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'The Grand Durbar: Time for the PM recommendation to the throne.',
     video: {
+      enabled: false,
       youtubeUrl: '',
       headline: '“The Grand Durbar: Deliver your strategic diagnosis.”',
       caption: 'Synthesis and the Problem Discovery Framework reveal.'
     },
+    videoEnabled: false,
     youtubeUrl: '',
     synthesis: {
       question: 'Write your problem statement in ONE sentence.',
@@ -423,13 +438,16 @@ export function RamayanaChroniclePage() {
             if (found) {
               const rawYt = found.video?.youtubeUrl || found.youtubeUrl || def.video?.youtubeUrl;
               const yt = (def.dayNumber === 1 && (!rawYt || rawYt.includes('dQw4w9WgXcQ'))) ? 'https://youtu.be/UDIcRkHsqOs' : rawYt;
+              const isEnabled = found.video?.enabled !== undefined ? Boolean(found.video.enabled) : (found.videoEnabled !== undefined ? Boolean(found.videoEnabled) : Boolean(def.video?.enabled));
               return {
                 ...def,
                 ...found,
+                videoEnabled: isEnabled,
                 youtubeUrl: yt,
                 video: {
                   ...def.video,
                   ...(found.video || {}),
+                  enabled: isEnabled,
                   youtubeUrl: yt,
                   headline: found.video?.headline || def.video?.headline,
                   caption: found.video?.caption || def.video?.caption,
@@ -460,13 +478,16 @@ export function RamayanaChroniclePage() {
                   if (remote) {
                     const rawYt = remote.video?.youtubeUrl || remote.youtubeUrl || defaultDrop.video?.youtubeUrl;
                     const yt = (defaultDrop.dayNumber === 1 && (!rawYt || rawYt.includes('dQw4w9WgXcQ'))) ? 'https://youtu.be/UDIcRkHsqOs' : rawYt;
+                    const isEnabled = remote.video?.enabled !== undefined ? Boolean(remote.video.enabled) : (remote.videoEnabled !== undefined ? Boolean(remote.videoEnabled) : Boolean(defaultDrop.video?.enabled));
                     return {
                       ...defaultDrop,
                       ...remote,
+                      videoEnabled: isEnabled,
                       youtubeUrl: yt,
                       video: {
                         ...defaultDrop.video,
                         ...(remote.video || {}),
+                        enabled: isEnabled,
                         youtubeUrl: yt,
                         headline: remote.video?.headline || defaultDrop.video?.headline,
                         caption: remote.video?.caption || defaultDrop.video?.caption
@@ -1127,77 +1148,79 @@ export function RamayanaChroniclePage() {
               </div>
             </div>
 
-            {/* 🎬 2. Dasharatha, Video Summons */}
-            <div className="bg-[#F0F9FF] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
-              <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#188ab2] border-2 border-[#141413] flex items-center justify-center text-white shadow-[1.5px_1.5px_0px_0px_#141413]">
-                    <Video className="w-5 h-5" />
+            {/* 🎬 2. Dasharatha, Video Summons (when enabled) */}
+            {isDayVideoEnabled(currentDrop) && (currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
+              <div className="bg-[#F0F9FF] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
+                <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#188ab2] border-2 border-[#141413] flex items-center justify-center text-white shadow-[1.5px_1.5px_0px_0px_#141413]">
+                      <Video className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
+                        The King’s Royal Summons
+                      </h3>
+                      <p className="text-xs font-bold text-[#0369A1]">
+                        King Dasharatha addresses you • Watch the royal briefing
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
-                      The King’s Royal Summons
-                    </h3>
-                    <p className="text-xs font-bold text-[#0369A1]">
-                      King Dasharatha addresses you • Watch the royal briefing
-                    </p>
+                  <div className="bg-[#188ab2] text-white font-mono text-[11px] font-black uppercase px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                    VIDEO SUMMONS
                   </div>
                 </div>
-                <div className="bg-[#188ab2] text-white font-mono text-[11px] font-black uppercase px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                  VIDEO SUMMONS
-                </div>
-              </div>
 
-              {/* Big Quote */}
-              <div className="bg-white rounded-xl border-2 border-[#141413] p-5 mb-5 shadow-[2px_2px_0px_0px_#141413] text-center">
-                <p className="text-2xl sm:text-3xl font-black text-[#188ab2] tracking-tight">
-                  {currentDrop.video?.headline || '“I have no heir. Fix this.”'}
-                </p>
-                {currentDrop.video?.caption && (
-                  <p className="text-xs font-bold text-slate-500 mt-1.5">
-                    {currentDrop.video.caption}
+                {/* Big Quote */}
+                <div className="bg-white rounded-xl border-2 border-[#141413] p-5 mb-5 shadow-[2px_2px_0px_0px_#141413] text-center">
+                  <p className="text-2xl sm:text-3xl font-black text-[#188ab2] tracking-tight">
+                    {currentDrop.video?.headline || '“I have no heir. Fix this.”'}
                   </p>
-                )}
-              </div>
+                  {currentDrop.video?.caption && (
+                    <p className="text-xs font-bold text-slate-500 mt-1.5">
+                      {currentDrop.video.caption}
+                    </p>
+                  )}
+                </div>
 
-              {/* Responsive 16:9 YouTube Video Embed Card */}
-              <div className="bg-white rounded-xl border-2 border-[#141413] p-3 sm:p-4 shadow-[3px_3px_0px_0px_#141413]">
-                <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-[#141413] bg-black shadow-[2px_2px_0px_0px_#141413]">
-                  {(() => {
-                    const rawYt = currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl;
-                    const finalYt = (currentDrop.dayNumber === 1 && (!rawYt || rawYt.includes('dQw4w9WgXcQ')))
-                      ? 'https://youtu.be/UDIcRkHsqOs'
-                      : (rawYt || (currentDrop.dayNumber === 1 ? 'https://youtu.be/UDIcRkHsqOs' : ''));
-                    const embedUrl = getYouTubeEmbedUrl(finalYt);
-                    return embedUrl ? (
-                      <iframe
-                        src={embedUrl}
-                        title="King Dasharatha Summons - Video Briefing"
-                        className="w-full h-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white bg-slate-900">
-                        <Video className="w-10 h-10 mb-2 text-[#FEF08A]" />
-                        <p className="font-bold text-sm">Video briefing is being configured by the admin.</p>
-                        <p className="text-xs text-slate-400 mt-1">Check back shortly or update the link in the Admin Panel.</p>
-                      </div>
-                    );
-                  })()}
-                </div>
-                <div className="mt-3 flex items-center justify-between text-xs font-bold text-slate-600 px-1">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    HD Video Briefing • Royal Court of Ayodhya
-                  </span>
-                  <span className="font-mono text-slate-500 text-[11px]">
-                    StepSmart PM Chronicle
-                  </span>
+                {/* Responsive 16:9 YouTube Video Embed Card */}
+                <div className="bg-white rounded-xl border-2 border-[#141413] p-3 sm:p-4 shadow-[3px_3px_0px_0px_#141413]">
+                  <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-[#141413] bg-black shadow-[2px_2px_0px_0px_#141413]">
+                    {(() => {
+                      const rawYt = currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl;
+                      const finalYt = (currentDrop.dayNumber === 1 && (!rawYt || rawYt.includes('dQw4w9WgXcQ')))
+                        ? 'https://youtu.be/UDIcRkHsqOs'
+                        : (rawYt || (currentDrop.dayNumber === 1 ? 'https://youtu.be/UDIcRkHsqOs' : ''));
+                      const embedUrl = getYouTubeEmbedUrl(finalYt);
+                      return embedUrl ? (
+                        <iframe
+                          src={embedUrl}
+                          title="King Dasharatha Summons - Video Briefing"
+                          className="w-full h-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white bg-slate-900">
+                          <Video className="w-10 h-10 mb-2 text-[#FEF08A]" />
+                          <p className="font-bold text-sm">Video briefing is being configured by the admin.</p>
+                          <p className="text-xs text-slate-400 mt-1">Check back shortly or update the link in the Admin Panel.</p>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                  <div className="mt-3 flex items-center justify-between text-xs font-bold text-slate-600 px-1">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                      HD Video Briefing • Royal Court of Ayodhya
+                    </span>
+                    <span className="font-mono text-slate-500 text-[11px]">
+                      StepSmart PM Chronicle
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* 📊 3. Poll: “Your first instinct?” */}
             <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
@@ -1482,80 +1505,85 @@ export function RamayanaChroniclePage() {
               </div>
             </div>
 
-            {/* 💡 Note: Video contains the recorded interviews by each stakeholder */}
-            <div className="p-4 sm:p-5 bg-[#FEF08A] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[3px_3px_0px_0px_#141413] flex items-start sm:items-center gap-3.5">
-              <span className="text-3xl flex-shrink-0">🎥</span>
-              <div className="text-xs sm:text-sm font-bold text-[#141413] leading-relaxed">
-                <span className="font-black uppercase tracking-wider block text-[11px] text-[#854d0e] mb-1">
-                  Stakeholder Discovery Video Briefing
-                </span>
-                The video below contains the recorded interviews conducted with each stakeholder — King Dasharatha (the emotional layer), Chief Minister Sumantra (the political risk layer), and the Citizen of Ayodhya (the unspoken anxiety layer). Watch the video below to hear all three perspectives before completing your discovery worksheet!
-              </div>
-            </div>
-
-            {/* 🎬 Day 2 Video Briefing (Recorded Stakeholder Interviews) */}
-            <div className="bg-[#F0F9FF] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
-              <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#188ab2] border-2 border-[#141413] flex items-center justify-center text-white shadow-[1.5px_1.5px_0px_0px_#141413]">
-                    <Video className="w-5 h-5" />
+            {/* 💡 Note & Video: Only rendered when video section is enabled for Day 2 */}
+            {isDayVideoEnabled(currentDrop) && (
+              <>
+                {/* 💡 Note: Video contains the recorded interviews by each stakeholder */}
+                <div className="p-4 sm:p-5 bg-[#FEF08A] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[3px_3px_0px_0px_#141413] flex items-start sm:items-center gap-3.5">
+                  <span className="text-3xl flex-shrink-0">🎥</span>
+                  <div className="text-xs sm:text-sm font-bold text-[#141413] leading-relaxed">
+                    <span className="font-black uppercase tracking-wider block text-[11px] text-[#854d0e] mb-1">
+                      Stakeholder Discovery Video Briefing
+                    </span>
+                    The video below contains the recorded interviews conducted with each stakeholder — King Dasharatha (the emotional layer), Chief Minister Sumantra (the political risk layer), and the Citizen of Ayodhya (the unspoken anxiety layer). Watch the video below to hear all three perspectives before completing your discovery worksheet!
                   </div>
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
-                      Stakeholder Discovery Briefing
-                    </h3>
-                    <p className="text-xs font-bold text-[#0369A1]">
-                      Recorded interviews of King Dasharatha, Chief Minister Sumantra & Ayodhya Citizen
+                </div>
+
+                {/* 🎬 Day 2 Video Briefing (Recorded Stakeholder Interviews) */}
+                <div className="bg-[#F0F9FF] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
+                  <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[#188ab2] border-2 border-[#141413] flex items-center justify-center text-white shadow-[1.5px_1.5px_0px_0px_#141413]">
+                        <Video className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
+                          Stakeholder Discovery Briefing
+                        </h3>
+                        <p className="text-xs font-bold text-[#0369A1]">
+                          Recorded interviews of King Dasharatha, Chief Minister Sumantra & Ayodhya Citizen
+                        </p>
+                      </div>
+                    </div>
+                    <div className="bg-[#188ab2] text-white font-mono text-[11px] font-black uppercase px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                      DAY 2 VIDEO
+                    </div>
+                  </div>
+
+                  {/* Big Quote */}
+                  <div className="bg-white rounded-xl border-2 border-[#141413] p-5 mb-5 shadow-[2px_2px_0px_0px_#141413] text-center">
+                    <p className="text-2xl sm:text-3xl font-black text-[#188ab2] tracking-tight">
+                      {currentDrop.video?.headline || '“Three voices. One throne. Who do you trust?”'}
+                    </p>
+                    <p className="text-xs font-bold text-slate-500 mt-1.5">
+                      {currentDrop.video?.caption || 'This video contains the individual interviews of King Dasharatha, Chief Minister Sumantra, and the Citizen of Ayodhya.'}
                     </p>
                   </div>
-                </div>
-                <div className="bg-[#188ab2] text-white font-mono text-[11px] font-black uppercase px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                  DAY 2 VIDEO
-                </div>
-              </div>
 
-              {/* Big Quote */}
-              <div className="bg-white rounded-xl border-2 border-[#141413] p-5 mb-5 shadow-[2px_2px_0px_0px_#141413] text-center">
-                <p className="text-2xl sm:text-3xl font-black text-[#188ab2] tracking-tight">
-                  {currentDrop.video?.headline || '“Three voices. One throne. Who do you trust?”'}
-                </p>
-                <p className="text-xs font-bold text-slate-500 mt-1.5">
-                  {currentDrop.video?.caption || 'This video contains the individual interviews of King Dasharatha, Chief Minister Sumantra, and the Citizen of Ayodhya.'}
-                </p>
-              </div>
-
-              {/* Responsive 16:9 YouTube Video Embed Card */}
-              <div className="bg-white rounded-xl border-2 border-[#141413] p-3 sm:p-4 shadow-[3px_3px_0px_0px_#141413]">
-                <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-[#141413] bg-black shadow-[2px_2px_0px_0px_#141413]">
-                  {(() => {
-                    const ytUrl = currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl || 'https://youtu.be/UDIcRkHsqOs';
-                    const embedUrl = getYouTubeEmbedUrl(ytUrl);
-                    return embedUrl ? (
-                      <iframe
-                        src={embedUrl}
-                        title="Day 2 Stakeholder Discovery Video"
-                        className="w-full h-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white bg-slate-900">
-                        <Video className="w-10 h-10 mb-2 text-[#FEF08A]" />
-                        <p className="font-bold text-sm">Video briefing is being configured by the admin.</p>
-                      </div>
-                    );
-                  })()}
+                  {/* Responsive 16:9 YouTube Video Embed Card */}
+                  <div className="bg-white rounded-xl border-2 border-[#141413] p-3 sm:p-4 shadow-[3px_3px_0px_0px_#141413]">
+                    <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-[#141413] bg-black shadow-[2px_2px_0px_0px_#141413]">
+                      {(() => {
+                        const ytUrl = currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl || 'https://youtu.be/UDIcRkHsqOs';
+                        const embedUrl = getYouTubeEmbedUrl(ytUrl);
+                        return embedUrl ? (
+                          <iframe
+                            src={embedUrl}
+                            title="Day 2 Stakeholder Discovery Video"
+                            className="w-full h-full border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                          />
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white bg-slate-900">
+                            <Video className="w-10 h-10 mb-2 text-[#FEF08A]" />
+                            <p className="font-bold text-sm">Video briefing is being configured by the admin.</p>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                    <div className="mt-3 flex items-center justify-between text-xs font-bold text-slate-600 px-1">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                        HD Video Briefing • Ayodhya Council Chambers
+                      </span>
+                      <span className="font-mono text-slate-500 text-[11px]">DAY 2</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="mt-3 flex items-center justify-between text-xs font-bold text-slate-600 px-1">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    HD Video Briefing • Ayodhya Council Chambers
-                  </span>
-                  <span className="font-mono text-slate-500 text-[11px]">DAY 2</span>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
 
             {/* 8. Open Q: “Sort what you learned into: Fact / Assumption / Unknown.” */}
             <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
@@ -1712,8 +1740,8 @@ export function RamayanaChroniclePage() {
               )}
             </div>
 
-            {/* 🎬 2. Day 3 Video Briefing (when configured) */}
-            {(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
+            {/* 🎬 2. Day 3 Video Briefing (when enabled & configured) */}
+            {isDayVideoEnabled(currentDrop) && (currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
               <div className="bg-[#F0FDF4] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
                 <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
                   <div className="flex items-center gap-3">

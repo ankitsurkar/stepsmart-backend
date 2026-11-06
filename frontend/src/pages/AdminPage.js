@@ -6017,10 +6017,12 @@ const DEFAULT_RAMAYANA_DROPS = [
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'Ayodhya at dawn: The King stands by the sacred balcony, awaiting your counsel.',
     video: {
+      enabled: true,
       youtubeUrl: 'https://youtu.be/UDIcRkHsqOs',
       headline: '“I have no heir. Fix this.”',
       caption: 'King Dasharatha summons you to the royal court of Ayodhya.'
     },
+    videoEnabled: true,
     youtubeUrl: 'https://youtu.be/UDIcRkHsqOs',
     poll: {
       question: 'Your first instinct?',
@@ -6054,10 +6056,12 @@ const DEFAULT_RAMAYANA_DROPS = [
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'The Inner Court: Dasharatha, Sumantra, and citizens gather under the palace archway.',
     video: {
+      enabled: false,
       youtubeUrl: '',
       headline: '“Three voices. One throne. Who do you trust?”',
       caption: 'Stakeholder discovery briefing with King, Minister, and Citizen.'
     },
+    videoEnabled: false,
     youtubeUrl: '',
     poll: {
       question: 'Who do you interview first?',
@@ -6127,10 +6131,12 @@ const DEFAULT_RAMAYANA_DROPS = [
     imageUrl: '/ayodhya_dawn.jpg',
     imageCaption: 'The Grand Durbar: Time for the PM recommendation to the throne.',
     video: {
+      enabled: false,
       youtubeUrl: '',
       headline: '“The Grand Durbar: Deliver your strategic diagnosis.”',
       caption: 'Synthesis and the Problem Discovery Framework reveal.'
     },
+    videoEnabled: false,
     youtubeUrl: '',
     synthesis: {
       question: 'Write your problem statement in ONE sentence.',
@@ -6289,7 +6295,18 @@ function RamayanaChronicleTab({ courseId }) {
         // Merge fetched drops from dedicated ramayana table with defaults
         const merged = DEFAULT_RAMAYANA_DROPS.map(def => {
           const found = data.ramayanaDrops.find(d => Number(d.dayNumber) === Number(def.dayNumber));
-          return found ? { ...def, ...found } : def;
+          if (!found) return def;
+          const isEnabled = found.video?.enabled !== undefined ? Boolean(found.video.enabled) : (found.videoEnabled !== undefined ? Boolean(found.videoEnabled) : Boolean(def.video?.enabled));
+          return {
+            ...def,
+            ...found,
+            videoEnabled: isEnabled,
+            video: {
+              ...def.video,
+              ...(found.video || {}),
+              enabled: isEnabled
+            }
+          };
         });
         setDrops(merged);
         const active = merged.find(d => Number(d.dayNumber) === Number(selectedDay)) || merged[0];
@@ -6309,15 +6326,18 @@ function RamayanaChronicleTab({ courseId }) {
               if (def.dayNumber === 1 && (!yt || yt.includes('dQw4w9WgXcQ'))) {
                 yt = 'https://youtu.be/UDIcRkHsqOs';
               }
+              const isEnabled = parsedDrop.video?.enabled !== undefined ? Boolean(parsedDrop.video.enabled) : (parsedDrop.videoEnabled !== undefined ? Boolean(parsedDrop.videoEnabled) : Boolean(def.video?.enabled));
               return {
                 ...def,
                 ...parsedDrop,
                 title: foundWeek.title || def.title,
                 subtitle: foundWeek.description || def.subtitle,
                 youtubeUrl: yt,
+                videoEnabled: isEnabled,
                 video: {
                   ...def.video,
                   ...(parsedDrop.video || {}),
+                  enabled: isEnabled,
                   youtubeUrl: yt
                 }
               };
@@ -6335,13 +6355,16 @@ function RamayanaChronicleTab({ courseId }) {
               if (def.dayNumber === 1 && (!yt || yt.includes('dQw4w9WgXcQ'))) {
                 yt = 'https://youtu.be/UDIcRkHsqOs';
               }
+              const isEnabled = found.video?.enabled !== undefined ? Boolean(found.video.enabled) : (found.videoEnabled !== undefined ? Boolean(found.videoEnabled) : Boolean(def.video?.enabled));
               return {
                 ...def,
                 ...found,
                 youtubeUrl: yt,
+                videoEnabled: isEnabled,
                 video: {
                   ...def.video,
                   ...(found.video || {}),
+                  enabled: isEnabled,
                   youtubeUrl: yt
                 }
               };
@@ -6438,6 +6461,17 @@ function RamayanaChronicleTab({ courseId }) {
 
   const todayStr = getChronicleTodayStr();
   const isDropLive = (Number(currentDrop.dayNumber) === 1) || ((currentDrop.unlockDate || '') <= todayStr);
+  const isCurrentVideoEnabled = currentDrop.video?.enabled !== undefined
+    ? Boolean(currentDrop.video?.enabled)
+    : (currentDrop.videoEnabled !== undefined
+        ? Boolean(currentDrop.videoEnabled)
+        : (Number(currentDrop.dayNumber) === 1));
+
+  const handleToggleVideo = () => {
+    const nextVal = !isCurrentVideoEnabled;
+    handleFieldChange('videoEnabled', nextVal);
+    handleNestedFieldChange('video', 'enabled', nextVal);
+  };
 
   return (
     <div>
@@ -6533,6 +6567,26 @@ function RamayanaChronicleTab({ courseId }) {
               }}>
                 {isLive ? 'LIVE' : `Unlocks ${dropItem.unlockDate || 'Soon'}`}
               </span>
+              {(() => {
+                const isVidOn = dropItem.video?.enabled !== undefined
+                  ? Boolean(dropItem.video.enabled)
+                  : (dropItem.videoEnabled !== undefined
+                      ? Boolean(dropItem.videoEnabled)
+                      : (day === 1));
+                return (
+                  <span style={{
+                    fontSize: '0.65rem',
+                    fontWeight: 800,
+                    padding: '0.1rem 0.4rem',
+                    borderRadius: '4px',
+                    border: '1px solid currentColor',
+                    background: isSelected ? 'rgba(0,0,0,0.18)' : isVidOn ? '#EFF6FF' : '#F1F5F9',
+                    color: isSelected ? '#fff' : isVidOn ? '#1D4ED8' : '#64748B'
+                  }}>
+                    {isVidOn ? '🎥 Video On' : '🚫 Video Off'}
+                  </span>
+                );
+              })()}
             </button>
           );
         })}
@@ -6611,62 +6665,86 @@ function RamayanaChronicleTab({ courseId }) {
                 </div>
               )}
 
-              {/* Note below poll explaining that video has the interviews by each stakeholder */}
-              <div style={{
-                background: '#FEF08A',
-                border: '2px solid #111',
-                padding: '1rem 1.25rem',
-                marginBottom: '1.5rem',
-                boxShadow: '3px 3px 0px #111',
-                display: 'flex',
-                gap: '0.75rem',
-                alignItems: 'center'
-              }}>
-                <span style={{ fontSize: '1.5rem' }}>🎥</span>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#111' }}>
-                  <span style={{ textTransform: 'uppercase', fontSize: '0.75rem', color: '#854d0e', display: 'block', fontWeight: 800 }}>
-                    Recorded Stakeholder Interviews
-                  </span>
-                  The video below contains the recorded interviews conducted with each stakeholder (King Dasharatha, Chief Minister Sumantra, and the Citizen of Ayodhya).
-                </div>
-              </div>
+              {/* Note below poll and video: ONLY when video is enabled */}
+              {isCurrentVideoEnabled ? (
+                <>
+                  {/* Note below poll explaining that video has the interviews by each stakeholder */}
+                  <div style={{
+                    background: '#FEF08A',
+                    border: '2px solid #111',
+                    padding: '1rem 1.25rem',
+                    marginBottom: '1.5rem',
+                    boxShadow: '3px 3px 0px #111',
+                    display: 'flex',
+                    gap: '0.75rem',
+                    alignItems: 'center'
+                  }}>
+                    <span style={{ fontSize: '1.5rem' }}>🎥</span>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#111' }}>
+                      <span style={{ textTransform: 'uppercase', fontSize: '0.75rem', color: '#854d0e', display: 'block', fontWeight: 800 }}>
+                        Recorded Stakeholder Interviews
+                      </span>
+                      The video below contains the recorded interviews conducted with each stakeholder (King Dasharatha, Chief Minister Sumantra, and the Citizen of Ayodhya).
+                    </div>
+                  </div>
 
-              {/* Day 2 Video Preview */}
-              <div style={{
-                background: '#fff',
-                border: '2px solid #111',
-                padding: '1.25rem',
-                marginBottom: '1.5rem',
-                boxShadow: '3px 3px 0px #111'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                  <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>
-                    🎥 Day 2 Stakeholder Video Briefing (YouTube)
-                  </span>
-                  <span style={{ fontWeight: 800, color: '#188ab2' }}>
-                    {currentDrop.video?.headline || '“Three voices. One throne. Who do you trust?”'}
-                  </span>
+                  {/* Day 2 Video Preview */}
+                  <div style={{
+                    background: '#fff',
+                    border: '2px solid #111',
+                    padding: '1.25rem',
+                    marginBottom: '1.5rem',
+                    boxShadow: '3px 3px 0px #111'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                      <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>
+                        🎥 Day 2 Stakeholder Video Briefing (YouTube)
+                      </span>
+                      <span style={{ fontWeight: 800, color: '#188ab2' }}>
+                        {currentDrop.video?.headline || '“Three voices. One throne. Who do you trust?”'}
+                      </span>
+                    </div>
+                    <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', border: '1.5px solid #111', background: '#000', borderRadius: '6px' }}>
+                      <iframe
+                        src={getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl || 'https://youtu.be/UDIcRkHsqOs')}
+                        title="Day 2 Video Brief"
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+                    {currentDrop.video?.caption && (
+                      <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: '#64748b', fontStyle: 'italic' }}>
+                        {currentDrop.video.caption}
+                      </p>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div style={{
+                  background: '#F1F5F9',
+                  border: '2px dashed #64748B',
+                  borderRadius: '8px',
+                  padding: '1rem 1.25rem',
+                  marginBottom: '1.5rem',
+                  fontSize: '0.85rem',
+                  color: '#475569',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem'
+                }}>
+                  <span style={{ fontSize: '1.4rem' }}>🚫</span>
+                  <div>
+                    <strong style={{ color: '#1E293B', display: 'block' }}>Day 2 Video Section is Currently Disabled</strong>
+                    <span>Students see the 3 stakeholder interviews and proceed directly to the PM Discovery Worksheet without any video player.</span>
+                  </div>
                 </div>
-                <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', border: '1.5px solid #111', background: '#000', borderRadius: '6px' }}>
-                  <iframe
-                    src={getYouTubeEmbedUrl(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl || 'https://youtu.be/UDIcRkHsqOs')}
-                    title="Day 2 Video Brief"
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                </div>
-                {currentDrop.video?.caption && (
-                  <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: '#64748b', fontStyle: 'italic' }}>
-                    {currentDrop.video.caption}
-                  </p>
-                )}
-              </div>
+              )}
             </>
           ) : (
             <>
               {/* YouTube Video Preview for Day 1 or Day 3 */}
-              {(currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) && (
+              {isCurrentVideoEnabled && (currentDrop.video?.youtubeUrl || currentDrop.youtubeUrl) ? (
                 <div style={{
                   background: '#fff',
                   border: '2px solid #111',
@@ -6697,7 +6775,26 @@ function RamayanaChronicleTab({ courseId }) {
                     </p>
                   )}
                 </div>
-              )}
+              ) : !isCurrentVideoEnabled ? (
+                <div style={{
+                  background: '#F1F5F9',
+                  border: '2px dashed #64748B',
+                  borderRadius: '8px',
+                  padding: '1rem 1.25rem',
+                  marginBottom: '1.5rem',
+                  fontSize: '0.85rem',
+                  color: '#475569',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem'
+                }}>
+                  <span style={{ fontSize: '1.4rem' }}>🚫</span>
+                  <div>
+                    <strong style={{ color: '#1E293B', display: 'block' }}>Day {currentDrop.dayNumber} Video Section is Currently Disabled</strong>
+                    <span>The video player is hidden from students.</span>
+                  </div>
+                </div>
+              ) : null}
 
               {/* Poll Preview */}
               {currentDrop.poll && (
@@ -6958,15 +7055,116 @@ function RamayanaChronicleTab({ courseId }) {
           </div>
 
           {/* YouTube Video Link settings (For Day 1, 2, and 3) */}
-          <div style={{ ...s.qPanel, border: '2px solid #111', background: '#F8FAFC', marginBottom: '1.25rem' }}>
-            <div style={{ fontWeight: 800, fontSize: '0.9rem', marginBottom: '0.75rem', color: '#188ab2', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <span>🎥 YouTube Video Briefing (Day {currentDrop.dayNumber})</span>
+          <div style={{
+            ...s.qPanel,
+            border: `2px solid ${isCurrentVideoEnabled ? '#111' : '#cbd5e1'}`,
+            background: isCurrentVideoEnabled ? '#F8FAFC' : '#F8FAFC',
+            marginBottom: '1.25rem',
+            transition: 'all 0.15s ease'
+          }}>
+            {/* Header with Enable / Disable Toggle Button */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '0.75rem',
+              marginBottom: '1rem',
+              paddingBottom: '0.75rem',
+              borderBottom: '1.5px solid #e2e8f0'
+            }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '1.1rem' }}>🎥</span>
+                  <span style={{ fontWeight: 900, fontSize: '0.95rem', color: '#111' }}>
+                    Video Section (Day {currentDrop.dayNumber})
+                  </span>
+                  <span style={{
+                    fontSize: '0.7rem',
+                    fontWeight: 800,
+                    textTransform: 'uppercase',
+                    padding: '0.2rem 0.6rem',
+                    borderRadius: '999px',
+                    border: '1.5px solid #111',
+                    background: isCurrentVideoEnabled ? '#DCFCE7' : '#FEE2E2',
+                    color: isCurrentVideoEnabled ? '#166534' : '#991B1B',
+                    boxShadow: '1px 1px 0px #111'
+                  }}>
+                    {isCurrentVideoEnabled ? '🟢 Video Section: ENABLED' : '🔴 Video Section: DISABLED'}
+                  </span>
+                </div>
+                <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: '#64748b' }}>
+                  {isCurrentVideoEnabled
+                    ? `Visible to students on Day ${currentDrop.dayNumber} of the chronicle.`
+                    : `Currently HIDDEN from students on Day ${currentDrop.dayNumber}. (Poll and Discovery Worksheet remain active).`}
+                </p>
               </div>
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, background: '#E0F2FE', color: '#0369A1', padding: '0.15rem 0.5rem', borderRadius: '999px', border: '1px solid #0369A1' }}>
-                {Number(currentDrop.dayNumber) === 1 ? 'King Dasharatha Summons' : Number(currentDrop.dayNumber) === 2 ? 'Stakeholder Discovery' : 'Synthesis & Reveal'}
-              </span>
+
+              {/* The Enable/Disable Button */}
+              <button
+                type="button"
+                onClick={handleToggleVideo}
+                style={{
+                  padding: '0.45rem 1rem',
+                  borderRadius: '8px',
+                  fontWeight: 800,
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  border: '2px solid #111',
+                  background: isCurrentVideoEnabled ? '#FEE2E2' : '#DCFCE7',
+                  color: isCurrentVideoEnabled ? '#991B1B' : '#166534',
+                  boxShadow: '2px 2px 0px #111',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  transition: 'all 0.1s ease'
+                }}
+              >
+                {isCurrentVideoEnabled ? '🚫 Disable Video Section' : '✅ Enable Video Section'}
+              </button>
             </div>
+
+            {/* Warning Callout when Video Section is Disabled */}
+            {!isCurrentVideoEnabled && (
+              <div style={{
+                background: '#FEF3C7',
+                border: '1.5px solid #D97706',
+                borderRadius: '8px',
+                padding: '0.75rem 1rem',
+                marginBottom: '1rem',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                color: '#92400E',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '0.75rem',
+                flexWrap: 'wrap'
+              }}>
+                <div>
+                  <strong>🔒 Video section is currently DISABLED for Day {currentDrop.dayNumber}.</strong>
+                  <div style={{ fontSize: '0.75rem', marginTop: '0.2rem' }}>
+                    The video player and interview reference notes will not appear on the student landing page.
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleToggleVideo}
+                  style={{
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    padding: '0.3rem 0.75rem',
+                    borderRadius: '6px',
+                    border: '1.5px solid #92400E',
+                    background: '#fff',
+                    color: '#92400E',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Enable Video Section Now
+                </button>
+              </div>
+            )}
             <div style={s.grid2} className="admin-grid2">
               <div>
                 <label style={s.label}>YouTube Video URL or Video ID</label>
