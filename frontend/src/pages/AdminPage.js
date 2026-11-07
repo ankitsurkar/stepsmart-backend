@@ -6138,6 +6138,21 @@ const DEFAULT_RAMAYANA_DROPS = [
     },
     videoEnabled: false,
     youtubeUrl: '',
+    questionType: 'both',
+    poll: {
+      question: 'Your recommendation: Which strategic bet should King Dasharatha make?',
+      options: [
+        { key: 'A', text: 'Option A: Conduct the Putra Kameshti Yajna immediately to satisfy the King’s emotional need.', archetype: 'The Emotional Pacifier' },
+        { key: 'B', text: 'Option B: Reassure the citizenry with economic reforms while stabilizing borders through military alliances.', archetype: 'The Bureaucratic Stabilizer' },
+        { key: 'C', text: 'Option C: Execute a dual-track strategy: address dynastic continuity while decentralizing governance so Ayodhya thrives regardless.', archetype: 'The Strategic PM' }
+      ]
+    },
+    openQuestion: {
+      prompt: 'Write your problem statement in ONE sentence.',
+      helper: 'Reduce the fog of Ayodhya into ONE definitive problem statement.',
+      placeholder: 'Ayodhya’s core problem is...',
+      sampleAnswer: '“Ayodhya’s leadership is paralyzed by the emotional burden of childlessness, mistaking dynastic succession anxiety for an immediate administrative emergency while neglecting the citizen confidence that truly protects the realm.”'
+    },
     synthesis: {
       question: 'Write your problem statement in ONE sentence.',
       sampleAnswer: '“Ayodhya’s leadership is paralyzed by the emotional burden of childlessness, mistaking dynastic succession anxiety for an immediate administrative emergency while neglecting the citizen confidence that truly protects the realm.”',
@@ -6173,6 +6188,77 @@ const DEFAULT_RAMAYANA_DROPS = [
     }
   }
 ];
+
+function mergeDropWithDefaults(def, found) {
+  if (!found) return def;
+  const isEnabled = found.video?.enabled !== undefined
+    ? Boolean(found.video.enabled)
+    : (found.videoEnabled !== undefined ? Boolean(found.videoEnabled) : Boolean(def.video?.enabled));
+  const rawYt = found.video?.youtubeUrl || found.youtubeUrl || def.video?.youtubeUrl || '';
+  const yt = (def.dayNumber === 1 && (!rawYt || rawYt.includes('dQw4w9WgXcQ'))) ? 'https://youtu.be/UDIcRkHsqOs' : rawYt;
+
+  // Question configuration resolution: 'mcq' | 'text' | 'both'
+  const qType = found.questionType || def.questionType || (
+    Number(def.dayNumber) === 3
+      ? 'both'
+      : (found.poll && found.openQuestion ? 'both' : (found.poll ? 'mcq' : (found.openQuestion ? 'text' : 'both')))
+  );
+
+  let pollData = found.poll;
+  if (!pollData) {
+    if (Number(def.dayNumber) === 3 && found.recommendationPoll) {
+      pollData = {
+        question: found.recommendationPoll.question || def.poll?.question || 'Your recommendation: Which strategic bet should King Dasharatha make?',
+        options: (found.recommendationPoll.options || def.poll?.options || []).map((o, idx) => ({
+          key: o.key || String.fromCharCode(65 + idx),
+          text: o.text || '',
+          archetype: o.archetype || o.role || ''
+        }))
+      };
+    } else {
+      pollData = def.poll;
+    }
+  }
+
+  let openData = found.openQuestion;
+  if (!openData) {
+    if (Number(def.dayNumber) === 3 && found.synthesis) {
+      openData = {
+        prompt: found.synthesis.question || def.openQuestion?.prompt || 'Write your problem statement in ONE sentence.',
+        helper: def.openQuestion?.helper || 'Reduce the fog of Ayodhya into ONE definitive statement.',
+        placeholder: def.openQuestion?.placeholder || 'Ayodhya’s core problem is...',
+        sampleAnswer: found.synthesis.sampleAnswer || def.openQuestion?.sampleAnswer || ''
+      };
+    } else {
+      openData = def.openQuestion;
+    }
+  }
+
+  return {
+    ...def,
+    ...found,
+    videoEnabled: isEnabled,
+    youtubeUrl: yt,
+    questionType: qType,
+    video: {
+      ...def.video,
+      ...(found.video || {}),
+      enabled: isEnabled,
+      youtubeUrl: yt
+    },
+    poll: pollData,
+    openQuestion: openData,
+    recommendationPoll: Number(def.dayNumber) === 3 ? (found.recommendationPoll || (pollData ? {
+      question: pollData.question,
+      options: pollData.options
+    } : def.recommendationPoll)) : found.recommendationPoll,
+    synthesis: Number(def.dayNumber) === 3 ? (found.synthesis || (openData ? {
+      question: openData.prompt,
+      sampleAnswer: openData.sampleAnswer,
+      commonPatterns: def.synthesis?.commonPatterns
+    } : def.synthesis)) : found.synthesis
+  };
+}
 
 function RamayanaChronicleTab({ courseId }) {
   const [drops, setDrops] = useState(DEFAULT_RAMAYANA_DROPS);
@@ -6295,18 +6381,7 @@ function RamayanaChronicleTab({ courseId }) {
         // Merge fetched drops from dedicated ramayana table with defaults
         const merged = DEFAULT_RAMAYANA_DROPS.map(def => {
           const found = data.ramayanaDrops.find(d => Number(d.dayNumber) === Number(def.dayNumber));
-          if (!found) return def;
-          const isEnabled = found.video?.enabled !== undefined ? Boolean(found.video.enabled) : (found.videoEnabled !== undefined ? Boolean(found.videoEnabled) : Boolean(def.video?.enabled));
-          return {
-            ...def,
-            ...found,
-            videoEnabled: isEnabled,
-            video: {
-              ...def.video,
-              ...(found.video || {}),
-              enabled: isEnabled
-            }
-          };
+          return mergeDropWithDefaults(def, found);
         });
         setDrops(merged);
         const active = merged.find(d => Number(d.dayNumber) === Number(selectedDay)) || merged[0];
@@ -6322,25 +6397,13 @@ function RamayanaChronicleTab({ courseId }) {
               try {
                 if (foundWeek.textContent) parsedDrop = JSON.parse(foundWeek.textContent);
               } catch (e) {}
-              let yt = foundWeek.youtubeUrl || parsedDrop.video?.youtubeUrl || parsedDrop.youtubeUrl || def.video?.youtubeUrl;
-              if (def.dayNumber === 1 && (!yt || yt.includes('dQw4w9WgXcQ'))) {
-                yt = 'https://youtu.be/UDIcRkHsqOs';
-              }
-              const isEnabled = parsedDrop.video?.enabled !== undefined ? Boolean(parsedDrop.video.enabled) : (parsedDrop.videoEnabled !== undefined ? Boolean(parsedDrop.videoEnabled) : Boolean(def.video?.enabled));
-              return {
-                ...def,
+              const combined = {
                 ...parsedDrop,
-                title: foundWeek.title || def.title,
-                subtitle: foundWeek.description || def.subtitle,
-                youtubeUrl: yt,
-                videoEnabled: isEnabled,
-                video: {
-                  ...def.video,
-                  ...(parsedDrop.video || {}),
-                  enabled: isEnabled,
-                  youtubeUrl: yt
-                }
+                title: foundWeek.title || parsedDrop.title || def.title,
+                subtitle: foundWeek.description || parsedDrop.subtitle || def.subtitle,
+                youtubeUrl: foundWeek.youtubeUrl || parsedDrop.youtubeUrl
               };
+              return mergeDropWithDefaults(def, combined);
             }
             return def;
           });
@@ -6350,26 +6413,7 @@ function RamayanaChronicleTab({ courseId }) {
         } else if (Array.isArray(savedLocalDrops) && savedLocalDrops.length > 0) {
           const merged = DEFAULT_RAMAYANA_DROPS.map(def => {
             const found = savedLocalDrops.find(d => Number(d.dayNumber) === Number(def.dayNumber));
-            if (found) {
-              let yt = found.video?.youtubeUrl || found.youtubeUrl || def.video?.youtubeUrl;
-              if (def.dayNumber === 1 && (!yt || yt.includes('dQw4w9WgXcQ'))) {
-                yt = 'https://youtu.be/UDIcRkHsqOs';
-              }
-              const isEnabled = found.video?.enabled !== undefined ? Boolean(found.video.enabled) : (found.videoEnabled !== undefined ? Boolean(found.videoEnabled) : Boolean(def.video?.enabled));
-              return {
-                ...def,
-                ...found,
-                youtubeUrl: yt,
-                videoEnabled: isEnabled,
-                video: {
-                  ...def.video,
-                  ...(found.video || {}),
-                  enabled: isEnabled,
-                  youtubeUrl: yt
-                }
-              };
-            }
-            return def;
+            return mergeDropWithDefaults(def, found);
           });
           setDrops(merged);
           const active = merged.find(d => Number(d.dayNumber) === Number(selectedDay)) || merged[0];
@@ -6389,8 +6433,12 @@ function RamayanaChronicleTab({ courseId }) {
         if (raw) {
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            setDrops(parsed);
-            setCurrentDrop(parsed.find(d => Number(d.dayNumber) === Number(selectedDay)) || parsed[0]);
+            const merged = DEFAULT_RAMAYANA_DROPS.map(def => {
+              const found = parsed.find(d => Number(d.dayNumber) === Number(def.dayNumber));
+              return mergeDropWithDefaults(def, found);
+            });
+            setDrops(merged);
+            setCurrentDrop(merged.find(d => Number(d.dayNumber) === Number(selectedDay)) || merged[0]);
           }
         }
       } catch (e) {}
@@ -6404,7 +6452,8 @@ function RamayanaChronicleTab({ courseId }) {
     setSelectedDay(dayNum);
     const drop = drops.find(d => Number(d.dayNumber) === Number(dayNum));
     if (drop) {
-      setCurrentDrop(JSON.parse(JSON.stringify(drop)));
+      const def = DEFAULT_RAMAYANA_DROPS.find(d => Number(d.dayNumber) === Number(dayNum)) || DEFAULT_RAMAYANA_DROPS[0];
+      setCurrentDrop(mergeDropWithDefaults(def, JSON.parse(JSON.stringify(drop))));
     }
   };
 
@@ -6422,24 +6471,224 @@ function RamayanaChronicleTab({ courseId }) {
     }));
   };
 
+  const activeQuestionType = currentDrop.questionType || (
+    Number(currentDrop.dayNumber) === 3
+      ? 'both'
+      : (currentDrop.poll && currentDrop.openQuestion ? 'both' : (currentDrop.poll ? 'mcq' : (currentDrop.openQuestion ? 'text' : 'both')))
+  );
+
+  const handleSelectQuestionType = (newType) => {
+    setCurrentDrop(prev => {
+      const updated = { ...prev, questionType: newType };
+      // Ensure poll exists if 'mcq' or 'both'
+      if ((newType === 'mcq' || newType === 'both') && (!updated.poll || !updated.poll.options?.length)) {
+        if (Number(prev.dayNumber) === 3 && updated.recommendationPoll) {
+          updated.poll = {
+            question: updated.recommendationPoll.question || 'Your recommendation: Which strategic bet should King Dasharatha make?',
+            options: (updated.recommendationPoll.options || []).map(o => ({ ...o, archetype: o.archetype || '' }))
+          };
+        } else if (Number(prev.dayNumber) === 3) {
+          updated.poll = {
+            question: 'Your recommendation: Which strategic bet should King Dasharatha make?',
+            options: [
+              { key: 'A', text: 'Option A: Authorize the Putrakameshti Yajna immediately', archetype: 'The Emotional Pacifier' },
+              { key: 'B', text: 'Option B: Establish a provisional ministerial council', archetype: 'The Bureaucratic Stabilizer' },
+              { key: 'C', text: 'Option C: Execute a hybrid strategy: dynastic continuity + decentralized governance', archetype: 'The Strategic PM' }
+            ]
+          };
+        } else {
+          updated.poll = {
+            question: 'Your challenge question:',
+            options: [
+              { key: 'A', text: 'Option A', archetype: 'Perspective 1' },
+              { key: 'B', text: 'Option B', archetype: 'Perspective 2' },
+              { key: 'C', text: 'Option C', archetype: 'Perspective 3' }
+            ]
+          };
+        }
+      }
+
+      // Ensure openQuestion exists if 'text' or 'both'
+      if ((newType === 'text' || newType === 'both') && !updated.openQuestion) {
+        if (Number(prev.dayNumber) === 3 && updated.synthesis) {
+          updated.openQuestion = {
+            prompt: updated.synthesis.question || 'Write your problem statement in ONE sentence.',
+            helper: 'Reduce the fog of Ayodhya into ONE definitive statement.',
+            placeholder: 'Ayodhya’s core problem is...',
+            sampleAnswer: updated.synthesis.sampleAnswer || ''
+          };
+        } else if (Number(prev.dayNumber) === 3) {
+          updated.openQuestion = {
+            prompt: 'Write your problem statement in ONE sentence.',
+            helper: 'Reduce the fog of Ayodhya into ONE definitive statement.',
+            placeholder: 'Ayodhya’s core problem is...',
+            sampleAnswer: '“Ayodhya’s leadership is paralyzed by the emotional burden of childlessness, mistaking dynastic succession anxiety for an immediate administrative emergency while neglecting the citizen confidence that truly protects the realm.”'
+          };
+        } else {
+          updated.openQuestion = {
+            prompt: 'In one sentence, what is the core problem?',
+            helper: 'Reply in one concise sentence.',
+            placeholder: 'Your answer...'
+          };
+        }
+      }
+
+      if (Number(prev.dayNumber) === 3) {
+        if (updated.poll) {
+          updated.recommendationPoll = {
+            question: updated.poll.question,
+            options: updated.poll.options
+          };
+        }
+        if (updated.openQuestion) {
+          updated.synthesis = {
+            ...(updated.synthesis || {}),
+            question: updated.openQuestion.prompt,
+            sampleAnswer: updated.openQuestion.sampleAnswer
+          };
+        }
+      }
+
+      return updated;
+    });
+  };
+
+  const handlePollQuestionChange = (newQuestion) => {
+    setCurrentDrop(prev => {
+      const nextPoll = { ...(prev.poll || {}), question: newQuestion };
+      const nextDrop = { ...prev, poll: nextPoll };
+      if (Number(prev.dayNumber) === 3) {
+        nextDrop.recommendationPoll = {
+          ...(prev.recommendationPoll || {}),
+          question: newQuestion,
+          options: nextPoll.options || []
+        };
+      }
+      return nextDrop;
+    });
+  };
+
+  const handlePollOptionChange = (idx, field, value) => {
+    setCurrentDrop(prev => {
+      const currentOpts = [...(prev.poll?.options || [])];
+      if (!currentOpts[idx]) return prev;
+      currentOpts[idx] = { ...currentOpts[idx], [field]: value };
+      const nextPoll = { ...(prev.poll || {}), options: currentOpts };
+      const nextDrop = { ...prev, poll: nextPoll };
+      if (Number(prev.dayNumber) === 3) {
+        nextDrop.recommendationPoll = {
+          ...(prev.recommendationPoll || {}),
+          options: currentOpts
+        };
+      }
+      return nextDrop;
+    });
+  };
+
+  const handleAddPollOption = () => {
+    setCurrentDrop(prev => {
+      const currentOpts = [...(prev.poll?.options || [])];
+      const nextChar = String.fromCharCode(65 + currentOpts.length);
+      const nextKey = currentOpts.length < 26 ? nextChar : `Option ${currentOpts.length + 1}`;
+      const newOption = {
+        key: nextKey,
+        text: '',
+        archetype: ''
+      };
+      const updatedOpts = [...currentOpts, newOption];
+      const nextPoll = { ...(prev.poll || {}), options: updatedOpts };
+      const nextDrop = { ...prev, poll: nextPoll };
+      if (Number(prev.dayNumber) === 3) {
+        nextDrop.recommendationPoll = {
+          ...(prev.recommendationPoll || {}),
+          options: updatedOpts
+        };
+      }
+      return nextDrop;
+    });
+  };
+
+  const handleRemovePollOption = (idxToRemove) => {
+    setCurrentDrop(prev => {
+      const currentOpts = [...(prev.poll?.options || [])];
+      if (currentOpts.length <= 2) {
+        alert('A poll must have at least 2 options.');
+        return prev;
+      }
+      const updatedOpts = currentOpts.filter((_, idx) => idx !== idxToRemove);
+      const nextPoll = { ...(prev.poll || {}), options: updatedOpts };
+      const nextDrop = { ...prev, poll: nextPoll };
+      if (Number(prev.dayNumber) === 3) {
+        nextDrop.recommendationPoll = {
+          ...(prev.recommendationPoll || {}),
+          options: updatedOpts
+        };
+      }
+      return nextDrop;
+    });
+  };
+
+  const handleOpenQuestionChange = (field, value) => {
+    setCurrentDrop(prev => {
+      const nextOpen = {
+        ...(prev.openQuestion || {}),
+        [field]: value
+      };
+      const nextDrop = { ...prev, openQuestion: nextOpen };
+      if (Number(prev.dayNumber) === 3) {
+        if (field === 'prompt') {
+          nextDrop.synthesis = {
+            ...(prev.synthesis || {}),
+            question: value
+          };
+        }
+        if (field === 'sampleAnswer') {
+          nextDrop.synthesis = {
+            ...(prev.synthesis || {}),
+            sampleAnswer: value
+          };
+        }
+      }
+      return nextDrop;
+    });
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
     setMessage('');
     try {
-      await adminSaveRamayanaDrop(courseId, currentDrop);
-      setMessage(`✓ Day ${currentDrop.dayNumber} drop saved successfully!`);
+      let dropToSave = { ...currentDrop };
+      if (Number(dropToSave.dayNumber) === 3) {
+        if (dropToSave.poll) {
+          dropToSave.recommendationPoll = {
+            question: dropToSave.poll.question,
+            options: dropToSave.poll.options
+          };
+        }
+        if (dropToSave.openQuestion) {
+          dropToSave.synthesis = {
+            ...(dropToSave.synthesis || {}),
+            question: dropToSave.openQuestion.prompt,
+            sampleAnswer: dropToSave.openQuestion.sampleAnswer
+          };
+        }
+      }
+
+      await adminSaveRamayanaDrop(courseId, dropToSave);
+      setMessage(`✓ Day ${dropToSave.dayNumber} drop saved successfully!`);
       // Update local drops list and persist to localStorage
       setDrops(prev => {
         const next = [...prev];
-        const idx = next.findIndex(d => Number(d.dayNumber) === Number(currentDrop.dayNumber));
-        if (idx >= 0) next[idx] = currentDrop;
-        else next.push(currentDrop);
+        const idx = next.findIndex(d => Number(d.dayNumber) === Number(dropToSave.dayNumber));
+        if (idx >= 0) next[idx] = dropToSave;
+        else next.push(dropToSave);
         try {
           localStorage.setItem('pmx_chronicle_admin_drops', JSON.stringify(next));
         } catch (e) {}
         return next;
       });
+      setCurrentDrop(dropToSave);
     } catch (err) {
       console.error('Failed to save drop:', err);
       // Fallback: save locally in browser so edits are never lost
@@ -6651,17 +6900,51 @@ function RamayanaChronicleTab({ courseId }) {
           {/* If Day 2: Poll FIRST, then Callout Note, then Video Briefing */}
           {Number(currentDrop.dayNumber) === 2 ? (
             <>
-              {/* Poll Preview */}
-              {currentDrop.poll && (
+              {/* Question Preview in Student Preview Mode */}
+              {(activeQuestionType === 'mcq' || activeQuestionType === 'both') && currentDrop.poll && (
                 <div style={{ background: '#fff', border: '2px solid #111', padding: '1.25rem', marginBottom: '1.5rem', boxShadow: '3px 3px 0px #111' }}>
-                  <h4 style={{ margin: '0 0 0.5rem', fontWeight: 800 }}>📊 Poll: {currentDrop.poll.question}</h4>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <h4 style={{ margin: 0, fontWeight: 800 }}>📊 Poll / MCQ: {currentDrop.poll.question}</h4>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 800, background: '#FEF08A', border: '1px solid #111', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>
+                      MCQ
+                    </span>
+                  </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
                     {(currentDrop.poll.options || []).map((opt, i) => (
-                      <div key={i} style={{ padding: '0.6rem 0.8rem', border: '1.5px solid #111', background: '#FFF3A7', fontWeight: 600 }}>
-                        {opt.key ? `(${opt.key}) ` : ''}{opt.text}
+                      <div key={i} style={{ padding: '0.6rem 0.8rem', border: '1.5px solid #111', background: '#FFF3A7', fontWeight: 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>{opt.key ? `(${opt.key}) ` : ''}{opt.text}</span>
+                        {(opt.archetype || opt.role) && (
+                          <span style={{ fontSize: '0.7rem', fontStyle: 'italic', color: '#854d0e', background: '#fff', padding: '0.1rem 0.4rem', border: '1px solid #854d0e', borderRadius: '3px' }}>
+                            {opt.archetype || opt.role}
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {(activeQuestionType === 'text' || activeQuestionType === 'both') && currentDrop.openQuestion && (
+                <div style={{ background: '#fff', border: '2px solid #111', padding: '1.25rem', marginBottom: '1.5rem', boxShadow: '3px 3px 0px #111' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <h4 style={{ margin: 0, fontWeight: 800 }}>✍️ Text Question: {currentDrop.openQuestion.prompt}</h4>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 800, background: '#D1FAE5', color: '#065F46', border: '1px solid #111', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>
+                      Text Response
+                    </span>
+                  </div>
+                  {currentDrop.openQuestion.helper && (
+                    <p style={{ margin: '0.25rem 0 0.75rem', fontSize: '0.8rem', color: '#64748b', fontStyle: 'italic' }}>
+                      {currentDrop.openQuestion.helper}
+                    </p>
+                  )}
+                  <div style={{ padding: '0.75rem', border: '1.5px dashed #94a3b8', background: '#F8FAFC', borderRadius: '6px', fontSize: '0.8rem', color: '#64748b' }}>
+                    {currentDrop.openQuestion.placeholder || 'Students type their answer here...'}
+                  </div>
+                  {currentDrop.openQuestion.sampleAnswer && (
+                    <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.8rem', background: '#FEF9C3', border: '1px solid #CA8A04', borderRadius: '6px', fontSize: '0.75rem' }}>
+                      <strong style={{ color: '#854D0E' }}>Sample / Model Answer:</strong> {currentDrop.openQuestion.sampleAnswer}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -6796,17 +7079,51 @@ function RamayanaChronicleTab({ courseId }) {
                 </div>
               ) : null}
 
-              {/* Poll Preview */}
-              {currentDrop.poll && (
+              {/* Question Preview in Student Preview Mode */}
+              {(activeQuestionType === 'mcq' || activeQuestionType === 'both') && currentDrop.poll && (
                 <div style={{ background: '#fff', border: '2px solid #111', padding: '1.25rem', marginBottom: '1.5rem', boxShadow: '3px 3px 0px #111' }}>
-                  <h4 style={{ margin: '0 0 0.5rem', fontWeight: 800 }}>📊 Poll: {currentDrop.poll.question}</h4>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <h4 style={{ margin: 0, fontWeight: 800 }}>📊 Poll / MCQ: {currentDrop.poll.question}</h4>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 800, background: '#FEF08A', border: '1px solid #111', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>
+                      MCQ
+                    </span>
+                  </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
                     {(currentDrop.poll.options || []).map((opt, i) => (
-                      <div key={i} style={{ padding: '0.6rem 0.8rem', border: '1.5px solid #111', background: '#FFF3A7', fontWeight: 600 }}>
-                        {opt.key ? `(${opt.key}) ` : ''}{opt.text}
+                      <div key={i} style={{ padding: '0.6rem 0.8rem', border: '1.5px solid #111', background: '#FFF3A7', fontWeight: 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>{opt.key ? `(${opt.key}) ` : ''}{opt.text}</span>
+                        {(opt.archetype || opt.role) && (
+                          <span style={{ fontSize: '0.7rem', fontStyle: 'italic', color: '#854d0e', background: '#fff', padding: '0.1rem 0.4rem', border: '1px solid #854d0e', borderRadius: '3px' }}>
+                            {opt.archetype || opt.role}
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {(activeQuestionType === 'text' || activeQuestionType === 'both') && currentDrop.openQuestion && (
+                <div style={{ background: '#fff', border: '2px solid #111', padding: '1.25rem', marginBottom: '1.5rem', boxShadow: '3px 3px 0px #111' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <h4 style={{ margin: 0, fontWeight: 800 }}>✍️ Text Question: {currentDrop.openQuestion.prompt}</h4>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 800, background: '#D1FAE5', color: '#065F46', border: '1px solid #111', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>
+                      Text Response
+                    </span>
+                  </div>
+                  {currentDrop.openQuestion.helper && (
+                    <p style={{ margin: '0.25rem 0 0.75rem', fontSize: '0.8rem', color: '#64748b', fontStyle: 'italic' }}>
+                      {currentDrop.openQuestion.helper}
+                    </p>
+                  )}
+                  <div style={{ padding: '0.75rem', border: '1.5px dashed #94a3b8', background: '#F8FAFC', borderRadius: '6px', fontSize: '0.8rem', color: '#64748b' }}>
+                    {currentDrop.openQuestion.placeholder || 'Students type their answer here...'}
+                  </div>
+                  {currentDrop.openQuestion.sampleAnswer && (
+                    <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.8rem', background: '#FEF9C3', border: '1px solid #CA8A04', borderRadius: '6px', fontSize: '0.75rem' }}>
+                      <strong style={{ color: '#854D0E' }}>Sample / Model Answer:</strong> {currentDrop.openQuestion.sampleAnswer}
+                    </div>
+                  )}
                 </div>
               )}
             </>
@@ -7261,56 +7578,234 @@ function RamayanaChronicleTab({ courseId }) {
             )}
           </div>
 
-          {/* Poll Settings */}
-          {currentDrop.poll && (
-            <div style={{ ...s.qPanel, border: '2px solid #111', background: '#FFFDE7', marginBottom: '1.25rem' }}>
-              <div style={{ fontWeight: 800, fontSize: '0.9rem', marginBottom: '0.75rem' }}>
-                📊 Poll Question & Options
-              </div>
+          {/* Question / Poll Configuration Panel */}
+          <div style={{ ...s.qPanel, border: '2px solid #111', background: '#FFFDF0', marginBottom: '1.5rem', boxShadow: '2px 2px 0px #111' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem', borderBottom: '1.5px solid #111', paddingBottom: '0.75rem' }}>
               <div>
-                <label style={s.label}>Poll Question</label>
-                <input
-                  type="text"
-                  style={s.input}
-                  value={currentDrop.poll.question || ''}
-                  onChange={(e) => handleNestedFieldChange('poll', 'question', e.target.value)}
-                />
+                <div style={{ fontWeight: 900, fontSize: '1rem', color: '#111' }}>
+                  ❓ Day {currentDrop.dayNumber} Question Configuration
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.15rem' }}>
+                  Choose how students respond on Day {currentDrop.dayNumber}: Multiple Choice (MCQ), Text-based response, or Both.
+                </div>
               </div>
-              {(currentDrop.poll.options || []).map((opt, i) => (
-                <div key={i} style={{ display: 'grid', gridTemplateColumns: '60px 1fr 1fr', gap: '0.5rem', marginBottom: '0.5rem' }}>
+
+              {/* Mode Selector Buttons */}
+              <div style={{ display: 'flex', gap: '0.35rem', background: '#F1F5F9', padding: '3px', borderRadius: '8px', border: '1.5px solid #111' }}>
+                <button
+                  type="button"
+                  onClick={() => handleSelectQuestionType('mcq')}
+                  style={{
+                    padding: '0.35rem 0.75rem',
+                    borderRadius: '6px',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    border: activeQuestionType === 'mcq' ? '1.5px solid #111' : '1px solid transparent',
+                    background: activeQuestionType === 'mcq' ? '#FEF08A' : 'transparent',
+                    color: '#111',
+                    boxShadow: activeQuestionType === 'mcq' ? '1.5px 1.5px 0px #111' : 'none'
+                  }}
+                >
+                  📊 MCQ (Poll)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSelectQuestionType('text')}
+                  style={{
+                    padding: '0.35rem 0.75rem',
+                    borderRadius: '6px',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    border: activeQuestionType === 'text' ? '1.5px solid #111' : '1px solid transparent',
+                    background: activeQuestionType === 'text' ? '#FEF08A' : 'transparent',
+                    color: '#111',
+                    boxShadow: activeQuestionType === 'text' ? '1.5px 1.5px 0px #111' : 'none'
+                  }}
+                >
+                  ✍️ Text Response
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSelectQuestionType('both')}
+                  style={{
+                    padding: '0.35rem 0.75rem',
+                    borderRadius: '6px',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    border: activeQuestionType === 'both' ? '1.5px solid #111' : '1px solid transparent',
+                    background: activeQuestionType === 'both' ? '#FEF08A' : 'transparent',
+                    color: '#111',
+                    boxShadow: activeQuestionType === 'both' ? '1.5px 1.5px 0px #111' : 'none'
+                  }}
+                >
+                  🔀 Both (MCQ + Text)
+                </button>
+              </div>
+            </div>
+
+            {/* 1. MCQ Editor (Visible when 'mcq' or 'both') */}
+            {(activeQuestionType === 'mcq' || activeQuestionType === 'both') && (
+              <div style={{ background: '#fff', border: '1.5px solid #111', borderRadius: '8px', padding: '1rem', marginBottom: (activeQuestionType === 'both' ? '1.25rem' : '0.5rem'), boxShadow: '2px 2px 0px #111' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                  <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#854D0E' }}>
+                    📊 MCQ / Poll Question & Options
+                  </span>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 700, background: '#FEF3C7', color: '#92400E', padding: '0.15rem 0.5rem', borderRadius: '4px', border: '1px solid #D97706' }}>
+                    Multiple Choice Mode
+                  </span>
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={s.label}>Poll / MCQ Question Text</label>
                   <input
                     type="text"
                     style={s.input}
-                    value={opt.key || ''}
-                    disabled
-                  />
-                  <input
-                    type="text"
-                    style={s.input}
-                    placeholder="Option text..."
-                    value={opt.text || ''}
-                    onChange={(e) => {
-                      const nextOpts = [...currentDrop.poll.options];
-                      nextOpts[i].text = e.target.value;
-                      handleNestedFieldChange('poll', 'options', nextOpts);
-                    }}
-                  />
-                  <input
-                    type="text"
-                    style={s.input}
-                    placeholder="PM Archetype or Explanation..."
-                    value={opt.archetype || opt.role || ''}
-                    onChange={(e) => {
-                      const nextOpts = [...currentDrop.poll.options];
-                      if (opt.archetype !== undefined) nextOpts[i].archetype = e.target.value;
-                      else nextOpts[i].role = e.target.value;
-                      handleNestedFieldChange('poll', 'options', nextOpts);
-                    }}
+                    value={currentDrop.poll?.question || ''}
+                    onChange={(e) => handlePollQuestionChange(e.target.value)}
+                    placeholder={Number(currentDrop.dayNumber) === 3 ? "Your recommendation: Which strategic bet should King Dasharatha make?" : "Enter question prompt..."}
                   />
                 </div>
-              ))}
-            </div>
-          )}
+
+                <div style={{ marginBottom: '0.5rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <label style={{ ...s.label, margin: 0 }}>Options List</label>
+                    <button
+                      type="button"
+                      onClick={handleAddPollOption}
+                      style={{
+                        padding: '0.25rem 0.6rem',
+                        fontSize: '0.75rem',
+                        fontWeight: 800,
+                        background: '#10B981',
+                        color: '#fff',
+                        border: '1.5px solid #111',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        boxShadow: '1.5px 1.5px 0px #111'
+                      }}
+                    >
+                      + Add Option
+                    </button>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {(currentDrop.poll?.options || []).map((opt, i) => (
+                      <div key={i} style={{ display: 'grid', gridTemplateColumns: '48px 1fr 1fr 34px', gap: '0.4rem', alignItems: 'center' }}>
+                        <div style={{
+                          padding: '0.45rem',
+                          background: '#FEF08A',
+                          border: '1.5px solid #111',
+                          borderRadius: '4px',
+                          fontWeight: 900,
+                          textAlign: 'center',
+                          fontSize: '0.8rem'
+                        }}>
+                          {opt.key || String.fromCharCode(65 + i)}
+                        </div>
+                        <input
+                          type="text"
+                          style={{ ...s.input, margin: 0 }}
+                          placeholder={`Option ${opt.key || String.fromCharCode(65 + i)} text...`}
+                          value={opt.text || ''}
+                          onChange={(e) => handlePollOptionChange(i, 'text', e.target.value)}
+                        />
+                        <input
+                          type="text"
+                          style={{ ...s.input, margin: 0 }}
+                          placeholder="PM Archetype or Explanation (optional)..."
+                          value={opt.archetype || opt.role || ''}
+                          onChange={(e) => handlePollOptionChange(i, 'archetype', e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemovePollOption(i)}
+                          title="Delete this option"
+                          disabled={(currentDrop.poll?.options || []).length <= 2}
+                          style={{
+                            height: '36px',
+                            padding: 0,
+                            background: (currentDrop.poll?.options || []).length <= 2 ? '#E2E8F0' : '#FEE2E2',
+                            color: (currentDrop.poll?.options || []).length <= 2 ? '#94A3B8' : '#991B1B',
+                            border: '1.5px solid #111',
+                            borderRadius: '4px',
+                            cursor: (currentDrop.poll?.options || []).length <= 2 ? 'not-allowed' : 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontWeight: 900,
+                            fontSize: '0.85rem'
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 2. Text-Based Question Editor (Visible when 'text' or 'both') */}
+            {(activeQuestionType === 'text' || activeQuestionType === 'both') && (
+              <div style={{ background: '#fff', border: '1.5px solid #111', borderRadius: '8px', padding: '1rem', boxShadow: '2px 2px 0px #111' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                  <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#047857' }}>
+                    ✍️ Text-Based Open Question
+                  </span>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 700, background: '#D1FAE5', color: '#065F46', padding: '0.15rem 0.5rem', borderRadius: '4px', border: '1px solid #059669' }}>
+                    Open Text Mode
+                  </span>
+                </div>
+
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <label style={s.label}>Question Prompt / Instruction</label>
+                  <input
+                    type="text"
+                    style={s.input}
+                    value={currentDrop.openQuestion?.prompt || ''}
+                    onChange={(e) => handleOpenQuestionChange('prompt', e.target.value)}
+                    placeholder={Number(currentDrop.dayNumber) === 3 ? "Write your problem statement in ONE sentence." : "Enter question prompt..."}
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                  <div>
+                    <label style={s.label}>Helper Guidance Note</label>
+                    <input
+                      type="text"
+                      style={s.input}
+                      value={currentDrop.openQuestion?.helper || ''}
+                      onChange={(e) => handleOpenQuestionChange('helper', e.target.value)}
+                      placeholder="e.g. Reduce the fog into ONE definitive statement."
+                    />
+                  </div>
+                  <div>
+                    <label style={s.label}>Textarea Placeholder</label>
+                    <input
+                      type="text"
+                      style={s.input}
+                      value={currentDrop.openQuestion?.placeholder || ''}
+                      onChange={(e) => handleOpenQuestionChange('placeholder', e.target.value)}
+                      placeholder="e.g. Ayodhya's core problem is..."
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={s.label}>Sample / Model Answer (Optional: shown after student submits)</label>
+                  <textarea
+                    style={{ ...s.textarea, minHeight: '65px' }}
+                    value={currentDrop.openQuestion?.sampleAnswer || ''}
+                    onChange={(e) => handleOpenQuestionChange('sampleAnswer', e.target.value)}
+                    placeholder="Enter an exemplary or gold-standard problem statement..."
+                  />
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Cliffhanger */}
           <div>

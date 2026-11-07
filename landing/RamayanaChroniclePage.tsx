@@ -74,6 +74,7 @@ interface DropData {
   introLines: string[];
   imageUrl: string;
   imageCaption: string;
+  questionType?: 'mcq' | 'text' | 'both';
   videoEnabled?: boolean;
   video?: {
     enabled?: boolean;
@@ -98,6 +99,7 @@ interface DropData {
     prompt: string;
     helper?: string;
     placeholder?: string;
+    sampleAnswer?: string;
     fields?: string[];
   };
   cliffhanger?: string;
@@ -119,7 +121,13 @@ interface DropData {
   };
   recommendationPoll?: {
     question: string;
-    options: Array<{ key: string; text: string }>;
+    options: Array<{
+      key: string;
+      text: string;
+      archetype?: string;
+      role?: string;
+      explanation?: string;
+    }>;
   };
   framework?: {
     headline: string;
@@ -288,6 +296,33 @@ const DEFAULT_DROPS: DropData[] = [
     },
     videoEnabled: false,
     youtubeUrl: '',
+    questionType: 'both',
+    poll: {
+      question: 'Your recommendation: Which strategic bet should King Dasharatha make?',
+      options: [
+        {
+          key: 'A',
+          text: 'Option A: Authorize the Putrakameshti Yajna to satisfy Dasharatha’s emotion and buy time.',
+          archetype: 'The Emotional Pacifier'
+        },
+        {
+          key: 'B',
+          text: 'Option B: Establish a provisional ministerial council to govern borders and relieve political panic.',
+          archetype: 'The Bureaucratic Stabilizer'
+        },
+        {
+          key: 'C',
+          text: 'Option C: Execute a hybrid strategy: conduct the ritual publicly for morale, while codifying constitutional succession protocols.',
+          archetype: 'The Strategic PM'
+        }
+      ]
+    },
+    openQuestion: {
+      prompt: 'Write your problem statement in ONE sentence.',
+      helper: 'Reduce the fog of Ayodhya into ONE definitive problem statement.',
+      placeholder: 'Ayodhya’s core problem is...',
+      sampleAnswer: '“Ayodhya’s leadership is paralyzed by the emotional burden of childlessness, mistaking dynastic succession anxiety for an immediate administrative emergency while neglecting the citizen confidence that truly protects the realm.”'
+    },
     synthesis: {
       question: 'Write your problem statement in ONE sentence.',
       sampleAnswer: '“Ayodhya’s leadership is paralyzed by the emotional burden of childlessness, mistaking dynastic succession anxiety for an immediate administrative emergency while neglecting the citizen confidence that truly protects the realm.”',
@@ -439,11 +474,39 @@ export function RamayanaChroniclePage() {
               const rawYt = found.video?.youtubeUrl || found.youtubeUrl || def.video?.youtubeUrl;
               const yt = (def.dayNumber === 1 && (!rawYt || rawYt.includes('dQw4w9WgXcQ'))) ? 'https://youtu.be/UDIcRkHsqOs' : rawYt;
               const isEnabled = found.video?.enabled !== undefined ? Boolean(found.video.enabled) : (found.videoEnabled !== undefined ? Boolean(found.videoEnabled) : Boolean(def.video?.enabled));
+              const pollData = found.poll || (def.dayNumber === 3 && found.recommendationPoll ? {
+                question: found.recommendationPoll.question || def.poll?.question || 'Your Strategic Recommendation',
+                options: (found.recommendationPoll.options || def.poll?.options || []).map((o: any, idx: number) => ({
+                  key: o.key || String.fromCharCode(65 + idx),
+                  text: o.text || '',
+                  archetype: o.archetype || o.role || ''
+                }))
+              } : def.poll);
+              const openData = found.openQuestion || (def.dayNumber === 3 && found.synthesis ? {
+                prompt: found.synthesis.question || def.openQuestion?.prompt || 'Write your problem statement in ONE sentence.',
+                helper: def.openQuestion?.helper || 'Reduce the fog of Ayodhya into ONE definitive statement.',
+                placeholder: def.openQuestion?.placeholder || "Ayodhya's core problem is...",
+                sampleAnswer: found.synthesis.sampleAnswer || def.openQuestion?.sampleAnswer
+              } : def.openQuestion);
+              const qType = found.questionType || def.questionType || 'both';
+
               return {
                 ...def,
                 ...found,
                 videoEnabled: isEnabled,
                 youtubeUrl: yt,
+                questionType: qType,
+                poll: pollData,
+                openQuestion: openData,
+                recommendationPoll: def.dayNumber === 3 ? (found.recommendationPoll || (pollData ? {
+                  question: pollData.question,
+                  options: pollData.options
+                } : def.recommendationPoll)) : found.recommendationPoll,
+                synthesis: def.dayNumber === 3 ? (found.synthesis || (openData ? {
+                  question: openData.prompt,
+                  sampleAnswer: openData.sampleAnswer || '',
+                  commonPatterns: def.synthesis?.commonPatterns || []
+                } : def.synthesis)) : found.synthesis,
                 video: {
                   ...def.video,
                   ...(found.video || {}),
@@ -479,11 +542,39 @@ export function RamayanaChroniclePage() {
                     const rawYt = remote.video?.youtubeUrl || remote.youtubeUrl || defaultDrop.video?.youtubeUrl;
                     const yt = (defaultDrop.dayNumber === 1 && (!rawYt || rawYt.includes('dQw4w9WgXcQ'))) ? 'https://youtu.be/UDIcRkHsqOs' : rawYt;
                     const isEnabled = remote.video?.enabled !== undefined ? Boolean(remote.video.enabled) : (remote.videoEnabled !== undefined ? Boolean(remote.videoEnabled) : Boolean(defaultDrop.video?.enabled));
+                    const pollData = remote.poll || (defaultDrop.dayNumber === 3 && remote.recommendationPoll ? {
+                      question: remote.recommendationPoll.question || defaultDrop.poll?.question || 'Your Strategic Recommendation',
+                      options: (remote.recommendationPoll.options || defaultDrop.poll?.options || []).map((o: any, idx: number) => ({
+                        key: o.key || String.fromCharCode(65 + idx),
+                        text: o.text || '',
+                        archetype: o.archetype || o.role || ''
+                      }))
+                    } : defaultDrop.poll);
+                    const openData = remote.openQuestion || (defaultDrop.dayNumber === 3 && remote.synthesis ? {
+                      prompt: remote.synthesis.question || defaultDrop.openQuestion?.prompt || 'Write your problem statement in ONE sentence.',
+                      helper: defaultDrop.openQuestion?.helper || 'Reduce the fog of Ayodhya into ONE definitive statement.',
+                      placeholder: defaultDrop.openQuestion?.placeholder || "Ayodhya's core problem is...",
+                      sampleAnswer: remote.synthesis.sampleAnswer || defaultDrop.openQuestion?.sampleAnswer
+                    } : defaultDrop.openQuestion);
+                    const qType = remote.questionType || defaultDrop.questionType || 'both';
+
                     return {
                       ...defaultDrop,
                       ...remote,
                       videoEnabled: isEnabled,
                       youtubeUrl: yt,
+                      questionType: qType,
+                      poll: pollData,
+                      openQuestion: openData,
+                      recommendationPoll: defaultDrop.dayNumber === 3 ? (remote.recommendationPoll || (pollData ? {
+                        question: pollData.question,
+                        options: pollData.options
+                      } : defaultDrop.recommendationPoll)) : remote.recommendationPoll,
+                      synthesis: defaultDrop.dayNumber === 3 ? (remote.synthesis || (openData ? {
+                        question: openData.prompt,
+                        sampleAnswer: openData.sampleAnswer || '',
+                        commonPatterns: defaultDrop.synthesis?.commonPatterns || []
+                      } : defaultDrop.synthesis)) : remote.synthesis,
                       video: {
                         ...defaultDrop.video,
                         ...(remote.video || {}),
@@ -1808,109 +1899,140 @@ export function RamayanaChroniclePage() {
               </div>
             )}
 
-            {/* Header intro */}
-            <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
-              <div className="inline-block bg-[#D1FAE5] text-[#065F46] font-mono text-xs font-black uppercase px-3 py-1 rounded-full border border-[#141413] shadow-[1px_1px_0px_0px_#141413] mb-3">
-                DAY 3: SYNTHESIS & REVEAL
-              </div>
-              <h2 className="text-2xl sm:text-4xl font-black text-[#141413] mb-3 tracking-tight">
-                Write Your Problem Statement
-              </h2>
-              <p className="text-sm sm:text-base text-[#141413]/80 leading-relaxed mb-6 font-medium">
-                You have heard the King’s emotion, the Minister’s political calculations, and the Citizen’s quiet anxiety. Now, reduce the fog of Ayodhya into ONE definitive problem statement.
-              </p>
+            {/* Day 3 Dynamic Question Component (MCQ, Text-based, or Both) */}
+            {(() => {
+              const qType = currentDrop.questionType || 'both';
+              const showText = qType === 'text' || qType === 'both';
+              const showMcq = qType === 'mcq' || qType === 'both';
+              const pollOptions = currentDrop.poll?.options || currentDrop.recommendationPoll?.options || [];
+              const pollTitle = currentDrop.poll?.question || currentDrop.recommendationPoll?.question || 'Your Strategic Recommendation';
+              const textPrompt = currentDrop.openQuestion?.prompt || currentDrop.synthesis?.question || 'Write your problem statement in ONE sentence:';
+              const textHelper = currentDrop.openQuestion?.helper || 'You have heard the King’s emotion, the Minister’s political calculations, and the Citizen’s quiet anxiety. Now, reduce the fog of Ayodhya into ONE definitive problem statement.';
+              const textPlaceholder = currentDrop.openQuestion?.placeholder || "Ayodhya's core problem is...";
+              const sampleAnswer = currentDrop.openQuestion?.sampleAnswer || currentDrop.synthesis?.sampleAnswer;
 
-              {/* 10. Write problem statement */}
-              <form onSubmit={handleSaveDay3Statement} className="mb-6">
-                <label className="block text-xs font-black uppercase text-[#141413] mb-2">
-                  Write your problem statement in ONE sentence:
-                </label>
-                <textarea
-                  value={day3ProblemStatement}
-                  onChange={(e) => setDay3ProblemStatement(e.target.value)}
-                  placeholder="Ayodhya's core problem is..."
-                  rows={3}
-                  className="w-full p-4 rounded-xl border-2 border-[#141413] font-medium text-sm sm:text-base bg-[#FDFCF7] shadow-[2px_2px_0px_0px_#141413] mb-4 focus:outline-none focus:ring-2 focus:ring-[#188ab2]"
-                  required
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[2px_2px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#141413] transition-all text-xs sm:text-sm uppercase cursor-pointer"
-                >
-                  Reveal Sample Answer & 3 Common Patterns
-                </button>
-              </form>
+              return (
+                <>
+                  {/* 10. Text-Based Question (When 'text' or 'both') */}
+                  {showText && (
+                    <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
+                      <div className="inline-block bg-[#D1FAE5] text-[#065F46] font-mono text-xs font-black uppercase px-3 py-1 rounded-full border border-[#141413] shadow-[1px_1px_0px_0px_#141413] mb-3">
+                        DAY 3: {qType === 'text' ? 'STRATEGIC CHALLENGE' : 'SYNTHESIS & REVEAL'}
+                      </div>
+                      <h2 className="text-2xl sm:text-4xl font-black text-[#141413] mb-3 tracking-tight">
+                        {textPrompt}
+                      </h2>
+                      <p className="text-sm sm:text-base text-[#141413]/80 leading-relaxed mb-6 font-medium">
+                        {textHelper}
+                      </p>
 
-              {/* Reveal after submit */}
-              {day3StatementSubmitted && (
-                <div className="bg-[#FEF08A] rounded-xl border-2 border-[#141413] p-5 sm:p-6 shadow-[3px_3px_0px_0px_#141413] space-y-5">
-                  <div>
-                    <div className="font-mono text-xs font-black uppercase text-[#141413] mb-1.5">
-                      ★ Gold-Standard Sample Problem Statement:
-                    </div>
-                    <blockquote className="bg-white rounded-xl border-2 border-[#141413] p-4 text-sm sm:text-base font-bold italic text-[#141413] shadow-[2px_2px_0px_0px_#141413] leading-relaxed">
-                      {currentDrop.synthesis?.sampleAnswer}
-                    </blockquote>
-                  </div>
+                      <form onSubmit={handleSaveDay3Statement} className="mb-6">
+                        <label className="block text-xs font-black uppercase text-[#141413] mb-2">
+                          {textPrompt}
+                        </label>
+                        <textarea
+                          value={day3ProblemStatement}
+                          onChange={(e) => setDay3ProblemStatement(e.target.value)}
+                          placeholder={textPlaceholder}
+                          rows={3}
+                          className="w-full p-4 rounded-xl border-2 border-[#141413] font-medium text-sm sm:text-base bg-[#FDFCF7] shadow-[2px_2px_0px_0px_#141413] mb-4 focus:outline-none focus:ring-2 focus:ring-[#188ab2]"
+                          required
+                        />
+                        <button
+                          type="submit"
+                          className="px-6 py-2.5 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[2px_2px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#141413] transition-all text-xs sm:text-sm uppercase cursor-pointer"
+                        >
+                          Submit Response & Reveal Analysis
+                        </button>
+                      </form>
 
-                  <div>
-                    <div className="font-mono text-xs font-black uppercase text-[#141413] mb-2.5">
-                      The 3 Most Common Patterns We Observed:
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {currentDrop.synthesis?.commonPatterns.map((pat, i) => (
-                        <div key={i} className="bg-white rounded-xl border-2 border-[#141413] p-4 shadow-[1.5px_1.5px_0px_0px_#141413]">
-                          <div className="font-black text-sm text-[#188ab2] mb-1">{pat.title}</div>
-                          <p className="text-xs text-[#141413]/80 leading-relaxed font-medium">{pat.desc}</p>
+                      {/* Reveal after submit */}
+                      {day3StatementSubmitted && (
+                        <div className="bg-[#FEF08A] rounded-xl border-2 border-[#141413] p-5 sm:p-6 shadow-[3px_3px_0px_0px_#141413] space-y-5">
+                          {sampleAnswer && (
+                            <div>
+                              <div className="font-mono text-xs font-black uppercase text-[#141413] mb-1.5">
+                                ★ Gold-Standard Sample Answer:
+                              </div>
+                              <blockquote className="bg-white rounded-xl border-2 border-[#141413] p-4 text-sm sm:text-base font-bold italic text-[#141413] shadow-[2px_2px_0px_0px_#141413] leading-relaxed">
+                                {sampleAnswer}
+                              </blockquote>
+                            </div>
+                          )}
+
+                          {currentDrop.synthesis?.commonPatterns && currentDrop.synthesis.commonPatterns.length > 0 && (
+                            <div>
+                              <div className="font-mono text-xs font-black uppercase text-[#141413] mb-2.5">
+                                The 3 Most Common Patterns We Observed:
+                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                {currentDrop.synthesis.commonPatterns.map((pat, i) => (
+                                  <div key={i} className="bg-white rounded-xl border-2 border-[#141413] p-4 shadow-[1.5px_1.5px_0px_0px_#141413]">
+                                    <div className="font-black text-sm text-[#188ab2] mb-1">{pat.title}</div>
+                                    <p className="text-xs text-[#141413]/80 leading-relaxed font-medium">{pat.desc}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      ))}
+                      )}
                     </div>
-                  </div>
-                </div>
-              )}
-            </div>
+                  )}
 
-            {/* 11. Poll: Recommendation A / B / C */}
-            <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl">⚖️</span>
-                <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
-                  Your Strategic Recommendation
-                </h3>
-              </div>
-              <p className="text-xs sm:text-sm text-[#141413]/70 font-semibold mb-6">
-                Given everything you’ve discovered, what is your official PM recommendation to Dasharatha?
-              </p>
+                  {/* 11. MCQ Recommendation Poll (When 'mcq' or 'both') */}
+                  {showMcq && (
+                    <div className="bg-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-2xl">⚖️</span>
+                        <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight">
+                          {pollTitle}
+                        </h3>
+                      </div>
+                      <p className="text-xs sm:text-sm text-[#141413]/70 font-semibold mb-6">
+                        Given everything you’ve discovered, what is your official PM recommendation to Dasharatha?
+                      </p>
 
-              <div className="space-y-3 mb-6">
-                {currentDrop.recommendationPoll?.options.map((opt) => {
-                  const isSelected = day3Recommendation === opt.key;
-                  return (
-                    <button
-                      key={opt.key}
-                      type="button"
-                      onClick={() => handleSelectRecommendation(opt.key)}
-                      className={`w-full text-left p-4 sm:p-5 rounded-xl border-2 border-[#141413] transition-all cursor-pointer ${
-                        isSelected
-                          ? 'bg-[#FEF08A] shadow-[0px_4px_0px_0px_#141413] translate-y-[-2px]'
-                          : 'bg-[#FFFDF5] hover:bg-slate-50 shadow-[0px_2px_0px_0px_#141413] active:translate-y-[1px]'
-                      }`}
-                    >
-                      <span className="font-bold text-sm sm:text-base text-[#141413]">
-                        {opt.text}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+                      <div className="space-y-3 mb-6">
+                        {pollOptions.map((opt) => {
+                          const isSelected = day3Recommendation === opt.key;
+                          return (
+                            <button
+                              key={opt.key}
+                              type="button"
+                              onClick={() => handleSelectRecommendation(opt.key)}
+                              className={`w-full text-left p-4 sm:p-5 rounded-xl border-2 border-[#141413] transition-all cursor-pointer ${
+                                isSelected
+                                  ? 'bg-[#FEF08A] shadow-[0px_4px_0px_0px_#141413] translate-y-[-2px]'
+                                  : 'bg-[#FFFDF5] hover:bg-slate-50 shadow-[0px_2px_0px_0px_#141413] active:translate-y-[1px]'
+                              }`}
+                            >
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                                <span className="font-bold text-sm sm:text-base text-[#141413]">
+                                  {opt.key ? `(${opt.key}) ` : ''}{opt.text}
+                                </span>
+                                {(opt.archetype || opt.role) && (
+                                  <span className="text-[11px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 w-fit shrink-0">
+                                    {opt.archetype || opt.role}
+                                  </span>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
 
-              {day3Recommendation && (
-                <div className="bg-[#ECFDF5] border-2 border-[#141413] p-3 rounded-xl text-xs font-bold text-[#065F46] flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Recommendation saved to your profile!</span>
-                </div>
-              )}
-            </div>
+                      {day3Recommendation && (
+                        <div className="bg-[#ECFDF5] border-2 border-[#141413] p-3 rounded-xl text-xs font-bold text-[#065F46] flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <span>Recommendation saved to your profile!</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              );
+            })()}
 
             {/* 12. Reveal: Problem Discovery 3-line framework */}
             <div className="bg-[#141413] text-white rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413]">
