@@ -4,26 +4,47 @@ import { ArrowUpRight, CheckCircle2, X, Check, Compass, Layers, ShieldCheck, Clo
 
 const smoothEase = [0.16, 1, 0.3, 1] as const;
 
-// --- SECTION 4: THE 3 TRANSITION STORIES ---
+// --- SECTION 4: THE 3 TRANSITION STORIES (Reforge/Stripe Editorial Dossier Cards) ---
 export function TransitionStoriesEditorial() {
   const stories = [
     {
-      id: '01',
-      path: 'PATH: OPERATIONS / QA / BA → PM',
-      img: '/hero-slide-1.webp',
-      alt: 'Operations / QA / BA to PM career transition'
+      caseId: 'CASE 01',
+      from: 'OPERATIONS / QA',
+      to: 'PM',
+      quotePart1: 'I switched into PM with zero product experience. No CS degree. No MBA.',
+      quoteHighlight: 'Just the right preparation.',
+      quotePart2: '',
+      name: 'Sanket Katore',
+      role: 'Product Manager · FinTech',
+      capstone: 'CAPSTONE: B2C Checkout PRD',
+      avatar: '/alumni-avatar-1.webp',
+      alt: 'Sanket Katore - Operations to Product Manager transition'
     },
     {
-      id: '02',
-      path: 'PATH: SDE / TECH LEAD → PM',
-      img: '/hero-slide-2.webp',
-      alt: 'SDE / Tech Lead to PM career transition'
+      caseId: 'CASE 02',
+      from: 'SDE / TECH LEAD',
+      to: 'PM',
+      quotePart1: 'I took the conventional but',
+      quoteHighlight: 'not so conventional path',
+      quotePart2: 'from an SDE to MBA to product leadership.',
+      name: 'Ankit Surkar',
+      role: 'Product Manager · Enterprise SaaS',
+      capstone: 'CAPSTONE: AI Workflow Engine Spec',
+      avatar: '/alumni-avatar-2.webp',
+      alt: 'Ankit Surkar - Software Engineer to Product Manager transition'
     },
     {
-      id: '03',
-      path: 'PATH: UNDERGRADUATE → APM',
-      img: '/hero-slide-3.webp',
-      alt: 'Undergraduate to APM career transition'
+      caseId: 'CASE 03',
+      from: 'UNDERGRADUATE',
+      to: 'APM',
+      quotePart1: 'No prior experience. No roadmap.',
+      quoteHighlight: 'Just a college grad who became a PM',
+      quotePart2: 'through verifiable proof of work.',
+      name: 'Pankaj Sharma',
+      role: 'Associate PM · Consumer Tech',
+      capstone: 'CAPSTONE: Mobile Onboarding Teardown',
+      avatar: '/alumni-avatar-3.webp',
+      alt: 'Pankaj Sharma - College Graduate to Associate Product Manager transition'
     }
   ];
 
@@ -32,7 +53,7 @@ export function TransitionStoriesEditorial() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         
         {/* Section Header */}
-        <div className="text-center max-w-4xl mx-auto mb-6 md:mb-8">
+        <div className="text-center max-w-4xl mx-auto mb-8 md:mb-10">
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -60,38 +81,72 @@ export function TransitionStoriesEditorial() {
           </motion.h2>
         </div>
 
-        {/* 3 Editorial Cards: Full Image Banners with Zero Text Clipping + Highlighted Warm Pathway Pill */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* 3 Reforge / Stripe Editorial Dossier Cards (HTML Typography + Clean Avatars + Monospace Telemetry) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
           {stories.map((story, index) => (
             <motion.div
-              key={story.id}
+              key={story.caseId}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: index * 0.15, ease: smoothEase }}
-              whileHover={{ y: -5 }}
-              className="group bg-[#FAF8F5] border border-stone-200/90 rounded-2xl p-4 shadow-[0_12px_30px_-8px_rgba(25,20,15,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(25,20,15,0.08)] transition-all flex flex-col justify-between"
+              whileHover={{ y: -4 }}
+              className="group bg-[#FAF8F5] border border-[#E6E1D6] rounded-2xl p-6 sm:p-7 shadow-[0_4px_20px_-4px_rgba(25,20,15,0.03)] hover:shadow-[0_16px_36px_-8px_rgba(25,20,15,0.08)] transition-all duration-300 flex flex-col justify-between relative"
             >
-              <div>
-                {/* Full Aspect-Ratio Image Container (1024x536): No left clipping of text or graphics */}
-                <div className="w-full aspect-[1024/536] rounded-xl overflow-hidden border border-stone-200/80 bg-stone-100 relative shadow-sm">
-                  <img
-                    src={story.img}
-                    alt={story.alt}
-                    className="w-full h-full object-contain sm:object-cover group-hover:scale-[1.02] transition-transform duration-500 ease-out"
-                  />
-                </div>
+              {/* Top Row: Career Shift Telemetry Bar */}
+              <div className="flex items-center justify-between gap-2 pb-5 border-b border-stone-200/70">
+                <span className="font-mono text-[10px] sm:text-[11px] font-bold text-stone-500 uppercase tracking-widest flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  {story.caseId}
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] font-mono text-[10.5px] font-semibold tracking-wide uppercase shadow-2xs">
+                  <span>{story.from}</span>
+                  <span className="text-[#B45309] font-bold">➔</span>
+                  <span className="text-stone-900 font-bold">{story.to}</span>
+                </span>
               </div>
 
-              {/* Highlighted Warmer Pathway Pill (Easy Scanning & High Contrast) */}
-              <div className="pt-4 mt-3 flex items-center justify-between border-t border-stone-200/80">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 text-amber-950 border border-amber-300/70 font-mono text-[11px] font-medium tracking-[0.05em] uppercase shadow-xs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
-                  {story.path}
-                </span>
-                <span className="w-7 h-7 rounded-full bg-stone-100 group-hover:bg-[#16171A] group-hover:text-white flex items-center justify-center transition-colors">
-                  <ArrowUpRight className="w-3.5 h-3.5 text-stone-500 group-hover:text-white transition-colors" />
-                </span>
+              {/* Middle Area: Live Editorial Pull-Quote (Real HTML Typography in Plus Jakarta Sans) */}
+              <div className="py-6 sm:py-7 flex-1 flex flex-col justify-center">
+                <blockquote className="text-[17px] sm:text-[18px] lg:text-[19px] font-medium text-[#141413] leading-[1.5] tracking-[-0.015em]">
+                  “{story.quotePart1}{' '}
+                  <span className="font-editorial italic font-normal text-[#D97706] text-[1.12em] tracking-normal inline-block">
+                    {story.quoteHighlight}
+                  </span>
+                  {story.quotePart2 ? ` ${story.quotePart2}` : ''}”
+                </blockquote>
+              </div>
+
+              {/* Bottom Row: Clean Studio Portrait Avatar + Verified Capstone Metadata */}
+              <div className="pt-5 border-t border-dashed border-[#E6E1D6] flex items-center gap-3.5">
+                {/* 64x64px Studio Portrait Avatar (Cleanly Cropped Chest-Up, Zero Watermark) */}
+                <div className="w-16 h-16 rounded-xl border border-[#141413]/15 bg-[#EFECE4] overflow-hidden shrink-0 shadow-2xs relative">
+                  <img
+                    src={story.avatar}
+                    alt={story.name}
+                    className="w-full h-full object-cover saturate-[0.88] contrast-[1.05] group-hover:scale-105 transition-transform duration-500 ease-out"
+                    width="64"
+                    height="64"
+                    loading="lazy"
+                  />
+                </div>
+
+                {/* Right of Portrait: Name, Role & Verified Capstone Spec */}
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold text-sm text-[#141413] tracking-tight">
+                    {story.name}
+                  </div>
+                  <div className="text-xs text-stone-600 font-medium truncate mt-0.5">
+                    {story.role}
+                  </div>
+                  <a
+                    href="#curriculum"
+                    className="font-mono text-[11px] text-[#6E6A63] hover:text-[#D97706] flex items-center gap-1 mt-1 truncate transition-colors group/link cursor-pointer"
+                  >
+                    <span className="font-semibold tracking-tight">{story.capstone}</span>
+                    <ArrowUpRight className="w-3 h-3 shrink-0 text-amber-600 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
+                  </a>
+                </div>
               </div>
             </motion.div>
           ))}
