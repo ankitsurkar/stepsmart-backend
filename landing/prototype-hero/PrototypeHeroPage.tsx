@@ -77,7 +77,7 @@ export function PrototypeHeroPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] text-[#16171A] font-sans selection:bg-amber-200/50 selection:text-stone-900">
+    <div className="min-h-screen bg-[#FBF9F5] text-[#16171A] font-sans selection:bg-amber-200/50 selection:text-stone-900 w-full max-w-full overflow-x-hidden">
       
       {/* FLOATING EDITORIAL PILL NAVBAR (SLIDES DOWN PAST HERO & SCROLL PROGRESS) */}
       <StickyPillNavbar />
@@ -85,15 +85,15 @@ export function PrototypeHeroPage() {
       {/* 1. TOP ANNOUNCEMENT BANNER */}
       <aside 
         aria-label="Announcement Banner" 
-        className="w-full bg-[#16171A] text-white text-xs py-2.5 px-4 font-mono border-b border-stone-800 relative z-30"
+        className="w-full bg-[#16171A] text-white text-xs py-2 px-3 sm:px-4 font-mono border-b border-stone-800 relative z-30"
       >
-        <div className="container mx-auto max-w-7xl flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-2.5">
-            <span className="bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2 py-0.5 text-[10px] uppercase inline-flex items-center gap-1.5 font-medium tracking-[0.05em] rounded">
+        <div className="container mx-auto max-w-7xl flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2 py-0.5 text-[9.5px] sm:text-[10px] uppercase inline-flex items-center gap-1.5 font-medium tracking-[0.05em] rounded shrink-0">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               ADMISSION LIVE
             </span>
-            <span className="text-stone-300 text-xs sm:text-sm font-medium">
+            <span className="text-stone-300 text-[11px] sm:text-sm font-medium truncate">
               {countdownText}
             </span>
           </div>
@@ -102,7 +102,7 @@ export function PrototypeHeroPage() {
               const el = document.getElementById('pricing') || document.getElementById('tuition');
               el?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="bg-white hover:bg-stone-100 text-[#16171A] px-4 py-1.5 text-xs uppercase font-mono font-medium tracking-[0.05em] rounded transition-all cursor-pointer shadow-sm"
+            className="bg-white hover:bg-stone-100 text-[#16171A] px-2.5 sm:px-4 py-1 text-[11px] sm:text-xs uppercase font-mono font-medium tracking-[0.05em] rounded transition-all cursor-pointer shadow-sm shrink-0 whitespace-nowrap"
           >
             Reserve Seat ➜
           </button>
@@ -111,17 +111,17 @@ export function PrototypeHeroPage() {
 
       {/* 2. HEADER / NAVBAR (State 1: At Top of Page - scrollY < 100px) */}
       <header className="w-full bg-[#FBF9F5]/90 backdrop-blur-md border-b border-stone-200/90 relative z-30">
-        <div className="container mx-auto px-6 h-20 max-w-7xl relative flex items-center justify-between">
+        <div className="container mx-auto px-3.5 sm:px-6 h-16 sm:h-20 max-w-7xl relative flex items-center justify-between gap-2">
           {/* Left: StepSmart Official Sky Blue Logo */}
-          <Link to="/" className="flex items-center gap-3 select-none shrink-0 z-10">
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 select-none shrink-0 z-10">
             <img 
               src="/stepsmart-logo.webp" 
               alt="StepSmart Logo" 
-              className="w-8 h-8 object-contain shrink-0"
+              className="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0"
               width="32" 
               height="32" 
             />
-            <span className="font-extrabold text-2xl tracking-tight text-[#141413]">
+            <span className="font-extrabold text-xl sm:text-2xl tracking-tight text-[#141413]">
               StepSmart
             </span>
           </Link>
@@ -182,10 +182,10 @@ export function PrototypeHeroPage() {
           </nav>
 
           {/* Right: Login + Chat + RESERVE SEAT · ₹15K → */}
-          <div className="flex items-center gap-3 shrink-0 z-10">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 z-10">
             <a 
               href="/learn" 
-              className="border border-[#38BDF8]/40 bg-[#E0F2FE]/50 text-[#0284C7] hover:bg-[#E0F2FE] px-4 py-1.5 rounded-full transition-all text-xs font-semibold cursor-pointer"
+              className="border border-[#38BDF8]/40 bg-[#E0F2FE]/50 text-[#0284C7] hover:bg-[#E0F2FE] px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full transition-all text-[11px] sm:text-xs font-semibold cursor-pointer whitespace-nowrap"
             >
               Login
             </a>
@@ -193,9 +193,9 @@ export function PrototypeHeroPage() {
               href="https://wa.me/message/GH5C7YLAYIEHN1"
               target="_blank"
               rel="noreferrer"
-              className="text-stone-700 hover:text-emerald-800 font-mono text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-stone-100/80 transition-colors inline-flex items-center gap-1.5"
+              className="hidden sm:inline-flex text-stone-700 hover:text-emerald-800 font-mono text-xs font-semibold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-stone-100/80 transition-colors items-center gap-1.5 whitespace-nowrap"
             >
-              <MessageCircle className="w-4 h-4 text-emerald-600" />
+              <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
               <span className="hidden lg:inline">Chat</span>
             </a>
             <button 
@@ -203,9 +203,10 @@ export function PrototypeHeroPage() {
                 const el = document.getElementById('pricing') || document.getElementById('tuition');
                 el?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#F59E0B] hover:bg-[#D97706] text-[#141413] px-4 sm:px-5 py-2 sm:py-2.5 uppercase font-mono font-semibold text-xs tracking-wider rounded-full shadow-md transition-all cursor-pointer inline-flex items-center gap-1.5"
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-[#141413] px-3 sm:px-5 py-1.5 sm:py-2.5 uppercase font-mono font-semibold text-[11px] sm:text-xs tracking-wider rounded-full shadow-md transition-all cursor-pointer inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap"
             >
-              <span>Reserve Seat · ₹15K</span>
+              <span className="hidden sm:inline">Reserve Seat · ₹15K</span>
+              <span className="sm:hidden font-bold">₹15K</span>
               <span>→</span>
             </button>
           </div>

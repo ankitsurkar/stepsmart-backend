@@ -227,8 +227,8 @@ export function MentorsEditorial() {
                       <div>
                         {/* Header: Photo, Name, Single-line Role Badge & LinkedIn */}
                         <div className="flex items-start justify-between gap-4 mb-6">
-                          <div className="flex items-center gap-4 sm:gap-5">
-                            <div className="w-20 h-20 rounded-2xl overflow-hidden border border-[#E5E0D8] bg-stone-100 shadow-xs shrink-0">
+                          <div className="flex items-center gap-3.5 sm:gap-5">
+                            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border border-[#E5E0D8] bg-stone-100 shadow-xs shrink-0">
                               <img 
                                 src={mentor.img} 
                                 alt={mentor.name} 
@@ -236,11 +236,11 @@ export function MentorsEditorial() {
                               />
                             </div>
                             <div className="min-w-0">
-                              <h3 className="text-2xl sm:text-[26px] font-bold tracking-tight text-[#16171A]">
+                              <h3 className="text-xl sm:text-[26px] font-bold tracking-tight text-[#16171A]">
                                 {mentor.name}
                               </h3>
-                              <div className="flex items-center gap-2 mt-1.5">
-                                <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold text-stone-800 bg-stone-100/90 border border-stone-200 px-2.5 py-1 rounded-md tracking-wide uppercase shadow-2xs whitespace-nowrap w-fit shrink-0">
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="inline-flex items-center gap-1.5 sm:gap-2 font-mono text-[10px] sm:text-[11px] font-semibold text-stone-800 bg-stone-100/90 border border-stone-200 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md tracking-wide uppercase shadow-2xs whitespace-nowrap w-fit shrink-0">
                                   {isSanket ? <MastercardLogo /> : <MicrosoftLogo />}
                                   <span>{mentor.role}</span>
                                 </span>
@@ -252,26 +252,26 @@ export function MentorsEditorial() {
                             href={mentor.linkedin}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-9 h-9 rounded-full bg-stone-100 hover:bg-[#0077B5] hover:text-white text-stone-600 flex items-center justify-center transition-all shrink-0 border border-stone-200/80 shadow-2xs hover:shadow-xs group"
+                            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-stone-100 hover:bg-[#0077B5] hover:text-white text-stone-600 flex items-center justify-center transition-all shrink-0 border border-stone-200/80 shadow-2xs hover:shadow-xs group"
                             aria-label={`${mentor.name} LinkedIn Profile`}
                           >
-                            <svg className="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
                               <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
                             </svg>
                           </a>
                         </div>
 
                         {/* Bio */}
-                        <p className="text-[#475569] text-sm sm:text-base leading-relaxed font-normal">
+                        <p className="text-[#475569] text-xs sm:text-base leading-relaxed font-normal">
                           {mentor.bio}
                         </p>
                       </div>
                     </div>
 
                     {/* Recessed Cohort Role Footer Strip */}
-                    <div className="bg-[#FAF6EE] border-t border-[#ECE8DF] px-6 sm:px-7 py-3 mt-auto rounded-b-3xl flex items-center gap-2">
+                    <div className="bg-[#FAF6EE] border-t border-[#ECE8DF] px-4 sm:px-7 py-2.5 sm:py-3 mt-auto rounded-b-3xl flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                      <span className="font-mono text-[10px] sm:text-[10.5px] font-semibold text-stone-700 tracking-wide uppercase whitespace-nowrap">
+                      <span className="font-mono text-[9.5px] sm:text-[10.5px] font-semibold text-stone-700 tracking-wide uppercase truncate">
                         {mentor.cohortRole}
                       </span>
                     </div>
@@ -666,18 +666,18 @@ export function FitAssessmentEditorial() {
               </span>
             </div>
             
-            <div className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full font-mono text-[11px] font-bold transition-all shadow-2xs whitespace-nowrap self-start sm:self-auto ${
+            <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[10px] sm:text-[11px] font-bold transition-all shadow-2xs self-start sm:self-auto ${
               allChecked 
                 ? 'bg-emerald-100 text-emerald-950 border border-emerald-300' 
                 : 'bg-amber-100/90 text-amber-950 border border-amber-300'
             }`}>
               {allChecked ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-700 stroke-[3]" />
-                  <span>4 / 4 CRITERIA MET — QUALIFIED TO APPLY</span>
+                  <Check className="w-3.5 h-3.5 text-emerald-700 stroke-[3] shrink-0" />
+                  <span>4/4 CRITERIA MET — QUALIFIED TO APPLY</span>
                 </>
               ) : (
-                <span>{checkedCount} / 4 MET — {readinessCriteria.length - checkedCount} MORE TO QUALIFY</span>
+                <span>{checkedCount}/4 MET — {readinessCriteria.length - checkedCount} MORE TO QUALIFY</span>
               )}
             </div>
           </div>

@@ -22,10 +22,12 @@ html {
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
   scroll-padding-top: 90px;
+  overflow-x: clip;
 }
 
 body {
   font-family: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
   background-color: #FFFFFF;
   color: #111111;
+  overflow-x: clip;
 }

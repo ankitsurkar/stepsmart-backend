@@ -103,7 +103,7 @@ export function StickyPillNavbar() {
             : '-translate-y-12 opacity-0 pointer-events-none'
         }`}
       >
-        <div className="w-fit mx-auto px-2 py-1.5 rounded-full bg-[#FAF8F3]/90 backdrop-blur-md border border-[#E2DDD2] shadow-sm flex items-center gap-1 select-none">
+        <div className="w-fit max-w-[calc(100vw-1.5rem)] mx-auto px-1 sm:px-2 py-1 sm:py-1.5 rounded-full bg-[#FAF8F3]/95 backdrop-blur-md border border-[#E2DDD2] shadow-sm flex items-center gap-0.5 sm:gap-1 select-none overflow-x-auto">
           {navItems.map((item) => {
             const isActive = activeSection === item.key;
             return (
@@ -111,7 +111,7 @@ export function StickyPillNavbar() {
                 key={item.key}
                 type="button"
                 onClick={() => scrollTo(item.key)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-mono transition-all cursor-pointer select-none ${
+                className={`px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-mono transition-all cursor-pointer select-none whitespace-nowrap ${
                   isActive
                     ? 'bg-[#EBE6DC] text-[#141413] font-semibold shadow-2xs'
                     : 'text-[#6E6A63] hover:text-[#141413]'

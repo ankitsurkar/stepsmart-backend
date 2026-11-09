@@ -69,7 +69,7 @@ export function TransitionStoriesEditorial() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
-            className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-[-0.03em] text-[#16171A] leading-tight"
+            className="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-[-0.03em] text-[#16171A] leading-tight"
           >
             <span className="md:whitespace-nowrap">
               There is no{' '}
@@ -82,7 +82,7 @@ export function TransitionStoriesEditorial() {
         </div>
 
         {/* 3 Reforge / Stripe Editorial Dossier Cards (HTML Typography + Clean Avatars + Monospace Telemetry) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 items-stretch">
           {stories.map((story, index) => (
             <motion.div
               key={story.caseId}
@@ -91,15 +91,15 @@ export function TransitionStoriesEditorial() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: index * 0.15, ease: smoothEase }}
               whileHover={{ y: -4 }}
-              className="group bg-[#FAF8F5] border border-[#E6E1D6] rounded-2xl p-6 sm:p-7 shadow-[0_4px_20px_-4px_rgba(25,20,15,0.03)] hover:shadow-[0_16px_36px_-8px_rgba(25,20,15,0.08)] transition-all duration-300 flex flex-col justify-between relative"
+              className="group bg-[#FAF8F5] border border-[#E6E1D6] rounded-2xl p-5 sm:p-7 shadow-[0_4px_20px_-4px_rgba(25,20,15,0.03)] hover:shadow-[0_16px_36px_-8px_rgba(25,20,15,0.08)] transition-all duration-300 flex flex-col justify-between relative"
             >
               {/* Top Row: Career Shift Telemetry Bar */}
-              <div className="flex items-center justify-between gap-2 pb-5 border-b border-stone-200/70">
-                <span className="font-mono text-[10px] sm:text-[11px] font-bold text-stone-500 uppercase tracking-widest flex items-center gap-1.5">
+              <div className="flex items-center justify-between gap-2 pb-4 sm:pb-5 border-b border-stone-200/70">
+                <span className="font-mono text-[10px] sm:text-[11px] font-bold text-stone-500 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                   {story.caseId}
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] font-mono text-[10.5px] font-semibold tracking-wide uppercase shadow-2xs">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] font-mono text-[10px] sm:text-[10.5px] font-semibold tracking-wide uppercase shadow-2xs">
                   <span>{story.from}</span>
                   <span className="text-[#B45309] font-bold">➔</span>
                   <span className="text-stone-900 font-bold">{story.to}</span>
@@ -107,8 +107,8 @@ export function TransitionStoriesEditorial() {
               </div>
 
               {/* Middle Area: Live Editorial Pull-Quote (Real HTML Typography in Plus Jakarta Sans) */}
-              <div className="py-6 sm:py-7 flex-1 flex flex-col justify-center">
-                <blockquote className="text-[17px] sm:text-[18px] lg:text-[19px] font-medium text-[#141413] leading-[1.5] tracking-[-0.015em]">
+              <div className="py-5 sm:py-7 flex-1 flex flex-col justify-center">
+                <blockquote className="text-[16px] sm:text-[18px] lg:text-[19px] font-medium text-[#141413] leading-[1.5] tracking-[-0.015em]">
                   “{story.quotePart1}{' '}
                   <span className="font-editorial italic font-normal text-[#D97706] text-[1.12em] tracking-normal inline-block">
                     {story.quoteHighlight}
@@ -118,9 +118,9 @@ export function TransitionStoriesEditorial() {
               </div>
 
               {/* Bottom Row: Clean Studio Portrait Avatar + Verified Capstone Metadata */}
-              <div className="pt-5 border-t border-dashed border-[#E6E1D6] flex items-center gap-3.5">
-                {/* 64x64px Studio Portrait Avatar (Cleanly Cropped Chest-Up, Zero Watermark) */}
-                <div className="w-16 h-16 rounded-xl border border-[#141413]/15 bg-[#EFECE4] overflow-hidden shrink-0 shadow-2xs relative">
+              <div className="pt-4 sm:pt-5 border-t border-dashed border-[#E6E1D6] flex items-center gap-3.5">
+                {/* Clean Portrait Avatar */}
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl border border-[#141413]/15 bg-[#EFECE4] overflow-hidden shrink-0 shadow-2xs relative">
                   <img
                     src={story.avatar}
                     alt={story.name}
@@ -141,7 +141,7 @@ export function TransitionStoriesEditorial() {
                   </div>
                   <a
                     href="#curriculum"
-                    className="font-mono text-[11px] text-[#6E6A63] hover:text-[#D97706] flex items-center gap-1 mt-1 truncate transition-colors group/link cursor-pointer"
+                    className="font-mono text-[10.5px] sm:text-[11px] text-[#6E6A63] hover:text-[#D97706] flex items-center gap-1 mt-1 truncate transition-colors group/link cursor-pointer"
                   >
                     <span className="font-semibold tracking-tight">{story.capstone}</span>
                     <ArrowUpRight className="w-3 h-3 shrink-0 text-amber-600 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
@@ -223,7 +223,7 @@ export function StuckReframeEditorial() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: smoothEase }}
-            className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[#16171A]"
+            className="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-[-0.03em] text-[#16171A]"
           >
             Why most people stay{' '}
             <span className="font-editorial italic font-normal text-[#6E6A63] text-[1.12em] tracking-normal inline-block">

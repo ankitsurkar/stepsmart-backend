@@ -265,12 +265,12 @@ export function PricingEditorial({ countdownText, onEnroll }: PricingEditorialPr
 
               {/* Cohort Seat Capacity Progress Meter (Fills vertical gap & adds urgency) */}
               <div className="bg-stone-900/90 border border-stone-800/90 rounded-xl p-3 mb-5">
-                <div className="flex items-center justify-between text-[10px] sm:text-[10.5px] font-mono mb-2">
-                  <span className="text-stone-400 font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                <div className="flex items-center justify-between text-[10px] sm:text-[10.5px] font-mono mb-2 flex-wrap gap-1">
+                  <span className="text-stone-400 font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                     BATCH 02 CAPACITY
                   </span>
-                  <span className="text-amber-400 font-bold">
+                  <span className="text-amber-400 font-bold shrink-0">
                     23 / 30 SEATS FILLED (76%)
                   </span>
                 </div>
@@ -288,10 +288,10 @@ export function PricingEditorial({ countdownText, onEnroll }: PricingEditorialPr
               {/* Full-width Ticket CTA Button */}
               <button
                 onClick={() => onEnroll(`full-cohort${includeMentoring ? '-with-mentoring' : ''}`, cohortTotal)}
-                className="w-full py-3.5 px-5 font-mono font-bold text-xs sm:text-sm uppercase bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 group mb-3"
+                className="w-full py-3.5 px-3 sm:px-5 font-mono font-bold text-xs sm:text-sm uppercase bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 group mb-3"
               >
                 <span>RESERVE MY SEAT FOR ₹{cohortTotal.toLocaleString('en-IN')}</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform shrink-0" />
               </button>
 
               <div className="text-center">
@@ -443,7 +443,7 @@ export function PricingEditorial({ countdownText, onEnroll }: PricingEditorialPr
             {modularTotal > 0 ? (
               <button
                 onClick={() => onEnroll(`modular-${modularLabels.join('-')}`, modularTotal)}
-                className="w-full sm:w-auto px-8 py-3.5 font-mono font-bold uppercase text-xs sm:text-sm bg-[#16171A] hover:bg-black text-white rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer inline-flex items-center justify-center gap-2 group"
+                className="w-full sm:w-auto px-4 sm:px-8 py-3.5 font-mono font-bold uppercase text-xs sm:text-sm bg-[#16171A] hover:bg-black text-white rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer inline-flex items-center justify-center gap-2 group"
               >
                 <span>ENROLL IN {modularLabel.toUpperCase()} FOR ₹{modularTotal.toLocaleString('en-IN')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -451,7 +451,7 @@ export function PricingEditorial({ countdownText, onEnroll }: PricingEditorialPr
             ) : (
               <button
                 type="button"
-                className="w-full sm:w-auto px-8 py-3.5 font-mono font-semibold uppercase text-xs sm:text-sm border-2 border-stone-300 bg-stone-50 text-stone-500 rounded-xl cursor-default select-none transition-colors"
+                className="w-full sm:w-auto px-4 sm:px-8 py-3.5 font-mono font-semibold uppercase text-xs sm:text-sm border-2 border-stone-300 bg-stone-50 text-stone-500 rounded-xl cursor-default select-none transition-colors"
               >
                 SELECT BUILD OR PRACTICE ABOVE TO ENROLL
               </button>
@@ -639,7 +639,7 @@ export function HowToJoinEditorial() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
-              className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] text-[#16171A]"
+              className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] text-[#16171A]"
             >
               How to join?
             </motion.h2>
@@ -664,7 +664,7 @@ export function HowToJoinEditorial() {
             aria-hidden="true" 
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch relative z-10">
             {steps.map((step, i) => (
               <motion.div 
                 key={i}
@@ -672,7 +672,7 @@ export function HowToJoinEditorial() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease: smoothEase }}
-                className="bg-[#FAF8F3] border border-[#E6E1D6] rounded-2xl p-6 sm:p-6.5 flex flex-col justify-between h-full relative shadow-2xs hover:shadow-xs transition-shadow"
+                className="bg-[#FAF8F3] border border-[#E6E1D6] rounded-2xl p-5 sm:p-6.5 flex flex-col justify-between h-full relative shadow-2xs hover:shadow-xs transition-shadow"
               >
                 <div>
                   {/* Top Row: Step Number & Time/SLA Badge */}
@@ -825,7 +825,7 @@ export function FaqEditorial() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
-              className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] text-[#16171A]"
+              className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] text-[#16171A]"
             >
               Questions, answered.
             </motion.h2>
@@ -844,13 +844,13 @@ export function FaqEditorial() {
               <div key={idx} className="transition-colors hover:bg-stone-50/50">
                 <button
                   onClick={() => setOpenFaq(isOpen ? null : idx)}
-                  className="w-full py-5 px-6 sm:px-8 flex items-center justify-between text-left cursor-pointer group"
+                  className="w-full py-4 sm:py-5 px-4 sm:px-8 flex items-center justify-between text-left cursor-pointer group"
                 >
-                  <div className="flex items-center gap-4 flex-1 pr-4">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1 pr-3 sm:pr-4">
                     <span className="font-mono text-xs font-bold text-amber-800 shrink-0">
                       {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
                     </span>
-                    <span className="font-bold text-base sm:text-lg text-[#16171A] group-hover:text-amber-900 transition-colors tracking-tight">
+                    <span className="font-bold text-[14.5px] sm:text-lg text-[#16171A] group-hover:text-amber-900 transition-colors tracking-tight">
                       {faq.q}
                     </span>
                   </div>
@@ -911,13 +911,13 @@ export function FooterEditorial({ countdownText, onOpenBrochure, onEnroll }: Foo
             className="rounded-3xl bg-[#16171A] text-white p-8 sm:p-12 text-center shadow-xl shadow-stone-900/10 overflow-hidden relative border border-stone-800"
           >
             {/* Ambient amber glow */}
-            <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-56 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-72 sm:w-96 h-56 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
 
             <span className="font-mono text-[10px] uppercase font-semibold tracking-[0.05em] text-amber-300 block mb-2.5">
               ADMISSION DEADLINE APPROACHING
             </span>
 
-            <h2 className="text-3xl sm:text-5xl font-semibold text-white mb-3 leading-tight tracking-tight">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-semibold text-white mb-3 leading-tight tracking-tight">
               Your seat, your project,{' '}
               <span className="font-editorial italic font-normal text-amber-300 text-[1.1em]">
                 your evidence.

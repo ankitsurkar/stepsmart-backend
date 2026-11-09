@@ -646,8 +646,8 @@ export function WhyDifferentEditorial() {
           transition={{ duration: 0.7, delay: 0.2, ease: smoothEase }}
           className="relative w-full max-w-5xl mx-auto text-left rounded-3xl bg-[#F5F3EF] border border-stone-200/90 shadow-sm overflow-hidden"
         >
-          {/* Header Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 items-stretch border-b border-stone-200">
+          {/* Header Row (Desktop Side-by-Side Guide) */}
+          <div className="hidden md:grid grid-cols-2 items-stretch border-b border-stone-200">
             
             {/* Left Column Header: PM-X by StepSmart (Elevated Warm White) */}
             <div className="py-5 px-6 sm:px-8 bg-white flex items-center justify-between border-t-2 border-t-amber-500 md:border-r border-stone-200 shadow-2xs">
@@ -681,7 +681,7 @@ export function WhyDifferentEditorial() {
                 className="grid grid-cols-1 md:grid-cols-2 items-stretch transition-colors group"
               >
                 {/* Left Column: PM-X by StepSmart (Pure White, Elevated) */}
-                <div className="py-5 sm:py-6 px-6 sm:px-8 bg-white md:border-r border-stone-200 flex items-start gap-3.5 group-hover:bg-amber-50/20 transition-colors">
+                <div className="py-5 sm:py-6 px-5 sm:px-8 bg-white md:border-r border-stone-200 flex items-start gap-3 sm:gap-3.5 group-hover:bg-amber-50/20 transition-colors">
                   <div className="w-6 h-6 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
                     <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
                   </div>
@@ -699,7 +699,7 @@ export function WhyDifferentEditorial() {
                 </div>
 
                 {/* Right Column: Most PM Courses (Recessed Muted Gray with Soft Translucent Strikethrough) */}
-                <div className="py-5 sm:py-6 px-6 sm:px-8 bg-[#F5F3EF] flex items-start gap-3.5 group-hover:bg-[#EFECE6] transition-colors">
+                <div className="py-4 sm:py-6 px-5 sm:px-8 bg-[#F5F3EF] flex items-start gap-3 sm:gap-3.5 group-hover:bg-[#EFECE6] transition-colors border-t border-stone-200/80 md:border-t-0">
                   <div className="w-6 h-6 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center shrink-0 mt-0.5">
                     <span className="text-rose-500 font-bold text-xs">✕</span>
                   </div>
