@@ -79,24 +79,6 @@ export function PrototypeHeroPage() {
   return (
     <div className="min-h-screen bg-[#FBF9F5] text-[#16171A] font-sans selection:bg-amber-200/50 selection:text-stone-900">
       
-      {/* 0. PROTOTYPE NOTICE BAR */}
-      <div className="bg-[#16171A] text-white px-4 py-2 text-xs font-mono flex items-center justify-between border-b border-stone-800">
-        <div className="flex items-center gap-3">
-          <span className="bg-amber-400 text-black px-2 py-0.5 rounded font-bold text-[10px] tracking-wide">
-            DIRECTION 2 PROTOTYPE
-          </span>
-          <span className="text-stone-300">Prisma / Zenith Editorial Prestige</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <a 
-            href="/" 
-            className="text-amber-300 hover:text-amber-200 font-bold inline-flex items-center gap-1 transition-colors"
-          >
-            <span>View Current Live Site ➜</span>
-          </a>
-        </div>
-      </div>
-
       {/* FLOATING EDITORIAL PILL NAVBAR (SLIDES DOWN PAST HERO & SCROLL PROGRESS) */}
       <StickyPillNavbar />
 
@@ -454,7 +436,7 @@ export function PrototypeHeroPage() {
                   onClick={() => setEnrollModal(null)}
                   className="w-full py-3 rounded-full border border-stone-300 text-stone-600 hover:text-stone-900 text-xs font-mono font-medium uppercase transition-colors cursor-pointer"
                 >
-                  Continue Reviewing Prototype
+                  Continue Exploring
                 </button>
               </div>
             </motion.div>
