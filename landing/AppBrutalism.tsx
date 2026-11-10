@@ -3601,7 +3601,7 @@ function PortalPage() {
     return <LegacyPortalPage />;
   }
 
-  return <PrototypeHeroPage />;
+  return <AppExecutive />;
 }
 
 function LegacyPortalPage() {
