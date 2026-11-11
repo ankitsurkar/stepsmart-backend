@@ -1,0 +1,110 @@
+[
+  {
+    "id": 3045,
+    "title": "Top Salaries by Department",
+    "url": "https://www.aced.io/questions/3045/top-salaries-by-department",
+    "categories": [
+      "coding",
+      "sql"
+    ],
+    "companies": [
+      "Meta",
+      "Tesla"
+    ],
+    "difficulty": "Hard",
+    "last_asked_on": "2026-03-31T00:00:00.000Z",
+    "votes": 63,
+    "views": 1505,
+    "comments": 43,
+    "has_expert_solution": true,
+    "published_at": "2023-09-17T14:13:31.816Z"
+  },
+  {
+    "id": 2777,
+    "title": "Session Data Analysis.",
+    "url": "https://www.aced.io/questions/2777/session-data-analysis",
+    "categories": [
+      "coding",
+      "concept",
+      "sql"
+    ],
+    "companies": [
+      "Uber",
+      "Indeed",
+      "Amazon"
+    ],
+    "difficulty": "Hard",
+    "last_asked_on": "2025-09-10T00:00:00.000Z",
+    "votes": 17,
+    "views": 1204,
+    "comments": 6,
+    "has_expert_solution": true,
+    "published_at": "2023-01-28T17:39:31.788Z"
+  },
+  {
+    "id": 2167,
+    "title": "What is the difference between NoSQL and SQL?",
+    "url": "https://www.aced.io/questions/2167/difference-nosql-sql",
+    "categories": [
+      "concept",
+      "sql",
+      "technical"
+    ],
+    "companies": [
+      "Meta",
+      "Google",
+      "Apple",
+      "Amazon",
+      "Walmart Labs",
+      "AHL Logics"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 22,
+    "views": 1047,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2022-05-15T19:55:52.276Z"
+  },
+  {
+    "id": 3071,
+    "title": "Fraudulent Transactions",
+    "url": "https://www.aced.io/questions/3071/fraudulent-transactions",
+    "categories": [
+      "coding",
+      "sql"
+    ],
+    "companies": [
+      "Stripe",
+      "Revolut"
+    ],
+    "difficulty": "Medium",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 18,
+    "views": 440,
+    "comments": 8,
+    "has_expert_solution": true,
+    "published_at": "2023-09-17T14:26:27.730Z"
+  },
+  {
+    "id": 2156,
+    "title": "What is the best way to connect SQL databases and why?",
+    "url": "https://www.aced.io/questions/2156/best-way-connect-sql-databases",
+    "categories": [
+      "concept",
+      "sql",
+      "technical"
+    ],
+    "companies": [
+      "Airbnb",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 11,
+    "views": 732,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-05-10T22:04:05.842Z"
+  }
+]

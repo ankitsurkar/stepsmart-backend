@@ -1,0 +1,22 @@
+[
+  {
+    "id": 4843,
+    "title": "Design a database schema for a fitness app.",
+    "url": "https://www.aced.io/questions/4843/fitness-app-data-schema-design",
+    "categories": [
+      "data-modeling"
+    ],
+    "companies": [
+      "DoorDash",
+      "Databricks",
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-07-26T00:00:00.000Z",
+    "votes": 5,
+    "views": 1634,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2025-01-26T21:27:44.639Z"
+  }
+]

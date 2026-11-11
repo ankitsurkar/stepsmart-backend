@@ -1,0 +1,5 @@
+id,title,url,categories,companies,difficulty,last_asked_on,votes,views,comments,has_expert_solution,published_at
+4374,How would you design an A/B test for a new campaign?,https://www.aced.io/questions/4374/design-ab-test,statistics-and-experimentation,Uber,,2024-12-01T00:00:00.000Z,7,272,2,True,2024-09-25T07:55:23.506Z
+3718,Describe a situation where using an A/B test would be appropriate.,https://www.aced.io/questions/3718/appropriate-situation-for-ab-test,statistics-and-experimentation,,,2024-03-30T00:00:00.000Z,9,407,4,False,2024-02-27T18:49:54.690Z
+6595,Tell me about a time when you had to design an A/B experiment.,https://www.aced.io/questions/6595/describe-design-ab-experiment,"statistics-and-experimentation, behavioral","Home Depot, Agoda",,2025-08-31T00:00:00.000Z,0,20,0,False,2026-07-30T23:57:45.817Z
+5361,What are the z-tests and t-tests?,https://www.aced.io/questions/5361/z-and-t-tests,statistics-and-experimentation,"Google, Etsy, Solenis",,2025-12-01T00:00:00.000Z,1,72,0,True,2025-06-22T18:21:33.041Z

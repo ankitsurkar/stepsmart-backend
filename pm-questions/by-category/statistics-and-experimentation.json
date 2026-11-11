@@ -1,0 +1,76 @@
+[
+  {
+    "id": 4374,
+    "title": "How would you design an A/B test for a new campaign?",
+    "url": "https://www.aced.io/questions/4374/design-ab-test",
+    "categories": [
+      "statistics-and-experimentation"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-12-01T00:00:00.000Z",
+    "votes": 7,
+    "views": 272,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2024-09-25T07:55:23.506Z"
+  },
+  {
+    "id": 3718,
+    "title": "Describe a situation where using an A/B test would be appropriate.",
+    "url": "https://www.aced.io/questions/3718/appropriate-situation-for-ab-test",
+    "categories": [
+      "statistics-and-experimentation"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2024-03-30T00:00:00.000Z",
+    "votes": 9,
+    "views": 407,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2024-02-27T18:49:54.690Z"
+  },
+  {
+    "id": 6595,
+    "title": "Tell me about a time when you had to design an A/B experiment.",
+    "url": "https://www.aced.io/questions/6595/describe-design-ab-experiment",
+    "categories": [
+      "statistics-and-experimentation",
+      "behavioral"
+    ],
+    "companies": [
+      "Home Depot",
+      "Agoda"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-08-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 20,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-30T23:57:45.817Z"
+  },
+  {
+    "id": 5361,
+    "title": "What are the z-tests and t-tests?",
+    "url": "https://www.aced.io/questions/5361/z-and-t-tests",
+    "categories": [
+      "statistics-and-experimentation"
+    ],
+    "companies": [
+      "Google",
+      "Etsy",
+      "Solenis"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 72,
+    "comments": 0,
+    "has_expert_solution": true,
+    "published_at": "2025-06-22T18:21:33.041Z"
+  }
+]

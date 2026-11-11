@@ -1,0 +1,157 @@
+{
+  "slug": "nubank-product-manager-interview-guide",
+  "title": "Nubank Product Manager Interview Guide | Cases & Rounds",
+  "guide_type": "interview-guide",
+  "url": "https://nextsprints.com/guide/nubank-product-manager-interview-guide",
+  "updated_at": "October 31, 2026",
+  "word_count": 1929,
+  "local_path": "by-type/interview-guide/nubank-product-manager-interview-guide.md",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "subsections": [],
+      "content": "Nubank started in 2013 in a small house in São Paulo with one product: a purple, no-annual-fee credit card managed entirely through an app. Thirteen years later, Nu Holdings (NYSE: NU) serves about 139 million customers across Brazil, Mexico and Colombia. In the second quarter of 2026 it reported revenue of nearly US$5.9 billion and its first quarter of more than US$1 billion in net income. It now operates as a bank in Mexico, has been obtaining a banking licence in Brazil, and in January 2026 received conditional approval from US regulators to form Nubank, N.A.\n\nProduct managers sit at the centre of this machine. Nubank's products include NuConta and Pix, the credit card, Ultravioleta, Caixinhas, NuInvest, Pix no Crédito, NuPay, personal and payroll loans, insurance, NuCel, Nu México and Nu Colombia, plus AI features such as its transaction foundation model nuFormer and an AI assistant used for Pix.\n\nThis guide explains the PM role at Nubank, what the company looks for, how the interview process is reported to work, how compensation is structured, and how students and early-career candidates can prepare.\n\n> Insider Perspective\n> Candidates often describe Nubank's process as structured and case-heavy, with recruiters sharing preparation material in advance. Interviewers look for customer obsession, clear thinking about trade-offs, and comfort working in English and Portuguese or Spanish."
+    },
+    {
+      "heading": "PM Role",
+      "subsections": [],
+      "content": "> Nubank Product Manager\n> A Nubank PM owns a product or part of a customer journey (for example, Pix, credit card limits, Caixinhas, NuPay or Nu México onboarding), working with engineering, design, data science, business analysts and risk to deliver customer and business outcomes.\n\nNubank organises teams around products and customer problems, often in squads with a PM, an engineering manager, engineers, a designer and analysts. PMs work across:\n\n- **Banking and payments**: NuConta, Pix, tap-to-pay Pix, NuPay checkout.\n- **Credit**: credit cards, limits, Pix no Crédito, personal loans, payroll loans.\n- **Wealth**: Caixinhas, NuInvest.\n- **Premium and lifestyle**: Ultravioleta, Nubank+, NuCel, NuTravel.\n- **International**: Nu México (now a bank) and Nu Colombia; a US effort is being built.\n- **Platform and AI**: data platforms, nuFormer, the AI assistant, fraud and security.\n\n| Responsibility | What it looks like |\n| --- | --- |\n| Discovery | Customer research, data analysis, competitor analysis (Itaú, Mercado Pago, Inter, BBVA) |\n| Prioritisation | Balancing customer value, risk, regulation and revenue |\n| Execution | Writing specs, running experiments, shipping iteratively |\n| Measurement | Metrics such as principality, delinquency, Pix usage and NPS |\n| Collaboration | Working closely with risk, legal and compliance in a regulated environment |\n\nProduct roles are mainly in São Paulo (hybrid), Mexico City and Bogotá, with some roles in other locations including the US."
+    },
+    {
+      "heading": "Job Requirements",
+      "subsections": [],
+      "content": "**Experience**\n\n- Associate and early-career roles: 0–2 years, any degree, strong analytical skills. Nubank has run an Associate Product Manager programme in the past (a 12-month programme in São Paulo with two six-month rotations and a path to a PM role); check current early-career openings, since programme formats change.\n- PM roles: typically 3+ years in product, consulting, banking or technology.\n- Senior and Staff roles: 5–10 years, often with fintech, payments or credit experience.\n\n**Skills**\n\n- Analytical thinking: SQL, metrics, experiment design.\n- Financial product understanding: credit risk, interest, interchange, deposits.\n- Customer empathy for diverse users, from first-time credit customers to high-income Ultravioleta clients.\n- Communication in English plus Portuguese (Brazil) or Spanish (Mexico, Colombia).\n- Collaboration with risk, compliance and engineering.\n\n**Values**\n\nNubank's stated values include customers loving them fiercely, challenging the status quo, being smartly efficient, acting like owners and building strong, diverse teams.\n\n| Requirement | How to demonstrate it |\n| --- | --- |\n| Analytical skill | A project where data changed a decision |\n| Customer obsession | Research you ran and what you learned |\n| Financial understanding | A teardown of a Nubank product with economics |\n| Language | Interview comfortably in English |\n\n> Common Pitfalls\n> Candidates often propose growth ideas without thinking about credit risk, fraud or regulation. At Nubank, a feature that increases usage but also increases defaults is not a success.\n\n> Expert Advice\n> Use the Nubank app deeply (or Nu México and Nu Colombia apps) and compare it with Itaú, Inter, Mercado Pago or BBVA. Bring specific observations to your interviews."
+    },
+    {
+      "heading": "Interview Process Breakdown",
+      "subsections": [],
+      "content": "Based on candidate reports on Glassdoor and other sources, the process usually looks like this:\n\n```mermaid\ngraph LR\n    A[Application] --> B[Recruiter screen]\n    B --> C[Hiring manager or PM call]\n    C --> D[Product sense and execution cases]\n    D --> E[Technical or analytical assessment]\n    E --> F[Leadership and values]\n    F --> G[Offer]\n```\n\n| Stage | Format | Duration | Focus areas |\n| --- | --- | --- | --- |\n| Recruiter screen | Video | 30 mins | Motivation, experience, English |\n| PM call | Video | 45 mins | Past projects, problem solving, prioritisation |\n| Product sense (often 2) | Video | 45–60 mins each | Design and improve products |\n| Product execution (often 2) | Video | 45–60 mins each | Metrics, root cause, trade-offs |\n| Technical assessment | Video | 45–60 mins | Data, systems, working with engineers |\n| Leadership / values | Video or onsite | 45 mins | Ownership, collaboration, culture |\n| Case presentation (some roles) | Video | 60 mins | Case study presented to senior PMs |\n\nDetailed breakdown:\n\n- Screening:\n\nRecruiters assess motivation and communication, and some candidates report an English assessment early on.\n\n- Product interviews:\n\na. Product sense: design or improve experiences, sometimes for non-Nubank products (a supermarket shopper experience is one reported example).\n\nb. Product execution: measuring success of a feature, diagnosing metric drops, choosing between two equally important projects with limited resources.\n\nc. Strategy and business: market entry, competitive response, pricing.\n\n- Final rounds:\n\nLeadership and values interviews, sometimes with a case presented to two senior PMs.\n\nTimeline expectations:\n\n- Usually 3–6 weeks.\n- Recruiters often share preparation videos or documents.\n- Some candidates report unclear feedback when rejected for seniority reasons.\n\nPractice Revolut questions\n\nProduct Design\n\nHow could Facebook build a feature to help people find roommates?\n\nView\n\nSay you're a WhatsApp PM and want to add more ecommerce functionality. What would you do?\n\nView\n\nHow would you build a language learning product for the Facebook app?\n\nView\n\nProduct Improvement\n\nHow can Revolut enhance its budgeting tools to better help users manage their finances?\n\nView\n\nWhat features could be added to Revolut's cryptocurrency trading platform to attract more experienced traders?\n\nView\n\nIn what ways can we improve Revolut's travel insurance offering to provide more value to frequent travelers?\n\nView\n\nProduct Success Metrics\n\nhow would you define the success of revolut's multi-currency accounts?\n\nView\n\nwhat metrics would you use to evaluate revolut's premium subscription plan?\n\nView\n\nhow would you measure the success of revolut's international money transfer feature?\n\nView\n\nProduct Trade-Off\n\nShould Revolut prioritize adding new features or improving existing core functionalities?\n\nView\n\nHow can Revolut balance offering free services to attract users versus implementing fees to increase revenue?\n\nView\n\nIs it better for Revolut to focus on expanding to new markets or deepening product offerings in existing markets?\n\nView\n\nProduct Root Cause Analysis\n\nWhy has the number of new Revolut Metal card sign-ups dropped by 30% this month?\n\nView\n\nWhy has customer engagement with Revolut's budgeting tools decreased by 25% over the last month?\n\nView\n\nWhat's causing the sudden increase in failed international money transfers for Revolut business accounts?\n\nView"
+    },
+    {
+      "heading": "Product Manager Compensation & Levels at Nubank",
+      "subsections": [],
+      "content": "Nubank uses an individual contributor (IC) ladder. Levels.fyi data for Greater São Paulo shows PM median total compensation of roughly R$333,000 at IC5, R$455,000 at IC6 and R$574,000 at IC7 per year.\n\nLevels:\n\n1. Associate PM / PM I (IC4)\n2. Product Manager (IC5)\n3. Senior Product Manager (IC6)\n4. Staff / Lead PM (IC7)\n5. Principal PM / Group PM (IC8+)\n\n| Level | Estimated total compensation (BRL per year, 2026) |\n| --- | --- |\n| Associate PM (IC4) | R$180,000 – R$280,000 |\n| Product Manager (IC5) | R$300,000 – R$400,000 |\n| Senior PM (IC6) | R$400,000 – R$560,000 |\n| Staff / Lead PM (IC7) | R$520,000 – R$720,000 |\n| Principal / Group PM (IC8+) | R$750,000 – R$1,100,000+ |\n\nNote: total compensation includes base salary (paid in Brazil with a 13th salary and vacation bonus), profit sharing (PLR) and restricted stock units in Nu Holdings. Ranges are estimates and vary by team and performance. Mexico roles are paid in MXN and US roles in USD."
+    },
+    {
+      "heading": "How to Prepare",
+      "subsections": [],
+      "content": "**Know the products and the business**\n\n- Use NuConta, Pix, the credit card, Caixinhas, NuInvest and, if possible, Nu México or Nu Colombia.\n- Understand the business model: interchange, credit interest, deposits, fees, and very low cost to serve (efficiency ratio near 20%).\n- Follow recent moves: Mexico banking licence, US charter process, Ultravioleta changes, NuPay partnerships, NuCel and AI initiatives.\n\n**Practise fintech cases**\n\n- Designing for financial inclusion (first credit card, first emergency fund).\n- Metrics for payments and credit products.\n- Root cause analysis for approval rates, Pix usage or delinquency.\n- Strategy questions on Mexico, Colombia and the US.\n\nUse NextSprints' Product Manager Interview Questions to practise Nubank-style cases with worked answers.\n\n**Prepare your stories**\n\nUse the STAR method to show ownership, customer obsession and data-driven decisions. Prepare examples of disagreements with stakeholders such as risk or legal teams.\n\n**Practise in English**\n\nEven in São Paulo, parts of the process are often in English. Practise explaining cases clearly in English.\n\n**Mock interviews**\n\nPractise with PMs from fintech or banking. NextSprints PM Coaching can connect you with experienced PMs for mock interviews."
+    },
+    {
+      "heading": "FAQs",
+      "subsections": [
+        {
+          "heading": "Does Nubank hire product managers from university?",
+          "content": "Nubank has historically run an Associate Product Manager programme for early-career candidates from any degree, based in São Paulo. It also runs broader early-career programmes. Check Nubank's careers page and recruiting posts for current openings."
+        },
+        {
+          "heading": "Are interviews in English or Portuguese?",
+          "content": "Many candidates report that at least part of the process is in English, and some are fully in English. Roles in Brazil also require Portuguese; Mexico and Colombia roles require Spanish."
+        },
+        {
+          "heading": "What kinds of cases are asked?",
+          "content": "Reported cases include measuring the success of a feature, designing an improved experience for a shopper, and choosing between two equally prioritised projects with limited resources. Some candidates say cases are unrelated to Nubank's products, so practise general product sense as well as fintech cases."
+        },
+        {
+          "heading": "How important is knowledge of credit and banking?",
+          "content": "Very helpful. Many Nubank products involve credit risk, fraud and regulation. You do not need to be a credit expert, but you should understand how lending makes and loses money."
+        },
+        {
+          "heading": "Can I join Nubank's Mexico or Colombia teams from Brazil?",
+          "content": "Some roles allow transfers or regional work, but most require living in the relevant country. International experience and Spanish are strong advantages."
+        }
+      ],
+      "content": ""
+    },
+    {
+      "heading": "Related Guides Section",
+      "subsections": [],
+      "content": "📖 [Nubank Product Strategy Guide](/guide/nubank-product-strategy-guide) – How Nubank's Brazil, Mexico, Colombia and US strategies fit together.\n\n📖 [Nubank Product Manager Salary Guide](/guide/nubank-product-manager-salary-guide) – PM pay by level in BRL and negotiation tips.\n\n📖 [Nubank Product Teardown](/guide/nubank-digital-banking-app-product-teardown) – A teardown of the Nubank app.\n\nDisclaimer: This guide is created for product management interview preparation purposes only. The analysis and methodology are based on public information."
+    }
+  ],
+  "practice_questions": [
+    {
+      "category": "Product Design",
+      "question": "How could Facebook build a feature to help people find roommates?"
+    },
+    {
+      "category": "Product Design",
+      "question": "Say you're a WhatsApp PM and want to add more ecommerce functionality. What would you do?"
+    },
+    {
+      "category": "Product Design",
+      "question": "How would you build a language learning product for the Facebook app?"
+    },
+    {
+      "category": "Product Improvement",
+      "question": "How can Revolut enhance its budgeting tools to better help users manage their finances?"
+    },
+    {
+      "category": "Product Improvement",
+      "question": "What features could be added to Revolut's cryptocurrency trading platform to attract more experienced traders?"
+    },
+    {
+      "category": "Product Improvement",
+      "question": "In what ways can we improve Revolut's travel insurance offering to provide more value to frequent travelers?"
+    },
+    {
+      "category": "Product Success Metrics",
+      "question": "how would you define the success of revolut's multi-currency accounts?"
+    },
+    {
+      "category": "Product Success Metrics",
+      "question": "what metrics would you use to evaluate revolut's premium subscription plan?"
+    },
+    {
+      "category": "Product Success Metrics",
+      "question": "how would you measure the success of revolut's international money transfer feature?"
+    },
+    {
+      "category": "Product Trade-Off",
+      "question": "Should Revolut prioritize adding new features or improving existing core functionalities?"
+    },
+    {
+      "category": "Product Trade-Off",
+      "question": "How can Revolut balance offering free services to attract users versus implementing fees to increase revenue?"
+    },
+    {
+      "category": "Product Trade-Off",
+      "question": "Is it better for Revolut to focus on expanding to new markets or deepening product offerings in existing markets?"
+    },
+    {
+      "category": "Product Root Cause Analysis",
+      "question": "Why has the number of new Revolut Metal card sign-ups dropped by 30% this month?"
+    },
+    {
+      "category": "Product Root Cause Analysis",
+      "question": "Why has customer engagement with Revolut's budgeting tools decreased by 25% over the last month?"
+    },
+    {
+      "category": "Product Root Cause Analysis",
+      "question": "What's causing the sudden increase in failed international money transfers for Revolut business accounts?"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Does Nubank hire product managers from university?",
+      "answer": "Nubank has historically run an Associate Product Manager programme for early-career candidates from any degree, based in São Paulo. It also runs broader early-career programmes. Check Nubank's careers page and recruiting posts for current openings."
+    },
+    {
+      "question": "Are interviews in English or Portuguese?",
+      "answer": "Many candidates report that at least part of the process is in English, and some are fully in English. Roles in Brazil also require Portuguese; Mexico and Colombia roles require Spanish."
+    },
+    {
+      "question": "What kinds of cases are asked?",
+      "answer": "Reported cases include measuring the success of a feature, designing an improved experience for a shopper, and choosing between two equally prioritised projects with limited resources. Some candidates say cases are unrelated to Nubank's products, so practise general product sense as well as fintech cases."
+    },
+    {
+      "question": "How important is knowledge of credit and banking?",
+      "answer": "Very helpful. Many Nubank products involve credit risk, fraud and regulation. You do not need to be a credit expert, but you should understand how lending makes and loses money."
+    },
+    {
+      "question": "Can I join Nubank's Mexico or Colombia teams from Brazil?",
+      "answer": "Some roles allow transfers or regional work, but most require living in the relevant country. International experience and Spanish are strong advantages."
+    }
+  ],
+  "content_markdown": "## Introduction\n\nNubank started in 2013 in a small house in São Paulo with one product: a purple, no-annual-fee credit card managed entirely through an app. Thirteen years later, Nu Holdings (NYSE: NU) serves about 139 million customers across Brazil, Mexico and Colombia. In the second quarter of 2026 it reported revenue of nearly US$5.9 billion and its first quarter of more than US$1 billion in net income. It now operates as a bank in Mexico, has been obtaining a banking licence in Brazil, and in January 2026 received conditional approval from US regulators to form Nubank, N.A.\n\nProduct managers sit at the centre of this machine. Nubank's products include NuConta and Pix, the credit card, Ultravioleta, Caixinhas, NuInvest, Pix no Crédito, NuPay, personal and payroll loans, insurance, NuCel, Nu México and Nu Colombia, plus AI features such as its transaction foundation model nuFormer and an AI assistant used for Pix.\n\nThis guide explains the PM role at Nubank, what the company looks for, how the interview process is reported to work, how compensation is structured, and how students and early-career candidates can prepare.\n\n> Insider Perspective\n> Candidates often describe Nubank's process as structured and case-heavy, with recruiters sharing preparation material in advance. Interviewers look for customer obsession, clear thinking about trade-offs, and comfort working in English and Portuguese or Spanish.\n\n## PM Role\n\n> Nubank Product Manager\n> A Nubank PM owns a product or part of a customer journey (for example, Pix, credit card limits, Caixinhas, NuPay or Nu México onboarding), working with engineering, design, data science, business analysts and risk to deliver customer and business outcomes.\n\nNubank organises teams around products and customer problems, often in squads with a PM, an engineering manager, engineers, a designer and analysts. PMs work across:\n\n- **Banking and payments**: NuConta, Pix, tap-to-pay Pix, NuPay checkout.\n- **Credit**: credit cards, limits, Pix no Crédito, personal loans, payroll loans.\n- **Wealth**: Caixinhas, NuInvest.\n- **Premium and lifestyle**: Ultravioleta, Nubank+, NuCel, NuTravel.\n- **International**: Nu México (now a bank) and Nu Colombia; a US effort is being built.\n- **Platform and AI**: data platforms, nuFormer, the AI assistant, fraud and security.\n\n| Responsibility | What it looks like |\n| --- | --- |\n| Discovery | Customer research, data analysis, competitor analysis (Itaú, Mercado Pago, Inter, BBVA) |\n| Prioritisation | Balancing customer value, risk, regulation and revenue |\n| Execution | Writing specs, running experiments, shipping iteratively |\n| Measurement | Metrics such as principality, delinquency, Pix usage and NPS |\n| Collaboration | Working closely with risk, legal and compliance in a regulated environment |\n\nProduct roles are mainly in São Paulo (hybrid), Mexico City and Bogotá, with some roles in other locations including the US.\n\n## Job Requirements\n\n**Experience**\n\n- Associate and early-career roles: 0–2 years, any degree, strong analytical skills. Nubank has run an Associate Product Manager programme in the past (a 12-month programme in São Paulo with two six-month rotations and a path to a PM role); check current early-career openings, since programme formats change.\n- PM roles: typically 3+ years in product, consulting, banking or technology.\n- Senior and Staff roles: 5–10 years, often with fintech, payments or credit experience.\n\n**Skills**\n\n- Analytical thinking: SQL, metrics, experiment design.\n- Financial product understanding: credit risk, interest, interchange, deposits.\n- Customer empathy for diverse users, from first-time credit customers to high-income Ultravioleta clients.\n- Communication in English plus Portuguese (Brazil) or Spanish (Mexico, Colombia).\n- Collaboration with risk, compliance and engineering.\n\n**Values**\n\nNubank's stated values include customers loving them fiercely, challenging the status quo, being smartly efficient, acting like owners and building strong, diverse teams.\n\n| Requirement | How to demonstrate it |\n| --- | --- |\n| Analytical skill | A project where data changed a decision |\n| Customer obsession | Research you ran and what you learned |\n| Financial understanding | A teardown of a Nubank product with economics |\n| Language | Interview comfortably in English |\n\n> Common Pitfalls\n> Candidates often propose growth ideas without thinking about credit risk, fraud or regulation. At Nubank, a feature that increases usage but also increases defaults is not a success.\n\n> Expert Advice\n> Use the Nubank app deeply (or Nu México and Nu Colombia apps) and compare it with Itaú, Inter, Mercado Pago or BBVA. Bring specific observations to your interviews.\n\n## Interview Process Breakdown\n\nBased on candidate reports on Glassdoor and other sources, the process usually looks like this:\n\n```mermaid\ngraph LR\n    A[Application] --> B[Recruiter screen]\n    B --> C[Hiring manager or PM call]\n    C --> D[Product sense and execution cases]\n    D --> E[Technical or analytical assessment]\n    E --> F[Leadership and values]\n    F --> G[Offer]\n```\n\n| Stage | Format | Duration | Focus areas |\n| --- | --- | --- | --- |\n| Recruiter screen | Video | 30 mins | Motivation, experience, English |\n| PM call | Video | 45 mins | Past projects, problem solving, prioritisation |\n| Product sense (often 2) | Video | 45–60 mins each | Design and improve products |\n| Product execution (often 2) | Video | 45–60 mins each | Metrics, root cause, trade-offs |\n| Technical assessment | Video | 45–60 mins | Data, systems, working with engineers |\n| Leadership / values | Video or onsite | 45 mins | Ownership, collaboration, culture |\n| Case presentation (some roles) | Video | 60 mins | Case study presented to senior PMs |\n\nDetailed breakdown:\n\n- Screening:\n\nRecruiters assess motivation and communication, and some candidates report an English assessment early on.\n\n- Product interviews:\n\na. Product sense: design or improve experiences, sometimes for non-Nubank products (a supermarket shopper experience is one reported example).\n\nb. Product execution: measuring success of a feature, diagnosing metric drops, choosing between two equally important projects with limited resources.\n\nc. Strategy and business: market entry, competitive response, pricing.\n\n- Final rounds:\n\nLeadership and values interviews, sometimes with a case presented to two senior PMs.\n\nTimeline expectations:\n\n- Usually 3–6 weeks.\n- Recruiters often share preparation videos or documents.\n- Some candidates report unclear feedback when rejected for seniority reasons.\n\nPractice Revolut questions\n\nProduct Design\n\nHow could Facebook build a feature to help people find roommates?\n\nView\n\nSay you're a WhatsApp PM and want to add more ecommerce functionality. What would you do?\n\nView\n\nHow would you build a language learning product for the Facebook app?\n\nView\n\nProduct Improvement\n\nHow can Revolut enhance its budgeting tools to better help users manage their finances?\n\nView\n\nWhat features could be added to Revolut's cryptocurrency trading platform to attract more experienced traders?\n\nView\n\nIn what ways can we improve Revolut's travel insurance offering to provide more value to frequent travelers?\n\nView\n\nProduct Success Metrics\n\nhow would you define the success of revolut's multi-currency accounts?\n\nView\n\nwhat metrics would you use to evaluate revolut's premium subscription plan?\n\nView\n\nhow would you measure the success of revolut's international money transfer feature?\n\nView\n\nProduct Trade-Off\n\nShould Revolut prioritize adding new features or improving existing core functionalities?\n\nView\n\nHow can Revolut balance offering free services to attract users versus implementing fees to increase revenue?\n\nView\n\nIs it better for Revolut to focus on expanding to new markets or deepening product offerings in existing markets?\n\nView\n\nProduct Root Cause Analysis\n\nWhy has the number of new Revolut Metal card sign-ups dropped by 30% this month?\n\nView\n\nWhy has customer engagement with Revolut's budgeting tools decreased by 25% over the last month?\n\nView\n\nWhat's causing the sudden increase in failed international money transfers for Revolut business accounts?\n\nView\n\n## Product Manager Compensation & Levels at Nubank\n\nNubank uses an individual contributor (IC) ladder. Levels.fyi data for Greater São Paulo shows PM median total compensation of roughly R$333,000 at IC5, R$455,000 at IC6 and R$574,000 at IC7 per year.\n\nLevels:\n\n1. Associate PM / PM I (IC4)\n2. Product Manager (IC5)\n3. Senior Product Manager (IC6)\n4. Staff / Lead PM (IC7)\n5. Principal PM / Group PM (IC8+)\n\n| Level | Estimated total compensation (BRL per year, 2026) |\n| --- | --- |\n| Associate PM (IC4) | R$180,000 – R$280,000 |\n| Product Manager (IC5) | R$300,000 – R$400,000 |\n| Senior PM (IC6) | R$400,000 – R$560,000 |\n| Staff / Lead PM (IC7) | R$520,000 – R$720,000 |\n| Principal / Group PM (IC8+) | R$750,000 – R$1,100,000+ |\n\nNote: total compensation includes base salary (paid in Brazil with a 13th salary and vacation bonus), profit sharing (PLR) and restricted stock units in Nu Holdings. Ranges are estimates and vary by team and performance. Mexico roles are paid in MXN and US roles in USD.\n\n## How to Prepare\n\n**Know the products and the business**\n\n- Use NuConta, Pix, the credit card, Caixinhas, NuInvest and, if possible, Nu México or Nu Colombia.\n- Understand the business model: interchange, credit interest, deposits, fees, and very low cost to serve (efficiency ratio near 20%).\n- Follow recent moves: Mexico banking licence, US charter process, Ultravioleta changes, NuPay partnerships, NuCel and AI initiatives.\n\n**Practise fintech cases**\n\n- Designing for financial inclusion (first credit card, first emergency fund).\n- Metrics for payments and credit products.\n- Root cause analysis for approval rates, Pix usage or delinquency.\n- Strategy questions on Mexico, Colombia and the US.\n\nUse NextSprints' Product Manager Interview Questions to practise Nubank-style cases with worked answers.\n\n**Prepare your stories**\n\nUse the STAR method to show ownership, customer obsession and data-driven decisions. Prepare examples of disagreements with stakeholders such as risk or legal teams.\n\n**Practise in English**\n\nEven in São Paulo, parts of the process are often in English. Practise explaining cases clearly in English.\n\n**Mock interviews**\n\nPractise with PMs from fintech or banking. NextSprints PM Coaching can connect you with experienced PMs for mock interviews.\n\n## FAQs\n\n### Does Nubank hire product managers from university?\n\nNubank has historically run an Associate Product Manager programme for early-career candidates from any degree, based in São Paulo. It also runs broader early-career programmes. Check Nubank's careers page and recruiting posts for current openings.\n\n### Are interviews in English or Portuguese?\n\nMany candidates report that at least part of the process is in English, and some are fully in English. Roles in Brazil also require Portuguese; Mexico and Colombia roles require Spanish.\n\n### What kinds of cases are asked?\n\nReported cases include measuring the success of a feature, designing an improved experience for a shopper, and choosing between two equally prioritised projects with limited resources. Some candidates say cases are unrelated to Nubank's products, so practise general product sense as well as fintech cases.\n\n### How important is knowledge of credit and banking?\n\nVery helpful. Many Nubank products involve credit risk, fraud and regulation. You do not need to be a credit expert, but you should understand how lending makes and loses money.\n\n### Can I join Nubank's Mexico or Colombia teams from Brazil?\n\nSome roles allow transfers or regional work, but most require living in the relevant country. International experience and Spanish are strong advantages.\n\n## Related Guides Section\n\n📖 [Nubank Product Strategy Guide](/guide/nubank-product-strategy-guide) – How Nubank's Brazil, Mexico, Colombia and US strategies fit together.\n\n📖 [Nubank Product Manager Salary Guide](/guide/nubank-product-manager-salary-guide) – PM pay by level in BRL and negotiation tips.\n\n📖 [Nubank Product Teardown](/guide/nubank-digital-banking-app-product-teardown) – A teardown of the Nubank app.\n\nDisclaimer: This guide is created for product management interview preparation purposes only. The analysis and methodology are based on public information."
+}

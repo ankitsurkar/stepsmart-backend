@@ -1,0 +1,1610 @@
+[
+  {
+    "id": 6611,
+    "title": "You own an internal AI platform that other teams build agents on. What's your strategy, and if you could only own one metric, what would it be?",
+    "url": "https://www.aced.io/questions/6611/internal-ai-platform-strategy-metrics",
+    "categories": [
+      "analytical",
+      "product-strategy",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Google",
+      "Netflix",
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-18T00:00:00.000Z",
+    "votes": 51,
+    "views": 3255,
+    "comments": 16,
+    "has_expert_solution": false,
+    "published_at": "2026-08-04T02:36:10.298Z"
+  },
+  {
+    "id": 5983,
+    "title": "How do you approach GenAI safety in consumer products?",
+    "url": "https://www.aced.io/questions/5983/how-do-you-approach-genai-safety-in-consumer-products",
+    "categories": [
+      "product-strategy",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Google",
+      "Anthropic",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-21T00:00:00.000Z",
+    "votes": 107,
+    "views": 7727,
+    "comments": 30,
+    "has_expert_solution": true,
+    "published_at": "2026-01-27T03:02:52.365Z"
+  },
+  {
+    "id": 6396,
+    "title": "How have you adopted AI in your workflows? Walk through examples.",
+    "url": "https://www.aced.io/questions/6396/describe-ai-adoption-workflow-examples",
+    "categories": [
+      "behavioral",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "DoorDash",
+      "Rakuten",
+      "Mindbody",
+      "Stripe",
+      "Lyft",
+      "Microsoft",
+      "Abridge",
+      "Goldman Sachs"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-11-05T05:58:06.193Z",
+    "votes": 49,
+    "views": 3034,
+    "comments": 7,
+    "has_expert_solution": false,
+    "published_at": "2026-06-10T03:46:13.874Z"
+  },
+  {
+    "id": 5780,
+    "title": "Design an inference batching system for a single GPU that can handle up to 100 inputs per batch while users wait synchronously, maximizing utilization under compute constraints.",
+    "url": "https://www.aced.io/questions/5780/inference-batching-system",
+    "categories": [
+      "artificial-intelligence",
+      "machine-learning",
+      "system-design"
+    ],
+    "companies": [
+      "Anthropic",
+      "Nebius"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-29T00:00:00.000Z",
+    "votes": 47,
+    "views": 4343,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2025-12-08T08:09:18.988Z"
+  },
+  {
+    "id": 6592,
+    "title": "How would you design an AI evaluation system for resumes?",
+    "url": "https://www.aced.io/questions/6592/design-ai-evaluation-system-resumes",
+    "categories": [
+      "system-design",
+      "artificial-intelligence",
+      "product-design"
+    ],
+    "companies": [
+      "Microsoft",
+      "InPost"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 10,
+    "views": 693,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2026-07-30T22:19:38.168Z"
+  },
+  {
+    "id": 5848,
+    "title": "How would you define success metrics for an AI-oriented feature or product?",
+    "url": "https://www.aced.io/questions/5848/success-metrics-for-ai-oriented-feature",
+    "categories": [
+      "analytical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 30,
+    "views": 1784,
+    "comments": 10,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T06:26:20.071Z"
+  },
+  {
+    "id": 5978,
+    "title": "Have you worked with AI or generative AI products before?",
+    "url": "https://www.aced.io/questions/5978/ai-experience",
+    "categories": [
+      "artificial-intelligence",
+      "behavioral"
+    ],
+    "companies": [
+      "ElevenLabs",
+      "Google",
+      "Mistral AI",
+      "Accenture",
+      "Microsoft",
+      "Amazon",
+      "Qualys",
+      "Midis Group"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-11T00:00:00.000Z",
+    "votes": 22,
+    "views": 1310,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2026-01-20T06:10:46.127Z"
+  },
+  {
+    "id": 5877,
+    "title": "Explain how RAG works.",
+    "url": "https://www.aced.io/questions/5877/explain-rag",
+    "categories": [
+      "artificial-intelligence",
+      "concept",
+      "machine-learning"
+    ],
+    "companies": [
+      "Handshake",
+      "JP Morgan Chase",
+      "Google",
+      "Sierra AI",
+      "Databricks",
+      "Perplexity AI",
+      "Salesforce",
+      "Codincity",
+      "InPost"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-29T00:00:00.000Z",
+    "votes": 10,
+    "views": 1148,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:47:37.039Z"
+  },
+  {
+    "id": 7414,
+    "title": "Improve your favorite product with AI.",
+    "url": "https://www.aced.io/questions/7414/improve-favorite-product-with-ai",
+    "categories": [
+      "product-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 1,
+    "views": 31,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-23T09:32:57.436Z"
+  },
+  {
+    "id": 5677,
+    "title": "What methods or metrics do you use to evaluate how well your LLM performs?",
+    "url": "https://www.aced.io/questions/5677/evaluate-llm-performance",
+    "categories": [
+      "artificial-intelligence",
+      "concept"
+    ],
+    "companies": [
+      "Deloitte",
+      "Visa",
+      "Snap",
+      "Microsoft",
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 14,
+    "views": 1115,
+    "comments": 8,
+    "has_expert_solution": false,
+    "published_at": "2025-11-03T13:51:06.535Z"
+  },
+  {
+    "id": 6003,
+    "title": "Design an AI product for a ride sharing app.",
+    "url": "https://www.aced.io/questions/6003/design-ai-ride-sharing-app",
+    "categories": [
+      "product-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-04T00:00:00.000Z",
+    "votes": 12,
+    "views": 782,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2026-02-09T01:25:32.617Z"
+  },
+  {
+    "id": 5611,
+    "title": "How would you handle hallucinations in a generative AI model deployed to users?",
+    "url": "https://www.aced.io/questions/5611/handle-hallucinations-deployed-ai-model",
+    "categories": [
+      "technical",
+      "concept",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-09-16T00:00:00.000Z",
+    "votes": 23,
+    "views": 1158,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:40:51.331Z"
+  },
+  {
+    "id": 5873,
+    "title": "Design an AI agent for a streaming service.",
+    "url": "https://www.aced.io/questions/5873/ai-agent-for-streaming-service",
+    "categories": [
+      "product-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Sierra AI",
+      "Mastercard"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-16T00:00:00.000Z",
+    "votes": 12,
+    "views": 878,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:36:13.470Z"
+  },
+  {
+    "id": 6259,
+    "title": "How would you design safeguards for an AI system that can take actions on behalf of a user?",
+    "url": "https://www.aced.io/questions/6259/design-safeguards-ai-user-actions",
+    "categories": [
+      "system-design",
+      "artificial-intelligence",
+      "product-design"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-01T00:00:00.000Z",
+    "votes": 6,
+    "views": 393,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:26:34.194Z"
+  },
+  {
+    "id": 6614,
+    "title": "Your company has spent a year on a GenAI product that isn't showing traction. How do you decide whether to keep investing or kill it?",
+    "url": "https://www.aced.io/questions/6614/invest-or-kill-ai-product",
+    "categories": [
+      "analytical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Google",
+      "Stripe",
+      "Netflix"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-04T00:00:00.000Z",
+    "votes": 5,
+    "views": 160,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-08-04T02:39:51.402Z"
+  },
+  {
+    "id": 5612,
+    "title": "What's the effect of adjusting an LLM's context window size?",
+    "url": "https://www.aced.io/questions/5612/adjust-llm-context-window-size",
+    "categories": [
+      "technical",
+      "concept",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "JP Morgan Chase",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-30T00:00:00.000Z",
+    "votes": 16,
+    "views": 901,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:43:34.813Z"
+  },
+  {
+    "id": 7332,
+    "title": "Walk me through the backend architecture of an AI product.",
+    "url": "https://www.aced.io/questions/7332/explain-backend-architecture-ai-product",
+    "categories": [
+      "technical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Palo Alto Networks"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 1,
+    "views": 59,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-09-28T05:23:56.826Z"
+  },
+  {
+    "id": 5595,
+    "title": "Brainstorm a product idea with the help of AI.",
+    "url": "https://www.aced.io/questions/5595/brainstorm-product-idea-using-ai",
+    "categories": [
+      "product-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-09-20T00:00:00.000Z",
+    "votes": 20,
+    "views": 876,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T01:46:12.407Z"
+  },
+  {
+    "id": 5634,
+    "title": "Design a Retrieval-Augmented Generation (RAG) system to help TikTok’s content moderation team detect and handle misinformation.",
+    "url": "https://www.aced.io/questions/5634/design-tiktok-rag-to-detect-misinformation",
+    "categories": [
+      "product-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "TikTok"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-25T00:00:00.000Z",
+    "votes": 20,
+    "views": 770,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2025-10-27T02:24:47.772Z"
+  },
+  {
+    "id": 5610,
+    "title": "Define hallucinations in LLMs.",
+    "url": "https://www.aced.io/questions/5610/define-llm-hallucinations",
+    "categories": [
+      "artificial-intelligence",
+      "concept",
+      "machine-learning"
+    ],
+    "companies": [
+      "OpenAI",
+      "Anthropic",
+      "Mastercard"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-22T00:00:00.000Z",
+    "votes": 19,
+    "views": 751,
+    "comments": 7,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:37:12.887Z"
+  },
+  {
+    "id": 5834,
+    "title": "You have text-to-music capabilities. How would you productize it?",
+    "url": "https://www.aced.io/questions/5834/design-text-to-music-product",
+    "categories": [
+      "product-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 13,
+    "views": 598,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T04:42:54.100Z"
+  },
+  {
+    "id": 5860,
+    "title": "How would you launch a product for the proactivity space in Gemini?",
+    "url": "https://www.aced.io/questions/5860/launch-product-in-proactivity-space-gemini",
+    "categories": [
+      "product-strategy",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Google DeepMind"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-16T00:00:00.000Z",
+    "votes": 12,
+    "views": 584,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:07:58.024Z"
+  },
+  {
+    "id": 5863,
+    "title": "Imagine you're a startup founder and a VC asked you to build a company in the space of an AI career coaching. What would you build?",
+    "url": "https://www.aced.io/questions/5863/ai-career-coaching-product",
+    "categories": [
+      "artificial-intelligence",
+      "product-design"
+    ],
+    "companies": [
+      "Google DeepMind"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-16T00:00:00.000Z",
+    "votes": 11,
+    "views": 491,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2025-12-16T08:17:38.464Z"
+  },
+  {
+    "id": 5683,
+    "title": "What Gen AI skills do you think will be critical in the next year?",
+    "url": "https://www.aced.io/questions/5683/future-gen-ai-skills",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "OpenAI",
+      "Anthropic",
+      "Google",
+      "Imagen Technologies"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-22T00:00:00.000Z",
+    "votes": 13,
+    "views": 633,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2025-11-06T03:22:31.736Z"
+  },
+  {
+    "id": 5975,
+    "title": "How do you measure whether an LLM or RAG project you worked on is efficient?",
+    "url": "https://www.aced.io/questions/5975/llm-rag-efficiency",
+    "categories": [
+      "analytical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Nvidia",
+      "InPost"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 8,
+    "views": 479,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-01-20T05:37:39.617Z"
+  },
+  {
+    "id": 5603,
+    "title": "What's your approach to prompt engineering?",
+    "url": "https://www.aced.io/questions/5603/prompt-engineering-approach",
+    "categories": [
+      "artificial-intelligence",
+      "coding",
+      "technical"
+    ],
+    "companies": [
+      "Sierra AI",
+      "OpenAI",
+      "Anthropic"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-20T00:00:00.000Z",
+    "votes": 13,
+    "views": 660,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:21:05.528Z"
+  },
+  {
+    "id": 6626,
+    "title": "How do AI evals work?",
+    "url": "https://www.aced.io/questions/6626/explain-ai-evals-work",
+    "categories": [
+      "artificial-intelligence",
+      "concept"
+    ],
+    "companies": [
+      "Intuit",
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 126,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-08-04T16:35:19.883Z"
+  },
+  {
+    "id": 5598,
+    "title": "Tell me about your interest in AI.",
+    "url": "https://www.aced.io/questions/5598/interest-in-ai",
+    "categories": [
+      "behavioral",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Bloomberg",
+      "OpenAI",
+      "Nvidia",
+      "Perplexity AI",
+      "Anthropic",
+      "Lovable"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 6,
+    "views": 673,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T01:52:53.562Z"
+  },
+  {
+    "id": 5605,
+    "title": "What are the ethical risks of deploying agentic AI systems in high-stakes environments?",
+    "url": "https://www.aced.io/questions/5605/agentic-ai-systems-ethical-risk",
+    "categories": [
+      "artificial-intelligence",
+      "concept",
+      "machine-learning",
+      "technical"
+    ],
+    "companies": [
+      "Cohere",
+      "Anthropic"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-22T00:00:00.000Z",
+    "votes": 15,
+    "views": 488,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:25:20.359Z"
+  },
+  {
+    "id": 5833,
+    "title": "OpenAI is launching AirPods-like hardware with built-in voice AI. How would you set goals and success metrics for it?",
+    "url": "https://www.aced.io/questions/5833/openai-airpods-goals",
+    "categories": [
+      "analytical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 8,
+    "views": 323,
+    "comments": 0,
+    "has_expert_solution": true,
+    "published_at": "2025-12-15T04:40:47.428Z"
+  },
+  {
+    "id": 7360,
+    "title": "As a PM and product thinker, how do you use AI?",
+    "url": "https://www.aced.io/questions/7360/explain-using-ai-product-management",
+    "categories": [
+      "artificial-intelligence",
+      "product-strategy"
+    ],
+    "companies": [
+      "Datadog"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 33,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-06T15:29:06.903Z"
+  },
+  {
+    "id": 6610,
+    "title": "You're the PM for an AI agent that autonomously resolves customer support tickets. How would you design the evaluation framework before launch and after?",
+    "url": "https://www.aced.io/questions/6610/evals-ai-customer-support",
+    "categories": [
+      "technical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Google",
+      "Netflix"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 3,
+    "views": 81,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-04T02:33:52.872Z"
+  },
+  {
+    "id": 5832,
+    "title": "You have a technology that translates speech/text to animal language. How do you take this to market?",
+    "url": "https://www.aced.io/questions/5832/taking-animal-translator-to-market",
+    "categories": [
+      "artificial-intelligence",
+      "product-strategy"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 5,
+    "views": 271,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2025-12-15T04:38:46.614Z"
+  },
+  {
+    "id": 7415,
+    "title": "How would you improve an Azure Data product of your choice using AI?",
+    "url": "https://www.aced.io/questions/7415/improve-azure-data-product-ai",
+    "categories": [
+      "app-critique",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 13,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-23T09:40:09.682Z"
+  },
+  {
+    "id": 7333,
+    "title": "How do you reduce false-negative/false-positive cases in an AI product?",
+    "url": "https://www.aced.io/questions/7333/reduce-false-negatives-false-positives-ai",
+    "categories": [
+      "artificial-intelligence",
+      "analytical"
+    ],
+    "companies": [
+      "Palo Alto Networks"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 35,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-28T05:24:39.070Z"
+  },
+  {
+    "id": 5835,
+    "title": "OpenAI wants to launch a collaborative workspace for teams within ChatGPT. How would you define success metrics?",
+    "url": "https://www.aced.io/questions/5835/collaborative-workspace-within-chatgpt",
+    "categories": [
+      "analytical",
+      "execution",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 7,
+    "views": 289,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T04:45:56.376Z"
+  },
+  {
+    "id": 5600,
+    "title": "What are the risks of assuming LLMs think or feel like humans?",
+    "url": "https://www.aced.io/questions/5600/anthropomorphizing-llms-risks",
+    "categories": [
+      "technical",
+      "concept",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-08T00:00:00.000Z",
+    "votes": 10,
+    "views": 349,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T02:10:51.808Z"
+  },
+  {
+    "id": 5994,
+    "title": "Users complain Gemini is “confident but wrong.” How would you fix this?",
+    "url": "https://www.aced.io/questions/5994/fix-gemini-confidence",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Google DeepMind",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-28T00:00:00.000Z",
+    "votes": 6,
+    "views": 232,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-02-02T01:21:30.281Z"
+  },
+  {
+    "id": 6569,
+    "title": "Walk me through an end-to-end AI feature you shipped.",
+    "url": "https://www.aced.io/questions/6569/describe-end-to-end-ai-feature",
+    "categories": [
+      "behavioral",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Handshake",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-07T00:00:00.000Z",
+    "votes": 2,
+    "views": 67,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-27T04:57:50.746Z"
+  },
+  {
+    "id": 5608,
+    "title": "How would you adapt a generative AI model to perform well in a specific domain?",
+    "url": "https://www.aced.io/questions/5608/adapt-gen-ai-model-for-domain",
+    "categories": [
+      "technical",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-09-11T00:00:00.000Z",
+    "votes": 7,
+    "views": 312,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:33:49.480Z"
+  },
+  {
+    "id": 5844,
+    "title": "Why do you want to join an AI-first company?",
+    "url": "https://www.aced.io/questions/5844/why-ai-first-company",
+    "categories": [
+      "artificial-intelligence",
+      "behavioral"
+    ],
+    "companies": [
+      "Anthropic",
+      "Perplexity AI",
+      "xAI",
+      "Helsing"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 4,
+    "views": 262,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T06:17:40.966Z"
+  },
+  {
+    "id": 6613,
+    "title": "Agents are getting powerful enough to take real actions on a user's behalf. How do you decide what to automate versus what keeps a human in the loop and how does that line move over time?",
+    "url": "https://www.aced.io/questions/6613/agents-automate-vs-human-loop",
+    "categories": [
+      "technical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Netflix",
+      "Stripe",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-28T00:00:00.000Z",
+    "votes": 2,
+    "views": 48,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-04T02:37:44.866Z"
+  },
+  {
+    "id": 5868,
+    "title": "How do you keep up with the evolving landscape of artificial intelligence news?",
+    "url": "https://www.aced.io/questions/5868/how-you-keep-current-with-ai",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Sierra AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-16T00:00:00.000Z",
+    "votes": 0,
+    "views": 285,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:29:02.197Z"
+  },
+  {
+    "id": 7426,
+    "title": "Design a real time monitoring system with AI in part of it.",
+    "url": "https://www.aced.io/questions/7426/design-realtime-monitoring-system-ai",
+    "categories": [
+      "system-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Datadog"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 4,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-02T01:12:06.798Z"
+  },
+  {
+    "id": 5831,
+    "title": "Develop a strategy for OpenAI's fine-tuning capabilities using publicly available docs.",
+    "url": "https://www.aced.io/questions/5831/develop-strategy-for-openai-fine-tuning",
+    "categories": [
+      "product-strategy",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 3,
+    "views": 250,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T04:37:23.076Z"
+  },
+  {
+    "id": 5607,
+    "title": "What are the challenges in ensuring generative AI doesn’t produce harmful or unsafe content, and how would you address them?",
+    "url": "https://www.aced.io/questions/5607/gen-ai-address-harmful-content",
+    "categories": [
+      "technical",
+      "concept",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-08T00:00:00.000Z",
+    "votes": 7,
+    "views": 247,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:30:35.102Z"
+  },
+  {
+    "id": 5604,
+    "title": "How do you stay up-to-date with the latest developments in AI?",
+    "url": "https://www.aced.io/questions/5604/stay-up-to-date-in-ai",
+    "categories": [
+      "behavioral",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Microsoft",
+      "Anthropic",
+      "Rocket Money"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 8,
+    "views": 208,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:22:54.413Z"
+  },
+  {
+    "id": 7372,
+    "title": "Tell me about a time you used an AI tool to help with a piece of work or study, and had to work out how to use it effectively.",
+    "url": "https://www.aced.io/questions/7372/describe-using-ai-tool-effectively",
+    "categories": [
+      "behavioral",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "IBM"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-29T00:00:00.000Z",
+    "votes": 0,
+    "views": 14,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-07T02:33:45.565Z"
+  },
+  {
+    "id": 6589,
+    "title": "How would you prevent the system from reinforcing harmful biases?",
+    "url": "https://www.aced.io/questions/6589/prevent-system-reinforcing-harmful-biases",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 49,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-30T04:21:42.283Z"
+  },
+  {
+    "id": 7127,
+    "title": "Using AI, what platform would you build to resolve data discrepancies across a luxury hotel chain and improve the customer experience across channels?",
+    "url": "https://www.aced.io/questions/7127/design-ai-platform-resolve-hotel-data",
+    "categories": [
+      "product-design",
+      "system-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Intuit"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 33,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-18T04:44:12.603Z"
+  },
+  {
+    "id": 6371,
+    "title": "How have you used AI to bring about innovation and change either internally or externally to customers?",
+    "url": "https://www.aced.io/questions/6371/describe-ai-innovation-internal-external",
+    "categories": [
+      "artificial-intelligence",
+      "behavioral"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 50,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:43:15.574Z"
+  },
+  {
+    "id": 5871,
+    "title": "How do you use AI?",
+    "url": "https://www.aced.io/questions/5871/how-do-you-use-ai",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Okta",
+      "Apple",
+      "Meta",
+      "Robinhood",
+      "Sierra AI",
+      "Amazon",
+      "Snowflake",
+      "GitHub",
+      "Netflix",
+      "Hubspot",
+      "Rocket Money",
+      "Fluidstack"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 1,
+    "views": 155,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:34:30.801Z"
+  },
+  {
+    "id": 5675,
+    "title": "How would you design an effective chunking strategy for information in a RAG (Retrieval-Augmented Generation) system?",
+    "url": "https://www.aced.io/questions/5675/design-rag-chunking-strategy",
+    "categories": [
+      "product-design",
+      "concept",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Snap"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-03T00:00:00.000Z",
+    "votes": 3,
+    "views": 151,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-03T12:23:44.101Z"
+  },
+  {
+    "id": 5981,
+    "title": "Design an AI tool that helps professional consumers.",
+    "url": "https://www.aced.io/questions/5981/ai-professional-consumers",
+    "categories": [
+      "product-design",
+      "product-strategy",
+      "execution",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Mistral AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-20T00:00:00.000Z",
+    "votes": 2,
+    "views": 105,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-01-20T06:40:37.322Z"
+  },
+  {
+    "id": 6252,
+    "title": "What LLMs or AI agents do you use, and why?",
+    "url": "https://www.aced.io/questions/6252/explain-llms-ai-agents-usage",
+    "categories": [
+      "artificial-intelligence",
+      "concept"
+    ],
+    "companies": [
+      "Deloitte",
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 1,
+    "views": 59,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:08:17.954Z"
+  },
+  {
+    "id": 5674,
+    "title": "How would you design a system for a healthcare agent that summarizes a patient’s medical history?",
+    "url": "https://www.aced.io/questions/5674/design-ai-healthcare-agent",
+    "categories": [
+      "product-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Snap"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-03T00:00:00.000Z",
+    "votes": 0,
+    "views": 145,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-03T12:20:34.960Z"
+  },
+  {
+    "id": 6388,
+    "title": "Tell me about a product you built that used AI or large language models at scale to solve a customer problem.",
+    "url": "https://www.aced.io/questions/6388/describe-large-scale-ai-product",
+    "categories": [
+      "artificial-intelligence",
+      "behavioral",
+      "technical"
+    ],
+    "companies": [
+      "Apple"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 41,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:51:59.110Z"
+  },
+  {
+    "id": 5692,
+    "title": "How do you evaluate a Gen AI system?",
+    "url": "https://www.aced.io/questions/5692/evaluate-gen-ai-system",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Visa",
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-20T00:00:00.000Z",
+    "votes": 4,
+    "views": 95,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-10T03:08:20.724Z"
+  },
+  {
+    "id": 5691,
+    "title": "What factors do you evaluate before deciding whether to build, fine-tune, or buy a generative AI model?",
+    "url": "https://www.aced.io/questions/5691/build-finetune-buy-gen-ai-decision",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-10T00:00:00.000Z",
+    "votes": 3,
+    "views": 83,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2025-11-10T03:07:23.505Z"
+  },
+  {
+    "id": 6572,
+    "title": "Can AI be used alongside existing human and rules-based processes rather than replacing them immediately?",
+    "url": "https://www.aced.io/questions/6572/explain-ai-integration-human-processes",
+    "categories": [
+      "artificial-intelligence",
+      "concept"
+    ],
+    "companies": [
+      "Stitch.co"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 18,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-27T05:12:09.219Z"
+  },
+  {
+    "id": 5688,
+    "title": "How do you decide whether a problem should be solved using AI, generative AI, an agent-based system, traditional programming, or just a simple rule-based approach?",
+    "url": "https://www.aced.io/questions/5688/deciding-ai-approach",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-10T00:00:00.000Z",
+    "votes": 3,
+    "views": 78,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-10T03:01:05.327Z"
+  },
+  {
+    "id": 6493,
+    "title": "Critique an AI app.",
+    "url": "https://www.aced.io/questions/6493/critique-ai-app-performance",
+    "categories": [
+      "app-critique",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 29,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-08T03:48:04.737Z"
+  },
+  {
+    "id": 6351,
+    "title": "How would you design UI and UX around AI latency and multimodal features?",
+    "url": "https://www.aced.io/questions/6351/design-ui-ux-ai-latency-multimodal",
+    "categories": [
+      "product-design",
+      "technical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Google DeepMind"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 38,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:37:42.141Z"
+  },
+  {
+    "id": 5872,
+    "title": "What are general applications for AI within customer support?",
+    "url": "https://www.aced.io/questions/5872/ai-applications-for-customer-support",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Sierra AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-16T00:00:00.000Z",
+    "votes": 1,
+    "views": 78,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:35:15.125Z"
+  },
+  {
+    "id": 5594,
+    "title": "As a product manager at OpenAI, build an enterprise product.",
+    "url": "https://www.aced.io/questions/5594/openai-enterprise-product",
+    "categories": [
+      "product-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Oracle"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-05T00:00:00.000Z",
+    "votes": 2,
+    "views": 91,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-06T00:59:50.094Z"
+  },
+  {
+    "id": 5693,
+    "title": "Are you familiar with AI prototyping? Which tools or platforms have you used, and what has your experience been with them so far?",
+    "url": "https://www.aced.io/questions/5693/ai-prototyping-familiarity",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-10T00:00:00.000Z",
+    "votes": 2,
+    "views": 73,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-10T03:09:08.958Z"
+  },
+  {
+    "id": 5846,
+    "title": "How would you rollout a new feature for Perplexity?",
+    "url": "https://www.aced.io/questions/5846/rollout-new-feature-perplexity",
+    "categories": [
+      "product-strategy",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 1,
+    "views": 72,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T06:20:02.757Z"
+  },
+  {
+    "id": 6570,
+    "title": "How would you approach making a deterministic workflow system more configurable and AI-enabled?",
+    "url": "https://www.aced.io/questions/6570/improve-workflow-system-configurable-ai-enabled",
+    "categories": [
+      "system-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Stitch.co"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 21,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-27T05:11:35.998Z"
+  },
+  {
+    "id": 5980,
+    "title": "What products have you worked on that you launched or scaled?",
+    "url": "https://www.aced.io/questions/5980/products-launched-scaled",
+    "categories": [
+      "behavioral",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Mistral AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-20T00:00:00.000Z",
+    "votes": 1,
+    "views": 55,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-01-20T06:25:20.048Z"
+  },
+  {
+    "id": 5976,
+    "title": "How would you position Cosmos?",
+    "url": "https://www.aced.io/questions/5976/positioning-cosmos",
+    "categories": [
+      "product-strategy",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Nvidia"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-20T00:00:00.000Z",
+    "votes": 0,
+    "views": 65,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-01-20T05:40:22.890Z"
+  },
+  {
+    "id": 5673,
+    "title": "How would you decide between using an open-source model in-house versus a commercial API like OpenAI or Claude?",
+    "url": "https://www.aced.io/questions/5673/in-house-vs-commercial-gen-ai",
+    "categories": [
+      "product-design",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Snap"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-03T00:00:00.000Z",
+    "votes": 0,
+    "views": 85,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-03T12:18:48.942Z"
+  },
+  {
+    "id": 5864,
+    "title": "How would you approach building proactive AI?",
+    "url": "https://www.aced.io/questions/5864/building-proactive-ai",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Google DeepMind"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-16T00:00:00.000Z",
+    "votes": 1,
+    "views": 61,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:18:47.527Z"
+  },
+  {
+    "id": 5982,
+    "title": "How would you reduce alert fatigue in Microsoft OneSoc?",
+    "url": "https://www.aced.io/questions/5982/reduce-alert-fatigue-microsoft-one-soc",
+    "categories": [
+      "concept",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-02T00:00:00.000Z",
+    "votes": 1,
+    "views": 49,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-02-02T01:26:04.242Z"
+  },
+  {
+    "id": 6389,
+    "title": "How can AI help this business intelligence team do its work better?",
+    "url": "https://www.aced.io/questions/6389/improve-business-intelligence-ai",
+    "categories": [
+      "artificial-intelligence",
+      "data-analysis"
+    ],
+    "companies": [
+      "Apple"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 29,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:52:03.536Z"
+  },
+  {
+    "id": 5672,
+    "title": "Suppose your generative model needs to process very long inputs that exceed typical context limits. How would you approach managing or compressing that information effectively?",
+    "url": "https://www.aced.io/questions/5672/gen-ai-handle-large-context",
+    "categories": [
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Snap"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-03T00:00:00.000Z",
+    "votes": 0,
+    "views": 78,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-03T12:16:53.799Z"
+  },
+  {
+    "id": 6509,
+    "title": "Tell me about a time you shipped an AI powered product.",
+    "url": "https://www.aced.io/questions/6509/describe-shipping-ai-powered-product",
+    "categories": [
+      "behavioral",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Internet Brands"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 17,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-24T03:19:02.714Z"
+  },
+  {
+    "id": 5689,
+    "title": "What do you know about Responsible AI principles and existing regulations governing AI use?",
+    "url": "https://www.aced.io/questions/5689/responsible-ai-and-regulations",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-10T00:00:00.000Z",
+    "votes": 2,
+    "views": 51,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-10T03:02:16.877Z"
+  },
+  {
+    "id": 5843,
+    "title": "What experience do you have with AI projects/automations?",
+    "url": "https://www.aced.io/questions/5843/ai-project-experience",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 0,
+    "views": 52,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T06:16:45.529Z"
+  },
+  {
+    "id": 5690,
+    "title": "What Responsible AI considerations are most important for building and maintaining customer trust in our products?",
+    "url": "https://www.aced.io/questions/5690/responsible-ai-for-customer-trust",
+    "categories": [
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-10T00:00:00.000Z",
+    "votes": 1,
+    "views": 47,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-10T03:06:24.745Z"
+  },
+  {
+    "id": 5977,
+    "title": "What experience or work have you done with prosumers in the past?",
+    "url": "https://www.aced.io/questions/5977/prosumers-experience",
+    "categories": [
+      "behavioral",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Mistral AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-20T00:00:00.000Z",
+    "votes": 0,
+    "views": 35,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-01-20T06:09:08.933Z"
+  }
+]

@@ -1,0 +1,4290 @@
+[
+  {
+    "id": 4367,
+    "title": "You've just launched Facebook Jobs, a marketplace for employees and employers. Job listings are up 20%, but employer response time for applicants is down 20%. How would you approach this?",
+    "url": "https://www.aced.io/questions/4367/facebook-jobs-post-launch-metrics-evaluation",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-10-29T00:00:00.000Z",
+    "votes": 178,
+    "views": 12441,
+    "comments": 52,
+    "has_expert_solution": false,
+    "published_at": "2024-09-24T22:01:24.823Z"
+  },
+  {
+    "id": 94,
+    "title": "How would you measure success for Facebook Events?",
+    "url": "https://www.aced.io/questions/94/facebook-events-success-metrics",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-03T00:00:00.000Z",
+    "votes": 626,
+    "views": 44142,
+    "comments": 71,
+    "has_expert_solution": true,
+    "published_at": "2019-12-29T05:44:46.440Z"
+  },
+  {
+    "id": 4779,
+    "title": "You're a PM with two engineers, and enterprise customers won't adopt your product due to an unclear roadmap.  Your engineers are already working hard on a task outlined. What would you do?",
+    "url": "https://www.aced.io/questions/4779/product-roadmap-resource-constraint-challenge",
+    "categories": [
+      "execution"
+    ],
+    "companies": [
+      "eBay",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-05-01T00:00:00.000Z",
+    "votes": 70,
+    "views": 5979,
+    "comments": 15,
+    "has_expert_solution": false,
+    "published_at": "2025-01-09T19:38:37.212Z"
+  },
+  {
+    "id": 7331,
+    "title": "If the adoption of an AI product is low, how would you fix it?",
+    "url": "https://www.aced.io/questions/7331/improve-ai-product-adoption-rate",
+    "categories": [
+      "execution",
+      "product-strategy"
+    ],
+    "companies": [
+      "Palo Alto Networks"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 6,
+    "views": 130,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-09-28T05:22:44.964Z"
+  },
+  {
+    "id": 5629,
+    "title": "You're the PM for a calendar app. How would you design metrics for it?",
+    "url": "https://www.aced.io/questions/5629/calendar-app-success-metrics",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-22T00:00:00.000Z",
+    "votes": 38,
+    "views": 2133,
+    "comments": 15,
+    "has_expert_solution": false,
+    "published_at": "2025-10-21T08:34:22.456Z"
+  },
+  {
+    "id": 1358,
+    "title": "How would you determine success for Instagram Reels?",
+    "url": "https://www.aced.io/questions/1358/determine-success-instagram-reels",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta",
+      "Instagram"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 308,
+    "views": 16523,
+    "comments": 63,
+    "has_expert_solution": true,
+    "published_at": "2020-11-29T21:43:36.954Z"
+  },
+  {
+    "id": 4864,
+    "title": "You realized that Monthly Active Users (MAU) are down for this month. What would you do?",
+    "url": "https://www.aced.io/questions/4864/monthly-active-users-decline-analysis",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-02-05T00:00:00.000Z",
+    "votes": 52,
+    "views": 3764,
+    "comments": 12,
+    "has_expert_solution": false,
+    "published_at": "2025-02-07T22:45:38.883Z"
+  },
+  {
+    "id": 699,
+    "title": "What goals would you set as PM for Facebook marketplaces?",
+    "url": "https://www.aced.io/questions/699/pm-goals-facebook-marketplaces",
+    "categories": [
+      "execution",
+      "program-sense",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-08-08T00:00:00.000Z",
+    "votes": 288,
+    "views": 17814,
+    "comments": 44,
+    "has_expert_solution": true,
+    "published_at": "2020-03-01T20:34:24.030Z"
+  },
+  {
+    "id": 812,
+    "title": "You're a PM for Instagram Stories considering to increase the expiration time. What metrics would you examine?",
+    "url": "https://www.aced.io/questions/812/pm-instagram-stories-expiration-metrics",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta",
+      "Instagram"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-01T00:00:00.000Z",
+    "votes": 319,
+    "views": 16792,
+    "comments": 28,
+    "has_expert_solution": true,
+    "published_at": "2020-04-28T01:59:06.299Z"
+  },
+  {
+    "id": 428,
+    "title": "How would you measure the success of Facebook dating?",
+    "url": "https://www.aced.io/questions/428/measuring-success-facebook-dating",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-22T00:00:00.000Z",
+    "votes": 251,
+    "views": 16782,
+    "comments": 31,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T02:20:09.341Z"
+  },
+  {
+    "id": 4067,
+    "title": "As the Product Manager for Google Docs, facing a 10% decrease in the 'Open' metrics, what steps would you take to investigate and address this decline?",
+    "url": "https://www.aced.io/questions/4067/google-docs-decrease-open-metrics-response",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-07-09T00:00:00.000Z",
+    "votes": 66,
+    "views": 4660,
+    "comments": 18,
+    "has_expert_solution": false,
+    "published_at": "2024-07-11T02:41:41.167Z"
+  },
+  {
+    "id": 4159,
+    "title": "You're the PM for our stock trading product. With gross profit dropping significantly over the last month, what would you do?",
+    "url": "https://www.aced.io/questions/4159/pm-stock-trading-gross-profit-drop-response",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Revolut"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-07T00:00:00.000Z",
+    "votes": 26,
+    "views": 4822,
+    "comments": 17,
+    "has_expert_solution": false,
+    "published_at": "2024-08-19T06:33:58.685Z"
+  },
+  {
+    "id": 4094,
+    "title": "How would you execute the change of moving the 'like' button in photos to a menu under three dots on the picture?",
+    "url": "https://www.aced.io/questions/4094/execute-change-like-button-menu-picture",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-07-22T00:00:00.000Z",
+    "votes": 68,
+    "views": 3823,
+    "comments": 12,
+    "has_expert_solution": false,
+    "published_at": "2024-07-22T13:39:27.831Z"
+  },
+  {
+    "id": 4157,
+    "title": "You're a PM for Reels at Meta. With Reels watch time up 20% but Instagram posts down 20%, what would you do?",
+    "url": "https://www.aced.io/questions/4157/pm-reels-meta-watch-time-instagram",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta",
+      "Circle"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-01T00:00:00.000Z",
+    "votes": 64,
+    "views": 3744,
+    "comments": 7,
+    "has_expert_solution": false,
+    "published_at": "2024-08-17T01:33:38.369Z"
+  },
+  {
+    "id": 187,
+    "title": "You are the PM of Messenger and notice a significant drop in DAU. How would you investigate the cause?",
+    "url": "https://www.aced.io/questions/187/pm-messenger-dau-down",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "TikTok",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-12-09T00:00:00.000Z",
+    "votes": 153,
+    "views": 13302,
+    "comments": 21,
+    "has_expert_solution": false,
+    "published_at": "2020-01-15T05:30:13.414Z"
+  },
+  {
+    "id": 3808,
+    "title": "You're a PM for Meta's Verified Badge. Why would Meta build this product and how would you set goals and success metrics for it?",
+    "url": "https://www.aced.io/questions/3808/meta-verified-badge-goals-success-metrics",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-08-20T00:00:00.000Z",
+    "votes": 65,
+    "views": 3737,
+    "comments": 10,
+    "has_expert_solution": false,
+    "published_at": "2024-03-14T18:43:11.501Z"
+  },
+  {
+    "id": 6547,
+    "title": "How would you improve the Revolut hiring process?",
+    "url": "https://www.aced.io/questions/6547/improve-revolut-hiring-process",
+    "categories": [
+      "behavioral",
+      "execution"
+    ],
+    "companies": [
+      "Revolut"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-30T00:00:00.000Z",
+    "votes": 1,
+    "views": 291,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-27T03:39:33.193Z"
+  },
+  {
+    "id": 2962,
+    "title": "If you could choose 5 metrics for TikTok's customer service platform, what would they be?",
+    "url": "https://www.aced.io/questions/2962/top-5-metrics-tiktok-customer-service",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "TikTok"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-18T00:00:00.000Z",
+    "votes": 55,
+    "views": 4465,
+    "comments": 13,
+    "has_expert_solution": false,
+    "published_at": "2023-07-21T18:42:23.949Z"
+  },
+  {
+    "id": 3690,
+    "title": "You're a PM at Meta. How would you measure the success of Instagram Live?",
+    "url": "https://www.aced.io/questions/3690/measure-instagram-live-success-meta-pm",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-30T00:00:00.000Z",
+    "votes": 59,
+    "views": 3243,
+    "comments": 10,
+    "has_expert_solution": false,
+    "published_at": "2024-02-06T02:24:23.755Z"
+  },
+  {
+    "id": 3016,
+    "title": "How would you enhance the experience for Airbnb users after a negative booking?",
+    "url": "https://www.aced.io/questions/3016/enhance-airbnb-experience-after-negative-booking",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-08-14T00:00:00.000Z",
+    "votes": 28,
+    "views": 3491,
+    "comments": 9,
+    "has_expert_solution": false,
+    "published_at": "2023-08-22T17:13:12.048Z"
+  },
+  {
+    "id": 521,
+    "title": "How would you increase user engagement as a PM for Spotify?",
+    "url": "https://www.aced.io/questions/521/increase-user-engagement-spotify",
+    "categories": [
+      "product-design",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Spotify",
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-02-12T00:00:00.000Z",
+    "votes": 99,
+    "views": 7954,
+    "comments": 10,
+    "has_expert_solution": true,
+    "published_at": "2020-02-29T06:41:01.579Z"
+  },
+  {
+    "id": 328,
+    "title": "How would you set a goal for Facebook reactions and measure it?",
+    "url": "https://www.aced.io/questions/328/setting-goal-measure-facebook-reactions",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Coinbase",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-01-05T00:00:00.000Z",
+    "votes": 125,
+    "views": 7184,
+    "comments": 17,
+    "has_expert_solution": true,
+    "published_at": "2020-02-26T14:49:14.788Z"
+  },
+  {
+    "id": 3619,
+    "title": "You're a PM for Spotify Podcasts. Why did your team add podcasts to Spotify and why before audiobooks? What metrics were used to track the product's success?",
+    "url": "https://www.aced.io/questions/3619/spotify-podcasts-addition-reason-metrics",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-01-10T00:00:00.000Z",
+    "votes": 64,
+    "views": 2344,
+    "comments": 10,
+    "has_expert_solution": false,
+    "published_at": "2024-01-10T22:33:38.284Z"
+  },
+  {
+    "id": 4251,
+    "title": "As a PM for Instagram Shops, how would you increase the number of transactions?",
+    "url": "https://www.aced.io/questions/4251/instagram-shops-increase-transactions",
+    "categories": [
+      "analytical",
+      "product-strategy",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-16T00:00:00.000Z",
+    "votes": 38,
+    "views": 1752,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2024-09-23T21:44:18.617Z"
+  },
+  {
+    "id": 4717,
+    "title": "You're a PM for Instagram Reels. Would you prefer having 100 reels with 1M views each or 1M reels with 100 views each, and why?",
+    "url": "https://www.aced.io/questions/4717/instagram-reels-views-distribution-strategy",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-12-18T00:00:00.000Z",
+    "votes": 39,
+    "views": 1345,
+    "comments": 9,
+    "has_expert_solution": false,
+    "published_at": "2024-12-31T19:20:00.091Z"
+  },
+  {
+    "id": 1543,
+    "title": "YouTube comments have increased, but watch time has decreased. What actions would you take?",
+    "url": "https://www.aced.io/questions/1543/youtube-comments-up-watch-time-down-actions",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google",
+      "Youtube"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 127,
+    "views": 4802,
+    "comments": 8,
+    "has_expert_solution": true,
+    "published_at": "2021-05-22T20:08:40.504Z"
+  },
+  {
+    "id": 93,
+    "title": "What metrics would you define for the success of Facebook Lite?",
+    "url": "https://www.aced.io/questions/93/facebook-lite-success-metrics",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-09-05T00:00:00.000Z",
+    "votes": 123,
+    "views": 6728,
+    "comments": 10,
+    "has_expert_solution": true,
+    "published_at": "2019-12-29T05:44:25.842Z"
+  },
+  {
+    "id": 5995,
+    "title": "How would you launch a new ChatGPT model.",
+    "url": "https://www.aced.io/questions/5995/launch-new-chatgpt",
+    "categories": [
+      "product-strategy",
+      "execution"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-28T00:00:00.000Z",
+    "votes": 5,
+    "views": 539,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-01-28T00:37:02.773Z"
+  },
+  {
+    "id": 95,
+    "title": "How would you measure success metrics for Facebook Fundraisers?",
+    "url": "https://www.aced.io/questions/95/facebook-fundraisers-success-metrics",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-30T00:00:00.000Z",
+    "votes": 107,
+    "views": 6220,
+    "comments": 18,
+    "has_expert_solution": false,
+    "published_at": "2019-12-29T05:45:12.617Z"
+  },
+  {
+    "id": 171,
+    "title": "How would you reduce cancellations on Uber?",
+    "url": "https://www.aced.io/questions/171/reduce-cancellation-uber",
+    "categories": [
+      "product-design",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Adobe",
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-03-12T00:00:00.000Z",
+    "votes": 52,
+    "views": 6753,
+    "comments": 12,
+    "has_expert_solution": false,
+    "published_at": "2020-01-13T06:48:30.577Z"
+  },
+  {
+    "id": 4241,
+    "title": "You're a PM at a top-up team. How would you launch cash deposits? If one of the main KPIs is down, how would you go about addressing it?",
+    "url": "https://www.aced.io/questions/4241/pm-launch-cash-deposit-address-declining-kpi",
+    "categories": [
+      "analytical",
+      "product-strategy",
+      "execution"
+    ],
+    "companies": [
+      "Revolut"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-10T00:00:00.000Z",
+    "votes": 11,
+    "views": 1605,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-09-23T21:31:16.863Z"
+  },
+  {
+    "id": 3036,
+    "title": "As a PM at Meta launching a new video conference product, define the success metrics.",
+    "url": "https://www.aced.io/questions/3036/define-success-metrics-video-conference-meta",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-03T00:00:00.000Z",
+    "votes": 35,
+    "views": 2294,
+    "comments": 8,
+    "has_expert_solution": false,
+    "published_at": "2023-09-25T22:35:07.918Z"
+  },
+  {
+    "id": 6621,
+    "title": "You're a PM for Google Photos, how would you build the Yearly Recap feature?",
+    "url": "https://www.aced.io/questions/6621/design-yearly-recap-google-photos",
+    "categories": [
+      "product-design",
+      "execution"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-31T00:00:00.000Z",
+    "votes": 2,
+    "views": 121,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-04T16:32:02.034Z"
+  },
+  {
+    "id": 1022,
+    "title": "One of our merchants is experiencing increased fraud. How would you address this issue?",
+    "url": "https://www.aced.io/questions/1022/merchant-increased-fraud-solution",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "DoorDash",
+      "TikTok",
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 83,
+    "views": 5252,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2020-07-05T22:47:47.758Z"
+  },
+  {
+    "id": 4900,
+    "title": "You're a PM at Meta. DAU for Instagram is down while MAU is constant. How do you solve for this?",
+    "url": "https://www.aced.io/questions/4900/meta-monthly-daily-users-analysis",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Capital One"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-02-19T00:00:00.000Z",
+    "votes": 12,
+    "views": 1129,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2025-02-21T20:34:44.139Z"
+  },
+  {
+    "id": 3772,
+    "title": "Imagine you're a PM for Meta. What goals and metrics would you set for Horizon Worlds, a Meta Quest VR game?",
+    "url": "https://www.aced.io/questions/3772/goals-metrics-horizon-worlds-meta-quest",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-10-23T00:00:00.000Z",
+    "votes": 33,
+    "views": 1743,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2024-03-07T18:28:26.612Z"
+  },
+  {
+    "id": 2071,
+    "title": "You're a PM in the Onboarding team. You have to increase the conversion of the onboarding funnel by 15% in 3 months.",
+    "url": "https://www.aced.io/questions/2071/increase-onboarding-funnel-conversion",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral"
+    ],
+    "companies": [
+      "Revolut"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-09-17T00:00:00.000Z",
+    "votes": 27,
+    "views": 3622,
+    "comments": 8,
+    "has_expert_solution": false,
+    "published_at": "2022-04-13T19:21:22.806Z"
+  },
+  {
+    "id": 4867,
+    "title": "Click-through rate on Netflix is down by 10%. What would you do?",
+    "url": "https://www.aced.io/questions/4867/netflix-click-through-rate-analysis",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Coinbase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-02-06T00:00:00.000Z",
+    "votes": 18,
+    "views": 941,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2025-02-07T22:49:45.833Z"
+  },
+  {
+    "id": 4932,
+    "title": "How would you improve fill rate for Flipkart banners?",
+    "url": "https://www.aced.io/questions/4932/improve-flipkart-banner-fill-rate",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Flipkart"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-03-04T00:00:00.000Z",
+    "votes": 16,
+    "views": 835,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2025-03-04T19:25:51.160Z"
+  },
+  {
+    "id": 2870,
+    "title": "As an OpenTable PM, how would you prioritize improving the worst post-reservation experiences?",
+    "url": "https://www.aced.io/questions/2870/prioritize-improvement-opentable-post-reservation",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-08-07T00:00:00.000Z",
+    "votes": 18,
+    "views": 2131,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2023-04-24T15:46:40.477Z"
+  },
+  {
+    "id": 4089,
+    "title": "How would you improve the quality of Airbnb over the next six months?",
+    "url": "https://www.aced.io/questions/4089/improve-airbnb-quality-six-months",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-06T00:00:00.000Z",
+    "votes": 21,
+    "views": 1145,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-07-19T04:33:21.552Z"
+  },
+  {
+    "id": 5899,
+    "title": "A large enterprise customer wants to integrate Sierra, what would you build first and why?",
+    "url": "https://www.aced.io/questions/5899/enterprise-customer-integration",
+    "categories": [
+      "execution"
+    ],
+    "companies": [
+      "Sierra AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-28T00:00:00.000Z",
+    "votes": 4,
+    "views": 378,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-28T17:30:18.663Z"
+  },
+  {
+    "id": 4076,
+    "title": "How would you measure the success of Facebook Portal?",
+    "url": "https://www.aced.io/questions/4076/measure-success-facebook-portal",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-07-30T00:00:00.000Z",
+    "votes": 24,
+    "views": 1108,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-07-15T04:45:23.522Z"
+  },
+  {
+    "id": 3305,
+    "title": "You're the PM for Instagram Reels and want to test new advertising formats. What metrics would you track?",
+    "url": "https://www.aced.io/questions/3305/youre-the-pm-for-instagram-reels-you-are-thinking-about-adding-ads-to-the-platform-what-metrics-woul",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-21T00:00:00.000Z",
+    "votes": 32,
+    "views": 1429,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2023-11-22T20:58:08.273Z"
+  },
+  {
+    "id": 7441,
+    "title": "How do you take a requirement/feature and execute end-to-end?",
+    "url": "https://www.aced.io/questions/7441/execute-requirement-end-to-end-process",
+    "categories": [
+      "execution"
+    ],
+    "companies": [
+      "Western Union"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 6,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-02T02:30:05.318Z"
+  },
+  {
+    "id": 1910,
+    "title": "Set the success metrics for Google Maps.",
+    "url": "https://www.aced.io/questions/1910/set-success-metrics-for-google-maps",
+    "categories": [
+      "execution",
+      "behavioral",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-01-10T00:00:00.000Z",
+    "votes": 43,
+    "views": 2565,
+    "comments": 8,
+    "has_expert_solution": false,
+    "published_at": "2022-02-14T05:01:54.282Z"
+  },
+  {
+    "id": 3839,
+    "title": "YouTube's average video buffering time has increased by 10%. How would you address this issue?",
+    "url": "https://www.aced.io/questions/3839/solve-increased-youtube-buffering-time",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-30T00:00:00.000Z",
+    "votes": 27,
+    "views": 1190,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2024-04-02T20:52:33.600Z"
+  },
+  {
+    "id": 2235,
+    "title": "You're the PM for Instagram Stories. What is your North Star metric?",
+    "url": "https://www.aced.io/questions/2235/north-star-metric-instagram-stories",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-31T00:00:00.000Z",
+    "votes": 25,
+    "views": 2331,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2022-06-07T11:51:27.681Z"
+  },
+  {
+    "id": 3692,
+    "title": "How should Google launch a new teleportation product?",
+    "url": "https://www.aced.io/questions/3692/launch-teleportation-product-google",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-31T00:00:00.000Z",
+    "votes": 13,
+    "views": 1301,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2024-02-06T00:23:24.936Z"
+  },
+  {
+    "id": 4935,
+    "title": "You're a PM for Uber Eats. Cart conversation has dropped by 10% in the last 3 months. How would you find the root cause?",
+    "url": "https://www.aced.io/questions/4935/uber-eats-cart-conversion-drop-analysis",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "PayPal"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-03-06T00:00:00.000Z",
+    "votes": 14,
+    "views": 638,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2025-03-17T04:53:10.854Z"
+  },
+  {
+    "id": 5168,
+    "title": "You're a PM for a business intelligence system and it has a low NPS (25%). How would you bring it to 75%?",
+    "url": "https://www.aced.io/questions/5168/improve-business-intelligence-nps",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-04-28T00:00:00.000Z",
+    "votes": 14,
+    "views": 552,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2025-05-19T03:10:20.608Z"
+  },
+  {
+    "id": 7502,
+    "title": "You're a PM at Twitter, investigate a drop of 5% in tweets.",
+    "url": "https://www.aced.io/questions/7502/investigate-drop-tweets-twitter",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Monday"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-05-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 1,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-09T03:04:14.063Z"
+  },
+  {
+    "id": 2314,
+    "title": "How do you resolve conflicting product requirements, and who determines which requirement takes priority?",
+    "url": "https://www.aced.io/questions/2314/resolving-conflicting-product-requirements",
+    "categories": [
+      "behavioral",
+      "cross-functional",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-01T00:00:00.000Z",
+    "votes": 39,
+    "views": 1809,
+    "comments": 5,
+    "has_expert_solution": true,
+    "published_at": "2022-07-11T19:16:18.515Z"
+  },
+  {
+    "id": 5835,
+    "title": "OpenAI wants to launch a collaborative workspace for teams within ChatGPT. How would you define success metrics?",
+    "url": "https://www.aced.io/questions/5835/collaborative-workspace-within-chatgpt",
+    "categories": [
+      "analytical",
+      "execution",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 7,
+    "views": 289,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T04:45:56.376Z"
+  },
+  {
+    "id": 7271,
+    "title": "How would you prioritise platform requests from multiple stakeholders?",
+    "url": "https://www.aced.io/questions/7271/prioritize-platform-requests-multiple-stakeholders",
+    "categories": [
+      "cross-functional",
+      "execution"
+    ],
+    "companies": [
+      "Wise"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-28T00:00:00.000Z",
+    "votes": 0,
+    "views": 49,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-07T03:46:02.144Z"
+  },
+  {
+    "id": 1888,
+    "title": "How would you measure the success of Facebook Live?",
+    "url": "https://www.aced.io/questions/1888/measure-success-facebook-live",
+    "categories": [
+      "execution",
+      "behavioral",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-07-22T00:00:00.000Z",
+    "votes": 33,
+    "views": 2098,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2022-02-02T22:08:40.758Z"
+  },
+  {
+    "id": 1667,
+    "title": "Define success metrics for Facebook Pay.",
+    "url": "https://www.aced.io/questions/1667/success-metrics-facebook-pay",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 38,
+    "views": 2219,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2021-10-26T19:04:03.865Z"
+  },
+  {
+    "id": 7401,
+    "title": "How do you balance shipping a product against investing time in a platform?",
+    "url": "https://www.aced.io/questions/7401/balance-shipping-product-vs-platform-investment",
+    "categories": [
+      "product-strategy",
+      "execution"
+    ],
+    "companies": [
+      "Rippling"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 14,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-19T00:00:23.509Z"
+  },
+  {
+    "id": 5896,
+    "title": "How would you create a short-term roadmap when production issues, sales pressure, and customer demands conflict?",
+    "url": "https://www.aced.io/questions/5896/roadmap-during-conflicts",
+    "categories": [
+      "execution"
+    ],
+    "companies": [
+      "Sierra AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-28T00:00:00.000Z",
+    "votes": 5,
+    "views": 264,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-28T17:25:20.730Z"
+  },
+  {
+    "id": 7179,
+    "title": "Imagine you are a PM at Amazon. How would you solve a high return rate on Amazon orders?",
+    "url": "https://www.aced.io/questions/7179/solve-high-return-rate-amazon-orders",
+    "categories": [
+      "product-strategy",
+      "execution"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-24T00:00:00.000Z",
+    "votes": 0,
+    "views": 54,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-28T06:10:40.957Z"
+  },
+  {
+    "id": 6349,
+    "title": "We launched a Gemini tutoring feature for complex skills, and the feedback is highly polarized. Fewer than 10% think it's magical, and most think it's useless. How do you fix it?",
+    "url": "https://www.aced.io/questions/6349/improve-gemini-tutoring-feature-feedback",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Google DeepMind"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 133,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:37:31.193Z"
+  },
+  {
+    "id": 869,
+    "title": "You're the PM for Coinbase. DAU is down by 10%. What do you do to investigate?",
+    "url": "https://www.aced.io/questions/869/pm-coinbase-dau-down-10-investigate",
+    "categories": [
+      "execution",
+      "program-sense",
+      "analytical"
+    ],
+    "companies": [
+      "Coinbase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-08-01T00:00:00.000Z",
+    "votes": 52,
+    "views": 2676,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2020-05-19T03:10:18.085Z"
+  },
+  {
+    "id": 6387,
+    "title": "We've noticed a drop off in card usage. Evaluate why this might be happening and propose solutions to address it.",
+    "url": "https://www.aced.io/questions/6387/evaluate-card-usage-drop-solutions",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Coinbase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 108,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:51:35.695Z"
+  },
+  {
+    "id": 3306,
+    "title": "How do you prioritize tasks across the engineering team, product bugs, the product roadmap, and suggestions from leadership?",
+    "url": "https://www.aced.io/questions/3306/how-do-you-prioritize-based-on-input-from-engineering-tea-production-bug-leadership-team-directive-e",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Dell"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-21T00:00:00.000Z",
+    "votes": 18,
+    "views": 1023,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2023-11-22T20:55:50.329Z"
+  },
+  {
+    "id": 7328,
+    "title": "How would you decide whether an AI agent is good enough to ship?",
+    "url": "https://www.aced.io/questions/7328/define-ai-agent-shipping-criteria",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Scale AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 26,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-28T05:01:09.018Z"
+  },
+  {
+    "id": 4171,
+    "title": "How would you define success for Instagram Reels and what metrics would you use? If Instagram Reels engagement is growing but Instagram Feed engagement is declining, what actions would you take?",
+    "url": "https://www.aced.io/questions/4171/instagram-reels-success-metrics-decline-actions",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-08-14T00:00:00.000Z",
+    "votes": 19,
+    "views": 637,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-08-19T06:33:44.362Z"
+  },
+  {
+    "id": 7483,
+    "title": "How do you decide when the scope is ambiguous?",
+    "url": "https://www.aced.io/questions/7483/define-ambiguous-project-scope",
+    "categories": [
+      "execution"
+    ],
+    "companies": [
+      "PayPal"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-11-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 2,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-06T03:50:08.639Z"
+  },
+  {
+    "id": 4170,
+    "title": "As a PM for Spotify Podcasts, what success metrics would you define? If engagement on Spotify Music is down while engagement on Spotify Podcasts is up, what actions would you take?",
+    "url": "https://www.aced.io/questions/4170/spotify-podcasts-success-metrics-actions",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-08-14T00:00:00.000Z",
+    "votes": 18,
+    "views": 598,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-08-19T06:33:45.613Z"
+  },
+  {
+    "id": 1709,
+    "title": "How would you measure success for Instagram Shops, excluding ad revenue?",
+    "url": "https://www.aced.io/questions/1709/measure-success-instagram-shops-excluding-ads",
+    "categories": [
+      "execution",
+      "analytical",
+      "technical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-16T00:00:00.000Z",
+    "votes": 32,
+    "views": 1755,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-11-11T18:22:20.506Z"
+  },
+  {
+    "id": 91,
+    "title": "How would you measure the success of discovery features on Instagram?",
+    "url": "https://www.aced.io/questions/91/measure-success-instagram-discovery",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta",
+      "Instagram"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-01-14T00:00:00.000Z",
+    "votes": 55,
+    "views": 2305,
+    "comments": 3,
+    "has_expert_solution": true,
+    "published_at": "2019-12-29T05:43:30.873Z"
+  },
+  {
+    "id": 2299,
+    "title": "How would you prioritize solving the worst post-booking experience for TaskRabbit?",
+    "url": "https://www.aced.io/questions/2299/prioritize-worst-post-booking-taskrabbit",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-09-28T00:00:00.000Z",
+    "votes": 19,
+    "views": 1495,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2022-07-05T16:31:22.735Z"
+  },
+  {
+    "id": 665,
+    "title": "Explain how you would measure success for YouTube search.",
+    "url": "https://www.aced.io/questions/665/measure-success-youtube-search",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 45,
+    "views": 2175,
+    "comments": 7,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T15:47:12.519Z"
+  },
+  {
+    "id": 3995,
+    "title": "You're the PM for Agoda. Due to increasing failure rates in newer payment methods like wallets and UPI, how would you investigate the cause and what steps would you take to address it?",
+    "url": "https://www.aced.io/questions/3995/investigate-address-payment-failures-agoda",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Agoda"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-06-01T00:00:00.000Z",
+    "votes": 10,
+    "views": 685,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-06-06T22:31:45.393Z"
+  },
+  {
+    "id": 4258,
+    "title": "If you noticed a 10% decrease in an app’s conversion rate, what steps would you take to investigate and resolve the issue?",
+    "url": "https://www.aced.io/questions/4258/app-conversion-rate-decrease-action-plan",
+    "categories": [
+      "execution"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-18T00:00:00.000Z",
+    "votes": 9,
+    "views": 544,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-09-18T05:03:52.063Z"
+  },
+  {
+    "id": 3807,
+    "title": "What are the key metrics for a food delivery app, particularly those indicating an oversupply or undersupply of restaurants and orders?",
+    "url": "https://www.aced.io/questions/3807/key-metrics-food-delivery-app-oversupply-undersupply",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Lyft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-13T00:00:00.000Z",
+    "votes": 16,
+    "views": 644,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2024-03-14T00:31:01.474Z"
+  },
+  {
+    "id": 4329,
+    "title": "You're a PM at Spotify. How would you diagnose a user-reported connection issue?",
+    "url": "https://www.aced.io/questions/4329/spotify-diagnose-connection-issue",
+    "categories": [
+      "analytical",
+      "execution",
+      "technical"
+    ],
+    "companies": [
+      "Spotify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-23T00:00:00.000Z",
+    "votes": 7,
+    "views": 554,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-09-23T21:50:51.318Z"
+  },
+  {
+    "id": 2290,
+    "title": "What milestones would you look for to determine if a product isn’t performing well, and what process would you lay out to sunset the product while handling stakeholders?",
+    "url": "https://www.aced.io/questions/2290/milestones-for-sunset-product",
+    "categories": [
+      "product-strategy",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-21T00:00:00.000Z",
+    "votes": 27,
+    "views": 1072,
+    "comments": 3,
+    "has_expert_solution": true,
+    "published_at": "2022-06-28T16:42:27.084Z"
+  },
+  {
+    "id": 804,
+    "title": "How would you improve Buy and Sell Groups on Facebook?",
+    "url": "https://www.aced.io/questions/804/how-to-improve-buy-and-sell-groups-facebook",
+    "categories": [
+      "execution",
+      "system-design",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-30T00:00:00.000Z",
+    "votes": 44,
+    "views": 1921,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2020-04-03T04:49:26.113Z"
+  },
+  {
+    "id": 1922,
+    "title": "How would you measure the success of Facebook Rooms?",
+    "url": "https://www.aced.io/questions/1922/measuring-success-of-facebook-rooms",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-01T00:00:00.000Z",
+    "votes": 19,
+    "views": 1366,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-02-24T01:33:57.356Z"
+  },
+  {
+    "id": 2315,
+    "title": "How would you manage a latent field failure or bug that impacts customers and increases return rates or support contacts?",
+    "url": "https://www.aced.io/questions/2315/managing-latent-field-failure-bug",
+    "categories": [
+      "behavioral",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-06T00:00:00.000Z",
+    "votes": 12,
+    "views": 1251,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-07-11T19:18:12.065Z"
+  },
+  {
+    "id": 520,
+    "title": "As a PM for Instacart, what potential issues do you foresee after a customer places an order?",
+    "url": "https://www.aced.io/questions/520/pm-instacart-issues-after-order-placed",
+    "categories": [
+      "execution",
+      "concept",
+      "analytical"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 43,
+    "views": 1754,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T06:40:10.695Z"
+  },
+  {
+    "id": 1716,
+    "title": "As part of the Netflix PM team, how would we investigate the issue of one million active subscribers not logging into the platform?",
+    "url": "https://www.aced.io/questions/1716/netflix-pm-team-investigate-active-subscribers-issue",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-12T00:00:00.000Z",
+    "votes": 22,
+    "views": 1270,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2021-11-12T13:44:22.333Z"
+  },
+  {
+    "id": 1736,
+    "title": "You're a PM for a video conferencing app. What success metrics would you define for this app?",
+    "url": "https://www.aced.io/questions/1736/pm-video-conferencing-app-success-metrics",
+    "categories": [
+      "analytical",
+      "execution",
+      "product-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-06-12T00:00:00.000Z",
+    "votes": 24,
+    "views": 1254,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-11-16T18:38:17.141Z"
+  },
+  {
+    "id": 2288,
+    "title": "You are launching a strategic app. One month out, internal feedback suggests it isn't ready, with below target metrics including CSAT. What do you do?",
+    "url": "https://www.aced.io/questions/2288/launching-strategic-app-internal-feedback",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-21T00:00:00.000Z",
+    "votes": 24,
+    "views": 1023,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-06-28T16:42:27.084Z"
+  },
+  {
+    "id": 100,
+    "title": "How would you set a goal for Facebook Marketplace?",
+    "url": "https://www.aced.io/questions/100/facebook-marketplace-goal",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta",
+      "Age of Learning"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-25T00:00:00.000Z",
+    "votes": 46,
+    "views": 1644,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2019-12-29T05:48:21.336Z"
+  },
+  {
+    "id": 1666,
+    "title": "You were hired by an airline consortium to improve the perception of air travel. What would you do with a budget of $10M in one year?",
+    "url": "https://www.aced.io/questions/1666/improve-air-travel-perception",
+    "categories": [
+      "product-strategy",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-09-24T00:00:00.000Z",
+    "votes": 25,
+    "views": 1113,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2021-10-26T17:19:26.081Z"
+  },
+  {
+    "id": 1665,
+    "title": "You're a PM at Instacart. What would you do to improve retention?",
+    "url": "https://www.aced.io/questions/1665/instacart-retention-improvement",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Instacart"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-09-14T00:00:00.000Z",
+    "votes": 16,
+    "views": 1226,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-10-26T15:08:27.238Z"
+  },
+  {
+    "id": 3881,
+    "title": "You're a PM for TikTok and have noticed a drop in daily active users (DAU). How would you investigate?",
+    "url": "https://www.aced.io/questions/3881/investigate-dau-drop-tiktok-pm",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "TikTok"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-04-26T00:00:00.000Z",
+    "votes": 12,
+    "views": 449,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-05-29T04:56:59.016Z"
+  },
+  {
+    "id": 7402,
+    "title": "How do you decide whether a change is complex or lightweight?",
+    "url": "https://www.aced.io/questions/7402/define-complex-vs-lightweight-change",
+    "categories": [
+      "execution"
+    ],
+    "companies": [
+      "Rippling"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 7,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-19T00:00:35.206Z"
+  },
+  {
+    "id": 4524,
+    "title": "Given this user funnel, how would you prioritize addressing drop-off points? Come up with design solutions to increase conversion.",
+    "url": "https://www.aced.io/questions/4524/user-funnel-dropoff-analysis-optimization",
+    "categories": [
+      "product-design",
+      "analytical",
+      "product-strategy",
+      "execution"
+    ],
+    "companies": [
+      "Duolingo"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-10-25T00:00:00.000Z",
+    "votes": 4,
+    "views": 401,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2024-10-28T19:48:50.886Z"
+  },
+  {
+    "id": 2287,
+    "title": "Pick a product of your choice. What are its goals, and what’s in your monthly business review deck for the leadership team?",
+    "url": "https://www.aced.io/questions/2287/product-goals-monthly-business-review",
+    "categories": [
+      "execution",
+      "analytical",
+      "product-strategy"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-21T00:00:00.000Z",
+    "votes": 17,
+    "views": 872,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2022-06-28T16:42:27.084Z"
+  },
+  {
+    "id": 2258,
+    "title": "If you were the PM for Google Drive, what metrics would you prioritize?",
+    "url": "https://www.aced.io/questions/2258/metrics-priorities-google-drive",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-06T00:00:00.000Z",
+    "votes": 17,
+    "views": 867,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2022-06-20T23:26:51.697Z"
+  },
+  {
+    "id": 6296,
+    "title": "How do you demonstrate ownership and drive something end to end?",
+    "url": "https://www.aced.io/questions/6296/demonstrate-ownership-drive-end-to-end",
+    "categories": [
+      "behavioral",
+      "execution"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 48,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:06:14.953Z"
+  },
+  {
+    "id": 2704,
+    "title": "What's your favorite fitness product, and what would you do if you found that its users dropped off after 3 months?",
+    "url": "https://www.aced.io/questions/2704/favorite-fitness-product-user-dropoff",
+    "categories": [
+      "product-design",
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-10-06T00:00:00.000Z",
+    "votes": 8,
+    "views": 819,
+    "comments": 7,
+    "has_expert_solution": false,
+    "published_at": "2022-10-28T14:06:07.065Z"
+  },
+  {
+    "id": 4870,
+    "title": "How would you implement birth date capture for Meta?",
+    "url": "https://www.aced.io/questions/4870/implement-meta-birth-date-capture",
+    "categories": [
+      "product-design",
+      "execution"
+    ],
+    "companies": [
+      "Pinterest"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-05-08T00:00:00.000Z",
+    "votes": 3,
+    "views": 321,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-02-07T22:53:10.770Z"
+  },
+  {
+    "id": 5623,
+    "title": "How would you define success for Airbnb's Experiences?",
+    "url": "https://www.aced.io/questions/5623/success-metrics-airbnb-experiences",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Nubank"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-10T00:00:00.000Z",
+    "votes": 4,
+    "views": 148,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-13T06:36:41.186Z"
+  },
+  {
+    "id": 3815,
+    "title": "As the owner of a gas station observing a sudden surge in customers, reaching four times the usual capacity during peak times, how would you investigate, diagnose, and resolve this issue?",
+    "url": "https://www.aced.io/questions/3815/investigate-diagnose-resolve-customer-surge-gas-station",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-20T00:00:00.000Z",
+    "votes": 7,
+    "views": 457,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-06-06T23:21:45.645Z"
+  },
+  {
+    "id": 1752,
+    "title": "As the PM for Hangouts, what would be your next steps after it launched in 2013 with a 3-star rating and polarized reviews?",
+    "url": "https://www.aced.io/questions/1752/pm-hangouts-next-steps",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-23T00:00:00.000Z",
+    "votes": 20,
+    "views": 904,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2021-11-24T01:22:53.772Z"
+  },
+  {
+    "id": 3674,
+    "title": "You're a PM at Lyft. Your team is responsible for setting the default pick-up location. How would you improve it?",
+    "url": "https://www.aced.io/questions/3674/pm-lyft-improve-default-pick-up-location",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Lyft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-01-31T00:00:00.000Z",
+    "votes": 7,
+    "views": 482,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-01-31T17:16:36.722Z"
+  },
+  {
+    "id": 3998,
+    "title": "You're the PM for Facebook. There's been a significant drop in user engagement over the past 10 days. How would you investigate the cause and what steps would you take to address it?",
+    "url": "https://www.aced.io/questions/3998/facebook-pm-investigate-user-engagement-drop",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2024-06-03T00:00:00.000Z",
+    "votes": 6,
+    "views": 387,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2024-06-06T22:30:02.095Z"
+  },
+  {
+    "id": 5981,
+    "title": "Design an AI tool that helps professional consumers.",
+    "url": "https://www.aced.io/questions/5981/ai-professional-consumers",
+    "categories": [
+      "product-design",
+      "product-strategy",
+      "execution",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Mistral AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-20T00:00:00.000Z",
+    "votes": 2,
+    "views": 105,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-01-20T06:40:37.322Z"
+  },
+  {
+    "id": 7350,
+    "title": "How do you handle the tradeoff between speed vs robustness of engineering delivery?",
+    "url": "https://www.aced.io/questions/7350/explain-tradeoff-speed-robustness-engineering",
+    "categories": [
+      "execution"
+    ],
+    "companies": [
+      "MongoDB"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 10,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-06T03:44:21.502Z"
+  },
+  {
+    "id": 1706,
+    "title": "As part of the Netflix PM team, how would you investigate the issue of 1 million inactive but paying users?",
+    "url": "https://www.aced.io/questions/1706/investigate-netflix-inactive-users",
+    "categories": [
+      "product-design",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-10T00:00:00.000Z",
+    "votes": 27,
+    "views": 815,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-10T15:08:36.922Z"
+  },
+  {
+    "id": 2098,
+    "title": "Design price alert notifications for the Coinbase app.",
+    "url": "https://www.aced.io/questions/2098/design-price-alert-coinbase-app",
+    "categories": [
+      "execution",
+      "analytical",
+      "product-strategy"
+    ],
+    "companies": [
+      "Coinbase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-20T00:00:00.000Z",
+    "votes": 13,
+    "views": 830,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-20T18:20:29.330Z"
+  },
+  {
+    "id": 2520,
+    "title": "Installs are down 35% on DoorDash's iOS app, what do you do?",
+    "url": "https://www.aced.io/questions/2520/doorDash-ios-app-installs-down",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 4,
+    "views": 792,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:29:18.684Z"
+  },
+  {
+    "id": 3900,
+    "title": "You are the PM for a new product launch, but internal stakeholders won't have their component ready for the next six months. How would you proceed with the launch?",
+    "url": "https://www.aced.io/questions/3900/pm-proceed-new-product-launch-delays",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Capital One"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-05-10T00:00:00.000Z",
+    "votes": 10,
+    "views": 345,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-05-29T04:03:41.753Z"
+  },
+  {
+    "id": 1976,
+    "title": "If you had to create a dashboard for Netflix with only 3 metrics, what would they be?",
+    "url": "https://www.aced.io/questions/1976/create-dashboard-for-netflix-3-metrics",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-24T00:00:00.000Z",
+    "votes": 15,
+    "views": 779,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-03-28T20:04:36.632Z"
+  },
+  {
+    "id": 1683,
+    "title": "Determine if we should launch a feature of Instagram Store that allows purchases without logging in.",
+    "url": "https://www.aced.io/questions/1683/instagram-store-purchase-without-login",
+    "categories": [
+      "execution",
+      "behavioral",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-20T00:00:00.000Z",
+    "votes": 31,
+    "views": 683,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2021-10-28T06:05:59.814Z"
+  },
+  {
+    "id": 2864,
+    "title": "You are working for a retail company that wants to improve user engagement on a telemedicine platform by leveraging their retail data. What is your approach?",
+    "url": "https://www.aced.io/questions/2864/improve-engagement-telemedicine-leverage-retail-data",
+    "categories": [
+      "product-strategy",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Walmart Labs"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-04-12T00:00:00.000Z",
+    "votes": 6,
+    "views": 589,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-04-18T21:11:09.961Z"
+  },
+  {
+    "id": 4204,
+    "title": "You're a PM at Instagram. How would you diagnose a 10% drop in impressions?",
+    "url": "https://www.aced.io/questions/4204/instagram-diagnose-impression-drop",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Flipkart"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-08-29T00:00:00.000Z",
+    "votes": 5,
+    "views": 283,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2024-09-02T03:18:14.088Z"
+  },
+  {
+    "id": 2346,
+    "title": "How would you improve retention on LinkedIn?",
+    "url": "https://www.aced.io/questions/2346/improve-retention-linkedin",
+    "categories": [
+      "product-design",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Walmart Labs"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-11T00:00:00.000Z",
+    "votes": 7,
+    "views": 689,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2022-08-01T14:22:41.411Z"
+  },
+  {
+    "id": 6657,
+    "title": "How would you improve retention for a core Meta app?",
+    "url": "https://www.aced.io/questions/6657/improve-retention-core-meta-app",
+    "categories": [
+      "product-design",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 27,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-10T14:58:21.408Z"
+  },
+  {
+    "id": 1682,
+    "title": "Set goals and metrics for Instagram Store. What if purchases increase but engagement drops in other app areas?",
+    "url": "https://www.aced.io/questions/1682/instagram-store-goals-metrics-purchase-engagement",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-20T00:00:00.000Z",
+    "votes": 26,
+    "views": 657,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2021-10-28T06:04:59.437Z"
+  },
+  {
+    "id": 1740,
+    "title": "As a PM at Open Table, how would you resolve their biggest booking experience issue?",
+    "url": "https://www.aced.io/questions/1740/open-table-pm-booking-issue-resolution",
+    "categories": [
+      "execution",
+      "product-design",
+      "analytical",
+      "app-critique"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-28T00:00:00.000Z",
+    "votes": 19,
+    "views": 735,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2021-11-18T18:37:30.381Z"
+  },
+  {
+    "id": 2207,
+    "title": "You're a PM of OpenTable's post-booking experience. How would you prioritize and solve their biggest issue?",
+    "url": "https://www.aced.io/questions/2207/pm-opentable-post-booking-prioritize",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-25T00:00:00.000Z",
+    "votes": 10,
+    "views": 728,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-05-25T17:58:44.909Z"
+  },
+  {
+    "id": 1488,
+    "title": "Tell me about an end-to-end product you worked on.",
+    "url": "https://www.aced.io/questions/1488/end-to-end-product-you-worked-on",
+    "categories": [
+      "execution",
+      "product-design"
+    ],
+    "companies": [
+      "Cognition AI",
+      "Amazon",
+      "Google",
+      "Capital One",
+      "Instacart",
+      "Cisco"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 12,
+    "views": 955,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-03-28T04:29:22.358Z"
+  },
+  {
+    "id": 2969,
+    "title": "What would you do if you were a PM at Google Cloud and could only help 3 out of 10 customers?",
+    "url": "https://www.aced.io/questions/2969/pm-google-cloud-customer-prioritization",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-07-24T00:00:00.000Z",
+    "votes": 5,
+    "views": 520,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-08-22T17:00:01.125Z"
+  },
+  {
+    "id": 7249,
+    "title": "Tell me about a time your roadmap changed and why.",
+    "url": "https://www.aced.io/questions/7249/describe-roadmap-change-reason",
+    "categories": [
+      "behavioral",
+      "execution"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-06T00:00:00.000Z",
+    "votes": 0,
+    "views": 17,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-07T01:50:45.743Z"
+  },
+  {
+    "id": 7135,
+    "title": "Rides are decreasing in a market by 20%, how would you diagnose that?",
+    "url": "https://www.aced.io/questions/7135/diagnose-ride-decrease-market",
+    "categories": [
+      "data-analysis",
+      "execution"
+    ],
+    "companies": [
+      "Lyft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 22,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-21T02:43:05.144Z"
+  },
+  {
+    "id": 1898,
+    "title": "How would you launch a product for a digital library as a Google PM?",
+    "url": "https://www.aced.io/questions/1898/google-pm-launch-digital-library-product",
+    "categories": [
+      "product-strategy",
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-26T00:00:00.000Z",
+    "votes": 14,
+    "views": 689,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-02-07T15:20:59.095Z"
+  },
+  {
+    "id": 3031,
+    "title": "How would you improve engagement for a real estate app like Redfin or Zillow?",
+    "url": "https://www.aced.io/questions/3031/improve-engagement-real-estate-app",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-09-01T00:00:00.000Z",
+    "votes": 4,
+    "views": 383,
+    "comments": 0,
+    "has_expert_solution": true,
+    "published_at": "2023-09-25T22:29:20.764Z"
+  },
+  {
+    "id": 3552,
+    "title": "In a multi-step funnel with drop-offs at each stage, which stage would you prioritize addressing first?",
+    "url": "https://www.aced.io/questions/3552/prioritize-stage-multi-step-funnel",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-12-20T00:00:00.000Z",
+    "votes": 10,
+    "views": 350,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-12-20T17:10:35.829Z"
+  },
+  {
+    "id": 2266,
+    "title": "As a PM at Meta, design a product for making restaurant reservations.",
+    "url": "https://www.aced.io/questions/2266/pm-meta-design-restaurant-reservations",
+    "categories": [
+      "product-design",
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-20T00:00:00.000Z",
+    "votes": 8,
+    "views": 651,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-06-24T21:14:39.021Z"
+  },
+  {
+    "id": 2638,
+    "title": "Diagnose a 35% drop in retention on Salesforce.",
+    "url": "https://www.aced.io/questions/2638/diagnose-drop-retention-salesforce",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Salesforce"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 6,
+    "views": 633,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:53:41.795Z"
+  },
+  {
+    "id": 2792,
+    "title": "You're a PM at WhatsApp tasked with increasing user engagement. What features will you build and how will you prioritize and evaluate them?",
+    "url": "https://www.aced.io/questions/2792/pm-whatsapp-increase-user-engagement",
+    "categories": [
+      "product-strategy",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Truecaller"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-01T00:00:00.000Z",
+    "votes": 3,
+    "views": 554,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-02-09T10:16:58.348Z"
+  },
+  {
+    "id": 3346,
+    "title": "How do you collect user requirements?",
+    "url": "https://www.aced.io/questions/3346/collect-user-requirements",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Capital One"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-03-10T00:00:00.000Z",
+    "votes": 10,
+    "views": 332,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-11-29T23:12:11.719Z"
+  },
+  {
+    "id": 2771,
+    "title": "How would you optimize booking.com to improve conversion rates?",
+    "url": "https://www.aced.io/questions/2771/optimize-booking-improve-conversion-rates",
+    "categories": [
+      "product-design",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Coinbase",
+      "Booking.com"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-01T00:00:00.000Z",
+    "votes": 7,
+    "views": 534,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-01-20T03:07:10.531Z"
+  },
+  {
+    "id": 2329,
+    "title": "How would you improve pickups and drop-offs through Uber during large events with over 10,000 people?",
+    "url": "https://www.aced.io/questions/2329/improve-uber-pickups-drop-offs-large-events",
+    "categories": [
+      "program-sense",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 16,
+    "views": 549,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-07-21T15:20:39.406Z"
+  },
+  {
+    "id": 1611,
+    "title": "Should Facebook remove the mandatory profile picture upload during initial setup?",
+    "url": "https://www.aced.io/questions/1611/facebook-profile-setup-remove-picture",
+    "categories": [
+      "execution",
+      "analytical",
+      "product-strategy"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-09-29T00:00:00.000Z",
+    "votes": 37,
+    "views": 478,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2021-10-01T22:12:17.240Z"
+  },
+  {
+    "id": 6347,
+    "title": "Did you ever hit a major roadblock on a project, and how did you unblock the team?",
+    "url": "https://www.aced.io/questions/6347/describe-overcoming-roadblock-project",
+    "categories": [
+      "behavioral",
+      "execution"
+    ],
+    "companies": [
+      "Google DeepMind"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 35,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:37:18.905Z"
+  },
+  {
+    "id": 237,
+    "title": "As a PM for Instagram stories, how would you set the goal for the team?",
+    "url": "https://www.aced.io/questions/237/instagram-stories-goals",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-08-16T00:00:00.000Z",
+    "votes": 21,
+    "views": 963,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2020-01-24T05:14:49.997Z"
+  },
+  {
+    "id": 2203,
+    "title": "As a PM for Uber when it was a ride-hailing app, would you expand into Uber Eats?",
+    "url": "https://www.aced.io/questions/2203/pm-uber-expand-uber-eats",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-23T00:00:00.000Z",
+    "votes": 18,
+    "views": 498,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2022-05-23T18:13:25.559Z"
+  },
+  {
+    "id": 1894,
+    "title": "What is the most important metric for Instagram's verified badges?",
+    "url": "https://www.aced.io/questions/1894/important-metric-instagram-verified-badges",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-01-14T00:00:00.000Z",
+    "votes": 18,
+    "views": 586,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-02-06T06:37:22.176Z"
+  },
+  {
+    "id": 2039,
+    "title": "As a Product Manager for Clickup, analyze the scenario of low return rate of new users and propose solutions to improve metrics such as return rate, average new user sign-up, and daily average usage in the first 15 days.",
+    "url": "https://www.aced.io/questions/2039/product-manager-clickup-improve-new-user-metrics",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Atlassian"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-09T00:00:00.000Z",
+    "votes": 4,
+    "views": 666,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-04-09T12:09:28.624Z"
+  },
+  {
+    "id": 5624,
+    "title": "You're the PM for 99 Deliveries, the logistics branch of 99 in Brazil. How would you define success for this product?",
+    "url": "https://www.aced.io/questions/5624/define-success-of-99-deliveries",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Nubank"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-10T00:00:00.000Z",
+    "votes": 4,
+    "views": 84,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-13T06:34:58.468Z"
+  },
+  {
+    "id": 2240,
+    "title": "What are the key metrics you track for the product you currently manage?",
+    "url": "https://www.aced.io/questions/2240/key-metrics-product-management",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "PayPal",
+      "Adobe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-05-24T00:00:00.000Z",
+    "votes": 7,
+    "views": 560,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-06-09T21:18:17.512Z"
+  },
+  {
+    "id": 2033,
+    "title": "What is the value of a Google Photos user to Google?",
+    "url": "https://www.aced.io/questions/2033/value-of-google-photos-user",
+    "categories": [
+      "execution",
+      "behavioral",
+      "analytical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-31T00:00:00.000Z",
+    "votes": 11,
+    "views": 546,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-04T14:57:07.640Z"
+  },
+  {
+    "id": 4874,
+    "title": "You're a PM for ESPN's website and you see a decline in web traffic by 30%. What would you do?",
+    "url": "https://www.aced.io/questions/4874/espn-website-traffic-decline-analysis",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-02-10T00:00:00.000Z",
+    "votes": 2,
+    "views": 188,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-02-17T19:51:43.394Z"
+  },
+  {
+    "id": 2210,
+    "title": "The conversion ratio on OpenTable dipped by 10% in one day. What could be the cause?",
+    "url": "https://www.aced.io/questions/2210/opentable-conversion-ratio-drop-cause",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-20T00:00:00.000Z",
+    "votes": 10,
+    "views": 503,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-05-25T23:32:07.977Z"
+  },
+  {
+    "id": 1482,
+    "title": "What goals do you have for Facebook Marketplace?",
+    "url": "https://www.aced.io/questions/1482/goals-facebook-marketplace",
+    "categories": [
+      "execution",
+      "analytical",
+      "product-strategy"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-08-30T00:00:00.000Z",
+    "votes": 28,
+    "views": 531,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-03-28T04:15:46.414Z"
+  },
+  {
+    "id": 3374,
+    "title": "How would you prioritize features in a content moderation tool?",
+    "url": "https://www.aced.io/questions/3374/prioritize-features-content-moderation-tool",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "TikTok"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-29T00:00:00.000Z",
+    "votes": 9,
+    "views": 283,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-11-29T23:28:48.284Z"
+  },
+  {
+    "id": 2349,
+    "title": "How would you set goals and metrics for Facebook Work Chat?",
+    "url": "https://www.aced.io/questions/2349/set-goals-metrics-facebook-work-chat",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-11-19T00:00:00.000Z",
+    "votes": 8,
+    "views": 485,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-08-04T15:14:48.044Z"
+  },
+  {
+    "id": 4418,
+    "title": "You're a PM for an X-ray analysis software. You face user complaints about slow result processing times. How would you address this?",
+    "url": "https://www.aced.io/questions/4418/improve-xray-result-processing-time",
+    "categories": [
+      "execution"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-10-02T00:00:00.000Z",
+    "votes": 2,
+    "views": 220,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2024-10-09T09:00:23.698Z"
+  },
+  {
+    "id": 6350,
+    "title": "Walk me through how you thought about building a past 0-to-1 AI product. What were your learnings and success metrics?",
+    "url": "https://www.aced.io/questions/6350/describe-building-0-to-1-ai-product",
+    "categories": [
+      "product-design",
+      "product-strategy",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Google DeepMind"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 36,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:37:37.924Z"
+  },
+  {
+    "id": 5805,
+    "title": "How would you improve supply on Zomato?",
+    "url": "https://www.aced.io/questions/5805/improve-supply-on-zomato",
+    "categories": [
+      "product-strategy",
+      "execution"
+    ],
+    "companies": [
+      "Zomato"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-13T00:00:00.000Z",
+    "votes": 1,
+    "views": 76,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T02:20:35.122Z"
+  },
+  {
+    "id": 2409,
+    "title": "How would you improve engagement on the Venmo Social Feed?",
+    "url": "https://www.aced.io/questions/2409/improve-engagement-venmo-social-feed",
+    "categories": [
+      "product-design",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "PayPal"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-01T00:00:00.000Z",
+    "votes": 5,
+    "views": 489,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-08-24T04:45:37.910Z"
+  },
+  {
+    "id": 6656,
+    "title": "How would you improve engagement for a social app feature with declining usage?",
+    "url": "https://www.aced.io/questions/6656/improve-engagement-social-app-feature",
+    "categories": [
+      "product-design",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 18,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-10T14:58:02.389Z"
+  },
+  {
+    "id": 1494,
+    "title": "How would you mitigate negative experiences on OpenTable?",
+    "url": "https://www.aced.io/questions/1494/mitigate-negative-experiences-opentable",
+    "categories": [
+      "product-design",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-21T00:00:00.000Z",
+    "votes": 20,
+    "views": 529,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-03-28T04:32:55.250Z"
+  },
+  {
+    "id": 2697,
+    "title": "You're a PM for Instagram. You notice the Month-on-Month retention is down by 20%. What might be happening?",
+    "url": "https://www.aced.io/questions/2697/instagram-retention-down-20-percent",
+    "categories": [
+      "execution",
+      "product-design"
+    ],
+    "companies": [
+      "PayPal"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-10-17T00:00:00.000Z",
+    "votes": 7,
+    "views": 427,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-10-18T00:08:11.736Z"
+  },
+  {
+    "id": 2084,
+    "title": "Facebook is considering adding a 7th reaction. How would you determine its necessity and measure its success?",
+    "url": "https://www.aced.io/questions/2084/facebook-adding-7th-reaction-success",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Coinbase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-22T00:00:00.000Z",
+    "votes": 11,
+    "views": 436,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-04-18T18:56:53.296Z"
+  },
+  {
+    "id": 1744,
+    "title": "What goals would you set for DoorDash, and what would be your North Star? How would you prioritize between launching new features to increase orders or simplifying the onboarding funnel to attract new restaurants?",
+    "url": "https://www.aced.io/questions/1744/doordash-goals-north-star-prioritization",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-19T00:00:00.000Z",
+    "votes": 13,
+    "views": 495,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-20T00:16:29.871Z"
+  },
+  {
+    "id": 2413,
+    "title": "Design a GTM strategy for our web-based Documents Processor App.",
+    "url": "https://www.aced.io/questions/2413/gtm-strategy-documents-processor-app",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Lucid Software"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-08-26T00:00:00.000Z",
+    "votes": 6,
+    "views": 434,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-08-26T22:05:54.369Z"
+  },
+  {
+    "id": 2473,
+    "title": "Spotify installs increased 25%. What happened?",
+    "url": "https://www.aced.io/questions/2473/why-spotify-installs-increased",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Spotify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 10,
+    "views": 363,
+    "comments": 3,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:00:51.568Z"
+  },
+  {
+    "id": 1748,
+    "title": "What is the goal of Airbnb hosts?",
+    "url": "https://www.aced.io/questions/1748/goal-airbnb-hosts",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral"
+    ],
+    "companies": [
+      "Coinbase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-19T00:00:00.000Z",
+    "votes": 13,
+    "views": 464,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-11-23T03:28:01.834Z"
+  },
+  {
+    "id": 552,
+    "title": "How do you launch a product?",
+    "url": "https://www.aced.io/questions/552/how-to-launch-product",
+    "categories": [
+      "product-strategy",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Capital One",
+      "Samsung",
+      "Coursera"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 4,
+    "views": 812,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T08:48:12.612Z"
+  },
+  {
+    "id": 2295,
+    "title": "As a product manager for Uber Eats, what goals do you set?",
+    "url": "https://www.aced.io/questions/2295/product-manager-uber-eats-goals",
+    "categories": [
+      "execution",
+      "analytical",
+      "product-strategy"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-04-18T00:00:00.000Z",
+    "votes": 9,
+    "views": 408,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-06-30T22:48:18.574Z"
+  },
+  {
+    "id": 2848,
+    "title": "You are helping Netflix introduce an ACH payment method in the United States. What test would you conduct to help them determine whether ACH should be generally available?",
+    "url": "https://www.aced.io/questions/2848/testing-ach-payment-method-netflix-usa",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Plaid"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-03-24T00:00:00.000Z",
+    "votes": 4,
+    "views": 348,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-03-13T23:08:41.084Z"
+  },
+  {
+    "id": 2422,
+    "title": "When do you consider a design review completed?",
+    "url": "https://www.aced.io/questions/2422/when-is-design-review-completed",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-01T00:00:00.000Z",
+    "votes": 10,
+    "views": 369,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-09-01T14:34:18.725Z"
+  },
+  {
+    "id": 1909,
+    "title": "What would you set as the goals for Facebook hashtags?",
+    "url": "https://www.aced.io/questions/1909/set-goals-for-facebook-hashtags",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-01-10T00:00:00.000Z",
+    "votes": 14,
+    "views": 404,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-02-13T03:23:25.073Z"
+  },
+  {
+    "id": 4826,
+    "title": "Uber booking rates have dropped by 10%. How would you address this?",
+    "url": "https://www.aced.io/questions/4826/uber-booking-rates-decline-analysis",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2025-01-20T00:00:00.000Z",
+    "votes": 3,
+    "views": 133,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2025-01-21T05:56:18.132Z"
+  },
+  {
+    "id": 6630,
+    "title": "How did you prioritize tech resourcing for competing projects?",
+    "url": "https://www.aced.io/questions/6630/describe-prioritize-tech-resourcing-projects",
+    "categories": [
+      "project-managing",
+      "execution"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 17,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-07T09:06:41.821Z"
+  },
+  {
+    "id": 2281,
+    "title": "How would you set goals for an Instagram shop?",
+    "url": "https://www.aced.io/questions/2281/setting-goals-instagram-shop",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-27T00:00:00.000Z",
+    "votes": 7,
+    "views": 425,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-06-28T03:07:51.211Z"
+  },
+  {
+    "id": 2291,
+    "title": "Today is Wednesday, and you need to deliver a release on Friday that is crucial for a key customer. The engineering manager reports a major bug. What do you do?",
+    "url": "https://www.aced.io/questions/2291/handling-major-bug-before-release",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral"
+    ],
+    "companies": [
+      "Cisco"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-28T00:00:00.000Z",
+    "votes": 5,
+    "views": 430,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-06-28T18:26:30.687Z"
+  },
+  {
+    "id": 1977,
+    "title": "You are a Gmail PM and discover that traffic has dropped 10% on a Monday morning. What do you do?",
+    "url": "https://www.aced.io/questions/1977/gmail-pm-traffic-dropped-what-to-do",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-24T00:00:00.000Z",
+    "votes": 11,
+    "views": 403,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-03-28T20:07:09.597Z"
+  },
+  {
+    "id": 2584,
+    "title": "Diagnose a 25% decrease in song listens on Spotify.",
+    "url": "https://www.aced.io/questions/2584/diagnose-spotify-song-listens-drop",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Spotify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 11,
+    "views": 337,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:47:29.064Z"
+  },
+  {
+    "id": 1944,
+    "title": "For a new vertical such as peer-to-peer car rental at a super-app like Grab, what metrics would you examine in the first six months to assess its potential?",
+    "url": "https://www.aced.io/questions/1944/metrics-assess-peer-to-peer-car-rental-success",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-01T00:00:00.000Z",
+    "votes": 8,
+    "views": 413,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2022-03-11T02:35:07.928Z"
+  },
+  {
+    "id": 6227,
+    "title": "Assume the model needs a 20% precision improvement in 2 weeks to 1 month and you have 8 to 10 contractors. How would you approach it, what data would you use, and how would you leverage the team?",
+    "url": "https://www.aced.io/questions/6227/improve-model-precision-leverage-contractors",
+    "categories": [
+      "execution",
+      "data-analysis"
+    ],
+    "companies": [
+      "xAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-04-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 37,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-06T15:39:29.953Z"
+  },
+  {
+    "id": 2127,
+    "title": "What goals would you set for the Reels recommendation engine?",
+    "url": "https://www.aced.io/questions/2127/goals-for-reels-recommendation-engine",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-29T00:00:00.000Z",
+    "votes": 10,
+    "views": 376,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-30T00:57:47.730Z"
+  },
+  {
+    "id": 6573,
+    "title": "You’re the PM for a subscription meal delivery service.  Customer lifetime value has been decreasing MoM.  Talk through how you'd investigate and find solutions.",
+    "url": "https://www.aced.io/questions/6573/investigate-customer-lifetime-value-decline",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Rocket Money"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 18,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-27T05:18:04.210Z"
+  },
+  {
+    "id": 2153,
+    "title": "You're the PM for Facebook Rooms. What goals would you set for the next 6 months?",
+    "url": "https://www.aced.io/questions/2153/goals-facebook-rooms-next-6-months",
+    "categories": [
+      "execution",
+      "analytical",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-31T00:00:00.000Z",
+    "votes": 9,
+    "views": 368,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-05-09T20:55:45.640Z"
+  },
+  {
+    "id": 2302,
+    "title": "How would you set goals and metrics for Facebook Rooms?",
+    "url": "https://www.aced.io/questions/2302/set-goals-metrics-facebook-rooms",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-07T00:00:00.000Z",
+    "votes": 9,
+    "views": 346,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-07-07T22:35:31.100Z"
+  },
+  {
+    "id": 620,
+    "title": "How would you launch a scheduled rides feature for Uber or Lyft?",
+    "url": "https://www.aced.io/questions/620/launch-scheduled-rides-uber-lyft",
+    "categories": [
+      "product-design",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Bolt",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-04-22T00:00:00.000Z",
+    "votes": 11,
+    "views": 626,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T14:35:54.542Z"
+  },
+  {
+    "id": 6257,
+    "title": "Tell me about a time you had to cut scope to ship faster.",
+    "url": "https://www.aced.io/questions/6257/describe-cutting-scope-ship-faster",
+    "categories": [
+      "execution",
+      "behavioral"
+    ],
+    "companies": [
+      "Google DeepMind",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 34,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:25:54.015Z"
+  },
+  {
+    "id": 2564,
+    "title": "Amazon orders are down 25% - what do you do?",
+    "url": "https://www.aced.io/questions/2564/respond-to-amazon-order-decline",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Amazon",
+      "CoinDCX"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-01T00:00:00.000Z",
+    "votes": 7,
+    "views": 335,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:36:52.266Z"
+  },
+  {
+    "id": 1759,
+    "title": "As the PM for the newsfeed, how would you decide whether to show more videos or events?",
+    "url": "https://www.aced.io/questions/1759/pm-newsfeed-video-vs-events",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-01T00:00:00.000Z",
+    "votes": 10,
+    "views": 382,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-12-02T03:30:29.280Z"
+  },
+  {
+    "id": 3760,
+    "title": "You're a PM at Amazon notified of losing customers. How would you improve the customer journey and experience?",
+    "url": "https://www.aced.io/questions/3760/pm-amazon-improve-customer-journey-experience",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "TikTok"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-02-28T00:00:00.000Z",
+    "votes": 6,
+    "views": 177,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2024-06-07T00:06:01.888Z"
+  },
+  {
+    "id": 3361,
+    "title": "Explain a feature you've launched.",
+    "url": "https://www.aced.io/questions/3361/explain-feature-launched",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Capital One"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-29T00:00:00.000Z",
+    "votes": 9,
+    "views": 157,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-11-29T23:12:49.581Z"
+  },
+  {
+    "id": 2293,
+    "title": "You are PM in Meta, What is the goal for Facebook Pay in next 6months or 1 years? How would you think about tacking?",
+    "url": "https://www.aced.io/questions/2293/you-are-pm-in-meta-what-is-the-goal-for-facebook-pay-in-next-6-months-or-1-years-how-would-you-think-about-tacking",
+    "categories": [
+      "execution",
+      "analytical",
+      "product-strategy"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-27T00:00:00.000Z",
+    "votes": 10,
+    "views": 303,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-06-29T03:28:18.779Z"
+  },
+  {
+    "id": 2629,
+    "title": "Diagnose a 45% drop in ride orders on Lyft.",
+    "url": "https://www.aced.io/questions/2629/diagnose-drop-ride-orders-lyft",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Lyft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 5,
+    "views": 302,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:38:44.812Z"
+  },
+  {
+    "id": 2582,
+    "title": "Diagnose a 25% decrease in free sign ups on Notion.",
+    "url": "https://www.aced.io/questions/2582/diagnose-notion-sign-up-decrease",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Notion"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 3,
+    "views": 312,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:43:07.846Z"
+  },
+  {
+    "id": 2198,
+    "title": "You're a PM at Lyft and want to deploy a ride-sharing service using a self-driving car in Palo Alto. How would you choose around 10 pickup and drop-off locations, assuming routes are safe and pre-programmed?",
+    "url": "https://www.aced.io/questions/2198/lyft-self-driving-pickup-dropoff-locations",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Lyft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-17T00:00:00.000Z",
+    "votes": 3,
+    "views": 349,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-05-21T00:09:36.800Z"
+  },
+  {
+    "id": 1715,
+    "title": "Discuss how you managed an end-to-end product design to launch.",
+    "url": "https://www.aced.io/questions/1715/end-to-end-product-design-launch-management",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-05T00:00:00.000Z",
+    "votes": 8,
+    "views": 355,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-12T13:40:42.254Z"
+  },
+  {
+    "id": 630,
+    "title": "YouTube DAUs are falling. What do you do?",
+    "url": "https://www.aced.io/questions/630/youtube-daus-falling-what-to-do",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Google",
+      "Solenis"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-01-01T00:00:00.000Z",
+    "votes": 11,
+    "views": 487,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T14:43:42.125Z"
+  },
+  {
+    "id": 2119,
+    "title": "You're a PM for FB Audio Room, what metrics would you measure?",
+    "url": "https://www.aced.io/questions/2119/pm-fb-audio-room-metrics-measure",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-27T00:00:00.000Z",
+    "votes": 6,
+    "views": 314,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-04-28T20:18:03.399Z"
+  },
+  {
+    "id": 2476,
+    "title": "Diagnose a 20% drop in Facebook Groups usage.",
+    "url": "https://www.aced.io/questions/2476/diagnose-drop-facebook-groups-usage",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 6,
+    "views": 263,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:04:40.407Z"
+  },
+  {
+    "id": 2696,
+    "title": "How would you debug a decline in sales and decide whether to build a new feature or not?",
+    "url": "https://www.aced.io/questions/2696/debug-decline-sales-build-feature",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Shopify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-10-17T00:00:00.000Z",
+    "votes": 4,
+    "views": 267,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-10-17T22:25:21.078Z"
+  },
+  {
+    "id": 1711,
+    "title": "How will you address your API limits? Describe all possible scenarios regarding customers, technology, and suppliers.",
+    "url": "https://www.aced.io/questions/1711/address-api-limits-customers-technology-suppliers",
+    "categories": [
+      "execution",
+      "analytical",
+      "technical"
+    ],
+    "companies": [
+      "Twilio"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-09-29T00:00:00.000Z",
+    "votes": 8,
+    "views": 315,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-11T18:28:13.183Z"
+  },
+  {
+    "id": 1865,
+    "title": "You are a PM at Cisco facing supply chain issues. Role play a conversation with your client on how to address this.",
+    "url": "https://www.aced.io/questions/1865/pm-cisco-supply-chain-client-conversation",
+    "categories": [
+      "execution",
+      "behavioral"
+    ],
+    "companies": [
+      "Cisco"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-17T00:00:00.000Z",
+    "votes": 3,
+    "views": 330,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-01-19T15:05:04.996Z"
+  },
+  {
+    "id": 2799,
+    "title": "Tell me about a time when you felt the most challenged.",
+    "url": "https://www.aced.io/questions/2799/sharing-time-felt-most-challenged",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral"
+    ],
+    "companies": [
+      "U.S. Bank"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-01T00:00:00.000Z",
+    "votes": 3,
+    "views": 213,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-02-20T05:41:50.109Z"
+  },
+  {
+    "id": 2795,
+    "title": "You're a PO at WhatsApp and have been asked to increase engagement. What would you do?",
+    "url": "https://www.aced.io/questions/2795/po-whatsapp-increase-engagement",
+    "categories": [
+      "product-strategy",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Truecaller"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 211,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-02-09T18:42:39.955Z"
+  },
+  {
+    "id": 1725,
+    "title": "What metrics would you consider for designing a robot at Facebook?",
+    "url": "https://www.aced.io/questions/1725/facebook-robot-design-metrics",
+    "categories": [
+      "execution",
+      "analytical",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-20T00:00:00.000Z",
+    "votes": 6,
+    "views": 293,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-13T01:10:16.256Z"
+  },
+  {
+    "id": 1957,
+    "title": "What is your process for crafting effective user stories? What practices have you found beneficial?",
+    "url": "https://www.aced.io/questions/1957/crafting-effective-user-stories-process",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Booking.com"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-15T00:00:00.000Z",
+    "votes": 6,
+    "views": 256,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-03-17T20:52:00.825Z"
+  },
+  {
+    "id": 2577,
+    "title": "How would you improve shipment tracking on Amazon?",
+    "url": "https://www.aced.io/questions/2577/improve-amazon-shipment-tracking",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 7,
+    "views": 192,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:35:36.998Z"
+  },
+  {
+    "id": 2187,
+    "title": "Should Uber Eats be a separate app from Uber Rides?",
+    "url": "https://www.aced.io/questions/2187/uber-eats-separate-from-rides",
+    "categories": [
+      "execution",
+      "analytical",
+      "product-strategy"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-17T00:00:00.000Z",
+    "votes": 8,
+    "views": 201,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-05-17T07:33:05.479Z"
+  },
+  {
+    "id": 2271,
+    "title": "As the head of product at a children's museum, what would you do to address the feedback that engagement is down?",
+    "url": "https://www.aced.io/questions/2271/addressing-engagement-at-childrens-museum",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-24T00:00:00.000Z",
+    "votes": 9,
+    "views": 181,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-06-25T20:26:45.788Z"
+  },
+  {
+    "id": 1261,
+    "title": "Explain how you took or would take a product from ideation to launch.",
+    "url": "https://www.aced.io/questions/1261/product-ideation-to-launch-process",
+    "categories": [
+      "product-strategy",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Plaid",
+      "Blend"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-17T00:00:00.000Z",
+    "votes": 10,
+    "views": 307,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2020-08-03T07:57:43.190Z"
+  },
+  {
+    "id": 1785,
+    "title": "Should Facebook launch a 2D gaming product?",
+    "url": "https://www.aced.io/questions/1785/facebook-2d-gaming-launch",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-06T00:00:00.000Z",
+    "votes": 6,
+    "views": 248,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-12-08T21:30:37.742Z"
+  },
+  {
+    "id": 2578,
+    "title": "Events created are down 100% on Facebook - why?",
+    "url": "https://www.aced.io/questions/2578/facebook-events-decrease-causes",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 7,
+    "views": 171,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:36:27.978Z"
+  },
+  {
+    "id": 2585,
+    "title": "Diagnose a 40% increase in first month churn on HelloFresh.",
+    "url": "https://www.aced.io/questions/2585/diagnose-churn-increase-hellofresh",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "HelloFresh"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 1,
+    "views": 228,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:50:48.563Z"
+  },
+  {
+    "id": 3561,
+    "title": "How would you integrate an email marketing tool with a CRM like Salesforce, HubSpot, or Zoho?",
+    "url": "https://www.aced.io/questions/3561/integrate-email-marketing-with-crm",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-12-24T00:00:00.000Z",
+    "votes": 3,
+    "views": 128,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2024-01-02T20:00:07.832Z"
+  },
+  {
+    "id": 2525,
+    "title": "Diagnose a 25% drop in conversion on Wealthsimple's landing page.",
+    "url": "https://www.aced.io/questions/2525/diagnose-drop-conversion-wealthsimple-landing",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Wealthsimple"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 206,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:38:31.190Z"
+  },
+  {
+    "id": 2135,
+    "title": "Estimate how much bandwidth is needed for launching YouTube TV.",
+    "url": "https://www.aced.io/questions/2135/estimate-bandwidth-youtube-tv-launch",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-04T00:00:00.000Z",
+    "votes": 5,
+    "views": 202,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-05-04T19:58:37.163Z"
+  },
+  {
+    "id": 4422,
+    "title": "You’re a PM at CarGurus. You launched in Canada 8 months ago and conversions are lower in Canada than the US. What would you do?",
+    "url": "https://www.aced.io/questions/4422/cargurus-launch-canada-conversion-improvement",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2024-10-02T00:00:00.000Z",
+    "votes": 1,
+    "views": 83,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-11-15T03:27:07.959Z"
+  },
+  {
+    "id": 2506,
+    "title": "Diagnose 23andMe's 33% drop in conversion.",
+    "url": "https://www.aced.io/questions/2506/diagnose-23andme-conversion-drop",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "23andMe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 1,
+    "views": 212,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:55:52.651Z"
+  },
+  {
+    "id": 4299,
+    "title": "How would you approach the process of decommissioning a service or system?",
+    "url": "https://www.aced.io/questions/4299/process-decommissioning-service-system",
+    "categories": [
+      "product-strategy",
+      "execution",
+      "technical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2024-09-20T00:00:00.000Z",
+    "votes": 2,
+    "views": 82,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2024-09-23T22:06:22.413Z"
+  },
+  {
+    "id": 1905,
+    "title": "Help a premium airline with declining bookings in the business category.",
+    "url": "https://www.aced.io/questions/1905/assist-premium-airline-with-declining-business-bookings",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2022-01-31T00:00:00.000Z",
+    "votes": 2,
+    "views": 232,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-02-09T22:01:04.325Z"
+  },
+  {
+    "id": 2573,
+    "title": "Why are online orders on The New Yorker down 30%?",
+    "url": "https://www.aced.io/questions/2573/why-new-yorker-online-orders-down",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Samsung"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 2,
+    "views": 185,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:31:03.666Z"
+  },
+  {
+    "id": 1904,
+    "title": "As a PM for Jio Mart, how would you pilot drone delivery?",
+    "url": "https://www.aced.io/questions/1904/pm-jio-mart-pilot-drone-delivery",
+    "categories": [
+      "execution",
+      "product-strategy"
+    ],
+    "companies": [
+      "Reliance Retail"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 188,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-02-09T12:21:51.749Z"
+  },
+  {
+    "id": 1712,
+    "title": "List your top three favorite products. How will you measure success and mention all possible areas?",
+    "url": "https://www.aced.io/questions/1712/top-three-favorite-products-measure-success",
+    "categories": [
+      "execution",
+      "analytical",
+      "product-design"
+    ],
+    "companies": [
+      "Twilio"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-14T00:00:00.000Z",
+    "votes": 5,
+    "views": 184,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-11T18:29:27.884Z"
+  },
+  {
+    "id": 1820,
+    "title": "You have two high-ranking VIP customers who request different features. What do you do, and which features do you build?",
+    "url": "https://www.aced.io/questions/1820/vip-customers-different-features-decision-making",
+    "categories": [
+      "product-strategy",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Fyusion"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-01-11T00:00:00.000Z",
+    "votes": 3,
+    "views": 160,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2022-01-12T19:06:33.008Z"
+  },
+  {
+    "id": 1990,
+    "title": "As a Product Manager, how would you measure the success of Toshiba's self-checkout systems used by millions of grocery store shoppers daily?",
+    "url": "https://www.aced.io/questions/1990/measure-success-toshiba-self-checkout",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral"
+    ],
+    "companies": [
+      "Toshiba"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-05-30T00:00:00.000Z",
+    "votes": 3,
+    "views": 156,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-03-30T20:34:16.252Z"
+  },
+  {
+    "id": 2943,
+    "title": "You're the key decision maker at Google Pay, India. Imagine demonetization has been announced again for the Rs. 100 note. What actions would you take immediately, in the short term, and in the long term?",
+    "url": "https://www.aced.io/questions/2943/google-pay-india-demonetization-strategy",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-06-27T00:00:00.000Z",
+    "votes": 1,
+    "views": 131,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-07-21T18:31:29.534Z"
+  },
+  {
+    "id": 1913,
+    "title": "As a member of the product team at Scribe who receives user research indicating some users use the platform to build help centers, explain how you would assess building end-to-end help center functionality, including research, scoping features, and creating a roadmap with a team of four engineers and one product designer.",
+    "url": "https://www.aced.io/questions/1913/assess-building-help-center-functionality-scribe-product-team",
+    "categories": [
+      "execution",
+      "program-sense",
+      "analytical"
+    ],
+    "companies": [
+      "Scribe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 171,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-02-17T04:32:23.383Z"
+  },
+  {
+    "id": 2558,
+    "title": "Diagnose a 35% drop in usage on Invision.",
+    "url": "https://www.aced.io/questions/2558/diagnose-drop-in-invision-usage",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Invision"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 2,
+    "views": 137,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:29:44.337Z"
+  },
+  {
+    "id": 2787,
+    "title": "Improve the seller drop-off experience on the GOAT app.",
+    "url": "https://www.aced.io/questions/2787/improve-seller-dropoff-experience-goat-app",
+    "categories": [
+      "execution",
+      "analytical",
+      "product-design"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-02-03T00:00:00.000Z",
+    "votes": 1,
+    "views": 122,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-02-06T06:46:09.960Z"
+  },
+  {
+    "id": 2939,
+    "title": "How would you increase per user spending by 25% on an e-commerce website?",
+    "url": "https://www.aced.io/questions/2939/increase-user-spending-ecommerce-25-percent",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-06-16T00:00:00.000Z",
+    "votes": 1,
+    "views": 116,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-07-21T18:25:46.238Z"
+  },
+  {
+    "id": 2598,
+    "title": "Diagnose a 25% decrease in conversions on Opencare.",
+    "url": "https://www.aced.io/questions/2598/diagnose-decrease-conversions-opencare",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Opencare"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 2,
+    "views": 128,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:08:17.823Z"
+  },
+  {
+    "id": 3084,
+    "title": "You are in charge of the purchase experience at Back Market. A colleague tells you a lot of users try to buy large quantities of products from sellers. He thinks we need to build a checkout funnel with invoicing to serve these users. What do you do?",
+    "url": "https://www.aced.io/questions/3084/charge-purchase-experience-large-quantities-checkout-funnel",
+    "categories": [
+      "execution",
+      "analytical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-09-29T00:00:00.000Z",
+    "votes": 2,
+    "views": 90,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-10-23T15:46:09.295Z"
+  },
+  {
+    "id": 2791,
+    "title": "What would you do if the timelines of a product are scattered?",
+    "url": "https://www.aced.io/questions/2791/handling-scattered-product-timelines",
+    "categories": [
+      "product-strategy",
+      "analytical",
+      "execution"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-01-22T00:00:00.000Z",
+    "votes": 2,
+    "views": 107,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-02-09T03:32:11.345Z"
+  },
+  {
+    "id": 1796,
+    "title": "Build a table management system.",
+    "url": "https://www.aced.io/questions/1796/build-table-management-system",
+    "categories": [
+      "execution",
+      "analytical",
+      "technical"
+    ],
+    "companies": [
+      "Bentobox",
+      "Imagen Technologies"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-08-31T00:00:00.000Z",
+    "votes": 4,
+    "views": 124,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-12-16T06:43:58.799Z"
+  },
+  {
+    "id": 2596,
+    "title": "Diagnose a 35% decrease in email open rates on SendGrid.",
+    "url": "https://www.aced.io/questions/2596/diagnose-decrease-email-open-rates-sendgrid",
+    "categories": [
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "SendGrid"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 1,
+    "views": 106,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:05:21.286Z"
+  },
+  {
+    "id": 1960,
+    "title": "Where should the company launch next?",
+    "url": "https://www.aced.io/questions/1960/where-should-the-company-launch-next",
+    "categories": [
+      "execution",
+      "analytical",
+      "product-strategy"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2022-03-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 118,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-03-20T20:06:07.649Z"
+  }
+]

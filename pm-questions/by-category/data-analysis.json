@@ -1,0 +1,273 @@
+[
+  {
+    "id": 5521,
+    "title": "How would you convey insights and the methods used to a non-technical audience?",
+    "url": "https://www.aced.io/questions/5521/convey-insights-and-methods-to-non-technical-audience",
+    "categories": [
+      "data-analysis",
+      "technical"
+    ],
+    "companies": [
+      "IBM"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-09-10T00:00:00.000Z",
+    "votes": 9,
+    "views": 660,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2025-08-18T08:13:50.057Z"
+  },
+  {
+    "id": 6344,
+    "title": "As a PM, what would you measure to ensure an LLM is correctly executing a user's requested actions?",
+    "url": "https://www.aced.io/questions/6344/define-metrics-llm-user-actions",
+    "categories": [
+      "analytical",
+      "data-analysis"
+    ],
+    "companies": [
+      "Google DeepMind"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 197,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:36:29.335Z"
+  },
+  {
+    "id": 7447,
+    "title": "Walk us through a project where you used analytics.",
+    "url": "https://www.aced.io/questions/7447/describe-project-used-analytics",
+    "categories": [
+      "data-analysis",
+      "behavioral"
+    ],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 3,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-05T07:17:10.593Z"
+  },
+  {
+    "id": 279,
+    "title": "Tell me about a time you used data to diagnose and solve a problem.",
+    "url": "https://www.aced.io/questions/279/used-data-diagnose-solve-problem",
+    "categories": [
+      "data-analysis"
+    ],
+    "companies": [
+      "Monday",
+      "Instacart",
+      "ARM Holdings"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-05-31T00:00:00.000Z",
+    "votes": 25,
+    "views": 2394,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2020-02-11T05:57:56.276Z"
+  },
+  {
+    "id": 7305,
+    "title": "How would you evaluate a RAG pipeline?",
+    "url": "https://www.aced.io/questions/7305/evaluate-rag-pipeline-methods",
+    "categories": [
+      "data-analysis",
+      "system-design"
+    ],
+    "companies": [
+      "Palo Alto Networks"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 19,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-20T10:47:21.212Z"
+  },
+  {
+    "id": 7208,
+    "title": "What success metrics would you use for Meta Vibes?",
+    "url": "https://www.aced.io/questions/7208/define-success-metrics-meta-vibes",
+    "categories": [
+      "analytical",
+      "data-analysis"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 26,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-31T04:49:49.712Z"
+  },
+  {
+    "id": 5630,
+    "title": "Tell me about a time when data helped you make a decision.",
+    "url": "https://www.aced.io/questions/5630/when-data-helped-you-make-a-decision",
+    "categories": [
+      "data-analysis",
+      "program-sense"
+    ],
+    "companies": [
+      "LinkedIn",
+      "Anduril",
+      "Amazon",
+      "Visa",
+      "Achievers"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 156,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-21T08:32:56.007Z"
+  },
+  {
+    "id": 7135,
+    "title": "Rides are decreasing in a market by 20%, how would you diagnose that?",
+    "url": "https://www.aced.io/questions/7135/diagnose-ride-decrease-market",
+    "categories": [
+      "data-analysis",
+      "execution"
+    ],
+    "companies": [
+      "Lyft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 22,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-21T02:43:05.144Z"
+  },
+  {
+    "id": 6227,
+    "title": "Assume the model needs a 20% precision improvement in 2 weeks to 1 month and you have 8 to 10 contractors. How would you approach it, what data would you use, and how would you leverage the team?",
+    "url": "https://www.aced.io/questions/6227/improve-model-precision-leverage-contractors",
+    "categories": [
+      "execution",
+      "data-analysis"
+    ],
+    "companies": [
+      "xAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-04-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 37,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-06T15:39:29.953Z"
+  },
+  {
+    "id": 6389,
+    "title": "How can AI help this business intelligence team do its work better?",
+    "url": "https://www.aced.io/questions/6389/improve-business-intelligence-ai",
+    "categories": [
+      "artificial-intelligence",
+      "data-analysis"
+    ],
+    "companies": [
+      "Apple"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 29,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:52:03.536Z"
+  },
+  {
+    "id": 5176,
+    "title": "What would you do if you didn't have access to the exact data you need?",
+    "url": "https://www.aced.io/questions/5176/no-access-to-exact-data",
+    "categories": [
+      "data-analysis"
+    ],
+    "companies": [
+      "Visa"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-09-10T00:00:00.000Z",
+    "votes": 3,
+    "views": 83,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-05-01T08:47:41.730Z"
+  },
+  {
+    "id": 1620,
+    "title": "How would you identify market/product fit for connecting mentors with mentees and validate an MVP in this space?",
+    "url": "https://www.aced.io/questions/1620/validate-MVP-mentor-mentee-connection",
+    "categories": [
+      "product-design",
+      "data-analysis"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-04T00:00:00.000Z",
+    "votes": 9,
+    "views": 292,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-10-12T19:55:41.059Z"
+  },
+  {
+    "id": 6479,
+    "title": "Tell me about a project from lead to cash where you delivered a solution to achieve certain business results. How did you measure success?",
+    "url": "https://www.aced.io/questions/6479/describe-project-lead-to-cash-solution",
+    "categories": [
+      "project-managing",
+      "data-analysis"
+    ],
+    "companies": [
+      "BCG Gamma"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 13,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-03T06:00:07.822Z"
+  },
+  {
+    "id": 5012,
+    "title": "Tell me about your analytical skills.",
+    "url": "https://www.aced.io/questions/5012/tell-me-about-your-analytical-skills",
+    "categories": [
+      "data-analysis"
+    ],
+    "companies": [
+      "Agoda",
+      "PayPal",
+      "Hinge Health"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 63,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-03-18T04:08:38.272Z"
+  }
+]

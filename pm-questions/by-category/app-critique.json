@@ -1,0 +1,211 @@
+[
+  {
+    "id": 7413,
+    "title": "Create a friction log for Stripe Subscriptions.",
+    "url": "https://www.aced.io/questions/7413/create-friction-log-stripe-subscriptions",
+    "categories": [
+      "app-critique"
+    ],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 69,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-23T09:32:32.425Z"
+  },
+  {
+    "id": 7415,
+    "title": "How would you improve an Azure Data product of your choice using AI?",
+    "url": "https://www.aced.io/questions/7415/improve-azure-data-product-ai",
+    "categories": [
+      "app-critique",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 13,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-23T09:40:09.682Z"
+  },
+  {
+    "id": 7180,
+    "title": "How would you improve the Glean's home page?",
+    "url": "https://www.aced.io/questions/7180/improve-glean-home-page",
+    "categories": [
+      "app-critique",
+      "product-design"
+    ],
+    "companies": [
+      "Glean"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 32,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-28T06:19:22.165Z"
+  },
+  {
+    "id": 7120,
+    "title": "What are the pros and cons of Apple Maps versus Google Maps?",
+    "url": "https://www.aced.io/questions/7120/compare-apple-maps-vs-google-maps",
+    "categories": [
+      "app-critique"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 34,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-18T03:53:33.397Z"
+  },
+  {
+    "id": 6386,
+    "title": "How would you improve the dashboard experience for the Coinbase trading platform?",
+    "url": "https://www.aced.io/questions/6386/improve-dashboard-coinbase-trading-platform",
+    "categories": [
+      "product-design",
+      "app-critique"
+    ],
+    "companies": [
+      "Coinbase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 59,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:51:32.190Z"
+  },
+  {
+    "id": 1740,
+    "title": "As a PM at Open Table, how would you resolve their biggest booking experience issue?",
+    "url": "https://www.aced.io/questions/1740/open-table-pm-booking-issue-resolution",
+    "categories": [
+      "execution",
+      "product-design",
+      "analytical",
+      "app-critique"
+    ],
+    "companies": [
+      "DoorDash"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-28T00:00:00.000Z",
+    "votes": 19,
+    "views": 735,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2021-11-18T18:37:30.381Z"
+  },
+  {
+    "id": 6533,
+    "title": "How would you improve the Google Photos Sharing feature?",
+    "url": "https://www.aced.io/questions/6533/improve-google-photos-sharing-feature",
+    "categories": [
+      "product-design",
+      "app-critique"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 25,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-27T03:12:46.500Z"
+  },
+  {
+    "id": 6493,
+    "title": "Critique an AI app.",
+    "url": "https://www.aced.io/questions/6493/critique-ai-app-performance",
+    "categories": [
+      "app-critique",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 29,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-08T03:48:04.737Z"
+  },
+  {
+    "id": 7162,
+    "title": "How would you improve Indeed?",
+    "url": "https://www.aced.io/questions/7162/improve-indeed-job-platform",
+    "categories": [
+      "product-design",
+      "app-critique"
+    ],
+    "companies": [
+      "Indeed"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-12-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 13,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-21T03:42:42.406Z"
+  },
+  {
+    "id": 1737,
+    "title": "Tell me about your favorite application. How would you build or integrate it within the Facebook platform?",
+    "url": "https://www.aced.io/questions/1737/favorite-application-facebook-integration",
+    "categories": [
+      "product-design",
+      "app-critique"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-15T00:00:00.000Z",
+    "votes": 8,
+    "views": 200,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-16T18:41:04.821Z"
+  },
+  {
+    "id": 1735,
+    "title": "How can engagement be improved for the 13-19 age group on Instagram?",
+    "url": "https://www.aced.io/questions/1735/improve-instagram-engagement-13-19-age-group",
+    "categories": [
+      "product-design",
+      "app-critique"
+    ],
+    "companies": [
+      "Gameberry Labs"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-16T00:00:00.000Z",
+    "votes": 4,
+    "views": 235,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-16T17:08:09.890Z"
+  }
+]

@@ -1,0 +1,1494 @@
+[
+  {
+    "id": 2423,
+    "title": "Redesign a DMV system.",
+    "url": "https://www.aced.io/questions/2423/redesign-dmv-system",
+    "categories": [],
+    "companies": [
+      "Capital One"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-05-08T00:00:00.000Z",
+    "votes": 33,
+    "views": 2357,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-09-01T19:48:15.601Z"
+  },
+  {
+    "id": 3825,
+    "title": "How would you improve LinkedIn Messaging?",
+    "url": "https://www.aced.io/questions/3825/improve-linkedin-messaging",
+    "categories": [],
+    "companies": [
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-22T00:00:00.000Z",
+    "votes": 15,
+    "views": 1096,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2024-03-24T03:07:50.885Z"
+  },
+  {
+    "id": 3657,
+    "title": "How do you determine the health of the engineering or product backlog?",
+    "url": "https://www.aced.io/questions/3657/determine-health-engineering-product-backlog",
+    "categories": [],
+    "companies": [
+      "JP Morgan Chase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-01-25T00:00:00.000Z",
+    "votes": 14,
+    "views": 1209,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-01-25T22:28:51.151Z"
+  },
+  {
+    "id": 1764,
+    "title": "Tell me about a time when you made an important decision without your boss's approval.",
+    "url": "https://www.aced.io/questions/1764/decision-without-boss-approval",
+    "categories": [],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-07T00:00:00.000Z",
+    "votes": 22,
+    "views": 1734,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-12-07T16:41:59.174Z"
+  },
+  {
+    "id": 3391,
+    "title": "As a PM at Uber, what key metrics would you track to measure its success in a new city?",
+    "url": "https://www.aced.io/questions/3391/metrics-to-measure-uber-success-new-city",
+    "categories": [],
+    "companies": [
+      "Swiggy"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-12-03T00:00:00.000Z",
+    "votes": 7,
+    "views": 937,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2023-12-03T21:41:15.515Z"
+  },
+  {
+    "id": 3229,
+    "title": "You're an Apple product manager. How would you determine the ideal length of the iPhone charging cable?",
+    "url": "https://www.aced.io/questions/3229/determine-iphone-charging-cable-length",
+    "categories": [],
+    "companies": [
+      "Apple"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-14T00:00:00.000Z",
+    "votes": 8,
+    "views": 906,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2023-11-15T22:05:20.273Z"
+  },
+  {
+    "id": 3185,
+    "title": "Redesign Google Maps to increase engagement with small businesses.",
+    "url": "https://www.aced.io/questions/3185/redesign-google-maps-small-business-engagement",
+    "categories": [],
+    "companies": [
+      "Datadog",
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-01T00:00:00.000Z",
+    "votes": 4,
+    "views": 814,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-11-27T21:35:47.716Z"
+  },
+  {
+    "id": 3811,
+    "title": "You're a PM for Meta releasing a new Jobs feature in 2 weeks. How will you measure the success of this product in the short and long term?",
+    "url": "https://www.aced.io/questions/3811/meta-jobs-feature-success-measurement",
+    "categories": [],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-05-03T00:00:00.000Z",
+    "votes": 13,
+    "views": 543,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2024-03-16T02:46:42.445Z"
+  },
+  {
+    "id": 3877,
+    "title": "Tell me about your three favorite apps. As the CEO of one, what would be your most important KPI?",
+    "url": "https://www.aced.io/questions/3877/favorite-apps-ceo-important-kpi",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-04-23T00:00:00.000Z",
+    "votes": 11,
+    "views": 495,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-04-24T19:45:08.697Z"
+  },
+  {
+    "id": 3658,
+    "title": "As a product manager, what KPIs matter most to you?",
+    "url": "https://www.aced.io/questions/3658/product-manager-important-kpis",
+    "categories": [],
+    "companies": [
+      "JP Morgan Chase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-01-25T00:00:00.000Z",
+    "votes": 0,
+    "views": 671,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2024-01-25T22:28:52.480Z"
+  },
+  {
+    "id": 3163,
+    "title": "Design a payment screen mockup with virtual card numbers.",
+    "url": "https://www.aced.io/questions/3163/design-payment-screen-virtual-card-numbers",
+    "categories": [],
+    "companies": [
+      "Capital One"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-10-18T00:00:00.000Z",
+    "votes": 16,
+    "views": 564,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-10-23T15:59:18.800Z"
+  },
+  {
+    "id": 3838,
+    "title": "Design an iron for the blind.",
+    "url": "https://www.aced.io/questions/3838/design-iron-for-blind",
+    "categories": [],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-29T00:00:00.000Z",
+    "votes": 8,
+    "views": 503,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-04-02T20:43:56.984Z"
+  },
+  {
+    "id": 2487,
+    "title": "How would you measure the success of the recommendation engine at Netflix?",
+    "url": "https://www.aced.io/questions/2487/measure-success-netflix-recommendation-engine",
+    "categories": [],
+    "companies": [
+      "Netflix"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 9,
+    "views": 874,
+    "comments": 3,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:22:20.619Z"
+  },
+  {
+    "id": 2496,
+    "title": "List five different APIs offered by Spotify.",
+    "url": "https://www.aced.io/questions/2496/list-spotify-apis",
+    "categories": [],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 8,
+    "views": 890,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:41:05.718Z"
+  },
+  {
+    "id": 3659,
+    "title": "How do you determine the need for a particular product?",
+    "url": "https://www.aced.io/questions/3659/determine-need-for-product",
+    "categories": [],
+    "companies": [
+      "JP Morgan Chase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-01-25T00:00:00.000Z",
+    "votes": 5,
+    "views": 543,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-01-25T22:27:35.890Z"
+  },
+  {
+    "id": 3761,
+    "title": "You're a PM for Tesla. What success metrics would you use for Tesla's 'Sales & Delivery' app?",
+    "url": "https://www.aced.io/questions/3761/success-metrics-tesla-sales-delivery-app",
+    "categories": [],
+    "companies": [
+      "Tesla"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-02-28T00:00:00.000Z",
+    "votes": 6,
+    "views": 400,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2024-03-05T00:54:09.925Z"
+  },
+  {
+    "id": 2637,
+    "title": "How does Uber Eats track success?",
+    "url": "https://www.aced.io/questions/2637/tracking-success-uber-eats",
+    "categories": [],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 6,
+    "views": 694,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:50:58.400Z"
+  },
+  {
+    "id": 2666,
+    "title": "Improve Pinterest.",
+    "url": "https://www.aced.io/questions/2666/improve-pinterest",
+    "categories": [],
+    "companies": [
+      "Pinterest"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-18T00:00:00.000Z",
+    "votes": 4,
+    "views": 714,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-18T22:50:47.580Z"
+  },
+  {
+    "id": 2500,
+    "title": "What is your favorite physical product?",
+    "url": "https://www.aced.io/questions/2500/favorite-physical-product",
+    "categories": [],
+    "companies": [
+      "Tesla"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 1,
+    "views": 738,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:47:07.347Z"
+  },
+  {
+    "id": 2592,
+    "title": "How would you measure the success of FaceTime?",
+    "url": "https://www.aced.io/questions/2592/measure-success-facetime",
+    "categories": [],
+    "companies": [
+      "Apple"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 6,
+    "views": 624,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:59:05.099Z"
+  },
+  {
+    "id": 3515,
+    "title": "You're a PM at a big tech company. You have a product launch in one week, however, the legal team just flagged 100+ potential issues. What would you do?",
+    "url": "https://www.aced.io/questions/3515/pm-big-tech-company-product-launch-legal-issues",
+    "categories": [],
+    "companies": [
+      "Booking.com"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-12-07T00:00:00.000Z",
+    "votes": 2,
+    "views": 415,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-12-07T19:13:52.361Z"
+  },
+  {
+    "id": 2531,
+    "title": "How would you measure the metrics for TurboTax?",
+    "url": "https://www.aced.io/questions/2531/measure-metrics-turbotax",
+    "categories": [],
+    "companies": [
+      "Intuit"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 7,
+    "views": 558,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:46:43.955Z"
+  },
+  {
+    "id": 3359,
+    "title": "Should Capital One invest in a new mobile app?",
+    "url": "https://www.aced.io/questions/3359/capital-one-invest-new-mobile-app",
+    "categories": [],
+    "companies": [
+      "Capital One"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-29T00:00:00.000Z",
+    "votes": 10,
+    "views": 303,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-11-29T23:12:44.099Z"
+  },
+  {
+    "id": 3849,
+    "title": "What is your favorite app on your phone?",
+    "url": "https://www.aced.io/questions/3849/favorite-phone-app",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-04-13T00:00:00.000Z",
+    "votes": 3,
+    "views": 291,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-04-11T20:08:10.301Z"
+  },
+  {
+    "id": 3639,
+    "title": "Design a product for board meetings.",
+    "url": "https://www.aced.io/questions/3639/design-product-board-meetings",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-01-14T00:00:00.000Z",
+    "votes": 4,
+    "views": 317,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-01-16T18:41:49.531Z"
+  },
+  {
+    "id": 2644,
+    "title": "Why did PayPal acquire Honey?",
+    "url": "https://www.aced.io/questions/2644/why-paypal-acquired-honey",
+    "categories": [],
+    "companies": [
+      "PayPal"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 4,
+    "views": 532,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T20:01:56.175Z"
+  },
+  {
+    "id": 3159,
+    "title": "If you were the PM for the search results page, how would you design the relevance?",
+    "url": "https://www.aced.io/questions/3159/pm-design-relevance-search-results-page",
+    "categories": [],
+    "companies": [
+      "Agoda"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-10-17T00:00:00.000Z",
+    "votes": 1,
+    "views": 371,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-10-23T15:57:11.711Z"
+  },
+  {
+    "id": 2934,
+    "title": "Would it be beneficial for Google to charge Gmail users?",
+    "url": "https://www.aced.io/questions/2934/google-charge-for-gmail-benefits",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-06-13T00:00:00.000Z",
+    "votes": 7,
+    "views": 327,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-07-21T18:23:00.740Z"
+  },
+  {
+    "id": 2626,
+    "title": "Improve Discord.",
+    "url": "https://www.aced.io/questions/2626/how-to-improve-discord",
+    "categories": [],
+    "companies": [
+      "Discord"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 3,
+    "views": 438,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:36:29.580Z"
+  },
+  {
+    "id": 2642,
+    "title": "Why did Stripe launch Stripe Atlas, Stripe Press, and acquire Indie Hackers?",
+    "url": "https://www.aced.io/questions/2642/why-stripe-launched-atlas-press-acquired-indie",
+    "categories": [],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 5,
+    "views": 408,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:59:19.281Z"
+  },
+  {
+    "id": 1772,
+    "title": "What is the most innovative idea you have ever had?",
+    "url": "https://www.aced.io/questions/1772/most-innovative-idea",
+    "categories": [],
+    "companies": [
+      "Amazon",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-22T00:00:00.000Z",
+    "votes": 11,
+    "views": 457,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-12-07T16:50:21.956Z"
+  },
+  {
+    "id": 2536,
+    "title": "Why did Salesforce acquire Tableau?",
+    "url": "https://www.aced.io/questions/2536/reason-salesforce-acquisition-tableau",
+    "categories": [],
+    "companies": [
+      "Salesforce"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 0,
+    "views": 420,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:56:23.976Z"
+  },
+  {
+    "id": 2545,
+    "title": "Estimate the number of Instagram posts per day.",
+    "url": "https://www.aced.io/questions/2545/estimate-instagram-posts-daily",
+    "categories": [],
+    "companies": [
+      "Google",
+      "LINE"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-02-29T00:00:00.000Z",
+    "votes": 3,
+    "views": 372,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:08:12.437Z"
+  },
+  {
+    "id": 2658,
+    "title": "Diagnose a 15% drop in video engagement on YouTube.",
+    "url": "https://www.aced.io/questions/2658/diagnose-drop-video-engagement-youtube",
+    "categories": [],
+    "companies": [
+      "Youtube"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-18T00:00:00.000Z",
+    "votes": 4,
+    "views": 367,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-18T21:14:40.079Z"
+  },
+  {
+    "id": 2646,
+    "title": "How would you measure the success of improvements made to Uber's referral system?",
+    "url": "https://www.aced.io/questions/2646/measure-success-uber-referral-system-improvements",
+    "categories": [],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 4,
+    "views": 344,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T20:04:03.774Z"
+  },
+  {
+    "id": 2659,
+    "title": "Evaluate the success of Instagram Stories.",
+    "url": "https://www.aced.io/questions/2659/evaluate-success-instagram-stories",
+    "categories": [],
+    "companies": [
+      "Meta",
+      "Instagram"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-07-10T00:00:00.000Z",
+    "votes": 7,
+    "views": 289,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-18T21:16:54.037Z"
+  },
+  {
+    "id": 2215,
+    "title": "Design an app for a theme park.",
+    "url": "https://www.aced.io/questions/2215/design-theme-park-app",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-27T00:00:00.000Z",
+    "votes": 5,
+    "views": 362,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-05-31T16:36:07.130Z"
+  },
+  {
+    "id": 3828,
+    "title": "Tell me about a time you continuously improved a project.",
+    "url": "https://www.aced.io/questions/3828/continuous-project-improvement",
+    "categories": [],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-25T00:00:00.000Z",
+    "votes": 1,
+    "views": 207,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2024-03-28T23:41:06.088Z"
+  },
+  {
+    "id": 2662,
+    "title": "What do you like about Airbnb?",
+    "url": "https://www.aced.io/questions/2662/what-do-you-like-about-airbnb",
+    "categories": [],
+    "companies": [
+      "Airbnb"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-18T00:00:00.000Z",
+    "votes": 2,
+    "views": 330,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-18T21:36:51.147Z"
+  },
+  {
+    "id": 2509,
+    "title": "Help Reddit expand into Japan.",
+    "url": "https://www.aced.io/questions/2509/help-reddit-expand-japan",
+    "categories": [],
+    "companies": [
+      "Reddit"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 0,
+    "views": 351,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:06:21.245Z"
+  },
+  {
+    "id": 2645,
+    "title": "Airbnb made a feature to increase business travel. How would you measure its success?",
+    "url": "https://www.aced.io/questions/2645/measure-success-airbnb-business-travel-feature",
+    "categories": [],
+    "companies": [
+      "Airbnb"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 4,
+    "views": 295,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T20:03:12.053Z"
+  },
+  {
+    "id": 2667,
+    "title": "Google searches are down 35%. What happened?",
+    "url": "https://www.aced.io/questions/2667/google-searches-down-whats-happened",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-18T00:00:00.000Z",
+    "votes": 3,
+    "views": 274,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-18T22:53:25.973Z"
+  },
+  {
+    "id": 2589,
+    "title": "What are three endpoints on Wayfair?",
+    "url": "https://www.aced.io/questions/2589/three-endpoints-wayfair",
+    "categories": [],
+    "companies": [
+      "Wayfair"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 0,
+    "views": 308,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:55:30.967Z"
+  },
+  {
+    "id": 2663,
+    "title": "Design a bookshelf.",
+    "url": "https://www.aced.io/questions/2663/design-a-bookshelf",
+    "categories": [],
+    "companies": [
+      "Apple"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-18T00:00:00.000Z",
+    "votes": 3,
+    "views": 265,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-18T21:44:09.525Z"
+  },
+  {
+    "id": 2488,
+    "title": "Design a food pickup app for Yelp engineers.",
+    "url": "https://www.aced.io/questions/2488/design-food-pickup-app-yelp-engineers",
+    "categories": [],
+    "companies": [
+      "Yelp"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 259,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:25:39.459Z"
+  },
+  {
+    "id": 2335,
+    "title": "Design a Google product for the elderly.",
+    "url": "https://www.aced.io/questions/2335/design-google-product-elderly",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-19T00:00:00.000Z",
+    "votes": 5,
+    "views": 250,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-07-26T17:09:51.808Z"
+  },
+  {
+    "id": 2650,
+    "title": "Why do you want to work at Twitch?",
+    "url": "https://www.aced.io/questions/2650/why-work-at-twitch",
+    "categories": [],
+    "companies": [
+      "Twitch"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 1,
+    "views": 256,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T20:10:12.405Z"
+  },
+  {
+    "id": 2553,
+    "title": "How many people are listening to songs on Spotify right now?",
+    "url": "https://www.aced.io/questions/2553/current-spotify-listeners-count",
+    "categories": [],
+    "companies": [
+      "Spotify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 5,
+    "views": 205,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:20:46.023Z"
+  },
+  {
+    "id": 2494,
+    "title": "What would you do if Dropbox uploads were down 50%?",
+    "url": "https://www.aced.io/questions/2494/dropbox-uploads-down-response",
+    "categories": [],
+    "companies": [
+      "Dropbox"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 4,
+    "views": 184,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:37:37.668Z"
+  },
+  {
+    "id": 2633,
+    "title": "Why are display ads bad?",
+    "url": "https://www.aced.io/questions/2633/why-display-ads-are-bad",
+    "categories": [],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 2,
+    "views": 211,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:42:29.936Z"
+  },
+  {
+    "id": 2844,
+    "title": "How do you partner with engineering and data science teams?",
+    "url": "https://www.aced.io/questions/2844/partnering-engineering-data-science",
+    "categories": [],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-02-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 175,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-03-05T06:26:08.809Z"
+  },
+  {
+    "id": 2593,
+    "title": "How would you improve Patreon?",
+    "url": "https://www.aced.io/questions/2593/how-improve-patreon",
+    "categories": [],
+    "companies": [
+      "Spotify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 3,
+    "views": 196,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:01:37.850Z"
+  },
+  {
+    "id": 2609,
+    "title": "Improve StubHub.",
+    "url": "https://www.aced.io/questions/2609/improve-stubhub-strategies",
+    "categories": [],
+    "companies": [
+      "ESPN"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 0,
+    "views": 217,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:20:53.497Z"
+  },
+  {
+    "id": 2653,
+    "title": "How would you measure metrics for BART?",
+    "url": "https://www.aced.io/questions/2653/measure-metrics-for-bart",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 3,
+    "views": 175,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T20:13:44.275Z"
+  },
+  {
+    "id": 2489,
+    "title": "Design a better dog collar.",
+    "url": "https://www.aced.io/questions/2489/design-better-dog-collar",
+    "categories": [],
+    "companies": [
+      "Apple"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 184,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:29:07.420Z"
+  },
+  {
+    "id": 2651,
+    "title": "What are some reasons why Google acquired Fitbit?",
+    "url": "https://www.aced.io/questions/2651/reasons-google-acquired-fitbit",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 2,
+    "views": 186,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T20:11:23.846Z"
+  },
+  {
+    "id": 2554,
+    "title": "List four endpoints on Tinder.",
+    "url": "https://www.aced.io/questions/2554/list-tinder-api-endpoints",
+    "categories": [],
+    "companies": [
+      "Tinder"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 1,
+    "views": 189,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:21:46.234Z"
+  },
+  {
+    "id": 2478,
+    "title": "What is the benefit of a control group when testing?",
+    "url": "https://www.aced.io/questions/2478/benefit-of-control-group-in-testing",
+    "categories": [],
+    "companies": [
+      "Yelp"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 160,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:07:57.140Z"
+  },
+  {
+    "id": 2046,
+    "title": "What are the top five traits of a product manager?",
+    "url": "https://www.aced.io/questions/2046/top-five-traits-product-manager",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-11T00:00:00.000Z",
+    "votes": 3,
+    "views": 191,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-04-11T18:00:08.322Z"
+  },
+  {
+    "id": 2594,
+    "title": "How many chickens are there in the world?",
+    "url": "https://www.aced.io/questions/2594/total-chickens-worldwide",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 1,
+    "views": 172,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:03:17.455Z"
+  },
+  {
+    "id": 2652,
+    "title": "How many pairs of shoes do we own in our lifetime?",
+    "url": "https://www.aced.io/questions/2652/pairs-of-shoes-owned-lifetime",
+    "categories": [],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 3,
+    "views": 143,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T20:12:22.759Z"
+  },
+  {
+    "id": 2491,
+    "title": "What is the difference between a POST request and a GET request?",
+    "url": "https://www.aced.io/questions/2491/difference-post-get-request",
+    "categories": [],
+    "companies": [
+      "Dropbox"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 2,
+    "views": 153,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:32:55.017Z"
+  },
+  {
+    "id": 3190,
+    "title": "Tell me about a time you advocated for a team member with less power than you.",
+    "url": "https://www.aced.io/questions/3190/advocate-for-less-powerful-team-member",
+    "categories": [],
+    "companies": [
+      "LinkedIn",
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 124,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-11-27T21:29:37.513Z"
+  },
+  {
+    "id": 2139,
+    "title": "Estimate the market size of the bike market in the United States.",
+    "url": "https://www.aced.io/questions/2139/estimate-bike-market-size-us",
+    "categories": [],
+    "companies": [
+      "Amazon",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-23T00:00:00.000Z",
+    "votes": 1,
+    "views": 187,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-05-06T16:45:57.253Z"
+  },
+  {
+    "id": 2490,
+    "title": "How many tweets are tweeted every day on Twitter?",
+    "url": "https://www.aced.io/questions/2490/daily-tweet-count-twitter",
+    "categories": [],
+    "companies": [
+      "Twitter"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 0,
+    "views": 163,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:31:09.432Z"
+  },
+  {
+    "id": 3179,
+    "title": "Design a product to help salespeople in the automotive industry close more deals.",
+    "url": "https://www.aced.io/questions/3179/design-product-automotive-sales-enhancement",
+    "categories": [],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-10-29T00:00:00.000Z",
+    "votes": 1,
+    "views": 101,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-11-27T22:47:49.518Z"
+  },
+  {
+    "id": 2640,
+    "title": "How would you explain web cookies to someone non-technical?",
+    "url": "https://www.aced.io/questions/2640/explaining-web-cookies-non-technical",
+    "categories": [],
+    "companies": [
+      "Airtable"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 0,
+    "views": 152,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:56:03.636Z"
+  },
+  {
+    "id": 2493,
+    "title": "Installs on LinkedIn's iOS app are down, what do you do?",
+    "url": "https://www.aced.io/questions/2493/linkedin-ios-app-installs-down-response",
+    "categories": [],
+    "companies": [
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 1,
+    "views": 142,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:36:15.037Z"
+  },
+  {
+    "id": 2630,
+    "title": "Why did Twilio acquire SendGrid?",
+    "url": "https://www.aced.io/questions/2630/reason-twilio-acquired-sendgrid",
+    "categories": [],
+    "companies": [
+      "Twilio"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 0,
+    "views": 147,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:39:43.672Z"
+  },
+  {
+    "id": 1627,
+    "title": "As a PM for autonomous land-based vehicles at Google, how would you decide on the next market segment and geography? Assume Waymo does not exist.",
+    "url": "https://www.aced.io/questions/1627/decide-market-segment-geography-autonomous-vehicles",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-18T00:00:00.000Z",
+    "votes": 4,
+    "views": 147,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-10-19T05:29:39.105Z"
+  },
+  {
+    "id": 2495,
+    "title": "How would you share experiment results internally so it's digestible by different stakeholders?",
+    "url": "https://www.aced.io/questions/2495/share-experiment-results-internally",
+    "categories": [],
+    "companies": [
+      "Whole Foods"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 0,
+    "views": 133,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:38:51.638Z"
+  },
+  {
+    "id": 3158,
+    "title": "Design an internal navigation system for Cruise servicing garages.",
+    "url": "https://www.aced.io/questions/3158/design-internal-navigation-system-cruise-servicing-garages",
+    "categories": [],
+    "companies": [
+      "Cruise"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-10-17T00:00:00.000Z",
+    "votes": 1,
+    "views": 84,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-10-23T15:56:59.636Z"
+  },
+  {
+    "id": 2623,
+    "title": "Explain the process of a Google Search.",
+    "url": "https://www.aced.io/questions/2623/explain-google-search-process",
+    "categories": [],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 1,
+    "views": 122,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-09-11T19:34:52.336Z"
+  },
+  {
+    "id": 2647,
+    "title": "Why do you want to work at Facebook?",
+    "url": "https://www.aced.io/questions/2647/why-work-at-facebook",
+    "categories": [],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 0,
+    "views": 121,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T20:05:04.502Z"
+  },
+  {
+    "id": 2625,
+    "title": "What is the size of the micromobility market in the United States?",
+    "url": "https://www.aced.io/questions/2625/us-micromobility-market-size",
+    "categories": [],
+    "companies": [
+      "Lime"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 1,
+    "views": 110,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:35:54.082Z"
+  },
+  {
+    "id": 2501,
+    "title": "How would you improve the NBA League Pass for basketball fans?",
+    "url": "https://www.aced.io/questions/2501/improve-nba-league-pass-basketball-fans",
+    "categories": [],
+    "companies": [
+      "Disney"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 2,
+    "views": 99,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:48:23.634Z"
+  },
+  {
+    "id": 3207,
+    "title": "What product should Apple announce at their next Keynote?",
+    "url": "https://www.aced.io/questions/3207/next-product-announcement-apple-keynote",
+    "categories": [],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-13T00:00:00.000Z",
+    "votes": 0,
+    "views": 84,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-11-22T20:56:39.459Z"
+  },
+  {
+    "id": 2636,
+    "title": "What's a collaboration product your teams use, and why do you like it?",
+    "url": "https://www.aced.io/questions/2636/team-collaboration-tools-preferences",
+    "categories": [],
+    "companies": [
+      "Invision"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 1,
+    "views": 104,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:46:54.373Z"
+  },
+  {
+    "id": 2544,
+    "title": "What are the advantages and disadvantages of GraphQL?",
+    "url": "https://www.aced.io/questions/2544/pros-cons-graphql",
+    "categories": [],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 0,
+    "views": 114,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:07:04.431Z"
+  },
+  {
+    "id": 2514,
+    "title": "Why did Instagram remove the like count on posts?",
+    "url": "https://www.aced.io/questions/2514/why-instagram-removed-like-count",
+    "categories": [],
+    "companies": [
+      "Instagram"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 0,
+    "views": 112,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:14:40.733Z"
+  },
+  {
+    "id": 2217,
+    "title": "List four of your favorite Google products. What are some challenges one of them might face?",
+    "url": "https://www.aced.io/questions/2217/favorite-google-products-challenges",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-27T00:00:00.000Z",
+    "votes": 2,
+    "views": 111,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-05-31T16:36:07.130Z"
+  },
+  {
+    "id": 2581,
+    "title": "How many 'likes' happen on Facebook each day?",
+    "url": "https://www.aced.io/questions/2581/daily-facebook-likes-count",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 1,
+    "views": 97,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:41:44.039Z"
+  },
+  {
+    "id": 2643,
+    "title": "Design a new way for tourists to communicate.",
+    "url": "https://www.aced.io/questions/2643/design-new-communication-for-tourists",
+    "categories": [],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 0,
+    "views": 105,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T20:00:14.901Z"
+  },
+  {
+    "id": 1951,
+    "title": "What problems could an MVP app solve?",
+    "url": "https://www.aced.io/questions/1951/problems-solved-by-mvp-app",
+    "categories": [],
+    "companies": [
+      "Indeed"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-10T00:00:00.000Z",
+    "votes": 0,
+    "views": 131,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-03-15T00:04:08.229Z"
+  },
+  {
+    "id": 2649,
+    "title": "How should WeChat further expand into America?",
+    "url": "https://www.aced.io/questions/2649/expanding-wechat-into-america",
+    "categories": [],
+    "companies": [
+      "WhatsApp"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 1,
+    "views": 86,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T20:08:06.084Z"
+  },
+  {
+    "id": 2352,
+    "title": "How do you align incentives with a team that shares similar goals?",
+    "url": "https://www.aced.io/questions/2352/align-incentives-team-similar-goals",
+    "categories": [],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-21T00:00:00.000Z",
+    "votes": 3,
+    "views": 78,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-08-04T18:33:24.422Z"
+  },
+  {
+    "id": 2648,
+    "title": "How would you expand Fiverr into China?",
+    "url": "https://www.aced.io/questions/2648/expanding-fiverr-into-china",
+    "categories": [],
+    "companies": [
+      "Fiverr"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 0,
+    "views": 92,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T20:06:00.506Z"
+  },
+  {
+    "id": 2665,
+    "title": "Improve the Oculus Store.",
+    "url": "https://www.aced.io/questions/2665/improve-oculus-store",
+    "categories": [],
+    "companies": [
+      "Oculus"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-18T00:00:00.000Z",
+    "votes": 0,
+    "views": 88,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-18T22:44:17.417Z"
+  },
+  {
+    "id": 2624,
+    "title": "What are three APIs on theScore's mobile app?",
+    "url": "https://www.aced.io/questions/2624/three-apis-thescore-mobile-app",
+    "categories": [],
+    "companies": [
+      "TheScore"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 0,
+    "views": 98,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-09-11T19:35:28.673Z"
+  },
+  {
+    "id": 2555,
+    "title": "List three endpoints on edX.",
+    "url": "https://www.aced.io/questions/2555/list-edx-api-endpoints",
+    "categories": [],
+    "companies": [
+      "EdX"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 0,
+    "views": 88,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:24:42.841Z"
+  },
+  {
+    "id": 2574,
+    "title": "List 3 endpoints on theScore app.",
+    "url": "https://www.aced.io/questions/2574/list-endpoints-theScore-app",
+    "categories": [],
+    "companies": [
+      "TheScore"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 0,
+    "views": 85,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:32:51.395Z"
+  },
+  {
+    "id": 2610,
+    "title": "How many weddings does someone attend in their life?",
+    "url": "https://www.aced.io/questions/2610/average-weddings-attended-lifetime",
+    "categories": [],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 1,
+    "views": 81,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-09-11T19:21:55.586Z"
+  },
+  {
+    "id": 2591,
+    "title": "List three endpoints on Top Hat.",
+    "url": "https://www.aced.io/questions/2591/list-endpoints-top-hat",
+    "categories": [],
+    "companies": [
+      "Top Hat"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 0,
+    "views": 79,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:58:11.914Z"
+  }
+]

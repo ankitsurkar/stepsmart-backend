@@ -1,0 +1,2104 @@
+[
+  {
+    "id": 4988,
+    "title": "Design a system to track reviews abuse on Amazon.com.",
+    "url": "https://www.aced.io/questions/4988/design-system-track-review-abuse-amazon",
+    "categories": [
+      "product-design",
+      "analytical",
+      "technical",
+      "system-design"
+    ],
+    "companies": [
+      "DoorDash",
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-06-14T00:00:00.000Z",
+    "votes": 142,
+    "views": 17780,
+    "comments": 38,
+    "has_expert_solution": false,
+    "published_at": "2025-03-17T04:38:11.120Z"
+  },
+  {
+    "id": 113,
+    "title": "How would you explain cloud computing to your grandmother?",
+    "url": "https://www.aced.io/questions/113/explain-cloud-computing-grandmother",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Amazon",
+      "Tesla",
+      "Google",
+      "Google Cloud (GCP)"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-31T00:00:00.000Z",
+    "votes": 176,
+    "views": 13173,
+    "comments": 21,
+    "has_expert_solution": false,
+    "published_at": "2019-12-29T05:54:42.843Z"
+  },
+  {
+    "id": 1220,
+    "title": "How would you build TinyURL?",
+    "url": "https://www.aced.io/questions/1220/build-tinyurl",
+    "categories": [
+      "system-design",
+      "technical"
+    ],
+    "companies": [
+      "Amazon",
+      "Meta",
+      "Confluent",
+      "Google",
+      "Plaid"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 155,
+    "views": 10893,
+    "comments": 12,
+    "has_expert_solution": true,
+    "published_at": "2020-07-23T07:06:42.476Z"
+  },
+  {
+    "id": 5611,
+    "title": "How would you handle hallucinations in a generative AI model deployed to users?",
+    "url": "https://www.aced.io/questions/5611/handle-hallucinations-deployed-ai-model",
+    "categories": [
+      "technical",
+      "concept",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-09-16T00:00:00.000Z",
+    "votes": 23,
+    "views": 1158,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:40:51.331Z"
+  },
+  {
+    "id": 5612,
+    "title": "What's the effect of adjusting an LLM's context window size?",
+    "url": "https://www.aced.io/questions/5612/adjust-llm-context-window-size",
+    "categories": [
+      "technical",
+      "concept",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "JP Morgan Chase",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-30T00:00:00.000Z",
+    "votes": 16,
+    "views": 901,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:43:34.813Z"
+  },
+  {
+    "id": 114,
+    "title": "What happens when you navigate to a website?",
+    "url": "https://www.aced.io/questions/114/what-happens-navigate-website",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google",
+      "Ramp",
+      "Microsoft",
+      "Blend",
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 163,
+    "views": 8413,
+    "comments": 9,
+    "has_expert_solution": false,
+    "published_at": "2019-12-29T05:55:03.086Z"
+  },
+  {
+    "id": 7332,
+    "title": "Walk me through the backend architecture of an AI product.",
+    "url": "https://www.aced.io/questions/7332/explain-backend-architecture-ai-product",
+    "categories": [
+      "technical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Palo Alto Networks"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 1,
+    "views": 59,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-09-28T05:23:56.826Z"
+  },
+  {
+    "id": 4913,
+    "title": "How would you explain a technical concept to a non-technical person?",
+    "url": "https://www.aced.io/questions/4913/explain-technical-concept",
+    "categories": [
+      "behavioral",
+      "technical"
+    ],
+    "companies": [
+      "Microsoft",
+      "Sierra AI",
+      "OpenAI",
+      "Anthropic",
+      "Meta",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 32,
+    "views": 1324,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2025-03-04T19:44:10.711Z"
+  },
+  {
+    "id": 118,
+    "title": "How does Google Maps compute ETA?",
+    "url": "https://www.aced.io/questions/118/compute-google-maps-eta",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google",
+      "Amazon",
+      "Funding Societies"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-01T00:00:00.000Z",
+    "votes": 116,
+    "views": 7641,
+    "comments": 15,
+    "has_expert_solution": false,
+    "published_at": "2019-12-29T05:56:32.704Z"
+  },
+  {
+    "id": 7431,
+    "title": "Tell me about a technical product you worked on.",
+    "url": "https://www.aced.io/questions/7431/describe-technical-product-experience",
+    "categories": [
+      "behavioral",
+      "technical"
+    ],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 11,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-02T01:52:26.919Z"
+  },
+  {
+    "id": 4188,
+    "title": "Design an algorithm to rank ads in the Google Play Store. Include primary and secondary success metrics.",
+    "url": "https://www.aced.io/questions/4188/design-algorithm-rank-ads-google-play",
+    "categories": [
+      "analytical",
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-08-21T00:00:00.000Z",
+    "votes": 33,
+    "views": 1763,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2024-08-22T05:50:37.516Z"
+  },
+  {
+    "id": 5603,
+    "title": "What's your approach to prompt engineering?",
+    "url": "https://www.aced.io/questions/5603/prompt-engineering-approach",
+    "categories": [
+      "artificial-intelligence",
+      "coding",
+      "technical"
+    ],
+    "companies": [
+      "Sierra AI",
+      "OpenAI",
+      "Anthropic"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-20T00:00:00.000Z",
+    "votes": 13,
+    "views": 660,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:21:05.528Z"
+  },
+  {
+    "id": 5521,
+    "title": "How would you convey insights and the methods used to a non-technical audience?",
+    "url": "https://www.aced.io/questions/5521/convey-insights-and-methods-to-non-technical-audience",
+    "categories": [
+      "data-analysis",
+      "technical"
+    ],
+    "companies": [
+      "IBM"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-09-10T00:00:00.000Z",
+    "votes": 9,
+    "views": 660,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2025-08-18T08:13:50.057Z"
+  },
+  {
+    "id": 1286,
+    "title": "How does Google Docs work?",
+    "url": "https://www.aced.io/questions/1286/how-google-docs-works",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-31T00:00:00.000Z",
+    "votes": 99,
+    "views": 4557,
+    "comments": 8,
+    "has_expert_solution": true,
+    "published_at": "2020-10-08T04:52:12.618Z"
+  },
+  {
+    "id": 1293,
+    "title": "Why is Gmail search slower than Google search?",
+    "url": "https://www.aced.io/questions/1293/gmail-search-slower-than-google",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-08-06T00:00:00.000Z",
+    "votes": 85,
+    "views": 4498,
+    "comments": 5,
+    "has_expert_solution": true,
+    "published_at": "2020-10-08T04:57:31.346Z"
+  },
+  {
+    "id": 798,
+    "title": "What is an API and how does it work?",
+    "url": "https://www.aced.io/questions/798/what-is-an-api-and-how-does-it-work",
+    "categories": [
+      "technical",
+      "system-design"
+    ],
+    "companies": [
+      "Microsoft",
+      "Okta",
+      "PayPal",
+      "Indeed",
+      "Revolut",
+      "Meta",
+      "Apple",
+      "Stripe",
+      "Spotify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-31T00:00:00.000Z",
+    "votes": 69,
+    "views": 4979,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2020-04-03T04:46:05.642Z"
+  },
+  {
+    "id": 5605,
+    "title": "What are the ethical risks of deploying agentic AI systems in high-stakes environments?",
+    "url": "https://www.aced.io/questions/5605/agentic-ai-systems-ethical-risk",
+    "categories": [
+      "artificial-intelligence",
+      "concept",
+      "machine-learning",
+      "technical"
+    ],
+    "companies": [
+      "Cohere",
+      "Anthropic"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-22T00:00:00.000Z",
+    "votes": 15,
+    "views": 488,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:25:20.359Z"
+  },
+  {
+    "id": 263,
+    "title": "Tell me about a time when you disagreed with Engineering.",
+    "url": "https://www.aced.io/questions/263/engineering-disagreement",
+    "categories": [
+      "behavioral",
+      "technical"
+    ],
+    "companies": [
+      "Salesforce",
+      "Google DeepMind",
+      "Google",
+      "MasterClass",
+      "Airbnb",
+      "Yelp",
+      "Western Union"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 47,
+    "views": 4989,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2020-02-11T05:23:02.528Z"
+  },
+  {
+    "id": 6610,
+    "title": "You're the PM for an AI agent that autonomously resolves customer support tickets. How would you design the evaluation framework before launch and after?",
+    "url": "https://www.aced.io/questions/6610/evals-ai-customer-support",
+    "categories": [
+      "technical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Google",
+      "Netflix"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 3,
+    "views": 81,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-04T02:33:52.872Z"
+  },
+  {
+    "id": 4497,
+    "title": "Design the SMS API for Twilio.",
+    "url": "https://www.aced.io/questions/4497/design-twilio-sms-api",
+    "categories": [
+      "product-design",
+      "technical"
+    ],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-10-16T00:00:00.000Z",
+    "votes": 16,
+    "views": 1015,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-10-18T21:13:55.043Z"
+  },
+  {
+    "id": 894,
+    "title": "Design the system architecture for WhatsApp.",
+    "url": "https://www.aced.io/questions/894/system-design-whatsapp",
+    "categories": [
+      "system-design",
+      "technical"
+    ],
+    "companies": [
+      "Meta",
+      "Microsoft",
+      "WhatsApp",
+      "Airtel"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-01T00:00:00.000Z",
+    "votes": 89,
+    "views": 3352,
+    "comments": 9,
+    "has_expert_solution": true,
+    "published_at": "2020-05-29T07:56:02.258Z"
+  },
+  {
+    "id": 687,
+    "title": "Tell me about a technical challenge that you have overcome.",
+    "url": "https://www.aced.io/questions/687/technical-challenge-you-have-overcome",
+    "categories": [
+      "technical",
+      "behavioral"
+    ],
+    "companies": [
+      "JP Morgan",
+      "Cisco",
+      "Flexport",
+      "Databricks",
+      "Accenture",
+      "MongoDB",
+      "Snowflake",
+      "Infosys",
+      "Amazon",
+      "Google",
+      "OpenAI",
+      "McKinsey",
+      "Microsoft",
+      "Nvidia",
+      "Meta",
+      "Slack",
+      "Dropbox",
+      "Plaid",
+      "Braintrust"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-23T00:00:00.000Z",
+    "votes": 71,
+    "views": 3668,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T16:14:36.472Z"
+  },
+  {
+    "id": 5600,
+    "title": "What are the risks of assuming LLMs think or feel like humans?",
+    "url": "https://www.aced.io/questions/5600/anthropomorphizing-llms-risks",
+    "categories": [
+      "technical",
+      "concept",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-08T00:00:00.000Z",
+    "votes": 10,
+    "views": 349,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T02:10:51.808Z"
+  },
+  {
+    "id": 4028,
+    "title": "What are the key technical elements and considerations required to develop a push notification system for an app?",
+    "url": "https://www.aced.io/questions/4028/key-elements-push-notification-system-development",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Capital One",
+      "T-Mobile"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-04-08T00:00:00.000Z",
+    "votes": 24,
+    "views": 895,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-06-24T05:50:45.311Z"
+  },
+  {
+    "id": 1180,
+    "title": "Design the backend architecture for Spotify.",
+    "url": "https://www.aced.io/questions/1180/spotify-backend-architecture-design",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Microsoft",
+      "Spotify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-10T00:00:00.000Z",
+    "votes": 48,
+    "views": 2768,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2020-07-23T01:55:39.090Z"
+  },
+  {
+    "id": 1754,
+    "title": "What technical contributions have you made to a project?",
+    "url": "https://www.aced.io/questions/1754/technical-contribution-project",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Cisco",
+      "Anduril",
+      "Nvidia",
+      "Infosys",
+      "Amazon",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-16T00:00:00.000Z",
+    "votes": 31,
+    "views": 2056,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2021-11-29T18:55:58.688Z"
+  },
+  {
+    "id": 4256,
+    "title": "How would you explain what an OS is to your grandmother?",
+    "url": "https://www.aced.io/questions/4256/explain-os",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-18T00:00:00.000Z",
+    "votes": 14,
+    "views": 712,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-09-18T04:36:57.358Z"
+  },
+  {
+    "id": 1518,
+    "title": "Describe the most technically complex project you have worked on and explain why it was complex.",
+    "url": "https://www.aced.io/questions/1518/technically-complex-project-description",
+    "categories": [
+      "behavioral",
+      "technical"
+    ],
+    "companies": [
+      "Amazon",
+      "Rippling",
+      "Airbnb",
+      "OpenAI",
+      "Mastercard",
+      "Anthropic",
+      "Wells Fargo",
+      "Coinbase",
+      "Deloitte",
+      "Nvidia",
+      "Google",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-31T00:00:00.000Z",
+    "votes": 74,
+    "views": 1922,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2021-04-27T16:55:43.905Z"
+  },
+  {
+    "id": 5608,
+    "title": "How would you adapt a generative AI model to perform well in a specific domain?",
+    "url": "https://www.aced.io/questions/5608/adapt-gen-ai-model-for-domain",
+    "categories": [
+      "technical",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-09-11T00:00:00.000Z",
+    "votes": 7,
+    "views": 312,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:33:49.480Z"
+  },
+  {
+    "id": 6613,
+    "title": "Agents are getting powerful enough to take real actions on a user's behalf. How do you decide what to automate versus what keeps a human in the loop and how does that line move over time?",
+    "url": "https://www.aced.io/questions/6613/agents-automate-vs-human-loop",
+    "categories": [
+      "technical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Netflix",
+      "Stripe",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-28T00:00:00.000Z",
+    "votes": 2,
+    "views": 48,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-04T02:37:44.866Z"
+  },
+  {
+    "id": 5920,
+    "title": "What is DevOps?",
+    "url": "https://www.aced.io/questions/5920/what-is-devops",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-10T00:00:00.000Z",
+    "votes": 2,
+    "views": 226,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-01-12T02:06:33.021Z"
+  },
+  {
+    "id": 1709,
+    "title": "How would you measure success for Instagram Shops, excluding ad revenue?",
+    "url": "https://www.aced.io/questions/1709/measure-success-instagram-shops-excluding-ads",
+    "categories": [
+      "execution",
+      "analytical",
+      "technical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-16T00:00:00.000Z",
+    "votes": 32,
+    "views": 1755,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-11-11T18:22:20.506Z"
+  },
+  {
+    "id": 5456,
+    "title": "What metrics would you track to evaluate a new ‘Top Picks’ ML feature for Netflix?",
+    "url": "https://www.aced.io/questions/5456/track-metrics-top-picks-netlix-feature",
+    "categories": [
+      "analytical",
+      "technical"
+    ],
+    "companies": [
+      "Netflix"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-07-28T00:00:00.000Z",
+    "votes": 4,
+    "views": 358,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2025-07-28T00:26:49.695Z"
+  },
+  {
+    "id": 1190,
+    "title": "Design a newsfeed algorithm for Google.",
+    "url": "https://www.aced.io/questions/1190/google-newsfeed-algorithm-design",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Microsoft",
+      "Google",
+      "Waymo"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-10-31T00:00:00.000Z",
+    "votes": 38,
+    "views": 2314,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2020-07-23T05:26:28.148Z"
+  },
+  {
+    "id": 5607,
+    "title": "What are the challenges in ensuring generative AI doesn’t produce harmful or unsafe content, and how would you address them?",
+    "url": "https://www.aced.io/questions/5607/gen-ai-address-harmful-content",
+    "categories": [
+      "technical",
+      "concept",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-08T00:00:00.000Z",
+    "votes": 7,
+    "views": 247,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:30:35.102Z"
+  },
+  {
+    "id": 4329,
+    "title": "You're a PM at Spotify. How would you diagnose a user-reported connection issue?",
+    "url": "https://www.aced.io/questions/4329/spotify-diagnose-connection-issue",
+    "categories": [
+      "analytical",
+      "execution",
+      "technical"
+    ],
+    "companies": [
+      "Spotify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-23T00:00:00.000Z",
+    "votes": 7,
+    "views": 554,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-09-23T21:50:51.318Z"
+  },
+  {
+    "id": 5455,
+    "title": "How would you detect fake reviews using machine learning?",
+    "url": "https://www.aced.io/questions/5455/detect-fake-reviews-ml",
+    "categories": [
+      "product-design",
+      "system-design",
+      "technical"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-07-28T00:00:00.000Z",
+    "votes": 7,
+    "views": 281,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-07-28T00:25:07.762Z"
+  },
+  {
+    "id": 3563,
+    "title": "How do you A/B test a new feature?",
+    "url": "https://www.aced.io/questions/3563/how-to-ab-test-new-feature",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Capital One",
+      "Google",
+      "Apple",
+      "Affirm",
+      "The Trade Desk",
+      "TikTok"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 15,
+    "views": 724,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2024-01-02T18:34:57.627Z"
+  },
+  {
+    "id": 3171,
+    "title": "Tell me about a time you handled a difficult technical stakeholder.",
+    "url": "https://www.aced.io/questions/3171/handling-difficult-technical-stakeholder",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Apple",
+      "Two Sigma",
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 14,
+    "views": 810,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-10-23T22:08:26.035Z"
+  },
+  {
+    "id": 4031,
+    "title": "What technical elements are involved in implementing a per-transaction limit for the virtual card feature?",
+    "url": "https://www.aced.io/questions/4031/implementing-per-transaction-limit-virtual-card",
+    "categories": [
+      "product-design",
+      "technical"
+    ],
+    "companies": [
+      "Capital One"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-02-06T00:00:00.000Z",
+    "votes": 16,
+    "views": 545,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2024-06-24T04:08:45.543Z"
+  },
+  {
+    "id": 5317,
+    "title": "You're a PM at a SaaS startup. What are the key requirements for integrating with Google Cloud Marketplace?",
+    "url": "https://www.aced.io/questions/5317/saas-google-cloud-marketplace-integration",
+    "categories": [
+      "product-strategy",
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-06-05T00:00:00.000Z",
+    "votes": 4,
+    "views": 325,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-06-11T19:58:08.364Z"
+  },
+  {
+    "id": 951,
+    "title": "How do you develop metrics for a project?",
+    "url": "https://www.aced.io/questions/951/how-to-develop-project-metrics",
+    "categories": [
+      "technical",
+      "analytical"
+    ],
+    "companies": [
+      "Amazon",
+      "Samsung",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-31T00:00:00.000Z",
+    "votes": 40,
+    "views": 1599,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2020-06-07T22:06:39.024Z"
+  },
+  {
+    "id": 2167,
+    "title": "What is the difference between NoSQL and SQL?",
+    "url": "https://www.aced.io/questions/2167/difference-nosql-sql",
+    "categories": [
+      "concept",
+      "sql",
+      "technical"
+    ],
+    "companies": [
+      "Meta",
+      "Google",
+      "Apple",
+      "Amazon",
+      "Walmart Labs",
+      "AHL Logics"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 22,
+    "views": 1047,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2022-05-15T19:55:52.276Z"
+  },
+  {
+    "id": 1489,
+    "title": "What is a technical challenge you faced in your previous project?",
+    "url": "https://www.aced.io/questions/1489/technical-challenge-previous-project",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Expedia",
+      "Microsoft",
+      "Paytm",
+      "Amazon",
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 36,
+    "views": 1239,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2021-03-28T04:29:53.786Z"
+  },
+  {
+    "id": 479,
+    "title": "Walk me through the technical architecture of your product.",
+    "url": "https://www.aced.io/questions/479/technical-architecture-product",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Cisco",
+      "Mastercard",
+      "Scale AI",
+      "Stripe",
+      "IBM",
+      "Cognition AI",
+      "Amazon",
+      "Meta",
+      "Dell",
+      "Wingify",
+      "Meshy AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-16T00:00:00.000Z",
+    "votes": 29,
+    "views": 1678,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T04:18:38.203Z"
+  },
+  {
+    "id": 4021,
+    "title": "Design a distributed database system, for example, Kafka.",
+    "url": "https://www.aced.io/questions/4021/design-distributed-database-system-kafka",
+    "categories": [
+      "product-design",
+      "technical"
+    ],
+    "companies": [
+      "Confluent"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-06-13T00:00:00.000Z",
+    "votes": 3,
+    "views": 503,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-06-24T06:01:18.544Z"
+  },
+  {
+    "id": 541,
+    "title": "Explain Deep Learning to a non-technical audience.",
+    "url": "https://www.aced.io/questions/541/explain-deep-learning-non-technical-audience",
+    "categories": [
+      "concept",
+      "technical"
+    ],
+    "companies": [
+      "Nvidia",
+      "OpenAI",
+      "LendingClub",
+      "Google",
+      "Shure"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-11-21T00:00:00.000Z",
+    "votes": 35,
+    "views": 1252,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T08:39:13.341Z"
+  },
+  {
+    "id": 4551,
+    "title": "You're a financial security product PM. How would you use AI to enhance security across banking systems?",
+    "url": "https://www.aced.io/questions/4551/ai-banking-security-enhancement",
+    "categories": [
+      "product-strategy",
+      "technical"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-11-07T00:00:00.000Z",
+    "votes": 10,
+    "views": 276,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-11-08T04:56:11.353Z"
+  },
+  {
+    "id": 3394,
+    "title": "As an Admin, what key metrics would you consider crucial for evaluating Uber's success in a newly launched city?",
+    "url": "https://www.aced.io/questions/3394/admin-evaluate-uber-success-new-city",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Swiggy"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-12-03T00:00:00.000Z",
+    "votes": 8,
+    "views": 485,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-12-03T21:40:12.521Z"
+  },
+  {
+    "id": 958,
+    "title": "Explain the most complex product you have built.",
+    "url": "https://www.aced.io/questions/958/complex-product-built",
+    "categories": [
+      "behavioral",
+      "technical"
+    ],
+    "companies": [
+      "Amazon",
+      "Stripe",
+      "Meta",
+      "Google",
+      "Midis Group"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 40,
+    "views": 985,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2020-06-09T20:55:38.990Z"
+  },
+  {
+    "id": 6019,
+    "title": "How would you detect a fraudulent transaction in a given geography where users mostly spend online?",
+    "url": "https://www.aced.io/questions/6019/detect-fraud-in-geography-with-e-commerce",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Visa"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-20T00:00:00.000Z",
+    "votes": 0,
+    "views": 87,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-02-23T01:11:05.442Z"
+  },
+  {
+    "id": 6247,
+    "title": "Walk me through a technical feature you've led.",
+    "url": "https://www.aced.io/questions/6247/describe-leading-technical-feature",
+    "categories": [
+      "technical",
+      "behavioral"
+    ],
+    "companies": [
+      "Cognition AI",
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 64,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:03:35.140Z"
+  },
+  {
+    "id": 2156,
+    "title": "What is the best way to connect SQL databases and why?",
+    "url": "https://www.aced.io/questions/2156/best-way-connect-sql-databases",
+    "categories": [
+      "concept",
+      "sql",
+      "technical"
+    ],
+    "companies": [
+      "Airbnb",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 11,
+    "views": 732,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-05-10T22:04:05.842Z"
+  },
+  {
+    "id": 6388,
+    "title": "Tell me about a product you built that used AI or large language models at scale to solve a customer problem.",
+    "url": "https://www.aced.io/questions/6388/describe-large-scale-ai-product",
+    "categories": [
+      "artificial-intelligence",
+      "behavioral",
+      "technical"
+    ],
+    "companies": [
+      "Apple"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 41,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:51:59.110Z"
+  },
+  {
+    "id": 4232,
+    "title": "Design a web service for asynchronous communication.",
+    "url": "https://www.aced.io/questions/4232/design-asynchronous-communication-web-service",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-08T00:00:00.000Z",
+    "votes": 4,
+    "views": 291,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2024-09-09T12:28:17.375Z"
+  },
+  {
+    "id": 2472,
+    "title": "Describe what happens when you type a URL into your browser and press Enter.",
+    "url": "https://www.aced.io/questions/2472/describe-url-processing-in-browser",
+    "categories": [
+      "technical",
+      "concept"
+    ],
+    "companies": [
+      "Google",
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 14,
+    "views": 520,
+    "comments": 6,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T10:59:18.543Z"
+  },
+  {
+    "id": 2679,
+    "title": "Design a parking lot.",
+    "url": "https://www.aced.io/questions/2679/design-parking-lot",
+    "categories": [
+      "product-design",
+      "technical"
+    ],
+    "companies": [
+      "Swiggy",
+      "Mindbody",
+      "PayPal",
+      "Meta",
+      "Morgan Stanley",
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 12,
+    "views": 552,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-09-27T20:40:13.645Z"
+  },
+  {
+    "id": 2112,
+    "title": "Design the system for a ticket selling web application.",
+    "url": "https://www.aced.io/questions/2112/design-ticket-selling-web-system",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Amazon",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-14T00:00:00.000Z",
+    "votes": 12,
+    "views": 570,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-04-25T16:13:28.219Z"
+  },
+  {
+    "id": 903,
+    "title": "Tell me about a technical issue you resolved in your current role.",
+    "url": "https://www.aced.io/questions/903/technical-issue-resolution-example",
+    "categories": [
+      "behavioral",
+      "technical"
+    ],
+    "companies": [
+      "Accenture",
+      "Capital One",
+      "Salesforce",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 24,
+    "views": 723,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2020-05-29T08:01:47.538Z"
+  },
+  {
+    "id": 6351,
+    "title": "How would you design UI and UX around AI latency and multimodal features?",
+    "url": "https://www.aced.io/questions/6351/design-ui-ux-ai-latency-multimodal",
+    "categories": [
+      "product-design",
+      "technical",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Google DeepMind"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 38,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:37:42.141Z"
+  },
+  {
+    "id": 1872,
+    "title": "Tell me about a technical debt you introduced and its consequences. What trade-off options did you have?",
+    "url": "https://www.aced.io/questions/1872/technical-debt-consequences-trade-offs",
+    "categories": [
+      "behavioral",
+      "technical"
+    ],
+    "companies": [
+      "Robinhood"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-03T00:00:00.000Z",
+    "votes": 9,
+    "views": 536,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-01-20T04:47:11.891Z"
+  },
+  {
+    "id": 1862,
+    "title": "Design the architecture for a hardware device that measures temperature and social distance among employees in warehouses during COVID.",
+    "url": "https://www.aced.io/questions/1862/hardware-device-temperature-social-distance-covid",
+    "categories": [
+      "technical",
+      "system-design"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-12T00:00:00.000Z",
+    "votes": 9,
+    "views": 535,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-01-17T05:07:11.446Z"
+  },
+  {
+    "id": 2481,
+    "title": "What's the difference between an API and an SDK?",
+    "url": "https://www.aced.io/questions/2481/difference-between-api-and-sdk",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 9,
+    "views": 400,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:13:51.607Z"
+  },
+  {
+    "id": 1871,
+    "title": "How do you balance engineering foundational work with building new features?",
+    "url": "https://www.aced.io/questions/1871/balance-engineering-foundational-work-new-features",
+    "categories": [
+      "technical",
+      "behavioral"
+    ],
+    "companies": [
+      "Robinhood"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-03T00:00:00.000Z",
+    "votes": 9,
+    "views": 503,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-01-20T04:36:36.683Z"
+  },
+  {
+    "id": 4199,
+    "title": "Design an online file storage and sharing platform.",
+    "url": "https://www.aced.io/questions/4199/design-online-storage-platform",
+    "categories": [
+      "product-design",
+      "technical"
+    ],
+    "companies": [
+      "VMware"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-08-28T00:00:00.000Z",
+    "votes": 3,
+    "views": 183,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-08-28T04:26:53.302Z"
+  },
+  {
+    "id": 1948,
+    "title": "Design the architecture for Google Maps to load in under 100ms.",
+    "url": "https://www.aced.io/questions/1948/design-google-maps-load-under-100ms",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-10T00:00:00.000Z",
+    "votes": 8,
+    "views": 466,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-03-14T14:35:59.431Z"
+  },
+  {
+    "id": 3564,
+    "title": "How do you determine the necessary sample size for an A/B test?",
+    "url": "https://www.aced.io/questions/3564/determine-sample-size-ab-test",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-04-01T00:00:00.000Z",
+    "votes": 4,
+    "views": 260,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-01-02T19:38:02.823Z"
+  },
+  {
+    "id": 4601,
+    "title": "What is cloud gaming?",
+    "url": "https://www.aced.io/questions/4601/what-is-cloud-gaming",
+    "categories": [
+      "concept",
+      "technical"
+    ],
+    "companies": [
+      "Nvidia"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-11-21T00:00:00.000Z",
+    "votes": 1,
+    "views": 172,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-11-21T08:15:54.633Z"
+  },
+  {
+    "id": 928,
+    "title": "What are the differences between TCP and UDP?",
+    "url": "https://www.aced.io/questions/928/differences-between-tcp-and-udp",
+    "categories": [
+      "technical",
+      "concept"
+    ],
+    "companies": [
+      "Tesla",
+      "Meta",
+      "Solenis"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-31T00:00:00.000Z",
+    "votes": 18,
+    "views": 596,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2020-05-29T08:15:38.921Z"
+  },
+  {
+    "id": 2680,
+    "title": "Design a product similar to Google Docs for photo editing collaboration.",
+    "url": "https://www.aced.io/questions/2680/design-photo-editing-collaboration-product",
+    "categories": [
+      "technical",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-07-12T00:00:00.000Z",
+    "votes": 5,
+    "views": 376,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-09-28T03:14:44.852Z"
+  },
+  {
+    "id": 148,
+    "title": "How would you address a latency problem?",
+    "url": "https://www.aced.io/questions/148/improve-latency",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Meta",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-02-28T00:00:00.000Z",
+    "votes": 21,
+    "views": 579,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2020-01-13T06:19:50.229Z"
+  },
+  {
+    "id": 4845,
+    "title": "Design a recommendation system for Amazon. What key metrics would you use to measure its success?",
+    "url": "https://www.aced.io/questions/4845/design-recommendation-system-amazon-success-metrics",
+    "categories": [
+      "analytical",
+      "product-design",
+      "technical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2025-01-26T00:00:00.000Z",
+    "votes": 3,
+    "views": 129,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-01-26T21:19:04.659Z"
+  },
+  {
+    "id": 1714,
+    "title": "What is the most technical initiative you have handled as a Product Manager?",
+    "url": "https://www.aced.io/questions/1714/most-technical-initiative-product-manager",
+    "categories": [
+      "behavioral",
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-05T00:00:00.000Z",
+    "votes": 13,
+    "views": 386,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2021-11-12T13:40:42.254Z"
+  },
+  {
+    "id": 2676,
+    "title": "What would change if internet speed were 100 times faster than today?",
+    "url": "https://www.aced.io/questions/2676/impact-faster-internet-speed",
+    "categories": [
+      "product-strategy",
+      "technical"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-22T00:00:00.000Z",
+    "votes": 9,
+    "views": 325,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-09-22T13:56:59.616Z"
+  },
+  {
+    "id": 1746,
+    "title": "Explain how to train and deploy an ML model for license plate detection for customer pick-up orders at a retail store. How do you decide between on-premise versus cloud deployment?",
+    "url": "https://www.aced.io/questions/1746/ml-model-license-plate-detection-deployment",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-19T00:00:00.000Z",
+    "votes": 8,
+    "views": 408,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2021-11-20T21:00:48.602Z"
+  },
+  {
+    "id": 2241,
+    "title": "How would you build a system for running experiments such as A/B tests on an app or website?",
+    "url": "https://www.aced.io/questions/2241/build-system-running-ab-tests",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-09T00:00:00.000Z",
+    "votes": 10,
+    "views": 325,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-06-10T02:12:23.544Z"
+  },
+  {
+    "id": 2516,
+    "title": "What are some endpoints Robinhood has?",
+    "url": "https://www.aced.io/questions/2516/endpoints-robinhood",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Robinhood"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 5,
+    "views": 344,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:16:48.464Z"
+  },
+  {
+    "id": 1985,
+    "title": "When building an app for millions of users, would you deploy the ML model on the server side or client side?",
+    "url": "https://www.aced.io/questions/1985/ml-model-deployment-server-or-client-side",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-29T00:00:00.000Z",
+    "votes": 11,
+    "views": 313,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-03-29T13:34:00.547Z"
+  },
+  {
+    "id": 2099,
+    "title": "Explain prime numbers to a five-year-old.",
+    "url": "https://www.aced.io/questions/2099/explain-prime-numbers-simply",
+    "categories": [
+      "behavioral",
+      "technical"
+    ],
+    "companies": [
+      "Coinbase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-18T00:00:00.000Z",
+    "votes": 4,
+    "views": 383,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-04-20T18:21:11.093Z"
+  },
+  {
+    "id": 2229,
+    "title": "An engineer wants to make a major change to the ranking algorithm. How would you evaluate it?",
+    "url": "https://www.aced.io/questions/2229/evaluate-changes-ranking-algorithm",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-01T00:00:00.000Z",
+    "votes": 10,
+    "views": 228,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-06-01T21:15:22.956Z"
+  },
+  {
+    "id": 3565,
+    "title": "Imagine you're conducting a user survey. What do you do if you can't get 'enough' respondents?",
+    "url": "https://www.aced.io/questions/3565/handle-insufficient-respondents-user-survey",
+    "categories": [
+      "technical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-12-25T00:00:00.000Z",
+    "votes": 4,
+    "views": 145,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-01-02T19:37:23.678Z"
+  },
+  {
+    "id": 1711,
+    "title": "How will you address your API limits? Describe all possible scenarios regarding customers, technology, and suppliers.",
+    "url": "https://www.aced.io/questions/1711/address-api-limits-customers-technology-suppliers",
+    "categories": [
+      "execution",
+      "analytical",
+      "technical"
+    ],
+    "companies": [
+      "Twilio"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-09-29T00:00:00.000Z",
+    "votes": 8,
+    "views": 315,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-11T18:28:13.183Z"
+  },
+  {
+    "id": 4445,
+    "title": "How would you integrate LinkedIn with Cisco Webex to display user profiles on Webex during meetings?",
+    "url": "https://www.aced.io/questions/4445/integrating-linkedin-with-cisco-webex-for-user-profiles",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Cisco"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-10-07T00:00:00.000Z",
+    "votes": 1,
+    "views": 129,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2024-10-09T09:03:06.078Z"
+  },
+  {
+    "id": 2557,
+    "title": "What are three endpoints on Discord?",
+    "url": "https://www.aced.io/questions/2557/list-discord-api-endpoints",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Discord",
+      "Solenis"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-01-01T00:00:00.000Z",
+    "votes": 3,
+    "views": 268,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:28:32.582Z"
+  },
+  {
+    "id": 2023,
+    "title": "Can you provide an example of a strategy you developed to address a technology gap at your company, and explain how you decided between build, buy, or partnership?",
+    "url": "https://www.aced.io/questions/2023/strategy-for-technology-gap-build-buy-partnership",
+    "categories": [
+      "product-strategy",
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-31T00:00:00.000Z",
+    "votes": 5,
+    "views": 272,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-01T18:47:05.199Z"
+  },
+  {
+    "id": 2322,
+    "title": "What is your experience with machine learning?",
+    "url": "https://www.aced.io/questions/2322/experience-with-machine-learning",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Amazon",
+      "Microsoft",
+      "Anomaly"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-08-17T00:00:00.000Z",
+    "votes": 6,
+    "views": 225,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-07-14T02:07:56.476Z"
+  },
+  {
+    "id": 2608,
+    "title": "What are three endpoints on YouTube?",
+    "url": "https://www.aced.io/questions/2608/youtube-three-endpoints",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Youtube"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 1,
+    "views": 242,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:20:07.008Z"
+  },
+  {
+    "id": 5721,
+    "title": "Tell me about a technical project that you've done that you are passionate about.",
+    "url": "https://www.aced.io/questions/5721/passion-technical-project",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "xAI",
+      "Sierra AI",
+      "Department of Defense"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-21T00:00:00.000Z",
+    "votes": 0,
+    "views": 45,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-25T05:22:51.929Z"
+  },
+  {
+    "id": 2234,
+    "title": "Design a food truck's front-end and backend system.",
+    "url": "https://www.aced.io/questions/2234/design-food-truck-system",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-25T00:00:00.000Z",
+    "votes": 4,
+    "views": 234,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-06-03T21:09:53.182Z"
+  },
+  {
+    "id": 4863,
+    "title": "Build a product automating a three-way matching system for the Procure-to-Pay process, including exceptions handling.",
+    "url": "https://www.aced.io/questions/4863/automated-three-way-matching-system-prd",
+    "categories": [
+      "product-design",
+      "technical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2025-02-03T00:00:00.000Z",
+    "votes": 1,
+    "views": 69,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2025-02-07T22:44:22.967Z"
+  },
+  {
+    "id": 2562,
+    "title": "What happens, technically, when someone does a Google Search?",
+    "url": "https://www.aced.io/questions/2562/technical-process-google-search",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "JP Morgan Chase",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 5,
+    "views": 180,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:33:27.080Z"
+  },
+  {
+    "id": 3566,
+    "title": "What are the implications of collecting excessive user data or too many survey responses?",
+    "url": "https://www.aced.io/questions/3566/implications-collecting-excessive-user-data",
+    "categories": [
+      "technical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-12-25T00:00:00.000Z",
+    "votes": 4,
+    "views": 92,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-01-02T18:38:54.536Z"
+  },
+  {
+    "id": 1718,
+    "title": "Develop an algorithm for a radio station to select the next song from a database of over one million songs, given that only one input is allowed from the user on the landing page.",
+    "url": "https://www.aced.io/questions/1718/algorithm-radio-station-select-next-song",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-08T00:00:00.000Z",
+    "votes": 8,
+    "views": 211,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-12T13:44:22.333Z"
+  },
+  {
+    "id": 4299,
+    "title": "How would you approach the process of decommissioning a service or system?",
+    "url": "https://www.aced.io/questions/4299/process-decommissioning-service-system",
+    "categories": [
+      "product-strategy",
+      "execution",
+      "technical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2024-09-20T00:00:00.000Z",
+    "votes": 2,
+    "views": 82,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2024-09-23T22:06:22.413Z"
+  },
+  {
+    "id": 1719,
+    "title": "How would you re-architect WordPerfect as a PM to increase its market share?",
+    "url": "https://www.aced.io/questions/1719/re-architect-wordperfect-market-share",
+    "categories": [
+      "technical",
+      "product-strategy"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-08T00:00:00.000Z",
+    "votes": 5,
+    "views": 219,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-12T13:44:22.333Z"
+  },
+  {
+    "id": 2863,
+    "title": "How would you check for bias in your data?",
+    "url": "https://www.aced.io/questions/2863/check-bias-in-data",
+    "categories": [
+      "technical",
+      "analytical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-04-11T00:00:00.000Z",
+    "votes": 4,
+    "views": 127,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-04-18T21:10:13.415Z"
+  },
+  {
+    "id": 2515,
+    "title": "What are some endpoints on Amazon.com?",
+    "url": "https://www.aced.io/questions/2515/endpoints-on-amazon-com",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 1,
+    "views": 169,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:15:48.408Z"
+  },
+  {
+    "id": 4859,
+    "title": "Design a roadmap for adding or integrating purchase requests to an existing invoice management system.",
+    "url": "https://www.aced.io/questions/4859/roadmap-integrate-purchase-request-invoice-system",
+    "categories": [
+      "product-strategy",
+      "technical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2025-02-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 56,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-02-07T22:38:23.830Z"
+  },
+  {
+    "id": 2612,
+    "title": "Go into detail about a login endpoint.",
+    "url": "https://www.aced.io/questions/2612/detail-login-endpoint-description",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 2,
+    "views": 129,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:24:05.868Z"
+  },
+  {
+    "id": 2530,
+    "title": "List an example of one endpoint on Twitch.",
+    "url": "https://www.aced.io/questions/2530/example-endpoint-twitch",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Twitch"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 2,
+    "views": 127,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:45:50.029Z"
+  },
+  {
+    "id": 2474,
+    "title": "Describe an endpoint and provide two examples.",
+    "url": "https://www.aced.io/questions/2474/describe-endpoint-with-examples",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 2,
+    "views": 126,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:02:14.565Z"
+  },
+  {
+    "id": 1796,
+    "title": "Build a table management system.",
+    "url": "https://www.aced.io/questions/1796/build-table-management-system",
+    "categories": [
+      "execution",
+      "analytical",
+      "technical"
+    ],
+    "companies": [
+      "Bentobox",
+      "Imagen Technologies"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-08-31T00:00:00.000Z",
+    "votes": 4,
+    "views": 124,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-12-16T06:43:58.799Z"
+  },
+  {
+    "id": 2706,
+    "title": "How would you make the internet faster?",
+    "url": "https://www.aced.io/questions/2706/make-internet-faster",
+    "categories": [
+      "technical",
+      "product-design"
+    ],
+    "companies": [
+      "FrontFinancial"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-11-02T00:00:00.000Z",
+    "votes": 1,
+    "views": 127,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-11-03T15:29:31.467Z"
+  },
+  {
+    "id": 2781,
+    "title": "Design an open-source content management filtering system governed by a decentralized community.",
+    "url": "https://www.aced.io/questions/2781/design-open-source-content-system",
+    "categories": [
+      "product-design",
+      "technical"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-02-03T00:00:00.000Z",
+    "votes": 1,
+    "views": 98,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-02-03T12:40:34.353Z"
+  },
+  {
+    "id": 2038,
+    "title": "If I know coding.",
+    "url": "https://www.aced.io/questions/2038/if-i-know-coding",
+    "categories": [
+      "technical"
+    ],
+    "companies": [
+      "Freightos"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-08T00:00:00.000Z",
+    "votes": 0,
+    "views": 101,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-08T08:55:27.235Z"
+  }
+]

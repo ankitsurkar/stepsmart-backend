@@ -1,0 +1,355 @@
+[
+  {
+    "id": 228,
+    "title": "How do you prioritize tasks?",
+    "url": "https://www.aced.io/questions/228/how-prioritize-features",
+    "categories": [
+      "behavioral",
+      "program-sense",
+      "project-managing"
+    ],
+    "companies": [
+      "Datadog",
+      "DoorDash",
+      "Amazon",
+      "Lyft",
+      "Mastercard",
+      "Microsoft",
+      "Chime",
+      "Apple",
+      "Roblox",
+      "Google",
+      "Nvidia",
+      "Anthropic",
+      "Uber",
+      "HashiCorp",
+      "Adobe",
+      "Accenture",
+      "Asana",
+      "JP Morgan Chase",
+      "Google Cloud (GCP)",
+      "Lightbox",
+      "Blend",
+      "Gladly",
+      "Validus Capital"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 271,
+    "views": 15200,
+    "comments": 77,
+    "has_expert_solution": false,
+    "published_at": "2020-01-22T01:01:59.150Z"
+  },
+  {
+    "id": 1005,
+    "title": "Tell me about a time when you improved a complex process.",
+    "url": "https://www.aced.io/questions/1005/time-improved-complex-process",
+    "categories": [
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Revolut",
+      "Amazon",
+      "Google",
+      "Meta",
+      "Blend",
+      "Dayforce"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 202,
+    "views": 9649,
+    "comments": 13,
+    "has_expert_solution": true,
+    "published_at": "2020-06-20T06:17:01.939Z"
+  },
+  {
+    "id": 931,
+    "title": "How have you managed risk in a project?",
+    "url": "https://www.aced.io/questions/931/managing-risk-in-project",
+    "categories": [
+      "behavioral",
+      "program-sense",
+      "project-managing"
+    ],
+    "companies": [
+      "LangChain",
+      "Apple",
+      "Amazon",
+      "Oracle",
+      "Microsoft",
+      "Google",
+      "Meta",
+      "Airtel"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 159,
+    "views": 9949,
+    "comments": 17,
+    "has_expert_solution": true,
+    "published_at": "2020-06-01T07:04:55.822Z"
+  },
+  {
+    "id": 7337,
+    "title": "Tell me what you know about the Scrum and Agile processes and how you implement them as a product manager.",
+    "url": "https://www.aced.io/questions/7337/explain-scrum-agile-product-manager",
+    "categories": [
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Capital One"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-30T00:00:00.000Z",
+    "votes": 1,
+    "views": 80,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-28T05:43:41.863Z"
+  },
+  {
+    "id": 7321,
+    "title": "Tell me about time you managed risk.",
+    "url": "https://www.aced.io/questions/7321/describe-managed-risk-experience",
+    "categories": [
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Amazon",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-20T00:00:00.000Z",
+    "votes": 0,
+    "views": 33,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-28T03:40:58.400Z"
+  },
+  {
+    "id": 1665,
+    "title": "You're a PM at Instacart. What would you do to improve retention?",
+    "url": "https://www.aced.io/questions/1665/instacart-retention-improvement",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Instacart"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-09-14T00:00:00.000Z",
+    "votes": 16,
+    "views": 1226,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-10-26T15:08:27.238Z"
+  },
+  {
+    "id": 7278,
+    "title": "Tell me about the most ambiguous project you have owned.",
+    "url": "https://www.aced.io/questions/7278/describe-ambiguous-project-owned",
+    "categories": [
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Palantir",
+      "Scale AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 24,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-08T02:50:09.782Z"
+  },
+  {
+    "id": 7158,
+    "title": "Tell me about a time you had to design OKRs for an organization.",
+    "url": "https://www.aced.io/questions/7158/describe-design-okrs-organization",
+    "categories": [
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Netflix"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-01-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 31,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-21T03:36:45.547Z"
+  },
+  {
+    "id": 1514,
+    "title": "How do you communicate technical project needs to non-technical teams?",
+    "url": "https://www.aced.io/questions/1514/communicating-technical-needs-non-technical",
+    "categories": [
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Datadog",
+      "Amazon",
+      "HashiCorp",
+      "Salesforce",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 39,
+    "views": 716,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-04-27T16:55:05.768Z"
+  },
+  {
+    "id": 145,
+    "title": "Tell me about one of the most complex projects you've been involved in.",
+    "url": "https://www.aced.io/questions/145/most-complex-project",
+    "categories": [
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-02-07T00:00:00.000Z",
+    "votes": 27,
+    "views": 1138,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2020-01-13T06:12:21.424Z"
+  },
+  {
+    "id": 2806,
+    "title": "How would you improve Shopify for new merchants who have difficulty sourcing products to sell?",
+    "url": "https://www.aced.io/questions/2806/improve-shopify-for-new-merchants",
+    "categories": [
+      "product-design",
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Shopify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-02-27T00:00:00.000Z",
+    "votes": 8,
+    "views": 498,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-02-28T03:37:56.271Z"
+  },
+  {
+    "id": 7264,
+    "title": "Tell me about a time you had to deal with scope creep.",
+    "url": "https://www.aced.io/questions/7264/describe-dealing-with-scope-creep",
+    "categories": [
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Justworks"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-03T00:00:00.000Z",
+    "votes": 0,
+    "views": 13,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-07T03:11:18.752Z"
+  },
+  {
+    "id": 1744,
+    "title": "What goals would you set for DoorDash, and what would be your North Star? How would you prioritize between launching new features to increase orders or simplifying the onboarding funnel to attract new restaurants?",
+    "url": "https://www.aced.io/questions/1744/doordash-goals-north-star-prioritization",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-19T00:00:00.000Z",
+    "votes": 13,
+    "views": 495,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-20T00:16:29.871Z"
+  },
+  {
+    "id": 6630,
+    "title": "How did you prioritize tech resourcing for competing projects?",
+    "url": "https://www.aced.io/questions/6630/describe-prioritize-tech-resourcing-projects",
+    "categories": [
+      "project-managing",
+      "execution"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 17,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-07T09:06:41.821Z"
+  },
+  {
+    "id": 1957,
+    "title": "What is your process for crafting effective user stories? What practices have you found beneficial?",
+    "url": "https://www.aced.io/questions/1957/crafting-effective-user-stories-process",
+    "categories": [
+      "execution",
+      "analytical",
+      "behavioral",
+      "project-managing"
+    ],
+    "companies": [
+      "Booking.com"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-15T00:00:00.000Z",
+    "votes": 6,
+    "views": 256,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-03-17T20:52:00.825Z"
+  },
+  {
+    "id": 6479,
+    "title": "Tell me about a project from lead to cash where you delivered a solution to achieve certain business results. How did you measure success?",
+    "url": "https://www.aced.io/questions/6479/describe-project-lead-to-cash-solution",
+    "categories": [
+      "project-managing",
+      "data-analysis"
+    ],
+    "companies": [
+      "BCG Gamma"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 13,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-03T06:00:07.822Z"
+  }
+]

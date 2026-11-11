@@ -1,0 +1,140 @@
+[
+  {
+    "id": 6477,
+    "title": "Implement Stripe Checkout.",
+    "url": "https://www.aced.io/questions/6477/implement-stripe-checkout-integration",
+    "categories": [
+      "coding"
+    ],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 483,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-03T05:55:56.364Z"
+  },
+  {
+    "id": 5603,
+    "title": "What's your approach to prompt engineering?",
+    "url": "https://www.aced.io/questions/5603/prompt-engineering-approach",
+    "categories": [
+      "artificial-intelligence",
+      "coding",
+      "technical"
+    ],
+    "companies": [
+      "Sierra AI",
+      "OpenAI",
+      "Anthropic"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-20T00:00:00.000Z",
+    "votes": 13,
+    "views": 660,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:21:05.528Z"
+  },
+  {
+    "id": 3045,
+    "title": "Top Salaries by Department",
+    "url": "https://www.aced.io/questions/3045/top-salaries-by-department",
+    "categories": [
+      "coding",
+      "sql"
+    ],
+    "companies": [
+      "Meta",
+      "Tesla"
+    ],
+    "difficulty": "Hard",
+    "last_asked_on": "2026-03-31T00:00:00.000Z",
+    "votes": 63,
+    "views": 1505,
+    "comments": 43,
+    "has_expert_solution": true,
+    "published_at": "2023-09-17T14:13:31.816Z"
+  },
+  {
+    "id": 2777,
+    "title": "Session Data Analysis.",
+    "url": "https://www.aced.io/questions/2777/session-data-analysis",
+    "categories": [
+      "coding",
+      "concept",
+      "sql"
+    ],
+    "companies": [
+      "Uber",
+      "Indeed",
+      "Amazon"
+    ],
+    "difficulty": "Hard",
+    "last_asked_on": "2025-09-10T00:00:00.000Z",
+    "votes": 17,
+    "views": 1204,
+    "comments": 6,
+    "has_expert_solution": true,
+    "published_at": "2023-01-28T17:39:31.788Z"
+  },
+  {
+    "id": 5869,
+    "title": "Debug and extend a Python codebase by adding an async exponential retry mechanism with timeouts and backoff so failures are retried until success.",
+    "url": "https://www.aced.io/questions/5869/implement-exponential-retries",
+    "categories": [
+      "coding"
+    ],
+    "companies": [
+      "Sierra AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-16T00:00:00.000Z",
+    "votes": 0,
+    "views": 194,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:30:43.032Z"
+  },
+  {
+    "id": 5870,
+    "title": "Given a nested merchandise catalog dictionary, extract attributes for a specific item and traverse related items recursively to build the full relationship tree.",
+    "url": "https://www.aced.io/questions/5870/relationship-tree-of-dictionary-catalog",
+    "categories": [
+      "coding"
+    ],
+    "companies": [
+      "Sierra AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-16T00:00:00.000Z",
+    "votes": 0,
+    "views": 177,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:33:46.339Z"
+  },
+  {
+    "id": 3071,
+    "title": "Fraudulent Transactions",
+    "url": "https://www.aced.io/questions/3071/fraudulent-transactions",
+    "categories": [
+      "coding",
+      "sql"
+    ],
+    "companies": [
+      "Stripe",
+      "Revolut"
+    ],
+    "difficulty": "Medium",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 18,
+    "views": 440,
+    "comments": 8,
+    "has_expert_solution": true,
+    "published_at": "2023-09-17T14:26:27.730Z"
+  }
+]

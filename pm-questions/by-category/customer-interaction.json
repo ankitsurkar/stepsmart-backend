@@ -1,0 +1,166 @@
+[
+  {
+    "id": 551,
+    "title": "Tell me about a time when you handled a difficult stakeholder.",
+    "url": "https://www.aced.io/questions/551/time-handled-difficult-stakeholder",
+    "categories": [
+      "behavioral",
+      "customer-interaction"
+    ],
+    "companies": [
+      "DoorDash",
+      "Google",
+      "Amazon",
+      "Flexport",
+      "Asana",
+      "eBay",
+      "Microsoft",
+      "Apple",
+      "Meta",
+      "Verizon",
+      "Stripe",
+      "Braze",
+      "Vercel",
+      "JP Morgan Chase",
+      "Capital One",
+      "Coursera"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 816,
+    "views": 114506,
+    "comments": 105,
+    "has_expert_solution": true,
+    "published_at": "2020-02-29T08:47:15.805Z"
+  },
+  {
+    "id": 7359,
+    "title": "How do you engage customers throughout discovery and development?",
+    "url": "https://www.aced.io/questions/7359/describe-engage-customers-discovery-development",
+    "categories": [
+      "customer-interaction",
+      "cross-functional"
+    ],
+    "companies": [
+      "Datadog"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 25,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-06T15:27:42.489Z"
+  },
+  {
+    "id": 6366,
+    "title": "How do you normally do discovery on customer problems?",
+    "url": "https://www.aced.io/questions/6366/explain-discovery-customer-problems",
+    "categories": [
+      "behavioral",
+      "customer-interaction"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 3,
+    "views": 68,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:41:44.630Z"
+  },
+  {
+    "id": 7251,
+    "title": "Tell me about a time you showed customer obsession.",
+    "url": "https://www.aced.io/questions/7251/describe-customer-obsession-experience",
+    "categories": [
+      "behavioral",
+      "customer-interaction"
+    ],
+    "companies": [
+      "Amazon",
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-30T00:00:00.000Z",
+    "votes": 1,
+    "views": 14,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-07T02:18:48.865Z"
+  },
+  {
+    "id": 7181,
+    "title": "How would you sell Glean to a CTO?",
+    "url": "https://www.aced.io/questions/7181/sell-glean-cto",
+    "categories": [
+      "customer-interaction"
+    ],
+    "companies": [
+      "Glean"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 28,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-28T06:19:27.960Z"
+  },
+  {
+    "id": 7301,
+    "title": "How would you sell on-prem vs the cloud?",
+    "url": "https://www.aced.io/questions/7301/compare-on-prem-vs-cloud-selling",
+    "categories": [
+      "customer-interaction"
+    ],
+    "companies": [
+      "Datadog"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 19,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-15T06:25:34.318Z"
+  },
+  {
+    "id": 6279,
+    "title": "Tell me about a time when a customer came to you with a problem, but that was not the actual problem they were facing. How did you identify the root cause and realize what they were looking for was different from what they were asking for?",
+    "url": "https://www.aced.io/questions/6279/describe-identifying-root-cause-customer-issue",
+    "categories": [
+      "behavioral",
+      "customer-interaction"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 42,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:38:51.985Z"
+  },
+  {
+    "id": 4857,
+    "title": "How would you explain cricket to someone who has never encountered the sport?",
+    "url": "https://www.aced.io/questions/4857/explain-cricket-communication-skills",
+    "categories": [
+      "behavioral",
+      "customer-interaction"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2025-02-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 51,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-02-07T22:35:49.222Z"
+  }
+]

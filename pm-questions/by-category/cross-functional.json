@@ -1,0 +1,697 @@
+[
+  {
+    "id": 140,
+    "title": "Tell me about a time you had a conflict with someone. How did you resolve it and what did you learn?",
+    "url": "https://www.aced.io/questions/140/conflict-resolution-learning",
+    "categories": [
+      "behavioral",
+      "cross-functional",
+      "people-management"
+    ],
+    "companies": [
+      "Amazon",
+      "Salesforce",
+      "Google",
+      "Apple",
+      "Esri",
+      "NASA",
+      "Robinhood",
+      "Accenture",
+      "Uber",
+      "Stripe",
+      "LendingClub",
+      "Paytm",
+      "Anthropic",
+      "Meta",
+      "OpenAI",
+      "DoorDash",
+      "Microsoft",
+      "Walmart Labs",
+      "eBay",
+      "Indeed",
+      "Hubspot",
+      "Nvidia",
+      "Capital One",
+      "Expedia",
+      "Better.com",
+      "Dropbox",
+      "Rakuten",
+      "Asana",
+      "Slack",
+      "Sidecar Health",
+      "C3 AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-31T00:00:00.000Z",
+    "votes": 571,
+    "views": 39304,
+    "comments": 40,
+    "has_expert_solution": true,
+    "published_at": "2020-01-13T06:09:37.858Z"
+  },
+  {
+    "id": 1603,
+    "title": "Tell me about a time when you faced technical and people challenges simultaneously.",
+    "url": "https://www.aced.io/questions/1603/faced-technical-people-challenges",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Amazon",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-06T00:00:00.000Z",
+    "votes": 154,
+    "views": 6382,
+    "comments": 8,
+    "has_expert_solution": true,
+    "published_at": "2021-09-11T05:24:58.693Z"
+  },
+  {
+    "id": 7338,
+    "title": "Walk through a product you owned end-to-end, the stakeholders you worked with, and the challenges that you faced.",
+    "url": "https://www.aced.io/questions/7338/describe-owning-product-stakeholders-challenges",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Capital One"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-30T00:00:00.000Z",
+    "votes": 2,
+    "views": 29,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-09-28T05:43:48.909Z"
+  },
+  {
+    "id": 7369,
+    "title": "Tell me a time when you had to work with another person.",
+    "url": "https://www.aced.io/questions/7369/describe-collaboration-another-person",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-28T00:00:00.000Z",
+    "votes": 2,
+    "views": 20,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-06T15:53:58.035Z"
+  },
+  {
+    "id": 6602,
+    "title": "Tell me about a time you managed conflicting interests.",
+    "url": "https://www.aced.io/questions/6602/describe-managing-conflicting-interests",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Affirm"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-31T00:00:00.000Z",
+    "votes": 1,
+    "views": 108,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-07-31T00:11:22.889Z"
+  },
+  {
+    "id": 2313,
+    "title": "Your largest customer is advocating for a new feature not in your roadmap. What do you do?",
+    "url": "https://www.aced.io/questions/2313/customer-advocating-new-feature",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Cognition AI",
+      "Amazon",
+      "OpenAI",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-17T00:00:00.000Z",
+    "votes": 54,
+    "views": 2369,
+    "comments": 8,
+    "has_expert_solution": true,
+    "published_at": "2022-07-11T19:14:12.771Z"
+  },
+  {
+    "id": 310,
+    "title": "Describe an experience working in a cross-functional team.",
+    "url": "https://www.aced.io/questions/310/experience-cross-functional-team",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Capital One",
+      "Cisco",
+      "Netflix",
+      "Apple",
+      "Palo Alto Networks",
+      "Lyft",
+      "Mastercard",
+      "Salesforce",
+      "Mistral AI",
+      "Nvidia",
+      "Google DeepMind",
+      "Anthropic",
+      "Meta",
+      "Stripe",
+      "Amazon",
+      "Walmart Labs",
+      "Unity",
+      "StubHub",
+      "TheGuarantors"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-31T00:00:00.000Z",
+    "votes": 83,
+    "views": 4159,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2020-02-26T13:10:59.711Z"
+  },
+  {
+    "id": 106,
+    "title": "Tell me about a time you had to convince engineers to implement a particular feature.",
+    "url": "https://www.aced.io/questions/106/tell-me-about-time-convince-engineers",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Perplexity AI",
+      "Google",
+      "Blend"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 74,
+    "views": 3929,
+    "comments": 8,
+    "has_expert_solution": false,
+    "published_at": "2019-12-29T05:51:20.060Z"
+  },
+  {
+    "id": 5865,
+    "title": "As a PM, how do you work with your engineering team?",
+    "url": "https://www.aced.io/questions/5865/how-do-you-work-with-engineering",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Google DeepMind"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-16T00:00:00.000Z",
+    "votes": 4,
+    "views": 366,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:21:27.061Z"
+  },
+  {
+    "id": 7359,
+    "title": "How do you engage customers throughout discovery and development?",
+    "url": "https://www.aced.io/questions/7359/describe-engage-customers-discovery-development",
+    "categories": [
+      "customer-interaction",
+      "cross-functional"
+    ],
+    "companies": [
+      "Datadog"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 25,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-06T15:27:42.489Z"
+  },
+  {
+    "id": 2314,
+    "title": "How do you resolve conflicting product requirements, and who determines which requirement takes priority?",
+    "url": "https://www.aced.io/questions/2314/resolving-conflicting-product-requirements",
+    "categories": [
+      "behavioral",
+      "cross-functional",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-01T00:00:00.000Z",
+    "votes": 39,
+    "views": 1809,
+    "comments": 5,
+    "has_expert_solution": true,
+    "published_at": "2022-07-11T19:16:18.515Z"
+  },
+  {
+    "id": 6521,
+    "title": "Tell me about a time you disagreed with a team member.",
+    "url": "https://www.aced.io/questions/6521/describe-team-disagreement-experience",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Google",
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-26T00:00:00.000Z",
+    "votes": 4,
+    "views": 43,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-07-27T02:37:46.427Z"
+  },
+  {
+    "id": 7271,
+    "title": "How would you prioritise platform requests from multiple stakeholders?",
+    "url": "https://www.aced.io/questions/7271/prioritize-platform-requests-multiple-stakeholders",
+    "categories": [
+      "cross-functional",
+      "execution"
+    ],
+    "companies": [
+      "Wise"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-28T00:00:00.000Z",
+    "votes": 0,
+    "views": 49,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-07T03:46:02.144Z"
+  },
+  {
+    "id": 7489,
+    "title": "Tell me about a time you had to get alignment from other teams or stakeholders.",
+    "url": "https://www.aced.io/questions/7489/describe-getting-alignment-other-teams",
+    "categories": [
+      "cross-functional",
+      "behavioral"
+    ],
+    "companies": [
+      "Visa"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-06-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 2,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-06T04:07:54.356Z"
+  },
+  {
+    "id": 7484,
+    "title": "If engineers are not on board, how do you build rapport with them and influence them?",
+    "url": "https://www.aced.io/questions/7484/build-rapport-influence-engineers",
+    "categories": [
+      "cross-functional",
+      "behavioral"
+    ],
+    "companies": [
+      "PayPal"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-11-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 2,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-06T03:50:31.212Z"
+  },
+  {
+    "id": 7358,
+    "title": "How do you work with both engineering teams and non-technical stakeholders?",
+    "url": "https://www.aced.io/questions/7358/explain-working-engineers-nontechnical-stakeholders",
+    "categories": [
+      "cross-functional",
+      "behavioral"
+    ],
+    "companies": [
+      "Datadog"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 17,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-06T15:26:13.975Z"
+  },
+  {
+    "id": 6367,
+    "title": "What is your playbook for managing different stakeholder opinions?",
+    "url": "https://www.aced.io/questions/6367/explain-manage-stakeholder-opinions",
+    "categories": [
+      "cross-functional",
+      "behavioral"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 3,
+    "views": 50,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:41:47.126Z"
+  },
+  {
+    "id": 491,
+    "title": "How do you influence without authority?",
+    "url": "https://www.aced.io/questions/491/influencing-without-authority",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Salesforce",
+      "Google",
+      "American Express",
+      "Goldman Sachs",
+      "JP Morgan Chase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-15T00:00:00.000Z",
+    "votes": 28,
+    "views": 1910,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T05:47:49.278Z"
+  },
+  {
+    "id": 7121,
+    "title": "Your engineers feel demotivated by your new roadmap. What would you do to re-engage them on your product?",
+    "url": "https://www.aced.io/questions/7121/improve-engineer-engagement-product-roadmap",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 37,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-18T03:53:38.196Z"
+  },
+  {
+    "id": 7373,
+    "title": "Tell me about a time you worked with someone whose priorities or way of working was very different from yours.",
+    "url": "https://www.aced.io/questions/7373/describe-collaboration-different-work-styles",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "IBM"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-29T00:00:00.000Z",
+    "votes": 0,
+    "views": 12,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-07T02:34:15.471Z"
+  },
+  {
+    "id": 6362,
+    "title": "Tell me about your model of engaging with engineering.",
+    "url": "https://www.aced.io/questions/6362/describe-model-engaging-engineering",
+    "categories": [
+      "cross-functional",
+      "behavioral"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 57,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:40:25.813Z"
+  },
+  {
+    "id": 5861,
+    "title": "Tell me about your process for working with design teams.",
+    "url": "https://www.aced.io/questions/5861/process-working-with-design-teams",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Abridge",
+      "Google DeepMind",
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 4,
+    "views": 102,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:14:04.502Z"
+  },
+  {
+    "id": 7352,
+    "title": "How do you operate in a matrix organization?",
+    "url": "https://www.aced.io/questions/7352/explain-operate-matrix-organization",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "HelloFresh"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 10,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-06T03:49:23.916Z"
+  },
+  {
+    "id": 7351,
+    "title": "How do you handle it when you are the bottleneck for engineering?",
+    "url": "https://www.aced.io/questions/7351/address-bottleneck-engineering-teams",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "MongoDB"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 10,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-06T03:44:43.613Z"
+  },
+  {
+    "id": 916,
+    "title": "How do you encourage collaboration among cross-functional teams?",
+    "url": "https://www.aced.io/questions/916/encourage-collaboration-cross-functional-teams",
+    "categories": [
+      "behavioral",
+      "program-sense",
+      "cross-functional"
+    ],
+    "companies": [
+      "Scale AI",
+      "Anthropic",
+      "Microsoft",
+      "Amazon",
+      "Discord",
+      "Slack"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-11T00:00:00.000Z",
+    "votes": 28,
+    "views": 974,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2020-05-29T08:08:29.615Z"
+  },
+  {
+    "id": 6381,
+    "title": "Tell me about a time when you had to communicate a change in direction that you anticipated people would have concerns with.",
+    "url": "https://www.aced.io/questions/6381/describe-communicating-unpopular-direction-change",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 28,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:48:03.689Z"
+  },
+  {
+    "id": 6494,
+    "title": "How do you work with engineering?",
+    "url": "https://www.aced.io/questions/6494/describe-working-with-engineering-teams",
+    "categories": [
+      "cross-functional"
+    ],
+    "companies": [
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 29,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-08T03:48:12.306Z"
+  },
+  {
+    "id": 6255,
+    "title": "What were your key takeaways from the LLM paper we sent you? How would you think about working with engineering on something like that?",
+    "url": "https://www.aced.io/questions/6255/summarize-llm-paper-collaborate-engineering",
+    "categories": [
+      "concept",
+      "cross-functional"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 35,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:25:21.822Z"
+  },
+  {
+    "id": 6253,
+    "title": "Walk me through the roles on your AI project team and how you'd handle training an LLM on data that includes usernames and emails.",
+    "url": "https://www.aced.io/questions/6253/describe-ai-team-roles-train-llm-sensitive-data",
+    "categories": [
+      "cross-functional",
+      "machine-learning"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 28,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:08:42.926Z"
+  },
+  {
+    "id": 6246,
+    "title": "How would you convince engineering to go down a certain path?",
+    "url": "https://www.aced.io/questions/6246/persuade-engineering-specific-path",
+    "categories": [
+      "cross-functional",
+      "behavioral"
+    ],
+    "companies": [
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 28,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:03:30.247Z"
+  },
+  {
+    "id": 6256,
+    "title": "How do you partner with sales?",
+    "url": "https://www.aced.io/questions/6256/explain-partnership-sales",
+    "categories": [
+      "cross-functional"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 27,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:25:23.314Z"
+  },
+  {
+    "id": 5852,
+    "title": "How have you worked on quick iterations with UX designers in the past?",
+    "url": "https://www.aced.io/questions/5852/quick-iterations-with-ux-designers",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 0,
+    "views": 46,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T06:31:52.842Z"
+  },
+  {
+    "id": 5851,
+    "title": "How have you worked with designers to A/B test different iterations?",
+    "url": "https://www.aced.io/questions/5851/working-with-designers-to-ab-test",
+    "categories": [
+      "behavioral",
+      "cross-functional"
+    ],
+    "companies": [
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 0,
+    "views": 44,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T06:31:08.894Z"
+  }
+]

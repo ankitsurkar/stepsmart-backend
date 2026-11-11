@@ -1,0 +1,145 @@
+[
+  {
+    "id": 140,
+    "title": "Tell me about a time you had a conflict with someone. How did you resolve it and what did you learn?",
+    "url": "https://www.aced.io/questions/140/conflict-resolution-learning",
+    "categories": [
+      "behavioral",
+      "cross-functional",
+      "people-management"
+    ],
+    "companies": [
+      "Amazon",
+      "Salesforce",
+      "Google",
+      "Apple",
+      "Esri",
+      "NASA",
+      "Robinhood",
+      "Accenture",
+      "Uber",
+      "Stripe",
+      "LendingClub",
+      "Paytm",
+      "Anthropic",
+      "Meta",
+      "OpenAI",
+      "DoorDash",
+      "Microsoft",
+      "Walmart Labs",
+      "eBay",
+      "Indeed",
+      "Hubspot",
+      "Nvidia",
+      "Capital One",
+      "Expedia",
+      "Better.com",
+      "Dropbox",
+      "Rakuten",
+      "Asana",
+      "Slack",
+      "Sidecar Health",
+      "C3 AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-31T00:00:00.000Z",
+    "votes": 571,
+    "views": 39304,
+    "comments": 40,
+    "has_expert_solution": true,
+    "published_at": "2020-01-13T06:09:37.858Z"
+  },
+  {
+    "id": 924,
+    "title": "Tell me about a time when you dealt with a conflict with engineers.",
+    "url": "https://www.aced.io/questions/924/conflict-with-engineers",
+    "categories": [
+      "behavioral",
+      "people-management"
+    ],
+    "companies": [
+      "IBM",
+      "Google",
+      "Datadog",
+      "Nvidia",
+      "Block",
+      "OpenAI",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-14T00:00:00.000Z",
+    "votes": 118,
+    "views": 6138,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2020-05-29T08:13:04.480Z"
+  },
+  {
+    "id": 241,
+    "title": "Tell me about a time when you had a disagreement with your manager.",
+    "url": "https://www.aced.io/questions/241/disagreement-manager",
+    "categories": [
+      "behavioral",
+      "people-management"
+    ],
+    "companies": [
+      "Scale AI",
+      "OpenAI",
+      "Google",
+      "Meta",
+      "Amazon",
+      "Gameberry Labs",
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 81,
+    "views": 5741,
+    "comments": 9,
+    "has_expert_solution": false,
+    "published_at": "2020-01-24T05:21:07.175Z"
+  },
+  {
+    "id": 492,
+    "title": "How do you hire your team?",
+    "url": "https://www.aced.io/questions/492/how-to-hire-team",
+    "categories": [
+      "behavioral",
+      "people-management"
+    ],
+    "companies": [
+      "Amazon",
+      "Anduril",
+      "Robinhood",
+      "Airbnb",
+      "Square",
+      "Eve Legal"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-30T00:00:00.000Z",
+    "votes": 26,
+    "views": 1510,
+    "comments": 8,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T05:49:00.567Z"
+  },
+  {
+    "id": 6225,
+    "title": "How have you led teams at scale to improve models or algorithms post-training, especially using contractors?",
+    "url": "https://www.aced.io/questions/6225/lead-large-teams-improve-models-contractors",
+    "categories": [
+      "people-management",
+      "machine-learning"
+    ],
+    "companies": [
+      "xAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-04-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 20,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-06T15:32:41.262Z"
+  }
+]

@@ -1,0 +1,416 @@
+[
+  {
+    "id": 5780,
+    "title": "Design an inference batching system for a single GPU that can handle up to 100 inputs per batch while users wait synchronously, maximizing utilization under compute constraints.",
+    "url": "https://www.aced.io/questions/5780/inference-batching-system",
+    "categories": [
+      "artificial-intelligence",
+      "machine-learning",
+      "system-design"
+    ],
+    "companies": [
+      "Anthropic",
+      "Nebius"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-29T00:00:00.000Z",
+    "votes": 47,
+    "views": 4343,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2025-12-08T08:09:18.988Z"
+  },
+  {
+    "id": 3095,
+    "title": "Design an evaluation framework for ads ranking.",
+    "url": "https://www.aced.io/questions/3095/design-evaluation-framework-ads-ranking",
+    "categories": [
+      "product-design",
+      "system-design",
+      "machine-learning"
+    ],
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 122,
+    "views": 10541,
+    "comments": 13,
+    "has_expert_solution": true,
+    "published_at": "2023-10-03T16:28:00.328Z"
+  },
+  {
+    "id": 5877,
+    "title": "Explain how RAG works.",
+    "url": "https://www.aced.io/questions/5877/explain-rag",
+    "categories": [
+      "artificial-intelligence",
+      "concept",
+      "machine-learning"
+    ],
+    "companies": [
+      "Handshake",
+      "JP Morgan Chase",
+      "Google",
+      "Sierra AI",
+      "Databricks",
+      "Perplexity AI",
+      "Salesforce",
+      "Codincity",
+      "InPost"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-29T00:00:00.000Z",
+    "votes": 10,
+    "views": 1148,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2025-12-16T08:47:37.039Z"
+  },
+  {
+    "id": 5611,
+    "title": "How would you handle hallucinations in a generative AI model deployed to users?",
+    "url": "https://www.aced.io/questions/5611/handle-hallucinations-deployed-ai-model",
+    "categories": [
+      "technical",
+      "concept",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-09-16T00:00:00.000Z",
+    "votes": 23,
+    "views": 1158,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:40:51.331Z"
+  },
+  {
+    "id": 5620,
+    "title": "What metrics would you track to evaluate the performance of your ML pipeline?",
+    "url": "https://www.aced.io/questions/5620/evaluate-ml-pipeline-performance",
+    "categories": [
+      "system-design",
+      "machine-learning"
+    ],
+    "companies": [
+      "Google",
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 18,
+    "views": 1017,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2025-10-09T04:02:13.423Z"
+  },
+  {
+    "id": 5612,
+    "title": "What's the effect of adjusting an LLM's context window size?",
+    "url": "https://www.aced.io/questions/5612/adjust-llm-context-window-size",
+    "categories": [
+      "technical",
+      "concept",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "JP Morgan Chase",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-30T00:00:00.000Z",
+    "votes": 16,
+    "views": 901,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:43:34.813Z"
+  },
+  {
+    "id": 5610,
+    "title": "Define hallucinations in LLMs.",
+    "url": "https://www.aced.io/questions/5610/define-llm-hallucinations",
+    "categories": [
+      "artificial-intelligence",
+      "concept",
+      "machine-learning"
+    ],
+    "companies": [
+      "OpenAI",
+      "Anthropic",
+      "Mastercard"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-22T00:00:00.000Z",
+    "votes": 19,
+    "views": 751,
+    "comments": 7,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:37:12.887Z"
+  },
+  {
+    "id": 5605,
+    "title": "What are the ethical risks of deploying agentic AI systems in high-stakes environments?",
+    "url": "https://www.aced.io/questions/5605/agentic-ai-systems-ethical-risk",
+    "categories": [
+      "artificial-intelligence",
+      "concept",
+      "machine-learning",
+      "technical"
+    ],
+    "companies": [
+      "Cohere",
+      "Anthropic"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-22T00:00:00.000Z",
+    "votes": 15,
+    "views": 488,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:25:20.359Z"
+  },
+  {
+    "id": 4012,
+    "title": "Design an Instagram Ranking Model",
+    "url": "https://www.aced.io/questions/4012/design-instagram-ranking-model",
+    "categories": [
+      "machine-learning",
+      "system-design"
+    ],
+    "companies": [
+      "Datadog"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-12-31T00:00:00.000Z",
+    "votes": 15,
+    "views": 1403,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2024-06-10T16:11:02.643Z"
+  },
+  {
+    "id": 5608,
+    "title": "How would you adapt a generative AI model to perform well in a specific domain?",
+    "url": "https://www.aced.io/questions/5608/adapt-gen-ai-model-for-domain",
+    "categories": [
+      "technical",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-09-11T00:00:00.000Z",
+    "votes": 7,
+    "views": 312,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:33:49.480Z"
+  },
+  {
+    "id": 5607,
+    "title": "What are the challenges in ensuring generative AI doesn’t produce harmful or unsafe content, and how would you address them?",
+    "url": "https://www.aced.io/questions/5607/gen-ai-address-harmful-content",
+    "categories": [
+      "technical",
+      "concept",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Anthropic",
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-08T00:00:00.000Z",
+    "votes": 7,
+    "views": 247,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-08T03:30:35.102Z"
+  },
+  {
+    "id": 6370,
+    "title": "Roblox has users in different languages and a machine learning system for auto-translation. Design a system that would automatically translate between different people on different servers.",
+    "url": "https://www.aced.io/questions/6370/design-auto-translation-roblox-servers",
+    "categories": [
+      "system-design",
+      "machine-learning"
+    ],
+    "companies": [
+      "Roblox"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 96,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:42:38.717Z"
+  },
+  {
+    "id": 6226,
+    "title": "If you were building an autocomplete experience, how would you use underlying data to predict the next word a person is going to type?",
+    "url": "https://www.aced.io/questions/6226/design-autocomplete-predict-next-word",
+    "categories": [
+      "system-design",
+      "machine-learning"
+    ],
+    "companies": [
+      "xAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-04-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 70,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-06T15:33:36.726Z"
+  },
+  {
+    "id": 7128,
+    "title": "Why would you use RAG versus fine-tuning?",
+    "url": "https://www.aced.io/questions/7128/compare-rag-vs-fine-tuning",
+    "categories": [
+      "machine-learning",
+      "concept"
+    ],
+    "companies": [
+      "Intuit"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 27,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-18T04:44:29.180Z"
+  },
+  {
+    "id": 5673,
+    "title": "How would you decide between using an open-source model in-house versus a commercial API like OpenAI or Claude?",
+    "url": "https://www.aced.io/questions/5673/in-house-vs-commercial-gen-ai",
+    "categories": [
+      "product-design",
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Snap"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-03T00:00:00.000Z",
+    "votes": 0,
+    "views": 85,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-03T12:18:48.942Z"
+  },
+  {
+    "id": 2184,
+    "title": "You received user feedback that Yelp's restaurant recommendation is not personal enough. What would you do?",
+    "url": "https://www.aced.io/questions/2184/personalizing-yelp-restaurant-recommendations",
+    "categories": [
+      "product-design",
+      "machine-learning",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-10T00:00:00.000Z",
+    "votes": 13,
+    "views": 361,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-05-16T16:21:06.183Z"
+  },
+  {
+    "id": 5672,
+    "title": "Suppose your generative model needs to process very long inputs that exceed typical context limits. How would you approach managing or compressing that information effectively?",
+    "url": "https://www.aced.io/questions/5672/gen-ai-handle-large-context",
+    "categories": [
+      "machine-learning",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Snap"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-03T00:00:00.000Z",
+    "votes": 0,
+    "views": 78,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-11-03T12:16:53.799Z"
+  },
+  {
+    "id": 6575,
+    "title": "Design a product that can predict when someone is getting a paycheck.",
+    "url": "https://www.aced.io/questions/6575/design-product-predict-paycheck-timing",
+    "categories": [
+      "product-design",
+      "machine-learning"
+    ],
+    "companies": [
+      "Rocket Money"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 17,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-27T05:18:55.573Z"
+  },
+  {
+    "id": 6253,
+    "title": "Walk me through the roles on your AI project team and how you'd handle training an LLM on data that includes usernames and emails.",
+    "url": "https://www.aced.io/questions/6253/describe-ai-team-roles-train-llm-sensitive-data",
+    "categories": [
+      "cross-functional",
+      "machine-learning"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 28,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:08:42.926Z"
+  },
+  {
+    "id": 6225,
+    "title": "How have you led teams at scale to improve models or algorithms post-training, especially using contractors?",
+    "url": "https://www.aced.io/questions/6225/lead-large-teams-improve-models-contractors",
+    "categories": [
+      "people-management",
+      "machine-learning"
+    ],
+    "companies": [
+      "xAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-04-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 20,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-06T15:32:41.262Z"
+  }
+]

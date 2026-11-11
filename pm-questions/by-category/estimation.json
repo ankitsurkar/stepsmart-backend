@@ -1,0 +1,1490 @@
+[
+  {
+    "id": 8,
+    "title": "Estimate the number of restaurants in San Francisco.",
+    "url": "https://www.aced.io/questions/8/estimate-restaurants-sf",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google X",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-30T00:00:00.000Z",
+    "votes": 355,
+    "views": 30346,
+    "comments": 67,
+    "has_expert_solution": true,
+    "published_at": "2019-12-27T09:02:29.396Z"
+  },
+  {
+    "id": 5697,
+    "title": "Estimate how much it costs to run Youtube for a day",
+    "url": "https://www.aced.io/questions/5697/estimate-cost-run-youtube-for-a-day",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-17T00:00:00.000Z",
+    "votes": 23,
+    "views": 822,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2025-11-24T08:43:12.731Z"
+  },
+  {
+    "id": 4082,
+    "title": "Estimate the annual cost of managing Google Photos. What factors would you consider in your calculation?",
+    "url": "https://www.aced.io/questions/4082/estimate-cost-managing-google-photos",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-07-16T00:00:00.000Z",
+    "votes": 33,
+    "views": 1697,
+    "comments": 7,
+    "has_expert_solution": false,
+    "published_at": "2024-07-17T16:05:08.757Z"
+  },
+  {
+    "id": 1906,
+    "title": "Estimate the number of trees in the city of Delhi.",
+    "url": "https://www.aced.io/questions/1906/estimate-number-of-trees-city-delhi",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Park+"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-09-06T00:00:00.000Z",
+    "votes": 24,
+    "views": 4235,
+    "comments": 9,
+    "has_expert_solution": false,
+    "published_at": "2022-02-10T08:39:10.408Z"
+  },
+  {
+    "id": 4100,
+    "title": "How many parking spots are there in San Francisco?",
+    "url": "https://www.aced.io/questions/4100/san-francisco-parking-spots",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-07-25T00:00:00.000Z",
+    "votes": 24,
+    "views": 1618,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2024-07-29T03:04:41.976Z"
+  },
+  {
+    "id": 15,
+    "title": "Estimate the total internet bandwidth required for a campus of 1000 graduate students.",
+    "url": "https://www.aced.io/questions/15/estimate-internet-bandwidth-campus",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-12-12T00:00:00.000Z",
+    "votes": 65,
+    "views": 6195,
+    "comments": 8,
+    "has_expert_solution": true,
+    "published_at": "2019-12-28T02:49:38.529Z"
+  },
+  {
+    "id": 3311,
+    "title": "How many grocery stores are required in a metropolitan city?",
+    "url": "https://www.aced.io/questions/3311/number-grocery-stores-required-metropolitan-city",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-22T00:00:00.000Z",
+    "votes": 29,
+    "views": 2023,
+    "comments": 12,
+    "has_expert_solution": false,
+    "published_at": "2023-11-22T20:46:55.234Z"
+  },
+  {
+    "id": 1359,
+    "title": "How many ads should Facebook Newsfeed display?",
+    "url": "https://www.aced.io/questions/1359/how-many-ads-facebook-newsfeed",
+    "categories": [
+      "product-design",
+      "estimation"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-05-01T00:00:00.000Z",
+    "votes": 105,
+    "views": 4283,
+    "comments": 9,
+    "has_expert_solution": false,
+    "published_at": "2020-11-29T21:43:56.574Z"
+  },
+  {
+    "id": 4281,
+    "title": "Estimate Airbnb's Revenue",
+    "url": "https://www.aced.io/questions/4281/airbnb-revenue",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Dropbox"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-18T00:00:00.000Z",
+    "votes": 20,
+    "views": 1166,
+    "comments": 10,
+    "has_expert_solution": true,
+    "published_at": "2024-09-18T12:27:32.911Z"
+  },
+  {
+    "id": 3681,
+    "title": "Estimate the number of people who use Google Search to find a new job.",
+    "url": "https://www.aced.io/questions/3681/estimate-job-searchers-using-google",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-01-31T00:00:00.000Z",
+    "votes": 28,
+    "views": 1640,
+    "comments": 8,
+    "has_expert_solution": false,
+    "published_at": "2024-01-31T19:17:02.966Z"
+  },
+  {
+    "id": 3553,
+    "title": "Estimate the number of Zomato food delivery drivers in Bangalore, India.",
+    "url": "https://www.aced.io/questions/3553/estimate-zomato-drivers-bangalore",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-12-20T00:00:00.000Z",
+    "votes": 23,
+    "views": 1620,
+    "comments": 16,
+    "has_expert_solution": false,
+    "published_at": "2023-12-20T17:08:54.991Z"
+  },
+  {
+    "id": 3684,
+    "title": "You're a PM for Gmail. Your team won a communications contract with a 10,000-person colony on Mars. Estimate the necessary network bandwidth.",
+    "url": "https://www.aced.io/questions/3684/estimate-network-bandwidth-gmail-mars-colony",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-01-31T00:00:00.000Z",
+    "votes": 26,
+    "views": 1205,
+    "comments": 7,
+    "has_expert_solution": false,
+    "published_at": "2024-01-31T19:02:21.415Z"
+  },
+  {
+    "id": 4435,
+    "title": "A leading Canadian grocery chain is considering opening its first store in Montreal. Should they? If yes, what should be the ratio of self-checkout kiosks to cashier counters?",
+    "url": "https://www.aced.io/questions/4435/montreal-grocery-chain-expansion-checkout-options",
+    "categories": [
+      "product-strategy",
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-10-04T00:00:00.000Z",
+    "votes": 14,
+    "views": 907,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2024-10-18T21:23:22.219Z"
+  },
+  {
+    "id": 4934,
+    "title": "Estimate the number of tires purchased annually by a large car dealership in San Jose, California.",
+    "url": "https://www.aced.io/questions/4934/estimate-annual-tire-purchase-car-dealership",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-03-06T00:00:00.000Z",
+    "votes": 14,
+    "views": 615,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2025-03-17T04:55:44.664Z"
+  },
+  {
+    "id": 1790,
+    "title": "Estimate the number of apps available in the Play Store.",
+    "url": "https://www.aced.io/questions/1790/play-store-apps-estimate",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Stripe",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-07-02T00:00:00.000Z",
+    "votes": 29,
+    "views": 2239,
+    "comments": 7,
+    "has_expert_solution": false,
+    "published_at": "2021-12-12T05:15:57.078Z"
+  },
+  {
+    "id": 2334,
+    "title": "How many messages does Gmail receive per second?",
+    "url": "https://www.aced.io/questions/2334/gmail-messages-per-second",
+    "categories": [
+      "product-design",
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-19T00:00:00.000Z",
+    "votes": 18,
+    "views": 1819,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2022-07-26T17:09:25.767Z"
+  },
+  {
+    "id": 1814,
+    "title": "Estimate the number of credit card users in India.",
+    "url": "https://www.aced.io/questions/1814/estimate-credit-card-users-india",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Mobikwik"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-09T00:00:00.000Z",
+    "votes": 10,
+    "views": 2144,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2022-01-06T05:02:44.565Z"
+  },
+  {
+    "id": 3645,
+    "title": "Estimate the number of restaurants in Bengaluru, India.",
+    "url": "https://www.aced.io/questions/3645/estimate-restaurants-in-bengaluru",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2024-01-18T00:00:00.000Z",
+    "votes": 13,
+    "views": 926,
+    "comments": 7,
+    "has_expert_solution": false,
+    "published_at": "2024-01-18T21:28:02.720Z"
+  },
+  {
+    "id": 4280,
+    "title": "Estimate Self-Driving Cars",
+    "url": "https://www.aced.io/questions/4280/self-driving-cars",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Dropbox"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-18T00:00:00.000Z",
+    "votes": 11,
+    "views": 484,
+    "comments": 6,
+    "has_expert_solution": true,
+    "published_at": "2024-09-18T12:26:55.599Z"
+  },
+  {
+    "id": 3353,
+    "title": "Pick a Capital One product. Estimate the monthly revenue per customer.",
+    "url": "https://www.aced.io/questions/3353/estimate-monthly-revenue-capital-one-product",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Capital One"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-29T00:00:00.000Z",
+    "votes": 23,
+    "views": 824,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-11-29T23:12:34.820Z"
+  },
+  {
+    "id": 6295,
+    "title": "How would you calculate how much available space exists inside Amazon warehouses that fall within a hurricane path?",
+    "url": "https://www.aced.io/questions/6295/calculate-available-space-amazon-hurricane-warehouses",
+    "categories": [
+      "estimation",
+      "analytical"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 81,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:06:04.677Z"
+  },
+  {
+    "id": 308,
+    "title": "Estimate the amount of storage needed for Google Photos.",
+    "url": "https://www.aced.io/questions/308/estimate-storage-google-photos",
+    "categories": [
+      "system-design",
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-16T00:00:00.000Z",
+    "votes": 30,
+    "views": 2288,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2020-02-26T13:05:08.039Z"
+  },
+  {
+    "id": 1614,
+    "title": "Estimate the bandwidth requirements for Google Maps.",
+    "url": "https://www.aced.io/questions/1614/google-maps-bandwidth-estimate",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-01T00:00:00.000Z",
+    "votes": 32,
+    "views": 1523,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2021-10-06T01:53:30.546Z"
+  },
+  {
+    "id": 3570,
+    "title": "How many tennis balls can fit in an airplane?",
+    "url": "https://www.aced.io/questions/3570/calculating-tennis-balls-in-airplane",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Agoda"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-12-28T00:00:00.000Z",
+    "votes": 6,
+    "views": 843,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-12-29T15:53:49.368Z"
+  },
+  {
+    "id": 4853,
+    "title": "Estimate the total number of annual hotel bookings made globally on Expedia.",
+    "url": "https://www.aced.io/questions/4853/estimate-expedia-global-hotel-bookings",
+    "categories": [
+      "analytical",
+      "estimation"
+    ],
+    "companies": [
+      "Expedia"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-01-30T00:00:00.000Z",
+    "votes": 6,
+    "views": 381,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2025-02-07T22:29:30.923Z"
+  },
+  {
+    "id": 2656,
+    "title": "How many ping pong balls can fit in a helicopter?",
+    "url": "https://www.aced.io/questions/2656/ping-pong-balls-fit-helicopter",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-13T00:00:00.000Z",
+    "votes": 14,
+    "views": 821,
+    "comments": 12,
+    "has_expert_solution": false,
+    "published_at": "2022-09-13T18:45:17.515Z"
+  },
+  {
+    "id": 4912,
+    "title": "Design an elevator for a skyscraper and estimate the number of elevators needed.",
+    "url": "https://www.aced.io/questions/4912/skyscraper-elevator-design-estimation",
+    "categories": [
+      "product-design",
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-08T00:00:00.000Z",
+    "votes": 9,
+    "views": 278,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-03-04T19:45:02.115Z"
+  },
+  {
+    "id": 1887,
+    "title": "Estimate the market size for Google Fi.",
+    "url": "https://www.aced.io/questions/1887/market-size-estimate-google-fi",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-01T00:00:00.000Z",
+    "votes": 22,
+    "views": 845,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-02-01T22:03:17.573Z"
+  },
+  {
+    "id": 3176,
+    "title": "How many ping pong balls fit in a helicopter?",
+    "url": "https://www.aced.io/questions/3176/ping-pong-balls-fit-in-helicopter",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-10-28T00:00:00.000Z",
+    "votes": 4,
+    "views": 531,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-11-27T22:48:04.982Z"
+  },
+  {
+    "id": 3184,
+    "title": "How much does Meta (Facebook) spend to acquire one new user?",
+    "url": "https://www.aced.io/questions/3184/facebook-user-acquisition-cost",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-01T00:00:00.000Z",
+    "votes": 9,
+    "views": 444,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2023-11-27T22:44:05.686Z"
+  },
+  {
+    "id": 3837,
+    "title": "Estimate the number of mutual follows an average TikTok user has.",
+    "url": "https://www.aced.io/questions/3837/estimate-mutual-follows-average-tiktok-user",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "TikTok"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-29T00:00:00.000Z",
+    "votes": 10,
+    "views": 356,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2024-04-02T20:45:19.639Z"
+  },
+  {
+    "id": 6326,
+    "title": "10x the model capability, 10x the cost. Go.",
+    "url": "https://www.aced.io/questions/6326/evaluate-model-capability-vs-cost",
+    "categories": [
+      "estimation",
+      "analytical"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 54,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:29:12.077Z"
+  },
+  {
+    "id": 1861,
+    "title": "Estimate the number of high school students in the US.",
+    "url": "https://www.aced.io/questions/1861/estimate-high-school-students-us",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-01T00:00:00.000Z",
+    "votes": 15,
+    "views": 644,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2022-01-17T05:03:09.999Z"
+  },
+  {
+    "id": 1751,
+    "title": "How many drones would be needed to deliver all FedEx packages in the US?",
+    "url": "https://www.aced.io/questions/1751/drones-needed-fedex-delivery",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-23T00:00:00.000Z",
+    "votes": 12,
+    "views": 725,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2021-11-24T01:12:07.784Z"
+  },
+  {
+    "id": 5847,
+    "title": "You are launching an autonomous vehicle service in Austin. Estimate market size, demand, and optimal fleet size, plan for peak and off-peak periods, and explore business strategy options such as operating the fleet or licensing technology.",
+    "url": "https://www.aced.io/questions/5847/launch-autonomous-vehicle-fleet",
+    "categories": [
+      "product-strategy",
+      "estimation"
+    ],
+    "companies": [
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-15T00:00:00.000Z",
+    "votes": 5,
+    "views": 58,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-12-15T06:22:33.638Z"
+  },
+  {
+    "id": 1934,
+    "title": "Estimate the daily number of transactions in the US.",
+    "url": "https://www.aced.io/questions/1934/estimate-daily-transactions-us",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Visa"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-01T00:00:00.000Z",
+    "votes": 9,
+    "views": 635,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2022-03-08T15:18:12.975Z"
+  },
+  {
+    "id": 3378,
+    "title": "How long would it take to fill an Olympic swimming pool with water from a garden hose?",
+    "url": "https://www.aced.io/questions/3378/fill-olympic-pool-garden-hose-duration",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Walmart Labs"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-29T00:00:00.000Z",
+    "votes": 5,
+    "views": 357,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-11-29T23:42:46.353Z"
+  },
+  {
+    "id": 2421,
+    "title": "Estimate Facebook's yearly advertising revenue.",
+    "url": "https://www.aced.io/questions/2421/estimate-facebook-yearly-ad-revenue",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-01-01T00:00:00.000Z",
+    "votes": 11,
+    "views": 479,
+    "comments": 4,
+    "has_expert_solution": true,
+    "published_at": "2022-08-31T23:45:09.189Z"
+  },
+  {
+    "id": 1868,
+    "title": "How much storage does Google Maps' Street View require?",
+    "url": "https://www.aced.io/questions/1868/google-maps-street-view-storage",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-01T00:00:00.000Z",
+    "votes": 9,
+    "views": 637,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-01-19T23:10:08.292Z"
+  },
+  {
+    "id": 2685,
+    "title": "How would you estimate the number of Slack users?",
+    "url": "https://www.aced.io/questions/2685/estimate-slack-user-count",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Salesforce"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-20T00:00:00.000Z",
+    "votes": 11,
+    "views": 471,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-10-06T16:41:28.349Z"
+  },
+  {
+    "id": 2689,
+    "title": "How much does it cost Google to run Google Photos?",
+    "url": "https://www.aced.io/questions/2689/cost-for-google-running-google-photos",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-10-04T00:00:00.000Z",
+    "votes": 9,
+    "views": 484,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-10-10T16:01:33.829Z"
+  },
+  {
+    "id": 4916,
+    "title": "You're launching a bike-sharing service in a city of your choice. How many bikes would you need?",
+    "url": "https://www.aced.io/questions/4916/bike-sharing-quantity-estimation",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-02-25T00:00:00.000Z",
+    "votes": 2,
+    "views": 183,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-03-04T19:39:05.304Z"
+  },
+  {
+    "id": 2459,
+    "title": "Estimate the monthly profit per user for Capital One shopping.",
+    "url": "https://www.aced.io/questions/2459/estimate-monthly-profit-per-user-capital-one-shopping",
+    "categories": [
+      "product-strategy",
+      "estimation"
+    ],
+    "companies": [
+      "Google Cloud (GCP)"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-08-22T00:00:00.000Z",
+    "votes": 9,
+    "views": 455,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2022-09-08T11:31:17.757Z"
+  },
+  {
+    "id": 1629,
+    "title": "Estimate the number of cinema tickets sold in the US in one year.",
+    "url": "https://www.aced.io/questions/1629/estimate-cinema-tickets-sold-us-year",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2020-11-10T00:00:00.000Z",
+    "votes": 14,
+    "views": 487,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2021-10-20T16:54:53.402Z"
+  },
+  {
+    "id": 2228,
+    "title": "Pick an airport and estimate the number of people going through the metal detectors in a day.",
+    "url": "https://www.aced.io/questions/2228/estimate-airport-metal-detector-traffic",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-01T00:00:00.000Z",
+    "votes": 10,
+    "views": 380,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2022-06-01T21:13:36.307Z"
+  },
+  {
+    "id": 2257,
+    "title": "How much time does a person spend at a traffic intersection during their lifetime?",
+    "url": "https://www.aced.io/questions/2257/time-spent-traffic-intersection-lifetime",
+    "categories": [
+      "analytical",
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-03-31T00:00:00.000Z",
+    "votes": 10,
+    "views": 383,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2022-06-20T23:17:44.793Z"
+  },
+  {
+    "id": 1809,
+    "title": "What is the total number of airports in the US and globally?",
+    "url": "https://www.aced.io/questions/1809/total-number-airports-us-global",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Netflix"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-07-02T00:00:00.000Z",
+    "votes": 7,
+    "views": 474,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2021-12-30T22:39:22.573Z"
+  },
+  {
+    "id": 577,
+    "title": "How many bikes are needed to launch a bike-sharing service in NYC?",
+    "url": "https://www.aced.io/questions/577/bikes-needed-launch-bike-sharing-nyc",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-19T00:00:00.000Z",
+    "votes": 16,
+    "views": 546,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T09:29:06.776Z"
+  },
+  {
+    "id": 7196,
+    "title": "Estimate the number of people entering India.",
+    "url": "https://www.aced.io/questions/7196/estimate-people-entering-india",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "JP Morgan"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-21T00:00:00.000Z",
+    "votes": 0,
+    "views": 11,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-31T02:14:48.299Z"
+  },
+  {
+    "id": 1792,
+    "title": "Estimate how many productivity hours are lost per year due to traffic.",
+    "url": "https://www.aced.io/questions/1792/productivity-loss-traffic-estimate",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-07-02T00:00:00.000Z",
+    "votes": 9,
+    "views": 388,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2021-12-13T21:16:36.859Z"
+  },
+  {
+    "id": 1757,
+    "title": "What is the total addressable market (TAM) for Google Translate?",
+    "url": "https://www.aced.io/questions/1757/google-translate-tam",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-15T00:00:00.000Z",
+    "votes": 11,
+    "views": 358,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-11-30T15:31:23.365Z"
+  },
+  {
+    "id": 2155,
+    "title": "Pick an airport and estimate the number of people going through the security scan every day.",
+    "url": "https://www.aced.io/questions/2155/estimate-airport-security-scan-traffic",
+    "categories": [
+      "estimation",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-09T00:00:00.000Z",
+    "votes": 9,
+    "views": 318,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-05-10T00:37:36.892Z"
+  },
+  {
+    "id": 2138,
+    "title": "Azure provides HPC and wants to maximize its usage in the energy sector. What would be your strategy to ensure all energy sector clients move to HPC instead of AWS services?",
+    "url": "https://www.aced.io/questions/2138/azure-hpc-strategy-energy-sector",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-04T00:00:00.000Z",
+    "votes": 8,
+    "views": 315,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-05-06T15:02:52.291Z"
+  },
+  {
+    "id": 1806,
+    "title": "Estimate the total miles run by joggers in Central Park.",
+    "url": "https://www.aced.io/questions/1806/estimate-total-miles-joggers-central-park",
+    "categories": [
+      "estimation",
+      "behavioral"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-23T00:00:00.000Z",
+    "votes": 10,
+    "views": 332,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-12-29T21:48:42.186Z"
+  },
+  {
+    "id": 2600,
+    "title": "How many Slack messages are sent per day?",
+    "url": "https://www.aced.io/questions/2600/slack-messages-sent-daily",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 9,
+    "views": 250,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:10:20.909Z"
+  },
+  {
+    "id": 2712,
+    "title": "How much laundry detergent is used globally each year?",
+    "url": "https://www.aced.io/questions/2712/global-annual-laundry-detergent-use",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Exponent"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-11-08T00:00:00.000Z",
+    "votes": 5,
+    "views": 240,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2022-11-08T21:52:24.823Z"
+  },
+  {
+    "id": 2028,
+    "title": "Estimate the circumference of the Earth at the Equator.",
+    "url": "https://www.aced.io/questions/2028/estimate-circumference-earth-equator",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-31T00:00:00.000Z",
+    "votes": 6,
+    "views": 315,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-01T19:20:31.405Z"
+  },
+  {
+    "id": 318,
+    "title": "Estimate the number of potholes in continental USA.",
+    "url": "https://www.aced.io/questions/318/estimate-potholes-continental-usa",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-02-18T00:00:00.000Z",
+    "votes": 9,
+    "views": 483,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2020-02-26T13:37:04.396Z"
+  },
+  {
+    "id": 4282,
+    "title": "Estimate the total storage used by Dropbox.",
+    "url": "https://www.aced.io/questions/4282/estimate-dropbox-storage",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Dropbox"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-09-18T00:00:00.000Z",
+    "votes": 3,
+    "views": 109,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-09-18T12:28:49.103Z"
+  },
+  {
+    "id": 2466,
+    "title": "What's the size of the food delivery market in the United States?",
+    "url": "https://www.aced.io/questions/2466/size-of-food-delivery-market-us",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 5,
+    "views": 270,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T10:49:07.811Z"
+  },
+  {
+    "id": 2860,
+    "title": "Estimate the number of daily flights from London to Dubai.",
+    "url": "https://www.aced.io/questions/2860/estimate-daily-flights-london-dubai",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2022-04-24T00:00:00.000Z",
+    "votes": 5,
+    "views": 212,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-04-10T16:05:17.766Z"
+  },
+  {
+    "id": 2362,
+    "title": "How many windows do you estimate exist in Tehran?",
+    "url": "https://www.aced.io/questions/2362/estimate-windows-in-tehran",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Snap"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-14T00:00:00.000Z",
+    "votes": 7,
+    "views": 246,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-08-14T17:31:40.878Z"
+  },
+  {
+    "id": 2602,
+    "title": "How many deliveries does Uber Eats make per day?",
+    "url": "https://www.aced.io/questions/2602/deliveries-uber-eats-daily",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 3,
+    "views": 258,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:13:07.306Z"
+  },
+  {
+    "id": 1733,
+    "title": "Assuming AR-enabled glasses exist in 2031, how many do you think will ship that year? What factors will you consider in your estimation?",
+    "url": "https://www.aced.io/questions/1733/ar-glasses-shipment-estimation-factors",
+    "categories": [
+      "estimation",
+      "behavioral"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-15T00:00:00.000Z",
+    "votes": 5,
+    "views": 317,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-16T03:09:55.035Z"
+  },
+  {
+    "id": 2486,
+    "title": "Estimate the bandwidth required to support Spotify.",
+    "url": "https://www.aced.io/questions/2486/estimate-spotify-bandwidth-requirements",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Spotify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 5,
+    "views": 224,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:21:08.189Z"
+  },
+  {
+    "id": 2550,
+    "title": "How many rides happen on Uber each month?",
+    "url": "https://www.aced.io/questions/2550/monthly-uber-rides-estimation",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 237,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:16:36.196Z"
+  },
+  {
+    "id": 2485,
+    "title": "How many Hershey's chocolate bars were sold in the US last year?",
+    "url": "https://www.aced.io/questions/2485/hersheys-chocolate-bars-sales-us",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 232,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:19:50.600Z"
+  },
+  {
+    "id": 2053,
+    "title": "Estimate the time to move 100 petabytes of data from the East Coast to the West Coast.",
+    "url": "https://www.aced.io/questions/2053/estimate-time-move-100-petabytes-data-east-west-coast",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-07T00:00:00.000Z",
+    "votes": 7,
+    "views": 231,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-04-12T11:34:46.361Z"
+  },
+  {
+    "id": 1664,
+    "title": "How many people are flying to and from SFO in a day?",
+    "url": "https://www.aced.io/questions/1664/people-flying-sfo-day",
+    "categories": [
+      "estimation",
+      "behavioral"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-20T00:00:00.000Z",
+    "votes": 10,
+    "views": 225,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-10-24T17:03:28.583Z"
+  },
+  {
+    "id": 2560,
+    "title": "How many 'likes' happen on Instagram each day?",
+    "url": "https://www.aced.io/questions/2560/daily-instagram-likes-count",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 7,
+    "views": 160,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:31:30.143Z"
+  },
+  {
+    "id": 2542,
+    "title": "How many weddings does the average American attend in their lifetime?",
+    "url": "https://www.aced.io/questions/2542/average-weddings-attended-by-americans",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Twitch"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 5,
+    "views": 166,
+    "comments": 3,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:05:01.163Z"
+  },
+  {
+    "id": 2571,
+    "title": "You're a PM at a pharma company; your product helps cows produce 20% more milk, lasting a month. What pricing strategy and price would you set for the product?",
+    "url": "https://www.aced.io/questions/2571/pm-pharma-pricing-strategy-increased-milk-production",
+    "categories": [
+      "estimation",
+      "product-strategy"
+    ],
+    "companies": [
+      "PwC"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-20T00:00:00.000Z",
+    "votes": 2,
+    "views": 206,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-09-11T17:59:41.164Z"
+  },
+  {
+    "id": 2524,
+    "title": "How many grains of rice are in a 10kg bag?",
+    "url": "https://www.aced.io/questions/2524/count-grains-rice-10kg-bag",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 188,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:37:18.501Z"
+  },
+  {
+    "id": 2327,
+    "title": "Estimate the potential number of rides per month for e-scooter rentals in San Francisco.",
+    "url": "https://www.aced.io/questions/2327/estimate-rides-e-scooter-rental-sf",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-07-02T00:00:00.000Z",
+    "votes": 4,
+    "views": 197,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-07-18T23:35:34.906Z"
+  },
+  {
+    "id": 2483,
+    "title": "How big is the market for Dropbox for SMBs?",
+    "url": "https://www.aced.io/questions/2483/market-size-dropbox-for-smbs",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Dropbox"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 164,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:16:30.113Z"
+  },
+  {
+    "id": 1788,
+    "title": "Estimate the number of pieces of candy given out in your city.",
+    "url": "https://www.aced.io/questions/1788/city-candy-distribution-estimate",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-16T00:00:00.000Z",
+    "votes": 7,
+    "views": 177,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-12-10T20:37:11.664Z"
+  },
+  {
+    "id": 2606,
+    "title": "How many bottles of wine are opened per day?",
+    "url": "https://www.aced.io/questions/2606/bottles-wine-opened-daily",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 2,
+    "views": 157,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:18:05.068Z"
+  },
+  {
+    "id": 2597,
+    "title": "How many calls are received per day?",
+    "url": "https://www.aced.io/questions/2597/calls-received-daily",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 2,
+    "views": 157,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:06:27.167Z"
+  },
+  {
+    "id": 2537,
+    "title": "How many people are on Facebook at any given time?",
+    "url": "https://www.aced.io/questions/2537/current-facebook-user-count",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 4,
+    "views": 126,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:57:31.710Z"
+  },
+  {
+    "id": 2498,
+    "title": "How much oil, in barrels per year, does the United States import?",
+    "url": "https://www.aced.io/questions/2498/annual-us-oil-imports",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 123,
+    "comments": 2,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:44:18.677Z"
+  },
+  {
+    "id": 2567,
+    "title": "How many breaths do we take each day?",
+    "url": "https://www.aced.io/questions/2567/how-many-breaths-daily",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 1,
+    "views": 140,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T13:41:44.069Z"
+  },
+  {
+    "id": 2521,
+    "title": "Estimate the bandwidth (bits/s) of a 747 crossing the Atlantic filled with CDROMs.",
+    "url": "https://www.aced.io/questions/2521/estimate-bandwidth-747-cdroms-atlantic",
+    "categories": [
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 2,
+    "views": 102,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T12:30:23.922Z"
+  }
+]

@@ -1,0 +1,6 @@
+id,title,url,categories,companies,difficulty,last_asked_on,votes,views,comments,has_expert_solution,published_at
+3045,Top Salaries by Department,https://www.aced.io/questions/3045/top-salaries-by-department,"coding, sql","Meta, Tesla",Hard,2026-03-31T00:00:00.000Z,63,1505,43,True,2023-09-17T14:13:31.816Z
+2777,Session Data Analysis.,https://www.aced.io/questions/2777/session-data-analysis,"coding, concept, sql","Uber, Indeed, Amazon",Hard,2025-09-10T00:00:00.000Z,17,1204,6,True,2023-01-28T17:39:31.788Z
+2167,What is the difference between NoSQL and SQL?,https://www.aced.io/questions/2167/difference-nosql-sql,"concept, sql, technical","Meta, Google, Apple, Amazon, Walmart Labs, AHL Logics",,2026-06-01T00:00:00.000Z,22,1047,4,False,2022-05-15T19:55:52.276Z
+3071,Fraudulent Transactions,https://www.aced.io/questions/3071/fraudulent-transactions,"coding, sql","Stripe, Revolut",Medium,2026-06-01T00:00:00.000Z,18,440,8,True,2023-09-17T14:26:27.730Z
+2156,What is the best way to connect SQL databases and why?,https://www.aced.io/questions/2156/best-way-connect-sql-databases,"concept, sql, technical","Airbnb, Google",,2026-04-01T00:00:00.000Z,11,732,2,False,2022-05-10T22:04:05.842Z

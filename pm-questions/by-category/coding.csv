@@ -1,0 +1,8 @@
+id,title,url,categories,companies,difficulty,last_asked_on,votes,views,comments,has_expert_solution,published_at
+6477,Implement Stripe Checkout.,https://www.aced.io/questions/6477/implement-stripe-checkout-integration,coding,Stripe,,2026-06-01T00:00:00.000Z,0,483,0,False,2026-07-03T05:55:56.364Z
+5603,What's your approach to prompt engineering?,https://www.aced.io/questions/5603/prompt-engineering-approach,"artificial-intelligence, coding, technical","Sierra AI, OpenAI, Anthropic",,2026-07-20T00:00:00.000Z,13,660,0,False,2025-10-08T03:21:05.528Z
+3045,Top Salaries by Department,https://www.aced.io/questions/3045/top-salaries-by-department,"coding, sql","Meta, Tesla",Hard,2026-03-31T00:00:00.000Z,63,1505,43,True,2023-09-17T14:13:31.816Z
+2777,Session Data Analysis.,https://www.aced.io/questions/2777/session-data-analysis,"coding, concept, sql","Uber, Indeed, Amazon",Hard,2025-09-10T00:00:00.000Z,17,1204,6,True,2023-01-28T17:39:31.788Z
+5869,Debug and extend a Python codebase by adding an async exponential retry mechanism with timeouts and backoff so failures are retried until success.,https://www.aced.io/questions/5869/implement-exponential-retries,coding,Sierra AI,,2025-12-16T00:00:00.000Z,0,194,0,False,2025-12-16T08:30:43.032Z
+5870,"Given a nested merchandise catalog dictionary, extract attributes for a specific item and traverse related items recursively to build the full relationship tree.",https://www.aced.io/questions/5870/relationship-tree-of-dictionary-catalog,coding,Sierra AI,,2025-12-16T00:00:00.000Z,0,177,0,False,2025-12-16T08:33:46.339Z
+3071,Fraudulent Transactions,https://www.aced.io/questions/3071/fraudulent-transactions,"coding, sql","Stripe, Revolut",Medium,2026-06-01T00:00:00.000Z,18,440,8,True,2023-09-17T14:26:27.730Z

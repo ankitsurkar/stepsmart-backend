@@ -1,0 +1,2145 @@
+[
+  {
+    "id": 4988,
+    "title": "Design a system to track reviews abuse on Amazon.com.",
+    "url": "https://www.aced.io/questions/4988/design-system-track-review-abuse-amazon",
+    "categories": [
+      "product-design",
+      "analytical",
+      "technical",
+      "system-design"
+    ],
+    "companies": [
+      "DoorDash",
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-06-14T00:00:00.000Z",
+    "votes": 142,
+    "views": 17780,
+    "comments": 38,
+    "has_expert_solution": false,
+    "published_at": "2025-03-17T04:38:11.120Z"
+  },
+  {
+    "id": 5780,
+    "title": "Design an inference batching system for a single GPU that can handle up to 100 inputs per batch while users wait synchronously, maximizing utilization under compute constraints.",
+    "url": "https://www.aced.io/questions/5780/inference-batching-system",
+    "categories": [
+      "artificial-intelligence",
+      "machine-learning",
+      "system-design"
+    ],
+    "companies": [
+      "Anthropic",
+      "Nebius"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-29T00:00:00.000Z",
+    "votes": 47,
+    "views": 4343,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2025-12-08T08:09:18.988Z"
+  },
+  {
+    "id": 6592,
+    "title": "How would you design an AI evaluation system for resumes?",
+    "url": "https://www.aced.io/questions/6592/design-ai-evaluation-system-resumes",
+    "categories": [
+      "system-design",
+      "artificial-intelligence",
+      "product-design"
+    ],
+    "companies": [
+      "Microsoft",
+      "InPost"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 10,
+    "views": 693,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2026-07-30T22:19:38.168Z"
+  },
+  {
+    "id": 7435,
+    "title": "Design a RAG system for file search.",
+    "url": "https://www.aced.io/questions/7435/design-rag-system-file-search",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-03-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 45,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-02T02:07:35.026Z"
+  },
+  {
+    "id": 3095,
+    "title": "Design an evaluation framework for ads ranking.",
+    "url": "https://www.aced.io/questions/3095/design-evaluation-framework-ads-ranking",
+    "categories": [
+      "product-design",
+      "system-design",
+      "machine-learning"
+    ],
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 122,
+    "views": 10541,
+    "comments": 13,
+    "has_expert_solution": true,
+    "published_at": "2023-10-03T16:28:00.328Z"
+  },
+  {
+    "id": 1303,
+    "title": "Design Instagram.",
+    "url": "https://www.aced.io/questions/1303/design-instagram",
+    "categories": [
+      "system-design",
+      "product-design"
+    ],
+    "companies": [
+      "Amazon",
+      "DoorDash",
+      "Meta",
+      "Instagram"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 306,
+    "views": 22729,
+    "comments": 60,
+    "has_expert_solution": true,
+    "published_at": "2020-10-08T05:02:50.756Z"
+  },
+  {
+    "id": 7393,
+    "title": "How would you design a travel booking app?",
+    "url": "https://www.aced.io/questions/7393/design-travel-booking-app",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Goldman Sachs"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-06-30T00:00:00.000Z",
+    "votes": 2,
+    "views": 129,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-12T02:19:56.462Z"
+  },
+  {
+    "id": 789,
+    "title": "How would you build a Facebook product for blood donation?",
+    "url": "https://www.aced.io/questions/789/build-facebook-product-blood-donation",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-03-21T00:00:00.000Z",
+    "votes": 371,
+    "views": 20429,
+    "comments": 37,
+    "has_expert_solution": true,
+    "published_at": "2020-03-19T01:04:21.826Z"
+  },
+  {
+    "id": 1372,
+    "title": "Design TikTok.",
+    "url": "https://www.aced.io/questions/1372/design-tiktok",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "TikTok",
+      "Nordstrom",
+      "Reddit",
+      "Meta",
+      "Google",
+      "Walmart Labs",
+      "Infosys"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-05T00:00:00.000Z",
+    "votes": 154,
+    "views": 10878,
+    "comments": 23,
+    "has_expert_solution": true,
+    "published_at": "2020-12-16T12:26:48.461Z"
+  },
+  {
+    "id": 7428,
+    "title": "Design a newsfeed system.",
+    "url": "https://www.aced.io/questions/7428/design-newsfeed-system",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Datadog",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-30T00:00:00.000Z",
+    "votes": 1,
+    "views": 8,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-02T01:14:31.528Z"
+  },
+  {
+    "id": 1220,
+    "title": "How would you build TinyURL?",
+    "url": "https://www.aced.io/questions/1220/build-tinyurl",
+    "categories": [
+      "system-design",
+      "technical"
+    ],
+    "companies": [
+      "Amazon",
+      "Meta",
+      "Confluent",
+      "Google",
+      "Plaid"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 155,
+    "views": 10893,
+    "comments": 12,
+    "has_expert_solution": true,
+    "published_at": "2020-07-23T07:06:42.476Z"
+  },
+  {
+    "id": 1376,
+    "title": "Design Facebook Messenger.",
+    "url": "https://www.aced.io/questions/1376/design-facebook-messenger",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Meta",
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-08-17T00:00:00.000Z",
+    "votes": 176,
+    "views": 8530,
+    "comments": 63,
+    "has_expert_solution": true,
+    "published_at": "2020-12-18T04:11:39.931Z"
+  },
+  {
+    "id": 5438,
+    "title": "Design Slack.",
+    "url": "https://www.aced.io/questions/5438/design-slack",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Databricks",
+      "Amazon",
+      "Reddit",
+      "OpenAI",
+      "American Express",
+      "Coinbase",
+      "Slack"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 37,
+    "views": 1238,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2025-07-27T23:43:52.597Z"
+  },
+  {
+    "id": 5620,
+    "title": "What metrics would you track to evaluate the performance of your ML pipeline?",
+    "url": "https://www.aced.io/questions/5620/evaluate-ml-pipeline-performance",
+    "categories": [
+      "system-design",
+      "machine-learning"
+    ],
+    "companies": [
+      "Google",
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 18,
+    "views": 1017,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2025-10-09T04:02:13.423Z"
+  },
+  {
+    "id": 7159,
+    "title": "Design TurboTax.",
+    "url": "https://www.aced.io/questions/7159/design-tax-filing-platform",
+    "categories": [
+      "system-design",
+      "product-design"
+    ],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-17T00:00:00.000Z",
+    "votes": 2,
+    "views": 163,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-21T03:39:19.447Z"
+  },
+  {
+    "id": 6259,
+    "title": "How would you design safeguards for an AI system that can take actions on behalf of a user?",
+    "url": "https://www.aced.io/questions/6259/design-safeguards-ai-user-actions",
+    "categories": [
+      "system-design",
+      "artificial-intelligence",
+      "product-design"
+    ],
+    "companies": [
+      "OpenAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-01T00:00:00.000Z",
+    "votes": 6,
+    "views": 393,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:26:34.194Z"
+  },
+  {
+    "id": 7119,
+    "title": "Imagine there's a remote part of Earth where Google Maps doesn't exist. How would you go about designing Google Maps for that area?",
+    "url": "https://www.aced.io/questions/7119/design-google-maps-remote-area",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 3,
+    "views": 139,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2026-08-18T03:53:12.872Z"
+  },
+  {
+    "id": 6261,
+    "title": "If Spotify were integrating Sierra for its customer support chatbot, what would that technical system look like?",
+    "url": "https://www.aced.io/questions/6261/design-sierra-integration-spotify-chatbot",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Sierra AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-01T00:00:00.000Z",
+    "votes": 3,
+    "views": 373,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T16:28:43.739Z"
+  },
+  {
+    "id": 2961,
+    "title": "Design a meditation app.",
+    "url": "https://www.aced.io/questions/2961/design-meditation-app",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-07-17T00:00:00.000Z",
+    "votes": 29,
+    "views": 3224,
+    "comments": 11,
+    "has_expert_solution": false,
+    "published_at": "2023-07-21T19:53:16.761Z"
+  },
+  {
+    "id": 7504,
+    "title": "Pick up any product in the universe, and then explain the end-to-end workings of what happens under the hood.",
+    "url": "https://www.aced.io/questions/7504/explain-end-to-end-product-workings",
+    "categories": [
+      "system-design",
+      "product-design"
+    ],
+    "companies": [
+      "Rippling"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 2,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-09T03:06:00.259Z"
+  },
+  {
+    "id": 7497,
+    "title": "Design an API for Customer Relationship Management (CRM).",
+    "url": "https://www.aced.io/questions/7497/design-api-customer-relationship-management",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 2,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-09T02:53:59.062Z"
+  },
+  {
+    "id": 5453,
+    "title": "What signals would you use to improve Meta's News Feed relevance?",
+    "url": "https://www.aced.io/questions/5453/improve-meta-feed-relevance",
+    "categories": [
+      "product-design",
+      "product-strategy",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-07-28T00:00:00.000Z",
+    "votes": 17,
+    "views": 915,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2025-07-28T00:23:03.541Z"
+  },
+  {
+    "id": 7460,
+    "title": "Design a demand signal engine that pulls customer feedback and surfaces what the product team should work on.",
+    "url": "https://www.aced.io/questions/7460/design-demand-signal-engine-customer-feedback",
+    "categories": [
+      "system-design",
+      "product-design"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 5,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-05T10:36:39.900Z"
+  },
+  {
+    "id": 2770,
+    "title": "What should be the north star metric for Google Photos?",
+    "url": "https://www.aced.io/questions/2770/north-star-metric-google-photos",
+    "categories": [
+      "analytical",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-01-04T00:00:00.000Z",
+    "votes": 29,
+    "views": 2850,
+    "comments": 10,
+    "has_expert_solution": false,
+    "published_at": "2023-01-04T19:34:02.384Z"
+  },
+  {
+    "id": 798,
+    "title": "What is an API and how does it work?",
+    "url": "https://www.aced.io/questions/798/what-is-an-api-and-how-does-it-work",
+    "categories": [
+      "technical",
+      "system-design"
+    ],
+    "companies": [
+      "Microsoft",
+      "Okta",
+      "PayPal",
+      "Indeed",
+      "Revolut",
+      "Meta",
+      "Apple",
+      "Stripe",
+      "Spotify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-31T00:00:00.000Z",
+    "votes": 69,
+    "views": 4979,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2020-04-03T04:46:05.642Z"
+  },
+  {
+    "id": 4012,
+    "title": "Design an Instagram Ranking Model",
+    "url": "https://www.aced.io/questions/4012/design-instagram-ranking-model",
+    "categories": [
+      "machine-learning",
+      "system-design"
+    ],
+    "companies": [
+      "Datadog"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-12-31T00:00:00.000Z",
+    "votes": 15,
+    "views": 1403,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2024-06-10T16:11:02.643Z"
+  },
+  {
+    "id": 2807,
+    "title": "As a Product Manager at Clipboard Health, how would you adjust Lyft's driver payments to maximize net revenue over 12 months?",
+    "url": "https://www.aced.io/questions/2807/optimize-driver-payments-clipboard-health",
+    "categories": [
+      "analytical",
+      "system-design"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-04-15T00:00:00.000Z",
+    "votes": 51,
+    "views": 2201,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2023-03-01T02:07:28.005Z"
+  },
+  {
+    "id": 7335,
+    "title": "Design an app to use Portal Camera.",
+    "url": "https://www.aced.io/questions/7335/design-app-portal-camera",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-07-31T00:00:00.000Z",
+    "votes": 1,
+    "views": 30,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-28T05:38:32.791Z"
+  },
+  {
+    "id": 1375,
+    "title": "Design Uber.",
+    "url": "https://www.aced.io/questions/1375/design-uber",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Meta",
+      "Atlassian",
+      "Uber",
+      "Zamp AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-01T00:00:00.000Z",
+    "votes": 49,
+    "views": 3553,
+    "comments": 5,
+    "has_expert_solution": true,
+    "published_at": "2020-12-18T04:10:50.182Z"
+  },
+  {
+    "id": 1301,
+    "title": "Design an AI data product.",
+    "url": "https://www.aced.io/questions/1301/design-ai-data-product",
+    "categories": [
+      "system-design",
+      "product-design"
+    ],
+    "companies": [
+      "JP Morgan",
+      "Google",
+      "Scale AI",
+      "Accenture",
+      "Meta",
+      "Deutsche Bank",
+      "Amazon",
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-22T00:00:00.000Z",
+    "votes": 59,
+    "views": 3453,
+    "comments": 5,
+    "has_expert_solution": true,
+    "published_at": "2020-10-08T05:02:00.809Z"
+  },
+  {
+    "id": 894,
+    "title": "Design the system architecture for WhatsApp.",
+    "url": "https://www.aced.io/questions/894/system-design-whatsapp",
+    "categories": [
+      "system-design",
+      "technical"
+    ],
+    "companies": [
+      "Meta",
+      "Microsoft",
+      "WhatsApp",
+      "Airtel"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-01T00:00:00.000Z",
+    "votes": 89,
+    "views": 3352,
+    "comments": 9,
+    "has_expert_solution": true,
+    "published_at": "2020-05-29T07:56:02.258Z"
+  },
+  {
+    "id": 6397,
+    "title": "Have you built any end-to-end agentic systems?",
+    "url": "https://www.aced.io/questions/6397/describe-end-to-end-agentic-systems",
+    "categories": [
+      "behavioral",
+      "system-design"
+    ],
+    "companies": [
+      "Glean"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 149,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-10T03:54:36.086Z"
+  },
+  {
+    "id": 2141,
+    "title": "Design Uber Eats.",
+    "url": "https://www.aced.io/questions/2141/design-uber-eats",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Uber",
+      "Amazon",
+      "Microsoft",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 38,
+    "views": 1815,
+    "comments": 11,
+    "has_expert_solution": true,
+    "published_at": "2022-05-07T00:08:08.836Z"
+  },
+  {
+    "id": 949,
+    "title": "Design a timer system.",
+    "url": "https://www.aced.io/questions/949/design-timer-system",
+    "categories": [
+      "system-design",
+      "product-design"
+    ],
+    "companies": [
+      "Citadel",
+      "Microsoft",
+      "Amazon",
+      "Meta",
+      "Google",
+      "Lumos"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 57,
+    "views": 3003,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2020-06-02T22:18:46.695Z"
+  },
+  {
+    "id": 809,
+    "title": "If you had unlimited resources at Google, what would you build and why?",
+    "url": "https://www.aced.io/questions/809/build-with-unlimited-resources-google",
+    "categories": [
+      "product-strategy",
+      "system-design"
+    ],
+    "companies": [
+      "Palantir",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-06-30T00:00:00.000Z",
+    "votes": 41,
+    "views": 3236,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2020-04-16T18:38:08.271Z"
+  },
+  {
+    "id": 7122,
+    "title": "How would you design a Gemini AI email summarizer?",
+    "url": "https://www.aced.io/questions/7122/design-gemini-ai-email-summarizer",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 45,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-18T03:53:43.880Z"
+  },
+  {
+    "id": 1596,
+    "title": "Design YouTube.",
+    "url": "https://www.aced.io/questions/1596/design-youtube",
+    "categories": [
+      "system-design",
+      "product-design"
+    ],
+    "companies": [
+      "Google",
+      "Wealthfront"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 39,
+    "views": 1806,
+    "comments": 31,
+    "has_expert_solution": true,
+    "published_at": "2021-09-11T05:19:58.330Z"
+  },
+  {
+    "id": 2872,
+    "title": "Design a payment system.",
+    "url": "https://www.aced.io/questions/2872/design-payment-system",
+    "categories": [
+      "system-design",
+      "product-design"
+    ],
+    "companies": [
+      "Brex",
+      "Google",
+      "Meta",
+      "OpenAI",
+      "Capital One",
+      "Paytm",
+      "SoFi"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-28T00:00:00.000Z",
+    "votes": 16,
+    "views": 1476,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-04-24T15:46:55.398Z"
+  },
+  {
+    "id": 1800,
+    "title": "How would you build an audio product for Facebook?",
+    "url": "https://www.aced.io/questions/1800/build-audio-product-for-facebook",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-10-30T00:00:00.000Z",
+    "votes": 38,
+    "views": 1641,
+    "comments": 20,
+    "has_expert_solution": true,
+    "published_at": "2021-12-20T23:56:43.837Z"
+  },
+  {
+    "id": 7161,
+    "title": "Design DocuSign.",
+    "url": "https://www.aced.io/questions/7161/design-docusign-digital-signature",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-17T00:00:00.000Z",
+    "votes": 0,
+    "views": 57,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-21T03:39:27.029Z"
+  },
+  {
+    "id": 7427,
+    "title": "What changes when you scale a system from 1 to 100?",
+    "url": "https://www.aced.io/questions/7427/explain-changes-scaling-system-100",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Datadog"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 4,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-02T01:13:55.101Z"
+  },
+  {
+    "id": 7426,
+    "title": "Design a real time monitoring system with AI in part of it.",
+    "url": "https://www.aced.io/questions/7426/design-realtime-monitoring-system-ai",
+    "categories": [
+      "system-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Datadog"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 4,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-02T01:12:06.798Z"
+  },
+  {
+    "id": 2926,
+    "title": "How would you determine the pay structure for data labeling teams?",
+    "url": "https://www.aced.io/questions/2926/determine-pay-structure-data-labeling",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Scale AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-05-26T00:00:00.000Z",
+    "votes": 10,
+    "views": 1250,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-06-10T17:50:46.112Z"
+  },
+  {
+    "id": 7400,
+    "title": "How do you test a non-deterministic system?",
+    "url": "https://www.aced.io/questions/7400/test-non-deterministic-system",
+    "categories": [
+      "system-design",
+      "analytical"
+    ],
+    "companies": [
+      "Rippling"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 11,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-10-19T00:00:18.013Z"
+  },
+  {
+    "id": 7160,
+    "title": "Design Twilio.",
+    "url": "https://www.aced.io/questions/7160/design-twilio-communication-platform",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Stripe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-17T00:00:00.000Z",
+    "votes": 0,
+    "views": 46,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-21T03:39:23.335Z"
+  },
+  {
+    "id": 308,
+    "title": "Estimate the amount of storage needed for Google Photos.",
+    "url": "https://www.aced.io/questions/308/estimate-storage-google-photos",
+    "categories": [
+      "system-design",
+      "estimation"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-16T00:00:00.000Z",
+    "votes": 30,
+    "views": 2288,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2020-02-26T13:05:08.039Z"
+  },
+  {
+    "id": 5455,
+    "title": "How would you detect fake reviews using machine learning?",
+    "url": "https://www.aced.io/questions/5455/detect-fake-reviews-ml",
+    "categories": [
+      "product-design",
+      "system-design",
+      "technical"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-07-28T00:00:00.000Z",
+    "votes": 7,
+    "views": 281,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-07-28T00:25:07.762Z"
+  },
+  {
+    "id": 6370,
+    "title": "Roblox has users in different languages and a machine learning system for auto-translation. Design a system that would automatically translate between different people on different servers.",
+    "url": "https://www.aced.io/questions/6370/design-auto-translation-roblox-servers",
+    "categories": [
+      "system-design",
+      "machine-learning"
+    ],
+    "companies": [
+      "Roblox"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 96,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-04T03:42:38.717Z"
+  },
+  {
+    "id": 1728,
+    "title": "Design a solution for borrowing and lending on Facebook.",
+    "url": "https://www.aced.io/questions/1728/borrowing-lending-solution-facebook",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-10-04T00:00:00.000Z",
+    "votes": 20,
+    "views": 1525,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2021-11-14T04:28:18.225Z"
+  },
+  {
+    "id": 804,
+    "title": "How would you improve Buy and Sell Groups on Facebook?",
+    "url": "https://www.aced.io/questions/804/how-to-improve-buy-and-sell-groups-facebook",
+    "categories": [
+      "execution",
+      "system-design",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-30T00:00:00.000Z",
+    "votes": 44,
+    "views": 1921,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2020-04-03T04:49:26.113Z"
+  },
+  {
+    "id": 6224,
+    "title": "How would you design the gift card redemption flow?",
+    "url": "https://www.aced.io/questions/6224/design-gift-card-redemption-flow",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-12-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 92,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-06T15:27:15.239Z"
+  },
+  {
+    "id": 6402,
+    "title": "How would you design a 2-sided marketplace app?",
+    "url": "https://www.aced.io/questions/6402/design-two-sided-marketplace-app",
+    "categories": [
+      "system-design",
+      "product-design"
+    ],
+    "companies": [
+      "Shopify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 77,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-06-10T04:04:30.270Z"
+  },
+  {
+    "id": 7440,
+    "title": "Walk me through what systems are being touched when a customer with a multi-currency wallet is attempting a conversion.",
+    "url": "https://www.aced.io/questions/7440/explain-systems-multi-currency-wallet-conversion",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Western Union"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 0,
+    "views": 3,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-11-02T02:28:19.739Z"
+  },
+  {
+    "id": 1891,
+    "title": "Design an elevator for blind users.",
+    "url": "https://www.aced.io/questions/1891/elevator-design-blind-users",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Google Cloud (GCP)"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-31T00:00:00.000Z",
+    "votes": 18,
+    "views": 1268,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-02-04T04:43:43.180Z"
+  },
+  {
+    "id": 2728,
+    "title": "Design a free product. How would you monetize it?",
+    "url": "https://www.aced.io/questions/2728/design-monetize-free-product",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-10-25T00:00:00.000Z",
+    "votes": 11,
+    "views": 994,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2022-12-16T05:38:45.312Z"
+  },
+  {
+    "id": 6243,
+    "title": "Design a high-level system for Gemini responding to a user query.",
+    "url": "https://www.aced.io/questions/6243/design-system-gemini-user-query",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-09-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 79,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-07T15:40:45.408Z"
+  },
+  {
+    "id": 5454,
+    "title": "Design the recommendation engine for Amazon’s homepage.",
+    "url": "https://www.aced.io/questions/5454/design-amazon-recommendation-homepage",
+    "categories": [
+      "product-design",
+      "product-strategy",
+      "system-design"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-07-28T00:00:00.000Z",
+    "votes": 7,
+    "views": 204,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-07-28T00:24:18.286Z"
+  },
+  {
+    "id": 7305,
+    "title": "How would you evaluate a RAG pipeline?",
+    "url": "https://www.aced.io/questions/7305/evaluate-rag-pipeline-methods",
+    "categories": [
+      "data-analysis",
+      "system-design"
+    ],
+    "companies": [
+      "Palo Alto Networks"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 19,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-09-20T10:47:21.212Z"
+  },
+  {
+    "id": 7127,
+    "title": "Using AI, what platform would you build to resolve data discrepancies across a luxury hotel chain and improve the customer experience across channels?",
+    "url": "https://www.aced.io/questions/7127/design-ai-platform-resolve-hotel-data",
+    "categories": [
+      "product-design",
+      "system-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Intuit"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-07-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 33,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-18T04:44:12.603Z"
+  },
+  {
+    "id": 294,
+    "title": "Design an app for newcomers in a city to find doctors.",
+    "url": "https://www.aced.io/questions/294/design-app-newcomers-find-doctors",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-26T00:00:00.000Z",
+    "votes": 37,
+    "views": 1447,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2020-02-19T09:48:22.578Z"
+  },
+  {
+    "id": 799,
+    "title": "How would you improve Facebook Marketplace?",
+    "url": "https://www.aced.io/questions/799/how-to-improve-facebook-marketplace",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-07T00:00:00.000Z",
+    "votes": 31,
+    "views": 1434,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2020-04-03T04:46:32.925Z"
+  },
+  {
+    "id": 6492,
+    "title": "How would you design Perplexity's system?",
+    "url": "https://www.aced.io/questions/6492/design-perplexity-system-architecture",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Perplexity AI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 51,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-08T03:46:36.916Z"
+  },
+  {
+    "id": 6226,
+    "title": "If you were building an autocomplete experience, how would you use underlying data to predict the next word a person is going to type?",
+    "url": "https://www.aced.io/questions/6226/design-autocomplete-predict-next-word",
+    "categories": [
+      "system-design",
+      "machine-learning"
+    ],
+    "companies": [
+      "xAI"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-04-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 70,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-05-06T15:33:36.726Z"
+  },
+  {
+    "id": 757,
+    "title": "How would you monetize Google Assistant?",
+    "url": "https://www.aced.io/questions/757/monetize-google-assistant",
+    "categories": [
+      "product-strategy",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-01-28T00:00:00.000Z",
+    "votes": 28,
+    "views": 1408,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2020-03-10T22:47:13.060Z"
+  },
+  {
+    "id": 6534,
+    "title": "Design a vending machine for the blind.",
+    "url": "https://www.aced.io/questions/6534/design-vending-machine-for-blind",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 1,
+    "views": 30,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-27T03:13:00.692Z"
+  },
+  {
+    "id": 3097,
+    "title": "Design an AB test system.",
+    "url": "https://www.aced.io/questions/3097/design-ab-test-system",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Affirm",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-08-02T00:00:00.000Z",
+    "votes": 8,
+    "views": 576,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2023-10-23T15:51:20.315Z"
+  },
+  {
+    "id": 6637,
+    "title": "Vibe code a solution to help shop owners get better access to the Shopify marketplace apps.",
+    "url": "https://www.aced.io/questions/6637/improve-shopify-app-access-shop-owners",
+    "categories": [
+      "system-design",
+      "product-design"
+    ],
+    "companies": [
+      "Shopify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-10-31T00:00:00.000Z",
+    "votes": 0,
+    "views": 33,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-10T02:06:55.716Z"
+  },
+  {
+    "id": 1890,
+    "title": "You are PM for Instagram. How would you decide on investing in a verification badge?",
+    "url": "https://www.aced.io/questions/1890/instagram-pm-verification-badge-investment-decision",
+    "categories": [
+      "product-strategy",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-03T00:00:00.000Z",
+    "votes": 21,
+    "views": 834,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-02-04T00:25:04.195Z"
+  },
+  {
+    "id": 7186,
+    "title": "In Zomato district's app, we want to enable the feature for user special request while making a reservation at restaurant. How will you go around building this?",
+    "url": "https://www.aced.io/questions/7186/design-user-special-request-reservation",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Zomato"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-02-28T00:00:00.000Z",
+    "votes": 0,
+    "views": 22,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-08-31T01:41:29.895Z"
+  },
+  {
+    "id": 2298,
+    "title": "As a product manager for Meta, design a product for volunteers.",
+    "url": "https://www.aced.io/questions/2298/product-manager-meta-volunteers",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta",
+      "Atlassian"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 6,
+    "views": 706,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-06-30T22:50:22.850Z"
+  },
+  {
+    "id": 2054,
+    "title": "Design a travel app experience for Meta.",
+    "url": "https://www.aced.io/questions/2054/design-travel-app-experience-meta",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-07T00:00:00.000Z",
+    "votes": 6,
+    "views": 654,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-12T19:22:25.164Z"
+  },
+  {
+    "id": 2360,
+    "title": "Design a system for an Alexa-enabled Peloton. Define the APIs, system architecture, and explain the various components.",
+    "url": "https://www.aced.io/questions/2360/alexa-enabled-peloton-system-design",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-08-05T00:00:00.000Z",
+    "votes": 10,
+    "views": 535,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-08-13T17:18:30.563Z"
+  },
+  {
+    "id": 2166,
+    "title": "How would Google enter the food delivery space?",
+    "url": "https://www.aced.io/questions/2166/google-entry-food-delivery-space",
+    "categories": [
+      "product-strategy",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-04-11T00:00:00.000Z",
+    "votes": 14,
+    "views": 512,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-05-15T06:40:02.893Z"
+  },
+  {
+    "id": 2031,
+    "title": "Design a product for managing parking (not limited to cars).",
+    "url": "https://www.aced.io/questions/2031/design-product-for-managing-parking",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-01-01T00:00:00.000Z",
+    "votes": 13,
+    "views": 510,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-04T14:31:44.037Z"
+  },
+  {
+    "id": 922,
+    "title": "Design a messaging platform.",
+    "url": "https://www.aced.io/questions/922/system-design-messaging-platform",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Datadog",
+      "Apple",
+      "Workday"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-08-31T00:00:00.000Z",
+    "votes": 11,
+    "views": 848,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2020-05-29T08:11:31.307Z"
+  },
+  {
+    "id": 1862,
+    "title": "Design the architecture for a hardware device that measures temperature and social distance among employees in warehouses during COVID.",
+    "url": "https://www.aced.io/questions/1862/hardware-device-temperature-social-distance-covid",
+    "categories": [
+      "technical",
+      "system-design"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-12T00:00:00.000Z",
+    "votes": 9,
+    "views": 535,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-01-17T05:07:11.446Z"
+  },
+  {
+    "id": 2067,
+    "title": "Design a language learning app for Meta.",
+    "url": "https://www.aced.io/questions/2067/design-language-learning-app-meta",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-30T00:00:00.000Z",
+    "votes": 8,
+    "views": 488,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-13T15:02:59.971Z"
+  },
+  {
+    "id": 2034,
+    "title": "Design an app to search for therapists.",
+    "url": "https://www.aced.io/questions/2034/design-therapist-search-app",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-14T00:00:00.000Z",
+    "votes": 10,
+    "views": 468,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-05T00:27:34.797Z"
+  },
+  {
+    "id": 6570,
+    "title": "How would you approach making a deterministic workflow system more configurable and AI-enabled?",
+    "url": "https://www.aced.io/questions/6570/improve-workflow-system-configurable-ai-enabled",
+    "categories": [
+      "system-design",
+      "artificial-intelligence"
+    ],
+    "companies": [
+      "Stitch.co"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 21,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-27T05:11:35.998Z"
+  },
+  {
+    "id": 2132,
+    "title": "Design an events feature for a kids' messenger app.",
+    "url": "https://www.aced.io/questions/2132/design-events-feature-kids-app",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-02T00:00:00.000Z",
+    "votes": 9,
+    "views": 434,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-05-03T15:16:39.523Z"
+  },
+  {
+    "id": 2184,
+    "title": "You received user feedback that Yelp's restaurant recommendation is not personal enough. What would you do?",
+    "url": "https://www.aced.io/questions/2184/personalizing-yelp-restaurant-recommendations",
+    "categories": [
+      "product-design",
+      "machine-learning",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-10T00:00:00.000Z",
+    "votes": 13,
+    "views": 361,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-05-16T16:21:06.183Z"
+  },
+  {
+    "id": 6574,
+    "title": "How can LLMs be integrated into Rocket Money's platform?",
+    "url": "https://www.aced.io/questions/6574/integrate-llms-rocket-money-platform",
+    "categories": [
+      "system-design",
+      "product-design"
+    ],
+    "companies": [
+      "Rocket Money"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-01T00:00:00.000Z",
+    "votes": 0,
+    "views": 19,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2026-07-27T05:18:47.704Z"
+  },
+  {
+    "id": 2680,
+    "title": "Design a product similar to Google Docs for photo editing collaboration.",
+    "url": "https://www.aced.io/questions/2680/design-photo-editing-collaboration-product",
+    "categories": [
+      "technical",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-07-12T00:00:00.000Z",
+    "votes": 5,
+    "views": 376,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-09-28T03:14:44.852Z"
+  },
+  {
+    "id": 768,
+    "title": "How would you price the Amazon Kindle at launch?",
+    "url": "https://www.aced.io/questions/768/pricing-amazon-kindle-launch",
+    "categories": [
+      "product-strategy",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-08T00:00:00.000Z",
+    "votes": 10,
+    "views": 682,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2020-03-13T23:13:01.990Z"
+  },
+  {
+    "id": 2117,
+    "title": "Design a smart refrigerator.",
+    "url": "https://www.aced.io/questions/2117/design-smart-refrigerator",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Microsoft",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-02-29T00:00:00.000Z",
+    "votes": 9,
+    "views": 374,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2022-04-28T00:24:32.994Z"
+  },
+  {
+    "id": 1412,
+    "title": "How would you improve Facebook's timeline?",
+    "url": "https://www.aced.io/questions/1412/improve-facebook-timeline",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-10-15T00:00:00.000Z",
+    "votes": 14,
+    "views": 498,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-01-12T22:21:05.675Z"
+  },
+  {
+    "id": 2131,
+    "title": "Design a bookshelf for elderly people.",
+    "url": "https://www.aced.io/questions/2131/design-bookshelf-elderly-people",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-06-10T00:00:00.000Z",
+    "votes": 7,
+    "views": 386,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2022-05-02T04:06:57.803Z"
+  },
+  {
+    "id": 2153,
+    "title": "You're the PM for Facebook Rooms. What goals would you set for the next 6 months?",
+    "url": "https://www.aced.io/questions/2153/goals-facebook-rooms-next-6-months",
+    "categories": [
+      "execution",
+      "analytical",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-31T00:00:00.000Z",
+    "votes": 9,
+    "views": 368,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-05-09T20:55:45.640Z"
+  },
+  {
+    "id": 2694,
+    "title": "You're a PM at Uber; design a smartwatch app.",
+    "url": "https://www.aced.io/questions/2694/design-uber-smartwatch-app",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-10-14T00:00:00.000Z",
+    "votes": 7,
+    "views": 327,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-10-14T21:35:27.044Z"
+  },
+  {
+    "id": 2505,
+    "title": "Design a birthday app for Facebook.",
+    "url": "https://www.aced.io/questions/2505/design-birthday-app-facebook",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 366,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-09T11:53:14.216Z"
+  },
+  {
+    "id": 2347,
+    "title": "You're a PM for Facebook Group Travel on mobile. What would you build?",
+    "url": "https://www.aced.io/questions/2347/pm-facebook-group-travel-mobile",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-08-01T00:00:00.000Z",
+    "votes": 6,
+    "views": 357,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-08-01T21:22:50.647Z"
+  },
+  {
+    "id": 2101,
+    "title": "Design a solution for borrowing and lending goods among neighbors on Facebook.",
+    "url": "https://www.aced.io/questions/2101/design-borrowing-lending-solution-facebook",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-08T00:00:00.000Z",
+    "votes": 4,
+    "views": 395,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-21T18:19:41.905Z"
+  },
+  {
+    "id": 2155,
+    "title": "Pick an airport and estimate the number of people going through the security scan every day.",
+    "url": "https://www.aced.io/questions/2155/estimate-airport-security-scan-traffic",
+    "categories": [
+      "estimation",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-09T00:00:00.000Z",
+    "votes": 9,
+    "views": 318,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-05-10T00:37:36.892Z"
+  },
+  {
+    "id": 1970,
+    "title": "Design a health app within the Microsoft ecosystem.",
+    "url": "https://www.aced.io/questions/1970/design-health-app-microsoft-ecosystem",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Microsoft"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-03-25T00:00:00.000Z",
+    "votes": 5,
+    "views": 374,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-03-27T09:29:13.622Z"
+  },
+  {
+    "id": 1698,
+    "title": "The CEO asks you to design a new ATM specifically for their airport segment. What would you do?",
+    "url": "https://www.aced.io/questions/1698/design-atm-airport-segment",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Google Cloud (GCP)"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-28T00:00:00.000Z",
+    "votes": 5,
+    "views": 406,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-09T20:34:06.754Z"
+  },
+  {
+    "id": 1795,
+    "title": "For Amazon Video Service, would you recommend keeping or removing the offering?",
+    "url": "https://www.aced.io/questions/1795/amazon-video-service-recommendation",
+    "categories": [
+      "product-strategy",
+      "system-design"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-08-17T00:00:00.000Z",
+    "votes": 9,
+    "views": 339,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-12-15T19:27:39.218Z"
+  },
+  {
+    "id": 2635,
+    "title": "How should Yelp expand into Asia?",
+    "url": "https://www.aced.io/questions/2635/yelp-expansion-strategy-asia",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Yelp"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 3,
+    "views": 288,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T19:45:06.784Z"
+  },
+  {
+    "id": 2579,
+    "title": "Design the best slippers.",
+    "url": "https://www.aced.io/questions/2579/design-best-slippers",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [
+      "Walmart Labs"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-09-11T00:00:00.000Z",
+    "votes": 3,
+    "views": 287,
+    "comments": 1,
+    "has_expert_solution": true,
+    "published_at": "2022-09-11T18:37:23.005Z"
+  },
+  {
+    "id": 2802,
+    "title": "Design a product strategy for Netflix for FY23-24.",
+    "url": "https://www.aced.io/questions/2802/design-netflix-product-strategy-fy23-24",
+    "categories": [
+      "product-strategy",
+      "system-design"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2023-02-07T00:00:00.000Z",
+    "votes": 1,
+    "views": 271,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2023-02-22T07:26:48.383Z"
+  },
+  {
+    "id": 2092,
+    "title": "Design an app like Uber for Google's driverless cars targeted at children under 16 years old.",
+    "url": "https://www.aced.io/questions/2092/design-uber-like-app-google-driverless",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-04T00:00:00.000Z",
+    "votes": 6,
+    "views": 290,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-04-19T23:43:49.113Z"
+  },
+  {
+    "id": 808,
+    "title": "Design a product for digital well-being.",
+    "url": "https://www.aced.io/questions/808/design-product-digital-wellbeing",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Airbnb",
+      "TikTok",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-31T00:00:00.000Z",
+    "votes": 8,
+    "views": 430,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2020-04-16T18:37:30.429Z"
+  },
+  {
+    "id": 1725,
+    "title": "What metrics would you consider for designing a robot at Facebook?",
+    "url": "https://www.aced.io/questions/1725/facebook-robot-design-metrics",
+    "categories": [
+      "execution",
+      "analytical",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-10-20T00:00:00.000Z",
+    "votes": 6,
+    "views": 293,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2021-11-13T01:10:16.256Z"
+  },
+  {
+    "id": 1895,
+    "title": "Design an investment app.",
+    "url": "https://www.aced.io/questions/1895/investment-app-design",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-01-17T00:00:00.000Z",
+    "votes": 8,
+    "views": 253,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-02-06T19:19:10.142Z"
+  },
+  {
+    "id": 2405,
+    "title": "Define the flow from order booking to delivery, including installation, for a customized drinking water purifier.",
+    "url": "https://www.aced.io/questions/2405/flow-order-booking-delivery-installation-water-purifier",
+    "categories": [
+      "system-design"
+    ],
+    "companies": [],
+    "difficulty": "",
+    "last_asked_on": "2022-08-22T00:00:00.000Z",
+    "votes": 2,
+    "views": 249,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-08-23T19:05:36.932Z"
+  },
+  {
+    "id": 2111,
+    "title": "Design a studio apartment for 3 people.",
+    "url": "https://www.aced.io/questions/2111/design-studio-apartment-three-people",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-04T00:00:00.000Z",
+    "votes": 5,
+    "views": 251,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-04-25T16:13:28.219Z"
+  },
+  {
+    "id": 1912,
+    "title": "Design an app to allow book subscriptions with hard copies.",
+    "url": "https://www.aced.io/questions/1912/design-book-subscription-app-with-hard-copies",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Opentext"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-03T00:00:00.000Z",
+    "votes": 4,
+    "views": 236,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2022-02-16T19:19:50.006Z"
+  },
+  {
+    "id": 2154,
+    "title": "Design a product to track animals.",
+    "url": "https://www.aced.io/questions/2154/design-animal-tracking-product",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-05-09T00:00:00.000Z",
+    "votes": 5,
+    "views": 238,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-05-10T00:35:41.889Z"
+  },
+  {
+    "id": 2332,
+    "title": "Create an app to increase reading.",
+    "url": "https://www.aced.io/questions/2332/create-app-increase-reading",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Patreon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-07-25T00:00:00.000Z",
+    "votes": 3,
+    "views": 233,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-07-26T00:16:16.485Z"
+  },
+  {
+    "id": 2248,
+    "title": "Build a sushi factory that sells wholesale sushi boxes.",
+    "url": "https://www.aced.io/questions/2248/build-wholesale-sushi-factory",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Google Cloud (GCP)"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-01T00:00:00.000Z",
+    "votes": 4,
+    "views": 220,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-06-13T21:37:03.277Z"
+  },
+  {
+    "id": 1807,
+    "title": "Design the interior of a fully autonomous car that requires no human interaction.",
+    "url": "https://www.aced.io/questions/1807/design-interior-fully-autonomous-car",
+    "categories": [
+      "product-design",
+      "system-design"
+    ],
+    "companies": [
+      "Opendoor"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-12-17T00:00:00.000Z",
+    "votes": 2,
+    "views": 215,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-12-29T23:22:11.284Z"
+  }
+]

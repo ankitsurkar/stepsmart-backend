@@ -1,0 +1,572 @@
+[
+  {
+    "id": 699,
+    "title": "What goals would you set as PM for Facebook marketplaces?",
+    "url": "https://www.aced.io/questions/699/pm-goals-facebook-marketplaces",
+    "categories": [
+      "execution",
+      "program-sense",
+      "analytical"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-08-08T00:00:00.000Z",
+    "votes": 288,
+    "views": 17814,
+    "comments": 44,
+    "has_expert_solution": true,
+    "published_at": "2020-03-01T20:34:24.030Z"
+  },
+  {
+    "id": 228,
+    "title": "How do you prioritize tasks?",
+    "url": "https://www.aced.io/questions/228/how-prioritize-features",
+    "categories": [
+      "behavioral",
+      "program-sense",
+      "project-managing"
+    ],
+    "companies": [
+      "Datadog",
+      "DoorDash",
+      "Amazon",
+      "Lyft",
+      "Mastercard",
+      "Microsoft",
+      "Chime",
+      "Apple",
+      "Roblox",
+      "Google",
+      "Nvidia",
+      "Anthropic",
+      "Uber",
+      "HashiCorp",
+      "Adobe",
+      "Accenture",
+      "Asana",
+      "JP Morgan Chase",
+      "Google Cloud (GCP)",
+      "Lightbox",
+      "Blend",
+      "Gladly",
+      "Validus Capital"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-30T00:00:00.000Z",
+    "votes": 271,
+    "views": 15200,
+    "comments": 77,
+    "has_expert_solution": false,
+    "published_at": "2020-01-22T01:01:59.150Z"
+  },
+  {
+    "id": 931,
+    "title": "How have you managed risk in a project?",
+    "url": "https://www.aced.io/questions/931/managing-risk-in-project",
+    "categories": [
+      "behavioral",
+      "program-sense",
+      "project-managing"
+    ],
+    "companies": [
+      "LangChain",
+      "Apple",
+      "Amazon",
+      "Oracle",
+      "Microsoft",
+      "Google",
+      "Meta",
+      "Airtel"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-06-01T00:00:00.000Z",
+    "votes": 159,
+    "views": 9949,
+    "comments": 17,
+    "has_expert_solution": true,
+    "published_at": "2020-06-01T07:04:55.822Z"
+  },
+  {
+    "id": 2120,
+    "title": "Tell me about a time when you had to deal with conflicting priorities with your stakeholders and how you secured alignment with them.",
+    "url": "https://www.aced.io/questions/2120/manage-conflicting-priorities-stakeholders",
+    "categories": [
+      "behavioral",
+      "program-sense"
+    ],
+    "companies": [
+      "Amazon",
+      "Stripe",
+      "Scale AI",
+      "LinkedIn",
+      "Meta",
+      "Sierra AI",
+      "OpenAI",
+      "TikTok",
+      "Microsoft",
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-09-02T00:00:00.000Z",
+    "votes": 81,
+    "views": 4992,
+    "comments": 6,
+    "has_expert_solution": false,
+    "published_at": "2022-04-29T00:14:03.420Z"
+  },
+  {
+    "id": 1299,
+    "title": "Tell me about a time when you managed an end-to-end program.",
+    "url": "https://www.aced.io/questions/1299/end-to-end-program-management-example",
+    "categories": [
+      "behavioral",
+      "program-sense"
+    ],
+    "companies": [
+      "Mastercard",
+      "Anduril",
+      "Meta",
+      "Microsoft",
+      "Amazon",
+      "LinkedIn"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-30T00:00:00.000Z",
+    "votes": 94,
+    "views": 6164,
+    "comments": 8,
+    "has_expert_solution": true,
+    "published_at": "2020-10-08T05:01:20.442Z"
+  },
+  {
+    "id": 755,
+    "title": "Tell me about how you brought a product to market.",
+    "url": "https://www.aced.io/questions/755/bringing-product-to-market",
+    "categories": [
+      "behavioral",
+      "program-sense"
+    ],
+    "companies": [
+      "Capital One",
+      "Harvey AI",
+      "Amazon",
+      "Hubspot",
+      "Twilio",
+      "Google",
+      "DoorDash",
+      "Shopify"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-31T00:00:00.000Z",
+    "votes": 136,
+    "views": 5772,
+    "comments": 7,
+    "has_expert_solution": false,
+    "published_at": "2020-03-09T07:08:34.812Z"
+  },
+  {
+    "id": 3028,
+    "title": "As the PM for Ads in Facebook Reels, how would you measure success?",
+    "url": "https://www.aced.io/questions/3028/measure-success-facebook-reels-ads",
+    "categories": [
+      "analytical",
+      "program-sense",
+      "behavioral"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-11-15T00:00:00.000Z",
+    "votes": 34,
+    "views": 2294,
+    "comments": 9,
+    "has_expert_solution": false,
+    "published_at": "2023-09-25T22:32:58.965Z"
+  },
+  {
+    "id": 1876,
+    "title": "What are your top three favorite apps? How would you improve one of them?",
+    "url": "https://www.aced.io/questions/1876/favorite-apps-improvement",
+    "categories": [
+      "program-sense",
+      "product-design"
+    ],
+    "companies": [
+      "Stripe",
+      "Coinbase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-05-30T00:00:00.000Z",
+    "votes": 44,
+    "views": 2564,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2022-01-24T00:14:13.309Z"
+  },
+  {
+    "id": 869,
+    "title": "You're the PM for Coinbase. DAU is down by 10%. What do you do to investigate?",
+    "url": "https://www.aced.io/questions/869/pm-coinbase-dau-down-10-investigate",
+    "categories": [
+      "execution",
+      "program-sense",
+      "analytical"
+    ],
+    "companies": [
+      "Coinbase"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-08-01T00:00:00.000Z",
+    "votes": 52,
+    "views": 2676,
+    "comments": 5,
+    "has_expert_solution": false,
+    "published_at": "2020-05-19T03:10:18.085Z"
+  },
+  {
+    "id": 2855,
+    "title": "Tell me about a software product that you recently had a bad experience with and why you felt that way as a user.",
+    "url": "https://www.aced.io/questions/2855/bad-user-experience-software-product",
+    "categories": [
+      "product-design",
+      "behavioral",
+      "program-sense"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-11-28T00:00:00.000Z",
+    "votes": 25,
+    "views": 1157,
+    "comments": 3,
+    "has_expert_solution": true,
+    "published_at": "2023-03-27T20:45:46.808Z"
+  },
+  {
+    "id": 913,
+    "title": "How do you prioritize trade-offs?",
+    "url": "https://www.aced.io/questions/913/how-to-prioritize-tradeoffs",
+    "categories": [
+      "program-sense",
+      "behavioral"
+    ],
+    "companies": [
+      "Databricks",
+      "TikTok",
+      "Slack"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-31T00:00:00.000Z",
+    "votes": 33,
+    "views": 2028,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2020-05-29T08:07:26.920Z"
+  },
+  {
+    "id": 2086,
+    "title": "Design TikTok for the elderly.",
+    "url": "https://www.aced.io/questions/2086/design-tiktok-for-elderly",
+    "categories": [
+      "program-sense",
+      "product-design"
+    ],
+    "companies": [
+      "TikTok"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-04-09T00:00:00.000Z",
+    "votes": 19,
+    "views": 1366,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-04-19T02:08:40.021Z"
+  },
+  {
+    "id": 517,
+    "title": "How will you set goals for your teams?",
+    "url": "https://www.aced.io/questions/517/setting-goals-for-teams",
+    "categories": [
+      "program-sense",
+      "behavioral"
+    ],
+    "companies": [
+      "Google",
+      "Nike",
+      "Plaid",
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-04-30T00:00:00.000Z",
+    "votes": 49,
+    "views": 1653,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T06:36:20.210Z"
+  },
+  {
+    "id": 3498,
+    "title": "How would you ensure a delivery driver delivers over 200 packages in an 8-hour day?",
+    "url": "https://www.aced.io/questions/3498/ensure-delivery-driver-efficiency",
+    "categories": [
+      "program-sense"
+    ],
+    "companies": [
+      "Amazon"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2023-12-05T00:00:00.000Z",
+    "votes": 10,
+    "views": 601,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-12-07T19:13:39.666Z"
+  },
+  {
+    "id": 3862,
+    "title": "Can you explain how 15-minute speedy delivery apps operate?",
+    "url": "https://www.aced.io/questions/3862/how-15-minute-delivery-apps-work",
+    "categories": [
+      "program-sense"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-04-13T00:00:00.000Z",
+    "votes": 6,
+    "views": 516,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2024-04-23T21:22:27.802Z"
+  },
+  {
+    "id": 1966,
+    "title": "Meta wants to build a product for handymen like plumbers and carpenters. How would you design it?",
+    "url": "https://www.aced.io/questions/1966/meta-product-design-for-handymen",
+    "categories": [
+      "program-sense",
+      "product-design"
+    ],
+    "companies": [
+      "Meta"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-08-02T00:00:00.000Z",
+    "votes": 13,
+    "views": 984,
+    "comments": 4,
+    "has_expert_solution": false,
+    "published_at": "2022-03-24T17:22:25.750Z"
+  },
+  {
+    "id": 1797,
+    "title": "Meeting a customer executive for the first time, they question your credentials. How do you respond?",
+    "url": "https://www.aced.io/questions/1797/responding-to-credentials-question-customer-executive",
+    "categories": [
+      "program-sense",
+      "behavioral"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-11-11T00:00:00.000Z",
+    "votes": 24,
+    "views": 961,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2021-12-17T15:49:07.294Z"
+  },
+  {
+    "id": 5630,
+    "title": "Tell me about a time when data helped you make a decision.",
+    "url": "https://www.aced.io/questions/5630/when-data-helped-you-make-a-decision",
+    "categories": [
+      "data-analysis",
+      "program-sense"
+    ],
+    "companies": [
+      "LinkedIn",
+      "Anduril",
+      "Amazon",
+      "Visa",
+      "Achievers"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-03-01T00:00:00.000Z",
+    "votes": 2,
+    "views": 156,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2025-10-21T08:32:56.007Z"
+  },
+  {
+    "id": 2776,
+    "title": "What is your favorite product and why? How would you improve it? What considerations and metrics would be involved in rolling out these improvements?",
+    "url": "https://www.aced.io/questions/2776/improving-favorite-product-considerations",
+    "categories": [
+      "program-sense",
+      "analytical",
+      "product-design"
+    ],
+    "companies": [
+      "Google",
+      "IBM",
+      "Remitly",
+      "eBay"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-11-15T00:00:00.000Z",
+    "votes": 11,
+    "views": 628,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2023-01-27T18:59:17.882Z"
+  },
+  {
+    "id": 916,
+    "title": "How do you encourage collaboration among cross-functional teams?",
+    "url": "https://www.aced.io/questions/916/encourage-collaboration-cross-functional-teams",
+    "categories": [
+      "behavioral",
+      "program-sense",
+      "cross-functional"
+    ],
+    "companies": [
+      "Scale AI",
+      "Anthropic",
+      "Microsoft",
+      "Amazon",
+      "Discord",
+      "Slack"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-10-11T00:00:00.000Z",
+    "votes": 28,
+    "views": 974,
+    "comments": 2,
+    "has_expert_solution": false,
+    "published_at": "2020-05-29T08:08:29.615Z"
+  },
+  {
+    "id": 978,
+    "title": "How would you improve the Pinterest experience?",
+    "url": "https://www.aced.io/questions/978/improve-pinterest-experience",
+    "categories": [
+      "product-design",
+      "program-sense",
+      "behavioral"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2024-10-21T00:00:00.000Z",
+    "votes": 21,
+    "views": 989,
+    "comments": 3,
+    "has_expert_solution": false,
+    "published_at": "2020-06-20T05:01:26.061Z"
+  },
+  {
+    "id": 2329,
+    "title": "How would you improve pickups and drop-offs through Uber during large events with over 10,000 people?",
+    "url": "https://www.aced.io/questions/2329/improve-uber-pickups-drop-offs-large-events",
+    "categories": [
+      "program-sense",
+      "analytical",
+      "execution"
+    ],
+    "companies": [
+      "Uber"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2026-05-01T00:00:00.000Z",
+    "votes": 16,
+    "views": 549,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-07-21T15:20:39.406Z"
+  },
+  {
+    "id": 1708,
+    "title": "As a Google PM, how would you design a solution to enhance financial savviness for users?",
+    "url": "https://www.aced.io/questions/1708/google-pm-design-financial-savviness-solution",
+    "categories": [
+      "program-sense",
+      "product-design"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2021-09-17T00:00:00.000Z",
+    "votes": 11,
+    "views": 472,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2021-11-11T17:08:58.375Z"
+  },
+  {
+    "id": 2231,
+    "title": "You are the lead for recommending notifications to an existing news app. Describe how the product works, the technologies used, how the system decides what notifications to send, and how you would test it.",
+    "url": "https://www.aced.io/questions/2231/news-app-notification-recommendations",
+    "categories": [
+      "program-sense"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-06-01T00:00:00.000Z",
+    "votes": 7,
+    "views": 277,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2022-06-01T21:21:36.399Z"
+  },
+  {
+    "id": 616,
+    "title": "How would you create a business around autonomous vehicles?",
+    "url": "https://www.aced.io/questions/616/create-business-autonomous-vehicles",
+    "categories": [
+      "program-sense",
+      "product-strategy"
+    ],
+    "companies": [
+      "Google"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2025-12-01T00:00:00.000Z",
+    "votes": 14,
+    "views": 427,
+    "comments": 1,
+    "has_expert_solution": false,
+    "published_at": "2020-02-29T14:29:44.869Z"
+  },
+  {
+    "id": 1913,
+    "title": "As a member of the product team at Scribe who receives user research indicating some users use the platform to build help centers, explain how you would assess building end-to-end help center functionality, including research, scoping features, and creating a roadmap with a team of four engineers and one product designer.",
+    "url": "https://www.aced.io/questions/1913/assess-building-help-center-functionality-scribe-product-team",
+    "categories": [
+      "execution",
+      "program-sense",
+      "analytical"
+    ],
+    "companies": [
+      "Scribe"
+    ],
+    "difficulty": "",
+    "last_asked_on": "2022-02-09T00:00:00.000Z",
+    "votes": 3,
+    "views": 171,
+    "comments": 0,
+    "has_expert_solution": false,
+    "published_at": "2022-02-17T04:32:23.383Z"
+  }
+]
