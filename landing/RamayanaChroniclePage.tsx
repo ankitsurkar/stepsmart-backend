@@ -973,6 +973,30 @@ export function RamayanaChroniclePage() {
           </div>
         </div>
 
+        {/* Ram Setu Guesstimate Quick Link */}
+        <div className="mb-6 bg-[#FEF08A] rounded-xl border-2 border-[#141413] p-4 shadow-[3px_3px_0px_0px_#141413] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🪨</span>
+            <div>
+              <div className="font-mono text-[11px] font-black uppercase text-[#854D0E] tracking-wider">
+                NEW GUIDED INTERACTIVE CASE
+              </div>
+              <div className="font-black text-sm sm:text-base text-[#141413]">
+                Ram Setu Causeway Estimation Challenge
+              </div>
+              <p className="text-xs text-[#141413]/75 font-medium">
+                Practice asking clarifying questions, unlock interviewer parameters, and get dynamic PM hints.
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/case-simulator"
+            className="px-4 py-2 rounded-lg border-2 border-[#141413] bg-[#141413] hover:bg-[#262624] text-white font-black text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#141413] shrink-0"
+          >
+            Launch Guesstimate Lab ➔
+          </Link>
+        </div>
+
         {/* Hero Title Block (Soft Architectural Neo-Brutalism) */}
         <div className="bg-[#FFFDF5] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] p-6 sm:p-10 mb-8 shadow-[0px_6px_0px_0px_#141413] relative overflow-hidden">
           <div className="flex items-center gap-2 mb-3">
