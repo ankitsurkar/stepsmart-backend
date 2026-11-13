@@ -248,7 +248,9 @@ interface LeaderboardSectionProps {
 }
 
 function LeaderboardSection({ variant, finalEstimate, userCalculation, correctCount }: LeaderboardSectionProps) {
-  const [name, setName] = useState<string>(() => localStorage.getItem('pmx_leaderboard_user_name') || '');
+  const [name, setName] = useState<string>(() => {
+    return localStorage.getItem('pmx_leaderboard_user_name') || localStorage.getItem('pmx_chronicle_user_name') || '';
+  });
   const [email, setEmail] = useState<string>(() => localStorage.getItem('pmx_leaderboard_user_email') || '');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
@@ -340,24 +342,63 @@ function LeaderboardSection({ variant, finalEstimate, userCalculation, correctCo
         setUserEntry(newEntry);
         setShowLeaderboard(true);
 
-        // Save locally
+        // Save locally to Ramayana Chronicle all submissions
+        try {
+          const rawChronicle = localStorage.getItem('pmx_chronicle_all_submissions');
+          const chronicleList = rawChronicle ? JSON.parse(rawChronicle) : [];
+          const chroniclePhone = localStorage.getItem('pmx_chronicle_user_phone') || '';
+          chronicleList.unshift({
+            pageId: `CHRONICLE_RESP#${chroniclePhone || cleanEmail}#GUESSTIMATE#${Date.now()}`,
+            visitorId: chroniclePhone || cleanEmail,
+            name: cleanName,
+            email: cleanEmail,
+            phone: chroniclePhone,
+            whatsappNumber: chroniclePhone,
+            dayNumber: 4,
+            masterclassId: 'ramayana-chronicle',
+            source: 'ramayana_chronicle_guesstimate',
+            responseType: 'guesstimate_leaderboard',
+            responseData: {
+              estimate: finalEstimate || '5,040,000 stones',
+              accuracyScore: score,
+              rankBadge,
+              variant,
+              submittedAt: new Date().toISOString()
+            },
+            timestamp: new Date().toISOString()
+          });
+          localStorage.setItem('pmx_chronicle_all_submissions', JSON.stringify(chronicleList.slice(0, 200)));
+        } catch (e) {}
+
+        // Save locally for leaderboard
         localStorage.setItem('pmx_guesstimate_leaderboard_all', JSON.stringify(updatedList));
         localStorage.setItem('pmx_leaderboard_user_email', cleanEmail);
         localStorage.setItem('pmx_leaderboard_user_name', cleanName);
 
-        // Dispatch to backend API
+        // Dispatch to backend API as part of Ramayana Chronicle
         try {
+          const chroniclePhone = localStorage.getItem('pmx_chronicle_user_phone') || '';
           await fetch('https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               page: 'save_chronicle_response',
-              visitorId: cleanEmail,
+              visitorId: chroniclePhone || cleanEmail,
               name: cleanName,
               email: cleanEmail,
-              source: 'ram_setu_guesstimate_leaderboard',
+              phone: chroniclePhone,
+              whatsappNumber: chroniclePhone,
+              masterclassId: 'ramayana-chronicle',
+              source: 'ramayana_chronicle_guesstimate',
+              dayNumber: 4,
               responseType: 'guesstimate_leaderboard',
-              variant,
+              responseData: {
+                estimate: finalEstimate,
+                accuracyScore: score,
+                rankBadge,
+                variant,
+                firstSubmissionOnly: true
+              },
               estimate: finalEstimate,
               accuracyScore: score,
               firstSubmissionOnly: true,
@@ -638,6 +679,7 @@ export function CaseSimulatorPage() {
   const [isCasePromptOpen, setIsCasePromptOpen] = useState<boolean>(true);
 
   // ── VARIANT B STATE (Step-by-Step Breakdown with Assume vs Ask) ─────
+  // Default strategy set to 'assume' so interviewer answers are NOT revealed upfront
   const [partsB, setPartsB] = useState<{
     length: { strategy: 'ask' | 'assume'; value: string; reasoning: string };
     width: { strategy: 'ask' | 'assume'; value: string; reasoning: string };
@@ -646,11 +688,11 @@ export function CaseSimulatorPage() {
     stoneSize: { strategy: 'ask' | 'assume'; value: string; reasoning: string };
     totalStones: { value: string };
   }>({
-    length: { strategy: 'ask', value: '', reasoning: '' },
-    width: { strategy: 'ask', value: '', reasoning: '' },
-    height: { strategy: 'ask', value: '', reasoning: '' },
+    length: { strategy: 'assume', value: '', reasoning: '' },
+    width: { strategy: 'assume', value: '', reasoning: '' },
+    height: { strategy: 'assume', value: '', reasoning: '' },
     volume: { value: '' },
-    stoneSize: { strategy: 'ask', value: '', reasoning: '' },
+    stoneSize: { strategy: 'assume', value: '', reasoning: '' },
     totalStones: { value: '' }
   });
 
@@ -811,6 +853,63 @@ export function CaseSimulatorPage() {
                   e.preventDefault();
                   setIsSubmittedB(true);
                   window.scrollTo({ top: 400, behavior: 'smooth' });
+
+                  // Save submission as part of Ramayana Chronicle
+                  try {
+                    const chronicleName = localStorage.getItem('pmx_chronicle_user_name') || localStorage.getItem('pmx_leaderboard_user_name') || 'Anonymous PM';
+                    const chroniclePhone = localStorage.getItem('pmx_chronicle_user_phone') || '';
+                    const rawChronicle = localStorage.getItem('pmx_chronicle_all_submissions');
+                    const chronicleList = rawChronicle ? JSON.parse(rawChronicle) : [];
+                    chronicleList.unshift({
+                      pageId: `CHRONICLE_RESP#${chroniclePhone || 'anon'}#GUESSTIMATE_BOXES#${Date.now()}`,
+                      visitorId: chroniclePhone || 'anon_visitor',
+                      name: chronicleName,
+                      phone: chroniclePhone,
+                      whatsappNumber: chroniclePhone,
+                      dayNumber: 4,
+                      masterclassId: 'ramayana-chronicle',
+                      source: 'ramayana_chronicle_guesstimate',
+                      responseType: 'guesstimate_boxes_breakdown',
+                      responseData: {
+                        length: partsB.length,
+                        width: partsB.width,
+                        height: partsB.height,
+                        volume: partsB.volume,
+                        stoneSize: partsB.stoneSize,
+                        totalStones: partsB.totalStones,
+                        correctCount: validationB.correctCount
+                      },
+                      timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem('pmx_chronicle_all_submissions', JSON.stringify(chronicleList.slice(0, 200)));
+
+                    fetch('https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        page: 'save_chronicle_response',
+                        visitorId: chroniclePhone || 'anon_visitor',
+                        name: chronicleName,
+                        email: `${chroniclePhone || 'anon'}@chronicle.stepsmart.net`,
+                        phone: chroniclePhone,
+                        whatsappNumber: chroniclePhone,
+                        masterclassId: 'ramayana-chronicle',
+                        source: 'ramayana_chronicle_guesstimate',
+                        dayNumber: 4,
+                        responseType: 'guesstimate_boxes_breakdown',
+                        responseData: {
+                          length: partsB.length,
+                          width: partsB.width,
+                          height: partsB.height,
+                          volume: partsB.volume,
+                          stoneSize: partsB.stoneSize,
+                          totalStones: partsB.totalStones,
+                          correctCount: validationB.correctCount
+                        },
+                        timestamp: new Date().toISOString()
+                      })
+                    }).catch(() => {});
+                  } catch (e) {}
                 }}
                 className="space-y-6"
               >
@@ -1357,6 +1456,14 @@ export function CaseSimulatorPage() {
                       type="button"
                       onClick={() => {
                         setIsSubmittedB(false);
+                        setPartsB({
+                          length: { strategy: 'assume', value: '', reasoning: '' },
+                          width: { strategy: 'assume', value: '', reasoning: '' },
+                          height: { strategy: 'assume', value: '', reasoning: '' },
+                          volume: { value: '' },
+                          stoneSize: { strategy: 'assume', value: '', reasoning: '' },
+                          totalStones: { value: '' }
+                        });
                       }}
                       className="px-4 py-2.5 rounded-xl border-2 border-[#141413] bg-white hover:bg-slate-50 font-bold text-xs uppercase tracking-wide cursor-pointer transition-all flex items-center gap-1.5"
                     >
