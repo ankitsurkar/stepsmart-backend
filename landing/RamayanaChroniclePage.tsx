@@ -683,11 +683,9 @@ export function RamayanaChroniclePage() {
   };
 
 
-  // Check if drop is unlocked on simulated date (Day 1 is always unlocked; Day 2 unlocks Nov 6 IST; Day 3 unlocks Nov 7 IST)
-  const isDropUnlocked = (drop: DropData) => {
-    if (drop.dayNumber === 1) return true;
-    const effective = currentDateStr || getRealCalendarDateStr();
-    return drop.unlockDate <= effective;
+  // Check if drop is unlocked (Drops are directly unlocked and accessible via the Drop tabs)
+  const isDropUnlocked = (_drop: DropData) => {
+    return true;
   };
 
   // Day 1 submission handlers
@@ -898,7 +896,7 @@ export function RamayanaChroniclePage() {
       {/* Main Container */}
       <main className="py-10 md:py-14 px-4 sm:px-6 container mx-auto max-w-4xl">
         
-        {/* Top Header Badge & Date Simulator Bar */}
+        {/* Top Header Badge & Direct Switcher: Drop 1, Drop 2, Drop 3, Guesstimate */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div className="inline-flex items-center gap-2 bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1.5 shadow-[2px_2px_0px_0px_#141413]">
             <span className="text-base">🏹</span>
@@ -907,94 +905,49 @@ export function RamayanaChroniclePage() {
             </span>
           </div>
 
-          {/* Calendar Sync / Testing Preview Pill */}
-          <div className="flex items-center gap-1.5 bg-white rounded-full border-2 border-[#141413] p-1 shadow-[2px_2px_0px_0px_#141413] text-xs font-bold flex-wrap">
-            <span className="text-slate-500 uppercase px-2 text-[11px] font-mono flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Calendar Sync:
-            </span>
+          {/* Clean 4-Tab Switcher: Drop 1, Drop 2, Drop 3, Guesstimate */}
+          <div className="flex items-center gap-1.5 bg-white rounded-full border-2 border-[#141413] p-1.5 shadow-[2.5px_2.5px_0px_0px_#141413] text-xs font-bold flex-wrap">
             <button
               type="button"
-              onClick={() => {
-                const today = getRealCalendarDateStr();
-                setCurrentDateStr(today);
-                setActiveDay(today >= '2026-11-07' ? 3 : today >= '2026-11-06' ? 2 : 1);
-              }}
-              className={`px-3 py-1 rounded-full border-2 transition-all text-xs font-black cursor-pointer ${
-                currentDateStr === getRealCalendarDateStr()
+              onClick={() => setActiveDay(1)}
+              className={`px-4 py-1.5 rounded-full border-2 transition-all text-xs font-black cursor-pointer ${
+                activeDay === 1
                   ? 'bg-[#188ab2] text-white border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
-                  : 'bg-transparent text-slate-700 hover:bg-slate-100 border-transparent'
+                  : 'bg-transparent text-[#141413] hover:bg-slate-100 border-transparent'
               }`}
             >
-              Today ({getRealCalendarDateStr() === '2026-11-06' ? 'Nov 6 · Day 2 Unlocked' : getRealCalendarDateStr()})
+              Drop 1
             </button>
             <button
               type="button"
-              onClick={() => {
-                setCurrentDateStr('2026-11-05');
-                setActiveDay(1);
-              }}
-              className={`px-2.5 py-1 rounded-full border-2 transition-all text-[11px] font-bold cursor-pointer ${
-                currentDateStr === '2026-11-05'
+              onClick={() => setActiveDay(2)}
+              className={`px-4 py-1.5 rounded-full border-2 transition-all text-xs font-black cursor-pointer ${
+                activeDay === 2
                   ? 'bg-[#188ab2] text-white border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
-                  : 'bg-transparent text-slate-600 hover:bg-slate-100 border-transparent'
+                  : 'bg-transparent text-[#141413] hover:bg-slate-100 border-transparent'
               }`}
             >
-              Nov 5 (Day 1)
+              Drop 2
             </button>
             <button
               type="button"
-              onClick={() => {
-                setCurrentDateStr('2026-11-06');
-                setActiveDay(2);
-              }}
-              className={`px-2.5 py-1 rounded-full border-2 transition-all text-[11px] font-bold cursor-pointer ${
-                currentDateStr === '2026-11-06' && currentDateStr !== getRealCalendarDateStr()
+              onClick={() => setActiveDay(3)}
+              className={`px-4 py-1.5 rounded-full border-2 transition-all text-xs font-black cursor-pointer ${
+                activeDay === 3
                   ? 'bg-[#188ab2] text-white border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
-                  : 'bg-transparent text-slate-600 hover:bg-slate-100 border-transparent'
+                  : 'bg-transparent text-[#141413] hover:bg-slate-100 border-transparent'
               }`}
             >
-              Nov 6 (Day 2)
+              Drop 3
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                setCurrentDateStr('2026-11-07');
-                setActiveDay(3);
-              }}
-              className={`px-2.5 py-1 rounded-full border-2 transition-all text-[11px] font-bold cursor-pointer ${
-                currentDateStr === '2026-11-07'
-                  ? 'bg-[#188ab2] text-white border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
-                  : 'bg-transparent text-slate-600 hover:bg-slate-100 border-transparent'
-              }`}
+            <Link
+              to="/case-simulator"
+              className="px-4 py-1.5 rounded-full border-2 border-[#141413] bg-[#FEF08A] hover:bg-[#fde047] text-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] transition-all text-xs font-black cursor-pointer inline-flex items-center gap-1.5"
             >
-              Nov 7 (Day 3)
-            </button>
+              <span>🪨</span>
+              <span>Guesstimate</span>
+            </Link>
           </div>
-        </div>
-
-        {/* Ram Setu Guesstimate Quick Link */}
-        <div className="mb-6 bg-[#FEF08A] rounded-xl border-2 border-[#141413] p-4 shadow-[3px_3px_0px_0px_#141413] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🪨</span>
-            <div>
-              <div className="font-mono text-[11px] font-black uppercase text-[#854D0E] tracking-wider">
-                NEW GUIDED INTERACTIVE CASE
-              </div>
-              <div className="font-black text-sm sm:text-base text-[#141413]">
-                Ram Setu Causeway Estimation Challenge
-              </div>
-              <p className="text-xs text-[#141413]/75 font-medium">
-                Practice asking clarifying questions, unlock interviewer parameters, and get dynamic PM hints.
-              </p>
-            </div>
-          </div>
-          <Link
-            to="/case-simulator"
-            className="px-4 py-2 rounded-lg border-2 border-[#141413] bg-[#141413] hover:bg-[#262624] text-white font-black text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#141413] shrink-0"
-          >
-            Launch Guesstimate Lab ➔
-          </Link>
         </div>
 
         {/* Hero Title Block (Soft Architectural Neo-Brutalism) */}
@@ -1134,8 +1087,8 @@ export function RamayanaChroniclePage() {
           )}
         </div>
 
-        {/* Drop Navigation Tabs (Soft Neo-Brutalist 3-Day Switcher) */}
-        <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+        {/* Drop Navigation Tabs (Soft Neo-Brutalist 4-Item Switcher) */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
           {drops.map((d) => {
             const isUnlocked = isDropUnlocked(d);
             const isActive = activeDay === d.dayNumber;
@@ -1165,16 +1118,36 @@ export function RamayanaChroniclePage() {
                   {d.theme}
                 </div>
                 <div className="text-[10px] text-slate-500 mt-2 font-mono font-semibold">
-                  {(() => {
-                    const realToday = getRealCalendarDateStr();
-                    if (d.unlockDate === realToday) return `Nov ${d.dayNumber + 4} (Today · Live)`;
-                    if (d.unlockDate < realToday) return `Nov ${d.dayNumber + 4} (Day ${d.dayNumber})`;
-                    return `Nov ${d.dayNumber + 4} (${d.dayNumber === 3 ? 'Unlocks Tomorrow' : 'Scheduled'})`;
-                  })()}
+                  Part {d.dayNumber} of 3
                 </div>
               </button>
             );
           })}
+
+          {/* 4th Tab: Ram Setu Guesstimate Lab */}
+          <Link
+            to="/case-simulator"
+            className="p-4 sm:p-5 rounded-2xl border-2 border-[#141413] text-left transition-all relative cursor-pointer bg-[#FFFDF5] hover:bg-[#FEF08A] shadow-[0px_3px_0px_0px_#141413] hover:shadow-[0px_5px_0px_0px_#141413] hover:translate-y-[-2px] flex flex-col justify-between group"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] sm:text-xs font-mono font-black uppercase px-2 py-0.5 rounded-full border border-[#141413] bg-[#FEF08A] text-[#854D0E] group-hover:bg-[#141413] group-hover:text-white transition-colors">
+                  INTERACTIVE
+                </span>
+                <span className="text-sm">🪨</span>
+              </div>
+              <div className="font-black text-base sm:text-lg text-[#141413] truncate">
+                GUESSTIMATE
+              </div>
+              <div className="text-xs font-bold text-[#141413]/70 line-clamp-1 mt-0.5">
+                Ram Setu Causeway
+              </div>
+            </div>
+            <div className="text-[10px] text-[#188ab2] mt-3 font-mono font-black uppercase flex items-center gap-1">
+              <span>Launch Lab</span>
+              <span>➔</span>
+            </div>
+          </Link>
         </div>
 
         {/* --- IF DROP IS LOCKED --- */}

@@ -223,6 +223,13 @@ export function AppExecutive() {
               <span>Ramayana Chronicle</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             </Link>
+            <Link
+              to="/case-simulator"
+              className="flex items-center gap-1.5 bg-[#FFFDF5] hover:bg-[#FEF08A] text-[#141413] px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all font-black text-xs uppercase"
+            >
+              <span>🪨</span>
+              <span>Guesstimate Lab</span>
+            </Link>
             <button onClick={() => scrollToSection('system')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Cohort
             </button>
@@ -284,6 +291,19 @@ export function AppExecutive() {
               </span>
               <span className="text-[10px] font-mono font-black uppercase bg-[#188ab2] text-white px-2 py-0.5 rounded-full border border-[#141413]">
                 Drop 1 Live
+              </span>
+            </Link>
+            <Link
+              to="/case-simulator"
+              onClick={() => setIsMenuOpen(false)}
+              className="text-left font-black text-lg py-2.5 px-3 rounded-xl border-2 border-[#141413] bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] flex items-center justify-between text-[#141413]"
+            >
+              <span className="flex items-center gap-2">
+                <span className="text-xl">🪨</span>
+                <span>Guesstimate Lab</span>
+              </span>
+              <span className="text-[10px] font-mono font-black uppercase bg-[#FEF08A] text-[#141413] px-2 py-0.5 rounded-full border border-[#141413]">
+                Ram Setu Case
               </span>
             </Link>
             <button onClick={() => scrollToSection('system')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
@@ -645,6 +665,60 @@ export function AppExecutive() {
                       </Link>
                       <span className="text-xs text-[#141413]/60 font-semibold hidden sm:inline">
                         Takes 3 minutes · Free interactive module
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Ram Setu Guesstimate Lab Featured Banner */}
+            <div className="max-w-4xl mx-auto mb-14 text-left">
+              <div className="bg-[#FFFDF5] rounded-2xl border-2 sm:border-[2.5px] border-[#141413] shadow-[0px_6px_0px_0px_#141413] p-6 sm:p-8 relative overflow-hidden">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  {/* Thumbnail / Image with Architectural Border */}
+                  <div className="w-full md:w-56 shrink-0">
+                    <div className="relative rounded-xl border-2 border-[#141413] overflow-hidden shadow-[3px_3px_0px_0px_#141413] aspect-[4/3] bg-[#FEF08A]">
+                      <img
+                        src="/ram_setu_vanaras.jpg"
+                        alt="Vanara Army building Ram Setu - Guesstimate Lab"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute top-2 left-2 bg-[#141413] text-[#FEF08A] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded-full border border-white">
+                        Interactive Case
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Copy & CTA */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <span className="bg-[#FEF08A] text-[#141413] font-mono text-[11px] font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413] shadow-[1px_1px_0px_0px_#141413]">
+                        🪨 GUESSTIMATE LAB
+                      </span>
+                      <span className="text-xs font-bold text-[#141413]/70">
+                        Interactive Estimation Challenge · Instant Scoring
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl sm:text-2xl font-black text-[#141413] tracking-tight mb-2">
+                      Ram Setu Causeway: How many stones are needed to cross the ocean?
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#141413]/80 leading-relaxed mb-4">
+                      Step into the sandals of King Rama’s Chief Estimation PM. Break down the causeway’s 3D physical dimensions, choose whether to ask the royal architects or make educated assumptions, calculate the stone volume, and submit your score to the cohort leaderboard.
+                    </p>
+
+                    <div className="flex items-center gap-3">
+                      <Link
+                        to="/case-simulator"
+                        className="px-5 py-2.5 rounded-full font-black border-2 border-[#141413] bg-[#141413] hover:bg-[#262624] text-white shadow-[2.5px_2.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all text-xs sm:text-sm uppercase inline-flex items-center gap-2"
+                      >
+                        <span>Launch Guesstimate Lab</span>
+                        <span>➔</span>
+                      </Link>
+                      <span className="text-xs text-[#141413]/60 font-semibold hidden sm:inline">
+                        6 dimensional breakdown boxes · Live Leaderboard
                       </span>
                     </div>
                   </div>
