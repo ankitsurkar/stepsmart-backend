@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   MessageSquare,
@@ -12,11 +12,8 @@ import {
   ArrowLeft,
   Check,
   Edit3,
-  Copy,
-  Split,
   HelpCircle,
-  Hash,
-  Compass
+  Sparkles
 } from 'lucide-react';
 
 interface RubricDimension {
@@ -133,12 +130,12 @@ const RAM_SETU_CASE: CaseDefinition = {
 };
 
 export function CaseSimulatorPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
-  // ── A/B Test Variant State ──────────────────────────────────────────
-  // 'A' = Assumptions & Open Canvas Flow
-  // 'B' = Structured Step-by-Step Breakdown (Fill-in-the-boxes)
-  const [variant, setVariant] = useState<'A' | 'B'>(() => {
+  // ── Unified 50/50 Split for Single Link ────────────────────────────
+  // Visitors to /case-simulator are automatically split 50/50 and persisted in localStorage.
+  // Optional URL override (?v=a or ?v=b) remains available for instructor inspection.
+  const [variant] = useState<'A' | 'B'>(() => {
     try {
       const vParam = searchParams.get('variant') || searchParams.get('v');
       if (vParam) {
@@ -146,7 +143,6 @@ export function CaseSimulatorPage() {
         if (normalized === 'b' || normalized === 'breakdown' || normalized === 'boxes') return 'B';
         if (normalized === 'a' || normalized === 'open' || normalized === 'canvas') return 'A';
       }
-      // Check stored preference or randomly assign 50/50
       const stored = localStorage.getItem('pmx_ram_setu_ab_variant');
       if (stored === 'A' || stored === 'B') return stored;
       const assigned = Math.random() < 0.5 ? 'A' : 'B';
@@ -157,35 +153,10 @@ export function CaseSimulatorPage() {
     }
   });
 
-  const [copiedLink, setCopiedLink] = useState<string | null>(null);
-
-  // Sync variant to URL and localStorage
-  const handleSwitchVariant = (newVariant: 'A' | 'B') => {
-    setVariant(newVariant);
-    try {
-      localStorage.setItem('pmx_ram_setu_ab_variant', newVariant);
-      const newParams = new URLSearchParams(searchParams);
-      newParams.set('v', newVariant.toLowerCase());
-      setSearchParams(newParams, { replace: true });
-    } catch (e) {
-      console.warn('Could not sync search params', e);
-    }
-  };
-
-  const copyShareableLink = (forVariant: 'A' | 'B') => {
-    const origin = window.location.origin;
-    const url = `${origin}/case-simulator?v=${forVariant.toLowerCase()}`;
-    navigator.clipboard.writeText(url);
-    setCopiedLink(forVariant);
-    setTimeout(() => setCopiedLink(null), 2500);
-  };
-
-  // ── Common Case Data ────────────────────────────────────────────────
   const currentCase = RAM_SETU_CASE;
   const [isCasePromptOpen, setIsCasePromptOpen] = useState<boolean>(true);
 
   // ── VARIANT A STATE (Assumptions & Open Canvas) ─────────────────────
-  // Steps in Variant A:
   // 1: Clarifying Questions
   // 2: Your Assumptions
   // 3: Interviewer Guide & Final Answer Canvas
@@ -215,20 +186,21 @@ export function CaseSimulatorPage() {
   });
   const [showSubmittedRecapA, setShowSubmittedRecapA] = useState<boolean>(false);
 
-  // ── VARIANT B STATE (Step-by-Step Breakdown Boxes) ───────────────────
-  // Part 1: Length in meters
-  // Part 2: Width in meters
-  // Part 3: Total Height in meters (water depth + freeboard)
-  // Part 4: Total Volume in m³
-  // Part 5: Unit Stone Volume in m³
-  // Part 6: Total Stones Required
-  const [boxInputsB, setBoxInputsB] = useState({
-    lengthMeters: '',
-    widthMeters: '',
-    heightMeters: '',
-    totalVolumeM3: '',
-    unitStoneM3: '',
-    totalStones: ''
+  // ── VARIANT B STATE (Step-by-Step Breakdown with Assume vs Ask) ─────
+  const [partsB, setPartsB] = useState<{
+    length: { strategy: 'ask' | 'assume'; value: string; reasoning: string };
+    width: { strategy: 'ask' | 'assume'; value: string; reasoning: string };
+    height: { strategy: 'ask' | 'assume'; value: string; reasoning: string };
+    volume: { value: string };
+    stoneSize: { strategy: 'ask' | 'assume'; value: string; reasoning: string };
+    totalStones: { value: string };
+  }>({
+    length: { strategy: 'ask', value: '', reasoning: '' },
+    width: { strategy: 'ask', value: '', reasoning: '' },
+    height: { strategy: 'ask', value: '', reasoning: '' },
+    volume: { value: '' },
+    stoneSize: { strategy: 'ask', value: '', reasoning: '' },
+    totalStones: { value: '' }
   });
 
   const [isSubmittedB, setIsSubmittedB] = useState<boolean>(() => {
@@ -238,7 +210,6 @@ export function CaseSimulatorPage() {
       return false;
     }
   });
-  const [showReferenceAnswerB, setShowReferenceAnswerB] = useState<boolean>(false);
 
   // Dynamic rubric result for Variant A
   const evaluationResultA = useMemo(() => {
@@ -254,7 +225,6 @@ export function CaseSimulatorPage() {
       (dim) => dim.isCritical && !matchedDimensions.some((m) => m.id === dim.id)
     );
 
-    // Dynamic "WHAT WORKED"
     let whatWorked = '';
     if (matchedDimensions.length === 0) {
       whatWorked =
@@ -269,7 +239,6 @@ export function CaseSimulatorPage() {
         ' Stating your own baseline assumptions first helped benchmark your mental model against the interviewer’s ground facts.';
     }
 
-    // Check final estimate precision
     const estClean = (userFinalEstimateA + ' ' + userCalculationA).toLowerCase();
     const hasFiveMillion =
       estClean.includes('5.04') ||
@@ -284,10 +253,9 @@ export function CaseSimulatorPage() {
       whatWorked +=
         ' In addition, your final calculated estimate of ~5.04 Million stones hit the mathematical benchmark with exact arithmetic!';
     } else if (userFinalEstimateA.trim()) {
-      whatWorked += ` You finalized an estimate of "${userFinalEstimateA}" before reviewing the model answer.`;
+      whatWorked += ` You committed a final estimate of "${userFinalEstimateA}" before reviewing the model answer.`;
     }
 
-    // Dynamic "DO THIS NEXT"
     let doThisNext = '';
     if (missedCritical.length > 0) {
       const missedLabels = missedCritical.map((m) => `"${m.label}"`).join(' and ');
@@ -306,12 +274,12 @@ export function CaseSimulatorPage() {
 
   // Validation scores for Variant B boxes
   const validationB = useMemo(() => {
-    const l = parseFloat(boxInputsB.lengthMeters.replace(/,/g, '').trim());
-    const w = parseFloat(boxInputsB.widthMeters.replace(/,/g, '').trim());
-    const h = parseFloat(boxInputsB.heightMeters.replace(/,/g, '').trim());
-    const v = parseFloat(boxInputsB.totalVolumeM3.replace(/,/g, '').trim());
-    const u = parseFloat(boxInputsB.unitStoneM3.replace(/,/g, '').trim());
-    const s = parseFloat(boxInputsB.totalStones.replace(/,/g, '').trim());
+    const l = parseFloat(partsB.length.value.replace(/,/g, '').trim());
+    const w = parseFloat(partsB.width.value.replace(/,/g, '').trim());
+    const h = parseFloat(partsB.height.value.replace(/,/g, '').trim());
+    const v = parseFloat(partsB.volume.value.replace(/,/g, '').trim());
+    const u = parseFloat(partsB.stoneSize.value.replace(/,/g, '').trim());
+    const s = parseFloat(partsB.totalStones.value.replace(/,/g, '').trim());
 
     const isLengthCorrect = l === 48000;
     const isWidthCorrect = w === 30;
@@ -320,7 +288,15 @@ export function CaseSimulatorPage() {
     const isUnitCorrect = u === 1 || u === 1.0;
     const isStonesCorrect = s === 5040000 || (v && u && Math.abs(s - v / u) < 100);
 
-    const filledCount = Object.values(boxInputsB).filter((val) => val.trim() !== '').length;
+    const filledCount = [
+      partsB.length.value,
+      partsB.width.value,
+      partsB.height.value,
+      partsB.volume.value,
+      partsB.stoneSize.value,
+      partsB.totalStones.value
+    ].filter((val) => val.trim() !== '').length;
+
     const correctCount = [
       isLengthCorrect,
       isWidthCorrect,
@@ -340,7 +316,7 @@ export function CaseSimulatorPage() {
       filledCount,
       correctCount
     };
-  }, [boxInputsB]);
+  }, [partsB]);
 
   return (
     <div className="min-h-screen bg-[#FDFCF7] text-[#141413] font-sans pb-24 selection:bg-[#FFF3A7]">
@@ -359,98 +335,18 @@ export function CaseSimulatorPage() {
               <span className="font-mono text-xs font-black uppercase px-2 py-0.5 rounded bg-[#FEF08A] border border-[#141413]">
                 PM LAB
               </span>
-              <h1 className="font-black text-sm sm:text-base tracking-tight text-[#141413] truncate">
-                Ram Setu Guesstimate
+              <h1 className="font-black text-base sm:text-lg tracking-tight text-[#141413] truncate">
+                Ram Setu Guesstimate Simulator
               </h1>
-            </div>
-          </div>
-
-          {/* ── A/B Test Switcher in Header ────────────────────────────── */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center bg-[#FAF9F5] p-1 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]">
-              <button
-                type="button"
-                onClick={() => handleSwitchVariant('A')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
-                  variant === 'A'
-                    ? 'bg-[#FEF08A] text-[#141413] border border-[#141413] shadow-[1px_1px_0px_0px_#141413]'
-                    : 'text-slate-500 hover:text-black'
-                }`}
-                title="Variant A: Assumptions & Open Canvas Flow"
-              >
-                <span>Variant A</span>
-                <span className="hidden sm:inline ml-1 font-semibold text-[10px] text-slate-600">
-                  (Assumptions)
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleSwitchVariant('B')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
-                  variant === 'B'
-                    ? 'bg-[#FEF08A] text-[#141413] border border-[#141413] shadow-[1px_1px_0px_0px_#141413]'
-                    : 'text-slate-500 hover:text-black'
-                }`}
-                title="Variant B: Fill-in-the-Boxes Breakdown"
-              >
-                <span>Variant B</span>
-                <span className="hidden sm:inline ml-1 font-semibold text-[10px] text-slate-600">
-                  (Breakdown Boxes)
-                </span>
-              </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* ── A/B Test Admin & Shareable Links Bar ──────────────────────── */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-4">
-        <div className="bg-white rounded-xl border-2 border-[#141413] p-3 shadow-[2px_2px_0px_0px_#141413] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded bg-[#141413] text-white flex items-center justify-center font-black text-[10px]">
-              <Split className="w-3 h-3 text-[#FEF08A]" />
-            </div>
-            <span className="font-bold text-slate-700">
-              Active A/B Test:{' '}
-              <strong className="text-[#141413]">
-                {variant === 'A'
-                  ? 'Variant A (Assumptions ➔ Guide ➔ Final Canvas)'
-                  : 'Variant B (Structured Fill-in-the-Boxes Breakdown)'}
-              </strong>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => copyShareableLink('A')}
-              className={`px-2.5 py-1 rounded-lg border border-[#141413] text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
-                copiedLink === 'A' ? 'bg-[#D1FAE5] text-[#065F46]' : 'bg-[#FAF9F5] hover:bg-[#FEF08A]'
-              }`}
-            >
-              {copiedLink === 'A' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-              <span>Copy Link A</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => copyShareableLink('B')}
-              className={`px-2.5 py-1 rounded-lg border border-[#141413] text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
-                copiedLink === 'B' ? 'bg-[#D1FAE5] text-[#065F46]' : 'bg-[#FAF9F5] hover:bg-[#FEF08A]'
-              }`}
-            >
-              {copiedLink === 'B' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-              <span>Copy Link B</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* ── Main Container ────────────────────────────────────────────── */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-5 space-y-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 space-y-6">
         {/* ============================================================= */}
-        {/* VARIANT A: Assumptions -> Interviewer Guide -> Final Canvas  */}
+        {/* VARIANT A: Clarify -> Assumptions -> Guide -> Final Canvas   */}
         {/* ============================================================= */}
         {variant === 'A' && (
           <div className="space-y-6">
@@ -657,7 +553,7 @@ export function CaseSimulatorPage() {
                         rows={6}
                         value={userAssumptionsA}
                         onChange={(e) => setUserAssumptionsA(e.target.value)}
-                        placeholder="e.g.&#10;1. Span across ocean: I assume roughly 30-50 km across the strait.&#10;2. Bridge Width: I assume 20-30m so an army with siege equipment can pass.&#10;3. Water Depth: Shallow coastal shoal ~3-4m deep.&#10;4. Boulder Size: Hand-carved or natural boulders ~1 m³ each."
+                        placeholder="State the boundary conditions or dimensions you would assume before receiving data from the interviewer (e.g. your estimated distance across the ocean, causeway width, water depth, and individual stone size)..."
                         className="w-full p-4 rounded-xl border-2 border-[#141413] font-medium text-sm sm:text-base bg-[#FDFCF7] shadow-[2px_2px_0px_0px_#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2] transition-all"
                         required
                       />
@@ -687,7 +583,7 @@ export function CaseSimulatorPage() {
               {/* ── STEP A-3: INTERVIEWER GUIDE & FINAL ANSWER CANVAS ──── */}
               {stepA === 3 && (
                 <div className="space-y-6">
-                  {/* The Interviewer Guide is now revealed! */}
+                  {/* Interviewer Guide Revealed */}
                   <div className="bg-[#FAF9F5] rounded-xl border-2 border-[#141413] p-5 sm:p-6 shadow-[2px_2px_0px_0px_#141413] space-y-4">
                     <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
                       <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-[#141413]">
@@ -701,7 +597,7 @@ export function CaseSimulatorPage() {
                         <button
                           type="button"
                           onClick={() => setStepA(2)}
-                          className="font-bold text-slate-600 hover:text-black underline"
+                          className="font-bold text-slate-600 hover:text-black underline cursor-pointer"
                         >
                           Revise Assumptions
                         </button>
@@ -757,19 +653,26 @@ export function CaseSimulatorPage() {
                       }}
                       className="space-y-4"
                     >
+                      {/* Intermediate Calculation: Clean placeholder with Optional tab */}
                       <div>
-                        <label className="block text-xs font-black uppercase text-[#141413] mb-1.5">
-                          Your Calculation Steps & Math:
-                        </label>
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <label className="block text-xs font-black uppercase text-[#141413]">
+                            Show Your Intermediate Calculation:
+                          </label>
+                          <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-slate-200/80 text-slate-700 border border-slate-300">
+                            Optional
+                          </span>
+                        </div>
                         <textarea
                           rows={4}
                           value={userCalculationA}
                           onChange={(e) => setUserCalculationA(e.target.value)}
-                          placeholder="Show your intermediate formula (e.g. 48,000m × 30m × 3.5m = 5,040,000 m³ ÷ 1.0 m³ per stone)..."
+                          placeholder="Write down your formula, conversion of units, or intermediate volume math here if you wish (optional)..."
                           className="w-full p-3.5 rounded-xl border-2 border-[#141413] font-mono text-xs sm:text-sm bg-white shadow-[1.5px_1.5px_0px_0px_#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2]"
                         />
                       </div>
 
+                      {/* Final Stone Count Input: Clean placeholder */}
                       <div>
                         <label className="block text-xs font-black uppercase text-[#141413] mb-1.5">
                           Your Final Estimated Stone Count:
@@ -778,7 +681,7 @@ export function CaseSimulatorPage() {
                           type="text"
                           value={userFinalEstimateA}
                           onChange={(e) => setUserFinalEstimateA(e.target.value)}
-                          placeholder="e.g. 5,040,000 or 5.04 Million stones"
+                          placeholder="Enter your final estimated stone count..."
                           className="w-full sm:w-80 p-3 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white shadow-[1.5px_1.5px_0px_0px_#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2]"
                           required
                         />
@@ -815,7 +718,7 @@ export function CaseSimulatorPage() {
                     </h2>
                   </div>
 
-                  {/* Interviewer Answer Box (Matches Reference Style) */}
+                  {/* Interviewer Answer Box */}
                   <div className="bg-[#FAF9F5] rounded-xl border-2 border-[#141413] p-5 sm:p-6 shadow-[2px_2px_0px_0px_#141413]">
                     <div className="flex items-center justify-between gap-3 mb-4">
                       <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-[#141413]">
@@ -872,7 +775,7 @@ export function CaseSimulatorPage() {
                       <button
                         type="button"
                         onClick={() => setStepA(3)}
-                        className="text-slate-600 font-bold hover:text-black underline"
+                        className="text-slate-600 font-bold hover:text-black underline cursor-pointer"
                       >
                         Edit inputs
                       </button>
@@ -900,7 +803,7 @@ export function CaseSimulatorPage() {
                     )}
                   </div>
 
-                  {/* Dynamic Hints Card ("First answer in ^") */}
+                  {/* Dynamic Hints Card */}
                   <div className="bg-white rounded-xl border-2 border-[#141413] overflow-hidden shadow-[3px_3px_0px_0px_#141413]">
                     <button
                       type="button"
@@ -1015,11 +918,10 @@ export function CaseSimulatorPage() {
         )}
 
         {/* ============================================================= */}
-        {/* VARIANT B: Fill-in-the-Boxes Breakdown                        */}
+        {/* VARIANT B: Fill-in-the-Boxes (Assume vs Ask Mechanism)        */}
         {/* ============================================================= */}
         {variant === 'B' && (
           <div className="space-y-6">
-            {/* Header Card for Variant B */}
             <div className="bg-white rounded-2xl border-[3px] border-[#141413] p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-6">
               {/* Case Prompt Accordion Header */}
               <div className="border-b-2 border-slate-100 pb-5">
@@ -1033,7 +935,7 @@ export function CaseSimulatorPage() {
                       CASE PROMPT
                     </span>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-300">
-                      VARIANT B • STRUCTURED DECOMPOSITION
+                      STRUCTURED PM BREAKDOWN
                     </span>
                   </div>
                   <div className="text-slate-400 group-hover:text-black transition-colors">
@@ -1056,7 +958,7 @@ export function CaseSimulatorPage() {
                   Fill in the Values for Each Dimensional Part
                 </h2>
                 <p className="text-xs sm:text-sm font-medium text-slate-500 mt-2">
-                  Decompose the Ram Setu problem into 3D geometric components. Fill in each box below using the case facts, then verify your final stone requirement.
+                  For each physical dimension, choose whether you want to <strong>Ask the Interviewer</strong> for verified data or <strong>Make an Assumption</strong> first.
                 </p>
               </div>
 
@@ -1068,40 +970,104 @@ export function CaseSimulatorPage() {
                 </span>
                 {isSubmittedB && (
                   <span className="font-mono font-black text-emerald-700 ml-auto">
-                    ✓ {validationB.correctCount} / 6 Match Model
+                    ✓ {validationB.correctCount} / 6 Verified with Model
                   </span>
                 )}
               </div>
 
-              {/* ── The 6 Fill-in-the-Boxes Form ────────────────────────── */}
+              {/* ── The 6 Fill-in-the-Boxes Form with Assume/Ask Tabs ── */}
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   setIsSubmittedB(true);
-                  setShowReferenceAnswerB(true);
                   window.scrollTo({ top: 400, behavior: 'smooth' });
                 }}
-                className="space-y-5"
+                className="space-y-6"
               >
-                {/* Part 1: Length */}
-                <div className="bg-[#FAF9F5] p-4 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2">
-                  <div className="flex items-center justify-between">
+                {/* ── PART 1: LENGTH ────────────────────────────────────── */}
+                <div className="bg-[#FAF9F5] p-4 sm:p-5 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-[#141413] text-white flex items-center justify-center font-mono text-[11px]">
                         1
                       </span>
                       <span>Part 1: Causeway Span / Length (in meters)</span>
                     </label>
-                    <span className="text-[11px] text-slate-500 font-medium">Fact: 48 km across Palk Strait</span>
+
+                    {/* Assume vs Ask toggle tabs */}
+                    <div className="inline-flex items-center bg-white p-1 rounded-lg border border-[#141413] self-start sm:self-auto text-xs font-bold">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPartsB({
+                            ...partsB,
+                            length: { ...partsB.length, strategy: 'ask' }
+                          })
+                        }
+                        className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
+                          partsB.length.strategy === 'ask'
+                            ? 'bg-[#FEF08A] text-[#141413] font-black border border-[#141413]'
+                            : 'text-slate-500 hover:text-black'
+                        }`}
+                      >
+                        Ask Interviewer
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPartsB({
+                            ...partsB,
+                            length: { ...partsB.length, strategy: 'assume' }
+                          })
+                        }
+                        className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
+                          partsB.length.strategy === 'assume'
+                            ? 'bg-[#FEF08A] text-[#141413] font-black border border-[#141413]'
+                            : 'text-slate-500 hover:text-black'
+                        }`}
+                      >
+                        Make Assumption
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
+
+                  {/* Content conditional on Ask vs Assume */}
+                  {partsB.length.strategy === 'ask' ? (
+                    <div className="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-800 flex items-start gap-2">
+                      <span className="font-black text-[#188ab2] shrink-0">•</span>
+                      <div>
+                        <strong className="text-[#141413]">Interviewer Response:</strong> The causeway spans approximately 48 kilometers across the Palk Strait from Dhanushkodi to Talaimannar.
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={partsB.length.reasoning}
+                        onChange={(e) =>
+                          setPartsB({
+                            ...partsB,
+                            length: { ...partsB.length, reasoning: e.target.value }
+                          })
+                        }
+                        placeholder="Why this number? / Your assumption reasoning (Optional)..."
+                        className="w-full p-2.5 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-[#188ab2]"
+                      />
+                    </div>
+                  )}
+
+                  {/* Input value */}
+                  <div className="flex items-center gap-3 pt-1">
                     <input
                       type="text"
-                      value={boxInputsB.lengthMeters}
+                      value={partsB.length.value}
                       onChange={(e) =>
-                        setBoxInputsB({ ...boxInputsB, lengthMeters: e.target.value })
+                        setPartsB({
+                          ...partsB,
+                          length: { ...partsB.length, value: e.target.value }
+                        })
                       }
-                      placeholder="e.g. 48000"
+                      placeholder="Enter length in meters..."
                       className="p-2.5 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white w-full sm:w-64"
                       required
                     />
@@ -1113,32 +1079,94 @@ export function CaseSimulatorPage() {
                             <Check className="w-3.5 h-3.5" /> 48,000 m
                           </span>
                         ) : (
-                          <span className="text-amber-700">Model: 48,000 m (48 km × 1,000)</span>
+                          <span className="text-amber-700">Model: 48,000 m</span>
                         )}
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Part 2: Width */}
-                <div className="bg-[#FAF9F5] p-4 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2">
-                  <div className="flex items-center justify-between">
+                {/* ── PART 2: WIDTH ─────────────────────────────────────── */}
+                <div className="bg-[#FAF9F5] p-4 sm:p-5 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-[#141413] text-white flex items-center justify-center font-mono text-[11px]">
                         2
                       </span>
                       <span>Part 2: Causeway Width (in meters)</span>
                     </label>
-                    <span className="text-[11px] text-slate-500 font-medium">Fact: 10 ranks abreast + carts</span>
+
+                    <div className="inline-flex items-center bg-white p-1 rounded-lg border border-[#141413] self-start sm:self-auto text-xs font-bold">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPartsB({
+                            ...partsB,
+                            width: { ...partsB.width, strategy: 'ask' }
+                          })
+                        }
+                        className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
+                          partsB.width.strategy === 'ask'
+                            ? 'bg-[#FEF08A] text-[#141413] font-black border border-[#141413]'
+                            : 'text-slate-500 hover:text-black'
+                        }`}
+                      >
+                        Ask Interviewer
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPartsB({
+                            ...partsB,
+                            width: { ...partsB.width, strategy: 'assume' }
+                          })
+                        }
+                        className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
+                          partsB.width.strategy === 'assume'
+                            ? 'bg-[#FEF08A] text-[#141413] font-black border border-[#141413]'
+                            : 'text-slate-500 hover:text-black'
+                        }`}
+                      >
+                        Make Assumption
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
+
+                  {partsB.width.strategy === 'ask' ? (
+                    <div className="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-800 flex items-start gap-2">
+                      <span className="font-black text-[#188ab2] shrink-0">•</span>
+                      <div>
+                        <strong className="text-[#141413]">Interviewer Response:</strong> The bridge is designed 30 meters wide to safely accommodate 10 vanara infantry ranks + siege chariots marching abreast.
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={partsB.width.reasoning}
+                        onChange={(e) =>
+                          setPartsB({
+                            ...partsB,
+                            width: { ...partsB.width, reasoning: e.target.value }
+                          })
+                        }
+                        placeholder="Why this number? / Your assumption reasoning (Optional)..."
+                        className="w-full p-2.5 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-[#188ab2]"
+                      />
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3 pt-1">
                     <input
                       type="text"
-                      value={boxInputsB.widthMeters}
+                      value={partsB.width.value}
                       onChange={(e) =>
-                        setBoxInputsB({ ...boxInputsB, widthMeters: e.target.value })
+                        setPartsB({
+                          ...partsB,
+                          width: { ...partsB.width, value: e.target.value }
+                        })
                       }
-                      placeholder="e.g. 30"
+                      placeholder="Enter width in meters..."
                       className="p-2.5 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white w-full sm:w-64"
                       required
                     />
@@ -1150,32 +1178,94 @@ export function CaseSimulatorPage() {
                             <Check className="w-3.5 h-3.5" /> 30 m
                           </span>
                         ) : (
-                          <span className="text-amber-700">Model: 30 meters</span>
+                          <span className="text-amber-700">Model: 30 m</span>
                         )}
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Part 3: Total Height (Depth + Clearance) */}
-                <div className="bg-[#FAF9F5] p-4 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2">
-                  <div className="flex items-center justify-between">
+                {/* ── PART 3: DEPTH & HEIGHT ────────────────────────────── */}
+                <div className="bg-[#FAF9F5] p-4 sm:p-5 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-[#141413] text-white flex items-center justify-center font-mono text-[11px]">
                         3
                       </span>
                       <span>Part 3: Total Height from Seabed (in meters)</span>
                     </label>
-                    <span className="text-[11px] text-slate-500 font-medium">Fact: 3.0m water depth + 0.5m clearance</span>
+
+                    <div className="inline-flex items-center bg-white p-1 rounded-lg border border-[#141413] self-start sm:self-auto text-xs font-bold">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPartsB({
+                            ...partsB,
+                            height: { ...partsB.height, strategy: 'ask' }
+                          })
+                        }
+                        className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
+                          partsB.height.strategy === 'ask'
+                            ? 'bg-[#FEF08A] text-[#141413] font-black border border-[#141413]'
+                            : 'text-slate-500 hover:text-black'
+                        }`}
+                      >
+                        Ask Interviewer
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPartsB({
+                            ...partsB,
+                            height: { ...partsB.height, strategy: 'assume' }
+                          })
+                        }
+                        className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
+                          partsB.height.strategy === 'assume'
+                            ? 'bg-[#FEF08A] text-[#141413] font-black border border-[#141413]'
+                            : 'text-slate-500 hover:text-black'
+                        }`}
+                      >
+                        Make Assumption
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
+
+                  {partsB.height.strategy === 'ask' ? (
+                    <div className="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-800 flex items-start gap-2">
+                      <span className="font-black text-[#188ab2] shrink-0">•</span>
+                      <div>
+                        <strong className="text-[#141413]">Interviewer Response:</strong> Average water depth along the shoal is 3.0 meters, plus 0.5 meters bridge clearance above high tide (total height from seabed = 3.5 meters).
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={partsB.height.reasoning}
+                        onChange={(e) =>
+                          setPartsB({
+                            ...partsB,
+                            height: { ...partsB.height, reasoning: e.target.value }
+                          })
+                        }
+                        placeholder="Why this number? / Your assumption reasoning (Optional)..."
+                        className="w-full p-2.5 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-[#188ab2]"
+                      />
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3 pt-1">
                     <input
                       type="text"
-                      value={boxInputsB.heightMeters}
+                      value={partsB.height.value}
                       onChange={(e) =>
-                        setBoxInputsB({ ...boxInputsB, heightMeters: e.target.value })
+                        setPartsB({
+                          ...partsB,
+                          height: { ...partsB.height, value: e.target.value }
+                        })
                       }
-                      placeholder="e.g. 3.5"
+                      placeholder="Enter height in meters..."
                       className="p-2.5 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white w-full sm:w-64"
                       required
                     />
@@ -1187,15 +1277,15 @@ export function CaseSimulatorPage() {
                             <Check className="w-3.5 h-3.5" /> 3.5 m
                           </span>
                         ) : (
-                          <span className="text-amber-700">Model: 3.5 m (3.0m seabed + 0.5m tide)</span>
+                          <span className="text-amber-700">Model: 3.5 m</span>
                         )}
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Part 4: Total Volume (L x W x H) */}
-                <div className="bg-[#FAF9F5] p-4 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2">
+                {/* ── PART 4: VOLUME ────────────────────────────────────── */}
+                <div className="bg-[#FAF9F5] p-4 sm:p-5 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-[#188ab2] text-white flex items-center justify-center font-mono text-[11px]">
@@ -1203,16 +1293,18 @@ export function CaseSimulatorPage() {
                       </span>
                       <span>Part 4: Calculated Causeway Volume (Length × Width × Height)</span>
                     </label>
-                    <span className="text-[11px] text-slate-500 font-medium">Formula: 48,000 × 30 × 3.5</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <input
                       type="text"
-                      value={boxInputsB.totalVolumeM3}
+                      value={partsB.volume.value}
                       onChange={(e) =>
-                        setBoxInputsB({ ...boxInputsB, totalVolumeM3: e.target.value })
+                        setPartsB({
+                          ...partsB,
+                          volume: { value: e.target.value }
+                        })
                       }
-                      placeholder="e.g. 5040000"
+                      placeholder="Enter total volume in m³..."
                       className="p-2.5 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white w-full sm:w-64"
                       required
                     />
@@ -1231,25 +1323,87 @@ export function CaseSimulatorPage() {
                   </div>
                 </div>
 
-                {/* Part 5: Unit Stone Volume */}
-                <div className="bg-[#FAF9F5] p-4 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2">
-                  <div className="flex items-center justify-between">
+                {/* ── PART 5: UNIT STONE DIMENSIONS ─────────────────────── */}
+                <div className="bg-[#FAF9F5] p-4 sm:p-5 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-[#141413] text-white flex items-center justify-center font-mono text-[11px]">
                         5
                       </span>
-                      <span>Part 5: Unit Boulder Volume (1.0m × 1.0m × 1.0m)</span>
+                      <span>Part 5: Unit Boulder Volume (in m³)</span>
                     </label>
-                    <span className="text-[11px] text-slate-500 font-medium">Fact: Cut Gandhamadana boulders</span>
+
+                    <div className="inline-flex items-center bg-white p-1 rounded-lg border border-[#141413] self-start sm:self-auto text-xs font-bold">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPartsB({
+                            ...partsB,
+                            stoneSize: { ...partsB.stoneSize, strategy: 'ask' }
+                          })
+                        }
+                        className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
+                          partsB.stoneSize.strategy === 'ask'
+                            ? 'bg-[#FEF08A] text-[#141413] font-black border border-[#141413]'
+                            : 'text-slate-500 hover:text-black'
+                        }`}
+                      >
+                        Ask Interviewer
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPartsB({
+                            ...partsB,
+                            stoneSize: { ...partsB.stoneSize, strategy: 'assume' }
+                          })
+                        }
+                        className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
+                          partsB.stoneSize.strategy === 'assume'
+                            ? 'bg-[#FEF08A] text-[#141413] font-black border border-[#141413]'
+                            : 'text-slate-500 hover:text-black'
+                        }`}
+                      >
+                        Make Assumption
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
+
+                  {partsB.stoneSize.strategy === 'ask' ? (
+                    <div className="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-800 flex items-start gap-2">
+                      <span className="font-black text-[#188ab2] shrink-0">•</span>
+                      <div>
+                        <strong className="text-[#141413]">Interviewer Response:</strong> Natural boulders cut from the Gandhamadana mountain range average roughly 1.0 m × 1.0 m × 1.0 m (unit volume = 1.0 m³ each).
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={partsB.stoneSize.reasoning}
+                        onChange={(e) =>
+                          setPartsB({
+                            ...partsB,
+                            stoneSize: { ...partsB.stoneSize, reasoning: e.target.value }
+                          })
+                        }
+                        placeholder="Why this number? / Your assumption reasoning (Optional)..."
+                        className="w-full p-2.5 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-[#188ab2]"
+                      />
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3 pt-1">
                     <input
                       type="text"
-                      value={boxInputsB.unitStoneM3}
+                      value={partsB.stoneSize.value}
                       onChange={(e) =>
-                        setBoxInputsB({ ...boxInputsB, unitStoneM3: e.target.value })
+                        setPartsB({
+                          ...partsB,
+                          stoneSize: { ...partsB.stoneSize, value: e.target.value }
+                        })
                       }
-                      placeholder="e.g. 1.0"
+                      placeholder="Enter unit stone volume..."
                       className="p-2.5 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white w-full sm:w-64"
                       required
                     />
@@ -1261,14 +1415,14 @@ export function CaseSimulatorPage() {
                             <Check className="w-3.5 h-3.5" /> 1.0 m³
                           </span>
                         ) : (
-                          <span className="text-amber-700">Model: 1.0 m³ per stone</span>
+                          <span className="text-amber-700">Model: 1.0 m³</span>
                         )}
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Part 6: Total Stones Required */}
+                {/* ── PART 6: FINAL STONE COUNT ─────────────────────────── */}
                 <div className="bg-[#FFFDF0] p-4 sm:p-5 rounded-xl border-2 border-[#141413] shadow-[2px_2px_0px_0px_#141413] space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
@@ -1282,15 +1436,18 @@ export function CaseSimulatorPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                     <input
                       type="text"
-                      value={boxInputsB.totalStones}
+                      value={partsB.totalStones.value}
                       onChange={(e) =>
-                        setBoxInputsB({ ...boxInputsB, totalStones: e.target.value })
+                        setPartsB({
+                          ...partsB,
+                          totalStones: { value: e.target.value }
+                        })
                       }
-                      placeholder="e.g. 5040000"
+                      placeholder="Enter total estimated stone count..."
                       className="p-3 rounded-lg border-2 border-[#141413] font-mono text-base font-black bg-white w-full sm:w-72"
                       required
                     />
-                    <span className="font-mono text-xs font-bold text-slate-600">stones (~5.04M)</span>
+                    <span className="font-mono text-xs font-bold text-slate-600">stones</span>
                     {isSubmittedB && (
                       <span className="text-xs font-bold">
                         {validationB.isStonesCorrect ? (
@@ -1298,7 +1455,7 @@ export function CaseSimulatorPage() {
                             <Check className="w-4 h-4" /> Perfect Match: 5,040,000 Stones!
                           </span>
                         ) : (
-                          <span className="text-amber-700">Model: 5,040,000 stones (5.04 Million)</span>
+                          <span className="text-amber-700">Model: 5,040,000 stones (~5.04M)</span>
                         )}
                       </span>
                     )}
@@ -1306,7 +1463,7 @@ export function CaseSimulatorPage() {
                 </div>
 
                 {/* Submit button */}
-                <div className="flex items-center justify-end pt-3">
+                <div className="flex items-center justify-end pt-2">
                   <button
                     type="submit"
                     className="w-full sm:w-auto px-8 py-3.5 rounded-xl border-[2.5px] border-[#141413] bg-[#059669] hover:bg-[#047857] text-white font-black text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all cursor-pointer flex items-center justify-center gap-2"
