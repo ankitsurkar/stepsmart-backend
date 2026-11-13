@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   MessageSquare,
   RotateCcw,
@@ -7,14 +7,16 @@ import {
   ChevronUp,
   CheckCircle2,
   AlertTriangle,
-  Sparkles,
   Calculator,
   ArrowRight,
   ArrowLeft,
   Check,
-  Zap,
   Edit3,
-  Layers
+  Copy,
+  Split,
+  HelpCircle,
+  Hash,
+  Compass
 } from 'lucide-react';
 
 interface RubricDimension {
@@ -131,58 +133,121 @@ const RAM_SETU_CASE: CaseDefinition = {
 };
 
 export function CaseSimulatorPage() {
-  // Current active step in the guided flow:
-  // step 1 = Clarifying Questions
-  // step 2 = Answer Canvas (formulate estimate and math)
-  // step 3 = Interviewer Reveal & Dynamic Feedback
-  const [step, setStep] = useState<1 | 2 | 3>(() => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // ── A/B Test Variant State ──────────────────────────────────────────
+  // 'A' = Assumptions & Open Canvas Flow
+  // 'B' = Structured Step-by-Step Breakdown (Fill-in-the-boxes)
+  const [variant, setVariant] = useState<'A' | 'B'>(() => {
     try {
-      const params = new URLSearchParams(window.location.search);
-      const s = parseInt(params.get('step') || '1', 10);
-      if (s === 2 || s === 3) return s;
+      const vParam = searchParams.get('variant') || searchParams.get('v');
+      if (vParam) {
+        const normalized = vParam.toLowerCase();
+        if (normalized === 'b' || normalized === 'breakdown' || normalized === 'boxes') return 'B';
+        if (normalized === 'a' || normalized === 'open' || normalized === 'canvas') return 'A';
+      }
+      // Check stored preference or randomly assign 50/50
+      const stored = localStorage.getItem('pmx_ram_setu_ab_variant');
+      if (stored === 'A' || stored === 'B') return stored;
+      const assigned = Math.random() < 0.5 ? 'A' : 'B';
+      localStorage.setItem('pmx_ram_setu_ab_variant', assigned);
+      return assigned;
+    } catch {
+      return 'A';
+    }
+  });
+
+  const [copiedLink, setCopiedLink] = useState<string | null>(null);
+
+  // Sync variant to URL and localStorage
+  const handleSwitchVariant = (newVariant: 'A' | 'B') => {
+    setVariant(newVariant);
+    try {
+      localStorage.setItem('pmx_ram_setu_ab_variant', newVariant);
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set('v', newVariant.toLowerCase());
+      setSearchParams(newParams, { replace: true });
+    } catch (e) {
+      console.warn('Could not sync search params', e);
+    }
+  };
+
+  const copyShareableLink = (forVariant: 'A' | 'B') => {
+    const origin = window.location.origin;
+    const url = `${origin}/case-simulator?v=${forVariant.toLowerCase()}`;
+    navigator.clipboard.writeText(url);
+    setCopiedLink(forVariant);
+    setTimeout(() => setCopiedLink(null), 2500);
+  };
+
+  // ── Common Case Data ────────────────────────────────────────────────
+  const currentCase = RAM_SETU_CASE;
+  const [isCasePromptOpen, setIsCasePromptOpen] = useState<boolean>(true);
+
+  // ── VARIANT A STATE (Assumptions & Open Canvas) ─────────────────────
+  // Steps in Variant A:
+  // 1: Clarifying Questions
+  // 2: Your Assumptions
+  // 3: Interviewer Guide & Final Answer Canvas
+  // 4: Model Reveal & Hints
+  const [stepA, setStepA] = useState<1 | 2 | 3 | 4>(() => {
+    try {
+      const s = parseInt(searchParams.get('step') || '1', 10);
+      if (s >= 1 && s <= 4) return s as 1 | 2 | 3 | 4;
       return 1;
     } catch {
       return 1;
     }
   });
 
-  const [userQuestions, setUserQuestions] = useState<string>('');
-  const [userAnswerCanvas, setUserAnswerCanvas] = useState<string>('');
-  const [userFinalEstimate, setUserFinalEstimate] = useState<string>('');
+  const [userQuestionsA, setUserQuestionsA] = useState<string>('');
+  const [userAssumptionsA, setUserAssumptionsA] = useState<string>('');
+  const [userCalculationA, setUserCalculationA] = useState<string>('');
+  const [userFinalEstimateA, setUserFinalEstimateA] = useState<string>('');
 
-  const [isCasePromptOpen, setIsCasePromptOpen] = useState<boolean>(true);
-  const [isFeedbackOpen, setIsFeedbackOpen] = useState<boolean>(true);
-  const [showReferenceAnswer, setShowReferenceAnswer] = useState<boolean>(() => {
+  const [isFeedbackOpenA, setIsFeedbackOpenA] = useState<boolean>(true);
+  const [showReferenceAnswerA, setShowReferenceAnswerA] = useState<boolean>(() => {
     try {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('ref') === 'true';
+      return searchParams.get('ref') === 'true';
     } catch {
       return false;
     }
   });
-  const [showSubmittedRecap, setShowSubmittedRecap] = useState<boolean>(false);
+  const [showSubmittedRecapA, setShowSubmittedRecapA] = useState<boolean>(false);
 
-  // Evaluator Mode: Built-in instant rubric vs Live Gemini
-  const [evaluatorMode, setEvaluatorMode] = useState<'local' | 'ai'>('local');
-  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem('pmx_gemini_api_key') || '');
-  const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
-  const [aiFeedback, setAiFeedback] = useState<{ whatWorked: string; doThisNext: string } | null>(null);
+  // ── VARIANT B STATE (Step-by-Step Breakdown Boxes) ───────────────────
+  // Part 1: Length in meters
+  // Part 2: Width in meters
+  // Part 3: Total Height in meters (water depth + freeboard)
+  // Part 4: Total Volume in m³
+  // Part 5: Unit Stone Volume in m³
+  // Part 6: Total Stones Required
+  const [boxInputsB, setBoxInputsB] = useState({
+    lengthMeters: '',
+    widthMeters: '',
+    heightMeters: '',
+    totalVolumeM3: '',
+    unitStoneM3: '',
+    totalStones: ''
+  });
 
-  const currentCase = RAM_SETU_CASE;
-
-  // Local evaluation engine analyzing candidate questions and estimate
-  const evaluationResult = useMemo(() => {
-    if (!userQuestions.trim()) {
-      return {
-        whatWorked: 'You entered your clarifying questions phase.',
-        doThisNext: 'Make sure to probe the 3D dimensions (Length, Width, Depth) and individual stone unit size.',
-        scorePct: 0
-      };
+  const [isSubmittedB, setIsSubmittedB] = useState<boolean>(() => {
+    try {
+      return searchParams.get('submitted') === 'true';
+    } catch {
+      return false;
     }
+  });
+  const [showReferenceAnswerB, setShowReferenceAnswerB] = useState<boolean>(false);
 
-    const text = userQuestions.toLowerCase();
+  // Dynamic rubric result for Variant A
+  const evaluationResultA = useMemo(() => {
+    const questionsText = userQuestionsA.toLowerCase();
+    const assumptionsText = userAssumptionsA.toLowerCase();
+    const combinedText = `${questionsText} ${assumptionsText}`;
+
     const matchedDimensions = currentCase.rubric.dimensions.filter((dim) =>
-      dim.keywords.some((kw) => text.includes(kw.toLowerCase()))
+      dim.keywords.some((kw) => combinedText.includes(kw.toLowerCase()))
     );
 
     const missedCritical = currentCase.rubric.dimensions.filter(
@@ -193,14 +258,19 @@ export function CaseSimulatorPage() {
     let whatWorked = '';
     if (matchedDimensions.length === 0) {
       whatWorked =
-        'You asked setup questions, demonstrating the correct PM instinct to clarify boundaries before calculating.';
+        'You established your setup and articulated assumptions before viewing the interviewer facts, showing proactive initiative.';
     } else {
       const snippets = matchedDimensions.map((m) => m.whatWorkedSnippet);
       whatWorked = snippets.slice(0, 2).join(' Furthermore, ');
     }
 
-    // Check if the final estimate matches the ~5M ballpark
-    const estClean = (userFinalEstimate + ' ' + userAnswerCanvas).toLowerCase();
+    if (userAssumptionsA.trim()) {
+      whatWorked +=
+        ' Stating your own baseline assumptions first helped benchmark your mental model against the interviewer’s ground facts.';
+    }
+
+    // Check final estimate precision
+    const estClean = (userFinalEstimateA + ' ' + userCalculationA).toLowerCase();
     const hasFiveMillion =
       estClean.includes('5.04') ||
       estClean.includes('5,040,000') ||
@@ -212,9 +282,9 @@ export function CaseSimulatorPage() {
 
     if (hasFiveMillion) {
       whatWorked +=
-        ' In addition, your final calculated estimate on the Answer Canvas hit the ~5.04 Million stone benchmark with strong arithmetic precision!';
-    } else if (userFinalEstimate.trim()) {
-      whatWorked += ` You clearly committed your final estimate of "${userFinalEstimate}" on the canvas before viewing the model answer.`;
+        ' In addition, your final calculated estimate of ~5.04 Million stones hit the mathematical benchmark with exact arithmetic!';
+    } else if (userFinalEstimateA.trim()) {
+      whatWorked += ` You finalized an estimate of "${userFinalEstimateA}" before reviewing the model answer.`;
     }
 
     // Dynamic "DO THIS NEXT"
@@ -222,95 +292,55 @@ export function CaseSimulatorPage() {
     if (missedCritical.length > 0) {
       const missedLabels = missedCritical.map((m) => `"${m.label}"`).join(' and ');
       const snippets = missedCritical.map((m) => m.blindspotSnippet).join(' ');
-      doThisNext = `Your setup missed critical dimensions like ${missedLabels}. ${snippets} In future estimation rounds, systematically break physical problems into 3D volume (Length × Width × Height) divided by unit volume.`;
+      doThisNext = `Your setup missed critical dimensions like ${missedLabels}. ${snippets} Remember to always define 3D volume (Length × Width × Height) and divide by individual unit size.`;
     } else if (matchedDimensions.length === currentCase.rubric.dimensions.length) {
       doThisNext =
         'Flawless geometric setup! You accounted for all 4 physical variables: Length, Width, Depth, and Stone Unit Size. In an executive interview, follow up by sanity checking the daily placement rate against army headcount.';
     } else {
       doThisNext =
-        'Solid approach. To make your estimation airtight, always check whether the foundation is submerged (adding depth to the volume equation) before presenting to leadership.';
+        'Solid approach. To make your estimation airtight, always check whether the foundation is submerged (adding seabed depth to the volume equation) before presenting to leadership.';
     }
 
-    const scorePct = Math.round((matchedDimensions.length / currentCase.rubric.dimensions.length) * 100);
+    return { whatWorked, doThisNext };
+  }, [userQuestionsA, userAssumptionsA, userCalculationA, userFinalEstimateA, currentCase]);
 
-    return { whatWorked, doThisNext, scorePct };
-  }, [userQuestions, userAnswerCanvas, userFinalEstimate, currentCase]);
+  // Validation scores for Variant B boxes
+  const validationB = useMemo(() => {
+    const l = parseFloat(boxInputsB.lengthMeters.replace(/,/g, '').trim());
+    const w = parseFloat(boxInputsB.widthMeters.replace(/,/g, '').trim());
+    const h = parseFloat(boxInputsB.heightMeters.replace(/,/g, '').trim());
+    const v = parseFloat(boxInputsB.totalVolumeM3.replace(/,/g, '').trim());
+    const u = parseFloat(boxInputsB.unitStoneM3.replace(/,/g, '').trim());
+    const s = parseFloat(boxInputsB.totalStones.replace(/,/g, '').trim());
 
-  // Step 1: Submit Questions and proceed to Answer Canvas
-  const handleProceedToCanvas = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userQuestions.trim()) return;
-    setStep(2);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+    const isLengthCorrect = l === 48000;
+    const isWidthCorrect = w === 30;
+    const isHeightCorrect = h === 3.5 || (h >= 3.0 && h <= 3.5);
+    const isVolumeCorrect = v === 5040000 || (l && w && h && Math.abs(v - l * w * h) < 100);
+    const isUnitCorrect = u === 1 || u === 1.0;
+    const isStonesCorrect = s === 5040000 || (v && u && Math.abs(s - v / u) < 100);
 
-  // Step 2: Submit Answer Canvas and reveal Interviewer Evaluation & Hints
-  const handleSubmitCanvas = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStep(3);
-    setIsFeedbackOpen(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const filledCount = Object.values(boxInputsB).filter((val) => val.trim() !== '').length;
+    const correctCount = [
+      isLengthCorrect,
+      isWidthCorrect,
+      isHeightCorrect,
+      isVolumeCorrect,
+      isUnitCorrect,
+      isStonesCorrect
+    ].filter(Boolean).length;
 
-    // If AI mode is enabled and user has key, run live Gemini evaluation
-    if (evaluatorMode === 'ai' && apiKey.trim()) {
-      setIsAiLoading(true);
-      try {
-        const prompt = `You are a strict, top-tier Product Management & Strategy case interviewer evaluating a candidate's guesstimate on the Ram Setu stone requirement.
-Case Prompt: "${currentCase.casePrompt}"
-Case Ground Facts: ${JSON.stringify(currentCase.interviewerData)}
-Candidate Clarifying Questions:
-"${userQuestions}"
-Candidate Answer Canvas Solution & Estimate:
-"${userAnswerCanvas}"
-Final Estimate: "${userFinalEstimate}"
-
-Evaluate the candidate's performance. Ground truth calculation is 48,000m × 30m × 3.5m = 5,040,000 m³ = 5.04 Million stones (1m³ each).
-Output ONLY a valid JSON object in this exact format:
-{
-  "whatWorked": "1-2 sentences highlighting the smartest questions or math logic the candidate executed.",
-  "doThisNext": "1-2 sentences highlighting the biggest blindspot they missed or how to structure the presentation for executive leadership."
-}`;
-
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { responseMimeType: 'application/json' }
-            })
-          }
-        );
-
-        if (res.ok) {
-          const data = await res.json();
-          const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (rawText) {
-            const parsed = JSON.parse(rawText);
-            if (parsed.whatWorked && parsed.doThisNext) {
-              setAiFeedback(parsed);
-            }
-          }
-        }
-      } catch (err) {
-        console.warn('AI evaluation failed, falling back to local rubric engine', err);
-      } finally {
-        setIsAiLoading(false);
-      }
-    }
-  };
-
-  const handleRevise = () => {
-    // Allows returning to Step 2 to revise estimate or Step 1 to revise questions
-    setStep(2);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleSaveApiKey = (key: string) => {
-    setApiKey(key);
-    localStorage.setItem('pmx_gemini_api_key', key);
-  };
+    return {
+      isLengthCorrect,
+      isWidthCorrect,
+      isHeightCorrect,
+      isVolumeCorrect,
+      isUnitCorrect,
+      isStonesCorrect,
+      filledCount,
+      correctCount
+    };
+  }, [boxInputsB]);
 
   return (
     <div className="min-h-screen bg-[#FDFCF7] text-[#141413] font-sans pb-24 selection:bg-[#FFF3A7]">
@@ -329,531 +359,1030 @@ Output ONLY a valid JSON object in this exact format:
               <span className="font-mono text-xs font-black uppercase px-2 py-0.5 rounded bg-[#FEF08A] border border-[#141413]">
                 PM LAB
               </span>
-              <h1 className="font-black text-base sm:text-lg tracking-tight text-[#141413]">
-                Ram Setu Guesstimate Simulator
+              <h1 className="font-black text-sm sm:text-base tracking-tight text-[#141413] truncate">
+                Ram Setu Guesstimate
               </h1>
             </div>
           </div>
 
-          {/* Engine Mode Toggle (Local Heuristic vs Live Gemini) */}
+          {/* ── A/B Test Switcher in Header ────────────────────────────── */}
           <div className="flex items-center gap-2">
-            <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-slate-600 bg-slate-100 p-1 rounded-lg border border-[#141413]">
+            <div className="flex items-center bg-[#FAF9F5] p-1 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]">
               <button
                 type="button"
-                onClick={() => setEvaluatorMode('local')}
-                className={`px-2.5 py-1 rounded text-[11px] font-black transition-all ${
-                  evaluatorMode === 'local'
-                    ? 'bg-white text-[#141413] shadow-[1px_1px_0px_0px_#141413] border border-[#141413]'
+                onClick={() => handleSwitchVariant('A')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                  variant === 'A'
+                    ? 'bg-[#FEF08A] text-[#141413] border border-[#141413] shadow-[1px_1px_0px_0px_#141413]'
                     : 'text-slate-500 hover:text-black'
                 }`}
+                title="Variant A: Assumptions & Open Canvas Flow"
               >
-                ⚡ Smart Rubric
+                <span>Variant A</span>
+                <span className="hidden sm:inline ml-1 font-semibold text-[10px] text-slate-600">
+                  (Assumptions)
+                </span>
               </button>
+
               <button
                 type="button"
-                onClick={() => setEvaluatorMode('ai')}
-                className={`px-2.5 py-1 rounded text-[11px] font-black transition-all flex items-center gap-1 ${
-                  evaluatorMode === 'ai'
-                    ? 'bg-[#FEF08A] text-[#141413] shadow-[1px_1px_0px_0px_#141413] border border-[#141413]'
+                onClick={() => handleSwitchVariant('B')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                  variant === 'B'
+                    ? 'bg-[#FEF08A] text-[#141413] border border-[#141413] shadow-[1px_1px_0px_0px_#141413]'
                     : 'text-slate-500 hover:text-black'
                 }`}
+                title="Variant B: Fill-in-the-Boxes Breakdown"
               >
-                <Sparkles className="w-3 h-3 text-amber-600" />
-                Live AI
+                <span>Variant B</span>
+                <span className="hidden sm:inline ml-1 font-semibold text-[10px] text-slate-600">
+                  (Breakdown Boxes)
+                </span>
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* ── Main Container ────────────────────────────────────────────── */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 space-y-6">
-        {/* Step Progression Stepper */}
-        <div className="bg-white rounded-xl border-2 border-[#141413] p-3 shadow-[2px_2px_0px_0px_#141413] flex items-center justify-between text-xs sm:text-sm font-bold">
-          <button
-            type="button"
-            onClick={() => setStep(1)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${
-              step === 1
-                ? 'bg-[#FEF08A] text-[#141413] border border-[#141413] font-black shadow-[1px_1px_0px_0px_#141413]'
-                : step > 1
-                ? 'text-emerald-700 hover:bg-slate-100'
-                : 'text-slate-400'
-            }`}
-          >
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-mono font-black ${
-              step > 1 ? 'bg-emerald-600 text-white' : 'bg-[#141413] text-white'
-            }`}>
-              {step > 1 ? <Check className="w-3 h-3" /> : '1'}
+      {/* ── A/B Test Admin & Shareable Links Bar ──────────────────────── */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-4">
+        <div className="bg-white rounded-xl border-2 border-[#141413] p-3 shadow-[2px_2px_0px_0px_#141413] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded bg-[#141413] text-white flex items-center justify-center font-black text-[10px]">
+              <Split className="w-3 h-3 text-[#FEF08A]" />
+            </div>
+            <span className="font-bold text-slate-700">
+              Active A/B Test:{' '}
+              <strong className="text-[#141413]">
+                {variant === 'A'
+                  ? 'Variant A (Assumptions ➔ Guide ➔ Final Canvas)'
+                  : 'Variant B (Structured Fill-in-the-Boxes Breakdown)'}
+              </strong>
             </span>
-            <span>1. Clarifying Questions</span>
-          </button>
+          </div>
 
-          <span className="text-slate-300 font-black">➔</span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => copyShareableLink('A')}
+              className={`px-2.5 py-1 rounded-lg border border-[#141413] text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                copiedLink === 'A' ? 'bg-[#D1FAE5] text-[#065F46]' : 'bg-[#FAF9F5] hover:bg-[#FEF08A]'
+              }`}
+            >
+              {copiedLink === 'A' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+              <span>Copy Link A</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => userQuestions.trim() && setStep(2)}
-            disabled={!userQuestions.trim()}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${
-              step === 2
-                ? 'bg-[#FEF08A] text-[#141413] border border-[#141413] font-black shadow-[1px_1px_0px_0px_#141413]'
-                : step > 2
-                ? 'text-emerald-700 hover:bg-slate-100'
-                : 'text-slate-400 cursor-not-allowed'
-            }`}
-          >
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-mono font-black ${
-              step > 2 ? 'bg-emerald-600 text-white' : step === 2 ? 'bg-[#141413] text-white' : 'bg-slate-300 text-slate-600'
-            }`}>
-              {step > 2 ? <Check className="w-3 h-3" /> : '2'}
-            </span>
-            <span>2. Answer Canvas</span>
-          </button>
-
-          <span className="text-slate-300 font-black">➔</span>
-
-          <div
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${
-              step === 3
-                ? 'bg-[#FEF08A] text-[#141413] border border-[#141413] font-black shadow-[1px_1px_0px_0px_#141413]'
-                : 'text-slate-400'
-            }`}
-          >
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-mono font-black ${
-              step === 3 ? 'bg-[#141413] text-white' : 'bg-slate-300 text-slate-600'
-            }`}>
-              3
-            </span>
-            <span>3. Model Reveal & Hints</span>
+            <button
+              type="button"
+              onClick={() => copyShareableLink('B')}
+              className={`px-2.5 py-1 rounded-lg border border-[#141413] text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                copiedLink === 'B' ? 'bg-[#D1FAE5] text-[#065F46]' : 'bg-[#FAF9F5] hover:bg-[#FEF08A]'
+              }`}
+            >
+              {copiedLink === 'B' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+              <span>Copy Link B</span>
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* AI Key input banner if in AI mode */}
-        {evaluatorMode === 'ai' && (
-          <div className="bg-[#FFFDF0] rounded-xl border-2 border-[#141413] p-4 shadow-[2px_2px_0px_0px_#141413] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-amber-600 shrink-0" />
-              <span>
-                <strong>Live Gemini Mode Active:</strong> Paste your Gemini API key below to get real-time dynamic AI hints, or switch back to the built-in Smart Rubric engine.
-              </span>
+      {/* ── Main Container ────────────────────────────────────────────── */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-5 space-y-6">
+        {/* ============================================================= */}
+        {/* VARIANT A: Assumptions -> Interviewer Guide -> Final Canvas  */}
+        {/* ============================================================= */}
+        {variant === 'A' && (
+          <div className="space-y-6">
+            {/* Step Progression Stepper for Variant A */}
+            <div className="bg-white rounded-xl border-2 border-[#141413] p-2.5 shadow-[2px_2px_0px_0px_#141413] flex items-center justify-between text-xs font-bold overflow-x-auto">
+              <button
+                type="button"
+                onClick={() => setStepA(1)}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all whitespace-nowrap ${
+                  stepA === 1
+                    ? 'bg-[#FEF08A] text-[#141413] border border-[#141413] font-black shadow-[1px_1px_0px_0px_#141413]'
+                    : stepA > 1
+                    ? 'text-emerald-700 hover:bg-slate-100'
+                    : 'text-slate-400'
+                }`}
+              >
+                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-mono font-black ${
+                  stepA > 1 ? 'bg-emerald-600 text-white' : 'bg-[#141413] text-white'
+                }`}>
+                  {stepA > 1 ? <Check className="w-2.5 h-2.5" /> : '1'}
+                </span>
+                <span>1. Clarify</span>
+              </button>
+
+              <span className="text-slate-300 font-black">➔</span>
+
+              <button
+                type="button"
+                onClick={() => userQuestionsA.trim() && setStepA(2)}
+                disabled={!userQuestionsA.trim()}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all whitespace-nowrap ${
+                  stepA === 2
+                    ? 'bg-[#FEF08A] text-[#141413] border border-[#141413] font-black shadow-[1px_1px_0px_0px_#141413]'
+                    : stepA > 2
+                    ? 'text-emerald-700 hover:bg-slate-100'
+                    : 'text-slate-400 cursor-not-allowed'
+                }`}
+              >
+                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-mono font-black ${
+                  stepA > 2 ? 'bg-emerald-600 text-white' : stepA === 2 ? 'bg-[#141413] text-white' : 'bg-slate-300 text-slate-600'
+                }`}>
+                  {stepA > 2 ? <Check className="w-2.5 h-2.5" /> : '2'}
+                </span>
+                <span>2. Your Assumptions</span>
+              </button>
+
+              <span className="text-slate-300 font-black">➔</span>
+
+              <button
+                type="button"
+                onClick={() => userAssumptionsA.trim() && setStepA(3)}
+                disabled={!userAssumptionsA.trim()}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all whitespace-nowrap ${
+                  stepA === 3
+                    ? 'bg-[#FEF08A] text-[#141413] border border-[#141413] font-black shadow-[1px_1px_0px_0px_#141413]'
+                    : stepA > 3
+                    ? 'text-emerald-700 hover:bg-slate-100'
+                    : 'text-slate-400 cursor-not-allowed'
+                }`}
+              >
+                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-mono font-black ${
+                  stepA > 3 ? 'bg-emerald-600 text-white' : stepA === 3 ? 'bg-[#141413] text-white' : 'bg-slate-300 text-slate-600'
+                }`}>
+                  {stepA > 3 ? <Check className="w-2.5 h-2.5" /> : '3'}
+                </span>
+                <span>3. Guide & Final Answer</span>
+              </button>
+
+              <span className="text-slate-300 font-black">➔</span>
+
+              <div
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all whitespace-nowrap ${
+                  stepA === 4
+                    ? 'bg-[#FEF08A] text-[#141413] border border-[#141413] font-black shadow-[1px_1px_0px_0px_#141413]'
+                    : 'text-slate-400'
+                }`}
+              >
+                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-mono font-black ${
+                  stepA === 4 ? 'bg-[#141413] text-white' : 'bg-slate-300 text-slate-600'
+                }`}>
+                  4
+                </span>
+                <span>4. Model Reveal</span>
+              </div>
             </div>
-            <div className="w-full sm:w-auto flex items-center gap-2">
-              <input
-                type="password"
-                placeholder="Paste Gemini API Key..."
-                value={apiKey}
-                onChange={(e) => handleSaveApiKey(e.target.value)}
-                className="p-1.5 px-3 border border-[#141413] rounded-lg text-xs bg-white w-full sm:w-48"
-              />
+
+            {/* Case Card */}
+            <div className="bg-white rounded-2xl border-[3px] border-[#141413] p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-6">
+              {/* Case Prompt Accordion Header */}
+              <div className="border-b-2 border-slate-100 pb-5">
+                <button
+                  type="button"
+                  onClick={() => setIsCasePromptOpen(!isCasePromptOpen)}
+                  className="w-full flex items-center justify-between text-left group cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[11px] font-black uppercase text-slate-500 tracking-wider">
+                      CASE PROMPT
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-300">
+                      {currentCase.badge}
+                    </span>
+                  </div>
+                  <div className="text-slate-400 group-hover:text-black transition-colors">
+                    {isCasePromptOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </div>
+                </button>
+
+                {isCasePromptOpen && (
+                  <p className="mt-3 text-sm sm:text-base font-medium text-slate-800 leading-relaxed bg-[#F8FAFC] p-4 rounded-xl border border-slate-200">
+                    {currentCase.casePrompt}
+                  </p>
+                )}
+              </div>
+
+              {/* ── STEP A-1: CLARIFYING QUESTIONS ─────────────────────── */}
+              {stepA === 1 && (
+                <div className="space-y-5">
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-black text-[#141413] tracking-tight leading-tight">
+                      {currentCase.clarifyingPrompt}
+                    </h2>
+                    <p className="text-xs sm:text-sm font-medium text-slate-500 mt-2">
+                      Interrogating the right parameters early prevents solving the wrong problem. What missing information or dimensions do you need from the interviewer before calculating?
+                    </p>
+                  </div>
+
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!userQuestionsA.trim()) return;
+                      setStepA(2);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="space-y-4 pt-2"
+                  >
+                    <div>
+                      <label className="block text-xs font-black uppercase text-[#141413] mb-2">
+                        Your Clarifying Questions:
+                      </label>
+                      <textarea
+                        rows={6}
+                        value={userQuestionsA}
+                        onChange={(e) => setUserQuestionsA(e.target.value)}
+                        placeholder="Type the clarifying questions or parameters you would ask the interviewer before beginning your calculation..."
+                        className="w-full p-4 rounded-xl border-2 border-[#141413] font-medium text-sm sm:text-base bg-[#FDFCF7] shadow-[2px_2px_0px_0px_#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2] transition-all"
+                        required
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-end pt-2">
+                      <button
+                        type="submit"
+                        className="w-full sm:w-auto px-7 py-3 rounded-xl border-[2.5px] border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white font-black text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all cursor-pointer flex items-center justify-center gap-2"
+                      >
+                        <span>Next: State Your Assumptions</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {/* ── STEP A-2: YOUR ASSUMPTIONS ─────────────────────────── */}
+              {stepA === 2 && (
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div>
+                      <span className="font-mono text-[11px] font-black uppercase text-amber-700 tracking-wider block mb-1">
+                        STEP 2 OF 4 • HYPOTHESIS & BOUNDARIES
+                      </span>
+                      <h2 className="text-2xl sm:text-3xl font-black text-[#141413] tracking-tight leading-tight">
+                        What Are Your Assumptions?
+                      </h2>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setStepA(1)}
+                      className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-black underline cursor-pointer"
+                    >
+                      <Edit3 className="w-3 h-3" />
+                      <span>Edit Questions</span>
+                    </button>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed bg-[#FFFBEB] p-4 rounded-xl border border-amber-200">
+                    💡 <strong>Interviewer's Challenge:</strong> In a real case interview, if the interviewer asks you to <em>"make reasonable assumptions first"</em> before handing over facts, what numbers would you estimate for length, width, depth, and stone size?
+                  </p>
+
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!userAssumptionsA.trim()) return;
+                      setStepA(3);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="space-y-4 pt-1"
+                  >
+                    <div>
+                      <label className="block text-xs font-black uppercase text-[#141413] mb-2">
+                        State Your Initial Assumptions:
+                      </label>
+                      <textarea
+                        rows={6}
+                        value={userAssumptionsA}
+                        onChange={(e) => setUserAssumptionsA(e.target.value)}
+                        placeholder="e.g.&#10;1. Span across ocean: I assume roughly 30-50 km across the strait.&#10;2. Bridge Width: I assume 20-30m so an army with siege equipment can pass.&#10;3. Water Depth: Shallow coastal shoal ~3-4m deep.&#10;4. Boulder Size: Hand-carved or natural boulders ~1 m³ each."
+                        className="w-full p-4 rounded-xl border-2 border-[#141413] font-medium text-sm sm:text-base bg-[#FDFCF7] shadow-[2px_2px_0px_0px_#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2] transition-all"
+                        required
+                      />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setStepA(1)}
+                        className="px-4 py-2.5 rounded-xl border-2 border-[#141413] bg-white hover:bg-slate-50 font-bold text-xs uppercase tracking-wide cursor-pointer transition-all text-center"
+                      >
+                        ← Back to Questions
+                      </button>
+
+                      <button
+                        type="submit"
+                        className="px-7 py-3 rounded-xl border-[2.5px] border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white font-black text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all cursor-pointer flex items-center justify-center gap-2"
+                      >
+                        <span>Reveal Interviewer Guide & Data</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {/* ── STEP A-3: INTERVIEWER GUIDE & FINAL ANSWER CANVAS ──── */}
+              {stepA === 3 && (
+                <div className="space-y-6">
+                  {/* The Interviewer Guide is now revealed! */}
+                  <div className="bg-[#FAF9F5] rounded-xl border-2 border-[#141413] p-5 sm:p-6 shadow-[2px_2px_0px_0px_#141413] space-y-4">
+                    <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                      <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-[#141413]">
+                        <div className="w-6 h-6 rounded bg-[#141413] text-white flex items-center justify-center">
+                          <MessageSquare className="w-3.5 h-3.5" />
+                        </div>
+                        INTERVIEWER'S GUIDE & VERIFIED DATA
+                      </div>
+
+                      <div className="flex items-center gap-2 text-xs">
+                        <button
+                          type="button"
+                          onClick={() => setStepA(2)}
+                          className="font-bold text-slate-600 hover:text-black underline"
+                        >
+                          Revise Assumptions
+                        </button>
+                      </div>
+                    </div>
+
+                    <p className="text-xs sm:text-sm font-bold text-slate-900">
+                      Here are the verified case parameters provided by the royal architects:
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-slate-800">
+                      {currentCase.interviewerData.map((item, idx) => (
+                        <div key={idx} className="flex items-start gap-2 bg-white p-3 rounded-lg border border-slate-200">
+                          <span className="font-black text-[#188ab2] shrink-0">•</span>
+                          <div>
+                            <strong className="text-[#141413] block mb-0.5">{item.label}</strong>
+                            <span className="text-slate-700">{item.value}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="bg-amber-50/70 p-3 rounded-lg border border-amber-200 text-xs text-slate-700 font-medium flex items-start gap-2">
+                      <span className="font-bold text-amber-700 shrink-0">•</span>
+                      <div>
+                        <strong className="text-amber-900">Other requested parameters:</strong>{' '}
+                        {currentCase.otherRequestedInfo}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tab / Box for Final Answer to Fill In */}
+                  <div className="bg-[#FFFDF0] rounded-2xl border-[2.5px] border-[#141413] p-6 shadow-[3px_3px_0px_0px_#141413] space-y-5">
+                    <div>
+                      <span className="font-mono text-[11px] font-black uppercase text-[#188ab2] tracking-wider block mb-1">
+                        STEP 3 OF 4 • FINAL ANSWER CANVAS
+                      </span>
+                      <h3 className="text-xl sm:text-2xl font-black text-[#141413]">
+                        Calculate & Fill In Your Final Answer
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+                        Plug the interviewer data into your volume formula and state your final stone count.
+                      </p>
+                    </div>
+
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!userFinalEstimateA.trim()) return;
+                        setStepA(4);
+                        setIsFeedbackOpenA(true);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="space-y-4"
+                    >
+                      <div>
+                        <label className="block text-xs font-black uppercase text-[#141413] mb-1.5">
+                          Your Calculation Steps & Math:
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={userCalculationA}
+                          onChange={(e) => setUserCalculationA(e.target.value)}
+                          placeholder="Show your intermediate formula (e.g. 48,000m × 30m × 3.5m = 5,040,000 m³ ÷ 1.0 m³ per stone)..."
+                          className="w-full p-3.5 rounded-xl border-2 border-[#141413] font-mono text-xs sm:text-sm bg-white shadow-[1.5px_1.5px_0px_0px_#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-black uppercase text-[#141413] mb-1.5">
+                          Your Final Estimated Stone Count:
+                        </label>
+                        <input
+                          type="text"
+                          value={userFinalEstimateA}
+                          onChange={(e) => setUserFinalEstimateA(e.target.value)}
+                          placeholder="e.g. 5,040,000 or 5.04 Million stones"
+                          className="w-full sm:w-80 p-3 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white shadow-[1.5px_1.5px_0px_0px_#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2]"
+                          required
+                        />
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-slate-200">
+                        <button
+                          type="button"
+                          onClick={() => setStepA(2)}
+                          className="px-4 py-2.5 rounded-xl border-2 border-[#141413] bg-white hover:bg-slate-50 font-bold text-xs uppercase tracking-wide cursor-pointer transition-all text-center"
+                        >
+                          ← Back to Assumptions
+                        </button>
+
+                        <button
+                          type="submit"
+                          className="px-7 py-3 rounded-xl border-[2.5px] border-[#141413] bg-[#059669] hover:bg-[#047857] text-white font-black text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all cursor-pointer flex items-center justify-center gap-2"
+                        >
+                          <span>Submit Final Answer & See Evaluation</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+
+              {/* ── STEP A-4: MODEL REVEAL & DYNAMIC HINTS ─────────────── */}
+              {stepA === 4 && (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-black text-[#141413] tracking-tight leading-tight">
+                      {currentCase.clarifyingPrompt}
+                    </h2>
+                  </div>
+
+                  {/* Interviewer Answer Box (Matches Reference Style) */}
+                  <div className="bg-[#FAF9F5] rounded-xl border-2 border-[#141413] p-5 sm:p-6 shadow-[2px_2px_0px_0px_#141413]">
+                    <div className="flex items-center justify-between gap-3 mb-4">
+                      <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-[#141413]">
+                        <div className="w-6 h-6 rounded bg-[#141413] text-white flex items-center justify-center">
+                          <MessageSquare className="w-3.5 h-3.5" />
+                        </div>
+                        INTERVIEWER ANSWER
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setStepA(3)}
+                        className="flex items-center gap-1 px-3 py-1 rounded-lg border border-[#141413] bg-white text-xs font-bold text-slate-700 hover:bg-[#FFF3A7] transition-all shadow-[1px_1px_0px_0px_#141413] cursor-pointer"
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        <span>Revise</span>
+                      </button>
+                    </div>
+
+                    <p className="text-sm font-bold text-slate-900 mb-3">
+                      Here is what the case provides now:
+                    </p>
+
+                    <div className="space-y-2.5 text-xs sm:text-sm text-slate-800 mb-4">
+                      {currentCase.interviewerData.map((item, idx) => (
+                        <div key={idx} className="flex items-start gap-2 bg-white p-3 rounded-lg border border-slate-200">
+                          <span className="font-black text-[#188ab2] shrink-0">•</span>
+                          <div>
+                            <strong className="text-[#141413]">{item.label}:</strong> {item.value}
+                          </div>
+                        </div>
+                      ))}
+
+                      <div className="flex items-start gap-2 bg-amber-50/60 p-3 rounded-lg border border-amber-200 text-slate-700 font-medium">
+                        <span className="font-bold text-amber-700 shrink-0">•</span>
+                        <div>
+                          <strong className="text-amber-900">Other requested information:</strong>{' '}
+                          {currentCase.otherRequestedInfo}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Candidate's submitted work recap toggle */}
+                    <div className="pt-2 border-t border-slate-200 text-xs text-slate-500 flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => setShowSubmittedRecapA(!showSubmittedRecapA)}
+                        className="text-[#188ab2] font-black hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>{showSubmittedRecapA ? 'Hide your submitted work' : 'View your submitted questions, assumptions & answer'}</span>
+                        {showSubmittedRecapA ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setStepA(3)}
+                        className="text-slate-600 font-bold hover:text-black underline"
+                      >
+                        Edit inputs
+                      </button>
+                    </div>
+
+                    {showSubmittedRecapA && (
+                      <div className="mt-3 p-3 bg-white rounded-lg border border-slate-200 text-xs space-y-2">
+                        <div>
+                          <strong className="text-slate-900 block">Clarifying Questions Asked:</strong>
+                          <p className="text-slate-700 whitespace-pre-wrap mt-0.5">{userQuestionsA}</p>
+                        </div>
+                        {userAssumptionsA && (
+                          <div className="pt-2 border-t border-slate-100">
+                            <strong className="text-slate-900 block">Your Assumptions Stated:</strong>
+                            <p className="text-slate-700 whitespace-pre-wrap mt-0.5">{userAssumptionsA}</p>
+                          </div>
+                        )}
+                        {userFinalEstimateA && (
+                          <div className="pt-2 border-t border-slate-100">
+                            <strong className="text-slate-900 block">Your Final Estimate:</strong>
+                            <p className="font-mono font-black text-[#188ab2]">{userFinalEstimateA}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Dynamic Hints Card ("First answer in ^") */}
+                  <div className="bg-white rounded-xl border-2 border-[#141413] overflow-hidden shadow-[3px_3px_0px_0px_#141413]">
+                    <button
+                      type="button"
+                      onClick={() => setIsFeedbackOpenA(!isFeedbackOpenA)}
+                      className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors border-b-2 border-[#141413] text-left cursor-pointer"
+                    >
+                      <span className="font-serif italic font-bold text-base sm:text-lg text-[#141413]">
+                        First answer in
+                      </span>
+                      <div>
+                        {isFeedbackOpenA ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      </div>
+                    </button>
+
+                    {isFeedbackOpenA && (
+                      <div className="p-5 sm:p-6 space-y-5">
+                        {/* WHAT WORKED */}
+                        <div>
+                          <div className="font-mono text-xs font-black uppercase text-[#059669] tracking-wider mb-1.5 flex items-center gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            WHAT WORKED
+                          </div>
+                          <p className="text-sm font-medium text-slate-800 leading-relaxed bg-[#F0FDF4] p-3.5 rounded-xl border border-emerald-200">
+                            {evaluationResultA.whatWorked}
+                          </p>
+                        </div>
+
+                        {/* DO THIS NEXT */}
+                        <div>
+                          <div className="font-mono text-xs font-black uppercase text-[#D97706] tracking-wider mb-1.5 flex items-center gap-1.5">
+                            <AlertTriangle className="w-3.5 h-3.5" />
+                            DO THIS NEXT
+                          </div>
+                          <p className="text-sm font-medium text-slate-800 leading-relaxed bg-[#FFFBEB] p-3.5 rounded-xl border border-amber-200">
+                            {evaluationResultA.doThisNext}
+                          </p>
+                        </div>
+
+                        {/* Collapsible reference answer */}
+                        <div className="pt-2 border-t border-slate-100">
+                          <button
+                            type="button"
+                            onClick={() => setShowReferenceAnswerA(!showReferenceAnswerA)}
+                            className="text-xs sm:text-sm font-bold text-slate-600 hover:text-black flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>{showReferenceAnswerA ? 'Hide reference answer' : 'Show reference answer'}</span>
+                            {showReferenceAnswerA ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                          </button>
+
+                          {showReferenceAnswerA && (
+                            <div className="mt-4 bg-[#FEF08A]/40 rounded-xl border-2 border-[#141413] p-5 shadow-[2px_2px_0px_0px_#141413] space-y-4">
+                              <div className="flex items-center gap-2 font-mono text-xs font-black uppercase text-[#141413]">
+                                <Calculator className="w-4 h-4 text-[#188ab2]" />
+                                <span>{currentCase.referenceCalculation.frameworkTitle}</span>
+                              </div>
+
+                              <div className="space-y-3">
+                                {currentCase.referenceCalculation.steps.map((st, i) => (
+                                  <div key={i} className="bg-white p-3.5 rounded-lg border border-[#141413]">
+                                    <div className="font-black text-xs sm:text-sm text-[#141413] mb-1">
+                                      {st.title}
+                                    </div>
+                                    <div className="font-mono text-xs sm:text-sm font-bold text-[#188ab2] bg-slate-50 p-2 rounded border border-slate-200 mb-1.5">
+                                      {st.math}
+                                    </div>
+                                    <p className="text-xs text-slate-600 font-medium">{st.explanation}</p>
+                                  </div>
+                                ))}
+                              </div>
+
+                              <div className="bg-[#141413] text-white p-4 rounded-xl border-2 border-[#141413] space-y-2">
+                                <div className="font-mono text-[11px] font-black uppercase text-[#FEF08A]">
+                                  ★ Final Calculated Solution:
+                                </div>
+                                <div className="text-xl sm:text-2xl font-black text-white">
+                                  {currentCase.referenceCalculation.finalAnswer}
+                                </div>
+                                <p className="text-xs text-slate-300 font-medium leading-relaxed pt-1">
+                                  {currentCase.referenceCalculation.sanityCheck}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Bottom Navigation */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setStepA(2)}
+                      className="px-5 py-2.5 rounded-xl border-2 border-[#141413] bg-white hover:bg-slate-50 font-bold text-xs uppercase tracking-wide cursor-pointer transition-all flex items-center gap-1.5"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Revise Assumptions or Answer</span>
+                    </button>
+
+                    <Link
+                      to="/chronicle"
+                      className="px-5 py-2.5 rounded-xl border-2 border-[#141413] bg-[#FEF08A] hover:bg-[#FDE047] font-black text-xs uppercase tracking-wide cursor-pointer transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_0px_#141413]"
+                    >
+                      <span>Return to Ramayana Chronicle</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {/* ── Main Case Card (Neobrutalism Container) ───────────────── */}
-        <div className="bg-white rounded-2xl border-[3px] border-[#141413] p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-6">
-          {/* 1. Case Prompt Accordion Header */}
-          <div className="border-b-2 border-slate-100 pb-5">
-            <button
-              type="button"
-              onClick={() => setIsCasePromptOpen(!isCasePromptOpen)}
-              className="w-full flex items-center justify-between text-left group cursor-pointer"
-            >
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-[11px] font-black uppercase text-slate-500 tracking-wider">
-                  CASE PROMPT
-                </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-300">
-                  {currentCase.badge}
-                </span>
-              </div>
-              <div className="text-slate-400 group-hover:text-black transition-colors">
-                {isCasePromptOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </div>
-            </button>
+        {/* ============================================================= */}
+        {/* VARIANT B: Fill-in-the-Boxes Breakdown                        */}
+        {/* ============================================================= */}
+        {variant === 'B' && (
+          <div className="space-y-6">
+            {/* Header Card for Variant B */}
+            <div className="bg-white rounded-2xl border-[3px] border-[#141413] p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-6">
+              {/* Case Prompt Accordion Header */}
+              <div className="border-b-2 border-slate-100 pb-5">
+                <button
+                  type="button"
+                  onClick={() => setIsCasePromptOpen(!isCasePromptOpen)}
+                  className="w-full flex items-center justify-between text-left group cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[11px] font-black uppercase text-slate-500 tracking-wider">
+                      CASE PROMPT
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-300">
+                      VARIANT B • STRUCTURED DECOMPOSITION
+                    </span>
+                  </div>
+                  <div className="text-slate-400 group-hover:text-black transition-colors">
+                    {isCasePromptOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </div>
+                </button>
 
-            {isCasePromptOpen && (
-              <p className="mt-3 text-sm sm:text-base font-medium text-slate-800 leading-relaxed bg-[#F8FAFC] p-4 rounded-xl border border-slate-200">
-                {currentCase.casePrompt}
-              </p>
-            )}
-          </div>
+                {isCasePromptOpen && (
+                  <p className="mt-3 text-sm sm:text-base font-medium text-slate-800 leading-relaxed bg-[#F8FAFC] p-4 rounded-xl border border-slate-200">
+                    {currentCase.casePrompt}
+                  </p>
+                )}
+              </div>
 
-          {/* ── STEP 1: CLARIFYING QUESTIONS ───────────────────────────── */}
-          {step === 1 && (
-            <div className="space-y-5">
               <div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#141413] tracking-tight leading-tight">
-                  {currentCase.clarifyingPrompt}
+                <span className="font-mono text-xs font-black uppercase text-[#188ab2] tracking-wider block mb-1">
+                  STRUCTURED GUESSTIMATE BREAKDOWN
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-black text-[#141413] tracking-tight leading-tight">
+                  Fill in the Values for Each Dimensional Part
                 </h2>
                 <p className="text-xs sm:text-sm font-medium text-slate-500 mt-2">
-                  Interrogating the right parameters early prevents solving the wrong problem. What missing information or dimensions do you need from the interviewer before calculating?
+                  Decompose the Ram Setu problem into 3D geometric components. Fill in each box below using the case facts, then verify your final stone requirement.
                 </p>
               </div>
 
-              <form onSubmit={handleProceedToCanvas} className="space-y-4 pt-2">
-                <div>
-                  <label className="block text-xs font-black uppercase text-[#141413] mb-2">
-                    Your Clarifying Questions:
-                  </label>
-                  <textarea
-                    rows={6}
-                    value={userQuestions}
-                    onChange={(e) => setUserQuestions(e.target.value)}
-                    placeholder="Type the clarifying questions or parameters you would ask the interviewer before beginning your calculation..."
-                    className="w-full p-4 rounded-xl border-2 border-[#141413] font-medium text-sm sm:text-base bg-[#FDFCF7] shadow-[2px_2px_0px_0px_#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2] transition-all"
-                    required
-                  />
+              {/* Progress counter badge */}
+              <div className="flex items-center gap-2 bg-[#FAF9F5] p-3 rounded-xl border border-slate-200 text-xs">
+                <span className="font-bold text-slate-700">Inputs Completed:</span>
+                <span className="font-mono font-black px-2 py-0.5 bg-[#FEF08A] rounded border border-[#141413]">
+                  {validationB.filledCount} / 6 Parts
+                </span>
+                {isSubmittedB && (
+                  <span className="font-mono font-black text-emerald-700 ml-auto">
+                    ✓ {validationB.correctCount} / 6 Match Model
+                  </span>
+                )}
+              </div>
+
+              {/* ── The 6 Fill-in-the-Boxes Form ────────────────────────── */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setIsSubmittedB(true);
+                  setShowReferenceAnswerB(true);
+                  window.scrollTo({ top: 400, behavior: 'smooth' });
+                }}
+                className="space-y-5"
+              >
+                {/* Part 1: Length */}
+                <div className="bg-[#FAF9F5] p-4 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#141413] text-white flex items-center justify-center font-mono text-[11px]">
+                        1
+                      </span>
+                      <span>Part 1: Causeway Span / Length (in meters)</span>
+                    </label>
+                    <span className="text-[11px] text-slate-500 font-medium">Fact: 48 km across Palk Strait</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="text"
+                      value={boxInputsB.lengthMeters}
+                      onChange={(e) =>
+                        setBoxInputsB({ ...boxInputsB, lengthMeters: e.target.value })
+                      }
+                      placeholder="e.g. 48000"
+                      className="p-2.5 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white w-full sm:w-64"
+                      required
+                    />
+                    <span className="font-mono text-xs font-bold text-slate-500">meters</span>
+                    {isSubmittedB && (
+                      <span className="text-xs font-bold">
+                        {validationB.isLengthCorrect ? (
+                          <span className="text-emerald-700 flex items-center gap-1">
+                            <Check className="w-3.5 h-3.5" /> 48,000 m
+                          </span>
+                        ) : (
+                          <span className="text-amber-700">Model: 48,000 m (48 km × 1,000)</span>
+                        )}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-end pt-2">
+                {/* Part 2: Width */}
+                <div className="bg-[#FAF9F5] p-4 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#141413] text-white flex items-center justify-center font-mono text-[11px]">
+                        2
+                      </span>
+                      <span>Part 2: Causeway Width (in meters)</span>
+                    </label>
+                    <span className="text-[11px] text-slate-500 font-medium">Fact: 10 ranks abreast + carts</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="text"
+                      value={boxInputsB.widthMeters}
+                      onChange={(e) =>
+                        setBoxInputsB({ ...boxInputsB, widthMeters: e.target.value })
+                      }
+                      placeholder="e.g. 30"
+                      className="p-2.5 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white w-full sm:w-64"
+                      required
+                    />
+                    <span className="font-mono text-xs font-bold text-slate-500">meters</span>
+                    {isSubmittedB && (
+                      <span className="text-xs font-bold">
+                        {validationB.isWidthCorrect ? (
+                          <span className="text-emerald-700 flex items-center gap-1">
+                            <Check className="w-3.5 h-3.5" /> 30 m
+                          </span>
+                        ) : (
+                          <span className="text-amber-700">Model: 30 meters</span>
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Part 3: Total Height (Depth + Clearance) */}
+                <div className="bg-[#FAF9F5] p-4 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#141413] text-white flex items-center justify-center font-mono text-[11px]">
+                        3
+                      </span>
+                      <span>Part 3: Total Height from Seabed (in meters)</span>
+                    </label>
+                    <span className="text-[11px] text-slate-500 font-medium">Fact: 3.0m water depth + 0.5m clearance</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="text"
+                      value={boxInputsB.heightMeters}
+                      onChange={(e) =>
+                        setBoxInputsB({ ...boxInputsB, heightMeters: e.target.value })
+                      }
+                      placeholder="e.g. 3.5"
+                      className="p-2.5 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white w-full sm:w-64"
+                      required
+                    />
+                    <span className="font-mono text-xs font-bold text-slate-500">meters</span>
+                    {isSubmittedB && (
+                      <span className="text-xs font-bold">
+                        {validationB.isHeightCorrect ? (
+                          <span className="text-emerald-700 flex items-center gap-1">
+                            <Check className="w-3.5 h-3.5" /> 3.5 m
+                          </span>
+                        ) : (
+                          <span className="text-amber-700">Model: 3.5 m (3.0m seabed + 0.5m tide)</span>
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Part 4: Total Volume (L x W x H) */}
+                <div className="bg-[#FAF9F5] p-4 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#188ab2] text-white flex items-center justify-center font-mono text-[11px]">
+                        4
+                      </span>
+                      <span>Part 4: Calculated Causeway Volume (Length × Width × Height)</span>
+                    </label>
+                    <span className="text-[11px] text-slate-500 font-medium">Formula: 48,000 × 30 × 3.5</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="text"
+                      value={boxInputsB.totalVolumeM3}
+                      onChange={(e) =>
+                        setBoxInputsB({ ...boxInputsB, totalVolumeM3: e.target.value })
+                      }
+                      placeholder="e.g. 5040000"
+                      className="p-2.5 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white w-full sm:w-64"
+                      required
+                    />
+                    <span className="font-mono text-xs font-bold text-slate-500">m³</span>
+                    {isSubmittedB && (
+                      <span className="text-xs font-bold">
+                        {validationB.isVolumeCorrect ? (
+                          <span className="text-emerald-700 flex items-center gap-1">
+                            <Check className="w-3.5 h-3.5" /> 5,040,000 m³
+                          </span>
+                        ) : (
+                          <span className="text-amber-700">Model: 5,040,000 m³</span>
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Part 5: Unit Stone Volume */}
+                <div className="bg-[#FAF9F5] p-4 rounded-xl border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#141413] text-white flex items-center justify-center font-mono text-[11px]">
+                        5
+                      </span>
+                      <span>Part 5: Unit Boulder Volume (1.0m × 1.0m × 1.0m)</span>
+                    </label>
+                    <span className="text-[11px] text-slate-500 font-medium">Fact: Cut Gandhamadana boulders</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="text"
+                      value={boxInputsB.unitStoneM3}
+                      onChange={(e) =>
+                        setBoxInputsB({ ...boxInputsB, unitStoneM3: e.target.value })
+                      }
+                      placeholder="e.g. 1.0"
+                      className="p-2.5 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white w-full sm:w-64"
+                      required
+                    />
+                    <span className="font-mono text-xs font-bold text-slate-500">m³ per stone</span>
+                    {isSubmittedB && (
+                      <span className="text-xs font-bold">
+                        {validationB.isUnitCorrect ? (
+                          <span className="text-emerald-700 flex items-center gap-1">
+                            <Check className="w-3.5 h-3.5" /> 1.0 m³
+                          </span>
+                        ) : (
+                          <span className="text-amber-700">Model: 1.0 m³ per stone</span>
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Part 6: Total Stones Required */}
+                <div className="bg-[#FFFDF0] p-4 sm:p-5 rounded-xl border-2 border-[#141413] shadow-[2px_2px_0px_0px_#141413] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="font-black text-xs sm:text-sm text-[#141413] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#059669] text-white flex items-center justify-center font-mono text-[11px]">
+                        ★
+                      </span>
+                      <span>Part 6: Total Stones Required (Volume ÷ Unit Stone Volume)</span>
+                    </label>
+                    <span className="text-[11px] font-black text-[#059669] uppercase">Final Solution</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <input
+                      type="text"
+                      value={boxInputsB.totalStones}
+                      onChange={(e) =>
+                        setBoxInputsB({ ...boxInputsB, totalStones: e.target.value })
+                      }
+                      placeholder="e.g. 5040000"
+                      className="p-3 rounded-lg border-2 border-[#141413] font-mono text-base font-black bg-white w-full sm:w-72"
+                      required
+                    />
+                    <span className="font-mono text-xs font-bold text-slate-600">stones (~5.04M)</span>
+                    {isSubmittedB && (
+                      <span className="text-xs font-bold">
+                        {validationB.isStonesCorrect ? (
+                          <span className="text-emerald-700 flex items-center gap-1 font-black">
+                            <Check className="w-4 h-4" /> Perfect Match: 5,040,000 Stones!
+                          </span>
+                        ) : (
+                          <span className="text-amber-700">Model: 5,040,000 stones (5.04 Million)</span>
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Submit button */}
+                <div className="flex items-center justify-end pt-3">
                   <button
                     type="submit"
-                    className="w-full sm:w-auto px-7 py-3 rounded-xl border-[2.5px] border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white font-black text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_0px_#141413] transition-all cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto px-8 py-3.5 rounded-xl border-[2.5px] border-[#141413] bg-[#059669] hover:bg-[#047857] text-white font-black text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all cursor-pointer flex items-center justify-center gap-2"
                   >
-                    <span>Proceed to Answer Canvas</span>
+                    <span>Check All Breakdown Parts & Reveal Model</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               </form>
-            </div>
-          )}
 
-          {/* ── STEP 2: ANSWER CANVAS (CALCULATE & ESTIMATE) ──────────── */}
-          {step === 2 && (
-            <div className="space-y-6">
-              {/* Interviewer parameter reveal banner */}
-              <div className="bg-[#FAF9F5] rounded-xl border-2 border-[#141413] p-5 sm:p-6 shadow-[2px_2px_0px_0px_#141413] space-y-4">
-                <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
-                  <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-[#141413]">
-                    <div className="w-6 h-6 rounded bg-[#141413] text-white flex items-center justify-center">
-                      <MessageSquare className="w-3.5 h-3.5" />
-                    </div>
-                    INTERVIEWER'S BRIEFING & DATA
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setStep(1)}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#141413] bg-white text-xs font-bold text-slate-700 hover:bg-[#FFF3A7] transition-all shadow-[1px_1px_0px_0px_#141413] cursor-pointer"
-                  >
-                    <Edit3 className="w-3 h-3" />
-                    <span>Edit Questions</span>
-                  </button>
-                </div>
-
-                <p className="text-xs sm:text-sm font-bold text-slate-900">
-                  Based on your clarifying setup, here are the physical constraints and parameters provided:
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-slate-800">
-                  {currentCase.interviewerData.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2 bg-white p-3 rounded-lg border border-slate-200">
-                      <span className="font-black text-[#188ab2] shrink-0">•</span>
-                      <div>
-                        <strong className="text-[#141413] block mb-0.5">{item.label}</strong>
-                        <span className="text-slate-700">{item.value}</span>
+              {/* Reveal Reference Solution for Variant B */}
+              {isSubmittedB && (
+                <div className="mt-6 pt-6 border-t-2 border-slate-200 space-y-4">
+                  <div className="bg-[#FEF08A]/40 rounded-xl border-2 border-[#141413] p-5 shadow-[2px_2px_0px_0px_#141413] space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 font-mono text-xs font-black uppercase text-[#141413]">
+                        <Calculator className="w-4 h-4 text-[#188ab2]" />
+                        <span>{currentCase.referenceCalculation.frameworkTitle}</span>
                       </div>
+                      <span className="font-mono text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">
+                        {validationB.correctCount} / 6 Parts Verified
+                      </span>
                     </div>
-                  ))}
-                </div>
 
-                <div className="bg-amber-50/70 p-3 rounded-lg border border-amber-200 text-xs text-slate-700 font-medium flex items-start gap-2">
-                  <span className="font-bold text-amber-700 shrink-0">•</span>
-                  <div>
-                    <strong className="text-amber-900">Other requested parameters:</strong>{' '}
-                    {currentCase.otherRequestedInfo}
-                  </div>
-                </div>
-              </div>
+                    <div className="space-y-3">
+                      {currentCase.referenceCalculation.steps.map((st, i) => (
+                        <div key={i} className="bg-white p-3.5 rounded-lg border border-[#141413]">
+                          <div className="font-black text-xs sm:text-sm text-[#141413] mb-1">
+                            {st.title}
+                          </div>
+                          <div className="font-mono text-xs sm:text-sm font-bold text-[#188ab2] bg-slate-50 p-2 rounded border border-slate-200 mb-1.5">
+                            {st.math}
+                          </div>
+                          <p className="text-xs text-slate-600 font-medium">{st.explanation}</p>
+                        </div>
+                      ))}
+                    </div>
 
-              {/* The Answer Canvas Workspace */}
-              <div className="bg-[#FFFDF0] rounded-2xl border-[2.5px] border-[#141413] p-6 shadow-[3px_3px_0px_0px_#141413] space-y-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="font-mono text-[11px] font-black uppercase text-[#188ab2] tracking-wider block mb-1">
-                      STEP 2 • ANSWER CANVAS
-                    </span>
-                    <h3 className="text-xl sm:text-2xl font-black text-[#141413]">
-                      Formulate Your Stone Estimate
-                    </h3>
-                  </div>
-                  <div className="w-9 h-9 rounded-xl bg-[#FEF08A] border-2 border-[#141413] flex items-center justify-center font-black text-sm">
-                    🪨
-                  </div>
-                </div>
-
-                <p className="text-xs sm:text-sm text-slate-700 font-medium">
-                  Use the parameters above to formulate your solution. Show your math formula (e.g. Length × Width × Height ÷ Stone Volume), state intermediate assumptions, and calculate your final stone count.
-                </p>
-
-                <form onSubmit={handleSubmitCanvas} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-black uppercase text-[#141413] mb-1.5">
-                      Your Calculation & Logic Steps:
-                    </label>
-                    <textarea
-                      rows={5}
-                      value={userAnswerCanvas}
-                      onChange={(e) => setUserAnswerCanvas(e.target.value)}
-                      placeholder="e.g.&#10;1. Total volume formula = Length × Width × Height&#10;2. Convert units: 48 km = 48,000 m...&#10;3. Total stones required = Total volume ÷ unit volume of stone..."
-                      className="w-full p-3.5 rounded-xl border-2 border-[#141413] font-mono text-xs sm:text-sm bg-white shadow-[1.5px_1.5px_0px_0px_#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2]"
-                    />
+                    <div className="bg-[#141413] text-white p-4 rounded-xl border-2 border-[#141413] space-y-2">
+                      <div className="font-mono text-[11px] font-black uppercase text-[#FEF08A]">
+                        ★ Final Calculated Solution:
+                      </div>
+                      <div className="text-xl sm:text-2xl font-black text-white">
+                        {currentCase.referenceCalculation.finalAnswer}
+                      </div>
+                      <p className="text-xs text-slate-300 font-medium leading-relaxed pt-1">
+                        {currentCase.referenceCalculation.sanityCheck}
+                      </p>
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-black uppercase text-[#141413] mb-1.5">
-                      Your Final Stone Count Estimate:
-                    </label>
-                    <input
-                      type="text"
-                      value={userFinalEstimate}
-                      onChange={(e) => setUserFinalEstimate(e.target.value)}
-                      placeholder="e.g. 5,040,000 or 5.04 Million stones"
-                      className="w-full sm:w-80 p-3 rounded-lg border-2 border-[#141413] font-mono text-sm bg-white shadow-[1.5px_1.5px_0px_0px_#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2]"
-                      required
-                    />
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-slate-200">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                     <button
                       type="button"
-                      onClick={() => setStep(1)}
-                      className="px-4 py-2.5 rounded-xl border-2 border-[#141413] bg-white hover:bg-slate-50 font-bold text-xs uppercase tracking-wide cursor-pointer transition-all text-center"
+                      onClick={() => {
+                        setIsSubmittedB(false);
+                      }}
+                      className="px-4 py-2.5 rounded-xl border-2 border-[#141413] bg-white hover:bg-slate-50 font-bold text-xs uppercase tracking-wide cursor-pointer transition-all flex items-center gap-1.5"
                     >
-                      ← Back to Questions
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Reset Boxes & Try Again</span>
                     </button>
 
-                    <button
-                      type="submit"
-                      className="px-7 py-3 rounded-xl border-[2.5px] border-[#141413] bg-[#059669] hover:bg-[#047857] text-white font-black text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_0px_#141413] transition-all cursor-pointer flex items-center justify-center gap-2"
+                    <Link
+                      to="/chronicle"
+                      className="px-5 py-2.5 rounded-xl border-2 border-[#141413] bg-[#FEF08A] hover:bg-[#FDE047] font-black text-xs uppercase tracking-wide cursor-pointer transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_0px_#141413]"
                     >
-                      <span>Submit Estimate & Reveal Evaluation</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
+                      <span>Return to Ramayana Chronicle</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
                   </div>
-                </form>
-              </div>
+                </div>
+              )}
             </div>
-          )}
-
-          {/* ── STEP 3: INTERVIEWER REVEAL & DYNAMIC HINTS ───────────── */}
-          {step === 3 && (
-            <div className="space-y-6">
-              {/* Question Headline Recap */}
-              <div>
-                <h2 className="text-2xl sm:text-3xl font-black text-[#141413] tracking-tight leading-tight">
-                  {currentCase.clarifyingPrompt}
-                </h2>
-              </div>
-
-              {/* INTERVIEWER ANSWER BOX (Matches Reference Screenshot) */}
-              <div className="bg-[#FAF9F5] rounded-xl border-2 border-[#141413] p-5 sm:p-6 shadow-[2px_2px_0px_0px_#141413]">
-                <div className="flex items-center justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-[#141413]">
-                    <div className="w-6 h-6 rounded bg-[#141413] text-white flex items-center justify-center">
-                      <MessageSquare className="w-3.5 h-3.5" />
-                    </div>
-                    INTERVIEWER ANSWER
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleRevise}
-                    className="flex items-center gap-1 px-3 py-1 rounded-lg border border-[#141413] bg-white text-xs font-bold text-slate-700 hover:bg-[#FFF3A7] transition-all shadow-[1px_1px_0px_0px_#141413] cursor-pointer"
-                  >
-                    <RotateCcw className="w-3 h-3" />
-                    <span>Revise</span>
-                  </button>
-                </div>
-
-                <p className="text-sm font-bold text-slate-900 mb-3">
-                  Here is what the case provides now:
-                </p>
-
-                <div className="space-y-2.5 text-xs sm:text-sm text-slate-800 mb-4">
-                  {currentCase.interviewerData.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2 bg-white p-3 rounded-lg border border-slate-200">
-                      <span className="font-black text-[#188ab2] shrink-0">•</span>
-                      <div>
-                        <strong className="text-[#141413]">{item.label}:</strong> {item.value}
-                      </div>
-                    </div>
-                  ))}
-
-                  <div className="flex items-start gap-2 bg-amber-50/60 p-3 rounded-lg border border-amber-200 text-slate-700 font-medium">
-                    <span className="font-bold text-amber-700 shrink-0">•</span>
-                    <div>
-                      <strong className="text-amber-900">Other requested information:</strong>{' '}
-                      {currentCase.otherRequestedInfo}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Candidate's submitted text preview toggle */}
-                <div className="pt-2 border-t border-slate-200 text-xs text-slate-500 flex items-center justify-between">
-                  <button
-                    type="button"
-                    onClick={() => setShowSubmittedRecap(!showSubmittedRecap)}
-                    className="text-[#188ab2] font-black hover:underline flex items-center gap-1 cursor-pointer"
-                  >
-                    <span>{showSubmittedRecap ? 'Hide your submitted work' : 'View your submitted questions & answer'}</span>
-                    {showSubmittedRecap ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleRevise}
-                    className="text-slate-600 font-bold hover:text-black underline"
-                  >
-                    Edit your inputs
-                  </button>
-                </div>
-
-                {showSubmittedRecap && (
-                  <div className="mt-3 p-3 bg-white rounded-lg border border-slate-200 text-xs space-y-2">
-                    <div>
-                      <strong className="text-slate-900 block">Clarifying Questions Asked:</strong>
-                      <p className="text-slate-700 whitespace-pre-wrap mt-0.5">{userQuestions}</p>
-                    </div>
-                    {userAnswerCanvas && (
-                      <div className="pt-2 border-t border-slate-100">
-                        <strong className="text-slate-900 block">Answer Canvas Steps:</strong>
-                        <p className="text-slate-700 font-mono whitespace-pre-wrap mt-0.5">{userAnswerCanvas}</p>
-                      </div>
-                    )}
-                    {userFinalEstimate && (
-                      <div className="pt-2 border-t border-slate-100">
-                        <strong className="text-slate-900 block">Your Final Estimate:</strong>
-                        <p className="font-mono font-black text-[#188ab2]">{userFinalEstimate}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* DYNAMIC HINTS CARD ("First answer in ^") */}
-              <div className="bg-white rounded-xl border-2 border-[#141413] overflow-hidden shadow-[3px_3px_0px_0px_#141413]">
-                <button
-                  type="button"
-                  onClick={() => setIsFeedbackOpen(!isFeedbackOpen)}
-                  className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors border-b-2 border-[#141413] text-left cursor-pointer"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="font-serif italic font-bold text-base sm:text-lg text-[#141413]">
-                      First answer in
-                    </span>
-                    {isAiLoading && (
-                      <span className="text-xs font-mono font-bold text-amber-600 animate-pulse flex items-center gap-1">
-                        <Sparkles className="w-3 h-3" /> Analyzing with AI...
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    {isFeedbackOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                  </div>
-                </button>
-
-                {isFeedbackOpen && (
-                  <div className="p-5 sm:p-6 space-y-5">
-                    {/* WHAT WORKED */}
-                    <div>
-                      <div className="font-mono text-xs font-black uppercase text-[#059669] tracking-wider mb-1.5 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        WHAT WORKED
-                      </div>
-                      <p className="text-sm font-medium text-slate-800 leading-relaxed bg-[#F0FDF4] p-3.5 rounded-xl border border-emerald-200">
-                        {aiFeedback?.whatWorked || evaluationResult.whatWorked}
-                      </p>
-                    </div>
-
-                    {/* DO THIS NEXT */}
-                    <div>
-                      <div className="font-mono text-xs font-black uppercase text-[#D97706] tracking-wider mb-1.5 flex items-center gap-1.5">
-                        <AlertTriangle className="w-3.5 h-3.5" />
-                        DO THIS NEXT
-                      </div>
-                      <p className="text-sm font-medium text-slate-800 leading-relaxed bg-[#FFFBEB] p-3.5 rounded-xl border border-amber-200">
-                        {aiFeedback?.doThisNext || evaluationResult.doThisNext}
-                      </p>
-                    </div>
-
-                    {/* Show reference answer dropdown */}
-                    <div className="pt-2 border-t border-slate-100">
-                      <button
-                        type="button"
-                        onClick={() => setShowReferenceAnswer(!showReferenceAnswer)}
-                        className="text-xs sm:text-sm font-bold text-slate-600 hover:text-black flex items-center gap-1 cursor-pointer"
-                      >
-                        <span>{showReferenceAnswer ? 'Hide reference answer' : 'Show reference answer'}</span>
-                        {showReferenceAnswer ? (
-                          <ChevronUp className="w-3.5 h-3.5" />
-                        ) : (
-                          <ChevronDown className="w-3.5 h-3.5" />
-                        )}
-                      </button>
-
-                      {showReferenceAnswer && (
-                        <div className="mt-4 bg-[#FEF08A]/40 rounded-xl border-2 border-[#141413] p-5 shadow-[2px_2px_0px_0px_#141413] space-y-4">
-                          <div className="flex items-center gap-2 font-mono text-xs font-black uppercase text-[#141413]">
-                            <Calculator className="w-4 h-4 text-[#188ab2]" />
-                            <span>{currentCase.referenceCalculation.frameworkTitle}</span>
-                          </div>
-
-                          <div className="space-y-3">
-                            {currentCase.referenceCalculation.steps.map((st, i) => (
-                              <div key={i} className="bg-white p-3.5 rounded-lg border border-[#141413]">
-                                <div className="font-black text-xs sm:text-sm text-[#141413] mb-1">
-                                  {st.title}
-                                </div>
-                                <div className="font-mono text-xs sm:text-sm font-bold text-[#188ab2] bg-slate-50 p-2 rounded border border-slate-200 mb-1.5">
-                                  {st.math}
-                                </div>
-                                <p className="text-xs text-slate-600 font-medium">{st.explanation}</p>
-                              </div>
-                            ))}
-                          </div>
-
-                          <div className="bg-[#141413] text-white p-4 rounded-xl border-2 border-[#141413] space-y-2">
-                            <div className="font-mono text-[11px] font-black uppercase text-[#FEF08A]">
-                              ★ Final Calculated Solution:
-                            </div>
-                            <div className="text-xl sm:text-2xl font-black text-white">
-                              {currentCase.referenceCalculation.finalAnswer}
-                            </div>
-                            <p className="text-xs text-slate-300 font-medium leading-relaxed pt-1">
-                              {currentCase.referenceCalculation.sanityCheck}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Action buttons at the bottom of reveal */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={handleRevise}
-                  className="px-5 py-2.5 rounded-xl border-2 border-[#141413] bg-white hover:bg-slate-50 font-bold text-xs uppercase tracking-wide cursor-pointer transition-all flex items-center gap-1.5"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  <span>Revise Estimate or Questions</span>
-                </button>
-
-                <Link
-                  to="/chronicle"
-                  className="px-5 py-2.5 rounded-xl border-2 border-[#141413] bg-[#FEF08A] hover:bg-[#FDE047] font-black text-xs uppercase tracking-wide cursor-pointer transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_0px_#141413]"
-                >
-                  <span>Return to Ramayana Chronicle</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
