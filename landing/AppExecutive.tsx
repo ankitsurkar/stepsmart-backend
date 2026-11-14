@@ -24,7 +24,6 @@ import { startBrochureDownload, saveLeadToDemoDB } from './AppBrutalism';
 export function AppExecutive() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openWeek, setOpenWeek] = useState<number | null>(1);
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [batchConfig, setBatchConfig] = useState<BatchConfig>(() => getStoredBatchConfig());
 
   // Interactive modular checkboxes for Modules 1, 2, 3 + 1:1 mentoring
@@ -226,9 +225,6 @@ export function AppExecutive() {
             <button onClick={() => scrollToSection('system')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Cohort
             </button>
-            <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
-              How it works
-            </button>
             <button onClick={() => scrollToSection('curriculum')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Curriculum
             </button>
@@ -238,9 +234,9 @@ export function AppExecutive() {
             <button onClick={() => scrollToSection('pricing')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Pricing
             </button>
-            <button onClick={() => scrollToSection('faq')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
-              FAQ
-            </button>
+            <Link to="/blog" className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
+              Blog
+            </Link>
           </nav>
 
           {/* Right Action Buttons: Rounded Pill Buttons (Image 5 & 6) */}
@@ -289,9 +285,6 @@ export function AppExecutive() {
             <button onClick={() => scrollToSection('system')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               Cohort Modules
             </button>
-            <button onClick={() => scrollToSection('how-it-works')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
-              How It Works
-            </button>
             <button onClick={() => scrollToSection('curriculum')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               Curriculum (8 Weeks)
             </button>
@@ -301,9 +294,13 @@ export function AppExecutive() {
             <button onClick={() => scrollToSection('pricing')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               Pricing
             </button>
-            <button onClick={() => scrollToSection('faq')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
-              FAQ
-            </button>
+            <Link
+              to="/blog"
+              onClick={() => setIsMenuOpen(false)}
+              className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10 hover:text-[#188ab2] transition-colors"
+            >
+              Blog
+            </Link>
             <div className="flex flex-col gap-3 pt-3">
               <button
                 onClick={() => scrollToSection('pricing')}
@@ -1460,115 +1457,6 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 7. HOW IT WORKS */}
-        <section id="how-it-works" className="py-20 bg-white border-b-2 border-[#141413] scroll-mt-20">
-          <div className="container mx-auto px-6 max-w-6xl text-left">
-            
-            <div className="text-center mb-14">
-              <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block mb-3 select-none">
-                HOW IT WORKS
-              </span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#141413] tracking-tight mb-3">
-                Built around a{' '}
-                <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[1.5deg] shadow-[0px_3px_0px_0px_#141413]">
-                  full-time job
-                </span>
-              </h2>
-              <p className="text-sm sm:text-base font-bold text-[#141413]/80 max-w-xl mx-auto">
-                No quitting your job. Everything is designed around evening and weekend momentum.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              
-              {/* Point 1 */}
-              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
-                <div>
-                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">01 // DURATION</div>
-                  <h3 className="text-lg font-black text-[#141413] mb-2">About 10 weeks</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
-                    About 10 weeks. Modules run 5–8 weeks each.
-                  </p>
-                </div>
-              </div>
-
-              {/* Point 2 */}
-              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
-                <div>
-                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">02 // LAUNCH DATE</div>
-                  <h3 className="text-lg font-black text-[#141413] mb-2">Starts 23 Nov</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
-                    Starts 23 Nov. Intake strictly capped for the upcoming cohort.
-                  </p>
-                </div>
-              </div>
-
-              {/* Point 3 */}
-              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
-                <div>
-                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">03 // BATCH SIZE</div>
-                  <h3 className="text-lg font-black text-[#141413] mb-2">Groups of 10–20</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
-                    Live, in groups of 10–20. Everyone gets feedback, not just the loudest voice.
-                  </p>
-                </div>
-              </div>
-
-              {/* Point 4 */}
-              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
-                <div>
-                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">04 // INSTRUCTORS</div>
-                  <h3 className="text-lg font-black text-[#141413] mb-2">Two working PM instructors</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
-                    Two instructors, both working in product.
-                  </p>
-                </div>
-              </div>
-
-              {/* Point 5 */}
-              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
-                <div>
-                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">05 // FEEDBACK</div>
-                  <h3 className="text-lg font-black text-[#141413] mb-2">1:1 feedback on 2 mock interviews</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
-                    1:1 feedback on your 2 mock interviews. Everything else is live group work.
-                  </p>
-                </div>
-              </div>
-
-              {/* Point 6 */}
-              <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_6px_0px_0px_#141413] transition-all">
-                <div>
-                  <div className="font-mono font-black text-xs text-[#188ab2] uppercase mb-2">06 // DIRECT MENTORSHIP</div>
-                  <h3 className="text-lg font-black text-[#141413] mb-2">Mentor support on WhatsApp</h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#141413]/85 leading-relaxed">
-                    Mentor support on WhatsApp between sessions.
-                  </p>
-                </div>
-              </div>
-
-              {/* Point 7 */}
-              <div className="bg-[#FEF08A] rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] md:col-span-2 lg:col-span-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                  <div className="font-mono font-black text-xs text-[#141413] uppercase mb-1">07 // WEEKEND SCHEDULE</div>
-                  <h3 className="text-xl font-black text-[#141413] mb-1">Saturday &amp; Sunday live sessions</h3>
-                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85">
-                    Saturday &amp; Sunday live sessions (4–6 hours/week, designed for working professionals).
-                  </p>
-                </div>
-                <button
-                  onClick={() => scrollToSection('pricing')}
-                  className="px-7 py-3.5 bg-[#188ab2] hover:bg-[#0f6f8f] text-white rounded-full border-2 border-[#141413] font-black text-xs sm:text-sm uppercase shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] transition-all shrink-0 cursor-pointer"
-                >
-                  Reserve Your Seat ➜
-                </button>
-              </div>
-
-            </div>
-
-          </div>
-        </section>
-
         {/* 8. WHAT YOU WALK AWAY WITH */}
         <section id="outcomes" className="py-20 bg-white border-b-2 border-[#141413] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-6xl text-center">
@@ -2477,99 +2365,6 @@ export function AppExecutive() {
                   {step.action && step.action}
                 </div>
               ))}
-            </div>
-
-          </div>
-        </section>
-
-        {/* 15. QUESTIONS, ANSWERED (11 Rewritten FAQs) */}
-        <section id="faq" className="py-20 bg-slate-50 border-b-2 border-[#141413] scroll-mt-20">
-          <div className="container mx-auto px-6 max-w-4xl">
-            
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-black text-[#141413] mb-3 tracking-tight">
-                Questions,{' '}
-                <span className="inline-block bg-[#FEF08A] rounded-xl border-2 border-[#141413] px-3.5 py-0.5 rotate-[-1deg] shadow-[0px_3px_0px_0px_#141413]">
-                  answered
-                </span>
-              </h2>
-            </div>
-
-            {/* Rounded Editorial Container for FAQs */}
-            <div className="bg-white rounded-3xl border-2 border-[#141413] shadow-[0px_5px_0px_0px_#141413] divide-y divide-[#141413]/15 text-left overflow-hidden">
-              {[
-                {
-                  q: "Do I need an MBA, an IIT degree or a tech background?",
-                  a: "No. The Accelerator starts from your real experience and what you can show. People come from ops, QA, analytics, engineering, marketing, design and other fields."
-                },
-                {
-                  q: "I’m not from tech. Is this still for me?",
-                  a: "Yes, if you have no PM title yet. Module 1 maps your current work to PM skills, whatever your field, using real job descriptions."
-                },
-                {
-                  q: "Can I do this with a full-time job?",
-                  a: "Sessions are live on Saturdays and Sundays (7:00 PM – 9:00 PM IST), with about 4–6 hours a week of project work. All live sessions are recorded and shared within hours so you never fall behind."
-                },
-                {
-                  q: "What if I miss a session?",
-                  a: "Every live session is recorded and uploaded within hours, and you can get any doubts answered directly by mentors on WhatsApp before the next session."
-                },
-                {
-                  q: "Can I buy just one module?",
-                  a: isEarlyBird
-                    ? "Yes. Each module is ₹5,000 in the Diwali offer (₹7,000 regular). The bundle is ₹15,000 for all three and adds the Learn Module free."
-                    : "Yes. Each module is ₹7,000. The bundle is ₹21,000 for all three and adds the Learn Module free."
-                },
-                {
-                  q: "Which module should I pick?",
-                  a: "If your resume gets no replies, start with Module 1. If you have nothing to show, Module 2. If you freeze in interviews, Module 3. If more than one is true, the bundle."
-                },
-                {
-                  q: "What is in the Learn Module?",
-                  a: "Recorded lectures, a question bank, case resources, company-wise resources and PM Gym. It comes free with the bundle and is not sold separately."
-                },
-                {
-                  q: "How is this different from watching videos on my own?",
-                  a: "You work live, in a group of 8–10, on your own resume, projects and answers, and you get feedback on them."
-                },
-                {
-                  q: "Who gives me feedback?",
-                  a: "Two instructors. You get group feedback in sessions and 1:1 feedback on your 2 mock interviews. Mentor support continues on WhatsApp."
-                },
-                {
-                  q: "Will I get a job?",
-                  a: "No guarantee, and we won’t pretend otherwise. You finish with a PM-ready resume, two portfolio projects and interview practice, and what you do with them is up to you."
-                },
-                {
-                  q: "Do I keep access afterwards?",
-                  a: "You retain lifetime access to class recordings and the Learn Module library. The PM Gym, job board access, and the WhatsApp group stay active for 3 months after the cohort ends."
-                }
-              ].map((faq, idx) => {
-                const isOpen = openFaq === idx;
-                return (
-                  <div key={idx} className="transition-colors hover:bg-black/[0.02]">
-                    <button
-                      onClick={() => setOpenFaq(isOpen ? null : idx)}
-                      className="w-full py-5 px-4 sm:px-6 flex items-center justify-between text-left cursor-pointer group"
-                    >
-                      <div className="flex items-center gap-4 flex-1 pr-4">
-                        <span className="font-mono text-xs font-black text-[#188ab2] shrink-0">
-                          {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
-                        </span>
-                        <span className="font-black text-base sm:text-lg text-[#141413] group-hover:text-[#188ab2] transition-colors tracking-tight">
-                          {faq.q}
-                        </span>
-                      </div>
-                      <ChevronDown className={`w-5 h-5 text-[#141413] stroke-[2.5] transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180 text-[#188ab2]' : ''}`} />
-                    </button>
-                    {isOpen && (
-                      <div className="pb-6 pt-1 px-4 sm:px-6 pl-10 sm:pl-14 font-medium text-xs sm:text-sm text-[#141413]/85 leading-relaxed">
-                        {faq.a}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
             </div>
 
           </div>

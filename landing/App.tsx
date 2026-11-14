@@ -24,6 +24,7 @@ import {
 import { Analytics } from '@vercel/analytics/react';
 
 const RamayanaChroniclePage = React.lazy(() => import('./RamayanaChroniclePage').then(m => ({ default: m.RamayanaChroniclePage })));
+import { DEFAULT_BLOGS, mergeWithDefaultBlogs } from './blogData';
 
 // Firebase Imports
 import { initializeApp } from 'firebase/app';
@@ -852,8 +853,8 @@ export function formatImageUrl(url?: string): string {
 
 function BlogPage() {
   const { blogId } = useParams();
-  const [blogs, setBlogs] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [blogs, setBlogs] = useState<any[]>(() => DEFAULT_BLOGS);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -870,10 +871,11 @@ function BlogPage() {
         );
         if (!res.ok) throw new Error('Failed to fetch blog posts');
         const data = await res.json();
-        setBlogs(data.blogs || []);
+        const merged = mergeWithDefaultBlogs(data.blogs || []);
+        setBlogs(merged);
       } catch (err: any) {
         console.error(err);
-        setError(err.message || 'Failed to load blog posts.');
+        setBlogs(prev => (prev && prev.length > 0 ? prev : DEFAULT_BLOGS));
       } finally {
         setLoading(false);
       }
@@ -900,22 +902,99 @@ function BlogPage() {
       return placeholder;
     });
 
-    // 2. Escape HTML special characters
+    // 2. Extract markdown tables before character escaping
+    const lines = processed.split(/\r?\n/);
+    const outLines: string[] = [];
+    let inTable = false;
+    let tableLines: string[] = [];
+
+    const renderTable = (tLines: string[]) => {
+      if (tLines.length < 2) return tLines.join('\n');
+      const isSeparator = (line: string) => /^\|(?:\s*:?-+:?\s*\|)+$/.test(line);
+      let headerLine = '';
+      let rowLines: string[] = [];
+      if (tLines.length >= 2 && isSeparator(tLines[1])) {
+        headerLine = tLines[0];
+        rowLines = tLines.slice(2);
+      } else {
+        rowLines = tLines;
+      }
+      const splitRow = (line: string) => line.replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
+      let h = '<div class="my-8 overflow-x-auto border border-slate-200 rounded-xl shadow-sm bg-white">';
+      h += '<table class="w-full text-left border-collapse">';
+      if (headerLine) {
+        const headers = splitRow(headerLine);
+        h += '<thead><tr class="bg-slate-50 border-b border-slate-200">';
+        headers.forEach(head => {
+          h += `<th class="py-3 px-4 font-bold text-xs uppercase tracking-wider text-slate-700 border-r border-slate-200 last:border-r-0">${head}</th>`;
+        });
+        h += '</tr></thead>';
+      }
+      h += '<tbody class="divide-y border-slate-200">';
+      rowLines.forEach(r => {
+        if (isSeparator(r)) return;
+        const cells = splitRow(r);
+        h += '<tr class="hover:bg-slate-50/50 transition-colors">';
+        cells.forEach((c, idx) => {
+          const isFirstCol = idx === 0;
+          let formatted = c
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+          h += `<td class="py-3.5 px-4 text-sm text-slate-700 border-r border-slate-200 last:border-r-0 align-top ${isFirstCol ? 'font-bold bg-slate-50/60 whitespace-nowrap' : 'leading-relaxed'}">${formatted}</td>`;
+        });
+        h += '</tr>';
+      });
+      h += '</tbody></table></div>';
+      return h;
+    };
+
+    for (let i = 0; i < lines.length; i++) {
+      const l = lines[i].trim();
+      if (l.startsWith('|') && l.endsWith('|')) {
+        inTable = true;
+        tableLines.push(l);
+      } else {
+        if (inTable) {
+          const placeholder = `__TABLE_PLACEHOLDER_${imgPlaceholders.length}__`;
+          imgPlaceholders.push({ placeholder, html: renderTable(tableLines) });
+          outLines.push(placeholder);
+          inTable = false;
+          tableLines = [];
+        }
+        outLines.push(lines[i]);
+      }
+    }
+    if (inTable) {
+      const placeholder = `__TABLE_PLACEHOLDER_${imgPlaceholders.length}__`;
+      imgPlaceholders.push({ placeholder, html: renderTable(tableLines) });
+      outLines.push(placeholder);
+    }
+
+    processed = outLines.join('\n');
+
+    // 3. Escape HTML special characters
     let html = processed
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
-    // 3. Headings
+    // 4. Headings
     html = html.replace(/^### (.*?)$/gm, '<h3 class="text-xl font-bold mt-6 mb-3 text-slate-800">$1</h3>');
     html = html.replace(/^## (.*?)$/gm, '<h2 class="text-2xl font-bold mt-8 mb-4 border-b border-slate-100 pb-2 text-slate-900">$1</h2>');
     html = html.replace(/^# (.*?)$/gm, '<h1 class="text-3xl font-extrabold mt-10 mb-6 text-slate-900 leading-tight">$1</h1>');
 
-    // 4. Bold & Italic
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    // 5. Bold & Italic
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
 
-    // 5. Markdown Images ![alt](url)
+    // 6. Ordered Lists (e.g. 1. text)
+    html = html.replace(/^(\d+)\.\s+(.*)$/gm, '<div class="flex items-start gap-3 my-3 pl-1"><span class="flex items-center justify-center w-6 h-6 rounded-md bg-slate-100 font-mono text-xs font-bold text-slate-700 shrink-0">$1</span><div class="font-normal text-slate-700 leading-relaxed pt-0.5">$2</div></div>');
+
+    // 7. Bullet Lists (e.g. • or - or *)
+    html = html.replace(/^[•\-\*]\s+(.*)$/gm, '<div class="flex items-start gap-3 my-2.5 pl-1"><span class="w-2 h-2 rounded-full bg-[#188ab2] mt-2 shrink-0"></span><div class="font-normal text-slate-700 leading-relaxed">$1</div></div>');
+
+    // 8. Markdown Images ![alt](url)
     html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
       const rawUrl = url.replace(/&amp;/g, '&');
       const formattedUrl = formatImageUrl(rawUrl);
@@ -923,29 +1002,35 @@ function BlogPage() {
       return `<figure class="my-8"><img src="${formattedUrl}" alt="${alt}" class="max-w-full h-auto rounded-2xl mx-auto shadow-md block" loading="lazy" onError="this.parentElement.style.display='none'" />${!isGenericAlt ? `<figcaption class="text-center text-xs text-slate-400 mt-2">${alt}</figcaption>` : ''}</figure>`;
     });
 
-    // 6. Standalone Image URLs
+    // 9. Standalone Image URLs
     html = html.replace(/^(https?:\/\/[^\s<>]+\.(?:png|jpg|jpeg|gif|webp|svg)(?:\?[^\s<>]*)?)$/gim, (match, url) => {
       const rawUrl = url.replace(/&amp;/g, '&');
       const formattedUrl = formatImageUrl(rawUrl);
       return `<figure class="my-8"><img src="${formattedUrl}" alt="Blog Image" class="max-w-full h-auto rounded-2xl mx-auto shadow-md block" loading="lazy" onError="this.parentElement.style.display='none'" /></figure>`;
     });
 
-    // 7. Markdown Links [text](url)
+    // 10. Markdown Links [text](url)
     html = html.replace(/\[(.*?)\]\((.*?)\)/g, (match, text, url) => {
       const rawUrl = url.replace(/&amp;/g, '&');
       const formattedUrl = formatImageUrl(rawUrl);
       return `<a href="${formattedUrl}" target="_blank" class="text-[#188ab2] hover:underline font-semibold">${text}</a>`;
     });
 
-    // 8. Restore extracted HTML img placeholders
-    imgPlaceholders.forEach(({ placeholder, html: imgHtml }) => {
-      html = html.replace(placeholder, imgHtml);
+    // 11. Restore extracted HTML img placeholders
+    imgPlaceholders.forEach(({ placeholder, html: phHtml }) => {
+      html = html.replace(placeholder, phHtml);
     });
 
-    // 9. Paragraph wrapping
-    html = html.replace(/\n\n/g, '</p><p class="mb-5 text-slate-600 leading-relaxed text-base md:text-lg">');
-    html = '<p class="mb-5 text-slate-600 leading-relaxed text-base md:text-lg">' + html + '</p>';
-    html = html.replace(/<p class=".*?"><\/p>/g, '');
+    // 12. Paragraph wrapping
+    const blocks = html.split(/\n\n+/);
+    html = blocks.map(b => {
+      const trimmed = b.trim();
+      if (!trimmed) return '';
+      if (trimmed.startsWith('<h') || trimmed.startsWith('<div') || trimmed.startsWith('<figure') || trimmed.startsWith('<table')) {
+        return trimmed;
+      }
+      return `<p class="mb-5 text-slate-600 leading-relaxed text-base md:text-lg">${trimmed}</p>`;
+    }).join('\n\n');
 
     return html;
   };

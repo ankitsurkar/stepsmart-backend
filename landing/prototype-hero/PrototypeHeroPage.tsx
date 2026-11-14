@@ -169,16 +169,12 @@ export function PrototypeHeroPage() {
             >
               Pricing
             </a>
-            <a 
-              href="#faq" 
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
-              }}
+            <Link 
+              to="/blog" 
               className="hover:text-stone-900 transition-colors cursor-pointer"
             >
-              FAQ
-            </a>
+              Blog
+            </Link>
           </nav>
 
           {/* Right: Login + Chat + RESERVE SEAT · ₹15K → */}
@@ -269,9 +265,6 @@ export function PrototypeHeroPage() {
 
       {/* 15. HOW TO JOIN */}
       <HowToJoinEditorial />
-
-      {/* 16. QUESTIONS, ANSWERED (FAQ) */}
-      <FaqEditorial />
 
       {/* 17. FINAL CONVERSION & EDITORIAL FOOTER */}
       <FooterEditorial 

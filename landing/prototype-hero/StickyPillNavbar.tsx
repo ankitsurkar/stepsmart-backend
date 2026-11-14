@@ -83,7 +83,7 @@ export function StickyPillNavbar() {
     { key: 'curriculum', label: 'Curriculum' },
     { key: 'mentors', label: 'Mentors' },
     { key: 'pricing', label: 'Pricing' },
-    { key: 'faq', label: 'FAQ' },
+    { key: 'blog', label: 'Blog', href: '/blog' },
   ];
 
   return (
@@ -110,7 +110,13 @@ export function StickyPillNavbar() {
               <button
                 key={item.key}
                 type="button"
-                onClick={() => scrollTo(item.key)}
+                onClick={() => {
+                  if (item.href) {
+                    window.location.href = item.href;
+                  } else {
+                    scrollTo(item.key);
+                  }
+                }}
                 className={`px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-mono transition-all cursor-pointer select-none whitespace-nowrap ${
                   isActive
                     ? 'bg-[#EBE6DC] text-[#141413] font-semibold shadow-2xs'

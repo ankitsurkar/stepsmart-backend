@@ -14,6 +14,7 @@ const AppExecutive = lazy(() => import('./AppExecutive').then(m => ({ default: m
 const PrototypeHeroPage = lazy(() => import('./prototype-hero/PrototypeHeroPage'));
 const RamayanaChroniclePage = lazy(() => import('./RamayanaChroniclePage').then(m => ({ default: m.RamayanaChroniclePage })));
 const CaseSimulatorPage = lazy(() => import('./CaseSimulatorPage').then(m => ({ default: m.CaseSimulatorPage })));
+import { DEFAULT_BLOGS, mergeWithDefaultBlogs } from './blogData';
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center p-8">
@@ -736,6 +737,7 @@ function ProfessionalsLandingPage() {
               <NavLink href="#curriculum">The Experience</NavLink>
               <NavLink href="#who-is-it-for">Who is it for?</NavLink>
               <NavLink href="#mentors">Mentors</NavLink>
+              <NavLink to="/blog">Blog</NavLink>
               <NavLink to="/resources">Resources</NavLink>
               <a href="/learn" className="ml-2 px-5 py-2 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] transition-all select-none font-extrabold">Login</a>
               <button 
@@ -758,6 +760,7 @@ function ProfessionalsLandingPage() {
             <a href="#curriculum" onClick={(e) => handleMobileLinkClick(e, 'curriculum')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">The Experience</a>
             <a href="#who-is-it-for" onClick={(e) => handleMobileLinkClick(e, 'who-is-it-for')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Who is it for?</a>
             <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+            <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Blog</Link>
             <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Resources</Link>
             <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
             <button 
@@ -1832,80 +1835,6 @@ function ProfessionalsLandingPage() {
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-16 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111111] mb-4">
-              Frequently Asked{' '}
-              <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 py-0.5 rotate-[1.5deg] shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none">
-                Questions
-              </span>
-            </h2>
-            <p className="text-lg font-bold text-[#111111] mt-4">Got questions? We've got answers.</p>
-          </div>
-
-          <div className="space-y-6">
-            {(userType === 'professional' ? [
-              {
-                q: "Do I need an MBA or an IIT degree to join or break into PM?",
-                a: "Absolutely not. The best product managers come from diverse backgrounds like software engineering, analytics, marketing, or design. We screen for logic, user empathy, and problem-solving, not pedigree."
-              },
-              {
-                q: "How is the PM-X Accelerator different from other product management courses?",
-                a: "Most courses are passive video modules. StepSmart is a live career accelerator. Every session is taught live by PMs from Microsoft and Mastercard. You build real product specifications (PRDs) and do live mock interviews."
-              },
-              {
-                q: "What is the commitment required for this course?",
-                a: "You'll need to dedicate 10–12 hours per week in total: 3–4 hours of self-paced recorded modules, 15 minutes/day on PM Gym drills, and a 3-hour live workshop on Saturday. All live sessions are recorded for replay so you can easily balance it with full-time work."
-              },
-              {
-                q: "Do we get lifetime access to the resources and community?",
-                a: "Yes! Once you enroll, you join our WhatsApp Inner Circle and get lifetime access to our PM interview banks, toolstacks, templates, and active alumni network."
-              },
-              {
-                q: "Is there job placement assistance?",
-                a: "We offer complete resume transformation workshops, case study portfolio construction, and direct referrals to top-tier companies through our mentors and alumni network."
-              }
-            ] : [
-              {
-                q: "I have zero corporate experience. Can I still join this student program?",
-                a: "Yes, this program is specifically built for students with zero experience. We help you design real PRDs, build tools hands-on, and simulate placements to bridge that gap."
-              },
-              {
-                q: "What roles will this program prepare me for?",
-                a: "It prepares you for APM (Associate Product Manager) roles, Product Analyst roles, and Product Management internships at tech companies."
-              },
-              {
-                q: "What is the duration of the student cohort?",
-                a: "The program runs for 8 weeks, with structured weekend live sessions, mid-week case evaluations, and interactive placement mock runs."
-              },
-              {
-                q: "How does the referral system work?",
-                a: "Our founders and mentors reference top-performing students directly to companies hiring fresh APMs. We also run resume-matching and referral workshops."
-              }
-            ]).map((faq, i) => (
-              <details 
-                key={i} 
-                className="group border-[3px] border-[#111111] bg-white p-6 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] [&_summary::-webkit-details-marker]:hidden open:shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] open:translate-x-[2px] open:translate-y-[2px] transition-all duration-100 rounded-none select-none"
-              >
-                <summary className="flex items-center justify-between font-extrabold text-base md:text-lg cursor-pointer text-[#111111] list-none">
-                  <span>{faq.q}</span>
-                  <span className="transition group-open:rotate-180 font-bold text-xl shrink-0 ml-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-5 h-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </span>
-                </summary>
-                <p className="mt-4 text-xs md:text-sm font-bold leading-relaxed text-[#111111] border-t-2 border-[#111111]/10 pt-4">
-                  {faq.a}
-                </p>
-              </details>
             ))}
           </div>
         </div>
@@ -3150,8 +3079,8 @@ export function formatImageUrl(url?: string): string {
 
 function BlogPage() {
   const { blogId } = useParams();
-  const [blogs, setBlogs] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [blogs, setBlogs] = useState<any[]>(() => DEFAULT_BLOGS);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -3169,10 +3098,11 @@ function BlogPage() {
         );
         if (!res.ok) throw new Error('Failed to fetch blog posts');
         const data = await res.json();
-        setBlogs(data.blogs || []);
+        const merged = mergeWithDefaultBlogs(data.blogs || []);
+        setBlogs(merged);
       } catch (err: any) {
         console.error(err);
-        setError(err.message || 'Failed to load blog posts.');
+        setBlogs(prev => (prev && prev.length > 0 ? prev : DEFAULT_BLOGS));
       } finally {
         setLoading(false);
       }
@@ -3199,22 +3129,99 @@ function BlogPage() {
       return placeholder;
     });
 
-    // 2. Escape HTML special characters
+    // 2. Extract markdown tables before character escaping
+    const lines = processed.split(/\r?\n/);
+    const outLines: string[] = [];
+    let inTable = false;
+    let tableLines: string[] = [];
+
+    const renderTable = (tLines: string[]) => {
+      if (tLines.length < 2) return tLines.join('\n');
+      const isSeparator = (line: string) => /^\|(?:\s*:?-+:?\s*\|)+$/.test(line);
+      let headerLine = '';
+      let rowLines: string[] = [];
+      if (tLines.length >= 2 && isSeparator(tLines[1])) {
+        headerLine = tLines[0];
+        rowLines = tLines.slice(2);
+      } else {
+        rowLines = tLines;
+      }
+      const splitRow = (line: string) => line.replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
+      let h = '<div class="my-8 overflow-x-auto border-[3px] border-[#111111] shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] bg-white rounded-none">';
+      h += '<table class="w-full text-left border-collapse">';
+      if (headerLine) {
+        const headers = splitRow(headerLine);
+        h += '<thead><tr class="bg-[#FFF3A7] border-b-[3px] border-[#111111]">';
+        headers.forEach(head => {
+          h += `<th class="py-3.5 px-4 font-black text-xs sm:text-sm uppercase tracking-wider text-[#111111] border-r-2 border-[#111111] last:border-r-0">${head}</th>`;
+        });
+        h += '</tr></thead>';
+      }
+      h += '<tbody class="divide-y-2 divide-[#111111]">';
+      rowLines.forEach(r => {
+        if (isSeparator(r)) return;
+        const cells = splitRow(r);
+        h += '<tr class="hover:bg-amber-50/40 transition-colors">';
+        cells.forEach((c, idx) => {
+          const isFirstCol = idx === 0;
+          let formatted = c
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-[#111111]">$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+          h += `<td class="py-3.5 px-4 text-xs sm:text-sm text-[#111111] border-r-2 border-[#111111] last:border-r-0 align-top ${isFirstCol ? 'font-black bg-slate-50/80 whitespace-nowrap' : 'font-medium leading-relaxed'}">${formatted}</td>`;
+        });
+        h += '</tr>';
+      });
+      h += '</tbody></table></div>';
+      return h;
+    };
+
+    for (let i = 0; i < lines.length; i++) {
+      const l = lines[i].trim();
+      if (l.startsWith('|') && l.endsWith('|')) {
+        inTable = true;
+        tableLines.push(l);
+      } else {
+        if (inTable) {
+          const placeholder = `__TABLE_PLACEHOLDER_${imgPlaceholders.length}__`;
+          imgPlaceholders.push({ placeholder, html: renderTable(tableLines) });
+          outLines.push(placeholder);
+          inTable = false;
+          tableLines = [];
+        }
+        outLines.push(lines[i]);
+      }
+    }
+    if (inTable) {
+      const placeholder = `__TABLE_PLACEHOLDER_${imgPlaceholders.length}__`;
+      imgPlaceholders.push({ placeholder, html: renderTable(tableLines) });
+      outLines.push(placeholder);
+    }
+
+    processed = outLines.join('\n');
+
+    // 3. Escape HTML special characters
     let html = processed
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
-    // 3. Headings
+    // 4. Headings
     html = html.replace(/^### (.*?)$/gm, '<h3 class="text-xl font-extrabold mt-8 mb-3 text-[#111111]">$1</h3>');
-    html = html.replace(/^## (.*?)$/gm, '<h2 class="text-2xl font-extrabold mt-10 mb-4 border-b-[3px] border-[#111111] pb-2 text-[#111111]">$1</h2>');
+    html = html.replace(/^## (.*?)$/gm, '<h2 class="text-2xl md:text-3xl font-extrabold mt-10 mb-4 border-b-[3px] border-[#111111] pb-2 text-[#111111]">$1</h2>');
     html = html.replace(/^# (.*?)$/gm, '<h1 class="text-3xl md:text-4xl font-extrabold mt-12 mb-6 text-[#111111] leading-tight">$1</h1>');
 
-    // 4. Bold & Italic
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold">$1</strong>');
+    // 5. Bold & Italic
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-[#111111]">$1</strong>');
     html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
 
-    // 5. Markdown Images ![alt](url)
+    // 6. Ordered Lists (e.g. 1. text)
+    html = html.replace(/^(\d+)\.\s+(.*)$/gm, '<div class="flex items-start gap-3 my-3 pl-1"><span class="flex items-center justify-center w-6 h-6 rounded-md bg-[#FFF3A7] border-2 border-[#111111] font-mono text-xs font-black text-[#111111] shrink-0 shadow-[1.5px_1.5px_0px_0px_#111111]">$1</span><div class="font-medium text-base text-[#111111] leading-relaxed pt-0.5">$2</div></div>');
+
+    // 7. Bullet Lists (e.g. • or - or *)
+    html = html.replace(/^[•\-\*]\s+(.*)$/gm, '<div class="flex items-start gap-3 my-2.5 pl-1"><span class="w-2 h-2 rounded-full bg-[#188ab2] border border-[#111111] mt-2.5 shrink-0"></span><div class="font-medium text-base text-[#111111] leading-relaxed">$1</div></div>');
+
+    // 8. Markdown Images ![alt](url)
     html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
       const rawUrl = url.replace(/&amp;/g, '&');
       const formattedUrl = formatImageUrl(rawUrl);
@@ -3222,29 +3229,35 @@ function BlogPage() {
       return `<figure class="my-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden bg-white"><img src="${formattedUrl}" alt="${alt}" class="max-w-full h-auto mx-auto block" loading="lazy" onError="this.parentElement.style.display='none'" />${!isGenericAlt ? `<figcaption class="text-center text-xs font-bold text-[#111111] border-t-2 border-[#111111] py-2 bg-[#FFF3A7]">${alt}</figcaption>` : ''}</figure>`;
     });
 
-    // 6. Standalone Image URLs
+    // 9. Standalone Image URLs
     html = html.replace(/^(https?:\/\/[^\s<>]+\.(?:png|jpg|jpeg|gif|webp|svg)(?:\?[^\s<>]*)?)$/gim, (match, url) => {
       const rawUrl = url.replace(/&amp;/g, '&');
       const formattedUrl = formatImageUrl(rawUrl);
       return `<figure class="my-8 border-[3px] border-[#111111] shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden bg-white"><img src="${formattedUrl}" alt="Blog Image" class="max-w-full h-auto mx-auto block" loading="lazy" onError="this.parentElement.style.display='none'" /></figure>`;
     });
 
-    // 7. Markdown Links [text](url)
+    // 10. Markdown Links [text](url)
     html = html.replace(/\[(.*?)\]\((.*?)\)/g, (match, text, url) => {
       const rawUrl = url.replace(/&amp;/g, '&');
       const formattedUrl = formatImageUrl(rawUrl);
       return `<a href="${formattedUrl}" target="_blank" class="text-[#188ab2] hover:underline font-extrabold">${text}</a>`;
     });
 
-    // 8. Restore extracted HTML img placeholders
-    imgPlaceholders.forEach(({ placeholder, html: imgHtml }) => {
-      html = html.replace(placeholder, imgHtml);
+    // 11. Restore extracted HTML placeholders
+    imgPlaceholders.forEach(({ placeholder, html: phHtml }) => {
+      html = html.replace(placeholder, phHtml);
     });
 
-    // 9. Paragraph wrapping
-    html = html.replace(/\n\n/g, '</p><p class="mb-6 text-[#111111] leading-relaxed text-base font-bold">');
-    html = '<p class="mb-6 text-[#111111] leading-relaxed text-base font-bold">' + html + '</p>';
-    html = html.replace(/<p class=".*?"><\/p>/g, '');
+    // 12. Paragraph wrapping
+    const blocks = html.split(/\n\n+/);
+    html = blocks.map(b => {
+      const trimmed = b.trim();
+      if (!trimmed) return '';
+      if (trimmed.startsWith('<h') || trimmed.startsWith('<div') || trimmed.startsWith('<figure') || trimmed.startsWith('<table')) {
+        return trimmed;
+      }
+      return `<p class="mb-6 text-[#111111] leading-relaxed text-base font-medium">${trimmed}</p>`;
+    }).join('\n\n');
 
     return html;
   };
