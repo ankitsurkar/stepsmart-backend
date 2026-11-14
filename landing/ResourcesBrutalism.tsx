@@ -1553,9 +1553,18 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
         <nav className="w-full bg-[#FFFFFF] border-b-[3px] border-[#111111]">
           <div className="container mx-auto px-6 h-20 flex items-center justify-between">
             <Logo toHome={true} />
-            <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-              <a href="/#curriculum" className="hover:underline underline-offset-4 decoration-2 decoration-[#188ab2]">Cohort Perks</a>
+            <div className="hidden md:flex items-center gap-6 text-sm font-extrabold text-[#111111]">
+              <Link
+                to="/chronicle"
+                className="flex items-center gap-1.5 bg-[#FFF3A7] hover:bg-[#ffe566] text-[#111111] px-3 py-1 rounded-full border-2 border-[#111111] shadow-[1.5px_1.5px_0px_0px_#111111] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all font-black text-xs uppercase"
+              >
+                <span>🏹</span>
+                <span>Chronicle</span>
+              </Link>
+              <a href="/#system" className="hover:underline underline-offset-4 decoration-2 decoration-[#188ab2]">Cohort</a>
               <a href="/#curriculum" className="hover:underline underline-offset-4 decoration-2 decoration-[#188ab2]">Curriculum</a>
+              <a href="/#mentors" className="hover:underline underline-offset-4 decoration-2 decoration-[#188ab2]">Mentors</a>
+              <a href="/#pricing" className="hover:underline underline-offset-4 decoration-2 decoration-[#188ab2]">Pricing</a>
               <Link to="/resources" className="text-[#188ab2] font-black underline underline-offset-4 decoration-2">Resources</Link>
               <a 
                 href="/learn" 
@@ -1563,8 +1572,8 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
               >
                 Login
               </a>
-              <Button variant="primary" onClick={() => navigate('/#enroll')}>
-                Apply Now
+              <Button variant="primary" onClick={() => navigate('/#pricing')}>
+                Reserve Seat ➜
               </Button>
             </div>
             <button className="md:hidden p-2 border-[3px] border-[#111111] bg-[#FFFFFF]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -1576,11 +1585,14 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
         {/* Mobile Nav */}
         {isMenuOpen && (
           <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-            <a href="/#curriculum" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort Perks</a>
+            <Link to="/chronicle" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">🏹 Ramayana Chronicle</Link>
+            <a href="/#system" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort</a>
             <a href="/#curriculum" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Curriculum</a>
+            <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
+            <a href="/#pricing" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Pricing</a>
             <Link to="/resources" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">Resources</Link>
             <a href="/learn" onClick={() => setIsMenuOpen(false)} className="w-full text-center px-6 py-2.5 border-[3px] border-[#111111] text-[#111111] hover:bg-[#FFF3A7] font-extrabold transition-all">Login</a>
-            <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#enroll'); }}>Apply Now</Button>
+            <Button variant="primary" className="w-full" onClick={() => { setIsMenuOpen(false); navigate('/#pricing'); }}>Reserve Seat ➜</Button>
           </div>
         )}
       </div>

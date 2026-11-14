@@ -234,6 +234,9 @@ export function AppExecutive() {
             <button onClick={() => scrollToSection('pricing')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Pricing
             </button>
+            <Link to="/resources" className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
+              Resources
+            </Link>
             <Link to="/blog" className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Blog
             </Link>
@@ -294,6 +297,13 @@ export function AppExecutive() {
             <button onClick={() => scrollToSection('pricing')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               Pricing
             </button>
+            <Link
+              to="/resources"
+              onClick={() => setIsMenuOpen(false)}
+              className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10 hover:text-[#188ab2] transition-colors"
+            >
+              Resources
+            </Link>
             <Link
               to="/blog"
               onClick={() => setIsMenuOpen(false)}
@@ -2431,9 +2441,15 @@ export function AppExecutive() {
       </main>
 
       {/* 18. FOOTER */}
-      <footer className="bg-white py-12 text-center text-xs font-bold text-[#141413]/80">
+      <footer className="bg-white py-12 text-center text-xs font-bold text-[#141413]/80 border-t-2 border-[#141413]/10">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="mb-4">
+          <div className="flex items-center justify-center gap-6 mb-4 text-xs font-extrabold text-[#141413] flex-wrap">
+            <Link to="/resources" className="hover:text-[#188ab2] transition-colors">Resources</Link>
+            <Link to="/chronicle" className="hover:text-[#188ab2] transition-colors">Ramayana Chronicle</Link>
+            <Link to="/blog" className="hover:text-[#188ab2] transition-colors">PM Blog</Link>
+            <a href="/learn" className="hover:text-[#188ab2] transition-colors">Student Login</a>
+          </div>
+          <div className="mb-2">
             <span className="font-black text-[#141413] text-sm">StepSmart Fellowship</span> · admin@stepsmart.net · stepsmart.net
           </div>
           <div>No placement guarantee. Structured preparation &amp; verifiable proof of work.</div>
