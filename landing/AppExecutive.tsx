@@ -2090,7 +2090,7 @@ export function AppExecutive() {
                     </h4>
                   </div>
                   <p className="text-xs sm:text-sm font-bold text-[#141413]/85 leading-relaxed">
-                    UPI, card, EMI. Direct net banking, credit/debit cards, and zero-cost installments supported.
+                    UPI only
                   </p>
                 </div>
 
