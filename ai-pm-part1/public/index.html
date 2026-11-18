@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    try {
+      var s = localStorage.getItem('aipm-color-scheme');
+      if (s === 'light' || s === 'dark') document.querySelector('meta[name="color-scheme"]').content = s;
+    } catch (e) {}
+  </script>
+  <title>The AI PM, Part 1 — “The Making”</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="launcher-wrap">
+    <header style="display: flex; flex-direction: column; gap: 10px;">
+      <span class="pill pill-accent" style="align-self: flex-start;">The AI PM · Part 1</span>
+      <h1 style="margin: 0; font-size: clamp(32px, 4vw, 48px); line-height: 1.15;">“The Making”</h1>
+      <p style="margin: 0; font-size: 20px; color: var(--ink-muted); max-width: 680px;">
+        Can you spot when AI is wrong? Live two-screen session — Host Screen drives every connected Phone in real time.
+      </p>
+    </header>
+
+    <section class="launcher-grid" aria-label="Session views">
+      <div class="card" style="display: flex; flex-direction: column; gap: 14px; border-color: var(--accent);">
+        <span class="pill pill-accent" style="align-self: flex-start;">Recommended for testing</span>
+        <h2 style="margin: 0; font-size: 22px;">Side-by-Side Live Preview</h2>
+        <p style="margin: 0; color: var(--ink-muted); font-size: 16px;">
+          See the Host Screen and a live synced Phone frame together in one window, plus controls to test reconnecting and resetting phone setup.
+        </p>
+        <a href="/preview" class="btn btn-primary btn-block" style="margin-top: auto;">Open Side-by-Side Preview</a>
+      </div>
+
+      <div class="card" style="display: flex; flex-direction: column; gap: 14px;">
+        <span class="pill" style="align-self: flex-start;">Shared screen</span>
+        <h2 style="margin: 0; font-size: 22px;">Host Screen</h2>
+        <p style="margin: 0; color: var(--ink-muted); font-size: 16px;">
+          Full-screen presentation view for Sanket. High-contrast large typography, keyboard navigation, and live sync to all connected phones.
+        </p>
+        <a href="/host" class="btn btn-block" style="margin-top: auto;">Open Host Screen</a>
+      </div>
+
+      <div class="card" style="display: flex; flex-direction: column; gap: 14px;">
+        <span class="pill" style="align-self: flex-start;">Participant device</span>
+        <h2 style="margin: 0; font-size: 22px;">Phone (Live)</h2>
+        <p style="margin: 0; color: var(--ink-muted); font-size: 16px;">
+          Follows the host automatically. No Next, Back or Skip. Setup choices and typed lines stay private on the phone.
+        </p>
+        <a href="/phone" class="btn btn-block" style="margin-top: auto;">Open Live Phone View</a>
+      </div>
+
+      <div class="card" style="display: flex; flex-direction: column; gap: 14px;">
+        <span class="pill" style="align-self: flex-start;">Separate edition</span>
+        <h2 style="margin: 0; font-size: 22px;">Replay Edition</h2>
+        <p style="margin: 0; color: var(--ink-muted); font-size: 16px;">
+          Self-paced edition for people who missed the live session. Includes story scenes, reveals, and your personal wheel.
+        </p>
+        <a href="/replay" class="btn btn-block" style="margin-top: auto;">Open Replay Edition</a>
+      </div>
+    </section>
+
+    <section class="card-subtle" id="lanBox" style="display: flex; flex-direction: column; gap: 8px;">
+      <h2 style="margin: 0; font-size: 18px;">Test on a real phone on your Wi-Fi</h2>
+      <p id="lanText" style="margin: 0; font-size: 16px; color: var(--ink-muted);">Checking local network addresses…</p>
+    </section>
+  </main>
+
+  <script type="module">
+    fetch('/api/info')
+      .then((r) => r.json())
+      .then((info) => {
+        const el = document.getElementById('lanText');
+        if (info.lanUrls && info.lanUrls.length > 0) {
+          el.innerHTML = info.lanUrls
+            .map((u) => `Open <strong><code>${u}/phone</code></strong> on any phone connected to the same Wi-Fi.`)
+            .join('<br>');
+        } else {
+          el.textContent = `Open http://localhost:${info.port}/phone in another tab or browser window.`;
+        }
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>

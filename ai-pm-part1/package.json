@@ -1,0 +1,14 @@
+{
+  "name": "ai-pm-part1",
+  "version": "1.0.0",
+  "description": "The AI PM, Part 1 — The Making: live two-screen session app",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

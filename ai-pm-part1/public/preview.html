@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    try {
+      var s = localStorage.getItem('aipm-color-scheme');
+      if (s === 'light' || s === 'dark') document.querySelector('meta[name="color-scheme"]').content = s;
+    } catch (e) {}
+  </script>
+  <title>Live Preview (Host + Phone) | The AI PM, Part 1</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="preview-layout">
+    <section class="preview-pane preview-pane-host" aria-label="Host Screen">
+      <div class="preview-pane-header">
+        <span>HOST SCREEN (Sanket’s shared screen)</span>
+        <div style="display: flex; gap: 8px;">
+          <a href="/" class="btn" style="min-block-size: 36px; padding: 4px 12px; font-size: 14px;">Hub</a>
+          <a href="/host" target="_blank" rel="noopener" class="btn" style="min-block-size: 36px; padding: 4px 12px; font-size: 14px;">Full tab</a>
+        </div>
+      </div>
+      <iframe class="preview-frame" id="hostFrame" src="/host" title="Host Screen live view"></iframe>
+    </section>
+
+    <section class="preview-pane" aria-label="Participant Phone">
+      <div class="preview-pane-header">
+        <span>PHONE (Live synced)</span>
+        <div style="display: flex; gap: 6px;">
+          <button type="button" class="btn" id="simOfflineBtn" style="min-block-size: 36px; padding: 4px 10px; font-size: 13px;">Test drop</button>
+          <button type="button" class="btn" id="resetPhoneBtn" style="min-block-size: 36px; padding: 4px 10px; font-size: 13px;">Reset setup</button>
+        </div>
+      </div>
+      <div class="preview-phone-stage">
+        <div class="phone-device-bezel">
+          <iframe id="phoneFrame" src="/phone" title="Participant Phone live view"></iframe>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    import { initSchemeSync } from '/js/theme.js';
+    initSchemeSync();
+
+    const phoneFrame = document.getElementById('phoneFrame');
+    const offlineBtn = document.getElementById('simOfflineBtn');
+    const resetBtn = document.getElementById('resetPhoneBtn');
+    let offline = false;
+
+    offlineBtn.addEventListener('click', () => {
+      offline = !offline;
+      offlineBtn.textContent = offline ? 'Reconnect' : 'Test drop';
+      phoneFrame.contentWindow?.postMessage({ type: 'preview-simulate-disconnect', offline }, window.location.origin);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      phoneFrame.contentWindow?.postMessage({ type: 'preview-reset-phone' }, window.location.origin);
+    });
+  </script>
+</body>
+</html>
