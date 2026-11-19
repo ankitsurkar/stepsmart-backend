@@ -1978,39 +1978,13 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                         );
                       }
 
-                      // When All Question Types is selected, group by category so the 1st (unlocked) question of EVERY category is at the top!
-                      let displayQuestions: typeof questions = [];
-
-                      if (selectedQuestionCategory === 'All Question Types') {
-                        const catGroups: Record<string, typeof questions> = {};
-                        filteredQuestions.forEach(q => {
-                          if (!catGroups[q.category]) catGroups[q.category] = [];
-                          catGroups[q.category].push(q);
-                        });
-
-                        const firsts: typeof questions = [];
-                        const rest: typeof questions = [];
-
-                        Object.values(catGroups).forEach(group => {
-                          if (group.length > 0) {
-                            firsts.push(group[0]);
-                            rest.push(...group.slice(1));
-                          }
-                        });
-
-                        displayQuestions = [...firsts, ...rest];
-                      } else {
-                        displayQuestions = filteredQuestions;
-                      }
-
-                      // Track count per category: 1st question of each category is unlocked (count 0), all others are locked!
-                      const perCategorySeen: Record<string, number> = {};
+                      const displayQuestions = filteredQuestions;
                       const paginatedQuestions = displayQuestions.slice(0, visibleQuestionCount);
 
                       return (
                         <>
                           <div className="flex items-center justify-between text-xs font-bold text-slate-600 px-1">
-                            <span>Showing {displayQuestions.length} questions • 1 free per category</span>
+                            <span>Showing {displayQuestions.length} interview questions</span>
                             {questionSearchQuery && (
                               <button
                                 onClick={() => {
@@ -2026,52 +2000,6 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {paginatedQuestions.map((q) => {
-                              const countInCat = perCategorySeen[q.category] || 0;
-                              perCategorySeen[q.category] = countInCat + 1;
-
-                              // Exactly 1 question per category is unlocked. All other questions are locked!
-                              const isLocked = countInCat >= 1;
-
-                              if (isLocked) {
-                                return (
-                                  <div 
-                                    key={q.id}
-                                    onClick={() => {
-                                      setApplyStatus('idle');
-                                      setApplyValidationError('');
-                                      setShowApplyModal(true);
-                                    }}
-                                    className="relative bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden cursor-pointer select-none group min-h-[220px] flex flex-col justify-between hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all"
-                                  >
-                                    {/* Blurred Privacy Background */}
-                                    <div className="filter blur-[6px] opacity-25 pointer-events-none select-none">
-                                      <div className="flex items-center justify-between mb-3">
-                                        <span className="bg-slate-200 text-slate-700 px-2 py-0.5 text-xs font-bold">{q.category}</span>
-                                        <span className="text-xs font-bold text-slate-400">{q.company}</span>
-                                      </div>
-                                      <h4 className="font-extrabold text-base text-slate-800 mb-2">Product Manager Interview Question</h4>
-                                      <p className="text-xs text-slate-500">Framework breakdown, metrics, approach hint, and detailed solution.</p>
-                                    </div>
-
-                                    {/* Lock Overlay */}
-                                    <div className="absolute inset-0 bg-white/90 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10 group-hover:bg-white/80 transition-all">
-                                      <div className="w-11 h-11 bg-[#FFF3A7] border-[2.5px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] mb-3 rotate-[-3deg]">
-                                        <Lock className="h-5 w-5 text-[#111111]" />
-                                      </div>
-                                      <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] mb-2">
-                                        🔒 LOCKED • MEMBER-ONLY PM QUESTION
-                                      </span>
-                                      <p className="font-bold text-xs text-slate-600 mb-3 max-w-xs leading-relaxed">
-                                        Unlock full question statement, framework breakdown, step-by-step approach & solution.
-                                      </p>
-                                      <button className="bg-[#188ab2] text-white border-2 border-[#111111] px-4 py-2 text-xs font-black uppercase shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all cursor-pointer">
-                                        Unlock Question 🔒
-                                      </button>
-                                    </div>
-                                  </div>
-                                );
-                              }
-
                               return (
                                 <div 
                                   key={q.id}
