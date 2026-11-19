@@ -1,3 +1,9 @@
 User-agent: *
 Allow: /
+Allow: /resources
+Allow: /resources/*
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /auth
+
 Sitemap: https://www.stepsmart.net/sitemap.xml

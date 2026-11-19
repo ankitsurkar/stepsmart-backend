@@ -1500,6 +1500,263 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
   // Find active resource details
   const activeResource = resources.find(r => r.id === activeResourceId);
 
+  // Dynamic SEO and JSON-LD Structured Data Injection for Search Engines
+  useEffect(() => {
+    // Clean up existing schema
+    const prevSchema = document.getElementById('stepsmart-dynamic-schema');
+    if (prevSchema) prevSchema.remove();
+
+    const setMeta = (name: string, content: string) => {
+      let el = document.querySelector(`meta[name="${name}"]`) || document.querySelector(`meta[property="${name}"]`);
+      if (!el) {
+        el = document.createElement('meta');
+        if (name.startsWith('og:') || name.startsWith('twitter:')) {
+          el.setAttribute('property', name);
+        } else {
+          el.setAttribute('name', name);
+        }
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', content);
+    };
+
+    const setCanonical = (href: string) => {
+      let link = document.querySelector('link[rel="canonical"]');
+      if (!link) {
+        link = document.createElement('link');
+        link.setAttribute('rel', 'canonical');
+        document.head.appendChild(link);
+      }
+      link.setAttribute('href', href);
+    };
+
+    if (activeResource) {
+      // 1. Viewing an individual Guide
+      const guideTitle = activeResource.title.includes('StepSmart') 
+        ? activeResource.title 
+        : `${activeResource.title} | StepSmart PM Guide`;
+      const guideDesc = activeResource.description || `Comprehensive ${activeResource.company || ''} Product Manager interview guide covering interview rounds, product teardowns, case studies, and salary benchmarks.`;
+      const guideUrl = `https://www.stepsmart.net/resources/${activeResource.id}`;
+
+      document.title = guideTitle;
+      setMeta('description', guideDesc);
+      setMeta('og:title', guideTitle);
+      setMeta('og:description', guideDesc);
+      setMeta('og:url', guideUrl);
+      setMeta('og:type', 'article');
+      setMeta('twitter:title', guideTitle);
+      setMeta('twitter:description', guideDesc);
+      setMeta('twitter:url', guideUrl);
+      setCanonical(guideUrl);
+
+      // JSON-LD TechArticle & Breadcrumb Schema
+      const schemaData = {
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'TechArticle',
+            '@id': `${guideUrl}#article`,
+            'isPartOf': {
+              '@type': 'WebSite',
+              '@id': 'https://www.stepsmart.net/#website',
+              'name': 'StepSmart',
+              'url': 'https://www.stepsmart.net'
+            },
+            'headline': activeResource.title,
+            'description': guideDesc,
+            'url': guideUrl,
+            'author': {
+              '@type': 'Organization',
+              'name': 'StepSmart',
+              'url': 'https://www.stepsmart.net'
+            },
+            'publisher': {
+              '@type': 'Organization',
+              'name': 'StepSmart',
+              'logo': {
+                '@type': 'ImageObject',
+                'url': 'https://www.stepsmart.net/stepsmart-logo.png'
+              }
+            },
+            'articleSection': activeResource.category,
+            'keywords': (activeResource.tags || [activeResource.company || 'Product Management', 'PM Interview', 'Case Study']).join(', ')
+          },
+          {
+            '@type': 'BreadcrumbList',
+            '@id': `${guideUrl}#breadcrumb`,
+            'itemListElement': [
+              {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': 'https://www.stepsmart.net'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': 'Resources',
+                'item': 'https://www.stepsmart.net/resources'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 3,
+                'name': activeResource.company || 'Company Guides',
+                'item': 'https://www.stepsmart.net/resources?tab=guides'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 4,
+                'name': activeResource.title,
+                'item': guideUrl
+              }
+            ]
+          }
+        ]
+      };
+
+      const script = document.createElement('script');
+      script.id = 'stepsmart-dynamic-schema';
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify(schemaData);
+      document.head.appendChild(script);
+    } else if (activeResourceTab === 'questions') {
+      // 2. Viewing the Question Bank
+      const qTitle = 'Product Manager Question Bank — 2,200+ Real PM Interview Questions | StepSmart';
+      const qDesc = 'Browse and practice 2,200+ real Product Management interview questions asked at Flipkart, Zomato, Google, Uber, Notion & leading tech companies. Filter by metrics, strategy, design & RCA.';
+      const qUrl = 'https://www.stepsmart.net/resources?tab=questions';
+
+      document.title = qTitle;
+      setMeta('description', qDesc);
+      setMeta('og:title', qTitle);
+      setMeta('og:description', qDesc);
+      setMeta('og:url', qUrl);
+      setMeta('og:type', 'website');
+      setMeta('twitter:title', qTitle);
+      setMeta('twitter:description', qDesc);
+      setMeta('twitter:url', qUrl);
+      setCanonical(qUrl);
+
+      // JSON-LD FAQPage Schema (Google Rich Snippets for interview questions)
+      const topQuestions = questions.slice(0, 30);
+      const schemaData = {
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'FAQPage',
+            '@id': `${qUrl}#faq`,
+            'mainEntity': topQuestions.map(q => ({
+              '@type': 'Question',
+              'name': q.question,
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': q.description || `Real Product Management interview question asked at ${q.company} in ${q.category}. Framework and approach strategy available on StepSmart.`
+              }
+            }))
+          },
+          {
+            '@type': 'BreadcrumbList',
+            '@id': `${qUrl}#breadcrumb`,
+            'itemListElement': [
+              {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': 'https://www.stepsmart.net'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': 'Resources',
+                'item': 'https://www.stepsmart.net/resources'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 3,
+                'name': 'Question Bank',
+                'item': qUrl
+              }
+            ]
+          }
+        ]
+      };
+
+      const script = document.createElement('script');
+      script.id = 'stepsmart-dynamic-schema';
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify(schemaData);
+      document.head.appendChild(script);
+    } else {
+      // 3. Viewing the Company Guides Feed
+      const gTitle = 'Product Manager Company Guides — 280+ PM Interview Teardowns | StepSmart';
+      const gDesc = 'Comprehensive Product Manager (PM) interview guides for 280+ tech companies: interview loops, product cases, team structures, salary benchmarks, and preparation strategies.';
+      const gUrl = 'https://www.stepsmart.net/resources';
+
+      document.title = gTitle;
+      setMeta('description', gDesc);
+      setMeta('og:title', gTitle);
+      setMeta('og:description', gDesc);
+      setMeta('og:url', gUrl);
+      setMeta('og:type', 'website');
+      setMeta('twitter:title', gTitle);
+      setMeta('twitter:description', gDesc);
+      setMeta('twitter:url', gUrl);
+      setCanonical(gUrl);
+
+      // JSON-LD CollectionPage & ItemList Schema
+      const topGuides = resources.slice(0, 25);
+      const schemaData = {
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'CollectionPage',
+            '@id': `${gUrl}#collection`,
+            'name': 'Product Manager Interview Guides',
+            'description': gDesc,
+            'url': gUrl,
+            'mainEntity': {
+              '@type': 'ItemList',
+              'itemListElement': topGuides.map((g, idx) => ({
+                '@type': 'ListItem',
+                'position': idx + 1,
+                'name': g.title,
+                'url': `https://www.stepsmart.net/resources/${g.id}`
+              }))
+            }
+          },
+          {
+            '@type': 'BreadcrumbList',
+            '@id': `${gUrl}#breadcrumb`,
+            'itemListElement': [
+              {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': 'https://www.stepsmart.net'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': 'Resources',
+                'item': gUrl
+              }
+            ]
+          }
+        ]
+      };
+
+      const script = document.createElement('script');
+      script.id = 'stepsmart-dynamic-schema';
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify(schemaData);
+      document.head.appendChild(script);
+    }
+
+    return () => {
+      const existing = document.getElementById('stepsmart-dynamic-schema');
+      if (existing) existing.remove();
+    };
+  }, [activeResource, activeResourceTab, questions, resources]);
+
   const handleOpenResource = (id: string) => {
     navigate(`/resources/${id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1887,16 +2144,16 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
 
       {/* Resource Detail View */}
       {activeResource ? (
-        <div className="pt-28 sm:pt-36 pb-12 sm:pb-20 bg-[#FFFFFF]">
+        <article className="pt-28 sm:pt-36 pb-12 sm:pb-20 bg-[#FFFFFF]" itemScope itemType="https://schema.org/TechArticle">
           <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
             {/* Breadcrumb */}
-            <div className="flex items-center gap-1.5 sm:gap-2 text-xs font-bold text-slate-500 mb-6 select-none flex-wrap">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 sm:gap-2 text-xs font-bold text-slate-500 mb-6 select-none flex-wrap">
               <Link to="/" className="hover:text-[#111111]">Home</Link>
               <ChevronRight className="h-3 w-3 shrink-0" />
               <Link to="/resources" onClick={handleCloseResource} className="hover:text-[#111111]">Resources</Link>
               <ChevronRight className="h-3 w-3 shrink-0" />
               <span className="text-[#111111] truncate max-w-[140px] sm:max-w-xs">{activeResource.title}</span>
-            </div>
+            </nav>
 
             {/* Back Button */}
             <button 
@@ -2019,7 +2276,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
 
             </div>
           </div>
-        </div>
+        </article>
       ) : (
         /* Regular Resource Listing Page */
         <>
@@ -2141,6 +2398,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                       </div>
                       <input
                         type="text"
+                        aria-label="Search interview questions"
                         value={questionSearchQuery}
                         onChange={(e) => {
                           setQuestionSearchQuery(e.target.value);
@@ -2292,6 +2550,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                       </div>
                       <input
                         type="text"
+                        aria-label="Search company interview guides"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search across 280+ company guides (e.g. Google, Uber, Flipkart, Zomato, AJIO, CRED) or topic..."

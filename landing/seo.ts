@@ -3,6 +3,8 @@
 // same static index.html, we must update the document head per route on the client
 // so each page has a unique <title>, meta description and self-referencing canonical.
 
+import { ALL_GUIDES_SEO } from './guideSeoData';
+
 export const SITE_ORIGIN = 'https://www.stepsmart.net';
 const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/hero_image.webp`;
 
@@ -108,9 +110,9 @@ const STATIC_SEO: Record<string, Omit<SeoData, 'canonical'>> = {
     ogType: 'website',
   },
   '/resources': {
-    title: 'APM Interview Guides & IIT Placement PYQs for Product Managers | StepSmart',
+    title: 'Product Manager Company Guides — 280+ PM Interview Teardowns | StepSmart',
     description:
-      'Company-by-company APM and PM interview guides for IIT campus placements — shortlisting criteria, deck assignments, interview loops and previous year questions (PYQs).',
+      'Comprehensive Product Manager (PM) interview guides for 280+ tech companies: interview loops, product cases, team structures, salary benchmarks, and preparation strategies.',
     ogType: 'website',
   },
   '/gym': {
@@ -144,17 +146,31 @@ export function getSeoForLocation(pathname: string, search: string): SeoData {
       ? decodeURIComponent(pathname.replace('/resources/', '').replace(/\/$/, ''))
       : '';
     const guideId = params.get('id') || idFromPath;
-    if (guideId && GUIDE_SEO[guideId]) {
-      const g = GUIDE_SEO[guideId];
+    const guideMeta = (guideId && ALL_GUIDES_SEO[guideId]) || (guideId && GUIDE_SEO[guideId]);
+
+    if (guideId && guideMeta) {
       return {
-        title: g.title,
-        description: g.description,
+        title: guideMeta.title,
+        description: guideMeta.description,
         canonical: `${SITE_ORIGIN}/resources/${guideId}`,
         ogImage: DEFAULT_OG_IMAGE,
         ogType: 'article',
       };
     }
-    // Resources index
+
+    // Question Bank tab SEO
+    if (params.get('tab') === 'questions') {
+      return {
+        title: 'Product Manager Question Bank — 2,200+ Real PM Interview Questions | StepSmart',
+        description:
+          'Browse and practice 2,200+ real Product Management interview questions asked at Flipkart, Zomato, Google, Uber, Notion & leading tech companies. Filter by metrics, strategy, design & RCA.',
+        canonical: `${SITE_ORIGIN}/resources?tab=questions`,
+        ogImage: DEFAULT_OG_IMAGE,
+        ogType: 'website',
+      };
+    }
+
+    // Resources guides index
     const base = STATIC_SEO['/resources'];
     return { ...base, canonical: `${SITE_ORIGIN}/resources`, ogImage: DEFAULT_OG_IMAGE };
   }
