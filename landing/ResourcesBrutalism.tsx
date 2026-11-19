@@ -1311,6 +1311,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
   }, [defaultTab, tabParam]);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [questionSearchQuery, setQuestionSearchQuery] = useState<string>('');
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -1715,7 +1716,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                     {activeResource.title}
                   </h2>
                   <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-200">
-                    IIT Placement Interview Guide • {activeResource.format}
+                    PM Interview Guide • {activeResource.format}
                   </p>
                 </div>
 
@@ -1804,19 +1805,16 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
           {/* Hero Section */}
           <section className="pt-28 sm:pt-36 lg:pt-40 pb-8 lg:pb-12 bg-[#FFFFFF] border-b-[3px] border-[#111111]">
             <div className="container mx-auto px-4 sm:px-6 max-w-5xl text-center">
-              <div className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 sm:px-6 py-1.5 sm:py-2 font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none mb-4 sm:mb-6 rotate-[-1deg]">
-                {activeResourceTab === 'questions'
-                  ? 'IIT Placement Special'
-                  : 'Company Prep Guides'}
-              </div>
+              {activeResourceTab === 'guides' && (
+                <div className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-4 sm:px-6 py-1.5 sm:py-2 font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] select-none mb-4 sm:mb-6 rotate-[-1deg]">
+                  Company Prep Guides
+                </div>
+              )}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 sm:mb-6 text-[#111111] leading-tight">
                 {activeResourceTab === 'questions' ? (
-                  <>
-                    IIT{' '}
-                    <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-3 sm:px-4 py-0.5 rotate-[1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-                      Question Bank
-                    </span>
-                  </>
+                  <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-3 sm:px-4 py-0.5 rotate-[1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+                    Question Bank
+                  </span>
                 ) : (
                   <>
                     PM Interview{' '}
@@ -1828,7 +1826,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
               </h1>
               <p className="text-base sm:text-lg md:text-xl text-[#111111] max-w-3xl mx-auto leading-relaxed font-bold mb-6 sm:mb-8">
                 {activeResourceTab === 'questions'
-                  ? 'Real Previous Year Questions (PYQs) asked at Flipkart, Zomato, Uber, Sprinklr, and leading tech companies during campus placements.'
+                  ? 'Real interview questions asked at Flipkart, Zomato, Google, Uber, Notion & leading tech companies.'
                   : 'Company-by-company Product Manager (PM) and Associate Product Manager (APM) interview guides covering interview loops, core competencies, case studies, and preparation strategies.'}
               </p>
 
@@ -1882,11 +1880,11 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                     }`}
                   >
                     <HelpCircle className="h-4 w-4 shrink-0" />
-                    <span>Question Bank (PYQs)</span>
+                    <span>Question Bank</span>
                     <span className={`text-[10px] px-2 py-0.5 font-extrabold rounded-full border border-[#111111] ${
                       activeResourceTab === 'questions' ? 'bg-[#FFF3A7] text-[#111111]' : 'bg-slate-100 text-slate-700'
                     }`}>
-                      {questions.length}+ PYQs
+                      {questions.length}+ Questions
                     </span>
                   </button>
                 </div>
@@ -1915,23 +1913,46 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                       ))}
                     </div>
 
-                    <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-between flex-wrap gap-3">
-                      <div>
-                        <h3 className="font-black text-sm uppercase text-[#111111]">
-                          IIT Placement & Top Tech Question Bank — {selectedQuestionCategory}
-                        </h3>
-                        <p className="text-xs font-bold text-slate-600 mt-0.5">
-                          Showing {questions.length}+ curated interview questions asked in Flipkart, Zomato, Google, Uber, Notion & top startups.
-                        </p>
+                    {/* Search Bar for Questions */}
+                    <div className="relative w-full">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Search className="h-5 w-5 text-slate-400" />
                       </div>
-                      <span className="bg-white border-2 border-[#111111] px-3 py-1 text-xs font-extrabold shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                        1 Free Question Per Category • Rest Locked for Members 🔒
-                      </span>
+                      <input
+                        type="text"
+                        value={questionSearchQuery}
+                        onChange={(e) => {
+                          setQuestionSearchQuery(e.target.value);
+                          setVisibleQuestionCount(60);
+                        }}
+                        placeholder="Search across 2,200+ questions (e.g. metrics, retention, Uber, pricing, marketplace)..."
+                        className="w-full pl-12 pr-10 py-3.5 bg-white border-[3px] border-[#111111] font-bold text-sm text-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] outline-none focus:bg-[#FFF3A7]/10 transition-all placeholder:text-slate-400"
+                      />
+                      {questionSearchQuery && (
+                        <button
+                          onClick={() => {
+                            setQuestionSearchQuery('');
+                            setVisibleQuestionCount(60);
+                          }}
+                          className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-[#111111] cursor-pointer"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
 
                     {(() => {
                       const filteredQuestions = questions.filter(q => {
-                        return selectedQuestionCategory === 'All Question Types' || q.category === selectedQuestionCategory;
+                        const matchesCategory = selectedQuestionCategory === 'All Question Types' || q.category === selectedQuestionCategory;
+                        if (!matchesCategory) return false;
+                        if (!questionSearchQuery.trim()) return true;
+                        const query = questionSearchQuery.toLowerCase();
+                        return (
+                          (q.question && q.question.toLowerCase().includes(query)) ||
+                          (q.company && q.company.toLowerCase().includes(query)) ||
+                          (q.category && q.category.toLowerCase().includes(query)) ||
+                          (q.description && q.description.toLowerCase().includes(query))
+                        );
                       });
 
                       if (filteredQuestions.length === 0) {
@@ -1939,9 +1960,19 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                           <div className="border-[3px] border-[#111111] p-12 text-center bg-white shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] max-w-xl mx-auto">
                             <Info className="h-10 w-10 mx-auto mb-4 text-slate-400" />
                             <h3 className="text-xl font-extrabold text-[#111111] mb-2">No matching questions found</h3>
-                            <p className="text-sm font-bold text-slate-500 mb-6">Try selecting a different question type.</p>
-                            <Button variant="outline" onClick={() => setSelectedQuestionCategory('All Question Types')}>
-                              Reset Category
+                            <p className="text-sm font-bold text-slate-500 mb-6">
+                              {questionSearchQuery
+                                ? `No questions matched "${questionSearchQuery}". Try clearing search or selecting a different category.`
+                                : 'Try selecting a different question type.'}
+                            </p>
+                            <Button 
+                              variant="outline" 
+                              onClick={() => {
+                                setSelectedQuestionCategory('All Question Types');
+                                setQuestionSearchQuery('');
+                              }}
+                            >
+                              Reset Filters
                             </Button>
                           </div>
                         );
@@ -1978,6 +2009,21 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
 
                       return (
                         <>
+                          <div className="flex items-center justify-between text-xs font-bold text-slate-600 px-1">
+                            <span>Showing {displayQuestions.length} questions • 1 free per category</span>
+                            {questionSearchQuery && (
+                              <button
+                                onClick={() => {
+                                  setQuestionSearchQuery('');
+                                  setVisibleQuestionCount(60);
+                                }}
+                                className="text-[#188ab2] font-black hover:underline cursor-pointer"
+                              >
+                                Clear Search ↺
+                              </button>
+                            )}
+                          </div>
+
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {paginatedQuestions.map((q) => {
                               const countInCat = perCategorySeen[q.category] || 0;
@@ -2003,7 +2049,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                                         <span className="bg-slate-200 text-slate-700 px-2 py-0.5 text-xs font-bold">{q.category}</span>
                                         <span className="text-xs font-bold text-slate-400">{q.company}</span>
                                       </div>
-                                      <h4 className="font-extrabold text-base text-slate-800 mb-2">IIT & Top Tech PM Interview Question</h4>
+                                      <h4 className="font-extrabold text-base text-slate-800 mb-2">Product Manager Interview Question</h4>
                                       <p className="text-xs text-slate-500">Framework breakdown, metrics, approach hint, and detailed solution.</p>
                                     </div>
 
@@ -2055,7 +2101,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
 
                                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-extrabold text-slate-500">
                                     <span className="text-emerald-600 font-extrabold flex items-center gap-1">
-                                      ✓ Unlocked IIT Question
+                                      ✓ Unlocked Question
                                     </span>
                                     <button 
                                       onClick={() => {
