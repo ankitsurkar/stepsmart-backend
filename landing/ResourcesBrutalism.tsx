@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams, useParams } from 'react-router-dom';
+import { marked } from 'marked';
 import { 
   FileText, 
   BookOpen, 
@@ -1569,47 +1570,267 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
     handleOpenResource(createdItem.id);
   };
 
-  const parseMarkdown = (text: string) => {
+  const renderMermaidToHTML = (code: string): string => {
+    const lines = code.trim().split('\n').map(l => l.trim()).filter(Boolean);
+    if (lines.length === 0) return '';
+    const first = lines[0];
+
+    if (first.startsWith('graph LR') || first.startsWith('flowchart LR')) {
+      const nodeMap = new Map<string, string>();
+      const edges: [string, string][] = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        const parts = line.split(/-->|-- >/);
+        for (const p of parts) {
+          const m = p.trim().match(/([A-Za-z0-9_]+)\[(.*?)\]/);
+          if (m) nodeMap.set(m[1], m[2]);
+        }
+        if (parts.length >= 2) {
+          const fromId = parts[0].trim().replace(/\[.*?\]/, '').trim();
+          const toId = parts[1].trim().replace(/\[.*?\]/, '').trim();
+          edges.push([fromId, toId]);
+        }
+      }
+
+      const ordered: string[] = [];
+      for (const [from, to] of edges) {
+        const fromLabel = nodeMap.get(from) || from;
+        const toLabel = nodeMap.get(to) || to;
+        if (!ordered.includes(fromLabel)) ordered.push(fromLabel);
+        if (!ordered.includes(toLabel)) ordered.push(toLabel);
+      }
+
+      return `<div class="my-6 p-4 sm:p-5 bg-white border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+        <div class="flex items-center gap-2 mb-3 pb-2 border-b-2 border-slate-100">
+          <span class="w-2.5 h-2.5 bg-[#188ab2] border border-[#111111]"></span>
+          <span class="font-black text-xs uppercase tracking-wider text-[#111111]">Interview Stage Flow</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+          ${ordered.map((step, idx) => `
+            <div class="flex items-center gap-2 bg-[#FFF3A7] border-2 border-[#111111] px-3 py-1.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+              <span class="bg-[#188ab2] text-white text-[10px] font-black px-1.5 py-0.5 border border-[#111111] rounded">${idx + 1}</span>
+              <span class="font-extrabold text-xs text-[#111111]">${step}</span>
+            </div>
+            ${idx < ordered.length - 1 ? `<span class="font-black text-[#188ab2] text-sm">➜</span>` : ''}
+          `).join('')}
+        </div>
+      </div>`;
+    } else if (first.startsWith('graph TD') || first.startsWith('flowchart TD')) {
+      const nodeMap = new Map<string, string>();
+      const childrenMap = new Map<string, string[]>();
+      const roots = new Set<string>();
+      const nonRoots = new Set<string>();
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        const parts = line.split(/-->|-- >/);
+        for (const p of parts) {
+          const m = p.trim().match(/([A-Za-z0-9_]+)\[(.*?)\]/);
+          if (m) nodeMap.set(m[1], m[2]);
+        }
+        if (parts.length >= 2) {
+          const fromId = parts[0].trim().replace(/\[.*?\]/, '').trim();
+          const toId = parts[1].trim().replace(/\[.*?\]/, '').trim();
+          if (!childrenMap.has(fromId)) childrenMap.set(fromId, []);
+          childrenMap.get(fromId)!.push(toId);
+          nonRoots.add(toId);
+          roots.add(fromId);
+        }
+      }
+
+      const actualRoots = Array.from(roots).filter(r => !nonRoots.has(r));
+
+      return `<div class="my-6 p-4 sm:p-5 bg-white border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+        <div class="flex items-center gap-2 mb-3 pb-2 border-b-2 border-slate-100">
+          <span class="w-2.5 h-2.5 bg-[#FFF3A7] border border-[#111111]"></span>
+          <span class="font-black text-xs uppercase tracking-wider text-[#111111]">Team Structure & Role Hierarchy</span>
+        </div>
+        <div class="space-y-4">
+          ${actualRoots.map(root => `
+            <div>
+              <div class="inline-block bg-[#188ab2] text-white border-2 border-[#111111] px-3.5 py-1.5 text-xs font-black shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] mb-2">
+                👑 ${nodeMap.get(root) || root}
+              </div>
+              ${childrenMap.has(root) ? `
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 pl-2 sm:pl-4 border-l-2 border-[#111111]">
+                  ${childrenMap.get(root)!.map(child => `
+                    <div class="bg-slate-50 border-2 border-[#111111] p-2 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] text-left">
+                      <div class="font-black text-xs text-[#111111] mb-1">
+                        ${nodeMap.get(child) || child}
+                      </div>
+                      ${childrenMap.has(child) ? `
+                        <ul class="text-[11px] font-bold text-slate-600 pl-3 list-disc space-y-0.5 border-t border-slate-200 pt-1 mt-1">
+                          ${childrenMap.get(child)!.map(sub => `<li>${nodeMap.get(sub) || sub}</li>`).join('')}
+                        </ul>
+                      ` : ''}
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+    } else if (first.startsWith('gantt')) {
+      const titleMatch = code.match(/title\s+(.*?)\n/);
+      const title = titleMatch ? titleMatch[1].trim() : 'Interview Timeline';
+      const tasks = lines.filter(l => l.includes(':')).map(l => {
+        const parts = l.split(':');
+        return { name: parts[0].trim(), detail: parts[1] ? parts[1].trim() : '' };
+      });
+
+      return `<div class="my-6 p-4 sm:p-5 bg-white border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+        <div class="flex items-center gap-2 mb-3 pb-2 border-b-2 border-slate-100">
+          <span class="w-2.5 h-2.5 bg-emerald-400 border border-[#111111]"></span>
+          <span class="font-black text-xs uppercase tracking-wider text-[#111111]">${title}</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          ${tasks.map(t => `
+            <div class="bg-[#FFF3A7]/30 border-2 border-[#111111] p-2.5 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] flex items-center justify-between">
+              <span class="font-extrabold text-xs text-[#111111]">${t.name}</span>
+              <span class="text-[10px] font-black bg-white border border-[#111111] px-2 py-0.5">${t.detail}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+    }
+
+    return `<div class="my-5 border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] bg-[#111111] text-emerald-400 p-4 font-mono text-xs overflow-x-auto">
+      <pre><code>${code}</code></pre>
+    </div>`;
+  };
+
+  const parseMarkdown = (text: string): string => {
     if (!text) return '';
-    let html = text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+    try {
+      const renderer = new marked.Renderer();
 
-    // Horizontal rules
-    html = html.replace(/^---+$/gm, '<hr class="my-6 border-t-2 border-[#111111]" />');
+      renderer.code = function({ text, lang }: { text: string; lang?: string }) {
+        if (lang === 'mermaid') {
+          return renderMermaidToHTML(text);
+        }
+        return `<div class="my-5 border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] bg-[#111111] text-emerald-400 p-4 font-mono text-xs overflow-x-auto">
+          <pre><code>${text}</code></pre>
+        </div>`;
+      };
 
-    // Headings
-    html = html.replace(/^#### (.*?)$/gm, '<h4 class="text-base font-extrabold mt-4 mb-2 text-[#111111]">$1</h4>');
-    html = html.replace(/^### (.*?)$/gm, '<h3 class="text-lg font-extrabold mt-6 mb-2 text-[#111111]">$1</h3>');
-    html = html.replace(/^## (.*?)$/gm, '<h2 class="text-xl md:text-2xl font-black mt-8 mb-4 border-b-[3px] border-[#111111] pb-2 text-[#111111] uppercase tracking-wide">$1</h2>');
-    html = html.replace(/^# (.*?)$/gm, '<h1 class="text-2xl md:text-3xl font-black mt-8 mb-4 border-b-[3px] border-[#111111] pb-2 text-[#111111] uppercase tracking-wide">$1</h1>');
+      const r = renderer as any;
 
-    // Bold & Italics
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-[#111111]">$1</strong>');
-    html = html.replace(/\*(.*?)\*/g, '<em class="italic text-slate-700">$1</em>');
+      r.table = function(e: any) {
+        let t = '';
+        let n = '';
+        if (e.header) {
+          for (let s = 0; s < e.header.length; s++) {
+            n += this.tablecell(e.header[s]);
+          }
+        }
+        t += this.tablerow({ text: n });
+        let rowsHtml = '';
+        if (e.rows) {
+          for (let s = 0; s < e.rows.length; s++) {
+            const row = e.rows[s];
+            n = '';
+            for (let i = 0; i < row.length; i++) {
+              n += this.tablecell(row[i]);
+            }
+            rowsHtml += this.tablerow({ text: n });
+          }
+        }
 
-    // Numbered List Items
-    html = html.replace(/^(\d+)\.\s+(.*?)$/gm, '<li class="my-1.5 leading-relaxed">$2</li>');
+        return `<div class="overflow-x-auto my-6 border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] bg-white">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm font-bold text-[#111111]">
+            <thead class="bg-[#FFF3A7] border-b-[3px] border-[#111111] font-black uppercase text-xs tracking-wider">
+              ${t}
+            </thead>
+            <tbody class="divide-y-2 divide-[#111111]">
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>`;
+      };
 
-    // Bullet List Items
-    html = html.replace(/^- (.*?)$/gm, '<li class="my-1.5 leading-relaxed">$1</li>');
+      r.tablerow = function({ text }: { text: string }) {
+        return `<tr class="hover:bg-[#FFF3A7]/20 transition-colors">${text}</tr>`;
+      };
 
-    // Wrap consecutive <li> tags in proper <ol> or <ul> lists
-    html = html.replace(/((?:<li class="my-1.5 leading-relaxed">.*?<\/li>\s*)+)/g, '<ol class="list-decimal pl-6 my-4 space-y-1 text-sm font-bold text-[#111111]">$1</ol>');
+      r.tablecell = function(cell: any) {
+        const text = cell.tokens ? this.parser.parseInline(cell.tokens) : (cell.text || '');
+        if (cell.header) {
+          return `<th class="p-3 border-r-2 border-[#111111] last:border-r-0">${text}</th>`;
+        }
+        return `<td class="p-3 border-r-2 border-[#111111] last:border-r-0 font-medium">${text}</td>`;
+      };
 
-    // Paragraph wrapping
-    html = html.replace(/\n\n/g, '</p><p class="mb-4 text-[#111111] leading-relaxed text-sm font-bold">');
-    html = '<p class="mb-4 text-[#111111] leading-relaxed text-sm font-bold">' + html + '</p>';
+      r.blockquote = function(token: any) {
+        const text = token.text || (token.tokens ? this.parser.parse(token.tokens) : '');
+        return `<div class="bg-[#FFF3A7] border-[3px] border-[#111111] p-4 sm:p-5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] my-6">
+          <div class="flex items-center gap-2 mb-1.5 font-black text-xs uppercase tracking-wider text-[#111111]">
+            <span>💡</span>
+            <span>Insider Tip & Candidate Insight</span>
+          </div>
+          <div class="text-xs sm:text-sm font-bold text-slate-800 leading-relaxed space-y-1">
+            ${text}
+          </div>
+        </div>`;
+      };
 
-    // Clean up empty paragraph tags or double wraps
-    html = html.replace(/<p class=".*?"><ol/g, '<ol');
-    html = html.replace(/<\/ol><\/p>/g, '</ol>');
-    html = html.replace(/<p class=".*?"><hr/g, '<hr');
-    html = html.replace(/<\/hr><\/p>/g, '');
-    html = html.replace(/<p class=".*?"><\/p>/g, '');
+      r.heading = function({ text, depth }: { text: string; depth: number }) {
+        if (depth === 1) {
+          return `<h1 class="text-2xl sm:text-3xl font-black mt-8 mb-4 border-b-[3px] border-[#111111] pb-2 text-[#111111] uppercase tracking-wide">${text}</h1>`;
+        }
+        if (depth === 2) {
+          return `<h2 class="text-xl sm:text-2xl font-black mt-8 mb-3 border-b-2 border-[#111111] pb-2 text-[#111111] uppercase tracking-wide">${text}</h2>`;
+        }
+        if (depth === 3) {
+          return `<h3 class="text-base sm:text-lg font-extrabold mt-6 mb-2 text-[#111111] uppercase tracking-wide">${text}</h3>`;
+        }
+        return `<h4 class="text-sm sm:text-base font-extrabold mt-4 mb-2 text-[#111111]">${text}</h4>`;
+      };
 
-    return html;
+      r.list = function(token: any) {
+        const ordered = token.ordered;
+        const start = token.start;
+        let body = '';
+        if (token.items) {
+          for (let i = 0; i < token.items.length; i++) {
+            body += this.listitem(token.items[i]);
+          }
+        }
+        const type = ordered ? 'ol' : 'ul';
+        const listClass = ordered
+          ? 'list-decimal pl-6 my-4 space-y-2 text-sm font-bold text-[#111111]'
+          : 'list-disc pl-6 my-4 space-y-2 text-sm font-bold text-[#111111]';
+        const startAttr = (ordered && start && start !== 1) ? ` start="${start}"` : '';
+        return `<${type} class="${listClass}"${startAttr}>${body}</${type}>`;
+      };
+
+      r.listitem = function(item: any) {
+        const text = item.tokens ? this.parser.parse(item.tokens) : (item.text || '');
+        return `<li class="my-1 leading-relaxed">${text}</li>`;
+      };
+
+      renderer.paragraph = function({ text }: { text: string }) {
+        return `<p class="mb-4 text-[#111111] leading-relaxed text-sm font-semibold">${text}</p>`;
+      };
+
+      renderer.link = function({ href, text }: { href: string; text: string }) {
+        let cleanHref = href || '#';
+        if (cleanHref.startsWith('/guide/')) {
+          cleanHref = cleanHref.replace('/guide/', '/resources/');
+        }
+        return `<a href="${cleanHref}" class="text-[#188ab2] font-black underline hover:text-[#0e4e66] transition-colors">${text}</a>`;
+      };
+
+      renderer.hr = function() {
+        return '<hr class="my-6 border-t-2 border-[#111111]" />';
+      };
+
+      return marked.parse(text, { renderer, gfm: true, breaks: false }) as string;
+    } catch (e) {
+      console.error('Error parsing markdown:', e);
+      return `<p class="mb-4 text-[#111111] leading-relaxed text-sm font-bold">${text}</p>`;
+    }
   };
 
   return (
