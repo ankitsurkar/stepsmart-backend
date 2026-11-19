@@ -1295,6 +1295,8 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
       : 'guides');
 
   const [resources, setResources] = useState<ResourceItem[]>(DEMO_RESOURCES);
+  const [questions, setQuestions] = useState<QuestionItem[]>(IIT_QUESTIONS_DATA);
+  const [visibleQuestionCount, setVisibleQuestionCount] = useState<number>(60);
   const [selectedQuestionCategory, setSelectedQuestionCategory] = useState<string>('All Question Types');
   const [activeResourceTab, setActiveResourceTab] = useState<'guides' | 'questions'>(initialTab);
 
@@ -1430,6 +1432,28 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
       }
     };
     loadAllResources();
+    return () => { isMounted = false; };
+  }, []);
+
+  // Load 2,150 scraped questions from all_questions.json
+  useEffect(() => {
+    let isMounted = true;
+    const loadAllQuestions = async () => {
+      try {
+        const res = await fetch('/data/all_questions.json');
+        if (res.ok) {
+          const scrapedQuestions: QuestionItem[] = await res.json();
+          if (isMounted) {
+            const existingIds = new Set(IIT_QUESTIONS_DATA.map(q => q.id));
+            const additional = scrapedQuestions.filter(q => !existingIds.has(q.id));
+            setQuestions([...IIT_QUESTIONS_DATA, ...additional]);
+          }
+        }
+      } catch (err) {
+        console.warn('Could not load all_questions.json:', err);
+      }
+    };
+    loadAllQuestions();
     return () => { isMounted = false; };
   }, []);
 
@@ -1862,7 +1886,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                     <span className={`text-[10px] px-2 py-0.5 font-extrabold rounded-full border border-[#111111] ${
                       activeResourceTab === 'questions' ? 'bg-[#FFF3A7] text-[#111111]' : 'bg-slate-100 text-slate-700'
                     }`}>
-                      1 Free / Category 🔒
+                      {questions.length}+ PYQs
                     </span>
                   </button>
                 </div>
@@ -1876,7 +1900,10 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                         <button
                           key={qCat}
                           type="button"
-                          onClick={() => setSelectedQuestionCategory(qCat)}
+                          onClick={() => {
+                            setSelectedQuestionCategory(qCat);
+                            setVisibleQuestionCount(60);
+                          }}
                           className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-[#111111] transition-all select-none cursor-pointer whitespace-nowrap ${
                             selectedQuestionCategory === qCat
                               ? 'bg-[#188ab2] text-white shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]'
@@ -1891,10 +1918,10 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                     <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-between flex-wrap gap-3">
                       <div>
                         <h3 className="font-black text-sm uppercase text-[#111111]">
-                          IIT Placement Question Bank — {selectedQuestionCategory}
+                          IIT Placement & Top Tech Question Bank — {selectedQuestionCategory}
                         </h3>
                         <p className="text-xs font-bold text-slate-600 mt-0.5">
-                          Showing real interview questions asked in Flipkart, Zomato, Uber, Sprinklr & top startups.
+                          Showing {questions.length}+ curated interview questions asked in Flipkart, Zomato, Google, Uber, Notion & top startups.
                         </p>
                       </div>
                       <span className="bg-white border-2 border-[#111111] px-3 py-1 text-xs font-extrabold shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
@@ -1903,7 +1930,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                     </div>
 
                     {(() => {
-                      const filteredQuestions = IIT_QUESTIONS_DATA.filter(q => {
+                      const filteredQuestions = questions.filter(q => {
                         return selectedQuestionCategory === 'All Question Types' || q.category === selectedQuestionCategory;
                       });
 
@@ -1921,17 +1948,17 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                       }
 
                       // When All Question Types is selected, group by category so the 1st (unlocked) question of EVERY category is at the top!
-                      let displayQuestions: typeof IIT_QUESTIONS_DATA = [];
+                      let displayQuestions: typeof questions = [];
 
                       if (selectedQuestionCategory === 'All Question Types') {
-                        const catGroups: Record<string, typeof IIT_QUESTIONS_DATA> = {};
+                        const catGroups: Record<string, typeof questions> = {};
                         filteredQuestions.forEach(q => {
                           if (!catGroups[q.category]) catGroups[q.category] = [];
                           catGroups[q.category].push(q);
                         });
 
-                        const firsts: typeof IIT_QUESTIONS_DATA = [];
-                        const rest: typeof IIT_QUESTIONS_DATA = [];
+                        const firsts: typeof questions = [];
+                        const rest: typeof questions = [];
 
                         Object.values(catGroups).forEach(group => {
                           if (group.length > 0) {
@@ -1947,102 +1974,116 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
 
                       // Track count per category: 1st question of each category is unlocked (count 0), all others are locked!
                       const perCategorySeen: Record<string, number> = {};
+                      const paginatedQuestions = displayQuestions.slice(0, visibleQuestionCount);
 
                       return (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {displayQuestions.map((q) => {
-                            const countInCat = perCategorySeen[q.category] || 0;
-                            perCategorySeen[q.category] = countInCat + 1;
+                        <>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {paginatedQuestions.map((q) => {
+                              const countInCat = perCategorySeen[q.category] || 0;
+                              perCategorySeen[q.category] = countInCat + 1;
 
-                            // Exactly 1 question per category is unlocked. All other questions are locked!
-                            const isLocked = countInCat >= 1;
+                              // Exactly 1 question per category is unlocked. All other questions are locked!
+                              const isLocked = countInCat >= 1;
 
-                            if (isLocked) {
-                              return (
-                                <div 
-                                  key={q.id}
-                                  onClick={() => {
-                                    setApplyStatus('idle');
-                                    setApplyValidationError('');
-                                    setShowApplyModal(true);
-                                  }}
-                                  className="relative bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden cursor-pointer select-none group min-h-[220px] flex flex-col justify-between hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all"
-                                >
-                                  {/* Blurred Privacy Background */}
-                                  <div className="filter blur-[6px] opacity-25 pointer-events-none select-none">
-                                    <div className="flex items-center justify-between mb-3">
-                                      <span className="bg-slate-200 text-slate-700 px-2 py-0.5 text-xs font-bold">{q.category}</span>
-                                      <span className="text-xs font-bold text-slate-400">{q.company}</span>
-                                    </div>
-                                    <h4 className="font-extrabold text-base text-slate-800 mb-2">IIT APM Placement Interview Question</h4>
-                                    <p className="text-xs text-slate-500">Framework breakdown, metrics, approach hint, and detailed solution.</p>
-                                  </div>
-
-                                  {/* Lock Overlay */}
-                                  <div className="absolute inset-0 bg-white/90 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10 group-hover:bg-white/80 transition-all">
-                                    <div className="w-11 h-11 bg-[#FFF3A7] border-[2.5px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] mb-3 rotate-[-3deg]">
-                                      <Lock className="h-5 w-5 text-[#111111]" />
-                                    </div>
-                                    <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] mb-2">
-                                      🔒 LOCKED • MEMBER-ONLY IIT PYQ
-                                    </span>
-                                    <p className="font-bold text-xs text-slate-600 mb-3 max-w-xs leading-relaxed">
-                                      Unlock full question statement, framework breakdown, step-by-step approach & solution.
-                                    </p>
-                                    <button className="bg-[#188ab2] text-white border-2 border-[#111111] px-4 py-2 text-xs font-black uppercase shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all cursor-pointer">
-                                      Unlock Question 🔒
-                                    </button>
-                                  </div>
-                                </div>
-                              );
-                            }
-
-                            return (
-                              <div 
-                                key={q.id}
-                                className="bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between text-left"
-                              >
-                                <div>
-                                  <div className="flex items-center justify-between gap-3 mb-3">
-                                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                                      {q.category}
-                                    </span>
-                                    <span className="bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md">
-                                      {q.company}
-                                    </span>
-                                  </div>
-
-                                  <h4 className="text-base font-black text-[#111111] leading-snug mb-3">
-                                    {q.question}
-                                  </h4>
-
-                                  {q.description && (
-                                    <div className="text-xs font-semibold text-slate-600 leading-relaxed mb-4 border-l-3 border-[#188ab2] pl-3 py-1 bg-slate-50">
-                                      <strong className="text-[#188ab2] font-black block mb-0.5">Approach Hint:</strong>
-                                      {q.description}
-                                    </div>
-                                  )}
-                                </div>
-
-                                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-extrabold text-slate-500">
-                                  <span className="text-emerald-600 font-extrabold flex items-center gap-1">
-                                    ✓ Unlocked IIT Question
-                                  </span>
-                                  <button 
+                              if (isLocked) {
+                                return (
+                                  <div 
+                                    key={q.id}
                                     onClick={() => {
                                       setApplyStatus('idle');
                                       setApplyValidationError('');
                                       setShowApplyModal(true);
                                     }}
-                                    className="bg-[#188ab2] text-white border-2 border-[#111111] px-3.5 py-1.5 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all cursor-pointer"
+                                    className="relative bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden cursor-pointer select-none group min-h-[220px] flex flex-col justify-between hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all"
                                   >
-                                    Practice Case ➜
-                                  </button>
+                                    {/* Blurred Privacy Background */}
+                                    <div className="filter blur-[6px] opacity-25 pointer-events-none select-none">
+                                      <div className="flex items-center justify-between mb-3">
+                                        <span className="bg-slate-200 text-slate-700 px-2 py-0.5 text-xs font-bold">{q.category}</span>
+                                        <span className="text-xs font-bold text-slate-400">{q.company}</span>
+                                      </div>
+                                      <h4 className="font-extrabold text-base text-slate-800 mb-2">IIT & Top Tech PM Interview Question</h4>
+                                      <p className="text-xs text-slate-500">Framework breakdown, metrics, approach hint, and detailed solution.</p>
+                                    </div>
+
+                                    {/* Lock Overlay */}
+                                    <div className="absolute inset-0 bg-white/90 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10 group-hover:bg-white/80 transition-all">
+                                      <div className="w-11 h-11 bg-[#FFF3A7] border-[2.5px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] mb-3 rotate-[-3deg]">
+                                        <Lock className="h-5 w-5 text-[#111111]" />
+                                      </div>
+                                      <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] mb-2">
+                                        🔒 LOCKED • MEMBER-ONLY PM QUESTION
+                                      </span>
+                                      <p className="font-bold text-xs text-slate-600 mb-3 max-w-xs leading-relaxed">
+                                        Unlock full question statement, framework breakdown, step-by-step approach & solution.
+                                      </p>
+                                      <button className="bg-[#188ab2] text-white border-2 border-[#111111] px-4 py-2 text-xs font-black uppercase shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all cursor-pointer">
+                                        Unlock Question 🔒
+                                      </button>
+                                    </div>
+                                  </div>
+                                );
+                              }
+
+                              return (
+                                <div 
+                                  key={q.id}
+                                  className="bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between text-left"
+                                >
+                                  <div>
+                                    <div className="flex items-center justify-between gap-3 mb-3">
+                                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                                        {q.category}
+                                      </span>
+                                      <span className="bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md">
+                                        {q.company}
+                                      </span>
+                                    </div>
+
+                                    <h4 className="text-base font-black text-[#111111] leading-snug mb-3">
+                                      {q.question}
+                                    </h4>
+
+                                    {q.description && (
+                                      <div className="text-xs font-semibold text-slate-600 leading-relaxed mb-4 border-l-3 border-[#188ab2] pl-3 py-1 bg-slate-50">
+                                        <strong className="text-[#188ab2] font-black block mb-0.5">Approach Hint:</strong>
+                                        {q.description}
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-extrabold text-slate-500">
+                                    <span className="text-emerald-600 font-extrabold flex items-center gap-1">
+                                      ✓ Unlocked IIT Question
+                                    </span>
+                                    <button 
+                                      onClick={() => {
+                                        setApplyStatus('idle');
+                                        setApplyValidationError('');
+                                        setShowApplyModal(true);
+                                      }}
+                                      className="bg-[#188ab2] text-white border-2 border-[#111111] px-3.5 py-1.5 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all cursor-pointer"
+                                    >
+                                      Practice Case ➜
+                                    </button>
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+                              );
+                            })}
+                          </div>
+
+                          {visibleQuestionCount < displayQuestions.length && (
+                            <div className="pt-6 text-center">
+                              <button
+                                onClick={() => setVisibleQuestionCount(prev => prev + 60)}
+                                className="px-6 py-3.5 bg-white border-[3px] border-[#111111] font-black text-xs uppercase shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:bg-[#FFF3A7] transition-all cursor-pointer"
+                              >
+                                Load More Questions ({displayQuestions.length - visibleQuestionCount} remaining) ➜
+                              </button>
+                            </div>
+                          )}
+                        </>
                       );
                     })()}
                   </div>
