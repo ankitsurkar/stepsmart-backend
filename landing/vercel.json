@@ -9,35 +9,31 @@
       "destination": "https://stepsmart-backend-lyart.vercel.app"
     },
     {
-      "source": "/live/host",
-      "destination": "https://RAILWAY_LIVE_URL/host"
+      "source": "/live",
+      "destination": "/live/phone.html"
     },
     {
-      "source": "/live/host/:path*",
-      "destination": "https://RAILWAY_LIVE_URL/host"
+      "source": "/live/",
+      "destination": "/live/phone.html"
+    },
+    {
+      "source": "/live/host",
+      "destination": "/live/host.html"
     },
     {
       "source": "/live/phone",
-      "destination": "https://RAILWAY_LIVE_URL/phone"
+      "destination": "/live/phone.html"
     },
     {
       "source": "/live/replay",
-      "destination": "https://RAILWAY_LIVE_URL/replay"
+      "destination": "/live/replay.html"
     },
     {
-      "source": "/live/api/:path*",
-      "destination": "https://RAILWAY_LIVE_URL/api/:path*"
+      "source": "/live/preview",
+      "destination": "/live/preview.html"
     },
     {
-      "source": "/live/:path*",
-      "destination": "https://RAILWAY_LIVE_URL/:path*"
-    },
-    {
-      "source": "/live",
-      "destination": "https://RAILWAY_LIVE_URL/"
-    },
-    {
-      "source": "/(.*)",
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ]

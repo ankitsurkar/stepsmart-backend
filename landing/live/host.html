@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    try {
+      var s = localStorage.getItem('aipm-color-scheme');
+      if (s === 'light' || s === 'dark') document.querySelector('meta[name="color-scheme"]').content = s;
+    } catch (e) {}
+  </script>
+  <title>Host Screen | The AI PM, Part 1</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="host-page">
+  <header class="host-topbar">
+    <div class="host-stage-tag">
+      <span class="pill pill-accent" id="hostTimeTag">0–4m</span>
+      <span id="hostStageTag">Opening</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="pill tabular" id="hostPhonesBadge">0 phones connected</span>
+      <button type="button" class="theme-toggle-btn" id="hostThemeBtn">Dark mode</button>
+    </div>
+  </header>
+
+  <main class="host-main" id="hostMain"></main>
+
+  <footer class="host-dock">
+    <div class="host-dock-group">
+      <button type="button" class="btn" id="jumpStageBtn">All stages</button>
+      <span class="host-progress-text" id="hostProgressText">1 / 1</span>
+    </div>
+    <nav class="host-dock-group" aria-label="Host stage controls">
+      <button type="button" class="btn" id="prevStageBtn">← Back</button>
+      <button type="button" class="btn btn-primary" id="nextStageBtn">Next →</button>
+    </nav>
+  </footer>
+
+  <dialog class="stage-dialog" id="stageDialog" aria-labelledby="stageDialogTitle">
+    <div class="dialog-head">
+      <h2 id="stageDialogTitle" style="margin: 0; font-size: 22px;">Jump to stage</h2>
+      <button type="button" class="btn" id="closeDialogBtn" style="min-block-size: 40px; padding: 6px 14px;">Close</button>
+    </div>
+    <div class="dialog-body" id="stageJumpList"></div>
+  </dialog>
+
+  <script type="module" src="./js/host.js"></script>
+</body>
+</html>

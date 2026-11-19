@@ -1295,10 +1295,8 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
       : 'guides');
 
   const [resources, setResources] = useState<ResourceItem[]>(DEMO_RESOURCES);
-  const [selectedCategory, setSelectedCategory] = useState<string>('All Categories');
   const [selectedQuestionCategory, setSelectedQuestionCategory] = useState<string>('All Question Types');
   const [activeResourceTab, setActiveResourceTab] = useState<'guides' | 'questions'>(initialTab);
-  const [selectedCompany, setSelectedCompany] = useState<string>('All Companies');
 
   useEffect(() => {
     if (defaultTab) {
@@ -1310,21 +1308,11 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
     }
   }, [defaultTab, tabParam]);
 
-  // Collapsible Left Sidebar Dropdowns State
-  const [openDropdowns, setOpenDropdowns] = useState({
-    category: true,
-    questionType: true,
-    company: true
-  });
-
-  const toggleDropdown = (section: 'category' | 'questionType' | 'company') => {
-    setOpenDropdowns(prev => ({ ...prev, [section]: !prev[section] }));
-  };
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [showMobileFilters, setShowMobileFilters] = useState<boolean>(false);
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [guideLoading, setGuideLoading] = useState<boolean>(false);
 
   // Apply Now Modal & Lead State
   const [showApplyModal, setShowApplyModal] = useState<boolean>(false);
@@ -1409,31 +1397,78 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
     whatIsInsideText: ''
   });
 
+  // Load local custom resources + all 274 company guides from guides_index.json
   useEffect(() => {
-    const loadResources = () => {
+    let isMounted = true;
+    const loadAllResources = async () => {
       try {
         const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
         const customItems: ResourceItem[] = stored ? JSON.parse(stored) : [];
-        const combined = [...customItems, ...DEMO_RESOURCES.filter(d => !customItems.some(c => c.id === d.id))];
-        setResources(combined);
+
+        let nextGuides: ResourceItem[] = [];
+        try {
+          const res = await fetch('/data/guides_index.json');
+          if (res.ok) {
+            nextGuides = await res.json();
+          }
+        } catch (fetchErr) {
+          console.warn('Could not fetch guides_index.json:', fetchErr);
+        }
+
+        if (isMounted) {
+          const existingIds = new Set([
+            ...DEMO_RESOURCES.map(d => d.id),
+            ...customItems.map(c => c.id)
+          ]);
+          const additional = nextGuides.filter(g => !existingIds.has(g.id));
+          setResources([...customItems, ...DEMO_RESOURCES, ...additional]);
+        }
       } catch (e) {
-        setResources(DEMO_RESOURCES);
+        if (isMounted) setResources(DEMO_RESOURCES);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
-    loadResources();
+    loadAllResources();
+    return () => { isMounted = false; };
   }, []);
 
-  // Filter resources
+  // Fetch full guide markdown when opening a resource that has no aboutText loaded yet
+  useEffect(() => {
+    if (activeResourceId) {
+      const found = resources.find(r => r.id === activeResourceId);
+      if (!found || !found.aboutText) {
+        setGuideLoading(true);
+        fetch(`/data/guides/${activeResourceId}.json`)
+          .then(res => res.ok ? res.json() : null)
+          .then(data => {
+            if (data && data.aboutText) {
+              setResources(prev => {
+                const idx = prev.findIndex(r => r.id === activeResourceId);
+                if (idx >= 0) {
+                  const updated = [...prev];
+                  updated[idx] = { ...updated[idx], ...data };
+                  return updated;
+                }
+                return [data, ...prev];
+              });
+            }
+          })
+          .catch(err => console.error('Error loading guide markdown:', err))
+          .finally(() => setGuideLoading(false));
+      }
+    }
+  }, [activeResourceId, resources]);
+
+  // Filter company guides by search query
   const filteredResources = resources.filter(item => {
-    const matchesCategory = selectedCategory === 'All Categories' || item.category === selectedCategory;
-    const matchesCompany = selectedCompany === 'All Companies' || item.company === selectedCompany;
-    const matchesSearch = searchQuery.trim() === '' || 
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.tags && item.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())));
-    return matchesCategory && matchesCompany && matchesSearch;
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    const titleMatch = item.title.toLowerCase().includes(q);
+    const compMatch = item.company ? item.company.toLowerCase().includes(q) : false;
+    const descMatch = item.description ? item.description.toLowerCase().includes(q) : false;
+    const tagsMatch = item.tags ? item.tags.some(t => t.toLowerCase().includes(q)) : false;
+    return titleMatch || compMatch || descMatch || tagsMatch;
   });
 
   // Find active resource details
@@ -1516,9 +1551,14 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
+    // Horizontal rules
+    html = html.replace(/^---+$/gm, '<hr class="my-6 border-t-2 border-[#111111]" />');
+
     // Headings
+    html = html.replace(/^#### (.*?)$/gm, '<h4 class="text-base font-extrabold mt-4 mb-2 text-[#111111]">$1</h4>');
     html = html.replace(/^### (.*?)$/gm, '<h3 class="text-lg font-extrabold mt-6 mb-2 text-[#111111]">$1</h3>');
     html = html.replace(/^## (.*?)$/gm, '<h2 class="text-xl md:text-2xl font-black mt-8 mb-4 border-b-[3px] border-[#111111] pb-2 text-[#111111] uppercase tracking-wide">$1</h2>');
+    html = html.replace(/^# (.*?)$/gm, '<h1 class="text-2xl md:text-3xl font-black mt-8 mb-4 border-b-[3px] border-[#111111] pb-2 text-[#111111] uppercase tracking-wide">$1</h1>');
 
     // Bold & Italics
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-[#111111]">$1</strong>');
@@ -1540,6 +1580,8 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
     // Clean up empty paragraph tags or double wraps
     html = html.replace(/<p class=".*?"><ol/g, '<ol');
     html = html.replace(/<\/ol><\/p>/g, '</ol>');
+    html = html.replace(/<p class=".*?"><hr/g, '<hr');
+    html = html.replace(/<\/hr><\/p>/g, '');
     html = html.replace(/<p class=".*?"><\/p>/g, '');
 
     return html;
@@ -1656,10 +1698,17 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                 {/* Detailed Overview Markdown/HTML */}
                 <div className="border-t-2 border-[#111111]/10 pt-6">
                   <h3 className="text-lg sm:text-xl font-black mb-4">Detailed Overview</h3>
-                  <div 
-                    className="prose prose-slate max-w-none text-sm text-[#111111] leading-relaxed space-y-4"
-                    dangerouslySetInnerHTML={{ __html: parseMarkdown(activeResource.aboutText) }}
-                  />
+                  {guideLoading || !activeResource.aboutText ? (
+                    <div className="flex items-center justify-center py-12 gap-3 text-slate-600 font-bold">
+                      <Loader2 className="h-6 w-6 animate-spin text-[#188ab2]" />
+                      <span>Loading complete guide content...</span>
+                    </div>
+                  ) : (
+                    <div 
+                      className="prose prose-slate max-w-none text-sm text-[#111111] leading-relaxed space-y-4"
+                      dangerouslySetInnerHTML={{ __html: parseMarkdown(activeResource.aboutText) }}
+                    />
+                  )}
                 </div>
 
               </div>
@@ -1746,9 +1795,9 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                   </>
                 ) : (
                   <>
-                    APM{' '}
+                    PM Interview{' '}
                     <span className="inline-block bg-[#FFF3A7] border-[3px] border-[#111111] px-3 sm:px-4 py-0.5 rotate-[1.5deg] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-                      Interview Guide
+                      Company Guides
                     </span>
                   </>
                 )}
@@ -1756,7 +1805,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
               <p className="text-base sm:text-lg md:text-xl text-[#111111] max-w-3xl mx-auto leading-relaxed font-bold mb-6 sm:mb-8">
                 {activeResourceTab === 'questions'
                   ? 'Real Previous Year Questions (PYQs) asked at Flipkart, Zomato, Uber, Sprinklr, and leading tech companies during campus placements.'
-                  : 'Company-by-company Product Manager (PM) and Associate Product Manager (APM) interview guides for IIT campus placements — covering shortlisting criteria, deck assignments, interview loops, and Previous Year Questions (PYQs).'}
+                  : 'Company-by-company Product Manager (PM) and Associate Product Manager (APM) interview guides covering interview loops, core competencies, case studies, and preparation strategies.'}
               </p>
 
               {/* View Course CTA */}
@@ -1771,496 +1820,333 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
             </div>
           </section>
 
-          {/* Main Content Area with Left Sidebar Filter + Card Grid */}
+          {/* Main Content Area: Clean, Full-Width */}
           <main className="py-6 sm:py-12 bg-[#F8FAFC]">
             <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
-              
-              {/* Mobile Filter Toggle Bar (Visible on < lg screens) */}
-              <div className="lg:hidden w-full mb-4">
-                <button
-                  type="button"
-                  onClick={() => setShowMobileFilters(!showMobileFilters)}
-                  className="w-full bg-white border-[3px] border-[#111111] p-3.5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-between font-black text-xs sm:text-sm uppercase text-[#111111] cursor-pointer"
-                >
-                  <div className="flex items-center gap-2">
-                    <SlidersHorizontal className="h-4 w-4 text-[#188ab2]" />
-                    <span>Filter & Search Resources</span>
-                    {(selectedCategory !== 'All Categories' || selectedCompany !== 'All Companies' || selectedQuestionCategory !== 'All Question Types') && (
-                      <span className="bg-[#FFF3A7] border border-[#111111] text-[9px] px-1.5 py-0.5 font-extrabold">Active</span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-xs text-slate-500 font-bold">{showMobileFilters ? 'Hide' : 'Show'}</span>
-                    {showMobileFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                  </div>
-                </button>
-              </div>
+              <div className="w-full space-y-6 text-left">
 
-              <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+                {/* View Switcher Tabs: Guides vs Questions */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 border-b-2 border-[#111111]/10 pb-4">
+                  <button
+                    onClick={() => {
+                      setActiveResourceTab('guides');
+                      setSelectedQuestionCategory('All Question Types');
+                    }}
+                    className={`w-full sm:w-auto flex-1 justify-center px-4 sm:px-6 py-3 font-black text-xs md:text-sm uppercase border-[3px] border-[#111111] transition-all flex items-center gap-2 select-none cursor-pointer ${
+                      activeResourceTab === 'guides' 
+                        ? 'bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]' 
+                        : 'bg-white text-[#111111] hover:bg-[#FFF3A7] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]'
+                    }`}
+                  >
+                    <BookOpen className="h-4 w-4 shrink-0" />
+                    <span>Company Guides</span>
+                    <span className={`text-[10px] px-2 py-0.5 font-extrabold rounded-full border border-[#111111] ${
+                      activeResourceTab === 'guides' ? 'bg-[#FFF3A7] text-[#111111]' : 'bg-slate-100 text-slate-700'
+                    }`}>
+                      {resources.length}+ Guides
+                    </span>
+                  </button>
 
-                {/* Left Sidebar Filter */}
-                <aside className={`w-full lg:w-64 xl:w-72 shrink-0 bg-white border-[3px] border-[#111111] p-4 md:p-5 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] select-none lg:sticky lg:top-36 max-h-none lg:max-h-[calc(100vh-10rem)] overflow-y-auto z-20 space-y-4 text-left ${showMobileFilters ? 'block mb-6 lg:mb-0' : 'hidden lg:block'}`}>
-                  
-                  {/* Header */}
-                  <div className="flex items-center justify-between pb-3 border-b-2 border-[#111111]">
-                    <h3 className="text-xs font-black uppercase tracking-wider text-[#111111] flex items-center gap-2">
-                      <SlidersHorizontal className="h-4 w-4 text-[#188ab2]" /> Filter Resources
-                    </h3>
-                    {(selectedCategory !== 'All Categories' || selectedCompany !== 'All Companies' || selectedQuestionCategory !== 'All Question Types') && (
-                      <button
-                        onClick={() => { 
-                          setSelectedCategory('All Categories'); 
-                          setSelectedCompany('All Companies'); 
-                          setSelectedQuestionCategory('All Question Types');
-                          setActiveResourceTab('guides');
-                        }}
-                        className="text-[10px] font-black uppercase text-[#188ab2] hover:underline cursor-pointer"
-                      >
-                        Reset ↺
-                      </button>
-                    )}
-                  </div>
+                  <button
+                    onClick={() => {
+                      setActiveResourceTab('questions');
+                    }}
+                    className={`w-full sm:w-auto flex-1 justify-center px-4 sm:px-6 py-3 font-black text-xs md:text-sm uppercase border-[3px] border-[#111111] transition-all flex items-center gap-2 select-none cursor-pointer ${
+                      activeResourceTab === 'questions' 
+                        ? 'bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]' 
+                        : 'bg-white text-[#111111] hover:bg-[#FFF3A7] shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]'
+                    }`}
+                  >
+                    <HelpCircle className="h-4 w-4 shrink-0" />
+                    <span>Question Bank (PYQs)</span>
+                    <span className={`text-[10px] px-2 py-0.5 font-extrabold rounded-full border border-[#111111] ${
+                      activeResourceTab === 'questions' ? 'bg-[#FFF3A7] text-[#111111]' : 'bg-slate-100 text-slate-700'
+                    }`}>
+                      1 Free / Category 🔒
+                    </span>
+                  </button>
+                </div>
 
-                  {/* 1. Guide Category Dropdown */}
-                  <div className="border-2 border-[#111111] p-3 bg-white shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                    <button 
-                      type="button"
-                      onClick={() => toggleDropdown('category')}
-                      className="w-full flex items-center justify-between font-black text-xs uppercase tracking-wider text-[#111111] cursor-pointer"
-                    >
-                      <div className="flex items-center gap-1.5 truncate">
-                        <FolderArchive className="h-3.5 w-3.5 text-[#188ab2] shrink-0" />
-                        <span className="truncate">Category</span>
+                {activeResourceTab === 'questions' ? (
+                  /* QUESTION BANK VIEW */
+                  <div className="space-y-6">
+                    {/* Category Filter Pills */}
+                    <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                      {QUESTION_TYPES.map((qCat) => (
+                        <button
+                          key={qCat}
+                          type="button"
+                          onClick={() => setSelectedQuestionCategory(qCat)}
+                          className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-[#111111] transition-all select-none cursor-pointer whitespace-nowrap ${
+                            selectedQuestionCategory === qCat
+                              ? 'bg-[#188ab2] text-white shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]'
+                              : 'bg-white text-[#111111] hover:bg-[#FFF3A7] shadow-[1px_1px_0px_0px_rgba(17,17,17,1)]'
+                          }`}
+                        >
+                          {qCat}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-between flex-wrap gap-3">
+                      <div>
+                        <h3 className="font-black text-sm uppercase text-[#111111]">
+                          IIT Placement Question Bank — {selectedQuestionCategory}
+                        </h3>
+                        <p className="text-xs font-bold text-slate-600 mt-0.5">
+                          Showing real interview questions asked in Flipkart, Zomato, Uber, Sprinklr & top startups.
+                        </p>
                       </div>
-                      <div className="flex items-center gap-1 shrink-0">
-                        <span className="text-[9px] bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-1.5 py-0.5 font-extrabold rounded truncate max-w-[80px]">
-                          {selectedCategory === 'All Categories' ? 'All' : selectedCategory}
-                        </span>
-                        {openDropdowns.category ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                      </div>
-                    </button>
+                      <span className="bg-white border-2 border-[#111111] px-3 py-1 text-xs font-extrabold shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+                        1 Free Question Per Category • Rest Locked for Members 🔒
+                      </span>
+                    </div>
 
-                    {openDropdowns.category && (
-                      <div className="mt-2.5 pt-2.5 border-t border-slate-200">
-                        {/* List Options */}
-                        <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-                          {CATEGORIES.map((cat) => (
-                            <label 
-                              key={cat} 
-                              onClick={() => setSelectedCategory(cat)}
-                              className="flex items-center gap-2 cursor-pointer group text-left"
-                            >
-                              <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                                selectedCategory === cat 
-                                  ? 'border-[#188ab2] bg-[#188ab2]' 
-                                  : 'border-slate-300 group-hover:border-[#111111] bg-white'
-                              }`}>
-                                {selectedCategory === cat && (
-                                  <div className="w-1 h-1 rounded-full bg-white" />
-                                )}
-                              </div>
-                              <span className={`text-xs font-bold leading-snug transition-colors ${
-                                selectedCategory === cat 
-                                  ? 'text-[#188ab2] font-black' 
-                                  : 'text-slate-700 group-hover:text-[#111111]'
-                              }`}>
-                                {cat}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                    {(() => {
+                      const filteredQuestions = IIT_QUESTIONS_DATA.filter(q => {
+                        return selectedQuestionCategory === 'All Question Types' || q.category === selectedQuestionCategory;
+                      });
 
-                  {/* 2. Question Type Dropdown */}
-                  <div className="border-2 border-[#111111] p-3 bg-white shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                    <button 
-                      type="button"
-                      onClick={() => toggleDropdown('questionType')}
-                      className="w-full flex items-center justify-between font-black text-xs uppercase tracking-wider text-[#111111] cursor-pointer"
-                    >
-                      <div className="flex items-center gap-1.5 truncate">
-                        <HelpCircle className="h-3.5 w-3.5 text-[#188ab2] shrink-0" />
-                        <span className="truncate">Question Type</span>
-                      </div>
-                      <div className="flex items-center gap-1 shrink-0">
-                        <span className="text-[9px] bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B] px-1.5 py-0.5 font-extrabold rounded truncate max-w-[80px]">
-                          {selectedQuestionCategory === 'All Question Types' ? '100+ PYQs' : selectedQuestionCategory}
-                        </span>
-                        {openDropdowns.questionType ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                      </div>
-                    </button>
+                      if (filteredQuestions.length === 0) {
+                        return (
+                          <div className="border-[3px] border-[#111111] p-12 text-center bg-white shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] max-w-xl mx-auto">
+                            <Info className="h-10 w-10 mx-auto mb-4 text-slate-400" />
+                            <h3 className="text-xl font-extrabold text-[#111111] mb-2">No matching questions found</h3>
+                            <p className="text-sm font-bold text-slate-500 mb-6">Try selecting a different question type.</p>
+                            <Button variant="outline" onClick={() => setSelectedQuestionCategory('All Question Types')}>
+                              Reset Category
+                            </Button>
+                          </div>
+                        );
+                      }
 
-                    {openDropdowns.questionType && (
-                      <div className="mt-2.5 pt-2.5 border-t border-slate-200">
-                        {/* List Options */}
-                        <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-                          {QUESTION_TYPES.map((qType) => (
-                            <label 
-                              key={qType} 
-                              onClick={() => {
-                                setSelectedQuestionCategory(qType);
-                                if (qType !== 'All Question Types') {
-                                  setActiveResourceTab('questions');
-                                }
-                              }}
-                              className="flex items-center gap-2 cursor-pointer group text-left"
-                            >
-                              <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                                selectedQuestionCategory === qType 
-                                  ? 'border-[#188ab2] bg-[#188ab2]' 
-                                  : 'border-slate-300 group-hover:border-[#111111] bg-white'
-                              }`}>
-                                {selectedQuestionCategory === qType && (
-                                  <div className="w-1 h-1 rounded-full bg-white" />
-                                )}
-                              </div>
-                              <span className={`text-xs font-bold leading-snug transition-colors ${
-                                selectedQuestionCategory === qType 
-                                  ? 'text-[#188ab2] font-black' 
-                                  : 'text-slate-700 group-hover:text-[#111111]'
-                              }`}>
-                                {qType}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                      // When All Question Types is selected, group by category so the 1st (unlocked) question of EVERY category is at the top!
+                      let displayQuestions: typeof IIT_QUESTIONS_DATA = [];
 
-                  {/* 3. Company Dropdown */}
-                  <div className="border-2 border-[#111111] p-3 bg-white shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
-                    <button 
-                      type="button"
-                      onClick={() => toggleDropdown('company')}
-                      className="w-full flex items-center justify-between font-black text-xs uppercase tracking-wider text-[#111111] cursor-pointer"
-                    >
-                      <div className="flex items-center gap-1.5 truncate">
-                        <Tag className="h-3.5 w-3.5 text-[#188ab2] shrink-0" />
-                        <span className="truncate">Company</span>
-                      </div>
-                      <div className="flex items-center gap-1 shrink-0">
-                        <span className="text-[9px] bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-1.5 py-0.5 font-extrabold rounded truncate max-w-[80px]">
-                          {selectedCompany === 'All Companies' ? 'All' : selectedCompany}
-                        </span>
-                        {openDropdowns.company ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                      </div>
-                    </button>
-
-                    {openDropdowns.company && (
-                      <div className="mt-2.5 pt-2.5 border-t border-slate-200">
-                        {/* List Options */}
-                        <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-                          {COMPANIES.map((comp) => (
-                            <label 
-                              key={comp} 
-                              onClick={() => setSelectedCompany(comp)}
-                              className="flex items-center gap-2 cursor-pointer group text-left"
-                            >
-                              <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                                selectedCompany === comp 
-                                  ? 'border-[#188ab2] bg-[#188ab2]' 
-                                  : 'border-slate-300 group-hover:border-[#111111] bg-white'
-                              }`}>
-                                {selectedCompany === comp && (
-                                  <div className="w-1 h-1 rounded-full bg-white" />
-                                )}
-                              </div>
-                              <span className={`text-xs font-bold leading-snug transition-colors ${
-                                selectedCompany === comp 
-                                  ? 'text-[#188ab2] font-black' 
-                                  : 'text-slate-700 group-hover:text-[#111111]'
-                              }`}>
-                                {comp}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Reset Filters Button */}
-                  {(selectedCategory !== 'All Categories' || selectedCompany !== 'All Companies' || selectedQuestionCategory !== 'All Question Types') && (
-                    <button
-                      onClick={() => { 
-                        setSelectedCategory('All Categories'); 
-                        setSelectedCompany('All Companies'); 
-                        setSelectedQuestionCategory('All Question Types');
-                        setActiveResourceTab('guides');
-                      }}
-                      className="w-full py-2 bg-[#FFF3A7] border-2 border-[#111111] text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#188ab2] hover:text-white transition-all cursor-pointer"
-                    >
-                      Reset Filters ↺
-                    </button>
-                  )}
-
-                </aside>
-
-                {/* Right Side: Main Resource Feed / Question Cards */}
-                <div className="flex-1 w-full space-y-6 text-left">
-
-                  {/* View Switcher Tabs */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 border-b-2 border-[#111111]/10 pb-4">
-                    <button
-                      onClick={() => {
-                        setActiveResourceTab('guides');
-                        setSelectedQuestionCategory('All Question Types');
-                      }}
-                      className={`w-full sm:w-auto flex-1 justify-center px-4 sm:px-5 py-2.5 font-black text-xs md:text-sm uppercase border-[3px] border-[#111111] transition-all flex items-center gap-2 select-none cursor-pointer ${
-                        activeResourceTab === 'guides' 
-                          ? 'bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]' 
-                          : 'bg-white text-[#111111] hover:bg-[#FFF3A7]'
-                      }`}
-                    >
-                      <BookOpen className="h-4 w-4 shrink-0" /> APM Interview Guides
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setActiveResourceTab('questions');
-                      }}
-                      className={`w-full sm:w-auto flex-1 justify-center px-4 sm:px-5 py-2.5 font-black text-xs md:text-sm uppercase border-[3px] border-[#111111] transition-all flex items-center gap-2 select-none cursor-pointer ${
-                        activeResourceTab === 'questions' 
-                          ? 'bg-[#188ab2] text-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]' 
-                          : 'bg-white text-[#111111] hover:bg-[#FFF3A7]'
-                      }`}
-                    >
-                      <HelpCircle className="h-4 w-4 shrink-0" /> IIT Question Bank (PYQs)
-                    </button>
-                  </div>
-
-                  {activeResourceTab === 'questions' || selectedQuestionCategory !== 'All Question Types' ? (
-                    /* QUESTION BANK VIEW */
-                    <div className="space-y-6">
-                      <div className="bg-[#FFF3A7] border-[3px] border-[#111111] p-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] flex items-center justify-between flex-wrap gap-3">
-                        <div>
-                          <h3 className="font-black text-sm uppercase text-[#111111]">
-                            IIT Placement Question Bank — {selectedQuestionCategory}
-                          </h3>
-                          <p className="text-xs font-bold text-slate-600 mt-0.5">
-                            Showing questions asked in Flipkart, Zomato, Uber, Sprinklr & top startups.
-                          </p>
-                        </div>
-                        <span className="bg-white border border-[#111111] px-3 py-1 text-xs font-extrabold">
-                          First 3 per category free • Lock applies to rest 🔒
-                        </span>
-                      </div>
-
-                      {(() => {
-                        const filteredQuestions = IIT_QUESTIONS_DATA.filter(q => {
-                          const matchesQCat = selectedQuestionCategory === 'All Question Types' || q.category === selectedQuestionCategory;
-                          
-                          let matchesCompany = selectedCompany === 'All Companies';
-                          if (!matchesCompany) {
-                            const compLower = selectedCompany.toLowerCase();
-                            const qCompLower = q.company.toLowerCase();
-
-                            if (qCompLower.includes(compLower)) {
-                              matchesCompany = true;
-                            } else if (compLower === 'zomato' && qCompLower.includes('blinkit')) {
-                              matchesCompany = true;
-                            } else if (compLower === 'meta' && (qCompLower.includes('facebook') || qCompLower.includes('instagram') || qCompLower.includes('whatsapp') || qCompLower.includes('threads'))) {
-                              matchesCompany = true;
-                            } else if (compLower === 'google' && (qCompLower.includes('youtube') || qCompLower.includes('maps') || qCompLower.includes('cloud'))) {
-                              matchesCompany = true;
-                            } else if (compLower === 'ola' && qCompLower.includes('ola electric')) {
-                              matchesCompany = true;
-                            }
-                          }
-
-                          return matchesQCat && matchesCompany;
+                      if (selectedQuestionCategory === 'All Question Types') {
+                        const catGroups: Record<string, typeof IIT_QUESTIONS_DATA> = {};
+                        filteredQuestions.forEach(q => {
+                          if (!catGroups[q.category]) catGroups[q.category] = [];
+                          catGroups[q.category].push(q);
                         });
 
-                        if (filteredQuestions.length === 0) {
-                          return (
-                            <div className="border-[3px] border-[#111111] p-12 text-center bg-white shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] max-w-xl mx-auto">
-                              <Info className="h-10 w-10 mx-auto mb-4 text-slate-400" />
-                              <h3 className="text-xl font-extrabold text-[#111111] mb-2">No matching questions found</h3>
-                              <p className="text-sm font-bold text-slate-500 mb-6">Try selecting a different company or question type.</p>
-                              <Button variant="outline" onClick={() => { setSelectedQuestionCategory('All Question Types'); setSelectedCompany('All Companies'); }}>
-                                Reset Question Filters
-                              </Button>
-                            </div>
-                          );
-                        }
+                        const firsts: typeof IIT_QUESTIONS_DATA = [];
+                        const rest: typeof IIT_QUESTIONS_DATA = [];
 
-                        // Interleave questions by category when All Question Types is selected so every category gets 1 unlocked question at the top!
-                        let displayQuestions = [...filteredQuestions];
-
-                        if (selectedQuestionCategory === 'All Question Types') {
-                          const catGroups: Record<string, typeof IIT_QUESTIONS_DATA> = {};
-                          filteredQuestions.forEach(q => {
-                            if (!catGroups[q.category]) catGroups[q.category] = [];
-                            catGroups[q.category].push(q);
-                          });
-
-                          const interleaved: typeof IIT_QUESTIONS_DATA = [];
-                          const categories = Object.keys(catGroups);
-                          const maxLen = Math.max(0, ...Object.values(catGroups).map(a => a.length));
-
-                          for (let i = 0; i < maxLen; i++) {
-                            for (const cat of categories) {
-                              if (catGroups[cat][i]) {
-                                interleaved.push(catGroups[cat][i]);
-                              }
-                            }
+                        Object.values(catGroups).forEach(group => {
+                          if (group.length > 0) {
+                            firsts.push(group[0]);
+                            rest.push(...group.slice(1));
                           }
-                          displayQuestions = interleaved;
-                        }
+                        });
 
-                        // Track count per category so the 1st question in EACH category is unlocked at top when viewing All Question Types
-                        const perCategoryCount: Record<string, number> = {};
+                        displayQuestions = [...firsts, ...rest];
+                      } else {
+                        displayQuestions = filteredQuestions;
+                      }
 
-                        return (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {displayQuestions.map((q) => {
-                              const countInCat = (perCategoryCount[q.category] || 0);
-                              perCategoryCount[q.category] = countInCat + 1;
+                      // Track count per category: 1st question of each category is unlocked (count 0), all others are locked!
+                      const perCategorySeen: Record<string, number> = {};
 
-                              // Unlock 1st question in each category (or first 3 when viewing specific company/category)
-                              const isLocked = selectedQuestionCategory === 'All Question Types' 
-                                ? countInCat >= 1 
-                                : countInCat >= 3;
+                      return (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {displayQuestions.map((q) => {
+                            const countInCat = perCategorySeen[q.category] || 0;
+                            perCategorySeen[q.category] = countInCat + 1;
 
-                              if (isLocked) {
-                                return (
-                                  <div 
-                                    key={q.id}
+                            // Exactly 1 question per category is unlocked. All other questions are locked!
+                            const isLocked = countInCat >= 1;
+
+                            if (isLocked) {
+                              return (
+                                <div 
+                                  key={q.id}
+                                  onClick={() => {
+                                    setApplyStatus('idle');
+                                    setApplyValidationError('');
+                                    setShowApplyModal(true);
+                                  }}
+                                  className="relative bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden cursor-pointer select-none group min-h-[220px] flex flex-col justify-between hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all"
+                                >
+                                  {/* Blurred Privacy Background */}
+                                  <div className="filter blur-[6px] opacity-25 pointer-events-none select-none">
+                                    <div className="flex items-center justify-between mb-3">
+                                      <span className="bg-slate-200 text-slate-700 px-2 py-0.5 text-xs font-bold">{q.category}</span>
+                                      <span className="text-xs font-bold text-slate-400">{q.company}</span>
+                                    </div>
+                                    <h4 className="font-extrabold text-base text-slate-800 mb-2">IIT APM Placement Interview Question</h4>
+                                    <p className="text-xs text-slate-500">Framework breakdown, metrics, approach hint, and detailed solution.</p>
+                                  </div>
+
+                                  {/* Lock Overlay */}
+                                  <div className="absolute inset-0 bg-white/90 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10 group-hover:bg-white/80 transition-all">
+                                    <div className="w-11 h-11 bg-[#FFF3A7] border-[2.5px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] mb-3 rotate-[-3deg]">
+                                      <Lock className="h-5 w-5 text-[#111111]" />
+                                    </div>
+                                    <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] mb-2">
+                                      🔒 LOCKED • MEMBER-ONLY IIT PYQ
+                                    </span>
+                                    <p className="font-bold text-xs text-slate-600 mb-3 max-w-xs leading-relaxed">
+                                      Unlock full question statement, framework breakdown, step-by-step approach & solution.
+                                    </p>
+                                    <button className="bg-[#188ab2] text-white border-2 border-[#111111] px-4 py-2 text-xs font-black uppercase shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all cursor-pointer">
+                                      Unlock Question 🔒
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            }
+
+                            return (
+                              <div 
+                                key={q.id}
+                                className="bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between text-left"
+                              >
+                                <div>
+                                  <div className="flex items-center justify-between gap-3 mb-3">
+                                    <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
+                                      {q.category}
+                                    </span>
+                                    <span className="bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md">
+                                      {q.company}
+                                    </span>
+                                  </div>
+
+                                  <h4 className="text-base font-black text-[#111111] leading-snug mb-3">
+                                    {q.question}
+                                  </h4>
+
+                                  {q.description && (
+                                    <div className="text-xs font-semibold text-slate-600 leading-relaxed mb-4 border-l-3 border-[#188ab2] pl-3 py-1 bg-slate-50">
+                                      <strong className="text-[#188ab2] font-black block mb-0.5">Approach Hint:</strong>
+                                      {q.description}
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-extrabold text-slate-500">
+                                  <span className="text-emerald-600 font-extrabold flex items-center gap-1">
+                                    ✓ Unlocked IIT Question
+                                  </span>
+                                  <button 
                                     onClick={() => {
                                       setApplyStatus('idle');
                                       setApplyValidationError('');
                                       setShowApplyModal(true);
                                     }}
-                                    className="relative bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] overflow-hidden cursor-pointer select-none group min-h-[220px] flex flex-col justify-between"
+                                    className="bg-[#188ab2] text-white border-2 border-[#111111] px-3.5 py-1.5 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all cursor-pointer"
                                   >
-                                    {/* Blurred Privacy Background */}
-                                    <div className="filter blur-[6px] opacity-25 pointer-events-none select-none">
-                                      <div className="flex items-center justify-between mb-3">
-                                        <span className="bg-slate-200 text-slate-700 px-2 py-0.5 text-xs font-bold">{q.category}</span>
-                                        <span className="text-xs font-bold text-slate-400">{q.company}</span>
-                                      </div>
-                                      <h4 className="font-extrabold text-base text-slate-800 mb-2">IIT APM Placement Interview Question</h4>
-                                      <p className="text-xs text-slate-500">Framework breakdown, metrics, approach hint, and detailed solution.</p>
-                                    </div>
-
-                                    {/* Lock Overlay */}
-                                    <div className="absolute inset-0 bg-white/90 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10 group-hover:bg-white/80 transition-all">
-                                      <div className="w-11 h-11 bg-[#FFF3A7] border-[2.5px] border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] mb-3 rotate-[-3deg]">
-                                        <Lock className="h-5 w-5 text-[#111111]" />
-                                      </div>
-                                      <span className="bg-[#FFF3A7] text-[#111111] border border-[#111111] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] mb-2">
-                                        🔒 LOCKED • IIT PLACEMENT PYQ
-                                      </span>
-                                      <p className="font-bold text-xs text-slate-600 mb-3 max-w-xs leading-relaxed">
-                                        Unlock full question statement, framework breakdown & solution.
-                                      </p>
-                                      <button className="bg-[#188ab2] text-white border-2 border-[#111111] px-4 py-2 text-xs font-black uppercase shadow-[2.5px_2.5px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all cursor-pointer">
-                                        Unlock Question 🔒
-                                      </button>
-                                    </div>
-                                  </div>
-                                );
-                              }
-
-                              return (
-                                <div 
-                                  key={q.id}
-                                  className="bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between text-left"
-                                >
-                                  <div>
-                                    <div className="flex items-center justify-between gap-3 mb-3">
-                                      <span className="bg-[#FFF3A7] text-[#111111] border-2 border-[#111111] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)]">
-                                        {q.category}
-                                      </span>
-                                      <span className="bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md">
-                                        {q.company}
-                                      </span>
-                                    </div>
-
-                                    <h4 className="text-base font-black text-[#111111] leading-snug mb-3">
-                                      {q.question}
-                                    </h4>
-
-                                    {q.description && (
-                                      <div className="text-xs font-semibold text-slate-600 leading-relaxed mb-4 border-l-3 border-[#188ab2] pl-3 py-1 bg-slate-50">
-                                        <strong className="text-[#188ab2] font-black block mb-0.5">Approach Hint:</strong>
-                                        {q.description}
-                                      </div>
-                                    )}
-                                  </div>
-
-                                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-extrabold text-slate-500">
-                                    <span className="text-emerald-600 font-extrabold flex items-center gap-1">
-                                      ✓ Unlocked IIT Question
-                                    </span>
-                                    <button 
-                                      onClick={() => {
-                                        setApplyStatus('idle');
-                                        setApplyValidationError('');
-                                        setShowApplyModal(true);
-                                      }}
-                                      className="bg-[#188ab2] text-white border-2 border-[#111111] px-3.5 py-1.5 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all"
-                                    >
-                                      Practice Case ➜
-                                    </button>
-                                  </div>
+                                    Practice Case ➜
+                                  </button>
                                 </div>
-                              );
-                            })}
-                          </div>
-                        );
-                      })()}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                ) : (
+                  /* COMPANY GUIDES FEED VIEW */
+                  <div className="space-y-6">
+                    {/* Search Bar for Guides */}
+                    <div className="relative w-full">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Search className="h-5 w-5 text-slate-400" />
+                      </div>
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search across 280+ company guides (e.g. Google, Uber, Flipkart, Zomato, AJIO, CRED) or topic..."
+                        className="w-full pl-12 pr-10 py-3.5 bg-white border-[3px] border-[#111111] font-bold text-sm text-[#111111] shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] outline-none focus:bg-[#FFF3A7]/10 transition-all placeholder:text-slate-400"
+                      />
+                      {searchQuery && (
+                        <button
+                          onClick={() => setSearchQuery('')}
+                          className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-[#111111] cursor-pointer"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
-                  ) : (
-                    /* APM GUIDES FEED VIEW */
-                    loading ? (
-                      <div className="flex justify-center py-16">
-                        <span className="text-lg font-bold">Loading guides...</span>
+
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-600 px-1">
+                      <span>Showing {filteredResources.length} company interview guides</span>
+                      {searchQuery && (
+                        <button onClick={() => setSearchQuery('')} className="text-[#188ab2] font-black hover:underline cursor-pointer">
+                          Clear Search ↺
+                        </button>
+                      )}
+                    </div>
+
+                    {loading ? (
+                      <div className="flex items-center justify-center py-16 gap-3 text-slate-600 font-extrabold">
+                        <Loader2 className="h-6 w-6 animate-spin text-[#188ab2]" />
+                        <span>Loading guides library...</span>
                       </div>
                     ) : filteredResources.length === 0 ? (
                       <div className="border-[3px] border-[#111111] p-12 text-center bg-white shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] max-w-xl mx-auto">
                         <Info className="h-10 w-10 mx-auto mb-4 text-slate-400" />
-                        <h3 className="text-xl font-extrabold text-[#111111] mb-2">No matching resources found</h3>
-                        <p className="text-sm font-bold text-slate-500 mb-6">Try clearing your filters.</p>
-                        <Button variant="outline" onClick={() => { setSelectedCategory('All Categories'); setSelectedCompany('All Companies'); }}>
-                          Clear Filters
+                        <h3 className="text-xl font-extrabold text-[#111111] mb-2">No matching guides found</h3>
+                        <p className="text-sm font-bold text-slate-500 mb-6">Try searching with a different company name.</p>
+                        <Button variant="outline" onClick={() => setSearchQuery('')}>
+                          Clear Search
                         </Button>
                       </div>
                     ) : (
-                      <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredResources.map((resource) => (
                           <div 
                             key={resource.id}
                             onClick={() => handleOpenResource(resource.id)}
-                            className="bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between cursor-pointer select-none group"
+                            className="bg-white border-[3px] border-[#111111] p-6 shadow-[6px_6px_0px_0px_rgba(17,17,17,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-all flex flex-col justify-between cursor-pointer select-none group min-h-[260px]"
                           >
-                            {/* Title */}
-                            <h3 className="text-lg md:text-xl font-black text-[#111111] mb-2 leading-snug group-hover:text-[#188ab2] transition-colors">
-                              {resource.title}
-                            </h3>
-
-                            {/* Short Description */}
-                            <p className="text-xs md:text-sm font-semibold text-slate-600 leading-relaxed mb-5">
-                              {resource.description}
-                            </p>
-
-                            {/* Footer Row: Tags + View Guide CTA */}
-                            <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-slate-100">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span className="bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md">
-                                  {resource.category}
+                            <div>
+                              {/* Header row: Company pill + Read time */}
+                              <div className="flex items-center justify-between gap-2 mb-3">
+                                <span className="bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md truncate max-w-[160px]">
+                                  {resource.company || 'Company Guide'}
                                 </span>
-                                <span className="bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B] px-2.5 py-0.5 font-extrabold text-[11px] rounded-md">
-                                  IIT Placement PYQ
-                                </span>
+                                {resource.readTime && (
+                                  <span className="bg-slate-100 text-slate-700 text-[10px] font-extrabold px-2 py-0.5 border border-slate-300 rounded">
+                                    {resource.readTime}
+                                  </span>
+                                )}
                               </div>
+
+                              {/* Title */}
+                              <h3 className="text-base font-black text-[#111111] mb-2 leading-snug group-hover:text-[#188ab2] transition-colors line-clamp-2">
+                                {resource.title}
+                              </h3>
+
+                              {/* Description */}
+                              <p className="text-xs font-semibold text-slate-600 leading-relaxed mb-4 line-clamp-3">
+                                {resource.description}
+                              </p>
+
+                              {/* What's inside preview pills */}
+                              {resource.whatIsInside && resource.whatIsInside.length > 0 && (
+                                <div className="space-y-1 mb-4 pt-2 border-t border-slate-100">
+                                  {resource.whatIsInside.slice(0, 2).map((item, idx) => (
+                                    <div key={idx} className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 truncate">
+                                      <span className="text-[#188ab2] font-black">›</span>
+                                      <span className="truncate">{item}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Card Footer: Category tag + View Guide CTA */}
+                            <div className="flex items-center justify-between gap-3 pt-3 border-t border-slate-100 mt-auto">
+                              <span className="bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B] px-2 py-0.5 font-extrabold text-[10px] rounded">
+                                {resource.category}
+                              </span>
 
                               <button 
                                 onClick={(e: React.MouseEvent) => { e.stopPropagation(); handleOpenResource(resource.id); }}
-                                className="bg-[#188ab2] text-white border-2 border-[#111111] px-5 py-2 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all"
+                                className="bg-[#188ab2] text-white border-2 border-[#111111] px-3.5 py-1.5 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] hover:bg-[#0f6786] transition-all cursor-pointer"
                               >
                                 View Guide ➜
                               </button>
@@ -2268,10 +2154,9 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                           </div>
                         ))}
                       </div>
-                    )
-                  )}
-                </div>
-
+                    )}
+                  </div>
+                )}
               </div>
 
             </div>

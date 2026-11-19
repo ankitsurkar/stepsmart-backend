@@ -1,0 +1,150 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// This security rules file assumes the following data structures:
+//
+// Collection: live_sessions
+// Document ID: 'ai_pm_part1' (single public live workshop session document)
+// Access:
+//   - Public unauthenticated single-document `get` (real-time onSnapshot) for
+//     sessionId == 'ai_pm_part1' ONLY.
+//   - Collection `list` is DENIED to prevent enumeration of session IDs.
+//   - ALL client writes (`create`, `update`, `delete`) are DENIED. All stage
+//     changes, heartbeats, tally resets, and anonymous Round 1 tally increments
+//     are performed strictly server-side via Vercel Serverless Functions using
+//     the Firebase Admin SDK (which bypasses client Security Rules).
+//   - Contains NO PII (no emails, names, phone numbers, or participant answers).
+// Fields (written exclusively by Firebase Admin SDK):
+//   - stageIndex: int (required) - current host stage index
+//   - stageId: string (required) - current host stage identifier
+//   - updatedAt: int / timestamp (required) - last server update timestamp
+//   - round1Tally: map (optional) - anonymous Round 1 slice bucket counts only
+//   - connectedPhones: int (optional) - live connected phone count
+//   - connectedHosts: int (optional) - live connected host count
+//
+// Collection: artifacts/{appId}/public/data/analytics
+// Document ID: auto-generated via addDoc()
+// Scope: appId == 'stepsmart-prod' ONLY
+// Access:
+//   - Public write-only `create` for unauthenticated landing page visit
+//     telemetry (used by landing/App.tsx, landing/AppBrutalism.tsx, and
+//     landing/StudentsBrutalism.tsx).
+//   - `read`, `update`, and `delete` are completely DENIED from clients to
+//     prevent scraping visitor metadata (userAgent) or tampering with records.
+// Fields:
+//   - page: string (required, 1..100 chars, immutable) - visited page identifier
+//     (e.g., 'landing_page', 'students_landing_page')
+//   - timestamp: timestamp (required, must equal request.time / serverTimestamp(),
+//     immutable) - visit timestamp set by Firestore server
+//   - userAgent: string (required, 0..512 chars, immutable) - browser User-Agent
+//
+// All other collections and subcollections:
+//   - Explicitly DENIED for all reads and writes by default.
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user owns the resource (for user-owned documents)
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Check if user is owner based on document's uid field
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.uid;
+    }
+
+    // Verify UID hasn't been tampered with on create
+    function uidUnchanged() {
+      return !('uid' in request.resource.data) ||
+             request.resource.data.uid == request.auth.uid;
+    }
+
+    // Ensure uid field is not modified on update
+    function uidNotModified() {
+      return !('uid' in request.resource.data) ||
+             request.resource.data.uid == resource.data.uid;
+    }
+
+    // Validate required fields exist
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // Validate that the document contains only the allowed fields
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // Validate string type and length bounds
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+             request.resource.data[field].size() >= minLen &&
+             request.resource.data[field].size() <= maxLen;
+    }
+
+    // Validate that immutable fields have not changed on update
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    // Validates landing page visit analytics events written via addDoc().
+    // Enforces strict schema (no extraneous fields), bounded string lengths
+    // to prevent resource exhaustion / 1MB payload DoS, and server timestamp.
+    function isValidAnalyticsEvent(data) {
+      return hasOnlyAllowedFields(['page', 'timestamp', 'userAgent']) &&
+             hasRequiredFields(['page', 'timestamp', 'userAgent']) &&
+             validStringLength('page', 1, 100) &&
+             validStringLength('userAgent', 0, 512) &&
+             data.timestamp is timestamp &&
+             data.timestamp == request.time;
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // Live workshop session state (real-time listener for host & phones).
+    // Only single-document `get` on 'ai_pm_part1' is permitted publicly;
+    // collection enumeration (`list`) and all client writes are denied.
+    match /live_sessions/{sessionId} {
+      allow get: if sessionId == 'ai_pm_part1';
+      allow list: if false;
+      allow create, update, delete: if false;
+    }
+
+    // Landing page visit analytics (append-only from public landing pages).
+    // Scoped strictly to appId == 'stepsmart-prod' with schema & size bounds.
+    match /artifacts/{appId}/public/data/analytics/{docId} {
+      allow create: if appId == 'stepsmart-prod' &&
+                       isValidAnalyticsEvent(request.resource.data);
+      allow read, update, delete: if false;
+    }
+
+    // ===============================================================
+    // Explicit Default Deny
+    // ===============================================================
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
