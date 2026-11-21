@@ -2100,11 +2100,11 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
             <Logo toHome={true} />
             <div className="hidden md:flex items-center gap-6 text-sm font-extrabold text-[#111111]">
               <Link
-                to="/chronicle"
-                className="flex items-center gap-1.5 bg-[#FFF3A7] hover:bg-[#ffe566] text-[#111111] px-3 py-1 rounded-full border-2 border-[#111111] shadow-[1.5px_1.5px_0px_0px_#111111] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all font-black text-xs uppercase"
+                to="/spinner"
+                className="flex items-center gap-1.5 bg-[#FAF5FF] hover:bg-[#F3E8FF] text-[#6B21A8] px-3 py-1 rounded-full border-2 border-[#111111] shadow-[1.5px_1.5px_0px_0px_#111111] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all font-black text-xs uppercase"
               >
-                <span>🏹</span>
-                <span>Chronicle</span>
+                <span>🎡</span>
+                <span>Which PM Are You?</span>
               </Link>
               <a href="/#system" className="hover:underline underline-offset-4 decoration-2 decoration-[#188ab2]">Cohort</a>
               <a href="/#curriculum" className="hover:underline underline-offset-4 decoration-2 decoration-[#188ab2]">Curriculum</a>
@@ -2130,7 +2130,10 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
         {/* Mobile Nav */}
         {isMenuOpen && (
           <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-            <Link to="/chronicle" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">🏹 Ramayana Chronicle</Link>
+            <Link to="/spinner" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#6B21A8] flex items-center gap-2">
+              <span>🎡</span>
+              <span>Which PM Are You?</span>
+            </Link>
             <a href="/#system" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Cohort</a>
             <a href="/#curriculum" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Curriculum</a>
             <a href="/#mentors" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>

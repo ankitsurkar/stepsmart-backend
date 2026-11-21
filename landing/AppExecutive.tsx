@@ -215,12 +215,12 @@ export function AppExecutive() {
           {/* Clean Desktop Navigation Anchors */}
           <nav className="hidden md:flex items-center gap-6 text-sm font-extrabold text-[#141413]">
             <Link
-              to="/chronicle"
-              className="flex items-center gap-1.5 bg-[#FEF08A] hover:bg-[#fde047] text-[#141413] px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all font-black text-xs uppercase"
+              to="/spinner"
+              className="flex items-center gap-1.5 bg-[#FAF5FF] hover:bg-[#F3E8FF] text-[#6B21A8] px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all font-black text-xs uppercase"
             >
-              <span>🏹</span>
-              <span>Ramayana Chronicle</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>🎡</span>
+              <span>Which PM Are You?</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
             </Link>
             <button onClick={() => scrollToSection('system')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Cohort
@@ -273,16 +273,16 @@ export function AppExecutive() {
         {isMenuOpen && (
           <div className="md:hidden w-full bg-[#FDFCF7] border-b-2 border-[#141413] p-6 flex flex-col gap-4 shadow-[0px_4px_0px_0px_#141413]">
             <Link
-              to="/chronicle"
+              to="/spinner"
               onClick={() => setIsMenuOpen(false)}
-              className="text-left font-black text-lg py-2.5 px-3 rounded-xl border-2 border-[#141413] bg-[#FEF08A] shadow-[2px_2px_0px_0px_#141413] flex items-center justify-between text-[#141413]"
+              className="text-left font-black text-lg py-2.5 px-3 rounded-xl border-2 border-[#141413] bg-[#FAF5FF] shadow-[2px_2px_0px_0px_#141413] flex items-center justify-between text-[#6B21A8]"
             >
               <span className="flex items-center gap-2">
-                <span className="text-xl">🏹</span>
-                <span>Ramayana Chronicle</span>
+                <span className="text-xl">🎡</span>
+                <span>Which PM Are You?</span>
               </span>
-              <span className="text-[10px] font-mono font-black uppercase bg-[#188ab2] text-white px-2 py-0.5 rounded-full border border-[#141413]">
-                Drop 1 Live
+              <span className="text-[10px] font-mono font-black uppercase bg-[#6B21A8] text-white px-2 py-0.5 rounded-full border border-[#141413]">
+                Teaser
               </span>
             </Link>
             <button onClick={() => scrollToSection('system')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
@@ -2445,7 +2445,7 @@ export function AppExecutive() {
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="flex items-center justify-center gap-6 mb-4 text-xs font-extrabold text-[#141413] flex-wrap">
             <Link to="/resources" className="hover:text-[#188ab2] transition-colors">Resources</Link>
-            <Link to="/chronicle" className="hover:text-[#188ab2] transition-colors">Ramayana Chronicle</Link>
+            <Link to="/spinner" className="hover:text-[#6B21A8] transition-colors">Which PM Are You?</Link>
             <Link to="/blog" className="hover:text-[#188ab2] transition-colors">PM Blog</Link>
             <a href="/learn" className="hover:text-[#188ab2] transition-colors">Student Login</a>
           </div>

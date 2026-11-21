@@ -12,6 +12,7 @@ const ResourcesPage = lazy(() => import('./ResourcesBrutalism').then(m => ({ def
 const LandingPortalDashboard = lazy(() => import('./LandingPortalDashboard').then(m => ({ default: m.LandingPortalDashboard })));
 const AppExecutive = lazy(() => import('./AppExecutive').then(m => ({ default: m.AppExecutive })));
 const PrototypeHeroPage = lazy(() => import('./prototype-hero/PrototypeHeroPage'));
+const WhichPmSpinnerPage = lazy(() => import('./WhichPmSpinnerPage').then(m => ({ default: m.WhichPmSpinnerPage })));
 const RamayanaChroniclePage = lazy(() => import('./RamayanaChroniclePage').then(m => ({ default: m.RamayanaChroniclePage })));
 const CaseSimulatorPage = lazy(() => import('./CaseSimulatorPage').then(m => ({ default: m.CaseSimulatorPage })));
 import { DEFAULT_BLOGS, mergeWithDefaultBlogs } from './blogData';
@@ -305,6 +306,14 @@ export function AnnouncementBanner() {
             </button>
           </div>
         )}
+
+        <Link
+          to="/spinner"
+          className="hidden sm:inline-flex items-center gap-1.5 bg-[#FAF5FF] hover:bg-[#F3E8FF] text-[#6B21A8] border-2 border-[#111111] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_0px_rgba(17,17,17,1)] active:translate-x-[0.5px] active:translate-y-[0.5px] transition-all cursor-pointer shrink-0"
+        >
+          <span>🎡</span>
+          <span>Which PM Are You? Spin Now ➜</span>
+        </Link>
 
         {/* Dynamic Content based on active mode */}
         {currentMode === 'batch' ? (
@@ -3653,7 +3662,10 @@ function LegacyPortalPage() {
           <div className="container mx-auto px-6 h-20 flex items-center justify-between">
             <Logo />
             <div className="hidden md:flex items-center gap-8 text-sm font-extrabold text-[#111111]">
-              <NavLink to="/chronicle" className="text-[#188ab2] font-black">🏹 Chronicle</NavLink>
+              <NavLink to="/spinner" className="text-[#6B21A8] hover:text-[#581c87] font-black flex items-center gap-1.5 bg-[#FAF5FF] border-2 border-[#111111] px-2.5 py-1 shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(17,17,17,1)] transition-all">
+                <span>🎡</span>
+                <span>Which PM Are You?</span>
+              </NavLink>
               <NavLink to="/case-simulator" className="text-[#059669] font-black">🎯 Guesstimate Lab</NavLink>
               <NavLink href="#mentors">Mentors</NavLink>
               <NavLink to="/events">Events</NavLink>
@@ -3673,7 +3685,10 @@ function LegacyPortalPage() {
         {/* Mobile Nav */}
         {isMenuOpen && (
           <div className="md:hidden w-full bg-[#FFFFFF] border-b-[3px] border-[#111111] p-6 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-            <Link to="/chronicle" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#188ab2]">🏹 Chronicle</Link>
+            <Link to="/spinner" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#6B21A8] flex items-center gap-2">
+              <span>🎡</span>
+              <span>Which PM Are You?</span>
+            </Link>
             <Link to="/case-simulator" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200 text-[#059669]">🎯 Guesstimate Lab</Link>
             <a href="#mentors" onClick={(e) => handleMobileLinkClick(e, 'mentors')} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Mentors</a>
             <Link to="/events" onClick={() => setIsMenuOpen(false)} className="font-extrabold text-lg py-2 border-b-2 border-slate-200">Events</Link>
@@ -4225,8 +4240,10 @@ export default function App() {
           <Route path="/accelerator" element={<ProfessionalsLandingPage />} />
           <Route path="/students" element={<StudentsLandingPage />} />
           <Route path="/events" element={<EventsPage />} />
-          <Route path="/chronicle" element={<RamayanaChroniclePage />} />
-          <Route path="/ramayana-chronicle" element={<Navigate to="/chronicle" replace />} />
+          <Route path="/spinner" element={<WhichPmSpinnerPage />} />
+          <Route path="/which-pm" element={<Navigate to="/spinner" replace />} />
+          <Route path="/chronicle" element={<Navigate to="/spinner" replace />} />
+          <Route path="/ramayana-chronicle" element={<Navigate to="/spinner" replace />} />
           <Route path="/case-simulator" element={<CaseSimulatorPage />} />
           <Route path="/cases" element={<Navigate to="/case-simulator" replace />} />
           <Route path="/guesstimate" element={<Navigate to="/case-simulator" replace />} />

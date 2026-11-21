@@ -757,9 +757,9 @@ export function CaseSimulatorPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link
-              to="/chronicle"
+              to="/"
               className="p-1.5 rounded-lg border-2 border-[#141413] hover:bg-[#FEF08A] transition-all shadow-[1.5px_1.5px_0px_0px_#141413]"
-              title="Back to Chronicle"
+              title="Back to Home"
             >
               <ArrowLeft className="w-4 h-4" />
             </Link>
@@ -1472,10 +1472,10 @@ export function CaseSimulatorPage() {
                     </button>
 
                     <Link
-                      to="/chronicle"
+                      to="/"
                       className="px-5 py-2.5 rounded-xl border-2 border-[#141413] bg-[#FEF08A] hover:bg-[#FDE047] font-black text-xs uppercase tracking-wide cursor-pointer transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_0px_#141413]"
                     >
-                      <span>Return to Ramayana Chronicle</span>
+                      <span>Return to StepSmart Home</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
