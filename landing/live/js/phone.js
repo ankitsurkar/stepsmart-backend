@@ -161,6 +161,8 @@ function clearDisconnectTimeout() {
   }
 }
 
+let lastObservedUpdatedAt = 0;
+
 function connectToSession() {
   if (unsubscribeSession) {
     unsubscribeSession();
@@ -194,10 +196,20 @@ function connectToSession() {
       const liveChanged = nextHostLive !== hostLiveNow;
       hostLiveNow = nextHostLive;
 
+      const remoteUpdatedAt = typeof data.updatedAt === 'number' ? data.updatedAt : 0;
       const nextIdx = typeof data.stageIndex === 'number' ? data.stageIndex : 0;
       const clampedIdx = Math.max(0, Math.min(STAGES.length - 1, nextIdx));
-      const changed = clampedIdx !== hostStageIndex;
-      hostStageIndex = clampedIdx;
+
+      // Guard: Only adopt stage index if it's the initial connection or if updatedAt is >= lastObservedUpdatedAt
+      const isInitial = lastObservedUpdatedAt === 0;
+      const isFresh = remoteUpdatedAt >= lastObservedUpdatedAt;
+
+      let changed = false;
+      if (isInitial || isFresh) {
+        if (remoteUpdatedAt > 0) lastObservedUpdatedAt = remoteUpdatedAt;
+        changed = clampedIdx !== hostStageIndex;
+        hostStageIndex = clampedIdx;
+      }
 
       if (wasDisconnected || liveChanged || changed || !mainEl.innerHTML.trim() || reconnectSlot.innerHTML.trim()) {
         render();

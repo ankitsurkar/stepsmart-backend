@@ -11,6 +11,7 @@ import {
 export const SESSION_COLLECTION = 'live_sessions';
 export const SESSION_DOC_ID = 'ai_pm_part1';
 export const HOST_HEARTBEAT_STALE_MS = 90_000;
+export const DEFAULT_PIN = '1234';
 
 export const DEFAULT_SESSION_STATE = {
   stageIndex: 0,

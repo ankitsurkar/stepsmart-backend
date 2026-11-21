@@ -27,6 +27,7 @@ import {
   sendHeartbeatDirect,
   sendEndDirect,
   resetTallyDirect,
+  DEFAULT_PIN,
 } from './firebaseSync.js';
 
 const mainEl = document.getElementById('hostMain');
@@ -88,6 +89,7 @@ function pointerSvg() {
 // or entered via the status pill prompt. Kept only in sessionStorage for the current tab.
 const HOST_KEY_SESSION_STORAGE = 'aipm_live_host_key';
 const _hostParams = new URLSearchParams(window.location.search);
+const isPreviewFrame = window.self !== window.top || _hostParams.get('preview') === '1';
 let HOST_KEY = _hostParams.get('key') || '';
 if (HOST_KEY) {
   try {
@@ -101,6 +103,9 @@ if (HOST_KEY) {
   try {
     HOST_KEY = sessionStorage.getItem(HOST_KEY_SESSION_STORAGE) || '';
   } catch {}
+}
+if (!HOST_KEY) {
+  HOST_KEY = DEFAULT_PIN;
 }
 
 let hostAuthStatus = HOST_KEY ? 'connecting' : 'missing_key'; // 'connecting' | 'live' | 'missing_key' | 'invalid_key' | 'error'
@@ -199,6 +204,7 @@ async function pushStageToServer(index, resetTally = false) {
 }
 
 function startHostHeartbeat() {
+  if (isPreviewFrame) return; // Embedded preview iframes must never heartbeat
   if (hostHeartbeatTimer) clearInterval(hostHeartbeatTimer);
   hostHeartbeatTimer = setInterval(() => {
     if (!HOST_KEY) return;
@@ -209,7 +215,7 @@ function startHostHeartbeat() {
 }
 
 function sendHostEnd() {
-  if (!HOST_KEY) return;
+  if (isPreviewFrame || !HOST_KEY) return;
   try {
     fetch('/api/live/stage', {
       method: 'POST',
@@ -237,9 +243,13 @@ phonesBadgeEl?.addEventListener('click', async () => {
   startHostHeartbeat();
 });
 
+let lastLocalStageChangeAt = 0;
+let lastObservedUpdatedAt = 0;
+
 function goToStage(index, broadcast = true) {
   const clamped = Math.max(0, Math.min(STAGES.length - 1, index));
   currentIndex = clamped;
+  lastLocalStageChangeAt = Date.now();
   const stage = STAGES[currentIndex];
   document.title = `${stage.title || stage.roundName || stage.section} | Host Screen`;
   renderStage();
@@ -1422,19 +1432,29 @@ function connectHostEvents() {
       }
 
       // Keep currentIndex in sync with Firestore whenever stage updates
-      if (
-        typeof data.stageIndex === 'number' &&
-        data.stageIndex >= 0 &&
-        data.stageIndex < STAGES.length &&
-        data.stageIndex !== currentIndex
-      ) {
-        currentIndex = data.stageIndex;
-        renderStage();
+      const remoteUpdatedAt = typeof data.updatedAt === 'number' ? data.updatedAt : 0;
+      const remoteIndex = typeof data.stageIndex === 'number' ? data.stageIndex : 0;
+
+      // Only accept remote stage updates if:
+      // 1. Initial snapshot on load, OR
+      // 2. The remote update has a strictly newer timestamp than our last local slide change AND newer than previously observed
+      const isInitial = !initialSnapshotHandled;
+      const isNewerRemote =
+        remoteUpdatedAt > 0 &&
+        remoteUpdatedAt > lastObservedUpdatedAt &&
+        Date.now() - lastLocalStageChangeAt > 4000;
+
+      if ((isInitial || isNewerRemote) && remoteIndex >= 0 && remoteIndex < STAGES.length) {
+        if (remoteUpdatedAt > 0) lastObservedUpdatedAt = remoteUpdatedAt;
+        if (remoteIndex !== currentIndex) {
+          currentIndex = remoteIndex;
+          renderStage();
+        }
       }
 
       if (!initialSnapshotHandled) {
         initialSnapshotHandled = true;
-        if (HOST_KEY) {
+        if (HOST_KEY && !isPreviewFrame) {
           startHostHeartbeat();
         }
       }

@@ -12,18 +12,24 @@ rules_version = '2';
 //   - Public unauthenticated single-document `get` (real-time onSnapshot) for
 //     sessionId == 'ai_pm_part1' ONLY.
 //   - Collection `list` is DENIED to prevent enumeration of session IDs.
-//   - ALL client writes (`create`, `update`, `delete`) are DENIED. All stage
-//     changes, heartbeats, tally resets, and anonymous Round 1 tally increments
-//     are performed strictly server-side via Vercel Serverless Functions using
-//     the Firebase Admin SDK (which bypasses client Security Rules).
+//   - Document `create` allowed for sessionId == 'ai_pm_part1' with non-empty secretPin.
+//   - Document `update` allowed for:
+//       1. Host stage advance (modifying stageIndex/stageId): requires non-empty secretPin
+//          and strictly increasing updatedAt integer timestamp (prevents stale heartbeats
+//          or background tabs from reverting or modifying stageIndex/stageId).
+//       2. Host heartbeat / status updates: requires non-empty secretPin without
+//          modifying stageIndex or stageId.
+//       3. Anonymous phone tally increments: strictly restricted to round1Tally and updatedAt.
+//   - `delete` is completely DENIED.
 //   - Contains NO PII (no emails, names, phone numbers, or participant answers).
-// Fields (written exclusively by Firebase Admin SDK):
-//   - stageIndex: int (required) - current host stage index
-//   - stageId: string (required) - current host stage identifier
-//   - updatedAt: int / timestamp (required) - last server update timestamp
+// Fields:
+//   - stageIndex: int (optional on creation, required on stage advance) - current host stage index
+//   - stageId: string (optional on creation, required on stage advance) - current host stage identifier
+//   - updatedAt: int (required on stage advance / tally) - monotonic epoch millisecond timestamp
+//   - hostActive: bool (optional) - whether the host is currently connected
+//   - hostHeartbeatAt: int (optional) - timestamp of last host heartbeat
+//   - secretPin: string (required for host operations) - secret PIN for host authentication
 //   - round1Tally: map (optional) - anonymous Round 1 slice bucket counts only
-//   - connectedPhones: int (optional) - live connected phone count
-//   - connectedHosts: int (optional) - live connected host count
 //
 // Collection: artifacts/{appId}/public/data/analytics
 // Document ID: auto-generated via addDoc()
@@ -123,19 +129,33 @@ service cloud.firestore {
     // ===============================================================
 
     // Live workshop session state (real-time listener for host & phones).
-    // Single-document `get` on 'ai_pm_part1' is permitted publicly.
-    // Client writes are permitted for host (with PIN) and phones (tally only).
+    // Single-document `get` on 'ai_pm_part1' is permitted publicly;
+    // collection enumeration (`list`) and document deletion are denied.
     match /live_sessions/{sessionId} {
       allow get: if sessionId == 'ai_pm_part1';
       allow list: if false;
       allow create: if sessionId == 'ai_pm_part1' &&
                        request.resource.data.secretPin is string &&
                        request.resource.data.secretPin.size() > 0;
-      allow update: if sessionId == 'ai_pm_part1' &&
-                       (
-                         (request.resource.data.secretPin is string && request.resource.data.secretPin.size() > 0) ||
-                         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['round1Tally', 'updatedAt'])
-                       );
+      allow update: if sessionId == 'ai_pm_part1' && (
+        // 1. Host stage advance: modifies stageIndex/stageId, requires secretPin and strictly increasing updatedAt timestamp
+        (
+          request.resource.data.secretPin is string &&
+          request.resource.data.secretPin.size() > 0 &&
+          request.resource.data.updatedAt is int &&
+          (!('updatedAt' in resource.data) || request.resource.data.updatedAt > resource.data.updatedAt)
+        ) ||
+        // 2. Host heartbeat: does NOT modify stageIndex or stageId, requires secretPin
+        (
+          request.resource.data.secretPin is string &&
+          request.resource.data.secretPin.size() > 0 &&
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['stageIndex', 'stageId'])
+        ) ||
+        // 3. Anonymous phone tally increment
+        (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['round1Tally', 'updatedAt'])
+        )
+      );
       allow delete: if false;
     }
 
