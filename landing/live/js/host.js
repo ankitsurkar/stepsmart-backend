@@ -1485,6 +1485,17 @@ themeBtn?.addEventListener('click', () => {
   setTimeout(() => activeWheel?.draw(), 20);
 });
 
+let hostResizeTimer = null;
+window.addEventListener('resize', () => {
+  if (hostResizeTimer) clearTimeout(hostResizeTimer);
+  hostResizeTimer = setTimeout(() => {
+    if (activeWheel) {
+      const maxW = Math.min(420, Math.max(260, window.innerWidth - 80));
+      activeWheel.resize(maxW);
+    }
+  }, 100);
+});
+
 // Initial boot
 renderStage();
 connectHostEvents();

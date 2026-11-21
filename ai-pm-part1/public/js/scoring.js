@@ -41,6 +41,49 @@ const PERSONAL_SLICE_META = [
 ];
 
 /**
+ * Largest Remainder (Hare-Niemeyer) percentage normalizer.
+ * Guarantees that all slice percentages are positive integers (min 1) summing to exactly 100%.
+ */
+export function normalizePercentages(arr) {
+  if (!arr || arr.length === 0) return [];
+  const sum = arr.reduce((a, b) => a + b, 0) || 1;
+  const props = arr.map((v) => (v / sum) * 100);
+  const floors = props.map((v) => Math.max(1, Math.floor(v)));
+  let diff = 100 - floors.reduce((a, b) => a + b, 0);
+
+  if (diff > 0) {
+    const remainders = props.map((v, i) => ({ rem: v - Math.floor(v), i }));
+    remainders.sort((a, b) => b.rem - a.rem);
+    for (let k = 0; k < diff && k < remainders.length; k++) {
+      floors[remainders[k].i] += 1;
+    }
+    diff = 100 - floors.reduce((a, b) => a + b, 0);
+    while (diff > 0) {
+      const maxIdx = floors.indexOf(Math.max(...floors));
+      floors[maxIdx] += 1;
+      diff -= 1;
+    }
+  } else if (diff < 0) {
+    let guard = 0;
+    while (diff < 0 && guard < 100) {
+      guard++;
+      let bestIdx = -1;
+      let bestVal = -1;
+      for (let i = 0; i < floors.length; i++) {
+        if (floors[i] > 1 && floors[i] > bestVal) {
+          bestVal = floors[i];
+          bestIdx = i;
+        }
+      }
+      if (bestIdx === -1) break;
+      floors[bestIdx] -= 1;
+      diff += 1;
+    }
+  }
+  return floors;
+}
+
+/**
  * Raise (score + 1) ^ 1.8 and convert to integer percentages summing to 100, with no slice below minPct (default 5).
  */
 export function scoresToPercentages(values, minPct = 5) {
@@ -156,10 +199,10 @@ export function computeSanketR2Slices(activeLineIndices = []) {
   const t = Math.max(0, Math.min(1, count / 4));
 
   // Exact spec before/after numbers at endpoints, smooth interpolation in between
-  const pcts = SANKET_ROLE_KEYS.map((_, i) => {
-    const val = SANKET_BEFORE_PCTS[i] + (SANKET_AFTER_PCTS[i] - SANKET_BEFORE_PCTS[i]) * t;
-    return Math.round(val);
+  const rawPcts = SANKET_ROLE_KEYS.map((_, i) => {
+    return SANKET_BEFORE_PCTS[i] + (SANKET_AFTER_PCTS[i] - SANKET_BEFORE_PCTS[i]) * t;
   });
+  const pcts = normalizePercentages(rawPcts);
 
   return SANKET_ROLE_KEYS.map((meta, i) => ({
     key: meta.key,
@@ -199,21 +242,23 @@ export function computeSanketR3Slices(dialValue = 50) {
     raw = balanced.map((b, i) => b + (bold[i] - b) * t);
   }
 
-  // Round while keeping sum ~100 and hiding 0-weight slices
-  const slices = allMeta
-    .map((meta, i) => ({
-      key: meta.key,
-      label: meta.label,
-      weight: Math.round(raw[i] * 10) / 10,
-      pct: Math.round(raw[i]),
-      color: meta.color,
-      isDream: Boolean(meta.isDream),
-      isLongShot: Boolean(meta.isLongShot),
-      description: ROLE_DESCRIPTIONS[meta.label] || '',
-    }))
-    .filter((s) => s.weight >= 0.4);
+  // Filter out slices with negligible weight (< 0.5%) and normalize to exactly 100%
+  const surviving = allMeta
+    .map((meta, i) => ({ meta, rawWeight: raw[i] }))
+    .filter((entry) => entry.rawWeight >= 0.5);
 
-  return slices;
+  const pcts = normalizePercentages(surviving.map((s) => s.rawWeight));
+
+  return surviving.map((entry, idx) => ({
+    key: entry.meta.key,
+    label: entry.meta.label,
+    weight: pcts[idx],
+    pct: pcts[idx],
+    color: entry.meta.color,
+    isDream: Boolean(entry.meta.isDream),
+    isLongShot: Boolean(entry.meta.isLongShot),
+    description: ROLE_DESCRIPTIONS[entry.meta.label] || '',
+  }));
 }
 
 /**
@@ -262,13 +307,18 @@ export function computePhoneR3Slices(baseSixSlices, dialValue = 50) {
     raw = balanced.map((b, i) => b + (bold[i] - b) * t);
   }
 
-  return allMeta
-    .map((meta, i) => ({
-      ...meta,
-      weight: Math.round(raw[i] * 10) / 10,
-      pct: Math.round(raw[i]),
-    }))
-    .filter((s) => s.weight >= 0.4);
+  // Filter out slices with negligible weight (< 0.5%) and normalize to exactly 100%
+  const surviving = allMeta
+    .map((meta, i) => ({ meta, rawWeight: raw[i] }))
+    .filter((entry) => entry.rawWeight >= 0.5);
+
+  const pcts = normalizePercentages(surviving.map((s) => s.rawWeight));
+
+  return surviving.map((entry, idx) => ({
+    ...entry.meta,
+    weight: pcts[idx],
+    pct: pcts[idx],
+  }));
 }
 
 export function getDialSettingName(dialValue) {
@@ -379,12 +429,15 @@ export function computeHostR5Data(addSwitchers = false, updateForToday = false) 
   }
 
   const totalDots = entries.reduce((sum, e) => sum + e.count, 0);
-  const slices = entries.map((e) => ({
+  const rawPcts = entries.map((e) => (e.count / totalDots) * 100);
+  const pcts = normalizePercentages(rawPcts);
+
+  const slices = entries.map((e, idx) => ({
     key: e.key,
     label: e.label,
     count: e.count,
     weight: e.count,
-    pct: Math.round((e.count / totalDots) * 100),
+    pct: pcts[idx],
     color: e.color,
     isDream: Boolean(e.isDream),
     isNewToday: Boolean(e.isNewToday),

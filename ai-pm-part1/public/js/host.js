@@ -21,6 +21,13 @@ import {
 } from './scoring.js';
 import { WheelRenderer } from './wheel.js';
 import { initSchemeSync, toggleTwoStateScheme, getResolvedScheme } from './theme.js';
+import {
+  subscribeSession,
+  writeStageDirect,
+  sendHeartbeatDirect,
+  sendEndDirect,
+  resetTallyDirect,
+} from './firebaseSync.js';
 
 const mainEl = document.getElementById('hostMain');
 const stageTagEl = document.getElementById('hostStageTag');
@@ -77,30 +84,158 @@ function pointerSvg() {
 }
 
 // Host key for protecting stage-advance API calls.
-// Injected at page-load from the URL query param: /host?key=YOUR_HOST_KEY
-// Never stored in localStorage; must be re-supplied each time the host opens the page.
+// Supplied via /live/host?key=YOUR_HOST_KEY (immediately stripped from URL bar for G Meet privacy)
+// or entered via the status pill prompt. Kept only in sessionStorage for the current tab.
+const HOST_KEY_SESSION_STORAGE = 'aipm_live_host_key';
 const _hostParams = new URLSearchParams(window.location.search);
-const HOST_KEY = _hostParams.get('key') || '';
-
-async function pushStageToServer(index, resetTally = false) {
-  const stage = STAGES[index];
+let HOST_KEY = _hostParams.get('key') || '';
+if (HOST_KEY) {
   try {
-    await fetch('/api/host/stage', {
+    sessionStorage.setItem(HOST_KEY_SESSION_STORAGE, HOST_KEY);
+  } catch {}
+  _hostParams.delete('key');
+  const nextSearch = _hostParams.toString();
+  const cleanUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ''}${window.location.hash}`;
+  window.history.replaceState({}, '', cleanUrl);
+} else {
+  try {
+    HOST_KEY = sessionStorage.getItem(HOST_KEY_SESSION_STORAGE) || '';
+  } catch {}
+}
+
+let hostAuthStatus = HOST_KEY ? 'connecting' : 'missing_key'; // 'connecting' | 'live' | 'missing_key' | 'invalid_key' | 'error'
+let hostHeartbeatTimer = null;
+
+function updateSyncBadge() {
+  if (!phonesBadgeEl) return;
+  phonesBadgeEl.style.cursor = 'pointer';
+  phonesBadgeEl.title = 'Click to enter or change Host PIN';
+  if (hostAuthStatus === 'live') {
+    phonesBadgeEl.className = 'pill pill-good tabular';
+    phonesBadgeEl.textContent = 'Live · Synced';
+  } else if (hostAuthStatus === 'invalid_key') {
+    phonesBadgeEl.className = 'pill pill-dream tabular';
+    phonesBadgeEl.textContent = 'Invalid PIN · Click to unlock';
+  } else if (hostAuthStatus === 'missing_key') {
+    phonesBadgeEl.className = 'pill pill-dream tabular';
+    phonesBadgeEl.textContent = 'Locked · Click to enter PIN';
+  } else if (hostAuthStatus === 'error') {
+    phonesBadgeEl.className = 'pill pill-dream tabular';
+    phonesBadgeEl.textContent = 'Sync error · Check Vercel env';
+  } else {
+    phonesBadgeEl.className = 'pill tabular';
+    phonesBadgeEl.textContent = 'Connecting…';
+  }
+}
+
+async function callHostApi(path, body) {
+  if (!HOST_KEY) {
+    hostAuthStatus = 'missing_key';
+    updateSyncBadge();
+    return { ok: false, status: 401 };
+  }
+
+  // 1. First attempt the serverless API endpoint
+  let apiSucceeded = false;
+  try {
+    const res = await fetch(path, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(HOST_KEY ? { 'X-Host-Key': HOST_KEY } : {}),
+        'X-Host-Key': HOST_KEY,
       },
-      body: JSON.stringify({
-        stageIndex: index,
-        stageId: stage.id,
-        resetTally,
-      }),
+      body: JSON.stringify(body),
     });
+    if (res.ok) {
+      apiSucceeded = true;
+      hostAuthStatus = 'live';
+      updateSyncBadge();
+      return { ok: true, status: res.status };
+    }
+    if (res.status === 403) {
+      hostAuthStatus = 'invalid_key';
+      updateSyncBadge();
+      return { ok: false, status: 403 };
+    }
   } catch {
-    // Local demo continues even if server briefly unreachable
+    // API endpoint not reachable or Vercel env not set up; fallback to direct Firestore
   }
+
+  // 2. Direct client-to-Firestore fallback (works without Vercel Serverless / Admin credentials)
+  if (!apiSucceeded) {
+    try {
+      if (path.includes('reset-tally')) {
+        await resetTallyDirect(HOST_KEY);
+      } else if (body.action === 'end') {
+        await sendEndDirect(HOST_KEY);
+      } else if (body.action === 'heartbeat') {
+        await sendHeartbeatDirect(HOST_KEY);
+      } else {
+        await writeStageDirect(body.stageIndex, body.stageId, body.resetTally, HOST_KEY);
+      }
+      hostAuthStatus = 'live';
+      updateSyncBadge();
+      return { ok: true, status: 200 };
+    } catch (err) {
+      console.warn('[host] Direct Firestore write error:', err);
+      hostAuthStatus = 'error';
+      updateSyncBadge();
+      return { ok: false, status: 500 };
+    }
+  }
+
+  hostAuthStatus = 'error';
+  updateSyncBadge();
+  return { ok: false, status: 0 };
 }
+
+async function pushStageToServer(index, resetTally = false) {
+  const stage = STAGES[index];
+  await callHostApi('/api/live/stage', {
+    stageIndex: index,
+    stageId: stage.id,
+    resetTally,
+  });
+}
+
+function startHostHeartbeat() {
+  if (hostHeartbeatTimer) clearInterval(hostHeartbeatTimer);
+  hostHeartbeatTimer = setInterval(() => {
+    if (!HOST_KEY) return;
+    callHostApi('/api/live/stage', {
+      action: 'heartbeat',
+    });
+  }, 25_000);
+}
+
+function sendHostEnd() {
+  if (!HOST_KEY) return;
+  try {
+    fetch('/api/live/stage', {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Host-Key': HOST_KEY,
+      },
+      body: JSON.stringify({ action: 'end' }),
+    }).catch(() => {});
+  } catch {}
+}
+
+window.addEventListener('pagehide', sendHostEnd);
+
+phonesBadgeEl?.addEventListener('click', async () => {
+  const entered = window.prompt('Enter Host PIN (LIVE_HOST_KEY):', '');
+  if (entered === null) return;
+  HOST_KEY = entered.trim();
+  try {
+    if (HOST_KEY) sessionStorage.setItem(HOST_KEY_SESSION_STORAGE, HOST_KEY);
+    else sessionStorage.removeItem(HOST_KEY_SESSION_STORAGE);
+  } catch {}
+  await pushStageToServer(currentIndex, false);
+  startHostHeartbeat();
+});
 
 function goToStage(index, broadcast = true) {
   const clamped = Math.max(0, Math.min(STAGES.length - 1, index));
@@ -371,10 +506,7 @@ function bindTallyReset() {
   const btn = document.getElementById('resetTallyBtn');
   if (btn) {
     btn.addEventListener('click', () => {
-      fetch('/api/host/reset-tally', {
-        method: 'POST',
-        headers: { ...(HOST_KEY ? { 'X-Host-Key': HOST_KEY } : {}) },
-      }).catch(() => {});
+      callHostApi('/api/live/reset-tally', {});
     });
   }
 }
@@ -1277,28 +1409,42 @@ function openStageDialog() {
 
 /* =========================== LIVE SYNC & CONTROLS =========================== */
 function connectHostEvents() {
-  const es = new EventSource('/api/events?role=host');
-  const applyPayload = (data) => {
-    connectedPhones = data.connectedPhones || 0;
-    roomTally = data.round1Tally || {};
-    phonesBadgeEl.textContent = `${connectedPhones} ${connectedPhones === 1 ? 'phone' : 'phones'} connected`;
-    const slot = document.getElementById('hostRoomTallySlot');
-    if (slot) {
-      slot.innerHTML = renderRoomTallyStrip();
-      bindTallyReset();
-    }
-  };
+  updateSyncBadge();
+  let initialSnapshotHandled = false;
 
-  es.addEventListener('state', (e) => {
-    const data = JSON.parse(e.data);
-    applyPayload(data);
-    if (typeof data.stageIndex === 'number' && data.stageIndex !== currentIndex) {
-      currentIndex = data.stageIndex;
-      renderStage();
+  subscribeSession(
+    (data) => {
+      roomTally = data.round1Tally || {};
+      const slot = document.getElementById('hostRoomTallySlot');
+      if (slot) {
+        slot.innerHTML = renderRoomTallyStrip();
+        bindTallyReset();
+      }
+
+      // Keep currentIndex in sync with Firestore whenever stage updates
+      if (
+        typeof data.stageIndex === 'number' &&
+        data.stageIndex >= 0 &&
+        data.stageIndex < STAGES.length &&
+        data.stageIndex !== currentIndex
+      ) {
+        currentIndex = data.stageIndex;
+        renderStage();
+      }
+
+      if (!initialSnapshotHandled) {
+        initialSnapshotHandled = true;
+        if (HOST_KEY) {
+          startHostHeartbeat();
+        }
+      }
+    },
+    (err) => {
+      console.error('[host] Firestore listener error:', err);
+      hostAuthStatus = 'error';
+      updateSyncBadge();
     }
-  });
-  es.addEventListener('presence', (e) => applyPayload(JSON.parse(e.data)));
-  es.addEventListener('tally', (e) => applyPayload(JSON.parse(e.data)));
+  );
 }
 
 prevBtn.addEventListener('click', () => goToStage(currentIndex - 1, true));
@@ -1337,6 +1483,17 @@ themeBtn?.addEventListener('click', () => {
   toggleTwoStateScheme();
   updateThemeBtnLabel();
   setTimeout(() => activeWheel?.draw(), 20);
+});
+
+let hostResizeTimer = null;
+window.addEventListener('resize', () => {
+  if (hostResizeTimer) clearTimeout(hostResizeTimer);
+  hostResizeTimer = setTimeout(() => {
+    if (activeWheel) {
+      const maxW = Math.min(420, Math.max(260, window.innerWidth - 80));
+      activeWheel.resize(maxW);
+    }
+  }, 100);
 });
 
 // Initial boot

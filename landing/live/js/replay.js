@@ -390,35 +390,61 @@ function renderR3() {
 function renderR4() {
   const stmts = buildPhoneStatements(profile);
   const slices = stmts.map((st, i) => ({ key: st.id, label: `Line ${i + 1}`, weight: 1, pct: 17, color: SLICE_COLORS.statement[i], statement: st }));
-  mainEl.innerHTML = `
-    <div style="display:flex; flex-direction:column; gap:12px; align-items:center;">
-      ${state.r4Total > 0 ? `<div class="pill pill-accent">You caught ${state.r4Caught} of ${state.r4Total}</div>` : ''}
-      <div class="wheel-wrap">${pointerSvg()}<canvas id="rw" class="wheel-canvas"></canvas></div>
-      <button type="button" class="btn btn-primary btn-block" id="rSpin">Spin</button>
-      ${state.r4Current ? `<div class="card" style="width:100%; display:flex; flex-direction:column; gap:10px;">
+
+  function renderCard() {
+    if (!state.r4Current) return '';
+    return `
+      <div class="card" style="width:100%; display:flex; flex-direction:column; gap:10px;">
         <div class="phone-muted" style="font-weight:700;">The wheel says, in a perfectly confident tone:</div>
         <div class="phone-h2">“${esc(state.r4Current.text)}”</div>
         ${state.r4Voted === null
           ? `<div class="binary-row"><button type="button" class="btn btn-good" data-v="real">Real</button><button type="button" class="btn btn-warn" data-v="fake">Fake</button></div>`
           : `<div class="pill ${(state.r4Voted === 'real') === state.r4Current.isReal ? 'pill-good' : 'pill-warn'}" style="align-self:flex-start;">${(state.r4Voted === 'real') === state.r4Current.isReal ? 'You caught it' : 'It fooled you'}</div>
              <p class="phone-text">${state.r4Current.isReal ? 'You told us that.' : 'You never told us that. It sounded just as sure.'}</p>`}
-      </div>` : ''}
+      </div>
+    `;
+  }
+
+  function bindVotes() {
+    const cardSlot = document.getElementById('r4CardSlot');
+    if (!cardSlot) return;
+    cardSlot.querySelectorAll('[data-v]').forEach((b) => b.addEventListener('click', () => {
+      state.r4Voted = b.dataset.v;
+      state.r4Total += 1;
+      if ((state.r4Voted === 'real') === state.r4Current.isReal) state.r4Caught += 1;
+      const pillSlot = document.getElementById('r4PillSlot');
+      if (pillSlot) {
+        pillSlot.innerHTML = `<div class="pill pill-accent">You caught ${state.r4Caught} of ${state.r4Total}</div>`;
+      }
+      cardSlot.innerHTML = renderCard();
+      bindVotes();
+    }));
+  }
+
+  mainEl.innerHTML = `
+    <div style="display:flex; flex-direction:column; gap:12px; align-items:center;">
+      <div id="r4PillSlot">${state.r4Total > 0 ? `<div class="pill pill-accent">You caught ${state.r4Caught} of ${state.r4Total}</div>` : ''}</div>
+      <div class="wheel-wrap">${pointerSvg()}<canvas id="rw" class="wheel-canvas"></canvas></div>
+      <button type="button" class="btn btn-primary btn-block" id="rSpin">${state.r4Current ? 'Spin for another line' : 'Spin'}</button>
+      <div id="r4CardSlot" style="width:100%;">${renderCard()}</div>
     </div>
   `;
   activeWheel = new WheelRenderer(document.getElementById('rw'), { size: 256, mode: 'statement' });
   activeWheel.setSlices(slices, false);
+  bindVotes();
+
   document.getElementById('rSpin').addEventListener('click', async (e) => {
     e.currentTarget.disabled = true;
     const res = await activeWheel.spin();
     e.currentTarget.disabled = false;
-    if (res) { state.r4Current = res.slice.statement; state.r4Voted = null; render(); }
+    if (res) {
+      state.r4Current = res.slice.statement;
+      state.r4Voted = null;
+      document.getElementById('rSpin').textContent = 'Spin for another line';
+      document.getElementById('r4CardSlot').innerHTML = renderCard();
+      bindVotes();
+    }
   });
-  document.querySelectorAll('[data-v]').forEach((b) => b.addEventListener('click', () => {
-    state.r4Voted = b.dataset.v;
-    state.r4Total += 1;
-    if ((state.r4Voted === 'real') === state.r4Current.isReal) state.r4Caught += 1;
-    render();
-  }));
 }
 
 function renderR5() {
@@ -427,7 +453,7 @@ function renderR5() {
   mainEl.innerHTML = `
     <div style="display:flex; flex-direction:column; gap:12px; align-items:center;">
       <div class="wheel-wrap">${pointerSvg()}<canvas id="rw" class="wheel-canvas"></canvas></div>
-      <button type="button" class="chip-toggle" id="r5Sw" aria-pressed="${state.r5Switchers}"><span>${state.r5Switchers ? '✓' : '+'}</span><span>Add 30 career switchers who made it</span></button>
+      <button type="button" class="chip-toggle" id="r5Sw" aria-pressed="${state.r5Switchers}"><span id="r5SwIcon">${state.r5Switchers ? '✓' : '+'}</span><span>Add 30 career switchers who made it</span></button>
       <button type="button" class="btn btn-primary btn-block" id="rSpin">Spin</button>
       <div id="r5Out" class="phone-text" style="font-weight:700;">${state.r5Last ? `Landed on: ${esc(state.r5Last)}` : ''}</div>
     </div>
@@ -436,8 +462,11 @@ function renderR5() {
   activeWheel.setSlices(slices, false);
   document.getElementById('r5Sw').addEventListener('click', () => {
     state.r5Switchers = !state.r5Switchers;
+    const btn = document.getElementById('r5Sw');
+    if (btn) btn.setAttribute('aria-pressed', String(state.r5Switchers));
+    const icon = document.getElementById('r5SwIcon');
+    if (icon) icon.textContent = state.r5Switchers ? '✓' : '+';
     activeWheel.setSlices(getSlices(), true, 850);
-    render();
   });
   document.getElementById('rSpin').addEventListener('click', async (e) => {
     e.currentTarget.disabled = true;
@@ -584,6 +613,17 @@ function renderE3() {
     render();
   }));
 }
+
+let replayResizeTimer = null;
+window.addEventListener('resize', () => {
+  if (replayResizeTimer) clearTimeout(replayResizeTimer);
+  replayResizeTimer = setTimeout(() => {
+    if (activeWheel) {
+      const targetSize = activeWheel.mode === 'statement' ? Math.min(265, wheelSize()) : wheelSize();
+      activeWheel.resize(targetSize);
+    }
+  }, 100);
+});
 
 prevBtn.addEventListener('click', () => { if (stageIdx > 0) { stageIdx -= 1; render(); window.scrollTo(0, 0); } });
 nextBtn.addEventListener('click', () => { if (stageIdx < REPLAY_STAGES.length - 1) { stageIdx += 1; render(); window.scrollTo(0, 0); } });

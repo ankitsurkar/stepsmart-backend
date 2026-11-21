@@ -19,6 +19,7 @@ import {
 } from './scoring.js';
 import { WheelRenderer } from './wheel.js';
 import { initSchemeSync } from './theme.js';
+import { subscribeSession, isHostLive, recordTallyDirect } from './firebaseSync.js';
 
 const PROFILE_STORAGE_KEY = 'aipm_part1_phone_profile_v1';
 const EXTRAS_STORAGE_KEY = 'aipm_part1_phone_extras_v1';
@@ -26,10 +27,14 @@ const EXTRAS_STORAGE_KEY = 'aipm_part1_phone_extras_v1';
 const mainEl = document.getElementById('phoneMain');
 const statusPillEl = document.getElementById('phoneStagePill');
 const reconnectSlot = document.getElementById('phoneReconnectSlot');
+const resetProfileBtn = document.getElementById('phoneResetProfileBtn');
 
 let hostStageIndex = 0;
+let lastSessionData = null;
+let hostLiveNow = false;
 let connectionStatus = 'connecting'; // 'connecting' | 'connected' | 'reconnecting' | 'timeout'
-let eventSource = null;
+let unsubscribeSession = null;
+let heartbeatWatchTimer = null;
 let timeoutTimer = null;
 let simulatedOffline = false;
 
@@ -88,6 +93,27 @@ function saveJson(key, val) {
   }
 }
 
+function resetProfileToEdit() {
+  if (profile) {
+    setupDraft.backgroundId = profile.backgroundId;
+    setupDraft.experienceId = profile.experienceId;
+    setupDraft.things = Array.isArray(profile.things) ? [...profile.things] : [];
+  }
+  try {
+    localStorage.removeItem(PROFILE_STORAGE_KEY);
+    localStorage.removeItem(EXTRAS_STORAGE_KEY);
+  } catch {}
+  profile = null;
+  extras = { r2ProofIds: [], r2TypedLine: '', e3MapSelected: null };
+  render();
+}
+
+resetProfileBtn?.addEventListener('click', () => {
+  if (confirm('Change your background and experience answers? Your wheel will recalculate.')) {
+    resetProfileToEdit();
+  }
+});
+
 function esc(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -136,9 +162,13 @@ function clearDisconnectTimeout() {
 }
 
 function connectToSession() {
-  if (eventSource) {
-    eventSource.close();
-    eventSource = null;
+  if (unsubscribeSession) {
+    unsubscribeSession();
+    unsubscribeSession = null;
+  }
+  if (heartbeatWatchTimer) {
+    clearInterval(heartbeatWatchTimer);
+    heartbeatWatchTimer = null;
   }
 
   if (simulatedOffline) {
@@ -152,30 +182,46 @@ function connectToSession() {
   startDisconnectTimeout();
   render();
 
-  const es = new EventSource('/api/events?role=phone');
-  eventSource = es;
+  unsubscribeSession = subscribeSession(
+    (data) => {
+      if (simulatedOffline) return;
+      clearDisconnectTimeout();
+      const wasDisconnected = connectionStatus !== 'connected';
+      connectionStatus = 'connected';
+      lastSessionData = data;
 
-  es.addEventListener('state', (e) => {
-    if (simulatedOffline) return;
-    const data = JSON.parse(e.data);
-    clearDisconnectTimeout();
-    connectionStatus = 'connected';
-    const nextIdx = typeof data.stageIndex === 'number' ? data.stageIndex : 0;
-    const changed = nextIdx !== hostStageIndex;
-    hostStageIndex = Math.max(0, Math.min(STAGES.length - 1, nextIdx));
-    if (changed || !mainEl.innerHTML.trim() || reconnectSlot.innerHTML.trim()) {
+      const nextHostLive = isHostLive(data);
+      const liveChanged = nextHostLive !== hostLiveNow;
+      hostLiveNow = nextHostLive;
+
+      const nextIdx = typeof data.stageIndex === 'number' ? data.stageIndex : 0;
+      const clampedIdx = Math.max(0, Math.min(STAGES.length - 1, nextIdx));
+      const changed = clampedIdx !== hostStageIndex;
+      hostStageIndex = clampedIdx;
+
+      if (wasDisconnected || liveChanged || changed || !mainEl.innerHTML.trim() || reconnectSlot.innerHTML.trim()) {
+        render();
+      }
+    },
+    () => {
+      if (simulatedOffline) return;
+      if (connectionStatus !== 'timeout') {
+        connectionStatus = 'reconnecting';
+        startDisconnectTimeout();
+        render();
+      }
+    }
+  );
+
+  // Re-check host heartbeat freshness every 15s so phones lock if host drops off
+  heartbeatWatchTimer = setInterval(() => {
+    if (simulatedOffline || connectionStatus !== 'connected' || !lastSessionData) return;
+    const nextLive = isHostLive(lastSessionData);
+    if (nextLive !== hostLiveNow) {
+      hostLiveNow = nextLive;
       render();
     }
-  });
-
-  es.onerror = () => {
-    if (simulatedOffline) return;
-    if (connectionStatus !== 'timeout') {
-      connectionStatus = 'reconnecting';
-      startDisconnectTimeout();
-      render();
-    }
-  };
+  }, 15_000);
 }
 
 /* =========================== RENDER ROUTER =========================== */
@@ -214,6 +260,24 @@ function render() {
   }
 
   reconnectSlot.innerHTML = '';
+
+  if (resetProfileBtn) {
+    resetProfileBtn.style.display = profile && hostLiveNow ? 'inline-flex' : 'none';
+  }
+
+  // If no host screen is live right now, lock phone to waiting screen
+  if (!hostLiveNow) {
+    statusPillEl.textContent = 'Waiting';
+    document.title = 'Waiting for host | The AI PM';
+    mainEl.innerHTML = `
+      <div class="phone-center-screen">
+        <span class="pill pill-accent">Live Session</span>
+        <h1 class="phone-h1">Waiting for your host</h1>
+        <p class="phone-muted">No live host screen is active right now. Stay on this page — your screen will wake up as soon as your host starts.</p>
+      </div>
+    `;
+    return;
+  }
 
   // 3-second “Building your wheel…” interstitial after setup Continue
   if (isBuildingWheel) {
@@ -259,8 +323,12 @@ function render() {
         <span class="pill pill-good">Your wheel is ready</span>
         <h1 class="phone-h1">Waiting for your host</h1>
         <p class="phone-muted">Your Product Manager slice starts at <strong>${pm.pct}%</strong> on our wheel. Look at the main screen for Round 1.</p>
+        <button type="button" class="btn" id="phoneChangeAnswersBtn" style="margin-top: 14px; padding: 8px 16px; font-size: 14px;">Change answers</button>
       </div>
     `;
+    document.getElementById('phoneChangeAnswersBtn')?.addEventListener('click', () => {
+      resetProfileToEdit();
+    });
     return;
   }
 
@@ -547,11 +615,13 @@ function renderPhoneR1Play() {
 
     // Optional anonymous tally of landing bucket (zero setup info or personal data sent)
     if (res.slice.tallyBucket) {
-      fetch('/api/phone/tally', {
+      fetch('/api/live/tally', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bucket: res.slice.tallyBucket }),
-      }).catch(() => {});
+      }).catch(() => {
+        recordTallyDirect(res.slice.tallyBucket).catch(() => {});
+      });
     }
 
     const msg = playState.r1Spins.length === 1 ? 'Now spin again.' : 'Same resume. Same wheel. Different answer?';
@@ -767,7 +837,7 @@ function renderPhoneR4Play() {
 
   mainEl.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 14px; align-items: center;">
-      ${playState.r4Total > 0 ? `<div class="pill pill-accent tabular">You caught ${playState.r4Caught} of ${playState.r4Total}</div>` : ''}
+      <div id="phoneR4ScoreSlot">${playState.r4Total > 0 ? `<div class="pill pill-accent tabular">You caught ${playState.r4Caught} of ${playState.r4Total}</div>` : ''}</div>
 
       <div class="wheel-wrap">
         ${pointerSvg()}
@@ -855,7 +925,11 @@ function bindPhoneR4VoteButtons() {
       if ((vote === 'real') === playState.r4Current.isReal) {
         playState.r4Caught += 1;
       }
-      renderPhoneR4Play();
+      const scoreSlot = document.getElementById('phoneR4ScoreSlot');
+      if (scoreSlot) {
+        scoreSlot.innerHTML = `<div class="pill pill-accent tabular">You caught ${playState.r4Caught} of ${playState.r4Total}</div>`;
+      }
+      document.getElementById('phoneR4CardSlot').innerHTML = renderPhoneR4Card();
     });
   });
 }
@@ -1136,9 +1210,13 @@ window.addEventListener('message', (event) => {
   if (msg.type === 'preview-simulate-disconnect') {
     simulatedOffline = Boolean(msg.offline);
     if (simulatedOffline) {
-      if (eventSource) {
-        eventSource.close();
-        eventSource = null;
+      if (unsubscribeSession) {
+        unsubscribeSession();
+        unsubscribeSession = null;
+      }
+      if (heartbeatWatchTimer) {
+        clearInterval(heartbeatWatchTimer);
+        heartbeatWatchTimer = null;
       }
       connectionStatus = 'reconnecting';
       clearDisconnectTimeout();
@@ -1160,6 +1238,17 @@ window.addEventListener('message', (event) => {
     setupDraft.things = [];
     render();
   }
+});
+
+let phoneResizeTimer = null;
+window.addEventListener('resize', () => {
+  if (phoneResizeTimer) clearTimeout(phoneResizeTimer);
+  phoneResizeTimer = setTimeout(() => {
+    if (activeWheel) {
+      const targetSize = activeWheel.mode === 'statement' ? Math.min(265, wheelSize()) : wheelSize();
+      activeWheel.resize(targetSize);
+    }
+  }, 100);
 });
 
 initSchemeSync(() => activeWheel?.draw());

@@ -196,7 +196,7 @@ export const SANKET_ROLE_KEYS = [
   { key: 'productManager', label: 'Product Manager', color: SLICE_COLORS.productManager, isProduct: true, isDream: true },
 ];
 
-export const SANKET_BEFORE_PCTS = [54, 20, 9, 6, 5, 5];
+export const SANKET_BEFORE_PCTS = [54, 20, 9, 6, 6, 5];
 export const SANKET_AFTER_PCTS = [35, 23, 11, 11, 11, 9];
 
 // Round 3 Long-shot slices

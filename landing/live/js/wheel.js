@@ -129,6 +129,7 @@ export class WheelRenderer {
       cancelAnimationFrame(this._spinRaf);
       this._spinRaf = null;
     }
+    this.isSpinning = false;
   }
 
   /**

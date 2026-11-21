@@ -837,7 +837,7 @@ function renderPhoneR4Play() {
 
   mainEl.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 14px; align-items: center;">
-      ${playState.r4Total > 0 ? `<div class="pill pill-accent tabular">You caught ${playState.r4Caught} of ${playState.r4Total}</div>` : ''}
+      <div id="phoneR4ScoreSlot">${playState.r4Total > 0 ? `<div class="pill pill-accent tabular">You caught ${playState.r4Caught} of ${playState.r4Total}</div>` : ''}</div>
 
       <div class="wheel-wrap">
         ${pointerSvg()}
@@ -925,7 +925,11 @@ function bindPhoneR4VoteButtons() {
       if ((vote === 'real') === playState.r4Current.isReal) {
         playState.r4Caught += 1;
       }
-      renderPhoneR4Play();
+      const scoreSlot = document.getElementById('phoneR4ScoreSlot');
+      if (scoreSlot) {
+        scoreSlot.innerHTML = `<div class="pill pill-accent tabular">You caught ${playState.r4Caught} of ${playState.r4Total}</div>`;
+      }
+      document.getElementById('phoneR4CardSlot').innerHTML = renderPhoneR4Card();
     });
   });
 }
@@ -1234,6 +1238,17 @@ window.addEventListener('message', (event) => {
     setupDraft.things = [];
     render();
   }
+});
+
+let phoneResizeTimer = null;
+window.addEventListener('resize', () => {
+  if (phoneResizeTimer) clearTimeout(phoneResizeTimer);
+  phoneResizeTimer = setTimeout(() => {
+    if (activeWheel) {
+      const targetSize = activeWheel.mode === 'statement' ? Math.min(265, wheelSize()) : wheelSize();
+      activeWheel.resize(targetSize);
+    }
+  }, 100);
 });
 
 initSchemeSync(() => activeWheel?.draw());
