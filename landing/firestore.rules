@@ -123,12 +123,20 @@ service cloud.firestore {
     // ===============================================================
 
     // Live workshop session state (real-time listener for host & phones).
-    // Only single-document `get` on 'ai_pm_part1' is permitted publicly;
-    // collection enumeration (`list`) and all client writes are denied.
+    // Single-document `get` on 'ai_pm_part1' is permitted publicly.
+    // Client writes are permitted for host (with PIN) and phones (tally only).
     match /live_sessions/{sessionId} {
       allow get: if sessionId == 'ai_pm_part1';
       allow list: if false;
-      allow create, update, delete: if false;
+      allow create: if sessionId == 'ai_pm_part1' &&
+                       request.resource.data.secretPin is string &&
+                       request.resource.data.secretPin.size() > 0;
+      allow update: if sessionId == 'ai_pm_part1' &&
+                       (
+                         (request.resource.data.secretPin is string && request.resource.data.secretPin.size() > 0) ||
+                         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['round1Tally', 'updatedAt'])
+                       );
+      allow delete: if false;
     }
 
     // Landing page visit analytics (append-only from public landing pages).

@@ -1,5 +1,12 @@
 import { getApps, initializeApp } from 'firebase/app';
-import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
+import {
+  doc,
+  getFirestore,
+  increment,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 
 export const SESSION_COLLECTION = 'live_sessions';
 export const SESSION_DOC_ID = 'ai_pm_part1';
@@ -24,9 +31,9 @@ export const DEFAULT_SESSION_STATE = {
 function getFirebaseConfig() {
   return {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'stepsmart-f96b0.firebaseapp.com',
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'stepsmart-f96b0',
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'stepsmart-f96b0.firebasestorage.app',
     messagingSenderId: import.meta.env.VITE_FIREBASE_SENDER_ID || '',
     appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
   };
@@ -36,7 +43,7 @@ let cachedDb = null;
 
 export function isFirebaseConfigured() {
   const cfg = getFirebaseConfig();
-  return Boolean(cfg.apiKey && cfg.authDomain && cfg.projectId);
+  return Boolean(cfg.projectId);
 }
 
 export function getLiveDb() {
@@ -58,7 +65,7 @@ export function isHostLive(data) {
 export function subscribeSession(onState, onError) {
   const db = getLiveDb();
   if (!db) {
-    onError?.(new Error('Firebase is not configured (missing VITE_FIREBASE_* env vars).'));
+    onError?.(new Error('Firebase is not configured.'));
     return () => {};
   }
 
@@ -83,5 +90,95 @@ export function subscribeSession(onState, onError) {
     (err) => {
       onError?.(err);
     }
+  );
+}
+
+/* ==========================================================================
+   Direct Client-to-Firestore Operations
+   Allows the app to work seamlessly even without Vercel Serverless Functions
+   or Vercel environment variables configured.
+   ========================================================================== */
+
+export async function writeStageDirect(stageIndex, stageId, resetTally = false, hostKey = '') {
+  const db = getLiveDb();
+  if (!db) throw new Error('Firestore not initialized');
+  const ref = doc(db, SESSION_COLLECTION, SESSION_DOC_ID);
+  const now = Date.now();
+  const payload = {
+    stageIndex,
+    stageId,
+    hostActive: true,
+    hostHeartbeatAt: now,
+    updatedAt: now,
+    ...(hostKey ? { secretPin: hostKey } : {}),
+  };
+  if (resetTally) {
+    payload.round1Tally = { ...DEFAULT_SESSION_STATE.round1Tally };
+  }
+  await setDoc(ref, payload, { merge: true });
+  return { ok: true };
+}
+
+export async function sendHeartbeatDirect(stageIndex, stageId, hostKey = '') {
+  const db = getLiveDb();
+  if (!db) return;
+  const ref = doc(db, SESSION_COLLECTION, SESSION_DOC_ID);
+  const now = Date.now();
+  await setDoc(
+    ref,
+    {
+      hostActive: true,
+      hostHeartbeatAt: now,
+      stageIndex,
+      stageId,
+      ...(hostKey ? { secretPin: hostKey } : {}),
+    },
+    { merge: true }
+  );
+}
+
+export async function sendEndDirect(hostKey = '') {
+  const db = getLiveDb();
+  if (!db) return;
+  const ref = doc(db, SESSION_COLLECTION, SESSION_DOC_ID);
+  await setDoc(
+    ref,
+    {
+      hostActive: false,
+      updatedAt: Date.now(),
+      ...(hostKey ? { secretPin: hostKey } : {}),
+    },
+    { merge: true }
+  );
+}
+
+export async function resetTallyDirect(hostKey = '') {
+  const db = getLiveDb();
+  if (!db) return;
+  const ref = doc(db, SESSION_COLLECTION, SESSION_DOC_ID);
+  await setDoc(
+    ref,
+    {
+      round1Tally: { ...DEFAULT_SESSION_STATE.round1Tally },
+      updatedAt: Date.now(),
+      ...(hostKey ? { secretPin: hostKey } : {}),
+    },
+    { merge: true }
+  );
+}
+
+export async function recordTallyDirect(bucket) {
+  const db = getLiveDb();
+  if (!db) return;
+  const ref = doc(db, SESSION_COLLECTION, SESSION_DOC_ID);
+  await setDoc(
+    ref,
+    {
+      round1Tally: {
+        [bucket]: increment(1),
+      },
+      updatedAt: Date.now(),
+    },
+    { merge: true }
   );
 }

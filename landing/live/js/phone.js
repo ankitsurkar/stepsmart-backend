@@ -19,7 +19,7 @@ import {
 } from './scoring.js';
 import { WheelRenderer } from './wheel.js';
 import { initSchemeSync } from './theme.js';
-import { subscribeSession, isHostLive } from './firebaseSync.js';
+import { subscribeSession, isHostLive, recordTallyDirect } from './firebaseSync.js';
 
 const PROFILE_STORAGE_KEY = 'aipm_part1_phone_profile_v1';
 const EXTRAS_STORAGE_KEY = 'aipm_part1_phone_extras_v1';
@@ -589,7 +589,9 @@ function renderPhoneR1Play() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bucket: res.slice.tallyBucket }),
-      }).catch(() => {});
+      }).catch(() => {
+        recordTallyDirect(res.slice.tallyBucket).catch(() => {});
+      });
     }
 
     const msg = playState.r1Spins.length === 1 ? 'Now spin again.' : 'Same resume. Same wheel. Different answer?';

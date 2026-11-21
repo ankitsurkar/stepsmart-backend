@@ -21,7 +21,13 @@ import {
 } from './scoring.js';
 import { WheelRenderer } from './wheel.js';
 import { initSchemeSync, toggleTwoStateScheme, getResolvedScheme } from './theme.js';
-import { subscribeSession } from './firebaseSync.js';
+import {
+  subscribeSession,
+  writeStageDirect,
+  sendHeartbeatDirect,
+  sendEndDirect,
+  resetTallyDirect,
+} from './firebaseSync.js';
 
 const mainEl = document.getElementById('hostMain');
 const stageTagEl = document.getElementById('hostStageTag');
@@ -128,6 +134,9 @@ async function callHostApi(path, body) {
     updateSyncBadge();
     return { ok: false, status: 401 };
   }
+
+  // 1. First attempt the serverless API endpoint
+  let apiSucceeded = false;
   try {
     const res = await fetch(path, {
       method: 'POST',
@@ -138,6 +147,7 @@ async function callHostApi(path, body) {
       body: JSON.stringify(body),
     });
     if (res.ok) {
+      apiSucceeded = true;
       hostAuthStatus = 'live';
       updateSyncBadge();
       return { ok: true, status: res.status };
@@ -147,14 +157,36 @@ async function callHostApi(path, body) {
       updateSyncBadge();
       return { ok: false, status: 403 };
     }
-    hostAuthStatus = 'error';
-    updateSyncBadge();
-    return { ok: false, status: res.status };
   } catch {
-    hostAuthStatus = 'error';
-    updateSyncBadge();
-    return { ok: false, status: 0 };
+    // API endpoint not reachable or Vercel env not set up; fallback to direct Firestore
   }
+
+  // 2. Direct client-to-Firestore fallback (works without Vercel Serverless / Admin credentials)
+  if (!apiSucceeded) {
+    try {
+      if (path.includes('reset-tally')) {
+        await resetTallyDirect(HOST_KEY);
+      } else if (body.action === 'end') {
+        await sendEndDirect(HOST_KEY);
+      } else if (body.action === 'heartbeat') {
+        await sendHeartbeatDirect(body.stageIndex, body.stageId, HOST_KEY);
+      } else {
+        await writeStageDirect(body.stageIndex, body.stageId, body.resetTally, HOST_KEY);
+      }
+      hostAuthStatus = 'live';
+      updateSyncBadge();
+      return { ok: true, status: 200 };
+    } catch (err) {
+      console.warn('[host] Direct Firestore write error:', err);
+      hostAuthStatus = 'error';
+      updateSyncBadge();
+      return { ok: false, status: 500 };
+    }
+  }
+
+  hostAuthStatus = 'error';
+  updateSyncBadge();
+  return { ok: false, status: 0 };
 }
 
 async function pushStageToServer(index, resetTally = false) {
