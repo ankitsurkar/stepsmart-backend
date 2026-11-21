@@ -2506,10 +2506,7 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
                                     )}
                                   </div>
 
-                                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-extrabold text-slate-500">
-                                    <span className="text-emerald-600 font-extrabold flex items-center gap-1">
-                                      ✓ Unlocked Question
-                                    </span>
+                                  <div className="pt-3 border-t border-slate-100 flex items-center justify-end text-xs font-extrabold text-slate-500">
                                     <button 
                                       onClick={() => {
                                         setApplyStatus('idle');
