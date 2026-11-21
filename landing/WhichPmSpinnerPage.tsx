@@ -84,7 +84,7 @@ const NUM_BULBS = 24;
 export function WhichPmSpinnerPage() {
   const [searchParams] = useSearchParams();
   const customDate = searchParams.get('date') || 'Sunday';
-  const customTime = searchParams.get('time') || '8:00 PM IST';
+  const customTime = searchParams.get('time') || '3:00 PM IST';
   const customRegUrl = searchParams.get('reg') || searchParams.get('register') || 'https://docs.google.com/forms/d/e/1FAIpQLSdRBsOZLN4E4cJh-l7b4NYTEisRemCTpPsoBZEAboHQk67tlA/viewform?usp=publish-editor';
 
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -556,14 +556,9 @@ export function WhichPmSpinnerPage() {
           </h2>
 
           {/* Caption */}
-          <p className="text-lg sm:text-xl italic mb-4 max-w-md" style={{ fontFamily: 'Georgia, serif' }}>
+          <p className="text-lg sm:text-xl italic mb-6 max-w-md" style={{ fontFamily: 'Georgia, serif' }}>
             {resultItem?.caption}
           </p>
-
-          {/* Disclaimer */}
-          <div className="text-xs font-bold tracking-widest uppercase text-violet-200/70 pb-4 mb-5 border-b border-dashed border-amber-500/30 w-full">
-            Just for fun. Not a prediction.
-          </div>
 
           {/* Action Buttons */}
           <div className="w-full flex flex-col gap-3 mb-5">

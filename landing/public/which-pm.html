@@ -692,10 +692,6 @@
       <h2 class="result-tag-title" id="resultTagTitle">Born to Be PM</h2>
       <p class="result-caption" id="resultCaption">“It was always on the roadmap.”</p>
       
-      <div class="result-disclaimer">
-        Just for fun. Not a prediction.
-      </div>
-
       <div class="result-actions">
         <!-- Register Button (Primary) -->
         <a id="registerBtn" class="btn-register" href="#" target="_self">
@@ -730,7 +726,7 @@
 
       <!-- Live Session Teaser Notice -->
       <div class="result-live-notice" id="liveSessionNotice">
-        The real spin happens live on <strong id="liveDateDisplay">Sunday, 8:00 PM IST</strong>.<br />
+        The real spin happens live on <strong id="liveDateDisplay">Sunday, 3:00 PM IST</strong>.<br />
         <strong>The AI PM: The Making.</strong> Free. Limited seats.
       </div>
     </div>
@@ -852,7 +848,7 @@
       // Extract URL params if customized
       var urlParams = new URLSearchParams(window.location.search);
       var customDate = urlParams.get("date") || "Sunday";
-      var customTime = urlParams.get("time") || "8:00 PM IST";
+      var customTime = urlParams.get("time") || "3:00 PM IST";
       liveDateDisplay.textContent = customDate + ", " + customTime;
 
       var baseRegisterUrl = urlParams.get("reg") || urlParams.get("register") || "https://docs.google.com/forms/d/e/1FAIpQLSdRBsOZLN4E4cJh-l7b4NYTEisRemCTpPsoBZEAboHQk67tlA/viewform?usp=publish-editor";
