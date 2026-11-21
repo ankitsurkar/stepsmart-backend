@@ -119,7 +119,7 @@ export async function writeStageDirect(stageIndex, stageId, resetTally = false, 
   return { ok: true };
 }
 
-export async function sendHeartbeatDirect(stageIndex, stageId, hostKey = '') {
+export async function sendHeartbeatDirect(hostKey = '') {
   const db = getLiveDb();
   if (!db) return;
   const ref = doc(db, SESSION_COLLECTION, SESSION_DOC_ID);
@@ -129,8 +129,6 @@ export async function sendHeartbeatDirect(stageIndex, stageId, hostKey = '') {
     {
       hostActive: true,
       hostHeartbeatAt: now,
-      stageIndex,
-      stageId,
       ...(hostKey ? { secretPin: hostKey } : {}),
     },
     { merge: true }

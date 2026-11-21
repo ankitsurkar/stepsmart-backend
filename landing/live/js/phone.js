@@ -27,6 +27,7 @@ const EXTRAS_STORAGE_KEY = 'aipm_part1_phone_extras_v1';
 const mainEl = document.getElementById('phoneMain');
 const statusPillEl = document.getElementById('phoneStagePill');
 const reconnectSlot = document.getElementById('phoneReconnectSlot');
+const resetProfileBtn = document.getElementById('phoneResetProfileBtn');
 
 let hostStageIndex = 0;
 let lastSessionData = null;
@@ -91,6 +92,27 @@ function saveJson(key, val) {
     // Keep working in-memory if private browsing restricts storage
   }
 }
+
+function resetProfileToEdit() {
+  if (profile) {
+    setupDraft.backgroundId = profile.backgroundId;
+    setupDraft.experienceId = profile.experienceId;
+    setupDraft.things = Array.isArray(profile.things) ? [...profile.things] : [];
+  }
+  try {
+    localStorage.removeItem(PROFILE_STORAGE_KEY);
+    localStorage.removeItem(EXTRAS_STORAGE_KEY);
+  } catch {}
+  profile = null;
+  extras = { r2ProofIds: [], r2TypedLine: '', e3MapSelected: null };
+  render();
+}
+
+resetProfileBtn?.addEventListener('click', () => {
+  if (confirm('Change your background and experience answers? Your wheel will recalculate.')) {
+    resetProfileToEdit();
+  }
+});
 
 function esc(str) {
   return String(str)
@@ -239,6 +261,10 @@ function render() {
 
   reconnectSlot.innerHTML = '';
 
+  if (resetProfileBtn) {
+    resetProfileBtn.style.display = profile && hostLiveNow ? 'inline-flex' : 'none';
+  }
+
   // If no host screen is live right now, lock phone to waiting screen
   if (!hostLiveNow) {
     statusPillEl.textContent = 'Waiting';
@@ -297,8 +323,12 @@ function render() {
         <span class="pill pill-good">Your wheel is ready</span>
         <h1 class="phone-h1">Waiting for your host</h1>
         <p class="phone-muted">Your Product Manager slice starts at <strong>${pm.pct}%</strong> on our wheel. Look at the main screen for Round 1.</p>
+        <button type="button" class="btn" id="phoneChangeAnswersBtn" style="margin-top: 14px; padding: 8px 16px; font-size: 14px;">Change answers</button>
       </div>
     `;
+    document.getElementById('phoneChangeAnswersBtn')?.addEventListener('click', () => {
+      resetProfileToEdit();
+    });
     return;
   }
 

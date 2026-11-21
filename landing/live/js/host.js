@@ -169,7 +169,7 @@ async function callHostApi(path, body) {
       } else if (body.action === 'end') {
         await sendEndDirect(HOST_KEY);
       } else if (body.action === 'heartbeat') {
-        await sendHeartbeatDirect(body.stageIndex, body.stageId, HOST_KEY);
+        await sendHeartbeatDirect(HOST_KEY);
       } else {
         await writeStageDirect(body.stageIndex, body.stageId, body.resetTally, HOST_KEY);
       }
@@ -202,11 +202,8 @@ function startHostHeartbeat() {
   if (hostHeartbeatTimer) clearInterval(hostHeartbeatTimer);
   hostHeartbeatTimer = setInterval(() => {
     if (!HOST_KEY) return;
-    const stage = STAGES[currentIndex];
     callHostApi('/api/live/stage', {
       action: 'heartbeat',
-      stageIndex: currentIndex,
-      stageId: stage.id,
     });
   }, 25_000);
 }
@@ -1424,20 +1421,20 @@ function connectHostEvents() {
         bindTallyReset();
       }
 
+      // Keep currentIndex in sync with Firestore whenever stage updates
+      if (
+        typeof data.stageIndex === 'number' &&
+        data.stageIndex >= 0 &&
+        data.stageIndex < STAGES.length &&
+        data.stageIndex !== currentIndex
+      ) {
+        currentIndex = data.stageIndex;
+        renderStage();
+      }
+
       if (!initialSnapshotHandled) {
         initialSnapshotHandled = true;
-        if (
-          data.hostActive &&
-          typeof data.stageIndex === 'number' &&
-          data.stageIndex >= 0 &&
-          data.stageIndex < STAGES.length &&
-          data.stageIndex !== currentIndex
-        ) {
-          currentIndex = data.stageIndex;
-          renderStage();
-        }
         if (HOST_KEY) {
-          pushStageToServer(currentIndex, false);
           startHostHeartbeat();
         }
       }

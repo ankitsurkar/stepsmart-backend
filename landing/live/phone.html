@@ -17,7 +17,10 @@
   <div class="phone-shell">
     <header class="phone-header">
       <span class="phone-brand">The AI PM · Part 1</span>
-      <span class="pill" id="phoneStagePill">Connecting</span>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button type="button" class="btn" id="phoneResetProfileBtn" style="display: none; min-block-size: 28px; padding: 2px 10px; font-size: 12px;">Edit answers</button>
+        <span class="pill" id="phoneStagePill">Connecting</span>
+      </div>
     </header>
 
     <div id="phoneReconnectSlot"></div>

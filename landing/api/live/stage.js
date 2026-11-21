@@ -39,17 +39,6 @@ export default async function handler(req, res) {
         hostActive: true,
         hostHeartbeatAt: now,
       };
-      if (
-        Number.isInteger(body.stageIndex) &&
-        body.stageIndex >= 0 &&
-        body.stageIndex <= MAX_STAGE_INDEX &&
-        typeof body.stageId === 'string' &&
-        body.stageId.length > 0 &&
-        body.stageId.length <= 64
-      ) {
-        update.stageIndex = body.stageIndex;
-        update.stageId = body.stageId;
-      }
       await ref.set(update, { merge: true });
       return res.status(200).json({ ok: true, ...update });
     }
