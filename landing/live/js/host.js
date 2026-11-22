@@ -14,7 +14,7 @@ import {
   PROGRAMME_SIGNUP_URL,
   AI_PM_ANALOGY,
   WHATSAPP_1ON1_URL,
-  AI_PM_BROCHURE_MODULES,
+  AI_PM_COHORT_DATA,
 } from './data.js';
 import {
   computeSanketR2Slices,
@@ -395,26 +395,26 @@ function renderStage() {
     return;
   }
 
-  if (stage.type === 'e2_story') {
+    if (stage.type === 'e2_story') {
     mainEl.innerHTML = `
       <div class="analogy-container">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
-          <div>
-            <div class="host-kicker">Framework</div>
-            <h1 class="host-title" style="margin: 4px 0 0; font-size: clamp(26px, 2.5vw, 36px);">The AI PM Analogy</h1>
-          </div>
-          <div class="pill pill-accent" style="font-size: 13px;">Classic PM → AI PM</div>
-        </div>
-
         <div class="analogy-header-row">
-          <span>Classic PM</span>
-          <span></span>
-          <span>What shifts</span>
-          <span></span>
-          <span>AI PM</span>
+          <div class="analogy-header-card analogy-header-classic">Classic PM</div>
+          <div></div>
+          <div class="analogy-header-card analogy-header-shift">What shifts</div>
+          <div></div>
+          <div class="analogy-header-card analogy-header-aipm">AI PM</div>
         </div>
 
         <div class="analogy-rows" id="analogyRows">
+          <svg class="analogy-svg-overlay" id="analogySvgOverlay" aria-hidden="true">
+            <defs>
+              <marker id="analogy-arrowhead" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <polygon points="0 0.5, 6 3, 0 5.5" fill="#64748b" />
+              </marker>
+            </defs>
+            <path id="analogyDiagonalPath" d="" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#analogy-arrowhead)" />
+          </svg>
           ${AI_PM_ANALOGY.map((item, idx) => `
             <div class="analogy-row" data-index="${idx}">
               <div class="analogy-card-classic">
@@ -436,22 +436,54 @@ function renderStage() {
 
         <div class="analogy-legend-bar">
           <div class="analogy-legend-badges">
-            <span style="font-size: 13px; font-weight: 700; color: var(--ink-muted);">Legend</span>
+            <span style="font-size: 13px; font-weight: 700; color: #94a3b8;">Legend</span>
             <span class="badge-classic">Classic PM</span>
             <span class="badge-shift">What shifts</span>
             <span class="badge-aipm">AI PM</span>
           </div>
-          <span style="font-size: 13px; color: var(--ink-muted); font-weight: 600;">Tap any row to explore that concept</span>
+          <span style="font-size: 13px; color: #94a3b8; font-weight: 500;">Tap any box to explore that concept</span>
         </div>
 
         <div id="analogyDetailSlot"></div>
 
+        <div class="analogy-divider"></div>
+
         <div class="analogy-quote">
-          “Nothing is thrown away — every classic PM skill has an AI-native extension.<br>
-          The shift is in how you think, not how much you know.”
+          <div>Nothing is thrown away — every classic PM skill has an AI-native extension.</div>
+          <div style="margin-top: 4px;">The shift is in how you think, not how much you know.</div>
         </div>
       </div>
     `;
+
+    const drawAnalogyDiagonalArrow = () => {
+      const container = document.getElementById('analogyRows');
+      const path = document.getElementById('analogyDiagonalPath');
+      if (!container || !path) return;
+      const rows = container.querySelectorAll('.analogy-row');
+      if (rows.length < 8) return;
+      const row8Shift = rows[7]?.querySelector('.analogy-card-shift');
+      const row6Ai = rows[5]?.querySelector('.analogy-card-aipm');
+      if (!row8Shift || !row6Ai) return;
+
+      const cRect = container.getBoundingClientRect();
+      const sRect = row8Shift.getBoundingClientRect();
+      const eRect = row6Ai.getBoundingClientRect();
+
+      const startX = sRect.right - cRect.left;
+      const startY = (sRect.top + sRect.bottom) / 2 - cRect.top;
+      const endX = eRect.left - cRect.left - 4;
+      const endY = eRect.bottom - cRect.top - 10;
+
+      const c1x = startX + 28;
+      const c1y = startY - 20;
+      const c2x = endX - 28;
+      const c2y = endY + 20;
+
+      path.setAttribute('d', `M ${startX} ${startY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${endY}`);
+    };
+
+    setTimeout(drawAnalogyDiagonalArrow, 60);
+    window.addEventListener('resize', drawAnalogyDiagonalArrow);
 
     const rows = document.querySelectorAll('.analogy-row');
     const detailSlot = document.getElementById('analogyDetailSlot');
@@ -459,15 +491,23 @@ function renderStage() {
       r.addEventListener('click', () => {
         const idx = Number(r.getAttribute('data-index'));
         const item = AI_PM_ANALOGY[idx];
+        const wasActive = r.classList.contains('active');
         rows.forEach((other) => other.classList.remove('active'));
+        if (wasActive) {
+          if (detailSlot) detailSlot.innerHTML = '';
+          return;
+        }
         r.classList.add('active');
         if (detailSlot) {
           detailSlot.innerHTML = `
             <div class="analogy-detail-popup">
-              <div style="font-weight: 800; color: var(--accent); margin-bottom: 6px; font-size: 16px;">
-                ${esc(item.classic.title)} → ${esc(item.ai.title)}
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <div style="font-weight: 800; color: #5eead4; font-size: 16px;">
+                  ${esc(item.classic.title)} → ${esc(item.ai.title)}
+                </div>
+                <span class="pill pill-accent" style="font-size: 11px;">Concept Deep Dive</span>
               </div>
-              <div>${esc(item.detail)}</div>
+              <div style="line-height: 1.5; font-size: 14px; color: #e2e8f0;">${esc(item.detail)}</div>
             </div>
           `;
         }
@@ -499,121 +539,141 @@ function renderStage() {
     return;
   }
 
-  if (stage.type === 'e4_next') {
+  if (stage.type === 'e4_next' || stage.type === 'e5_brochure') {
     mainEl.innerHTML = `
-      <div class="interview-game-container">
-        <div style="text-align: center;">
-          <div class="host-kicker">Next Step</div>
-          <h1 class="host-title" style="margin: 8px 0 12px; font-size: clamp(32px, 3.5vw, 48px);">The AI interview game</h1>
-          <p class="host-copy" style="max-width: 680px; margin: 0 auto; font-size: 20px;">
-            Three pillars to turn your background into an unfair advantage in AI PM rounds.
+      <div class="cohort-container">
+        <!-- Hero Header -->
+        <div class="cohort-hero-card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <div class="host-kicker">Live 12-Week Programme</div>
+              <h1 class="host-title" style="margin: 4px 0 6px; font-size: clamp(30px, 3.2vw, 44px);">${esc(AI_PM_COHORT_DATA.title)}</h1>
+              <p style="font-size: 20px; font-weight: 700; color: var(--accent); margin: 0;">${esc(AI_PM_COHORT_DATA.tagline)}</p>
+            </div>
+            <span class="pill pill-good" style="font-size: 13px;">${esc(AI_PM_COHORT_DATA.badge)}</span>
+          </div>
+          <div class="host-callout" style="font-size: 16px; margin: 4px 0 0;">
+            ${esc(AI_PM_COHORT_DATA.story)}
+          </div>
+          <p style="font-size: 16px; color: var(--ink-muted); margin: 0; line-height: 1.5;">
+            ${esc(AI_PM_COHORT_DATA.mandate)}
           </p>
         </div>
 
-        <div class="interview-game-grid">
-          <div class="interview-step-card">
-            <div class="interview-step-number">1</div>
-            <h2 class="interview-step-title">The Application process</h2>
-            <p class="interview-step-desc">
-              Targeting the right doors where your context counts, framing AI-native experience, and turning a 9% wheel into an interview shortlist.
-            </p>
+        <!-- 1. The 12 Weeks Breakdown -->
+        <div>
+          <div style="margin-bottom: 14px;">
+            <div class="host-kicker">Curriculum & Deliverables</div>
+            <h2 class="cohort-section-title">THE 12 WEEKS: ONE DELIVERABLE EVERY WEEK</h2>
+            <p class="cohort-section-sub">Every week ends with a tangible, reviewable asset in your portfolio.</p>
           </div>
-
-          <div class="interview-step-card">
-            <div class="interview-step-number">2</div>
-            <h2 class="interview-step-title">The interview practice</h2>
-            <p class="interview-step-desc">
-              Mastering probabilistic PRD defense, system design trade-offs, and statistical eval rubrics under real interview pressure.
-            </p>
-          </div>
-
-          <div class="interview-step-card">
-            <div class="interview-step-number">3</div>
-            <h2 class="interview-step-title">The toolkit</h2>
-            <p class="interview-step-desc">
-              Live working templates for RAG architectures, prompt evals, data flywheel moats, and production case teardowns.
-            </p>
-          </div>
-        </div>
-
-        <!-- Curriculum Modules 1 to 4 -->
-        <div style="margin-top: 20px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <h2 style="font-size: 24px; font-weight: 800; color: var(--ink); margin: 0;">AI Product Management Curriculum (Modules 1–4)</h2>
-            <span class="pill pill-good">Full Course Curriculum</span>
-          </div>
-          <div class="brochure-grid">
-            ${AI_PM_BROCHURE_MODULES.map((m) => `
-              <div class="brochure-card">
-                <div class="brochure-card-header">
-                  <span class="brochure-card-number">Module ${esc(m.number)}</span>
-                  <span class="brochure-card-badge">${esc(m.badge)}</span>
+          <div class="cohort-weeks-grid">
+            ${AI_PM_COHORT_DATA.weeks.map((w) => `
+              <div class="cohort-week-card">
+                <div class="cohort-week-head">
+                  <span class="cohort-week-num">WEEK ${esc(w.num)}</span>
+                  <span class="cohort-week-phase">${esc(w.phase)}</span>
                 </div>
-                <h3 class="brochure-card-title">${esc(m.title)}</h3>
-                <p class="brochure-card-desc">${esc(m.desc)}</p>
-                <div class="brochure-highlights-wrap">
-                  ${m.highlights.map((h) => `<span class="brochure-highlight-tag">${esc(h)}</span>`).join('')}
-                </div>
+                <h3 class="cohort-week-title">${esc(w.title)}</h3>
+                <p class="cohort-week-desc">${esc(w.desc)}</p>
               </div>
             `).join('')}
           </div>
         </div>
 
-        <div style="display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 18px;">
-          ${getWhatsAppBtnHtml('Book 1:1 on WhatsApp with Sanket', 'font-size: 18px; padding: 14px 30px;')}
-          ${PROGRAMME_SIGNUP_URL ? `
-            <a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary" style="font-size: 17px; padding: 14px 28px; border-radius: var(--radius-md);">
-              See full curriculum →
-            </a>
-          ` : ''}
-        </div>
-      </div>
-    `;
-    return;
-  }
-
-  if (stage.type === 'e5_brochure') {
-    mainEl.innerHTML = `
-      <div class="brochure-container">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2px;">
-          <div>
-            <div class="host-kicker">Curriculum & Cohort</div>
-            <h1 class="host-title" style="margin: 4px 0 0; font-size: clamp(26px, 2.5vw, 36px);">AI Product Management — The Complete Course</h1>
+        <!-- 2. Is This For You? -->
+        <div>
+          <div style="margin-bottom: 14px;">
+            <div class="host-kicker">Candidate Fit</div>
+            <h2 class="cohort-section-title">IS THIS FOR YOU?</h2>
+            <p class="cohort-section-sub">We are very transparent about who this is built for.</p>
           </div>
-          <div class="pill pill-good" style="font-size: 13px;">Applications Open</div>
-        </div>
-
-        <div class="brochure-grid">
-          ${AI_PM_BROCHURE_MODULES.map((m) => `
-            <div class="brochure-card">
-              <div class="brochure-card-header">
-                <span class="brochure-card-number">Module ${esc(m.number)}</span>
-                <span class="brochure-card-badge">${esc(m.badge)}</span>
+          <div class="cohort-fit-grid">
+            <div class="cohort-fit-card-yes">
+              <div class="cohort-fit-header-yes">
+                <span>✓</span>
+                <span>THIS IS FOR YOU IF</span>
               </div>
-              <h2 class="brochure-card-title">${esc(m.title)}</h2>
-              <p class="brochure-card-desc">${esc(m.desc)}</p>
-              <div class="brochure-highlights-wrap">
-                ${m.highlights.map((h) => `<span class="brochure-highlight-tag">${esc(h)}</span>`).join('')}
+              <div class="cohort-fit-list">
+                ${AI_PM_COHORT_DATA.forYou.map((item) => `
+                  <div class="cohort-fit-item">
+                    <span class="cohort-fit-icon-yes">✓</span>
+                    <span>${esc(item)}</span>
+                  </div>
+                `).join('')}
               </div>
             </div>
-          `).join('')}
-        </div>
 
-        <div class="brochure-action-box">
-          <div>
-            <div style="font-weight: 800; font-size: 18px; color: var(--ink); margin-bottom: 3px;">
-              Ready to transition or level up as an AI PM?
-            </div>
-            <div style="font-size: 14px; color: var(--ink-muted);">
-              Review your profile fit, transition roadmap, and upcoming cohort schedule directly with Sanket.
+            <div class="cohort-fit-card-no">
+              <div class="cohort-fit-header-no">
+                <span>✕</span>
+                <span>THIS IS NOT FOR YOU IF</span>
+              </div>
+              <div class="cohort-fit-list">
+                ${AI_PM_COHORT_DATA.notForYou.map((item) => `
+                  <div class="cohort-fit-item">
+                    <span class="cohort-fit-icon-no">✕</span>
+                    <span>${esc(item)}</span>
+                  </div>
+                `).join('')}
+              </div>
             </div>
           </div>
-          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-            ${getWhatsAppBtnHtml('Chat 1:1 on WhatsApp with Sanket', 'font-size: 16px; padding: 12px 24px;')}
+        </div>
+
+        <!-- 3. What You Walk Away With -->
+        <div>
+          <div style="margin-bottom: 14px;">
+            <div class="host-kicker">Tangible Proof</div>
+            <h2 class="cohort-section-title">WHAT YOU WALK AWAY WITH</h2>
+          </div>
+          <div class="cohort-walkaway-card">
+            <div class="cohort-walkaway-list">
+              ${AI_PM_COHORT_DATA.walkAway.map((item) => `
+                <div class="cohort-walkaway-item">
+                  <div class="cohort-walkaway-dot"></div>
+                  <span>${esc(item)}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="cohort-walkaway-promise">
+              ${esc(AI_PM_COHORT_DATA.promise)}
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. How It Runs & Joining -->
+        <div class="brochure-action-box" style="flex-direction: column; align-items: stretch; text-align: left; gap: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px;">
+            <div>
+              <div style="font-size: 20px; font-weight: 800; color: var(--ink); margin-bottom: 4px;">
+                ${esc(AI_PM_COHORT_DATA.joining.rule)}
+              </div>
+              <p style="font-size: 15px; color: var(--ink-muted); margin: 0; max-width: 680px; line-height: 1.5;">
+                ${esc(AI_PM_COHORT_DATA.joining.ruleDesc)}
+              </p>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight: 800; font-size: 18px; color: var(--accent);">${esc(AI_PM_COHORT_DATA.joining.fee)}</div>
+              <div style="font-size: 13px; color: var(--ink-muted);">${esc(AI_PM_COHORT_DATA.joining.starts)} · ${esc(AI_PM_COHORT_DATA.joining.seats)}</div>
+            </div>
+          </div>
+
+          <div class="cohort-mentors-grid" style="margin-top: 4px;">
+            ${AI_PM_COHORT_DATA.mentors.map((m) => `
+              <div class="cohort-mentor-box">
+                <div style="font-weight: 800; font-size: 16px; color: var(--ink);">${esc(m.name)}</div>
+                <div style="font-size: 13px; color: var(--ink-muted);">${esc(m.role)}</div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="display: flex; justify-content: center; margin-top: 8px;">
+            ${getWhatsAppBtnHtml('Chat 1:1 on WhatsApp with Sanket (Apply for 15-min call)', 'font-size: 18px; padding: 14px 34px;')}
           </div>
         </div>
       </div>
-    `;
+`;
     return;
   }
 

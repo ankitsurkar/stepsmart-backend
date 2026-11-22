@@ -573,33 +573,72 @@ export const AI_PM_ANALOGY = [
 
 export const WHATSAPP_1ON1_URL = 'https://wa.me/message/GH5C7YLAYIEHN1';
 
-export const AI_PM_BROCHURE_MODULES = [
-  {
-    number: '1',
-    title: 'Module 1: Model Understanding & Requirements',
-    badge: 'Foundations',
-    desc: 'Frame model selection as a product decision. Write Model Requirements Briefs in Discovery, evaluate base vs instruction-tuned models, and choose between cloud APIs and self-hosted VPCs.',
-    highlights: ['Discovery vs Delivery Briefs', '7 AI Model Categories', 'Base vs Instruct Models', 'HIPAA & Compliance Architecture']
+
+
+export const AI_PM_COHORT_DATA = {
+  title: 'The AI PM Cohort',
+  tagline: '12 weeks. One real AI product. Built from your own domain.',
+  badge: 'Stepsmart · Live cohort · Small by design · Joining by conversation',
+  story: '300+ applications. About 10 interviews. One PM job. Sanket was a data engineer. On our wheel, Product Manager was a 9% slice. He became a PM anyway. The wheel isn’t your career. What you can show is.',
+  mandate: 'You are an experienced professional who works around AI and wants to build with it. Your mandate for 12 weeks: pick one real problem from your own work and ship an AI product that solves it.',
+
+  weeks: [
+    { num: '01', title: 'Problem Brief', phase: 'Problem space', desc: 'Pick one real problem from your own work. Write who has it, how often, and the evidence.' },
+    { num: '02', title: 'AI Brief', phase: 'Problem space', desc: 'Decide if AI is even the answer. Set one success number and write a one-page brief.' },
+    { num: '03', title: 'Behaviour Log', phase: 'How AI behaves', desc: 'Test your problem across prompts and models. Record where answers vary, drift or go confidently wrong.' },
+    { num: '04', title: 'Prototype v1', phase: 'How AI behaves', desc: 'Give the AI your own documents. Build a first version that answers them.' },
+    { num: '05', title: 'Test Set', phase: 'Make it trustworthy', desc: 'Write 20 known cases with right answers. Score your prototype against them.' },
+    { num: '06', title: 'Agent Sketch', phase: 'Make it trustworthy', desc: 'Design an agent on one page: its goal, its tools, and what it must never do.' },
+    { num: '07', title: 'Safety Plan', phase: 'Make it trustworthy', desc: 'Add guardrails and approval points. List three ways it fails and how you will catch each.' },
+    { num: '08', title: 'AI PRD', phase: 'Design and ship', desc: 'Turn your brief and test results into a PRD an engineering team could build from.' },
+    { num: '09', title: 'Build Sprint', phase: 'Design and ship', desc: 'Ship a working version of your product and put it in front of three real users.' },
+    { num: '10', title: 'Launch Plan', phase: 'Design and ship', desc: 'Work out the cost per use, what you will monitor, and how the product improves after launch.' },
+    { num: '11', title: 'Proof Pack', phase: 'Proof & positioning', desc: 'Turn the build into a portfolio case study and a LinkedIn story.' },
+    { num: '12', title: 'Demo Day', phase: 'Proof & positioning', desc: 'Demo your product, then run a full mock interview loop on it.' }
+  ],
+
+  forYou: [
+    'You are an analyst, QA, BA, product owner, program, data, risk or tech role',
+    'You use AI at work and want to explain it with confidence',
+    'You want to move toward product or AI product work',
+    'You can give about 6 hours a week and build every week'
+  ],
+
+  notForYou: [
+    'You are a student or fresher',
+    'You want to learn to code AI systems from scratch',
+    'You want a job guarantee',
+    'You would rather watch than build'
+  ],
+
+  walkAway: [
+    'A working AI product, built on a problem from your own domain',
+    'An AI PRD and a 20-case test set that show how you think, not just what you built',
+    'A portfolio case study and a LinkedIn story you can use in interviews',
+    'A plain way to explain how AI products behave, to engineers, bosses and interviewers',
+    'A full mock interview loop, run on your own product'
+  ],
+  promise: 'We don’t promise a job. We promise proof you can defend.',
+
+  howItRuns: [
+    'One live build session a week',
+    'Every session opens with something you play on your phone, then you build',
+    'Feedback on every deliverable',
+    '1:1 checkpoints at weeks 4, 8 and 12',
+    'Session recordings to catch up',
+    'Tool list shared before week 1'
+  ],
+
+  joining: {
+    rule: 'You don’t join by paying. You join by talking.',
+    ruleDesc: 'We choose who joins. After this session, apply for a 15-minute call. We look at where you are, what you want to build, and whether this cohort is right for you right now.',
+    fee: 'INR ₹30,000 for all 12 weeks',
+    starts: 'December 1st Week',
+    seats: 'Capped at 15'
   },
-  {
-    number: '2',
-    title: 'Module 2: The 4-Stage Progression',
-    badge: 'Architecture',
-    desc: 'Master the progression from Prompting → RAG → Fine-Tuning (PEFT/LoRA) → Hybrid systems. Know exactly when to solve Knowledge Gaps vs Pattern Gaps.',
-    highlights: ['Few-Shot Prompt Engineering', 'RAG & Vector Embeddings', 'PEFT / LoRA (10-50 examples)', 'Enterprise Hybrid Systems']
-  },
-  {
-    number: '3',
-    title: 'Module 3: The 8 Model Selection Parameters',
-    badge: 'Decision Engine',
-    desc: 'Balance Latency budgets (TTFT < 800ms), cost per interaction at scale, context window limits, benchmark vs production accuracy, and vendor lock-in risks.',
-    highlights: ['Latency Budgets & TTFT', 'Scale Cost Modeling & Routing', 'Context Window vs RAG', 'Semantic Caching Economics']
-  },
-  {
-    number: '4',
-    title: 'Module 4: Production Case Studies & Evals',
-    badge: 'Execution',
-    desc: 'Real case studies: Legal contract capability mismatch, $800k/mo chat cost collapse, and HIPAA violations. Build statistical eval sets (50+ test cases) and define probabilistic PRDs.',
-    highlights: ['Probabilistic PRDs', 'Eval Set Design & Rubrics', 'Model Drift & Data Flywheels', 'AI Moat Strategy']
-  }
-];
+
+  mentors: [
+    { name: 'Sanket', role: 'Data engineer turned product manager · IIT Kanpur alum · Mastercard' },
+    { name: 'Ankit', role: 'Senior Product Manager · IIM Bangalore alum · Microsoft' }
+  ]
+};

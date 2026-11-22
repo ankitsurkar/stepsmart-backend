@@ -6,7 +6,6 @@ import {
   Clock,
   Check,
   CheckCircle2,
-  ChevronDown,
   ArrowRight,
   ArrowUpRight,
   MessageSquare,
@@ -23,7 +22,6 @@ import { startBrochureDownload, saveLeadToDemoDB } from './AppBrutalism';
 
 export function AppExecutive() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [openWeek, setOpenWeek] = useState<number | null>(1);
   const [batchConfig, setBatchConfig] = useState<BatchConfig>(() => getStoredBatchConfig());
 
   // Interactive modular checkboxes for Modules 1, 2, 3 + 1:1 mentoring
@@ -130,28 +128,24 @@ export function AppExecutive() {
     }
   };
 
-  // Modular selection calculation (Diwali Offer: ₹5,000 per live module, Regular: ₹7,000)
+  // Modular selection calculation (₹7,000 per live module)
   const modularItemCount = (selectedMod1 ? 1 : 0) + (selectedMod2 ? 1 : 0) + (selectedMod3 ? 1 : 0);
   const modulePrice = isEarlyBird ? 5000 : 7000;
   const modularTotal = (modularItemCount * modulePrice) + (selected1to1 ? 5000 : 0);
   const modularLabel = [
-    selectedMod1 ? 'Evidence Builder (Mod 1)' : '',
+    selectedMod1 ? 'AI Builder (Mod 1)' : '',
     selectedMod2 ? 'Profile Enhancer (Mod 2)' : '',
     selectedMod3 ? 'Interview Practice (Mod 3)' : '',
     selected1to1 ? '1:1 Mentoring' : ''
   ].filter(Boolean).join(' + ');
 
   const handleModularEnroll = () => {
-    const intent = isEarlyBird
-      ? `Hi, I want to enroll for modular PM-X: ${modularLabel} (₹${modularTotal.toLocaleString('en-IN')}) - Diwali Special Offer`
-      : `Hi, I want to enroll for modular PM-X: ${modularLabel} (₹${modularTotal.toLocaleString('en-IN')})`;
+    const intent = `Hi, I want to enroll for modular PM-X: ${modularLabel} (₹${modularTotal.toLocaleString('en-IN')})`;
     window.open(`https://wa.me/message/GH5C7YLAYIEHN1?text=${encodeURIComponent(intent)}`, '_blank', 'noopener,noreferrer');
   };
 
   const handleMainEnroll = () => {
-    const intent = isEarlyBird
-      ? `Hi, I want to reserve my seat for the full PM-X Accelerator cohort with the Diwali Offer (₹15,000 with Learn Module Free)`
-      : `Hi, I want to reserve my seat for the full PM-X Accelerator cohort (₹21,000 with Learn Module Free)`;
+    const intent = `Hi, I want to reserve my seat for the full PM-X AI PM Accelerator cohort (₹30,000 including all other modules with Learn Module Free)`;
     window.open(`https://wa.me/message/GH5C7YLAYIEHN1?text=${encodeURIComponent(intent)}`, '_blank', 'noopener,noreferrer');
   };
 
@@ -162,26 +156,12 @@ export function AppExecutive() {
       <aside aria-label="Announcement Banner" className="sticky top-0 z-50 w-full bg-[#FEF08A] border-b-2 border-[#141413] text-xs py-2 px-4 font-black">
         <div className="container mx-auto max-w-7xl flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2 flex-wrap">
-            {isEarlyBird ? (
-              <>
-                <span className="bg-[#188ab2] text-white rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_#141413] inline-flex items-center gap-1.5 font-black shrink-0">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  🪔 DIWALI OFFER
-                </span>
-                <span className="text-[#141413] font-black text-xs sm:text-sm">
-                  Diwali offer: modules ₹5,000 (regular ₹7,000), bundle ₹15,000 with the Learn Module free. Ends in <span className="font-mono bg-white px-2 py-0.5 rounded-md border border-[#141413] shadow-[1px_1px_0px_0px_#141413] inline-block font-black">{countdownTimer}</span>
-                </span>
-              </>
-            ) : (
-              <>
-                <span className="bg-[#188ab2] text-white rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_#141413] inline-flex items-center gap-1.5 font-black shrink-0">
-                  PM-X ACCELERATOR
-                </span>
-                <span className="text-[#141413] font-black text-xs sm:text-sm">
-                  Module ₹7,000 each · Bundle ₹21,000 · Cohort Starts 23 Nov
-                </span>
-              </>
-            )}
+            <span className="bg-[#188ab2] text-white rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_#141413] inline-flex items-center gap-1.5 font-black shrink-0">
+              PM-X ACCELERATOR
+            </span>
+            <span className="text-[#141413] font-black text-xs sm:text-sm">
+              Module ₹7,000 each · AI PM ₹30,000 · Cohort Starts 1st Dec
+            </span>
           </div>
           <button
             onClick={() => scrollToSection('pricing')}
@@ -367,7 +347,7 @@ export function AppExecutive() {
             <div className="inline-block mb-8">
               <span className="bg-white rounded-full border-2 border-[#141413] px-4 sm:px-5 py-1.5 font-mono font-bold text-xs uppercase shadow-[2px_2px_0px_0px_#141413] inline-flex items-center gap-2 tracking-wider select-none">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                ★ PM-X ACCELERATOR · LIVE AND HANDS-ON · GROUPS OF 10-20 · STARTS 23 NOV
+                ★ PM-X ACCELERATOR · LIVE AND HANDS-ON · GROUPS OF 10-20 · STARTS 1ST DEC
               </span>
             </div>
 
@@ -396,7 +376,7 @@ export function AppExecutive() {
 
             {/* Subheading */}
             <p className="text-base sm:text-lg md:text-xl text-[#141413]/85 mb-8 max-w-3xl mx-auto leading-relaxed font-medium">
-              You don’t need a PM title to start. You need a <strong className="font-black text-[#141413]">resume that reads like a PM’s</strong>, <strong className="font-black text-[#141413]">projects you can talk through</strong>, and <strong className="font-black text-[#141413]">interview practice</strong>. Do all three in about 10 weeks, live, with 10–20 people making the same switch.
+              You don’t need a PM title to start. You need a <strong className="font-black text-[#141413]">resume that reads like a PM’s</strong>, <strong className="font-black text-[#141413]">projects you can talk through</strong>, and <strong className="font-black text-[#141413]">interview practice</strong>. Do all this in 8 weeks, live, with 10–20 people making the same switch.
             </p>
 
             {/* 3. High-Converting CTA Action Bar & Micro-Trust Badge */}
@@ -405,7 +385,7 @@ export function AppExecutive() {
                 onClick={() => scrollToSection('pricing')}
                 className="w-full sm:w-auto px-7 py-3.5 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[4px_4px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[5px_5px_0px_0px_#141413] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#141413] transition-all text-xs sm:text-sm uppercase cursor-pointer inline-flex items-center justify-center gap-2"
               >
-                <span>Apply for Nov 23 Cohort</span>
+                <span>Apply for 1st Dec Cohort</span>
                 <span>➜</span>
               </button>
               <button
@@ -854,9 +834,7 @@ export function AppExecutive() {
 
                   {/* Line under the buttons */}
                   <p className="text-xs sm:text-sm font-extrabold text-[#141413]/85 mt-3 pt-3 border-t border-[#141413]/15">
-                    {isEarlyBird
-                      ? "Modules from ₹5,000 · Bundle ₹15,000 with the Learn Module free · No job guarantee, just the work that gets you ready."
-                      : "Module ₹7,000 each · Bundle ₹21,000 · No job guarantee, just the work that gets you ready."}
+                    Module ₹7,000 each · AI PM ₹30,000 · No job guarantee, just the work that gets you ready.
                   </p>
                 </div>
               </div>
@@ -866,7 +844,7 @@ export function AppExecutive() {
             <div className="bg-[#e6f1fb] rounded-2xl border-2 border-[#141413] p-5 shadow-[0px_4px_0px_0px_#141413] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-black uppercase text-[#141413]">
               <div>
                 <span className="text-[#141413] opacity-75 block text-[10px] font-black">NEXT COHORT</span>
-                <span className="text-[#141413] font-black">STARTS 23 NOV</span>
+                <span className="text-[#141413] font-black">STARTS 1ST DEC</span>
               </div>
               <div>
                 <span className="text-[#141413] opacity-75 block text-[10px] font-black">SCHEDULE</span>
@@ -1101,7 +1079,7 @@ export function AppExecutive() {
             {/* Clean, Uniform 4-Column Grid with Soft Neo-Brutalist Bento styling */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch mb-16">
               
-              {/* Module 1: Evidence Builder */}
+              {/* Module 1: AI Builder */}
               <div className="bg-white rounded-2xl border-2 border-[#141413] shadow-[0px_5px_0px_0px_#141413] flex flex-col justify-between h-full hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all overflow-hidden">
                 <div>
                   <div className="p-3.5 bg-[#188ab2] text-white border-b-2 border-[#141413] font-mono font-black flex items-center justify-between">
@@ -1112,7 +1090,7 @@ export function AppExecutive() {
                   </div>
                   <div className="p-5 pb-2">
                     <h3 className="font-mono font-black text-xl text-[#141413] tracking-tight mb-1">
-                      Evidence Builder
+                      AI Builder
                     </h3>
                     <p className="text-xs font-bold text-[#188ab2] leading-snug">
                       Build proof you can show.
@@ -1251,13 +1229,13 @@ export function AppExecutive() {
                 </div>
               </div>
 
-              {/* Learn Module (comes free with the bundle) */}
+              {/* Learn Module (comes free with AI PM) */}
               <div className="bg-white rounded-2xl border-2 border-[#141413] shadow-[0px_5px_0px_0px_#141413] flex flex-col justify-between h-full hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all overflow-hidden">
                 <div>
                   <div className="p-3.5 bg-[#141413] text-white border-b-2 border-[#141413] font-mono font-black flex items-center justify-between">
                     <span className="text-xs sm:text-sm tracking-wider">LEARN MODULE</span>
                     <span className="bg-[#A7F3D0] text-emerald-950 rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] font-black uppercase shadow-[0px_1.5px_0px_0px_#141413]">
-                      Free with bundle
+                      Free with AI PM
                     </span>
                   </div>
                   <div className="p-5 pb-2">
@@ -1318,10 +1296,10 @@ export function AppExecutive() {
               
               <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block select-none">
-                  COHORT TIMELINE · STARTS 23 NOV
+                  COHORT TIMELINE · STARTS 1ST DEC
                 </span>
                 <span className="font-mono font-black text-xs uppercase text-[#188ab2] bg-[#e0f2fe] rounded-full border-2 border-[#141413] px-3 py-1 shadow-[0px_1.5px_0px_0px_#141413]">
-                  10 Weeks · 2 Parallel Tracks
+                  8 Weeks · 4-Pillar Proven Methodology
                 </span>
               </div>
 
@@ -1330,120 +1308,131 @@ export function AppExecutive() {
               </h3>
               
               <p className="text-xs sm:text-sm md:text-base font-bold text-[#141413]/85 max-w-3xl mb-8 leading-relaxed">
-                Modules 1 and 2 run one after the other: first your evident and then your resume and story. Module 3 runs alongside them, so you practise interviews while you build. Each module takes 5–8 weeks; the whole programme takes about 10. Mentor support continues on WhatsApp throughout.
+                Four steps. One finished project. An 8-week, mentor-led program designed for professionals who want to break into Product Management. Master product thinking, build a production-grade portfolio, nail interviews, and leverage AI like a modern PM.
               </p>
 
-              {/* TIMELINE GRAPHIC CONTAINER */}
-              <div className="rounded-2xl border-2 border-[#141413] bg-slate-50 p-4 sm:p-6 shadow-[0px_4px_0px_0px_#141413] overflow-x-auto">
-                <div className="min-w-[620px]">
-                  
-                  {/* Header: Weeks 1 to 10 */}
-                  <div className="grid grid-cols-10 gap-1.5 mb-3 text-center">
-                    {Array.from({ length: 10 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className={`py-1 rounded-md text-[11px] font-mono font-black border border-[#141413] ${
-                          i < 5 ? 'bg-sky-100 text-[#188ab2]' : 'bg-amber-100 text-amber-900'
-                        }`}
-                      >
-                        WK {i + 1}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Lane A: Module 1 then Module 2 */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between text-xs font-mono font-black uppercase text-[#141413] mb-1.5">
-                      <span>LANE A: BUILD PROOF &amp; PROFILE (SEQUENTIAL)</span>
-                      <span className="text-[#188ab2]">Weeks 1–10</span>
-                    </div>
-                    <div className="grid grid-cols-10 gap-1.5 h-16">
-                      {/* Module 1: Weeks 1–5 */}
-                      <div className="col-span-5 bg-[#e0f2fe] rounded-xl border-2 border-[#141413] p-2.5 flex flex-col justify-between shadow-[0px_2px_0px_0px_#141413]">
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono font-black text-xs text-[#188ab2] uppercase">
-                            MODULE 1: EVIDENCE BUILDER
-                          </span>
-                          <span className="bg-white rounded-full border border-[#141413] font-mono font-black text-[10px] px-2 py-0.2">
-                            5 live sessions
-                          </span>
-                        </div>
-                        <p className="text-[11px] font-bold text-[#141413]/85 truncate">
-                          Teardowns, PRD writing, user research, data project &amp; prototype
-                        </p>
-                      </div>
-
-                      {/* Module 2: Weeks 6–10 */}
-                      <div className="col-span-5 bg-[#fef3c7] rounded-xl border-2 border-[#141413] p-2.5 flex flex-col justify-between shadow-[0px_2px_0px_0px_#141413]">
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono font-black text-xs text-amber-900 uppercase">
-                            MODULE 2: PROFILE ENHANCER
-                          </span>
-                          <span className="bg-white rounded-full border border-[#141413] font-mono font-black text-[10px] px-2 py-0.2">
-                            5 live sessions
-                          </span>
-                        </div>
-                        <p className="text-[11px] font-bold text-[#141413]/85 truncate">
-                          PM resume rewrite, LinkedIn overhaul, story &amp; StepSmart job board
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Lane B: Module 3 with Mock Dots */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between text-xs font-mono font-black uppercase text-[#141413] mb-1.5">
-                      <span>LANE B: INTERVIEW PRACTICE (CONCURRENT RUN)</span>
-                      <span className="text-emerald-800">8 Live Sessions + 2 Live Mocks</span>
-                    </div>
-                    
-                    <div className="relative bg-[#D1FAE5] rounded-xl border-2 border-[#141413] p-3 shadow-[0px_2px_0px_0px_#141413]">
+              {/* TIMELINE CONTAINER (MATCHING BROCHURE 4-PILLAR METHODOLOGY & 8-WEEK STRUCTURE) */}
+              <div className="rounded-2xl border-2 border-[#141413] bg-slate-50 p-4 sm:p-6 shadow-[0px_4px_0px_0px_#141413]">
+                
+                {/* 4 Pillars Grid (Wed Learn, Sun Build, Sat Practice, Post Career) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                  {/* Step 1: Learn */}
+                  <div className="bg-[#e0f2fe] rounded-xl border-2 border-[#141413] p-4 flex flex-col justify-between shadow-[0px_2px_0px_0px_#141413]">
+                    <div>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-mono font-black text-xs text-emerald-950 uppercase">
-                          MODULE 3: INTERVIEW PRACTICE (WEEKS 1–10)
-                        </span>
-                        <span className="bg-white rounded-full border border-[#141413] font-mono font-black text-[10px] px-2.5 py-0.5 text-emerald-900">
-                          8 live sessions + 2 live mock interviews
-                        </span>
+                        <span className="font-mono font-black text-xs text-[#188ab2] uppercase">01 · STEP 1: LEARN</span>
+                        <span className="bg-white rounded-full border border-[#141413] font-mono font-black text-[10px] px-2 py-0.5">WEDNESDAYS</span>
                       </div>
-                      
-                      <p className="text-[11px] font-bold text-[#141413]/80 mb-3">
-                        Practise product sense, analytics, RCA, strategy &amp; behavioral rounds out loud every week.
+                      <p className="text-xs font-bold text-[#141413] mb-2">
+                        8 live classes on product thinking mindset, research, strategy, MVPs, tech basics &amp; AI 101.
                       </p>
-
-                      {/* Timeline dot tracks inside Lane B */}
-                      <div className="relative h-7 bg-white/80 rounded-lg border border-[#141413] flex items-center px-4">
-                        <div className="w-full h-1 bg-emerald-300 rounded" />
-                        
-                        {/* Dot 1: Week 5 Mock */}
-                        <div className="absolute left-[48%] -translate-x-1/2 flex items-center gap-1 bg-[#141413] text-white rounded-full px-2.5 py-0.5 border border-white font-mono font-black text-[10px] shadow-[0px_1.5px_0px_0px_#141413]">
-                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
-                          <span>● MOCK 1 (1:1)</span>
-                        </div>
-
-                        {/* Dot 2: Week 9/10 Mock */}
-                        <div className="absolute right-[4%] flex items-center gap-1 bg-[#188ab2] text-white rounded-full px-2.5 py-0.5 border border-white font-mono font-black text-[10px] shadow-[0px_1.5px_0px_0px_#141413]">
-                          <span className="w-2 h-2 rounded-full bg-[#FEF08A] inline-block" />
-                          <span>● MOCK 2 (1:1)</span>
-                        </div>
-                      </div>
+                    </div>
+                    <div className="pt-2 border-t border-[#141413]/15 text-[11px] font-black text-[#188ab2]">
+                      ✦ Outcome: Talk product like an insider.
                     </div>
                   </div>
 
-                  {/* WhatsApp Support & Learn Library Underpinning */}
-                  <div className="bg-[#FEF08A] rounded-xl border-2 border-[#141413] p-2.5 flex items-center justify-between shadow-[0px_2px_0px_0px_#141413]">
-                    <div className="flex items-center gap-2">
-                      <span className="text-base">💬</span>
-                      <span className="font-mono font-black text-xs text-[#141413] uppercase">
-                        Continuous Mentor Support on WhatsApp + Daily PM Gym + Learn Library
-                      </span>
+                  {/* Step 2: Build */}
+                  <div className="bg-[#FEF08A] rounded-xl border-2 border-[#141413] p-4 flex flex-col justify-between shadow-[0px_2px_0px_0px_#141413]">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-mono font-black text-xs text-amber-950 uppercase">02 · STEP 2: BUILD</span>
+                        <span className="bg-white rounded-full border border-[#141413] font-mono font-black text-[10px] px-2 py-0.5">SUNDAYS</span>
+                      </div>
+                      <p className="text-xs font-bold text-[#141413] mb-2">
+                        Work on one real project start to finish: teardown, market research, user research, PRD &amp; clickable prototype.
+                      </p>
                     </div>
+                    <div className="pt-2 border-t border-[#141413]/15 text-[11px] font-black text-amber-900">
+                      ✦ Outcome: A documented project case study.
+                    </div>
+                  </div>
+
+                  {/* Step 3: Practice */}
+                  <div className="bg-[#D1FAE5] rounded-xl border-2 border-[#141413] p-4 flex flex-col justify-between shadow-[0px_2px_0px_0px_#141413]">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-mono font-black text-xs text-emerald-950 uppercase">03 · STEP 3: PRACTICE</span>
+                        <span className="bg-white rounded-full border border-[#141413] font-mono font-black text-[10px] px-2 py-0.5">SATURDAYS</span>
+                      </div>
+                      <p className="text-xs font-bold text-[#141413] mb-2">
+                        Live mock cases, root cause analysis, product design, metrics, estimation &amp; behavioral stories.
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-[#141413]/15 text-[11px] font-black text-emerald-900">
+                      ✦ Outcome: Structure answers under pressure.
+                    </div>
+                  </div>
+
+                  {/* Step 4: Career */}
+                  <div className="bg-[#f3e8ff] rounded-xl border-2 border-[#141413] p-4 flex flex-col justify-between shadow-[0px_2px_0px_0px_#141413]">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-mono font-black text-xs text-purple-950 uppercase">04 · STEP 4: CAREER</span>
+                        <span className="bg-white rounded-full border border-[#141413] font-mono font-black text-[10px] px-2 py-0.5">AFTER COURSE</span>
+                      </div>
+                      <p className="text-xs font-bold text-[#141413] mb-2">
+                        Resume &amp; LinkedIn rebuild around your project + StepSmart PM job board free for 3 months.
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-[#141413]/15 text-[11px] font-black text-purple-900">
+                      ✦ Outcome: Proof you can show &amp; roles to apply.
+                    </div>
+                  </div>
+                </div>
+
+                {/* Key Deliverables Checkpoints (Brochure Page 4) */}
+                <div className="mb-4 bg-white rounded-xl border-2 border-[#141413] p-4 shadow-[0px_2px_0px_0px_#141413]">
+                  <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+                    <span className="font-mono font-black text-xs uppercase text-[#141413] flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-amber-400" />
+                      KEY DELIVERABLES CHECKPOINTS (MENTOR-GRADED)
+                    </span>
                     <span className="font-mono font-bold text-[10px] text-[#141413]/70 uppercase">
-                      Active throughout all 10 weeks
+                      4 Assignments · Verified for Certificate Credit
                     </span>
                   </div>
-
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                    <div className="p-2.5 rounded-lg border border-[#141413] bg-[#f8fafc]">
+                      <div className="font-mono font-black text-[10px] text-[#188ab2] uppercase">WEEK 2 ★</div>
+                      <div className="font-black text-xs text-[#141413]">Market Research</div>
+                      <div className="text-[11px] font-medium text-[#141413]/70">Competitor &amp; TAM analysis</div>
+                    </div>
+                    <div className="p-2.5 rounded-lg border border-[#141413] bg-[#f8fafc]">
+                      <div className="font-mono font-black text-[10px] text-[#188ab2] uppercase">WEEK 4 ★</div>
+                      <div className="font-black text-xs text-[#141413]">Problem Framing</div>
+                      <div className="text-[11px] font-medium text-[#141413]/70">Persona &amp; JTBD validation</div>
+                    </div>
+                    <div className="p-2.5 rounded-lg border border-[#141413] bg-[#f8fafc]">
+                      <div className="font-mono font-black text-[10px] text-[#188ab2] uppercase">WEEK 6 ★</div>
+                      <div className="font-black text-xs text-[#141413]">Prototype</div>
+                      <div className="text-[11px] font-medium text-[#141413]/70">Clickable user journey flow</div>
+                    </div>
+                    <div className="p-2.5 rounded-lg border border-[#141413] bg-[#f8fafc]">
+                      <div className="font-mono font-black text-[10px] text-[#188ab2] uppercase">WEEK 8 ★</div>
+                      <div className="font-black text-xs text-[#141413]">Final Case Study</div>
+                      <div className="text-[11px] font-medium text-[#141413]/70">Production-grade PM portfolio</div>
+                    </div>
+                  </div>
                 </div>
+
+                {/* 4 Commitment Metrics + PM Gym Underpinning */}
+                <div className="bg-[#FEF08A] rounded-xl border-2 border-[#141413] p-3 flex flex-wrap items-center justify-between gap-3 shadow-[0px_2px_0px_0px_#141413]">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-mono font-black text-xs text-[#141413] uppercase flex items-center gap-1.5">
+                      <span>💬</span>
+                      <span>DAILY PM GYM + WHATSAPP DOUBT SUPPORT + LEARN LIBRARY</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 text-[11px] font-mono font-bold text-[#141413]">
+                    <span>📅 8 Weeks</span>
+                    <span>•</span>
+                    <span>🎥 24 Live Classes (48 Hrs)</span>
+                    <span>•</span>
+                    <span>📄 1 Capstone Project</span>
+                  </div>
+                </div>
+
               </div>
 
               {/* Start Date Confirmation Banner */}
@@ -1451,14 +1440,14 @@ export function AppExecutive() {
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                   <span className="text-xs sm:text-sm font-extrabold text-[#141413]">
-                    Cohort Starts <span className="bg-[#FEF08A] rounded-md px-2 py-0.5 border border-[#141413] font-mono font-black">23 November 2026</span> · Strictly capped to 10–20 seats
+                    Cohort Starts <span className="bg-[#FEF08A] rounded-md px-2 py-0.5 border border-[#141413] font-mono font-black">1st December 2026</span> · Strictly capped to 10–20 seats
                   </span>
                 </div>
                 <button
                   onClick={() => scrollToSection('pricing')}
                   className="px-5 py-2 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer"
                 >
-                  Reserve Your Seat for ₹15,000 ➜
+                  Reserve AI PM for ₹30,000 ➜
                 </button>
               </div>
 
@@ -1517,7 +1506,7 @@ export function AppExecutive() {
                 {
                   num: "05",
                   badgeBg: "bg-[#E9D5FF]",
-                  title: "With the bundle: the Learn Module",
+                  title: "With AI PM: the Learn Module",
                   desc: "Recorded lectures, question bank, case and company-wise resources, and daily PM Gym included at no extra cost."
                 }
               ].map((item, idx) => (
@@ -1658,113 +1647,214 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 10. THE 8 WEEKS, WEEK BY WEEK */}
+        {/* 10. CURRICULUM: THE 4-PILLAR METHODOLOGY (FROM BROCHURE) */}
         <section id="curriculum" className="py-20 bg-slate-50 border-b-2 border-[#141413] scroll-mt-20">
-          <div className="container mx-auto px-6 max-w-4xl">
+          <div className="container mx-auto px-6 max-w-5xl">
             
             <div className="text-center mb-16">
+              <div className="inline-block mb-3">
+                <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block select-none">
+                  THE METHODOLOGY · PROVEN FRAMEWORK
+                </span>
+              </div>
               <h2 className="text-3xl md:text-5xl font-black text-[#141413] mb-3 tracking-tight">
-                The 8 weeks,{' '}
+                Four steps.{' '}
                 <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[-1.5deg] shadow-[0px_3px_0px_0px_#141413]">
-                  week by week
+                  One finished project.
                 </span>
               </h2>
-              <p className="text-base font-medium text-[#141413]/80">
-                Wednesday learn, Sunday build, Saturday practise.
+              <p className="text-base font-medium text-[#141413]/80 max-w-2xl mx-auto leading-relaxed">
+                A structured, end-to-end curriculum engineered to transform aspiring candidates into credible, interview-ready product managers with proof of execution.
               </p>
             </div>
 
-            {/* Rounded Editorial Container for Curriculum */}
-            <div className="bg-white rounded-3xl border-2 border-[#141413] shadow-[0px_5px_0px_0px_#141413] divide-y divide-[#141413]/15 text-left overflow-hidden">
-              {[
-                { 
-                  week: 1, 
-                  num: "01",
-                  title: "Mindset & Teardown", 
-                  subtitle: "Product thinking mindset, live teardown & strengths storytelling",
-                  isGraded: false, 
-                  learn: "Product thinking mindset, core heuristics, and PM problem discovery", 
-                  build: "Live product teardown of real-world fintech & consumer apps", 
-                  practice: "Strengths storytelling & user insight interview questions" 
-                },
-                { 
-                  week: 2, 
-                  num: "02",
-                  title: "Market Research & Sizing", 
-                  subtitle: "Business viability, TAM estimation & root cause analysis",
-                  isGraded: true, 
-                  learn: "Business viability, competitor intelligence, and market research", 
-                  build: "Complete market sizing deck & opportunity assessment", 
-                  practice: "Root cause analysis (RCA) live mock drills" 
-                },
-                { 
-                  week: 3, 
-                  num: "03",
-                  title: "User Research & JTBD", 
-                  subtitle: "Primary research, segmentation, journey maps & estimation",
-                  isGraded: false, 
-                  learn: "Primary user interviews, segmentation, JTBD, journey maps", 
-                  build: "End-to-end user persona & friction-point mapping deliverable", 
-                  practice: "Market sizing, estimation & executive stakeholder communication" 
-                }
-              ].map(w => {
-                const isOpen = openWeek === w.week;
-                return (
-                  <div key={w.week} className="transition-colors hover:bg-black/[0.02]">
-                    <button
-                      onClick={() => setOpenWeek(isOpen ? null : w.week)}
-                      className="w-full py-5 sm:py-6 px-4 sm:px-6 flex items-center justify-between text-left cursor-pointer group"
-                    >
-                      <div className="flex items-center gap-4 sm:gap-6 flex-1 min-w-0 pr-4">
-                        {/* Naked Numeric Headings (01, 02) */}
-                        <span className="font-mono font-black text-lg sm:text-xl text-[#188ab2] shrink-0 tracking-wider w-8 sm:w-10">
-                          {w.num}
-                        </span>
-
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2.5 flex-wrap">
-                            <span className="text-lg sm:text-xl font-black text-[#141413] group-hover:text-[#188ab2] transition-colors tracking-tight">
-                              {w.title}
-                            </span>
-                            {w.isGraded && (
-                              <span className="bg-[#FEF08A] text-[#141413] rounded-full border border-[#141413] text-[10px] font-mono font-black px-2.5 py-0.5 uppercase shadow-[0px_1px_0px_#141413]">
-                                GRADED
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-xs sm:text-sm font-medium text-[#141413]/70 truncate mt-0.5">
-                            {w.subtitle}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[11px] font-mono font-bold text-[#141413]/50 uppercase hidden sm:inline">
-                          {isOpen ? 'Close' : 'View Syllabus'}
-                        </span>
-                        <ChevronDown className={`w-5 h-5 text-[#141413] stroke-[2.5] transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#188ab2]' : ''}`} />
-                      </div>
-                    </button>
-
-                    {isOpen && (
-                      <div className="pb-6 pt-1 px-4 sm:px-6 pl-14 sm:pl-16 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm font-medium text-[#141413]/85 border-t border-[#141413]/10 mt-1">
-                        <div className="p-3.5 bg-slate-50 rounded-xl border-l-4 border-[#188ab2]">
-                          <b className="text-[#141413] block mb-1 font-black text-xs uppercase tracking-wide">Learn · Wednesday</b>
-                          <span className="text-[#141413]/80">{w.learn}</span>
-                        </div>
-                        <div className="p-3.5 bg-slate-50 rounded-xl border-l-4 border-[#141413]">
-                          <b className="text-[#141413] block mb-1 font-black text-xs uppercase tracking-wide">Build · Sunday</b>
-                          <span className="text-[#141413]/80">{w.build}</span>
-                        </div>
-                        <div className="p-3.5 bg-slate-50 rounded-xl border-l-4 border-[#FEF08A]">
-                          <b className="text-[#141413] block mb-1 font-black text-xs uppercase tracking-wide">Practise · Saturday</b>
-                          <span className="text-[#141413]/80">{w.practice}</span>
-                        </div>
-                      </div>
-                    )}
+            {/* 4-Pillar Grid (Brochure Page 3) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left items-stretch mb-10">
+              
+              {/* Step 1: LEARN */}
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-7 shadow-[0px_5px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="bg-[#e0f2fe] text-[#188ab2] rounded-full border-2 border-[#141413] px-3 py-0.5 font-mono font-black text-xs uppercase shadow-[0px_1.5px_0px_0px_#141413]">
+                      WEDNESDAYS
+                    </span>
+                    <span className="font-mono font-black text-2xl text-[#188ab2]">
+                      01
+                    </span>
                   </div>
-                );
-              })}
+                  <h3 className="text-xl font-black text-[#141413] mb-2 tracking-tight">
+                    Step 1: LEARN
+                  </h3>
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 mb-4 leading-relaxed">
+                    Understand how product teams think. 8 live classes on product thinking, research, strategy, MVPs, AI and tech basics, plus pre-recorded modules.
+                  </p>
+                  <ul className="space-y-2 text-xs font-medium text-[#141413]/80 mb-6">
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#188ab2] font-black">•</span>
+                      <span>Product thinking mindset &amp; core heuristics</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#188ab2] font-black">•</span>
+                      <span>Business viability, competitor intelligence &amp; market sizing</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#188ab2] font-black">•</span>
+                      <span>Tech 101: APIs, system architecture &amp; AI fundamentals (RAG, prompting)</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="pt-3 border-t-2 border-[#141413]/10 font-bold text-xs text-[#188ab2]">
+                  ✦ Outcome: You can talk about product like an insider.
+                </div>
+              </div>
+
+              {/* Step 2: BUILD */}
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-7 shadow-[0px_5px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="bg-[#FEF08A] text-amber-950 rounded-full border-2 border-[#141413] px-3 py-0.5 font-mono font-black text-xs uppercase shadow-[0px_1.5px_0px_0px_#141413]">
+                      SUNDAYS
+                    </span>
+                    <span className="font-mono font-black text-2xl text-amber-900">
+                      02
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-black text-[#141413] mb-2 tracking-tight">
+                    Step 2: BUILD
+                  </h3>
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 mb-4 leading-relaxed">
+                    Work on one real project, start to finish: teardown, market research, user research, data analysis, PRD and a clickable prototype. A mentor reviews your work.
+                  </p>
+                  <ul className="space-y-2 text-xs font-medium text-[#141413]/80 mb-6">
+                    <li className="flex items-center gap-2">
+                      <span className="text-amber-800 font-black">•</span>
+                      <span>Product teardowns of real apps &amp; market research deck</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-amber-800 font-black">•</span>
+                      <span>User interviews, JTBD friction maps &amp; data analysis</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-amber-800 font-black">•</span>
+                      <span>Production PRD document &amp; clickable interactive prototype</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="pt-3 border-t-2 border-[#141413]/10 font-bold text-xs text-amber-900">
+                  ✦ Outcome: A documented project case study.
+                </div>
+              </div>
+
+              {/* Step 3: PRACTICE */}
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-7 shadow-[0px_5px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="bg-[#D1FAE5] text-emerald-950 rounded-full border-2 border-[#141413] px-3 py-0.5 font-mono font-black text-xs uppercase shadow-[0px_1.5px_0px_0px_#141413]">
+                      SATURDAYS
+                    </span>
+                    <span className="font-mono font-black text-2xl text-emerald-800">
+                      03
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-black text-[#141413] mb-2 tracking-tight">
+                    Step 3: PRACTICE
+                  </h3>
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 mb-4 leading-relaxed">
+                    Mock case interviews, root cause analysis, product design, metrics, estimation, behavioural rounds and stakeholder stories, with question banks to practice on.
+                  </p>
+                  <ul className="space-y-2 text-xs font-medium text-[#141413]/80 mb-6">
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-700 font-black">•</span>
+                      <span>Live mock case interviews &amp; clarifying question drills</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-700 font-black">•</span>
+                      <span>Root cause analysis (RCA), metrics drops &amp; market sizing</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-700 font-black">•</span>
+                      <span>GTM strategy, pricing &amp; behavioural storytelling</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="pt-3 border-t-2 border-[#141413]/10 font-bold text-xs text-emerald-900">
+                  ✦ Outcome: You can structure an answer under pressure.
+                </div>
+              </div>
+
+              {/* Step 4: CAREER */}
+              <div className="bg-white rounded-2xl border-2 border-[#141413] p-7 shadow-[0px_5px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_8px_0px_0px_#141413] transition-all">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="bg-[#f3e8ff] text-purple-950 rounded-full border-2 border-[#141413] px-3 py-0.5 font-mono font-black text-xs uppercase shadow-[0px_1.5px_0px_0px_#141413]">
+                      AFTER THE COURSE
+                    </span>
+                    <span className="font-mono font-black text-2xl text-purple-900">
+                      04
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-black text-[#141413] mb-2 tracking-tight">
+                    Step 4: CAREER
+                  </h3>
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 mb-4 leading-relaxed">
+                    Your resume and LinkedIn are rebuilt around your finished project. You get the StepSmart job board, which collects PM openings from hiring sites, free for 3 months.
+                  </p>
+                  <ul className="space-y-2 text-xs font-medium text-[#141413]/80 mb-6">
+                    <li className="flex items-center gap-2">
+                      <span className="text-purple-700 font-black">•</span>
+                      <span>Complete PM resume rewrite &amp; LinkedIn profile overhaul</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-purple-700 font-black">•</span>
+                      <span>StepSmart job board access for 3 months</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-purple-700 font-black">•</span>
+                      <span>Lifetime access to alumni WhatsApp group &amp; referral circles</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="pt-3 border-t-2 border-[#141413]/10 font-bold text-xs text-purple-900">
+                  ✦ Outcome: Proof you can show, and roles to show it for.
+                </div>
+              </div>
+
+            </div>
+
+            {/* Checkpoints & Routine Box */}
+            <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 sm:p-8 shadow-[0px_4px_0px_0px_#141413] mb-8 text-left">
+              <div className="flex items-center justify-between flex-wrap gap-2 mb-4 pb-3 border-b-2 border-[#141413]/10">
+                <div>
+                  <span className="font-mono font-black text-xs uppercase text-[#188ab2] block">DELIVERABLES TIMELINE</span>
+                  <h4 className="font-black text-base sm:text-lg text-[#141413]">4 Checkpoint Milestones</h4>
+                </div>
+                <span className="bg-[#FEF08A] rounded-full border border-[#141413] text-[10px] font-mono font-black px-3 py-1 uppercase shadow-[0px_1px_0px_#141413]">
+                  All Sessions Recorded &amp; Uploaded Within 4 Hours
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-3.5 rounded-xl border-2 border-[#141413] bg-sky-50 shadow-[0px_2px_0px_0px_#141413]">
+                  <span className="font-mono font-black text-[10px] text-[#188ab2] block">WEEK 2 · CHECKPOINT 1</span>
+                  <div className="font-black text-sm text-[#141413] mt-0.5">Market Research</div>
+                  <div className="text-xs text-[#141413]/70 font-medium mt-1">Competitor &amp; TAM analysis deck</div>
+                </div>
+                <div className="p-3.5 rounded-xl border-2 border-[#141413] bg-amber-50 shadow-[0px_2px_0px_0px_#141413]">
+                  <span className="font-mono font-black text-[10px] text-amber-900 block">WEEK 4 · CHECKPOINT 2</span>
+                  <div className="font-black text-sm text-[#141413] mt-0.5">Problem Framing</div>
+                  <div className="text-xs text-[#141413]/70 font-medium mt-1">Persona &amp; JTBD validation</div>
+                </div>
+                <div className="p-3.5 rounded-xl border-2 border-[#141413] bg-emerald-50 shadow-[0px_2px_0px_0px_#141413]">
+                  <span className="font-mono font-black text-[10px] text-emerald-800 block">WEEK 6 · CHECKPOINT 3</span>
+                  <div className="font-black text-sm text-[#141413] mt-0.5">Clickable Prototype</div>
+                  <div className="text-xs text-[#141413]/70 font-medium mt-1">Interactive user journey flow</div>
+                </div>
+                <div className="p-3.5 rounded-xl border-2 border-[#141413] bg-purple-50 shadow-[0px_2px_0px_0px_#141413]">
+                  <span className="font-mono font-black text-[10px] text-purple-900 block">WEEK 8 · CHECKPOINT 4</span>
+                  <div className="font-black text-sm text-[#141413] mt-0.5">Final Case Study</div>
+                  <div className="text-xs text-[#141413]/70 font-medium mt-1">Mentor-reviewed PM portfolio</div>
+                </div>
+              </div>
             </div>
 
             {/* Curriculum Brochure Unlock Bar */}
@@ -1773,7 +1863,7 @@ export function AppExecutive() {
                 setBrochureFormStatus('idle');
                 setIsBrochureModalOpen(true);
               }}
-              className="mt-8 bg-white rounded-2xl border-2 border-[#141413] p-4 sm:p-5 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 group select-none"
+              className="bg-white rounded-2xl border-2 border-[#141413] p-4 sm:p-5 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 group select-none"
             >
               <div className="flex items-center gap-3.5 min-w-0">
                 <div className="w-10 h-10 rounded-full bg-[#188ab2]/10 border border-[#188ab2] text-[#188ab2] flex items-center justify-center shrink-0 group-hover:bg-[#188ab2] group-hover:text-white transition-colors">
@@ -1785,7 +1875,7 @@ export function AppExecutive() {
                       Want the full 8-week syllabus?
                     </h4>
                     <span className="text-[10px] font-mono font-bold text-[#188ab2] uppercase bg-[#e0f2fe] rounded-full border border-[#188ab2]/30 px-2 py-0.5">
-                      WEEKS 04–08 · PDF
+                      BROCHURE PDF
                     </span>
                   </div>
                   <p className="text-xs font-medium text-[#141413]/70 truncate mt-0.5">
@@ -1903,7 +1993,7 @@ export function AppExecutive() {
             
             <div className="inline-block mb-3">
               <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block select-none">
-                🪔 DIWALI SPECIAL OFFER
+                TRANSPARENT PRICING · PM-X ACCELERATOR
               </span>
             </div>
             
@@ -1915,18 +2005,10 @@ export function AppExecutive() {
             </h2>
             
             <p className="text-sm sm:text-base font-bold text-[#141413]/80 max-w-xl mx-auto mb-12">
-              {isEarlyBird ? (
-                <>
-                  The Diwali offer ends 5 Nov, 11:59 PM IST · <span className="font-mono bg-amber-100 rounded-full px-3 py-0.5 border border-[#141413] shadow-[0px_1.5px_0px_0px_#141413] font-black text-[#141413]">{countdownTimer}</span>
-                </>
-              ) : (
-                <>
-                  Module ₹7,000 each · Bundle ₹21,000
-                </>
-              )}
+              Module ₹7,000 each · AI PM ₹30,000 · Starts 1st Dec 2026
             </p>
 
-            {/* Two Side-by-Side Pricing Cards: Single Module vs Bundle */}
+            {/* Two Side-by-Side Pricing Cards: Single Module vs AI PM */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left items-stretch mb-10">
               
               {/* Single Module Card */}
@@ -1947,29 +2029,19 @@ export function AppExecutive() {
 
                   <div className="flex items-baseline gap-2 mb-4">
                     <span className="font-mono font-black text-4xl text-[#141413]">
-                      {isEarlyBird ? '₹5,000' : '₹7,000'}
+                      ₹7,000
                     </span>
-                    {isEarlyBird && (
-                      <>
-                        <span className="font-mono font-bold text-slate-400 line-through text-lg">
-                          ₹7,000
-                        </span>
-                        <span className="bg-amber-100 text-amber-900 rounded-full border border-amber-300 font-mono font-black text-[10px] px-2 py-0.5 uppercase ml-1">
-                          Save ₹2,000
-                        </span>
-                      </>
-                    )}
                   </div>
 
                   <div className="border-t-2 border-[#141413]/15 pt-5 mb-6">
                     <ul className="space-y-3 text-xs sm:text-sm font-bold text-[#141413]">
                       <li className="flex items-start gap-2.5">
                         <span className="text-[#188ab2] font-black mt-0.5">•</span>
-                        <span>Pick one: Profile Enhancer, Evidence Builder or Interview Practice</span>
+                        <span>Pick one: Profile Enhancer, AI Builder or Interview Practice</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="text-[#188ab2] font-black mt-0.5">•</span>
-                        <span>Live in a group of 8–10</span>
+                        <span>Live in a group of 10–20</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="text-[#188ab2] font-black mt-0.5">•</span>
@@ -1996,7 +2068,7 @@ export function AppExecutive() {
                 </div>
               </div>
 
-              {/* Bundle Card (Featured) */}
+              {/* AI PM Card (Featured - In place of bundle) */}
               <div className="bg-[#FFFDF5] rounded-3xl border-2 sm:border-[2.5px] border-[#141413] p-7 sm:p-9 shadow-[0px_8px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_11px_0px_0px_#141413] transition-all relative">
                 
                 {/* Popular Badge Top Right */}
@@ -2007,44 +2079,39 @@ export function AppExecutive() {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <span className="bg-[#188ab2] text-white rounded-full border-2 border-[#141413] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[0px_1.5px_0px_0px_#141413]">
-                      Learn Module free
+                      Learn Module Included
                     </span>
                     <span className="text-xs font-mono font-black text-emerald-700 uppercase">
-                      ALL 3 MODULES
+                      ALL MODULES INCLUDED
                     </span>
                   </div>
 
                   <h3 className="text-2xl font-black text-[#141413] mb-2 tracking-tight">
-                    Bundle
+                    AI PM
                   </h3>
 
                   <div className="flex items-baseline gap-2 mb-2">
                     <span className="font-mono font-black text-4xl text-[#188ab2]">
-                      {isEarlyBird ? '₹15,000' : '₹21,000'}
+                      ₹30,000
                     </span>
-                    {isEarlyBird && (
-                      <>
-                        <span className="font-mono font-bold text-slate-400 line-through text-lg">
-                          ₹21,000
-                        </span>
-                        <span className="bg-emerald-100 text-emerald-900 rounded-full border border-emerald-300 font-mono font-black text-[10px] px-2 py-0.5 uppercase ml-1">
-                          Save ₹6,000
-                        </span>
-                      </>
-                    )}
+                    <span className="font-mono font-bold text-slate-500 text-sm">
+                      (All-Inclusive)
+                    </span>
                   </div>
 
                   <p className="text-xs font-bold text-[#141413]/85 mb-4 leading-snug">
-                    {isEarlyBird
-                      ? "That is the price of three modules at the Diwali offer, with the Learn Module added at no cost."
-                      : "That is the price of three modules, with the Learn Module added at no cost."}
+                    Comprehensive full-stack accelerator including AI Builder, Profile Enhancer, Interview Practice, and dedicated AI PM curriculum.
                   </p>
 
                   <div className="border-t-2 border-[#141413]/15 pt-5 mb-6">
                     <ul className="space-y-3 text-xs sm:text-sm font-bold text-[#141413]">
                       <li className="flex items-start gap-2.5">
                         <span className="text-emerald-600 font-black mt-0.5">✓</span>
-                        <span>All 3 live modules: Profile Enhancer, Evidence Builder, Interview Practice</span>
+                        <span>All live modules included: Profile Enhancer, AI Builder, Interview Practice</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="text-emerald-600 font-black mt-0.5">✓</span>
+                        <span>AI PM Mastery: AI 101, RAG, Prompting, Fine-Tuning, AI-Assisted PRD &amp; Prototypes</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="text-emerald-600 font-black mt-0.5">✓</span>
@@ -2056,7 +2123,11 @@ export function AppExecutive() {
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="text-emerald-600 font-black mt-0.5">✓</span>
-                        <span>Mentor support on WhatsApp</span>
+                        <span>Mentor support on WhatsApp &amp; lifetime alumni network access</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="text-emerald-600 font-black mt-0.5">✓</span>
+                        <span>StepSmart PM Job Board access for 3 months</span>
                       </li>
                     </ul>
                   </div>
@@ -2067,10 +2138,10 @@ export function AppExecutive() {
                     onClick={handleMainEnroll}
                     className="w-full py-4 bg-[#188ab2] hover:bg-[#0f6f8f] text-white rounded-full border-2 border-[#141413] font-black text-sm uppercase shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer text-center block"
                   >
-                    Reserve the bundle ➜
+                    Reserve AI PM for ₹30,000 ➜
                   </button>
                   <p className="text-[11px] font-bold text-[#188ab2] text-center mt-2.5">
-                    Includes all 3 live cohorts + full permanent resource library + 2 1:1 mocks
+                    Includes all live cohorts + AI PM specialization + permanent resource library + 2 1:1 mocks
                   </p>
                 </div>
               </div>
@@ -2150,7 +2221,7 @@ export function AppExecutive() {
 
               {/* Three Modular Options Side-by-Side */}
               <div className="grid md:grid-cols-3 gap-6 text-left">
-                {/* Module 1: Evidence Builder Card */}
+                {/* Module 1: AI Builder Card */}
                 <div
                   onClick={() => setSelectedMod1(!selectedMod1)}
                   className={`bg-white rounded-2xl border-2 border-[#141413] p-6 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-1 hover:shadow-[0px_7px_0px_0px_#141413] transition-all cursor-pointer flex flex-col justify-between select-none ${
@@ -2160,7 +2231,7 @@ export function AppExecutive() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="text-lg font-black tracking-tight text-[#141413]">
-                        MOD 1: EVIDENCE
+                        MOD 1: AI BUILDER
                       </h4>
                       <div className={`w-6 h-6 rounded-md border-2 border-[#141413] flex items-center justify-center font-black transition-colors ${
                         selectedMod1 ? 'bg-[#188ab2] text-white' : 'bg-white'
@@ -2170,11 +2241,11 @@ export function AppExecutive() {
                     </div>
 
                     <div className="font-mono font-black text-2xl text-[#188ab2] mb-2">
-                      {isEarlyBird ? '₹5,000' : '₹7,000'}
+                      ₹7,000
                     </div>
 
                     <p className="text-xs font-medium text-[#141413]/80 leading-relaxed">
-                      5 live sessions. PRDs, teardowns, user research, data project, and prototype. Leave with 2 portfolio projects.
+                      5 live sessions. PRDs, teardowns, user research, data project, prototype, and modern AI workflows. Leave with 2 portfolio projects.
                     </p>
                   </div>
                 </div>
@@ -2280,7 +2351,7 @@ export function AppExecutive() {
                   onClick={() => scrollToSection('pricing')}
                   className="text-xs sm:text-sm font-bold text-[#141413] underline hover:text-[#188ab2] cursor-pointer inline-flex items-center gap-1.5"
                 >
-                  <span>Looking for the full 8-week cohort instead? Jump to full cohort details &amp; pricing ↑</span>
+                  <span>Looking for the full AI PM cohort instead? Jump to full cohort details &amp; pricing ↑</span>
                 </button>
               </div>
 
@@ -2390,11 +2461,7 @@ export function AppExecutive() {
                 <span className="underline decoration-[#188ab2] decoration-[4px]">Build the proof with us.</span>
               </h2>
               <p className="text-sm sm:text-base font-black text-[#141413] mb-8 font-mono">
-                {isEarlyBird ? (
-                  <>🪔 Diwali Offer: Modules ₹5,000 (regular ₹7,000) · Bundle ₹15,000 with Learn Module Free · Ends in {countdownTimer}</>
-                ) : (
-                  <>Module ₹7,000 each · Bundle ₹21,000 · Starts 23 Nov</>
-                )}
+                Module ₹7,000 each · AI PM ₹30,000 · Starts 1st Dec
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
@@ -2402,7 +2469,7 @@ export function AppExecutive() {
                   onClick={handleMainEnroll}
                   className="w-full sm:w-auto px-10 py-5 font-black text-base sm:text-lg uppercase rounded-full border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
                 >
-                  {isEarlyBird ? 'Reserve the bundle for ₹15,000 ➜' : 'Reserve the bundle for ₹21,000 ➜'}
+                  Reserve AI PM for ₹30,000 ➜
                 </button>
                 <a
                   href="https://wa.me/message/GH5C7YLAYIEHN1"
@@ -2416,9 +2483,7 @@ export function AppExecutive() {
 
               {/* Line under the buttons */}
               <p className="text-xs sm:text-sm font-extrabold text-[#141413]/85 mt-6 max-w-xl mx-auto">
-                {isEarlyBird
-                  ? 'Modules from ₹5,000 · Bundle ₹15,000 with the Learn Module free · No job guarantee, just the work that gets you ready.'
-                  : 'Module ₹7,000 each · Bundle ₹21,000 · No job guarantee, just the work that gets you ready.'}
+                Modules from ₹7,000 · AI PM ₹30,000 including all other modules · No job guarantee, just the work that gets you ready.
               </p>
 
               <div className="mt-8 pt-6 border-t-2 border-[#141413]/20">
