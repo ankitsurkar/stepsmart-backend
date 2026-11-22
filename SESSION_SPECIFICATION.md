@@ -257,7 +257,7 @@ The core pedagogical narrative follows Sanket's actual transition from a Data En
 
 ---
 
-### Stage 9 of 62: What just happened
+### Stage 9 of 62: What just happened?
 - **Stage ID**: `r1_reveal_1`
 - **Type**: `reveal`
 - **Section**: Round 1
@@ -323,7 +323,7 @@ The core pedagogical narrative follows Sanket's actual transition from a Data En
 
 ---
 
-### Stage 12 of 62: Why this matters
+### Stage 12 of 62: Why this matters?
 - **Stage ID**: `r1_reveal_4`
 - **Type**: `reveal`
 - **Section**: Round 1
@@ -482,7 +482,7 @@ The core pedagogical narrative follows Sanket's actual transition from a Data En
 
 ---
 
-### Stage 19 of 62: Why the slices moved
+### Stage 19 of 62: Why the slices moved?
 - **Stage ID**: `r2_reveal_2`
 - **Type**: `reveal`
 - **Section**: Round 2
@@ -504,7 +504,7 @@ The core pedagogical narrative follows Sanket's actual transition from a Data En
 
 ---
 
-### Stage 20 of 62: Why this matters
+### Stage 20 of 62: Why this matters?
 - **Stage ID**: `r2_reveal_3`
 - **Type**: `reveal`
 - **Section**: Round 2
@@ -661,7 +661,7 @@ The core pedagogical narrative follows Sanket's actual transition from a Data En
 
 ---
 
-### Stage 27 of 62: What the dial does
+### Stage 27 of 62: What the dial does?
 - **Stage ID**: `r3_reveal_2`
 - **Type**: `reveal`
 - **Section**: Round 3
@@ -818,7 +818,7 @@ The core pedagogical narrative follows Sanket's actual transition from a Data En
 
 ---
 
-### Stage 34 of 62: What happened
+### Stage 34 of 62: What happened?
 - **Stage ID**: `r4_reveal_1`
 - **Type**: `reveal`
 - **Section**: Round 4
@@ -840,7 +840,7 @@ The core pedagogical narrative follows Sanket's actual transition from a Data En
 
 ---
 
-### Stage 35 of 62: Why it lies so smoothly
+### Stage 35 of 62: Why it lies so smoothly?
 - **Stage ID**: `r4_reveal_2`
 - **Type**: `reveal`
 - **Section**: Round 4
@@ -1022,7 +1022,7 @@ The core pedagogical narrative follows Sanket's actual transition from a Data En
 
 ---
 
-### Stage 43 of 62: What the wheel learned from
+### Stage 43 of 62: What the wheel learned from?
 - **Stage ID**: `r5_reveal_1`
 - **Type**: `reveal`
 - **Section**: Round 5
@@ -1044,7 +1044,7 @@ The core pedagogical narrative follows Sanket's actual transition from a Data En
 
 ---
 
-### Stage 44 of 62: Who is in the data
+### Stage 44 of 62: Who is in the data?
 - **Stage ID**: `r5_reveal_2`
 - **Type**: `reveal`
 - **Section**: Round 5
@@ -1066,7 +1066,7 @@ The core pedagogical narrative follows Sanket's actual transition from a Data En
 
 ---
 
-### Stage 45 of 62: One more question
+### Stage 45 of 62: One more question?
 - **Stage ID**: `r5_reveal_3`
 - **Type**: `reveal`
 - **Section**: Round 5

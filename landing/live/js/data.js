@@ -427,10 +427,10 @@ export const STAGES = [
   { id: 'r1_context', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'context',
     contextLine: 'The wheel this round. Six roles. The slice sizes come from the lines on the resume.' },
   { id: 'r1_play', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'play' },
-  { id: 'r1_reveal_1', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'reveal', panel: 1, panelTotal: 4, title: 'What just happened' },
+  { id: 'r1_reveal_1', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'reveal', panel: 1, panelTotal: 4, title: 'What just happened?' },
   { id: 'r1_reveal_2', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'reveal', panel: 2, panelTotal: 4, title: 'Two kinds of wheels' },
   { id: 'r1_reveal_3', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'reveal', panel: 3, panelTotal: 4, title: 'Under the hood' },
-  { id: 'r1_reveal_4', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'reveal', panel: 4, panelTotal: 4, title: 'Why this matters' },
+  { id: 'r1_reveal_4', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'reveal', panel: 4, panelTotal: 4, title: 'Why this matters?' },
   { id: 'r1_hold', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'hold', nextLabel: 'Round 2: Change the context' },
 
   // ROUND 2: Change the context (11–18 min)
@@ -442,8 +442,8 @@ export const STAGES = [
     contextLine: 'The wheel this round. Same six roles. This time the slice sizes come from the resume plus the lines you add.' },
   { id: 'r2_play', section: 'Round 2', roundName: 'Round 2: Change the context', minutes: '11–18m', round: 2, type: 'play' },
   { id: 'r2_reveal_1', section: 'Round 2', roundName: 'Round 2: Change the context', minutes: '11–18m', round: 2, type: 'reveal', panel: 1, panelTotal: 3, title: 'What moved' },
-  { id: 'r2_reveal_2', section: 'Round 2', roundName: 'Round 2: Change the context', minutes: '11–18m', round: 2, type: 'reveal', panel: 2, panelTotal: 3, title: 'Why the slices moved' },
-  { id: 'r2_reveal_3', section: 'Round 2', roundName: 'Round 2: Change the context', minutes: '11–18m', round: 2, type: 'reveal', panel: 3, panelTotal: 3, title: 'Why this matters' },
+  { id: 'r2_reveal_2', section: 'Round 2', roundName: 'Round 2: Change the context', minutes: '11–18m', round: 2, type: 'reveal', panel: 2, panelTotal: 3, title: 'Why the slices moved?' },
+  { id: 'r2_reveal_3', section: 'Round 2', roundName: 'Round 2: Change the context', minutes: '11–18m', round: 2, type: 'reveal', panel: 3, panelTotal: 3, title: 'Why this matters?' },
   { id: 'r2_hold', section: 'Round 2', roundName: 'Round 2: Change the context', minutes: '11–18m', round: 2, type: 'hold', nextLabel: 'Round 3: The dial' },
 
   // ROUND 3: The dial (18–25 min)
@@ -455,7 +455,7 @@ export const STAGES = [
     contextLine: 'The wheel this round. Same resume. A dial now changes how the slices are spread, not what is on the resume. Three long-shot roles appear when you go bold.' },
   { id: 'r3_play', section: 'Round 3', roundName: 'Round 3: The dial', minutes: '18–25m', round: 3, type: 'play' },
   { id: 'r3_reveal_1', section: 'Round 3', roundName: 'Round 3: The dial', minutes: '18–25m', round: 3, type: 'reveal', panel: 1, panelTotal: 3, title: 'What you saw' },
-  { id: 'r3_reveal_2', section: 'Round 3', roundName: 'Round 3: The dial', minutes: '18–25m', round: 3, type: 'reveal', panel: 2, panelTotal: 3, title: 'What the dial does' },
+  { id: 'r3_reveal_2', section: 'Round 3', roundName: 'Round 3: The dial', minutes: '18–25m', round: 3, type: 'reveal', panel: 2, panelTotal: 3, title: 'What the dial does?' },
   { id: 'r3_reveal_3', section: 'Round 3', roundName: 'Round 3: The dial', minutes: '18–25m', round: 3, type: 'reveal', panel: 3, panelTotal: 3, title: 'Which setting is right?' },
   { id: 'r3_hold', section: 'Round 3', roundName: 'Round 3: The dial', minutes: '18–25m', round: 3, type: 'hold', nextLabel: 'Round 4: Real or fake?' },
 
@@ -467,8 +467,8 @@ export const STAGES = [
   { id: 'r4_context', section: 'Round 4', roundName: 'Round 4: Real or fake?', minutes: '25–32m', round: 4, type: 'context',
     contextLine: 'The wheel this round. A different wheel. It no longer predicts roles. It writes one line about Sanket, from memory of people like him. It has not seen his resume.' },
   { id: 'r4_play', section: 'Round 4', roundName: 'Round 4: Real or fake?', minutes: '25–32m', round: 4, type: 'play' },
-  { id: 'r4_reveal_1', section: 'Round 4', roundName: 'Round 4: Real or fake?', minutes: '25–32m', round: 4, type: 'reveal', panel: 1, panelTotal: 3, title: 'What happened' },
-  { id: 'r4_reveal_2', section: 'Round 4', roundName: 'Round 4: Real or fake?', minutes: '25–32m', round: 4, type: 'reveal', panel: 2, panelTotal: 3, title: 'Why it lies so smoothly' },
+  { id: 'r4_reveal_1', section: 'Round 4', roundName: 'Round 4: Real or fake?', minutes: '25–32m', round: 4, type: 'reveal', panel: 1, panelTotal: 3, title: 'What happened?' },
+  { id: 'r4_reveal_2', section: 'Round 4', roundName: 'Round 4: Real or fake?', minutes: '25–32m', round: 4, type: 'reveal', panel: 2, panelTotal: 3, title: 'Why it lies so smoothly?' },
   { id: 'r4_reveal_3', section: 'Round 4', roundName: 'Round 4: Real or fake?', minutes: '25–32m', round: 4, type: 'reveal', panel: 3, panelTotal: 3, title: 'Confidence is not correctness' },
   { id: 'r4_hold', section: 'Round 4', roundName: 'Round 4: Real or fake?', minutes: '25–32m', round: 4, type: 'hold', nextLabel: 'Round 5: Who painted the wheel?' },
 
@@ -482,9 +482,9 @@ export const STAGES = [
   { id: 'r5_context', section: 'Round 5', roundName: 'Round 5: Who painted the wheel?', minutes: '32–39m', round: 5, type: 'context',
     contextLine: 'The wheel this round. Back to the role wheel. This time we open its memory: the careers its slice sizes were learned from.' },
   { id: 'r5_play', section: 'Round 5', roundName: 'Round 5: Who painted the wheel?', minutes: '32–39m', round: 5, type: 'play' },
-  { id: 'r5_reveal_1', section: 'Round 5', roundName: 'Round 5: Who painted the wheel?', minutes: '32–39m', round: 5, type: 'reveal', panel: 1, panelTotal: 3, title: 'What the wheel learned from' },
-  { id: 'r5_reveal_2', section: 'Round 5', roundName: 'Round 5: Who painted the wheel?', minutes: '32–39m', round: 5, type: 'reveal', panel: 2, panelTotal: 3, title: 'Who is in the data' },
-  { id: 'r5_reveal_3', section: 'Round 5', roundName: 'Round 5: Who painted the wheel?', minutes: '32–39m', round: 5, type: 'reveal', panel: 3, panelTotal: 3, title: 'One more question' },
+  { id: 'r5_reveal_1', section: 'Round 5', roundName: 'Round 5: Who painted the wheel?', minutes: '32–39m', round: 5, type: 'reveal', panel: 1, panelTotal: 3, title: 'What the wheel learned from?' },
+  { id: 'r5_reveal_2', section: 'Round 5', roundName: 'Round 5: Who painted the wheel?', minutes: '32–39m', round: 5, type: 'reveal', panel: 2, panelTotal: 3, title: 'Who is in the data?' },
+  { id: 'r5_reveal_3', section: 'Round 5', roundName: 'Round 5: Who painted the wheel?', minutes: '32–39m', round: 5, type: 'reveal', panel: 3, panelTotal: 3, title: 'One more question?' },
   { id: 'r5_hold', section: 'Round 5', roundName: 'Round 5: Who painted the wheel?', minutes: '32–39m', round: 5, type: 'hold', nextLabel: 'Round 6: Show your sources' },
 
   // ROUND 6: Show your sources (39–46 min)
