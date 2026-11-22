@@ -12,6 +12,7 @@ import {
   SPOT_IT_QUESTIONS,
   YOUR_MAP_ITEMS,
   PROGRAMME_SIGNUP_URL,
+  AI_PM_ANALOGY,
 } from './data.js';
 import {
   computeSanketR2Slices,
@@ -295,7 +296,7 @@ function renderStage() {
   const stage = STAGES[currentIndex];
 
   stageTagEl.textContent = stage.roundName || stage.section;
-  timeTagEl.textContent = stage.minutes;
+  if (timeTagEl) timeTagEl.textContent = stage.minutes;
   progressEl.textContent = `${currentIndex + 1} / ${STAGES.length}`;
   prevBtn.disabled = currentIndex === 0;
   nextBtn.disabled = currentIndex === STAGES.length - 1;
@@ -381,17 +382,82 @@ function renderStage() {
 
   if (stage.type === 'e2_story') {
     mainEl.innerHTML = `
-      <div class="host-slide">
-        <div class="host-kicker">Sanket’s story</div>
-        <h1 class="host-title">The 9% slice</h1>
-        <p class="host-copy">Even after he rewrote his resume, Product Manager was only about a 9% slice on our wheel. Sanket sent 300+ applications and sat through about 10 interviews before one became an offer.</p>
-        <div class="host-callout">
-          <div style="font-size: 18px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); margin-bottom: 10px;">What he worked out</div>
-          He kept asking ‘what am I missing?’ He wasn’t missing anything. In most interviews, another candidate simply had more relevant experience. So the move wasn’t to knock harder on the same doors. It was to find the right door: where his experience already counted.
+      <div class="analogy-container">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
+          <div>
+            <div class="host-kicker">Framework</div>
+            <h1 class="host-title" style="margin: 4px 0 0; font-size: clamp(26px, 2.5vw, 36px);">The AI PM Analogy</h1>
+          </div>
+          <div class="pill pill-accent" style="font-size: 13px;">Classic PM → AI PM</div>
         </div>
-        <p class="host-copy" style="font-weight: 800; color: var(--dream);">Bold finds the door. Context opens it. Probability isn’t destiny, and where you knock changes the odds.</p>
+
+        <div class="analogy-header-row">
+          <span>Classic PM</span>
+          <span></span>
+          <span>What shifts</span>
+          <span></span>
+          <span>AI PM</span>
+        </div>
+
+        <div class="analogy-rows" id="analogyRows">
+          ${AI_PM_ANALOGY.map((item, idx) => `
+            <div class="analogy-row" data-index="${idx}">
+              <div class="analogy-card-classic">
+                <div class="analogy-card-title">${esc(item.classic.title)}</div>
+                <div class="analogy-card-sub">${esc(item.classic.sub)}</div>
+              </div>
+              <div class="analogy-arrow">→</div>
+              <div class="analogy-card-shift">
+                ${esc(item.shift)}
+              </div>
+              <div class="analogy-arrow">→</div>
+              <div class="analogy-card-aipm">
+                <div class="analogy-card-title">${esc(item.ai.title)}</div>
+                <div class="analogy-card-sub">${esc(item.ai.sub)}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="analogy-legend-bar">
+          <div class="analogy-legend-badges">
+            <span style="font-size: 13px; font-weight: 700; color: var(--ink-muted);">Legend</span>
+            <span class="badge-classic">Classic PM</span>
+            <span class="badge-shift">What shifts</span>
+            <span class="badge-aipm">AI PM</span>
+          </div>
+          <span style="font-size: 13px; color: var(--ink-muted); font-weight: 600;">Tap any row to explore that concept</span>
+        </div>
+
+        <div id="analogyDetailSlot"></div>
+
+        <div class="analogy-quote">
+          “Nothing is thrown away — every classic PM skill has an AI-native extension.<br>
+          The shift is in how you think, not how much you know.”
+        </div>
       </div>
     `;
+
+    const rows = document.querySelectorAll('.analogy-row');
+    const detailSlot = document.getElementById('analogyDetailSlot');
+    rows.forEach((r) => {
+      r.addEventListener('click', () => {
+        const idx = Number(r.getAttribute('data-index'));
+        const item = AI_PM_ANALOGY[idx];
+        rows.forEach((other) => other.classList.remove('active'));
+        r.classList.add('active');
+        if (detailSlot) {
+          detailSlot.innerHTML = `
+            <div class="analogy-detail-popup">
+              <div style="font-weight: 800; color: var(--accent); margin-bottom: 6px; font-size: 16px;">
+                ${esc(item.classic.title)} → ${esc(item.ai.title)}
+              </div>
+              <div>${esc(item.detail)}</div>
+            </div>
+          `;
+        }
+      });
+    });
     return;
   }
 
@@ -420,15 +486,52 @@ function renderStage() {
 
   if (stage.type === 'e4_next') {
     mainEl.innerHTML = `
-      <div class="host-slide">
-        <div class="host-kicker">What’s next</div>
-        <h1 class="host-title">The programme</h1>
-        <p class="host-copy">The programme. AI product skills plus the PM foundations, built on the work you already do.</p>
-        <div class="host-callout host-callout-dream">
-          ${PROGRAMME_SIGNUP_URL
-            ? `Curriculum and sign-up: <a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener">${esc(PROGRAMME_SIGNUP_URL)}</a>`
-            : 'Your hosts will share the curriculum and the sign-up link now.'}
+      <div class="interview-game-container">
+        <div style="text-align: center;">
+          <div class="host-kicker">Next Step</div>
+          <h1 class="host-title" style="margin: 8px 0 12px; font-size: clamp(32px, 3.5vw, 48px);">The AI interview game</h1>
+          <p class="host-copy" style="max-width: 680px; margin: 0 auto; font-size: 20px;">
+            Three pillars to turn your background into an unfair advantage in AI PM rounds.
+          </p>
         </div>
+
+        <div class="interview-game-grid">
+          <div class="interview-step-card">
+            <div class="interview-step-number">1</div>
+            <h2 class="interview-step-title">The Application process</h2>
+            <p class="interview-step-desc">
+              Targeting the right doors where your context counts, framing AI-native experience, and turning a 9% wheel into an interview shortlist.
+            </p>
+          </div>
+
+          <div class="interview-step-card">
+            <div class="interview-step-number">2</div>
+            <h2 class="interview-step-title">The interview practice</h2>
+            <p class="interview-step-desc">
+              Mastering probabilistic PRD defense, system design trade-offs, and statistical eval rubrics under real interview pressure.
+            </p>
+          </div>
+
+          <div class="interview-step-card">
+            <div class="interview-step-number">3</div>
+            <h2 class="interview-step-title">The toolkit</h2>
+            <p class="interview-step-desc">
+              Live working templates for RAG architectures, prompt evals, data flywheel moats, and production case teardowns.
+            </p>
+          </div>
+        </div>
+
+        ${PROGRAMME_SIGNUP_URL ? `
+          <div style="text-align: center; margin-top: 10px;">
+            <a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary" style="font-size: 18px; padding: 14px 32px; border-radius: var(--radius-md);">
+              See the curriculum and register interest →
+            </a>
+          </div>
+        ` : `
+          <div class="host-callout host-callout-dream" style="text-align: center; font-size: 18px;">
+            Your hosts will share the curriculum and sign-up link now.
+          </div>
+        `}
       </div>
     `;
     return;

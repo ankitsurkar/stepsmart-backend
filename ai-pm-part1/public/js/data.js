@@ -420,7 +420,7 @@ export const STAGES = [
     hostBody: 'Sanket was a data engineer. He built data pipelines for airlines and banks. He was good at it, and his resume said so in five lines.' },
   { id: 'r1_story_2', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'story', sceneNum: 2, sceneTotal: 3, title: 'The wish',
     hostBody: 'He wanted to become a product manager. So he tried something odd: he put his resume on a wheel and asked what he could become.' },
-  { id: 'r1_story_3', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'story', sceneNum: 3, sceneTotal: 3, title: 'Tonight',
+  { id: 'r1_story_3', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'story', sceneNum: 3, sceneTotal: 3, title: 'Today',
     hostBody: 'Now you spin yours. Same idea, your resume. Watch how rarely it lands on the slice you actually want.' },
   { id: 'r1_context', section: 'Round 1', roundName: 'Round 1: Same resume, different answers', minutes: '4–11m', round: 1, type: 'context',
     contextLine: 'The wheel this round. Six roles. The slice sizes come from the lines on the resume.' },
@@ -502,8 +502,69 @@ export const STAGES = [
   { id: 'e1_spot_1', section: 'Ending', roundName: 'Spot it', minutes: '46–49m', round: 7, type: 'e1_spot', questionIndex: 0, title: 'Spot it · 1 of 3' },
   { id: 'e1_spot_2', section: 'Ending', roundName: 'Spot it', minutes: '46–49m', round: 7, type: 'e1_spot', questionIndex: 1, title: 'Spot it · 2 of 3' },
   { id: 'e1_spot_3', section: 'Ending', roundName: 'Spot it', minutes: '46–49m', round: 7, type: 'e1_spot', questionIndex: 2, title: 'Spot it · 3 of 3' },
-  { id: 'e2_story', section: 'Ending', roundName: 'The 9% slice', minutes: '49–52m', round: 8, type: 'e2_story', title: 'The 9% slice' },
+  { id: 'e2_story', section: 'Ending', roundName: 'AI PM Analogy', minutes: '49–52m', round: 8, type: 'e2_story', title: 'The AI PM Analogy' },
   { id: 'e3_map', section: 'Ending', roundName: 'Your map', minutes: '52–55m', round: 9, type: 'e3_map', title: 'Your map' },
-  { id: 'e4_next', section: 'What’s next', roundName: 'What’s next', minutes: '55–60m', round: 10, type: 'e4_next', title: 'What’s next' },
+  { id: 'e4_next', section: 'What’s next', roundName: 'The AI interview game', minutes: '55–60m', round: 10, type: 'e4_next', title: 'The AI interview game' },
   { id: 'qa', section: 'Q&A', roundName: 'Questions', minutes: '60–70m', round: 11, type: 'qa', title: 'Questions' },
+];
+
+
+// AI PM Analogy (Stage 58): Classic PM vs What shifts vs AI PM
+export const AI_PM_ANALOGY = [
+  {
+    id: 'problem_framing',
+    classic: { title: 'Problem framing', sub: 'Is this worth building?' },
+    shift: 'Add: is AI the right fit?',
+    ai: { title: 'AI opportunity brief', sub: 'Data fit · error cost · archetype' },
+    detail: 'Classic PM asks if the problem is painful and worth solving. AI PM must first evaluate if AI is actually the right tool, what errors cost, and if training data or prompt architectures can realistically support it.',
+  },
+  {
+    id: 'requirements',
+    classic: { title: 'Requirements', sub: 'Deterministic spec' },
+    shift: 'Shift: specify constraints, not exact behaviour',
+    ai: { title: 'Probabilistic PRD', sub: 'Hallucination rate · pass criteria' },
+    detail: 'Classic PRDs dictate deterministic if-then logic. Probabilistic PRDs define acceptable error margins, hallucination thresholds, guardrails, and statistical acceptance criteria.',
+  },
+  {
+    id: 'metrics',
+    classic: { title: 'Success metrics', sub: 'DAU · NPS · conversion' },
+    shift: 'Add: model quality layer beneath product metrics',
+    ai: { title: 'AI metric stack', sub: 'Task rate · override rate · cost' },
+    detail: 'Beyond high-level business KPIs, AI PMs measure task completion rate, human override frequency, latency, token spend, and factual accuracy.',
+  },
+  {
+    id: 'qa',
+    classic: { title: 'QA and done', sub: 'Test cases pass / fail' },
+    shift: 'Replace: binary pass/fail becomes statistical gate',
+    ai: { title: 'Eval set design', sub: '50+ cases · rubric · regression' },
+    detail: 'QA is no longer a checklist of passes and fails. AI PMs curate golden benchmark datasets (50+ challenging edge cases) with rubric scoring and automated regression evals.',
+  },
+  {
+    id: 'launch',
+    classic: { title: 'Launch', sub: 'Feature flag · rollout · GA' },
+    shift: 'Add: eval gate before any rollout begins',
+    ai: { title: 'Gated AI rollout', sub: 'Eval gate · guardrails · UX trust' },
+    detail: 'Rollouts require statistical verification at each step, safety filters, fallback UI states, and trust-building UX that clearly frames AI assistance.',
+  },
+  {
+    id: 'post_launch',
+    classic: { title: 'Post-launch', sub: 'Monitor KPIs · bug triage' },
+    shift: 'Add: model drift · feedback loop as product design',
+    ai: { title: 'Data flywheel', sub: 'Drift watch · override logging' },
+    detail: 'Models drift over time as user inputs shift. Continuous logging of user corrections and overrides feeds back into fine-tuning and retrieval context.',
+  },
+  {
+    id: 'stakeholders',
+    classic: { title: 'Stakeholder comms', sub: 'Roadmap · status · risk' },
+    shift: 'Add: explain probabilistic outcomes in plain language',
+    ai: { title: 'Tradeoff memo', sub: 'Latency · cost · quality in plain terms' },
+    detail: 'Stakeholders need clear framing around latency vs cost vs accuracy tradeoffs, communicating probabilistic risks in simple business terms.',
+  },
+  {
+    id: 'strategy',
+    classic: { title: 'Strategy', sub: 'Differentiation · roadmap' },
+    shift: 'Replace: feature moat with data + trust moat',
+    ai: { title: 'AI moat strategy', sub: 'Data · trust · fine-tune lock-in' },
+    detail: 'Features are easily cloned by foundation models. The real sustainable advantage lies in proprietary data loops, user trust, workflow lock-in, and domain fine-tuning.',
+  },
 ];

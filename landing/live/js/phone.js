@@ -308,13 +308,13 @@ function render() {
   statusPillEl.textContent = stage.section;
   document.title = `${stage.roundName || stage.section} | The AI PM`;
 
-  // Opening Scenes 1 & 2 -> Look at main screen
+  // Opening Scenes 1 & 2 -> Watch the host
   if (stage.type === 'opening_scene') {
     mainEl.innerHTML = `
       <div class="phone-center-screen">
         <span class="pill pill-accent">Opening</span>
-        <h1 class="phone-h1">Look at the main screen.</h1>
-        <p class="phone-muted">Waiting for your host</p>
+        <h1 class="phone-h1">Watch the host.</h1>
+        <p class="phone-muted">Look at the main screen</p>
       </div>
     `;
     return;
@@ -326,14 +326,14 @@ function render() {
     return;
   }
 
-  // Opening Setup completed -> Waiting for your host
+  // Opening Setup completed -> Watch the host
   if (stage.type === 'opening_setup') {
     const slices = computePersonalSlices(profile);
     const pm = slices.find((s) => s.key === 'pm');
     mainEl.innerHTML = `
       <div class="phone-center-screen">
         <span class="pill pill-good">Your wheel is ready</span>
-        <h1 class="phone-h1">Waiting for your host</h1>
+        <h1 class="phone-h1">Watch the host.</h1>
         <p class="phone-muted">Your Product Manager slice starts at <strong>${pm.pct}%</strong> on our wheel. Look at the main screen for Round 1.</p>
         <button type="button" class="btn" id="phoneChangeAnswersBtn" style="margin-top: 14px; padding: 8px 16px; font-size: 14px;">Change answers</button>
       </div>
@@ -344,26 +344,25 @@ function render() {
     return;
   }
 
-  // Stage 1: Story
+  // Stage 1: Story -> Watch the host
   if (stage.type === 'story') {
     mainEl.innerHTML = `
       <div class="phone-center-screen">
-        <span class="pill pill-accent">Round ${stage.round}</span>
-        <h1 class="phone-h1">${esc(stage.roundName)}. Look at the main screen.</h1>
+        <span class="pill pill-accent">${esc(stage.roundName || 'Round ' + stage.round)}</span>
+        <h1 class="phone-h1">Watch the host.</h1>
+        <p class="phone-muted">Look at the main screen</p>
       </div>
     `;
     return;
   }
 
-  // Stage 2: Context card
+  // Stage 2: Context card -> Watch the host
   if (stage.type === 'context') {
     mainEl.innerHTML = `
-      <div class="phone-center-screen" style="align-items: stretch; text-align: left;">
-        <span class="pill pill-accent" style="align-self: flex-start;">${esc(stage.roundName)}</span>
-        <div class="card-accent" style="padding: 22px;">
-          <p class="phone-h2" style="font-weight: 700; line-height: 1.4;">${esc(stage.contextLine)}</p>
-        </div>
-        <p class="phone-muted" style="text-align: center;">Waiting for your host to open the wheel…</p>
+      <div class="phone-center-screen">
+        <span class="pill pill-accent">${esc(stage.roundName)}</span>
+        <h1 class="phone-h1">Watch the host.</h1>
+        <p class="phone-muted">Look at the main screen as your host sets up the wheel</p>
       </div>
     `;
     return;
@@ -380,32 +379,25 @@ function render() {
     return;
   }
 
-  // Stage 4: Reveal takeaway card
+  // Stage 4: Reveal -> Watch the host (Takeaway page removed so users focus on host)
   if (stage.type === 'reveal') {
-    const t = ROUND_TAKEAWAYS[stage.round];
     mainEl.innerHTML = `
-      <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 8px;">
-        <span class="pill pill-accent" style="align-self: flex-start;">${esc(stage.roundName)}</span>
-        <div class="card" style="display: flex; flex-direction: column; gap: 12px;">
-          <div style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Takeaway</div>
-          <p class="phone-h2">${esc(t.phoneOneLiner)}</p>
-        </div>
-        <div class="card-subtle" style="display: flex; flex-direction: column; gap: 10px;">
-          <p class="phone-text">${esc(t.roleLine)}</p>
-          <p class="phone-text" style="font-weight: 700; color: var(--dream);">The PM move: ${esc(t.pmMove)}</p>
-        </div>
-        <p class="phone-muted" style="text-align: center;">Look at the main screen as your host walks through this.</p>
+      <div class="phone-center-screen">
+        <span class="pill pill-accent">${esc(stage.roundName)}</span>
+        <h1 class="phone-h1">Watch the host.</h1>
+        <p class="phone-muted">Look at the main screen as your host explains what happened</p>
       </div>
     `;
     return;
   }
 
-  // Stage 5: Hold
+  // Stage 5: Hold -> Watch the host
   if (stage.type === 'hold') {
     mainEl.innerHTML = `
       <div class="phone-center-screen">
         <span class="pill">${esc(stage.roundName)}</span>
-        <h1 class="phone-h1">Waiting for your host</h1>
+        <h1 class="phone-h1">Watch the host.</h1>
+        <p class="phone-muted">Look at the main screen</p>
       </div>
     `;
     return;
@@ -417,38 +409,40 @@ function render() {
     return;
   }
 
-  // Ending E2: Sanket's story
+  // Ending E2: Stage 58 AI PM Analogy -> Watch the host
   if (stage.type === 'e2_story') {
     mainEl.innerHTML = `
       <div class="phone-center-screen">
-        <span class="pill pill-dream">The 9% slice</span>
-        <h1 class="phone-h1">Look at the main screen.</h1>
-        <div class="card-dream" style="width: 100%; margin-top: 8px;">
-          <p class="phone-h2" style="color: var(--dream);">Bold finds the door. Context opens it.</p>
-        </div>
+        <span class="pill pill-accent">The AI PM Analogy</span>
+        <h1 class="phone-h1">Watch the host.</h1>
+        <p class="phone-muted">Look at the main screen for the Classic PM vs AI PM breakdown</p>
       </div>
     `;
     return;
   }
 
-  // Ending E3: Your map (interactive)
+  // Ending E3: Your map -> Watch the host
   if (stage.type === 'e3_map') {
-    renderPhoneE3Map();
+    mainEl.innerHTML = `
+      <div class="phone-center-screen">
+        <span class="pill pill-accent">Your map</span>
+        <h1 class="phone-h1">Watch the host.</h1>
+        <p class="phone-muted">Skills you already bring — look at the main screen</p>
+      </div>
+    `;
     return;
   }
 
-  // Ending E4: What's next
+  // Ending E4: Stage 60 The AI interview game -> Watch the host
   if (stage.type === 'e4_next') {
     mainEl.innerHTML = `
-      <div class="phone-center-screen" style="align-items: stretch; text-align: left;">
-        <span class="pill pill-accent" style="align-self: flex-start;">What’s next</span>
-        <div class="card" style="display: flex; flex-direction: column; gap: 14px;">
-          <h1 class="phone-h1">The programme</h1>
-          <p class="phone-text">The programme. AI product skills plus the PM foundations, built on the work you already do.</p>
-          ${PROGRAMME_SIGNUP_URL
-            ? `<a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary btn-block">See the curriculum and register interest</a>`
-            : `<div class="card-subtle"><p class="phone-text" style="font-weight: 600;">Your hosts will share the curriculum and the sign-up link now.</p></div>`}
-        </div>
+      <div class="phone-center-screen">
+        <span class="pill pill-accent">The AI interview game</span>
+        <h1 class="phone-h1">Watch the host.</h1>
+        <p class="phone-muted">Look at the main screen</p>
+        ${PROGRAMME_SIGNUP_URL
+          ? `<a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top: 16px;">See the curriculum and register interest</a>`
+          : ''}
       </div>
     `;
     return;

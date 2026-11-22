@@ -200,15 +200,34 @@ function render() {
 
   if (stage.type === 'e4_next') {
     mainEl.innerHTML = `
-      <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 8px;">
-        <span class="pill pill-accent" style="align-self: flex-start;">What’s next</span>
-        <div class="card" style="display: flex; flex-direction: column; gap: 12px;">
-          <h1 class="phone-h1">The programme</h1>
-          <p class="phone-text">The programme. AI product skills plus the PM foundations, built on the work you already do.</p>
-          ${PROGRAMME_SIGNUP_URL
-            ? `<a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary btn-block">See the curriculum and register interest</a>`
-            : `<div class="card-subtle"><p class="phone-text" style="font-weight: 600;">Your hosts will share the curriculum and the sign-up link now.</p></div>`}
+      <div class="interview-game-container" style="padding-top: 6px;">
+        <span class="pill pill-accent" style="align-self: flex-start;">Next Step</span>
+        <h1 class="phone-h1">The AI interview game</h1>
+        <p class="phone-text">Three pillars to turn your background into an unfair advantage in AI PM rounds.</p>
+
+        <div class="interview-game-grid">
+          <div class="interview-step-card" style="padding: 16px;">
+            <div class="interview-step-number" style="width: 32px; height: 32px; font-size: 15px;">1</div>
+            <h2 class="interview-step-title" style="font-size: 17px;">The Application process</h2>
+            <p class="interview-step-desc" style="font-size: 13px;">Targeting the right doors where your context counts, framing AI-native experience, and turning a 9% wheel into an interview shortlist.</p>
+          </div>
+
+          <div class="interview-step-card" style="padding: 16px;">
+            <div class="interview-step-number" style="width: 32px; height: 32px; font-size: 15px;">2</div>
+            <h2 class="interview-step-title" style="font-size: 17px;">The interview practice</h2>
+            <p class="interview-step-desc" style="font-size: 13px;">Mastering probabilistic PRD defense, system design trade-offs, and statistical eval rubrics under real interview pressure.</p>
+          </div>
+
+          <div class="interview-step-card" style="padding: 16px;">
+            <div class="interview-step-number" style="width: 32px; height: 32px; font-size: 15px;">3</div>
+            <h2 class="interview-step-title" style="font-size: 17px;">The toolkit</h2>
+            <p class="interview-step-desc" style="font-size: 13px;">Live working templates for RAG architectures, prompt evals, data flywheel moats, and production case teardowns.</p>
+          </div>
         </div>
+
+        ${PROGRAMME_SIGNUP_URL
+          ? `<a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="margin-top: 10px;">See the curriculum and register interest</a>`
+          : `<div class="card-subtle"><p class="phone-text" style="font-weight: 600;">Your hosts will share the curriculum and the sign-up link now.</p></div>`}
       </div>
     `;
   }
