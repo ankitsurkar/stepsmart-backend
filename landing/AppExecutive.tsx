@@ -178,9 +178,6 @@ export function AppExecutive() {
             <button onClick={() => scrollToSection('system')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Cohort
             </button>
-            <button onClick={() => scrollToSection('curriculum')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
-              Curriculum
-            </button>
             <button onClick={() => scrollToSection('mentors')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Mentors
             </button>
@@ -240,9 +237,6 @@ export function AppExecutive() {
             </Link>
             <button onClick={() => scrollToSection('system')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               Cohort Modules
-            </button>
-            <button onClick={() => scrollToSection('curriculum')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
-              Curriculum (12 Weeks)
             </button>
             <button onClick={() => scrollToSection('mentors')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
               Mentors
@@ -1120,12 +1114,24 @@ export function AppExecutive() {
                   <div className="text-xs font-black text-[#141413]">
                     YOU LEAVE WITH: A working AI product + AI PRD + 20-case test set + 3 1:1 Checkpoints + All modules included.
                   </div>
-                  <button
-                    onClick={() => scrollToSection('pricing')}
-                    className="px-5 py-2 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer shrink-0"
-                  >
-                    Apply for AI PM (₹30,000) ➜
-                  </button>
+                  <div className="flex items-center gap-2.5 flex-wrap shrink-0">
+                    <button
+                      onClick={() => scrollToSection('pricing')}
+                      className="px-5 py-2 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer shrink-0"
+                    >
+                      Apply for AI PM (₹30,000) ➜
+                    </button>
+                    <button
+                      onClick={() => {
+                        setBrochureFormStatus('idle');
+                        setIsBrochureModalOpen(true);
+                      }}
+                      className="px-5 py-2 rounded-full bg-white hover:bg-slate-50 text-[#141413] border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer shrink-0 inline-flex items-center gap-1.5"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download Brochure (PDF)</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -1464,12 +1470,24 @@ export function AppExecutive() {
                     Cohort Starts <span className="bg-[#FEF08A] rounded-md px-2 py-0.5 border border-[#141413] font-mono font-black">1st December 2026</span> · Strictly capped to 15 seats · Joining by conversation
                   </span>
                 </div>
-                <button
-                  onClick={() => scrollToSection('pricing')}
-                  className="px-5 py-2 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer"
-                >
-                  Reserve AI PM for ₹30,000 ➜
-                </button>
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <button
+                    onClick={() => {
+                      setBrochureFormStatus('idle');
+                      setIsBrochureModalOpen(true);
+                    }}
+                    className="px-5 py-2 rounded-full bg-white hover:bg-slate-50 text-[#141413] border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer inline-flex items-center gap-1.5"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download Brochure (PDF)</span>
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('pricing')}
+                    className="px-5 py-2 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer"
+                  >
+                    Reserve AI PM for ₹30,000 ➜
+                  </button>
+                </div>
               </div>
 
             </div>
@@ -1665,178 +1683,7 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 10. CURRICULUM: THE 12-WEEK DELIVERABLE ROADMAP (FROM BROCHURE) */}
-        <section id="curriculum" className="py-20 bg-slate-50 border-b-2 border-[#141413] scroll-mt-20">
-          <div className="container mx-auto px-6 max-w-5xl">
-            
-            <div className="text-center mb-16">
-              <div className="inline-block mb-3">
-                <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block select-none">
-                  THE 12 WEEKS · ONE DELIVERABLE EVERY WEEK
-                </span>
-              </div>
-              <h2 className="text-3xl md:text-5xl font-black text-[#141413] mb-3 tracking-tight">
-                12 weeks.{' '}
-                <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[-1.5deg] shadow-[0px_3px_0px_0px_#141413]">
-                  One real AI product.
-                </span>
-              </h2>
-              <p className="text-base font-medium text-[#141413]/80 max-w-2xl mx-auto leading-relaxed">
-                A disciplined, production-grade progression taking you from problem space to live demo and portfolio defense.
-              </p>
-            </div>
 
-            {/* 5 Phases Grid */}
-            <div className="space-y-6 mb-10 text-left">
-              {[
-                {
-                  phase: "PHASE 1: PROBLEM SPACE (WEEKS 1–2)",
-                  bg: "bg-[#e0f2fe]",
-                  items: [
-                    { wk: "01", title: "Problem Brief", desc: "Pick one real problem from your own work. Write who has it, how often, and the evidence." },
-                    { wk: "02", title: "AI Brief", desc: "Decide if AI is even the answer. Set one success number and write a one-page brief." }
-                  ]
-                },
-                {
-                  phase: "PHASE 2: HOW AI BEHAVES (WEEKS 3–4)",
-                  bg: "bg-[#fef9c3]",
-                  items: [
-                    { wk: "03", title: "Behaviour Log", desc: "Test your problem across prompts and models. Record where answers vary, drift or go confidently wrong." },
-                    { wk: "04 ★", title: "Prototype v1 (1:1 Checkpoint #1)", desc: "Give the AI your own documents. Build a first version that answers them with live 1:1 mentor review." }
-                  ]
-                },
-                {
-                  phase: "PHASE 3: MAKE IT TRUSTWORTHY (WEEKS 5–7)",
-                  bg: "bg-[#dcfce7]",
-                  items: [
-                    { wk: "05", title: "Test Set (20 Cases)", desc: "Write 20 known cases with right answers. Score your prototype against them." },
-                    { wk: "06", title: "Agent Sketch", desc: "Design an agent on one page: its goal, its tools, and what it must never do." },
-                    { wk: "07", title: "Safety Plan", desc: "Add guardrails and approval points. List three ways it fails and how you will catch each." }
-                  ]
-                },
-                {
-                  phase: "PHASE 4: DESIGN AND SHIP (WEEKS 8–10)",
-                  bg: "bg-[#ffedd5]",
-                  items: [
-                    { wk: "08 ★", title: "AI PRD (1:1 Checkpoint #2)", desc: "Turn your brief and test results into a PRD an engineering team could build from." },
-                    { wk: "09", title: "Build Sprint", desc: "Ship a working version of your product and put it in front of three real users." },
-                    { wk: "10", title: "Launch Plan", desc: "Work out the cost per use, what you will monitor, and how the product improves after launch." }
-                  ]
-                },
-                {
-                  phase: "PHASE 5: PROOF AND POSITIONING (WEEKS 11–12)",
-                  bg: "bg-[#f3e8ff]",
-                  items: [
-                    { wk: "11", title: "Proof Pack", desc: "Turn the build into a portfolio case study and an interview-ready LinkedIn story." },
-                    { wk: "12 ★", title: "Demo Day & Mock Loop (1:1 Checkpoint #3)", desc: "Demo your product live, then run a full mock interview loop on it." }
-                  ]
-                }
-              ].map((group, gIdx) => (
-                <div key={gIdx} className="bg-white rounded-2xl border-2 border-[#141413] p-5 sm:p-6 shadow-[0px_4px_0px_0px_#141413]">
-                  <div className="flex items-center gap-2 mb-4 pb-2 border-b-2 border-[#141413]/10">
-                    <span className={`px-3 py-1 rounded-full border border-[#141413] text-xs font-mono font-black uppercase ${group.bg}`}>
-                      {group.phase}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {group.items.map((item, iIdx) => (
-                      <div key={iIdx} className="p-3 rounded-xl border border-[#141413] bg-slate-50 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-mono font-black text-xs text-[#188ab2]">
-                              WEEK {item.wk}
-                            </span>
-                            {item.wk.includes("★") && (
-                              <span className="text-[10px] font-mono font-black bg-[#FEF08A] px-2 py-0.5 rounded border border-[#141413]">
-                                1:1 CHECKPOINT
-                              </span>
-                            )}
-                          </div>
-                          <h4 className="font-black text-sm text-[#141413] mb-1">
-                            {item.title}
-                          </h4>
-                          <p className="text-xs font-medium text-[#141413]/75 leading-relaxed">
-                            {item.desc}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Checkpoints & Routine Box */}
-            <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 sm:p-8 shadow-[0px_4px_0px_0px_#141413] mb-8 text-left">
-              <div className="flex items-center justify-between flex-wrap gap-2 mb-4 pb-3 border-b-2 border-[#141413]/10">
-                <div>
-                  <span className="font-mono font-black text-xs uppercase text-[#188ab2] block">1:1 MENTOR CHECKPOINTS</span>
-                  <h4 className="font-black text-base sm:text-lg text-[#141413]">3 Private Sessions with Sanket &amp; Ankit</h4>
-                </div>
-                <span className="bg-[#FEF08A] rounded-full border border-[#141413] text-[10px] font-mono font-black px-3 py-1 uppercase shadow-[0px_1px_0px_#141413]">
-                  All Sessions Recorded &amp; Uploaded Within 4 Hours
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-3.5 rounded-xl border-2 border-[#141413] bg-amber-50 shadow-[0px_2px_0px_0px_#141413]">
-                  <span className="font-mono font-black text-[10px] text-amber-900 block">WEEK 4 · CHECKPOINT 1</span>
-                  <div className="font-black text-sm text-[#141413] mt-0.5">Prototype v1 Review</div>
-                  <div className="text-xs text-[#141413]/70 font-medium mt-1">Review retrieval, hallucinations, and prompt architecture.</div>
-                </div>
-                <div className="p-3.5 rounded-xl border-2 border-[#141413] bg-sky-50 shadow-[0px_2px_0px_0px_#141413]">
-                  <span className="font-mono font-black text-[10px] text-[#188ab2] block">WEEK 8 · CHECKPOINT 2</span>
-                  <div className="font-black text-sm text-[#141413] mt-0.5">AI PRD Technical Defense</div>
-                  <div className="text-xs text-[#141413]/70 font-medium mt-1">Engineering feasibility, test set rubrics, and guardrail sign-off.</div>
-                </div>
-                <div className="p-3.5 rounded-xl border-2 border-[#141413] bg-purple-50 shadow-[0px_2px_0px_0px_#141413]">
-                  <span className="font-mono font-black text-[10px] text-purple-900 block">WEEK 12 · CHECKPOINT 3</span>
-                  <div className="font-black text-sm text-[#141413] mt-0.5">Full Mock Interview Loop</div>
-                  <div className="text-xs text-[#141413]/70 font-medium mt-1">Product demo plus comprehensive interview grilling on your build.</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Curriculum Brochure Unlock Bar */}
-            <div
-              onClick={() => {
-                setBrochureFormStatus('idle');
-                setIsBrochureModalOpen(true);
-              }}
-              className="bg-white rounded-2xl border-2 border-[#141413] p-4 sm:p-5 shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 group select-none"
-            >
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div className="w-10 h-10 rounded-full bg-[#188ab2]/10 border border-[#188ab2] text-[#188ab2] flex items-center justify-center shrink-0 group-hover:bg-[#188ab2] group-hover:text-white transition-colors">
-                  <Download className="w-4 h-4 stroke-[2.5]" />
-                </div>
-                <div className="min-w-0 text-left">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h4 className="text-sm sm:text-base font-black text-[#141413] tracking-tight">
-                      Want the full 12-week AI PM curriculum?
-                    </h4>
-                    <span className="text-[10px] font-mono font-bold text-[#188ab2] uppercase bg-[#e0f2fe] rounded-full border border-[#188ab2]/30 px-2 py-0.5">
-                      PDF BROCHURE
-                    </span>
-                  </div>
-                  <p className="text-xs font-semibold text-[#141413]/85 truncate">
-                    Weekly deliverable breakdown, rubrics, 1:1 checkpoints, faculty profiles &amp; admissions.
-                  </p>
-                </div>
-              </div>
-
-              <div className="shrink-0 flex items-center self-start sm:self-auto">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#188ab2] group-hover:bg-[#0f6f8f] text-white text-xs font-black uppercase rounded-full border-2 border-[#141413] shadow-[0px_3px_0px_0px_#141413] group-hover:shadow-[0px_4px_0px_0px_#141413] transition-all pointer-events-none"
-                >
-                  <Download className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>Get Full Brochure ➜</span>
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </section>
 
         {/* 11. MEET YOUR INSTRUCTORS (Mentors) */}
         <section id="mentors" className="py-20 bg-white border-b-2 border-[#141413] scroll-mt-20">
