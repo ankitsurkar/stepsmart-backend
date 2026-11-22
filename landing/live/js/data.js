@@ -325,8 +325,6 @@ export const ROUND_TAKEAWAYS = {
     phoneOneLiner: 'The dial reshapes the slices. Careful is repeatable. Bold explores.',
     roleLine: 'If you’re a product owner, program or scrum lead, you trade scope, time and risk every sprint. The dial is the same trade: repeatable and safe, or fresh and riskier.',
     pmMove: 'you choose the setting for each feature, and that is a prioritisation call.',
-    hostQuestion: 'Which setting for a refund-policy answer? Which for brainstorming interview stories?',
-    hostQuestionAnswer: 'Careful for anything a customer relies on, Bold for brainstorming. (Sets up the interview-prep build later)',
   },
   4: {
     phoneOneLiner: 'Sounding sure is not being right. The wheel has no ‘I don’t know’ slice.',
