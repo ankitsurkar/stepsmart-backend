@@ -536,13 +536,81 @@ function renderStage() {
           </div>
         </div>
 
-        <div style="display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 10px;">
-          ${getWhatsAppBtnHtml('Book 1:1 on WhatsApp with Sanket', 'font-size: 17px; padding: 12px 26px;')}
+        <!-- Curriculum Modules 1 to 4 -->
+        <div style="margin-top: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h2 style="font-size: 24px; font-weight: 800; color: var(--ink); margin: 0;">AI Product Management Curriculum (Modules 1–4)</h2>
+            <span class="pill pill-good">Full Course Curriculum</span>
+          </div>
+          <div class="brochure-grid">
+            ${AI_PM_BROCHURE_MODULES.map((m) => `
+              <div class="brochure-card">
+                <div class="brochure-card-header">
+                  <span class="brochure-card-number">Module ${esc(m.number)}</span>
+                  <span class="brochure-card-badge">${esc(m.badge)}</span>
+                </div>
+                <h3 class="brochure-card-title">${esc(m.title)}</h3>
+                <p class="brochure-card-desc">${esc(m.desc)}</p>
+                <div class="brochure-highlights-wrap">
+                  ${m.highlights.map((h) => `<span class="brochure-highlight-tag">${esc(h)}</span>`).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 18px;">
+          ${getWhatsAppBtnHtml('Book 1:1 on WhatsApp with Sanket', 'font-size: 18px; padding: 14px 30px;')}
           ${PROGRAMME_SIGNUP_URL ? `
-            <a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary" style="font-size: 17px; padding: 12px 26px; border-radius: var(--radius-md);">
+            <a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary" style="font-size: 17px; padding: 14px 28px; border-radius: var(--radius-md);">
               See full curriculum →
             </a>
           ` : ''}
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  if (stage.type === 'e5_brochure') {
+    mainEl.innerHTML = `
+      <div class="brochure-container">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2px;">
+          <div>
+            <div class="host-kicker">Curriculum & Cohort</div>
+            <h1 class="host-title" style="margin: 4px 0 0; font-size: clamp(26px, 2.5vw, 36px);">AI Product Management — The Complete Course</h1>
+          </div>
+          <div class="pill pill-good" style="font-size: 13px;">Applications Open</div>
+        </div>
+
+        <div class="brochure-grid">
+          ${AI_PM_BROCHURE_MODULES.map((m) => `
+            <div class="brochure-card">
+              <div class="brochure-card-header">
+                <span class="brochure-card-number">Module ${esc(m.number)}</span>
+                <span class="brochure-card-badge">${esc(m.badge)}</span>
+              </div>
+              <h2 class="brochure-card-title">${esc(m.title)}</h2>
+              <p class="brochure-card-desc">${esc(m.desc)}</p>
+              <div class="brochure-highlights-wrap">
+                ${m.highlights.map((h) => `<span class="brochure-highlight-tag">${esc(h)}</span>`).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="brochure-action-box">
+          <div>
+            <div style="font-weight: 800; font-size: 18px; color: var(--ink); margin-bottom: 3px;">
+              Ready to transition or level up as an AI PM?
+            </div>
+            <div style="font-size: 14px; color: var(--ink-muted);">
+              Review your profile fit, transition roadmap, and upcoming cohort schedule directly with Sanket.
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            ${getWhatsAppBtnHtml('Chat 1:1 on WhatsApp with Sanket', 'font-size: 16px; padding: 12px 24px;')}
+          </div>
         </div>
       </div>
     `;

@@ -202,27 +202,49 @@ function render() {
     mainEl.innerHTML = `
       <div class="interview-game-container" style="padding-top: 6px;">
         <span class="pill pill-accent" style="align-self: flex-start;">Next Step</span>
-        <h1 class="phone-h1">The AI interview game</h1>
+        <h1 class="phone-h1" style="font-size: 22px;">The AI interview game</h1>
         <p class="phone-text">Three pillars to turn your background into an unfair advantage in AI PM rounds.</p>
 
         <div class="interview-game-grid">
           <div class="interview-step-card" style="padding: 16px;">
             <div class="interview-step-number" style="width: 32px; height: 32px; font-size: 15px;">1</div>
-            <h2 class="interview-step-title" style="font-size: 17px;">The Application process</h2>
+            <h2 class="interview-step-title" style="font-size: 16px;">The Application process</h2>
             <p class="interview-step-desc" style="font-size: 13px;">Targeting the right doors where your context counts, framing AI-native experience, and turning a 9% wheel into an interview shortlist.</p>
           </div>
 
           <div class="interview-step-card" style="padding: 16px;">
             <div class="interview-step-number" style="width: 32px; height: 32px; font-size: 15px;">2</div>
-            <h2 class="interview-step-title" style="font-size: 17px;">The interview practice</h2>
+            <h2 class="interview-step-title" style="font-size: 16px;">The interview practice</h2>
             <p class="interview-step-desc" style="font-size: 13px;">Mastering probabilistic PRD defense, system design trade-offs, and statistical eval rubrics under real interview pressure.</p>
           </div>
 
           <div class="interview-step-card" style="padding: 16px;">
             <div class="interview-step-number" style="width: 32px; height: 32px; font-size: 15px;">3</div>
-            <h2 class="interview-step-title" style="font-size: 17px;">The toolkit</h2>
+            <h2 class="interview-step-title" style="font-size: 16px;">The toolkit</h2>
             <p class="interview-step-desc" style="font-size: 13px;">Live working templates for RAG architectures, prompt evals, data flywheel moats, and production case teardowns.</p>
           </div>
+        </div>
+
+        <!-- Course Curriculum Modules 1 to 4 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+          <h2 style="font-size: 18px; font-weight: 800; color: var(--ink); margin: 0;">Course Curriculum (Modules 1–4)</h2>
+          <span class="pill pill-good" style="font-size: 11px;">Complete</span>
+        </div>
+
+        <div class="brochure-grid" style="grid-template-columns: 1fr; gap: 10px;">
+          ${AI_PM_BROCHURE_MODULES.map((m) => `
+            <div class="brochure-card" style="padding: 14px;">
+              <div class="brochure-card-header">
+                <span class="brochure-card-number">Module ${esc(m.number)}</span>
+                <span class="brochure-card-badge">${esc(m.badge)}</span>
+              </div>
+              <h2 class="brochure-card-title" style="font-size: 16px;">${esc(m.title)}</h2>
+              <p class="brochure-card-desc" style="font-size: 13px;">${esc(m.desc)}</p>
+              <div class="brochure-highlights-wrap">
+                ${m.highlights.map((h) => `<span class="brochure-highlight-tag">${esc(h)}</span>`).join('')}
+              </div>
+            </div>
+          `).join('')}
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
@@ -231,6 +253,44 @@ function render() {
         </div>
       </div>
     `;
+    return;
+  }
+
+  if (stage.type === 'e5_brochure') {
+    mainEl.innerHTML = `
+      <div class="brochure-container" style="padding-top: 4px;">
+        <span class="pill pill-good" style="align-self: flex-start;">Curriculum & Cohort</span>
+        <h1 class="phone-h1" style="margin: 0; font-size: 22px;">AI Product Management</h1>
+        <p class="phone-muted" style="margin: 0; font-size: 13px;">The complete course curriculum by Sanket</p>
+
+        <div class="brochure-grid" style="grid-template-columns: 1fr; gap: 10px;">
+          ${AI_PM_BROCHURE_MODULES.map((m) => `
+            <div class="brochure-card" style="padding: 14px;">
+              <div class="brochure-card-header">
+                <span class="brochure-card-number">Module ${esc(m.number)}</span>
+                <span class="brochure-card-badge">${esc(m.badge)}</span>
+              </div>
+              <h2 class="brochure-card-title" style="font-size: 16px;">${esc(m.title)}</h2>
+              <p class="brochure-card-desc" style="font-size: 13px;">${esc(m.desc)}</p>
+              <div class="brochure-highlights-wrap">
+                ${m.highlights.map((h) => `<span class="brochure-highlight-tag">${esc(h)}</span>`).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="brochure-action-box" style="flex-direction: column; text-align: center; padding: 16px;">
+          <div>
+            <div style="font-weight: 800; font-size: 15px; color: var(--ink);">Ready to level up as an AI PM?</div>
+            <div style="font-size: 13px; color: var(--ink-muted); margin-top: 2px;">
+              Review your profile fit and transition roadmap directly with Sanket.
+            </div>
+          </div>
+          ${getWhatsAppBtnHtml('Chat 1:1 on WhatsApp with Sanket', 'width: 100%; padding: 13px; font-size: 14.5px;')}
+        </div>
+      </div>
+    `;
+    return;
   }
 }
 

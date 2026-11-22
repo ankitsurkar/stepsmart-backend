@@ -575,29 +575,29 @@ export const WHATSAPP_1ON1_URL = 'https://wa.me/message/GH5C7YLAYIEHN1';
 
 export const AI_PM_BROCHURE_MODULES = [
   {
-    number: '01',
-    title: 'Model Understanding & Requirements',
+    number: '1',
+    title: 'Module 1: Model Understanding & Requirements',
     badge: 'Foundations',
     desc: 'Frame model selection as a product decision. Write Model Requirements Briefs in Discovery, evaluate base vs instruction-tuned models, and choose between cloud APIs and self-hosted VPCs.',
     highlights: ['Discovery vs Delivery Briefs', '7 AI Model Categories', 'Base vs Instruct Models', 'HIPAA & Compliance Architecture']
   },
   {
-    number: '02',
-    title: 'The 4-Stage Progression',
+    number: '2',
+    title: 'Module 2: The 4-Stage Progression',
     badge: 'Architecture',
     desc: 'Master the progression from Prompting → RAG → Fine-Tuning (PEFT/LoRA) → Hybrid systems. Know exactly when to solve Knowledge Gaps vs Pattern Gaps.',
     highlights: ['Few-Shot Prompt Engineering', 'RAG & Vector Embeddings', 'PEFT / LoRA (10-50 examples)', 'Enterprise Hybrid Systems']
   },
   {
-    number: '03',
-    title: 'The 8 Model Selection Parameters',
+    number: '3',
+    title: 'Module 3: The 8 Model Selection Parameters',
     badge: 'Decision Engine',
     desc: 'Balance Latency budgets (TTFT < 800ms), cost per interaction at scale, context window limits, benchmark vs production accuracy, and vendor lock-in risks.',
     highlights: ['Latency Budgets & TTFT', 'Scale Cost Modeling & Routing', 'Context Window vs RAG', 'Semantic Caching Economics']
   },
   {
-    number: '04',
-    title: 'Production Case Studies & Evals',
+    number: '4',
+    title: 'Module 4: Production Case Studies & Evals',
     badge: 'Execution',
     desc: 'Real case studies: Legal contract capability mismatch, $800k/mo chat cost collapse, and HIPAA violations. Build statistical eval sets (50+ test cases) and define probabilistic PRDs.',
     highlights: ['Probabilistic PRDs', 'Eval Set Design & Rubrics', 'Model Drift & Data Flywheels', 'AI Moat Strategy']

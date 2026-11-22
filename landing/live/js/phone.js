@@ -448,12 +448,12 @@ function render() {
     return;
   }
 
-  // Ending E4: Stage 60 The AI interview game
+  // Ending E4: Stage 60 The AI interview game & Course Curriculum
   if (stage.type === 'e4_next') {
     mainEl.innerHTML = `
-      <div class="phone-center-screen" style="text-align: left; align-items: stretch;">
+      <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 4px; text-align: left;">
         <span class="pill pill-accent" style="align-self: flex-start;">The AI interview game</span>
-        <h1 class="phone-h1" style="margin-top: 6px; font-size: 24px;">The 3 Pillars</h1>
+        <h1 class="phone-h1" style="margin: 0; font-size: 22px;">The 3 Pillars</h1>
         <div class="card" style="display: flex; flex-direction: column; gap: 10px; padding: 14px 16px;">
           <div>
             <div style="font-weight: 800; color: var(--ink); font-size: 15px;">1. The Application process</div>
@@ -468,14 +468,42 @@ function render() {
             <div style="font-size: 13px; color: var(--ink-muted); margin-top: 2px;">Working RAG architectures, prompt evals, data flywheel moats, and production case teardowns.</div>
           </div>
         </div>
-        ${getWhatsAppBtnHtml('Chat 1:1 on WhatsApp with Sanket', 'width: 100%; margin-top: 12px; padding: 14px; font-size: 15px;')}
+
+        <!-- Course Curriculum Modules 1 to 4 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+          <h2 style="font-size: 17px; font-weight: 800; color: var(--ink); margin: 0;">Course Curriculum (Modules 1–4)</h2>
+          <span class="pill pill-good" style="font-size: 11px;">Complete</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          ${AI_PM_BROCHURE_MODULES.map((m) => `
+            <div class="card" style="padding: 12px 14px; display: flex; flex-direction: column; gap: 5px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 11px; font-weight: 800; color: var(--accent);">Module ${esc(m.number)}</span>
+                <span class="pill pill-accent" style="font-size: 10px; padding: 1px 6px;">${esc(m.badge)}</span>
+              </div>
+              <div style="font-weight: 800; font-size: 15px; color: var(--ink);">${esc(m.title)}</div>
+              <p style="font-size: 12.5px; color: var(--ink-muted); margin: 0; line-height: 1.4;">${esc(m.desc)}</p>
+              <div class="brochure-highlights-wrap" style="margin-top: 2px;">
+                ${m.highlights.map((h) => `<span class="brochure-highlight-tag" style="font-size: 11px; padding: 2px 6px;">${esc(h)}</span>`).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="card-accent" style="padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-weight: 800; font-size: 15px; color: var(--ink);">Join the next AI PM batch</div>
+          <p style="font-size: 12.5px; color: var(--ink-muted); margin: 0;">
+            Chat directly with Sanket to discuss your profile fit, transition roadmap, and upcoming cohort schedule.
+          </p>
+          ${getWhatsAppBtnHtml('Chat 1:1 on WhatsApp with Sanket', 'width: 100%; padding: 13px; font-size: 14.5px;')}
+        </div>
       </div>
     `;
     return;
   }
 
-
-  // Ending E5: AI PM Course Curriculum
+    // Ending E5: AI PM Course Curriculum
   if (stage.type === 'e5_brochure') {
     mainEl.innerHTML = `
       <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 4px;">
