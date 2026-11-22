@@ -504,7 +504,8 @@ export const STAGES = [
   { id: 'e1_spot_3', section: 'Ending', roundName: 'Spot it', minutes: '46–49m', round: 7, type: 'e1_spot', questionIndex: 2, title: 'Spot it · 3 of 3' },
   { id: 'e2_story', section: 'Ending', roundName: 'AI PM Analogy', minutes: '49–52m', round: 8, type: 'e2_story', title: 'The AI PM Analogy' },
   { id: 'e3_map', section: 'Ending', roundName: 'Your map', minutes: '52–55m', round: 9, type: 'e3_map', title: 'Your map' },
-  { id: 'e4_next', section: 'What’s next', roundName: 'The AI interview game', minutes: '55–60m', round: 10, type: 'e4_next', title: 'The AI interview game' },
+  { id: 'e4_next', section: 'What’s next', roundName: 'The AI interview game', minutes: '55–58m', round: 10, type: 'e4_next', title: 'The AI interview game' },
+  { id: 'e5_brochure', section: 'Curriculum', roundName: 'AI PM Course Curriculum', minutes: '58–62m', round: 11, type: 'e5_brochure', title: 'AI PM Course Curriculum' },
   { id: 'qa', section: 'Q&A', roundName: 'Questions', minutes: '60–70m', round: 11, type: 'qa', title: 'Questions' },
 ];
 
@@ -567,4 +568,38 @@ export const AI_PM_ANALOGY = [
     ai: { title: 'AI moat strategy', sub: 'Data · trust · fine-tune lock-in' },
     detail: 'Features are easily cloned by foundation models. The real sustainable advantage lies in proprietary data loops, user trust, workflow lock-in, and domain fine-tuning.',
   },
+];
+
+
+export const WHATSAPP_1ON1_URL = 'https://wa.me/message/GH5C7YLAYIEHN1';
+
+export const AI_PM_BROCHURE_MODULES = [
+  {
+    number: '01',
+    title: 'Model Understanding & Requirements',
+    badge: 'Foundations',
+    desc: 'Frame model selection as a product decision. Write Model Requirements Briefs in Discovery, evaluate base vs instruction-tuned models, and choose between cloud APIs and self-hosted VPCs.',
+    highlights: ['Discovery vs Delivery Briefs', '7 AI Model Categories', 'Base vs Instruct Models', 'HIPAA & Compliance Architecture']
+  },
+  {
+    number: '02',
+    title: 'The 4-Stage Progression',
+    badge: 'Architecture',
+    desc: 'Master the progression from Prompting → RAG → Fine-Tuning (PEFT/LoRA) → Hybrid systems. Know exactly when to solve Knowledge Gaps vs Pattern Gaps.',
+    highlights: ['Few-Shot Prompt Engineering', 'RAG & Vector Embeddings', 'PEFT / LoRA (10-50 examples)', 'Enterprise Hybrid Systems']
+  },
+  {
+    number: '03',
+    title: 'The 8 Model Selection Parameters',
+    badge: 'Decision Engine',
+    desc: 'Balance Latency budgets (TTFT < 800ms), cost per interaction at scale, context window limits, benchmark vs production accuracy, and vendor lock-in risks.',
+    highlights: ['Latency Budgets & TTFT', 'Scale Cost Modeling & Routing', 'Context Window vs RAG', 'Semantic Caching Economics']
+  },
+  {
+    number: '04',
+    title: 'Production Case Studies & Evals',
+    badge: 'Execution',
+    desc: 'Real case studies: Legal contract capability mismatch, $800k/mo chat cost collapse, and HIPAA violations. Build statistical eval sets (50+ test cases) and define probabilistic PRDs.',
+    highlights: ['Probabilistic PRDs', 'Eval Set Design & Rubrics', 'Model Drift & Data Flywheels', 'AI Moat Strategy']
+  }
 ];

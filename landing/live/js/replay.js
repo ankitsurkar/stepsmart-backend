@@ -225,9 +225,10 @@ function render() {
           </div>
         </div>
 
-        ${PROGRAMME_SIGNUP_URL
-          ? `<a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="margin-top: 10px;">See the curriculum and register interest</a>`
-          : `<div class="card-subtle"><p class="phone-text" style="font-weight: 600;">Your hosts will share the curriculum and the sign-up link now.</p></div>`}
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+          ${getWhatsAppBtnHtml('Chat 1:1 on WhatsApp with Sanket', 'width: 100%; padding: 13px; font-size: 14.5px;')}
+          ${PROGRAMME_SIGNUP_URL ? `<a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary btn-block">See the curriculum and register interest</a>` : ''}
+        </div>
       </div>
     `;
   }

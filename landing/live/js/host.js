@@ -13,6 +13,8 @@ import {
   YOUR_MAP_ITEMS,
   PROGRAMME_SIGNUP_URL,
   AI_PM_ANALOGY,
+  WHATSAPP_1ON1_URL,
+  AI_PM_BROCHURE_MODULES,
 } from './data.js';
 import {
   computeSanketR2Slices,
@@ -67,6 +69,19 @@ const demoState = {
   r6Current: null,
   e1Revealed: new Set(),
 };
+
+
+function getWhatsAppBtnHtml(label = 'Book 1:1 on WhatsApp with Sanket', extraStyle = '') {
+  return `
+    <a href="${esc(WHATSAPP_1ON1_URL)}" target="_blank" rel="noopener" class="btn btn-whatsapp" style="${extraStyle}">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.073-2.027-.478-1.7-1.045-2.784-2.812-2.868-2.925-.084-.112-.686-.913-.686-1.742 0-.828.434-1.236.589-1.395.155-.158.337-.198.45-.198.113 0 .225.001.325.006.107.005.25-.041.391.298.144.347.491 1.2.534 1.288.043.088.072.19.014.305-.058.115-.087.188-.173.289l-.26.304c-.087.098-.178.204-.077.377.101.173.45.742.966 1.202.665.592 1.226.776 1.399.863.173.086.274.072.376-.044.102-.115.434-.505.549-.679.115-.173.231-.144.39-.086.158.058 1.011.477 1.184.564.173.086.289.13.332.202.043.072.043.419-.101.824z"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.66 1.434 5.176L2 22l4.981-1.309A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 1.5a8.5 8.5 0 100 17 8.46 8.46 0 004.743-1.442l.338-.204 3.09.812-.826-3.016.223-.356A8.463 8.463 0 0020.5 12 8.51 8.51 0 0012 3.5z"/>
+      </svg>
+      <span>${esc(label)}</span>
+    </a>
+  `;
+}
 
 function esc(str) {
   return String(str)
@@ -521,17 +536,14 @@ function renderStage() {
           </div>
         </div>
 
-        ${PROGRAMME_SIGNUP_URL ? `
-          <div style="text-align: center; margin-top: 10px;">
-            <a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary" style="font-size: 18px; padding: 14px 32px; border-radius: var(--radius-md);">
-              See the curriculum and register interest →
+        <div style="display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 10px;">
+          ${getWhatsAppBtnHtml('Book 1:1 on WhatsApp with Sanket', 'font-size: 17px; padding: 12px 26px;')}
+          ${PROGRAMME_SIGNUP_URL ? `
+            <a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary" style="font-size: 17px; padding: 12px 26px; border-radius: var(--radius-md);">
+              See full curriculum →
             </a>
-          </div>
-        ` : `
-          <div class="host-callout host-callout-dream" style="text-align: center; font-size: 18px;">
-            Your hosts will share the curriculum and sign-up link now.
-          </div>
-        `}
+          ` : ''}
+        </div>
       </div>
     `;
     return;

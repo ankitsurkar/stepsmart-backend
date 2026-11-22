@@ -9,6 +9,8 @@ import {
   SPOT_IT_QUESTIONS,
   YOUR_MAP_ITEMS,
   PROGRAMME_SIGNUP_URL,
+  WHATSAPP_1ON1_URL,
+  AI_PM_BROCHURE_MODULES,
 } from './data.js';
 import {
   computePersonalSlices,
@@ -113,6 +115,19 @@ resetProfileBtn?.addEventListener('click', () => {
     resetProfileToEdit();
   }
 });
+
+
+function getWhatsAppBtnHtml(label = 'Book 1:1 on WhatsApp with Sanket', extraStyle = '') {
+  return `
+    <a href="${esc(WHATSAPP_1ON1_URL)}" target="_blank" rel="noopener" class="btn btn-whatsapp" style="${extraStyle}">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.073-2.027-.478-1.7-1.045-2.784-2.812-2.868-2.925-.084-.112-.686-.913-.686-1.742 0-.828.434-1.236.589-1.395.155-.158.337-.198.45-.198.113 0 .225.001.325.006.107.005.25-.041.391.298.144.347.491 1.2.534 1.288.043.088.072.19.014.305-.058.115-.087.188-.173.289l-.26.304c-.087.098-.178.204-.077.377.101.173.45.742.966 1.202.665.592 1.226.776 1.399.863.173.086.274.072.376-.044.102-.115.434-.505.549-.679.115-.173.231-.144.39-.086.158.058 1.011.477 1.184.564.173.086.289.13.332.202.043.072.043.419-.101.824z"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.66 1.434 5.176L2 22l4.981-1.309A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 1.5a8.5 8.5 0 100 17 8.46 8.46 0 004.743-1.442l.338-.204 3.09.812-.826-3.016.223-.356A8.463 8.463 0 0020.5 12 8.51 8.51 0 0012 3.5z"/>
+      </svg>
+      <span>${esc(label)}</span>
+    </a>
+  `;
+}
 
 function esc(str) {
   return String(str)
@@ -433,16 +448,61 @@ function render() {
     return;
   }
 
-  // Ending E4: Stage 60 The AI interview game -> Watch the host
+  // Ending E4: Stage 60 The AI interview game
   if (stage.type === 'e4_next') {
     mainEl.innerHTML = `
-      <div class="phone-center-screen">
-        <span class="pill pill-accent">The AI interview game</span>
-        <h1 class="phone-h1">Watch the host.</h1>
-        <p class="phone-muted">Look at the main screen</p>
-        ${PROGRAMME_SIGNUP_URL
-          ? `<a href="${esc(PROGRAMME_SIGNUP_URL)}" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top: 16px;">See the curriculum and register interest</a>`
-          : ''}
+      <div class="phone-center-screen" style="text-align: left; align-items: stretch;">
+        <span class="pill pill-accent" style="align-self: flex-start;">The AI interview game</span>
+        <h1 class="phone-h1" style="margin-top: 6px; font-size: 24px;">The 3 Pillars</h1>
+        <div class="card" style="display: flex; flex-direction: column; gap: 10px; padding: 14px 16px;">
+          <div>
+            <div style="font-weight: 800; color: var(--ink); font-size: 15px;">1. The Application process</div>
+            <div style="font-size: 13px; color: var(--ink-muted); margin-top: 2px;">Targeting the right doors where your context counts and turning a 9% wheel into interviews.</div>
+          </div>
+          <div>
+            <div style="font-weight: 800; color: var(--ink); font-size: 15px;">2. The interview practice</div>
+            <div style="font-size: 13px; color: var(--ink-muted); margin-top: 2px;">Probabilistic PRDs, system design trade-offs, and statistical eval rubrics under pressure.</div>
+          </div>
+          <div>
+            <div style="font-weight: 800; color: var(--ink); font-size: 15px;">3. The toolkit</div>
+            <div style="font-size: 13px; color: var(--ink-muted); margin-top: 2px;">Working RAG architectures, prompt evals, data flywheel moats, and production case teardowns.</div>
+          </div>
+        </div>
+        ${getWhatsAppBtnHtml('Chat 1:1 on WhatsApp with Sanket', 'width: 100%; margin-top: 12px; padding: 14px; font-size: 15px;')}
+      </div>
+    `;
+    return;
+  }
+
+
+  // Ending E5: AI PM Course Curriculum
+  if (stage.type === 'e5_brochure') {
+    mainEl.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 4px;">
+        <span class="pill pill-good" style="align-self: flex-start;">Curriculum & Cohort</span>
+        <h1 class="phone-h1" style="font-size: 22px; margin: 0;">AI Product Management</h1>
+        <p class="phone-muted" style="margin: 0; font-size: 13px;">The complete course curriculum by Sanket</p>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          ${AI_PM_BROCHURE_MODULES.map((m) => `
+            <div class="card" style="padding: 12px 14px; display: flex; flex-direction: column; gap: 5px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 11px; font-weight: 800; color: var(--accent);">Module ${esc(m.number)}</span>
+                <span class="pill pill-accent" style="font-size: 10px; padding: 1px 6px;">${esc(m.badge)}</span>
+              </div>
+              <div style="font-weight: 800; font-size: 15px; color: var(--ink);">${esc(m.title)}</div>
+              <p style="font-size: 12.5px; color: var(--ink-muted); margin: 0; line-height: 1.4;">${esc(m.desc)}</p>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="card-accent" style="padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-weight: 800; font-size: 14px; color: var(--ink);">Ready to transition to AI PM?</div>
+          <p style="font-size: 12.5px; color: var(--ink-muted); margin: 0;">
+            Connect 1:1 with Sanket to discuss your background, portfolio fit, and next cohort details.
+          </p>
+          ${getWhatsAppBtnHtml('Chat 1:1 on WhatsApp with Sanket', 'width: 100%; padding: 13px; font-size: 14.5px;')}
+        </div>
       </div>
     `;
     return;
