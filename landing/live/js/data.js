@@ -313,6 +313,7 @@ export const ROUND_TAKEAWAYS = {
   1: {
     phoneOneLiner: 'Same resume, different answers. The wheel doesn’t look up an answer. It draws one, and slice size means how likely.',
     roleLine: 'If you’re a QA or tester, you know a test can pass at 10:00 and fail at 10:05 (timing, shared data), so you never trust one green run. AI needs the same habit: run it many times and look at the pass rate.',
+    extraRoleLine: 'If you’re a product owner or scrum lead, you write acceptance criteria: ‘done means these pass.’ With AI, the criterion becomes ‘right 9 times in 10’, and you decide what happens the other time.',
     pmMove: 'you set the quality bar for an AI feature, such as ‘right 9 times in 10’, and decide what happens the other time.',
   },
   2: {
@@ -322,8 +323,10 @@ export const ROUND_TAKEAWAYS = {
   },
   3: {
     phoneOneLiner: 'The dial reshapes the slices. Careful is repeatable. Bold explores.',
-    roleLine: 'If you’ve sat between marketing and compliance, you already argue about this: one wants fresh wording, the other wants the same exact answer. The dial is that argument made visible.',
+    roleLine: 'If you’re a product owner, program or scrum lead, you trade scope, time and risk every sprint. The dial is the same trade: repeatable and safe, or fresh and riskier.',
     pmMove: 'you choose the setting for each feature, and that is a prioritisation call.',
+    hostQuestion: 'Which setting for a refund-policy answer? Which for brainstorming interview stories?',
+    hostQuestionAnswer: 'Careful for anything a customer relies on, Bold for brainstorming. (Sets up the interview-prep build later)',
   },
   4: {
     phoneOneLiner: 'Sounding sure is not being right. The wheel has no ‘I don’t know’ slice.',
@@ -342,7 +345,6 @@ export const ROUND_TAKEAWAYS = {
   },
 };
 
-// E1. Spot it (3 questions verbatim)
 export const SPOT_IT_QUESTIONS = [
   {
     index: 1,

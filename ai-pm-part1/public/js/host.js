@@ -276,10 +276,32 @@ function goToStage(index, broadcast = true) {
 
 function renderRoleBox(roundNum) {
   const t = ROUND_TAKEAWAYS[roundNum];
+  if (!t) return '';
+  const lines = [t.roleLine, t.extraRoleLine].filter(Boolean);
   return `
     <div class="host-role-box">
-      <div>${esc(t.roleLine)}</div>
-      <div><span class="host-pm-move">The PM move:</span> ${esc(t.pmMove)}</div>
+      ${lines.length > 1 ? `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 4px;">
+          ${lines.map((line, idx) => `
+            <div class="card" style="padding: 16px 18px; margin: 0; font-size: clamp(19px, 1.6vw, 23px); line-height: 1.42; background: var(--surface); border: 2px solid var(--border-strong);">
+              <span class="pill ${idx === 0 ? '' : 'pill-accent'}" style="font-size: 13px; margin-bottom: 8px; display: inline-block;">
+                ${idx === 0 ? 'QA & Testing' : 'Product Owner & Scrum Lead'}
+              </span>
+              <div>${esc(line)}</div>
+            </div>
+          `).join('')}
+        </div>
+      ` : `
+        <div>${esc(t.roleLine)}</div>
+      `}
+      <div style="margin-top: 2px;"><span class="host-pm-move">The PM move:</span> ${esc(t.pmMove)}</div>
+      ${t.hostQuestion ? `
+        <div style="margin-top: 10px; padding: 14px 20px; background: rgba(24, 138, 178, 0.12); border-left: 4px solid var(--accent); border-radius: var(--radius-sm);">
+          <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 4px;">Host question for 30-second discussion</div>
+          <div style="font-size: clamp(20px, 1.7vw, 25px); font-weight: 800; color: var(--ink);">“${esc(t.hostQuestion)}”</div>
+          <div style="font-size: 16px; color: var(--ink-muted); margin-top: 4px;">The answers (${esc(t.hostQuestionAnswer)}) set up the interview-prep build later.</div>
+        </div>
+      ` : ''}
     </div>
   `;
 }
@@ -361,11 +383,19 @@ function renderStage() {
     return;
   }
 
-  if (stage.type === 'hold') {
+    if (stage.type === 'hold') {
+    const t = ROUND_TAKEAWAYS[stage.round];
     mainEl.innerHTML = `
       <div class="host-slide">
         <div class="host-kicker">${esc(stage.roundName)} · Complete</div>
         <h1 class="host-title">Ready to move on</h1>
+        ${t?.hostQuestion ? `
+          <div class="card" style="max-width: 900px; margin: 16px 0; padding: 18px 22px; border-left: 5px solid var(--accent); background: rgba(24, 138, 178, 0.12); text-align: left;">
+            <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 4px;">30-second discussion question</div>
+            <div style="font-size: 24px; font-weight: 800; color: var(--ink);">“${esc(t.hostQuestion)}”</div>
+            <div style="font-size: 17px; color: var(--ink-muted); margin-top: 6px;">Answers: ${esc(t.hostQuestionAnswer)}</div>
+          </div>
+        ` : ''}
         <p class="host-copy-muted">Up next: ${esc(stage.nextLabel)}</p>
       </div>
     `;
