@@ -1297,12 +1297,6 @@ function renderReveal(stage) {
         <div class="host-kicker">${esc(kicker)}</div>
         <h1 class="host-title">What just happened?</h1>
         <p class="host-copy" style="font-size: clamp(28px, 2.4vw, 36px); font-weight: 700;">Same resume, several spins, different answers.</p>
-        <details class="host-notes-drawer" style="margin-top: 24px; max-width: 900px; font-size: 16px; color: var(--ink-muted); border-top: 1px dashed var(--border); padding-top: 12px;">
-          <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Presenter Talking Notes</summary>
-          <div style="margin-top: 8px; line-height: 1.5; font-size: 18px; background: rgba(0,0,0,0.04); padding: 12px 16px; border-radius: var(--radius-sm);">
-            Nothing about the person changed between spins. The wheel didn’t look up an answer. It drew one, from slices sized by how likely each outcome is for someone with this resume. So which spin was right? Maybe all of them. Maybe none.
-          </div>
-        </details>
       </div>
     `;
     return;
@@ -1405,12 +1399,6 @@ function renderReveal(stage) {
         <p class="host-copy" style="font-size: clamp(28px, 2.4vw, 34px); font-weight: 700;">Normal software is predictable.</p>
         <div class="host-callout host-callout-dream">A normal product ships a button. An AI product ships a wheel. Someone decides what is on it and how big each slice is.</div>
         ${renderRoleBox(1)}
-        <details class="host-notes-drawer" style="margin-top: 24px; max-width: 900px; font-size: 16px; color: var(--ink-muted); border-top: 1px dashed var(--border); padding-top: 12px;">
-          <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Presenter Talking Notes</summary>
-          <div style="margin-top: 8px; line-height: 1.5; font-size: 18px; background: rgba(0,0,0,0.04); padding: 12px 16px; border-radius: var(--radius-sm);">
-            The same input always gives the same output, so you can test it once and trust it. An AI product isn’t. Ask it the same thing twice and you may get two different answers, as you just saw. That changes a PM’s job. You can’t check one result and call it done. You have to decide how much variety is acceptable, and test many times, not once.
-          </div>
-        </details>
       </div>
     `;
     return;
@@ -1452,12 +1440,6 @@ function renderReveal(stage) {
         <div class="host-kicker">${esc(kicker)}</div>
         <h1 class="host-title">Why the slices moved?</h1>
         <p class="host-copy" style="font-size: clamp(28px, 2.4vw, 36px); font-weight: 700;">Look at what the four new lines have in common.</p>
-        <details class="host-notes-drawer" style="margin-top: 24px; max-width: 900px; font-size: 16px; color: var(--ink-muted); border-top: 1px dashed var(--border); padding-top: 12px;">
-          <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Presenter Talking Notes</summary>
-          <div style="margin-top: 8px; line-height: 1.5; font-size: 18px; background: rgba(0,0,0,0.04); padding: 12px 16px; border-radius: var(--radius-sm);">
-            Numbers: 20%, 10%, 15%. People: a team to cover for, two interns to mentor. The old lines said what he did. The new ones say what happened because he did it. The wheel doesn’t know Sanket. It only reads the page. What you hand an AI like this is called its <strong>context</strong> (or <strong>prompt</strong>), and changing it changes the answer.
-          </div>
-        </details>
       </div>
     `;
     return;
@@ -1470,12 +1452,6 @@ function renderReveal(stage) {
         <h1 class="host-title">Why this matters?</h1>
         <p class="host-copy" style="font-size: clamp(28px, 2.4vw, 34px); font-weight: 700;">Context is the cheapest lever a product manager has.</p>
         ${renderRoleBox(2)}
-        <details class="host-notes-drawer" style="margin-top: 24px; max-width: 900px; font-size: 16px; color: var(--ink-muted); border-top: 1px dashed var(--border); padding-top: 12px;">
-          <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Presenter Talking Notes</summary>
-          <div style="margin-top: 8px; line-height: 1.5; font-size: 18px; background: rgba(0,0,0,0.04); padding: 12px 16px; border-radius: var(--radius-sm);">
-            No new model, no new code. Change what goes in, and the same system answers differently. It also moves for anyone who writes the right words, true or not.
-          </div>
-        </details>
       </div>
     `;
     return;
@@ -1518,12 +1494,6 @@ function renderReveal(stage) {
         <div class="host-kicker">${esc(kicker)}</div>
         <h1 class="host-title">What the dial does?</h1>
         <p class="host-copy" style="font-size: clamp(28px, 2.4vw, 36px); font-weight: 700;">It doesn’t add or remove a role. It only reshapes the slices.</p>
-        <details class="host-notes-drawer" style="margin-top: 24px; max-width: 900px; font-size: 16px; color: var(--ink-muted); border-top: 1px dashed var(--border); padding-top: 12px;">
-          <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Presenter Talking Notes</summary>
-          <div style="margin-top: 8px; line-height: 1.5; font-size: 18px; background: rgba(0,0,0,0.04); padding: 12px 16px; border-radius: var(--radius-sm);">
-            Careful makes the biggest slice bigger. Bold flattens everything toward equal, so rare roles get a real chance. In AI this dial is called <strong>temperature</strong>. Low gives predictable, repeatable answers. High gives varied, surprising ones, and more of them are wrong.
-          </div>
-        </details>
       </div>
     `;
     return;
@@ -1558,12 +1528,6 @@ function renderReveal(stage) {
         <div class="host-kicker">${esc(kicker)}</div>
         <h1 class="host-title">What happened?</h1>
         <p class="host-copy" style="font-size: clamp(28px, 2.4vw, 36px); font-weight: 700;">The wheel gave statements about Sanket (and about you) in the same confident tone, true or not.</p>
-        <details class="host-notes-drawer" style="margin-top: 24px; max-width: 900px; font-size: 16px; color: var(--ink-muted); border-top: 1px dashed var(--border); padding-top: 12px;">
-          <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Presenter Talking Notes</summary>
-          <div style="margin-top: 8px; line-height: 1.5; font-size: 18px; background: rgba(0,0,0,0.04); padding: 12px 16px; border-radius: var(--radius-sm);">
-            The invented ones weren’t random noise. They were plausible: the kind of thing a person with your background might have done.
-          </div>
-        </details>
       </div>
     `;
     return;
@@ -1575,12 +1539,6 @@ function renderReveal(stage) {
         <div class="host-kicker">${esc(kicker)}</div>
         <h1 class="host-title">Why it lies so smoothly?</h1>
         <p class="host-copy" style="font-size: clamp(28px, 2.4vw, 36px); font-weight: 700;">The wheel only has real words, and it picks what usually comes next.</p>
-        <details class="host-notes-drawer" style="margin-top: 24px; max-width: 900px; font-size: 16px; color: var(--ink-muted); border-top: 1px dashed var(--border); padding-top: 12px;">
-          <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Presenter Talking Notes</summary>
-          <div style="margin-top: 8px; line-height: 1.5; font-size: 18px; background: rgba(0,0,0,0.04); padding: 12px 16px; border-radius: var(--radius-sm);">
-            It has no ‘I don’t know’ slice, so it always lands somewhere, and it lands in the same confident voice. This is called <strong>hallucination</strong>: fluent output that isn’t grounded in anything true.
-          </div>
-        </details>
       </div>
     `;
     return;
@@ -1605,12 +1563,6 @@ function renderReveal(stage) {
         <div class="host-kicker">${esc(kicker)}</div>
         <h1 class="host-title">What the wheel learned from?</h1>
         <p class="host-copy" style="font-size: clamp(28px, 2.4vw, 36px); font-weight: 700;">In these 100 careers, only 4 became product managers.</p>
-        <details class="host-notes-drawer" style="margin-top: 24px; max-width: 900px; font-size: 16px; color: var(--ink-muted); border-top: 1px dashed var(--border); padding-top: 12px;">
-          <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Presenter Talking Notes</summary>
-          <div style="margin-top: 8px; line-height: 1.5; font-size: 18px; background: rgba(0,0,0,0.04); padding: 12px 16px; border-radius: var(--radius-sm);">
-            Almost none were switchers like Sanket. So his Product Manager slice was 4% on our wheel. Add 30 switchers who made it, and the same slice becomes about 14%. Same wheel, same resume, different history. The counts are an illustration. The real wheel learned from millions of careers, and the effect is the same.
-          </div>
-        </details>
       </div>
     `;
     return;
@@ -1622,12 +1574,6 @@ function renderReveal(stage) {
         <div class="host-kicker">${esc(kicker)}</div>
         <h1 class="host-title">Who is in the data?</h1>
         <p class="host-copy" style="font-size: clamp(28px, 2.4vw, 36px); font-weight: 700;">The wheel doesn’t judge Sanket. It repeats the past.</p>
-        <details class="host-notes-drawer" style="margin-top: 24px; max-width: 900px; font-size: 16px; color: var(--ink-muted); border-top: 1px dashed var(--border); padding-top: 12px;">
-          <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Presenter Talking Notes</summary>
-          <div style="margin-top: 8px; line-height: 1.5; font-size: 18px; background: rgba(0,0,0,0.04); padding: 12px 16px; border-radius: var(--radius-sm);">
-            Whoever is thin in its data is thin on the wheel. That is <strong>bias</strong>, and the data it learned from is called <strong>training data</strong>. Data also ages, and it freezes the menu too. A wheel painted in 2019 has no AI Product Manager slice, so it can never land there. Update the wheel for today and two slices appear. Repainting a wheel costs time and money, which Part 2 is about.
-          </div>
-        </details>
       </div>
     `;
     return;
@@ -1640,12 +1586,6 @@ function renderReveal(stage) {
         <h1 class="host-title">One more question?</h1>
         <p class="host-copy" style="font-size: clamp(28px, 2.4vw, 34px); font-weight: 700;">Those 100 dots were real people’s career histories.</p>
         ${renderRoleBox(5)}
-        <details class="host-notes-drawer" style="margin-top: 24px; max-width: 900px; font-size: 16px; color: var(--ink-muted); border-top: 1px dashed var(--border); padding-top: 12px;">
-          <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Presenter Talking Notes</summary>
-          <div style="margin-top: 8px; line-height: 1.5; font-size: 18px; background: rgba(0,0,0,0.04); padding: 12px 16px; border-radius: var(--radius-sm);">
-            Did they know they would be used to teach a wheel? Can one dot ask to be removed? The people who build the data pipelines usually know whether names are stripped and consent is recorded, which is why these are product decisions, not only legal ones.
-          </div>
-        </details>
       </div>
     `;
     return;
