@@ -122,6 +122,16 @@ export function AppExecutive() {
     window.open(`https://wa.me/message/GH5C7YLAYIEHN1?text=${encodeURIComponent(intent)}`, '_blank', 'noopener,noreferrer');
   };
 
+  const handleInterviewEnroll = () => {
+    const intent = `Hi, I want to enroll for PM-X Interview Module (₹7,000 for first 8 weeks live out-loud practice + 2 live 1:1 mocks)`;
+    window.open(`https://wa.me/message/GH5C7YLAYIEHN1?text=${encodeURIComponent(intent)}`, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleProfileEnroll = () => {
+    const intent = `Hi, I want to enroll for PM-X Profile Enhancer Module (₹7,000 for last 4 weeks resume, LinkedIn & portfolio overhaul)`;
+    window.open(`https://wa.me/message/GH5C7YLAYIEHN1?text=${encodeURIComponent(intent)}`, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div className="min-h-screen bg-[#FDFCF7] text-[#141413] font-sans selection:bg-[#FFF3A7] selection:text-[#141413] font-medium">
       
@@ -349,7 +359,7 @@ export function AppExecutive() {
             {/* 3. High-Converting CTA Action Bar & Micro-Trust Badge */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4">
               <button
-                onClick={() => scrollToSection('pricing')}
+                onClick={() => scrollToSection('system')}
                 className="w-full sm:w-auto px-7 py-3.5 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[4px_4px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[5px_5px_0px_0px_#141413] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#141413] transition-all text-xs sm:text-sm uppercase cursor-pointer inline-flex items-center justify-center gap-2"
               >
                 <span>Apply for 1st Dec Cohort</span>
@@ -773,7 +783,7 @@ export function AppExecutive() {
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                     {/* Primary Button */}
                     <button
-                      onClick={() => scrollToSection('pricing')}
+                      onClick={() => scrollToSection('system')}
                       className="px-7 py-3.5 rounded-full bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#141413] font-black text-sm uppercase shadow-[0px_4px_0px_0px_#141413] hover:translate-y-[-1px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer text-center"
                     >
                       Reserve your seat ➜
@@ -1113,13 +1123,16 @@ export function AppExecutive() {
                 <div className="rounded-2xl border-2 border-[#141413] bg-[#FEF08A] p-4 flex flex-wrap items-center justify-between gap-3 shadow-[0px_2px_0px_0px_#141413]">
                   <div className="text-xs font-black text-[#141413]">
                     YOU LEAVE WITH: A working AI product + AI PRD + 20-case test set + 3 1:1 Checkpoints + All modules included.
+                    <span className="block mt-0.5 text-[11px] font-bold text-[#141413]/85">
+                      💡 In transition? You can pay in installments if you are in the transition journey of your job.
+                    </span>
                   </div>
                   <div className="flex items-center gap-2.5 flex-wrap shrink-0">
                     <button
-                      onClick={() => scrollToSection('pricing')}
-                      className="px-5 py-2 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer shrink-0"
+                      onClick={handleMainEnroll}
+                      className="px-5 py-2 rounded-full bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer shrink-0"
                     >
-                      Apply for AI PM (₹30,000) ➜
+                      Apply on WhatsApp (₹30,000) ➜
                     </button>
                     <button
                       onClick={() => {
@@ -1195,13 +1208,10 @@ export function AppExecutive() {
                       Included in AI PM Cohort, or standalone at ₹7,000
                     </span>
                     <button
-                      onClick={() => {
-                        setSelectedInterview(true);
-                        scrollToSection('modular');
-                      }}
-                      className="px-4 py-2 rounded-full bg-white hover:bg-slate-50 text-[#141413] border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_2px_0px_0px_#141413] cursor-pointer shrink-0"
+                      onClick={handleInterviewEnroll}
+                      className="px-4 py-2 rounded-full bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_2px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_4px_0px_0px_#141413] transition-all cursor-pointer shrink-0"
                     >
-                      Enroll for ₹7k ➜
+                      Enroll on WhatsApp (₹7k) ➜
                     </button>
                   </div>
                 </div>
@@ -1263,13 +1273,10 @@ export function AppExecutive() {
                       Included in AI PM Cohort, or standalone at ₹7,000
                     </span>
                     <button
-                      onClick={() => {
-                        setSelectedProfile(true);
-                        scrollToSection('modular');
-                      }}
-                      className="px-4 py-2 rounded-full bg-white hover:bg-slate-50 text-[#141413] border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_2px_0px_0px_#141413] cursor-pointer shrink-0"
+                      onClick={handleProfileEnroll}
+                      className="px-4 py-2 rounded-full bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_2px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_4px_0px_0px_#141413] transition-all cursor-pointer shrink-0"
                     >
-                      Enroll for ₹7k ➜
+                      Enroll on WhatsApp (₹7k) ➜
                     </button>
                   </div>
                 </div>
@@ -1482,8 +1489,8 @@ export function AppExecutive() {
                     <span>Download Brochure (PDF)</span>
                   </button>
                   <button
-                    onClick={() => scrollToSection('pricing')}
-                    className="px-5 py-2 rounded-full bg-[#188ab2] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer"
+                    onClick={handleMainEnroll}
+                    className="px-5 py-2 rounded-full bg-[#188ab2] hover:bg-[#0f6f8f] text-white border-2 border-[#141413] text-xs font-black uppercase font-mono shadow-[0px_3px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_5px_0px_0px_#141413] transition-all cursor-pointer"
                   >
                     Reserve AI PM for ₹30,000 ➜
                   </button>
@@ -1774,318 +1781,15 @@ export function AppExecutive() {
           </div>
         </section>
 
-        {/* 12. CHOOSE YOUR PLAN (PRICING) */}
+        {/* 12. ONLY NEED ONE PIECE? (MODULAR ENROLLMENT & POLICIES) */}
         <section id="pricing" className="py-20 bg-slate-50 border-b-2 border-[#141413] scroll-mt-20">
           <div className="container mx-auto px-6 max-w-5xl text-center">
             
-            <div className="inline-block mb-3">
-              <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1 font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] rotate-[-1deg] inline-block select-none">
-                TRANSPARENT PRICING · PM-X ACCELERATOR
-              </span>
-            </div>
-            
-            <h2 className="text-3xl md:text-5xl font-black text-[#141413] mb-3 tracking-tight">
-              Choose your{' '}
-              <span className="inline-block bg-[#FEF08A] border-2 border-[#141413] rounded-xl px-3.5 py-0.5 rotate-[1.5deg] shadow-[0px_3px_0px_0px_#141413]">
-                plan
-              </span>
-            </h2>
-            
-            <p className="text-sm sm:text-base font-bold text-[#141413]/80 max-w-xl mx-auto mb-12">
-              Module ₹7,000 each · AI PM ₹30,000 · Starts 1st Dec 2026
-            </p>
-
-            {/* Main Pricing Layout: Top Card = AI PM Cohort; Side by Side Below = Interview Module & Profile Enhancer */}
-            <div className="max-w-5xl mx-auto mb-10 flex flex-col gap-6 text-left">
-              
-              {/* TOP HERO CARD: THE AI PM COHORT (ALL-INCLUSIVE FLAGSHIP) */}
-              <div className="bg-[#FFFDF5] rounded-3xl border-2 sm:border-[2.5px] border-[#141413] p-7 sm:p-9 shadow-[0px_8px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_11px_0px_0px_#141413] transition-all relative">
-                
-                {/* Popular Badge Top Right */}
-                <div className="absolute -top-3.5 right-6 bg-[#FEF08A] rounded-full border-2 border-[#141413] px-3.5 py-0.5 font-mono font-black text-[11px] uppercase shadow-[0px_2px_0px_0px_#141413] rotate-[1.5deg]">
-                  BEST VALUE · ALL MODULES INCLUDED
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="bg-[#188ab2] text-white rounded-full border-2 border-[#141413] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[0px_1.5px_0px_0px_#141413]">
-                        FLAGSHIP · 12 WEEKS LIVE
-                      </span>
-                      <span className="bg-[#A7F3D0] text-emerald-950 rounded-full border-2 border-[#141413] px-3 py-1 font-mono font-black text-xs uppercase shadow-[0px_1.5px_0px_0px_#141413]">
-                        STARTS 1ST DEC · CAPPED AT 15 SEATS
-                      </span>
-                    </div>
-                    <span className="text-xs font-mono font-black text-emerald-700 uppercase">
-                      JOINING BY CONVERSATION
-                    </span>
-                  </div>
-
-                  <h3 className="text-2xl sm:text-3xl font-black text-[#141413] mb-2 tracking-tight">
-                    The AI PM Cohort
-                  </h3>
-
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="font-mono font-black text-4xl sm:text-5xl text-[#188ab2]">
-                      ₹30,000
-                    </span>
-                    <span className="font-mono font-bold text-slate-500 text-sm">
-                      (All-Inclusive for 12 Weeks)
-                    </span>
-                  </div>
-
-                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 mb-4 leading-snug">
-                    12 weeks. One real AI product built from your own domain. Full access to the AI PM Track, Interview Module (Weeks 1–8), Profile Enhancer (Weeks 9–12), 3 1:1 checkpoints, and permanent Learn Library.
-                  </p>
-
-                  <div className="border-t-2 border-[#141413]/15 pt-5 mb-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm font-bold text-[#141413]">
-                      <ul className="space-y-2.5">
-                        <li className="flex items-start gap-2.5">
-                          <span className="text-emerald-600 font-black mt-0.5">✓</span>
-                          <span><strong>One real AI product</strong> built from your own domain and shipped to real users</span>
-                        </li>
-                        <li className="flex items-start gap-2.5">
-                          <span className="text-emerald-600 font-black mt-0.5">✓</span>
-                          <span><strong>AI PRD and 20-case test set</strong> to prove evaluation, safety guardrails &amp; thinking</span>
-                        </li>
-                        <li className="flex items-start gap-2.5">
-                          <span className="text-emerald-600 font-black mt-0.5">✓</span>
-                          <span><strong>3 dedicated 1:1 mentor checkpoints</strong> (Weeks 4, 8, 12) with MSFT &amp; Mastercard PMs</span>
-                        </li>
-                        <li className="flex items-start gap-2.5">
-                          <span className="text-emerald-600 font-black mt-0.5">✓</span>
-                          <span><strong>Full mock interview loop</strong> run directly on your own product build</span>
-                        </li>
-                      </ul>
-                      <ul className="space-y-2.5">
-                        <li className="flex items-start gap-2.5">
-                          <span className="text-emerald-600 font-black mt-0.5">✓</span>
-                          <span><strong>Interview Module included:</strong> First 8 weeks of live out-loud mock practice + 2 live 1:1 mocks</span>
-                        </li>
-                        <li className="flex items-start gap-2.5">
-                          <span className="text-emerald-600 font-black mt-0.5">✓</span>
-                          <span><strong>Profile Enhancer included:</strong> Last 4 weeks of resume rewrite, LinkedIn overhaul &amp; portfolio pack</span>
-                        </li>
-                        <li className="flex items-start gap-2.5">
-                          <span className="text-emerald-600 font-black mt-0.5">✓</span>
-                          <span><strong>Learn Module free:</strong> Recorded lectures, question bank, case resources, and PM Gym</span>
-                        </li>
-                        <li className="flex items-start gap-2.5">
-                          <span className="text-emerald-600 font-black mt-0.5">✓</span>
-                          <span><strong>StepSmart PM Job Board access</strong> free for 3 months</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t-2 border-[#141413]/15 flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <button
-                    onClick={handleMainEnroll}
-                    className="w-full sm:w-auto px-8 py-4 bg-[#188ab2] hover:bg-[#0f6f8f] text-white rounded-full border-2 border-[#141413] font-black text-sm uppercase shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer text-center block"
-                  >
-                    Reserve AI PM for ₹30,000 ➜
-                  </button>
-                  <p className="text-[11px] font-bold text-[#188ab2] text-center sm:text-right">
-                    Apply for 15-min alignment call · ₹1,000 seat-hold adjusted in fee
-                  </p>
-                </div>
-              </div>
-
-              {/* SIDE BY SIDE ROW BELOW AI PM: INTERVIEW MODULE & PROFILE ENHANCER */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-                
-                {/* Standalone Interview Module Card */}
-                <div className="bg-white rounded-3xl border-2 border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_9px_0px_0px_#141413] transition-all">
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="bg-[#D1FAE5] text-emerald-950 rounded-full border-2 border-[#141413] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[0px_1.5px_0px_0px_#141413]">
-                        FIRST 8 WEEKS (W1–W8)
-                      </span>
-                      <span className="text-xs font-mono font-bold text-slate-500 uppercase">
-                        STANDALONE MODULE
-                      </span>
-                    </div>
-
-                    <h3 className="text-2xl font-black text-[#141413] mb-1 tracking-tight">
-                      Interview Module
-                    </h3>
-
-                    <div className="flex items-baseline gap-2 mb-3">
-                      <span className="font-mono font-black text-4xl text-[#141413]">
-                        ₹7,000
-                      </span>
-                      <span className="font-mono font-bold text-slate-500 text-xs">
-                        (or included with AI PM)
-                      </span>
-                    </div>
-
-                    <p className="text-xs font-bold text-[#188ab2] mb-4 leading-snug">
-                      8 live Saturday sessions + out-loud mock drills. Clarifying questions, product sense, RCA, metrics drop, estimation &amp; behavioral stories under pressure.
-                    </p>
-
-                    <div className="border-t-2 border-[#141413]/15 pt-4 mb-6">
-                      <ul className="space-y-2.5 text-xs sm:text-sm font-bold text-[#141413]">
-                        <li className="flex items-start gap-2">
-                          <span className="text-[#188ab2] font-black mt-0.5">•</span>
-                          <span>8 live Saturday out-loud practice rounds with immediate critique</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-[#188ab2] font-black mt-0.5">•</span>
-                          <span>Product sense, root cause analysis (RCA), and metric drop diagnosis</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-[#188ab2] font-black mt-0.5">•</span>
-                          <span>Market sizing, guesstimates, and behavioral storytelling frameworks</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-emerald-700 font-black mt-0.5">✦</span>
-                          <span><strong>2 live 1:1 mock interviews</strong> with detailed written scorecard &amp; rubrics</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t-2 border-[#141413]/15">
-                    <button
-                      onClick={() => {
-                        setSelectedInterview(true);
-                        scrollToSection('modular');
-                      }}
-                      className="w-full py-3.5 bg-white hover:bg-slate-50 text-[#141413] rounded-full border-2 border-[#141413] font-black text-sm uppercase shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer text-center block"
-                    >
-                      Reserve Interview Module (₹7,000) ➜
-                    </button>
-                    <p className="text-[11px] font-bold text-[#141413]/70 text-center mt-2">
-                      Join the live cohort for weeks 1–8 · Can add Profile Enhancer later at ₹7,000
-                    </p>
-                  </div>
-                </div>
-
-                {/* Standalone Profile Enhancer Card */}
-                <div className="bg-white rounded-3xl border-2 border-[#141413] p-6 sm:p-8 shadow-[0px_6px_0px_0px_#141413] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0px_9px_0px_0px_#141413] transition-all">
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="bg-[#BAE6FD] text-sky-950 rounded-full border-2 border-[#141413] px-3.5 py-1 font-mono font-black text-xs uppercase shadow-[0px_1.5px_0px_0px_#141413]">
-                        LAST 4 WEEKS (W9–W12)
-                      </span>
-                      <span className="text-xs font-mono font-bold text-slate-500 uppercase">
-                        STANDALONE MODULE
-                      </span>
-                    </div>
-
-                    <h3 className="text-2xl font-black text-[#141413] mb-1 tracking-tight">
-                      Profile Enhancer
-                    </h3>
-
-                    <div className="flex items-baseline gap-2 mb-3">
-                      <span className="font-mono font-black text-4xl text-[#141413]">
-                        ₹7,000
-                      </span>
-                      <span className="font-mono font-bold text-slate-500 text-xs">
-                        (or included with AI PM)
-                      </span>
-                    </div>
-
-                    <p className="text-xs font-bold text-[#188ab2] mb-4 leading-snug">
-                      4 live sessions on profile reconstruction. Map prior experience to PM competencies, line-by-line resume rewrite, LinkedIn makeover &amp; StepSmart job board.
-                    </p>
-
-                    <div className="border-t-2 border-[#141413]/15 pt-4 mb-6">
-                      <ul className="space-y-2.5 text-xs sm:text-sm font-bold text-[#141413]">
-                        <li className="flex items-start gap-2">
-                          <span className="text-[#188ab2] font-black mt-0.5">•</span>
-                          <span>4 live sessions: Translate tech/analyst/ops work into PM signals</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-[#188ab2] font-black mt-0.5">•</span>
-                          <span>Complete PM resume rewrite emphasizing quantifiable business outcomes</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-[#188ab2] font-black mt-0.5">•</span>
-                          <span>LinkedIn profile overhaul &amp; personal transition narrative</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-sky-700 font-black mt-0.5">✦</span>
-                          <span><strong>StepSmart PM Job Board:</strong> 3 months free access to daily curated PM roles</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t-2 border-[#141413]/15">
-                    <button
-                      onClick={() => {
-                        setSelectedProfile(true);
-                        scrollToSection('modular');
-                      }}
-                      className="w-full py-3.5 bg-white hover:bg-slate-50 text-[#141413] rounded-full border-2 border-[#141413] font-black text-sm uppercase shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer text-center block"
-                    >
-                      Reserve Profile Enhancer (₹7,000) ➜
-                    </button>
-                    <p className="text-[11px] font-bold text-[#141413]/70 text-center mt-2">
-                      Join the live cohort for weeks 9–12 · Can add Interview Module later at ₹7,000
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-
-            {/* Under both cards */}
-            <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 sm:p-8 shadow-[0px_4px_0px_0px_#141413] text-left max-w-5xl mx-auto mb-10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 divide-y-2 md:divide-y-0 md:divide-x-2 divide-[#141413]/15">
-                
-                {/* Payment */}
-                <div className="pt-4 md:pt-0 md:px-4 first:pt-0 first:pl-0">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="text-base">💳</span>
-                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#141413]">
-                      Payment
-                    </h4>
-                  </div>
-                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 leading-relaxed">
-                    UPI only
-                  </p>
-                </div>
-
-                {/* Refund */}
-                <div className="pt-4 md:pt-0 md:px-4">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="text-base">🛡️</span>
-                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#141413]">
-                      Refund
-                    </h4>
-                  </div>
-                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 leading-relaxed">
-                    If you leave after the first week, receive a complete full refund — no friction, no hassle.
-                  </p>
-                </div>
-
-                {/* No promises */}
-                <div className="pt-4 md:pt-0 md:px-4">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="text-base">🤝</span>
-                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#141413]">
-                      No promises
-                    </h4>
-                  </div>
-                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 leading-relaxed">
-                    We don’t guarantee a job. We give you the resume, projects and practice that prepare you for interviews.
-                  </p>
-                </div>
-
-              </div>
-            </div>
-
-            {/* 13. ONLY NEED ONE PIECE? (Modular Unbundling Section) */}
-            <div id="modular" className="mt-16 pt-12 border-t-2 border-dashed border-[#141413]/30 scroll-mt-20">
+            <div id="modular" className="scroll-mt-20">
               
               {/* Header Pill */}
               <div className="inline-block mb-4">
-                <span className="bg-white rounded-full border-2 border-[#141413] px-4 py-1.5 font-mono font-black text-xs uppercase tracking-wider shadow-[0px_2px_0px_0px_#141413] inline-block select-none">
+                <span className="bg-[#FEF08A] rounded-full border-2 border-[#141413] px-4 py-1.5 font-mono font-black text-xs uppercase tracking-wider shadow-[0px_2px_0px_0px_#141413] inline-block select-none">
                   {isEarlyBird ? 'MODULAR UNBUNDLING · DIWALI OFFER' : 'MODULAR ENROLLMENT · PM-X ACCELERATOR'}
                 </span>
               </div>
@@ -2198,7 +1902,7 @@ export function AppExecutive() {
                     onClick={handleModularEnroll}
                     className="w-full sm:w-auto px-10 py-4.5 rounded-full font-black uppercase text-xs sm:text-sm border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[0px_4px_0px_0px_#141413] hover:-translate-y-0.5 hover:shadow-[0px_6px_0px_0px_#141413] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
                   >
-                    Enroll in {modularLabel} for ₹{modularTotal.toLocaleString('en-IN')} ➜
+                    Enroll in {modularLabel} for ₹{modularTotal.toLocaleString('en-IN')} on WhatsApp ➜
                   </button>
                 ) : (
                   <button
@@ -2213,13 +1917,72 @@ export function AppExecutive() {
               {/* Navigation Back Link */}
               <div className="mt-6">
                 <button
-                  onClick={() => scrollToSection('pricing')}
+                  onClick={() => scrollToSection('system')}
                   className="text-xs sm:text-sm font-bold text-[#141413] underline hover:text-[#188ab2] cursor-pointer inline-flex items-center gap-1.5"
                 >
-                  <span>Looking for the full AI PM cohort instead? Jump to full cohort details &amp; pricing ↑</span>
+                  <span>Looking for the full AI PM cohort instead? Jump to cohort modules &amp; flagship details ↑</span>
                 </button>
               </div>
 
+            </div>
+
+            {/* Payment, Installments, Refund & Transparency Box placed below Only Need One Piece */}
+            <div className="bg-white rounded-2xl border-2 border-[#141413] p-6 sm:p-8 shadow-[0px_4px_0px_0px_#141413] text-left max-w-4xl mx-auto mt-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 divide-y-2 sm:divide-y-0 sm:divide-x-2 divide-[#141413]/15">
+                
+                {/* Payment */}
+                <div className="pt-4 sm:pt-0 sm:px-4 first:pt-0 first:pl-0">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-base">💳</span>
+                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#141413]">
+                      Payment
+                    </h4>
+                  </div>
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 leading-relaxed">
+                    UPI only. Instant payment confirmation &amp; receipt.
+                  </p>
+                </div>
+
+                {/* Installments */}
+                <div className="pt-4 sm:pt-0 sm:px-4">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-base">📅</span>
+                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#141413]">
+                      Installments
+                    </h4>
+                  </div>
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 leading-relaxed">
+                    You can pay in installments if you are in the transition journey of your job.
+                  </p>
+                </div>
+
+                {/* Refund */}
+                <div className="pt-4 sm:pt-0 sm:px-4">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-base">🛡️</span>
+                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#141413]">
+                      Refund
+                    </h4>
+                  </div>
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 leading-relaxed">
+                    If you leave after the first week, receive a complete full refund — no friction, no hassle.
+                  </p>
+                </div>
+
+                {/* No promises */}
+                <div className="pt-4 sm:pt-0 sm:px-4">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-base">🤝</span>
+                    <h4 className="font-mono font-black text-xs uppercase tracking-wider text-[#141413]">
+                      No promises
+                    </h4>
+                  </div>
+                  <p className="text-xs sm:text-sm font-bold text-[#141413]/85 leading-relaxed">
+                    We don’t guarantee a job. We give you the resume, projects and practice that prepare you for interviews.
+                  </p>
+                </div>
+
+              </div>
             </div>
 
           </div>
