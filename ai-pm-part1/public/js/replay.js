@@ -751,9 +751,26 @@ function renderReplayReveal(stage) {
       <h1 class="phone-h1">${esc(stage.title)}</h1>
       ${visual}
       <p class="phone-text">${esc(copyMap[`${stage.round}_${stage.panel}`] || '')}</p>
-      ${isLastPanel ? `<div class="card-subtle" style="display:flex; flex-direction:column; gap:8px;">
-        <p class="phone-text">${esc(t.roleLine)}</p>
+      ${isLastPanel ? `<div class="card-subtle" style="display:flex; flex-direction:column; gap:10px;">
+        ${(t.extraRoleLine ? [
+          { role: 'QA & Testing', line: t.roleLine },
+          { role: 'Product Owner & Scrum Lead', line: t.extraRoleLine }
+        ] : [
+          { role: null, line: t.roleLine }
+        ]).map(item => `
+          <div>
+            ${item.role ? `<span class="pill" style="font-size: 11px; margin-bottom: 4px; display: inline-block;">${item.role}</span>` : ''}
+            <p class="phone-text">${esc(item.line)}</p>
+          </div>
+        `).join('')}
         <p class="phone-text" style="font-weight:700; color:var(--dream);">The PM move: ${esc(t.pmMove)}</p>
+        ${t.hostQuestion ? `
+          <div style="margin-top: 4px; padding: 10px 14px; background: rgba(24, 138, 178, 0.08); border-left: 3px solid var(--accent); border-radius: var(--radius-sm);">
+            <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 0.05em;">Discussion question</div>
+            <div style="font-size: 15px; font-weight: 700; color: var(--ink); margin-top: 2px;">“${esc(t.hostQuestion)}”</div>
+            <div style="font-size: 13px; color: var(--ink-muted); margin-top: 2px;">The answers (${esc(t.hostQuestionAnswer)}) set up the interview-prep build later.</div>
+          </div>
+        ` : ''}
       </div>` : ''}
     </div>
   `;
