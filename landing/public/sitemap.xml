@@ -33,8 +33,14 @@
   </url>
   <url>
     <loc>https://www.stepsmart.net/blog</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.stepsmart.net/blog/pm-interview-prep-toolkit</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>

@@ -1392,6 +1392,76 @@ export function LandingPortalDashboard() {
                   </div>
                 </div>
 
+                {/* ── COURSE 3: AI SEEKHO, AI APNAO (AI FOR BEGINNERS) ── */}
+                <div style={{ ...s.courseCard, border: '2px solid #027A9B', position: 'relative' }}>
+                  <div style={{ position: 'absolute', top: '-12px', right: '24px', background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)', color: '#ffffff', fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.75rem', borderRadius: '999px', boxShadow: '0 2px 8px rgba(2, 122, 155, 0.3)' }}>
+                    ✨ NEW COHORT · LIVE COMPANION
+                  </div>
+
+                  <div>
+                    <div style={{ ...s.courseBadge, background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0' }}>
+                      <Sparkles size={13} />
+                      <span>Beginners & All Backgrounds • 75 Min Live + AI Gym</span>
+                    </div>
+
+                    <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.4rem 0' }}>
+                      AI Seekho, AI Apnao
+                    </h3>
+                    <p style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.5, margin: '0 0 1.25rem 0' }}>
+                      Pehle experience karo, phir samjho. An experience-first AI learning companion with bilingual prompts, personal teacher demonstrations, and daily AI Gym streaks.
+                    </p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', padding: '0.85rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', marginBottom: '1.25rem', textAlign: 'center' }}>
+                      <div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#027A9B' }}>75 Min</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Interactive Flow</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#10b981' }}>7</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Hands-on Drills</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#f59e0b' }}>AI Gym</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Daily Streaks</div>
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '1.25rem' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#64748b', letterSpacing: '0.04em', marginBottom: '0.65rem' }}>
+                        Curriculum Highlights:
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                        {[
+                          { time: '0–5m', title: 'Curiosity Hook: Personal Assistant' },
+                          { time: '5–15m', title: 'AI Showcase: AI as Personal Teacher' },
+                          { time: '15–30m', title: 'Hands-on Challenge: Solve Real Problems' },
+                          { time: '60–70m', title: 'Tokens & Prediction: How AI Generates Answers' }
+                        ].map((m, idx) => (
+                          <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.55rem 0.75rem', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', fontSize: '0.8125rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <span style={{ fontWeight: 700, color: '#027A9B', fontSize: '0.75rem', background: '#e0f2fe', padding: '0.15rem 0.45rem', borderRadius: '6px' }}>
+                                {m.time}
+                              </span>
+                              <span style={{ fontWeight: 600, color: '#1e293b' }}>{m.title}</span>
+                            </div>
+                            <CheckCircle2 size={13} style={{ color: '#10b981' }} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
+                    <Link
+                      to="/ai-lms"
+                      style={{ ...s.primaryBtn, background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)', textDecoration: 'none', textAlign: 'center' }}
+                    >
+                      <Zap size={16} fill="#ffffff" />
+                      <span>Launch AI Beginners LMS 🚀</span>
+                    </Link>
+                  </div>
+                </div>
+
               </div>
             </div>
           )}

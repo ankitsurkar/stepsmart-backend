@@ -889,9 +889,25 @@ function BlogPage() {
   const parseMarkdown = (text: string) => {
     if (!text) return '<p class="text-slate-400 italic">No content written yet for this post.</p>';
     
+    // 0. Extract fenced code blocks before HTML character escaping
+    const codePlaceholders: { placeholder: string; html: string }[] = [];
+    let processed = text.replace(/```([a-zA-Z0-9_-]*)\r?\n([\s\S]*?)```/g, (match, lang, code) => {
+      const placeholder = `__CODE_BLOCK_PLACEHOLDER_${codePlaceholders.length}__`;
+      const escapedCode = code
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      
+      const label = (lang || '').trim() || 'PROMPT / FILE TEMPLATE';
+      const codeHtml = `<div class="my-8 border border-slate-300 rounded-xl shadow-sm bg-slate-900 overflow-hidden"><div class="flex items-center justify-between px-4 py-2 bg-slate-800 border-b border-slate-700 font-mono text-xs font-bold text-slate-200"><span class="uppercase tracking-wider">${label}</span><span class="text-xs text-slate-400">SELECT &amp; COPY</span></div><pre class="p-4 md:p-5 text-xs sm:text-sm font-mono text-slate-100 whitespace-pre-wrap leading-relaxed overflow-x-auto select-all bg-slate-950">${escapedCode.trim()}</pre></div>`;
+      
+      codePlaceholders.push({ placeholder, html: codeHtml });
+      return placeholder;
+    });
+
     // 1. Extract raw HTML <img> tags before HTML character escaping
     const imgPlaceholders: { placeholder: string; html: string }[] = [];
-    let processed = text.replace(/<img\s+[^>]*src=["']([^"']+)["'][^>]*\/?>/gi, (match, src) => {
+    processed = processed.replace(/<img\s+[^>]*src=["']([^"']+)["'][^>]*\/?>/gi, (match, src) => {
       const formattedSrc = formatImageUrl(src);
       const placeholder = `__HTML_IMG_PLACEHOLDER_${imgPlaceholders.length}__`;
       const altMatch = match.match(/alt=["']([^"']*)["']/i);
@@ -1017,12 +1033,18 @@ function BlogPage() {
       return `<a href="${formattedUrl}" target="_blank" class="text-[#188ab2] hover:underline font-semibold">${text}</a>`;
     });
 
-    // 11. Restore extracted HTML img placeholders
+    // 11. Inline Code `code`
+    html = html.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 font-mono text-xs sm:text-sm font-semibold text-slate-800 rounded">$1</code>');
+
+    // 12. Restore extracted HTML img placeholders & code placeholders
     imgPlaceholders.forEach(({ placeholder, html: phHtml }) => {
       html = html.replace(placeholder, phHtml);
     });
+    codePlaceholders.forEach(({ placeholder, html: phHtml }) => {
+      html = html.replace(placeholder, phHtml);
+    });
 
-    // 12. Paragraph wrapping
+    // 13. Paragraph wrapping
     const blocks = html.split(/\n\n+/);
     html = blocks.map(b => {
       const trimmed = b.trim();

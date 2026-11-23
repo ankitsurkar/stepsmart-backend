@@ -18,6 +18,8 @@ const TIMEZONE_IST = 'Asia/Kolkata';
 
 const COURSE_NAME_OVERRIDES = {
   'course-001': 'PM -X Accelerator',
+  'course-002': 'PM -X First Step',
+  'course-ai-001': 'AI Seekho, AI Apnao',
 };
 
 

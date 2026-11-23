@@ -15,6 +15,7 @@ const PrototypeHeroPage = lazy(() => import('./prototype-hero/PrototypeHeroPage'
 const WhichPmSpinnerPage = lazy(() => import('./WhichPmSpinnerPage').then(m => ({ default: m.WhichPmSpinnerPage })));
 const RamayanaChroniclePage = lazy(() => import('./RamayanaChroniclePage').then(m => ({ default: m.RamayanaChroniclePage })));
 const CaseSimulatorPage = lazy(() => import('./CaseSimulatorPage').then(m => ({ default: m.CaseSimulatorPage })));
+const AiBeginnersLms = lazy(() => import('./AiBeginnersLms'));
 import { DEFAULT_BLOGS, mergeWithDefaultBlogs } from './blogData';
 
 const PageLoader = () => (
@@ -3124,9 +3125,25 @@ function BlogPage() {
   const parseMarkdown = (text: string) => {
     if (!text) return '<p class="text-slate-400 italic">No content written yet for this post.</p>';
     
+    // 0. Extract fenced code blocks before HTML character escaping
+    const codePlaceholders: { placeholder: string; html: string }[] = [];
+    let processed = text.replace(/```([a-zA-Z0-9_-]*)\r?\n([\s\S]*?)```/g, (match, lang, code) => {
+      const placeholder = `__CODE_BLOCK_PLACEHOLDER_${codePlaceholders.length}__`;
+      const escapedCode = code
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      
+      const label = (lang || '').trim() || 'PROMPT / FILE TEMPLATE';
+      const codeHtml = `<div class="my-8 border-[3px] border-[#111111] shadow-[5px_5px_0px_0px_rgba(17,17,17,1)] bg-white overflow-hidden"><div class="flex items-center justify-between px-4 py-2 bg-[#FFF3A7] border-b-[3px] border-[#111111] font-mono text-xs font-black text-[#111111]"><span class="uppercase tracking-wider flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#111111] inline-block"></span>${label}</span><span class="text-[10px] sm:text-xs font-bold text-[#111111]/75 bg-white px-2 py-0.5 border border-[#111111]">SELECT &amp; COPY</span></div><pre class="p-4 md:p-5 text-xs sm:text-sm font-mono text-[#111111] whitespace-pre-wrap leading-relaxed overflow-x-auto select-all bg-[#F8FAFC]">${escapedCode.trim()}</pre></div>`;
+      
+      codePlaceholders.push({ placeholder, html: codeHtml });
+      return placeholder;
+    });
+
     // 1. Extract raw HTML <img> tags before HTML character escaping
     const imgPlaceholders: { placeholder: string; html: string }[] = [];
-    let processed = text.replace(/<img\s+[^>]*src=["']([^"']+)["'][^>]*\/?>/gi, (match, src) => {
+    processed = processed.replace(/<img\s+[^>]*src=["']([^"']+)["'][^>]*\/?>/gi, (match, src) => {
       const formattedSrc = formatImageUrl(src);
       const placeholder = `__HTML_IMG_PLACEHOLDER_${imgPlaceholders.length}__`;
       const altMatch = match.match(/alt=["']([^"']*)["']/i);
@@ -3252,12 +3269,18 @@ function BlogPage() {
       return `<a href="${formattedUrl}" target="_blank" class="text-[#188ab2] hover:underline font-extrabold">${text}</a>`;
     });
 
-    // 11. Restore extracted HTML placeholders
+    // 11. Inline Code `code`
+    html = html.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 bg-[#FFF3A7] border border-[#111111] font-mono text-xs sm:text-sm font-bold text-[#111111]">$1</code>');
+
+    // 12. Restore extracted HTML & code placeholders
     imgPlaceholders.forEach(({ placeholder, html: phHtml }) => {
       html = html.replace(placeholder, phHtml);
     });
+    codePlaceholders.forEach(({ placeholder, html: phHtml }) => {
+      html = html.replace(placeholder, phHtml);
+    });
 
-    // 12. Paragraph wrapping
+    // 13. Paragraph wrapping
     const blocks = html.split(/\n\n+/);
     html = blocks.map(b => {
       const trimmed = b.trim();
@@ -4254,6 +4277,10 @@ export default function App() {
           <Route path="/gym" element={<Navigate to="/resources" replace />} />
           <Route path="/pm-gym" element={<Navigate to="/resources" replace />} />
           <Route path="/resources/gym" element={<Navigate to="/resources" replace />} />
+          <Route path="/ai-lms" element={<AiBeginnersLms />} />
+          <Route path="/ai-beginners" element={<AiBeginnersLms />} />
+          <Route path="/ai" element={<AiBeginnersLms />} />
+          <Route path="/ai-seekho" element={<AiBeginnersLms />} />
           <Route path="/auth" element={<ExternalRedirect to="/learn" />} />
           <Route path="/login" element={<ExternalRedirect to="/learn" />} />
           <Route
