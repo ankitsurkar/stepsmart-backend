@@ -2,6 +2,7 @@ const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, PutCommand, UpdateCommand, QueryCommand, DeleteCommand, ScanCommand, GetCommand } = require('@aws-sdk/lib-dynamodb');
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const nodemailer = require('nodemailer');
+const { BATCH_2_PRODUCT_DESIGN_CASE_STUDY } = require('./batch2GymQuestions');
 
 const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(ddbClient);
@@ -130,8 +131,15 @@ exports.handler = async (event) => {
           },
         }));
 
+        let rawItems = gymQuestionsResult.Items || [];
+        if (targetCourseId === 'course-002' || rawItems.length === 0) {
+          const existingDates = new Set(rawItems.map((q) => q.date));
+          const batch2Items = BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter((q) => !existingDates.has(q.date));
+          rawItems = [...rawItems, ...batch2Items];
+        }
+
         // Mask future questions so future answers are not revealed
-        const gymQuestions = (gymQuestionsResult.Items || []).map((q) => {
+        const gymQuestions = rawItems.map((q) => {
           if (q.date > clientDate) {
             const { correctIndex, correctAnswer, explanation, ...stripped } = q;
             return stripped;

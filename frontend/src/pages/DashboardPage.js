@@ -13,12 +13,13 @@ import { toast } from 'sonner';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { INTERVIEW_CATEGORIES, INTERVIEW_COMPANIES, ALL_INTERVIEW_QUESTIONS } from '../utils/interviewQuestions';
+import { BATCH_2_PRODUCT_DESIGN_CASE_STUDY } from '../utils/batch2GymQuestions';
 
 const TIMEZONE_IST = 'Asia/Kolkata';
 
 const COURSE_NAME_OVERRIDES = {
   'course-001': 'PM -X Accelerator',
-  'course-002': 'PM -X First Step',
+  'course-002': 'PM -X Accelerator (Batch 2)',
   'course-ai-001': 'AI Seekho, AI Apnao',
 };
 
@@ -2416,10 +2417,17 @@ export default function DashboardPage() {
     return [];
   });
   const [gymQuestions, setGymQuestions] = useState(() => {
-    if (clientDashboardCache && clientDashboardCache.username === user?.username) {
-      return clientDashboardCache.gymQuestions || [];
+    let list = [];
+    if (clientDashboardCache && clientDashboardCache.username === user?.username && clientDashboardCache.gymQuestions?.length > 0) {
+      list = clientDashboardCache.gymQuestions;
     }
-    return [];
+    const todayStr = toDateKey(new Date());
+    const existingDates = new Set(list.map(q => q.date));
+    if (!existingDates.has(todayStr)) {
+      list = [...list, ...BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter(q => !existingDates.has(q.date))];
+      list.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    }
+    return list;
   });
   const [gymStreak, setGymStreak] = useState(() => {
     if (clientDashboardCache && clientDashboardCache.username === user?.username) {
@@ -2731,7 +2739,12 @@ export default function DashboardPage() {
       setSupplementalContent(suppData);
 
       const nextGymProgress = progressData.gymProgress || [];
-      const nextGymQuestions = progressData.gymQuestions || [];
+      let nextGymQuestions = progressData.gymQuestions || [];
+      const existingDates = new Set(nextGymQuestions.map(q => q.date));
+      if (!existingDates.has(todayStr) || actualCourse?.name?.toLowerCase().includes('batch 2') || actualCourse?.name?.toLowerCase().includes('accelerator')) {
+        const merged = [...nextGymQuestions, ...BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter(q => !existingDates.has(q.date))];
+        nextGymQuestions = merged.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+      }
       const nextGymStreak = progressData.gymStreak || 0;
 
       setGymProgress(nextGymProgress);
@@ -2802,16 +2815,21 @@ export default function DashboardPage() {
 
       setSupplementalContent(suppData);
 
+      // Resolve the selected course correctly using courseId instead of stale activeCourse state
+      const currentSelectedCourse = (courseList || courses || []).find(c => c.courseId === courseId) || activeCourse || (courseList && courseList[0]) || (courses && courses[0]);
+
       const nextGymProgress = progressRes.data.gymProgress || [];
-      const nextGymQuestions = progressRes.data.gymQuestions || [];
+      let nextGymQuestions = progressRes.data.gymQuestions || [];
+      const existingDates = new Set(nextGymQuestions.map(q => q.date));
+      if (!existingDates.has(todayStr) || currentSelectedCourse?.name?.toLowerCase().includes('batch 2') || currentSelectedCourse?.name?.toLowerCase().includes('accelerator')) {
+        const merged = [...nextGymQuestions, ...BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter(q => !existingDates.has(q.date))];
+        nextGymQuestions = merged.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+      }
       const nextGymStreak = progressRes.data.gymStreak || 0;
 
       setGymProgress(nextGymProgress);
       setGymQuestions(nextGymQuestions);
       setGymStreak(nextGymStreak);
-
-      // Resolve the selected course correctly using courseId instead of stale activeCourse state
-      const currentSelectedCourse = (courseList || courses || []).find(c => c.courseId === courseId) || activeCourse || (courseList && courseList[0]) || (courses && courses[0]);
 
       // Save to module cache & localStorage (including PM Gym data)
       clientDashboardCache = {

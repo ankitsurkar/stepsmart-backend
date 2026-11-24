@@ -19,6 +19,7 @@
 //   GET    /admin/courses/{courseId}/progress            → all student progress for a course
 
 const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm');
+const { BATCH_2_PRODUCT_DESIGN_CASE_STUDY } = require('./batch2GymQuestions');
 const ssm = new SSMClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 
 let cachedSupaUrl = null;
@@ -407,7 +408,15 @@ async function listWeeks(courseId) {
 
   const signedWeeks = await signWeekVideos(rawWeeks);
 
-  const gymQuestions = (gymResult.Items || [])
+  let gymItems = gymResult.Items || [];
+  const existingDates = new Set(gymItems.map((q) => q.date));
+  const todayDateStr = new Date().toISOString().split('T')[0];
+  if (!existingDates.has(todayDateStr) || courseId === 'course-002' || gymItems.length === 0) {
+    const batch2Items = BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter((q) => !existingDates.has(q.date));
+    gymItems = [...gymItems, ...batch2Items];
+  }
+
+  const gymQuestions = gymItems
     .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
 
   const blogs = (blogResult.Items || [])

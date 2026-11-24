@@ -130,9 +130,11 @@ function normalizeResource(resource = '') {
     .replace('{sessionID}', '{sessionId}');
 }
 
+const { BATCH_2_PRODUCT_DESIGN_CASE_STUDY } = require('./batch2GymQuestions');
+
 const COURSE_NAME_OVERRIDES = {
   'course-001': 'PM -X Accelerator',
-  'course-002': 'PM -X First Step',
+  'course-002': 'PM -X Accelerator (Batch 2)',
   'course-ai-001': 'AI Seekho, AI Apnao',
 };
 
@@ -802,13 +804,20 @@ async function getProgressForCourse(courseId, userId, event) {
   const serverDateStr = new Date().toISOString().split('T')[0];
   const clientDate = event.queryStringParameters?.clientDate || serverDateStr;
 
-  const gymQuestions = (gymQuestionsResult.Items || []).map((q) => {
+  let rawGymItems = gymQuestionsResult.Items || [];
+  const existingDates = new Set(rawGymItems.map((q) => q.date));
+  if (!existingDates.has(clientDate) || courseId === 'course-002' || rawGymItems.length === 0) {
+    const batch2Items = BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter((q) => !existingDates.has(q.date));
+    rawGymItems = [...rawGymItems, ...batch2Items];
+  }
+
+  const gymQuestions = rawGymItems.map((q) => {
     if (q.date >= clientDate) {
       const { correctIndex, correctAnswer, explanation, ...stripped } = q;
       return stripped;
     }
     return q;
-  });
+  }).sort((a, b) => (a.date || '').localeCompare(b.date || ''));
 
   const gymStreak = calculateGymStreak(gymProgress, clientDate);
 
@@ -978,11 +987,19 @@ async function submitGymAttempt(userId, body) {
   }
 
   // Get question to verify correct answer if it's a quiz
-  const qRes = await ddb.send(new GetCommand({
-    TableName: COURSES_TABLE,
-    Key: { pk: `COURSE#${courseId}`, sk: `GYM#${date}` },
-  }));
-  const question = qRes.Item;
+  let question;
+  try {
+    const qRes = await ddb.send(new GetCommand({
+      TableName: COURSES_TABLE,
+      Key: { pk: `COURSE#${courseId}`, sk: `GYM#${date}` },
+    }));
+    question = qRes.Item;
+  } catch (err) {
+    console.error('DynamoDB GetCommand error:', err);
+  }
+  if (!question) {
+    question = BATCH_2_PRODUCT_DESIGN_CASE_STUDY.find((q) => q.date === date);
+  }
   if (!question) {
     return res(404, { message: 'Daily question not found' });
   }

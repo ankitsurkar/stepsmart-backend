@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { INTERVIEW_CATEGORIES, INTERVIEW_COMPANIES, ALL_INTERVIEW_QUESTIONS } from '@/lib/interviewQuestions';
+import { BATCH_2_PRODUCT_DESIGN_CASE_STUDY } from '@/lib/batch2GymQuestions';
 
 Amplify.configure(awsConfig);
 
@@ -24,6 +25,8 @@ const TIMEZONE_IST = 'Asia/Kolkata';
 
 const COURSE_NAME_OVERRIDES = {
   'course-001': 'PM -X Accelerator',
+  'course-002': 'PM -X Accelerator (Batch 2)',
+  'course-ai-001': 'AI Seekho, AI Apnao',
 };
 
 
@@ -2403,7 +2406,16 @@ export default function DashboardClient({
 
   // DB Gym States — initialized from SSR props or client cache
   const [gymProgress, setGymProgress] = useState(() => (initialGymProgress?.length ? initialGymProgress : (clientDashboardCache?.gymProgress || [])));
-  const [gymQuestions, setGymQuestions] = useState(() => (initialGymQuestions?.length ? initialGymQuestions : (clientDashboardCache?.gymQuestions || [])));
+  const [gymQuestions, setGymQuestions] = useState(() => {
+    let list = initialGymQuestions?.length ? initialGymQuestions : (clientDashboardCache?.gymQuestions?.length ? clientDashboardCache.gymQuestions : []);
+    const todayStr = toDateKey(new Date());
+    const existingDates = new Set(list.map(q => q.date));
+    if (!existingDates.has(todayStr)) {
+      list = [...list, ...BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter(q => !existingDates.has(q.date))];
+      list.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    }
+    return list;
+  });
   const [gymStreak, setGymStreak] = useState(() => (initialGymStreak !== undefined && initialGymStreak !== 0 ? initialGymStreak : (clientDashboardCache?.gymStreak || 0)));
   const [tempSelectedOption, setTempSelectedOption] = useState(undefined);
   const [tempTextAnswer, setTempTextAnswer] = useState('');
@@ -2760,7 +2772,12 @@ export default function DashboardClient({
       setSupplementalContent(suppData);
 
       const nextGymProgress = progressData.gymProgress || [];
-      const nextGymQuestions = progressData.gymQuestions || [];
+      let nextGymQuestions = progressData.gymQuestions || [];
+      const existingDates = new Set(nextGymQuestions.map(q => q.date));
+      if (!existingDates.has(todayStr) || actualCourse?.name?.toLowerCase().includes('batch 2') || actualCourse?.name?.toLowerCase().includes('accelerator')) {
+        const merged = [...nextGymQuestions, ...BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter(q => !existingDates.has(q.date))];
+        nextGymQuestions = merged.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+      }
       const nextGymStreak = progressData.gymStreak || 0;
 
       setGymProgress(nextGymProgress);
@@ -2831,16 +2848,21 @@ export default function DashboardClient({
 
       setSupplementalContent(suppData);
 
+      // Resolve the selected course correctly using courseId instead of stale activeCourse state
+      const currentSelectedCourse = (courseList || courses || []).find(c => c.courseId === courseId) || activeCourse || (courseList && courseList[0]) || (courses && courses[0]);
+
       const nextGymProgress = progressRes.gymProgress || [];
-      const nextGymQuestions = progressRes.gymQuestions || [];
+      let nextGymQuestions = progressRes.gymQuestions || [];
+      const existingDates = new Set(nextGymQuestions.map(q => q.date));
+      if (!existingDates.has(todayStr) || currentSelectedCourse?.name?.toLowerCase().includes('batch 2') || currentSelectedCourse?.name?.toLowerCase().includes('accelerator')) {
+        const merged = [...nextGymQuestions, ...BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter(q => !existingDates.has(q.date))];
+        nextGymQuestions = merged.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+      }
       const nextGymStreak = progressRes.gymStreak || 0;
 
       setGymProgress(nextGymProgress);
       setGymQuestions(nextGymQuestions);
       setGymStreak(nextGymStreak);
-
-      // Resolve the selected course correctly using courseId instead of stale activeCourse state
-      const currentSelectedCourse = (courseList || courses || []).find(c => c.courseId === courseId) || activeCourse || (courseList && courseList[0]) || (courses && courses[0]);
 
       // Save to module cache & localStorage (including PM Gym data)
       clientDashboardCache = {
