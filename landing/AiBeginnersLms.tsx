@@ -58,7 +58,10 @@ import {
   Shield,
   FlaskConical,
   Target,
-  RefreshCw
+  RefreshCw,
+  ExternalLink,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 
 // ─── TYPES & INTERFACES ───
@@ -75,6 +78,7 @@ interface Module0Slide {
     heading: string;
     subheading: string;
     description?: string;
+    bullets?: string[];
     cards?: { title: string; desc: string; icon: string; tag?: string }[];
     promptBox?: { label: string; text: string };
     discussion?: string;
@@ -85,6 +89,7 @@ interface Module0Slide {
     heading: string;
     subheading: string;
     description?: string;
+    bullets?: string[];
     cards?: { title: string; desc: string; icon: string; tag?: string }[];
     promptBox?: { label: string; text: string };
     discussion?: string;
@@ -106,11 +111,14 @@ interface Module0Slide {
 
 interface GymChallengeDay {
   day: number;
+  caseStudyTitle: string;
   challenge: string;
+  questionPrompt: string;
   newExperience: string;
   category: string;
   promptSuggestion: string;
   completed: boolean;
+  scoreAwarded?: number;
 }
 
 // ─── 14 MODULE 0 SLIDES (Exact match to uploaded presentation deck) ───
@@ -641,69 +649,351 @@ const MODULE_0_SLIDES: Module0Slide[] = [
   }
 ];
 
-// ─── 7-DAY AI GYM CHALLENGES (Exact table provided by user) ───
+// ─── 7-DAY AI GYM CHALLENGES (1 per day; missed days can be attempted later for 8 XP instead of 20 XP) ───
+const TODAY_GYM_DAY = 2; // Nov 24, 2026 - Day 2 active today
+
 const INITIAL_GYM_CHALLENGES: GymChallengeDay[] = [
   {
     day: 1,
+    caseStudyTitle: "Case Study: AI Personal Learning Companion",
     challenge: "Ask AI to explain something you don't understand",
+    questionPrompt: "Ask AI to explain a complex topic using an everyday life analogy (e.g. explain how APIs or neural networks work like a restaurant order). Evaluate whether the explanation clarified the concept or oversimplified it.",
     newExperience: "Learning",
     category: "Concept Breakdown",
     promptSuggestion: "Mujhe [Topic] bilkul basic level se school teacher ki tarah step-by-step samjhao.",
-    completed: true
+    completed: true,
+    scoreAwarded: 20
   },
   {
     day: 2,
-    challenge: "Use AI to improve an existing piece of writing",
-    newExperience: "Communication",
-    category: "Tone Polish",
-    promptSuggestion: "Mera ye draft message padho aur ise zyada polite, professional aur clear banao.",
-    completed: true
+    caseStudyTitle: "Case Study: Design a Group Food Ordering Experience for Swiggy",
+    challenge: "Segment potential group ordering market & state target for MVP",
+    questionPrompt: "Assume the primary goal is driving weekday lunch frequency and AOV in metro tech parks. Segment the potential group ordering market into 3 distinct user groups, and state in ONE sentence which group Swiggy should target for the MVP and why.",
+    newExperience: "Communication & Strategy",
+    category: "Market Segmentation",
+    promptSuggestion: "Assume metro tech park context. Segment Swiggy group lunch ordering into 3 distinct user cohorts with clear pain points, and define the single MVP target persona.",
+    completed: false
   },
   {
     day: 3,
-    challenge: "Give AI a real planning problem",
-    newExperience: "Organization",
-    category: "Schedule & Buffers",
-    promptSuggestion: "Mera agla hafta kaafi busy hai. Mere in 5 tasks ke liye realistic buffer time ke saath schedule banao.",
-    completed: true
+    caseStudyTitle: "Case Study: Executive Communication Polish & Tone Calibration",
+    challenge: "Use AI to improve an existing piece of writing",
+    questionPrompt: "Take an unstructured or aggressive email draft. Prompt AI to create 3 variations: Executive Summary for C-Suite, Collaborative Slack for peers, and Direct Action Items for vendors. Evaluate which format delivers maximum clarity.",
+    newExperience: "Communication",
+    category: "Tone Polish",
+    promptSuggestion: "Mera ye draft message padho aur ise 3 distinct professional tones mein rewrite karo.",
+    completed: false
   },
   {
     day: 4,
-    challenge: "Ask AI to analyze a sample document",
-    newExperience: "Information extraction",
-    category: "Document Parsing",
-    promptSuggestion: "Is sample document ya bill ka 3 clear bullet points mein summary do aur key dates highlight karo.",
+    caseStudyTitle: "Case Study: Real-World Time Blocking & Constraint Optimization",
+    challenge: "Give AI a real planning problem with conflicting priorities",
+    questionPrompt: "Provide AI with a real-life list of 6 conflicting weekly tasks (office deadlines, skill development, health, family commitments). Demand a realistic schedule with 20% buffer blocks and explain the tradeoff logic.",
+    newExperience: "Organization",
+    category: "Schedule & Buffers",
+    promptSuggestion: "Mera agla hafta kaafi busy hai. Mere in 6 tasks ke liye realistic buffer time ke saath schedule banao.",
     completed: false
   },
   {
     day: 5,
-    challenge: "Compare two alternatives using AI",
-    newExperience: "Decision-making",
-    category: "Tradeoff Analysis",
-    promptSuggestion: "Option A aur Option B ke pros, cons aur long-term tradeoffs compare karke recommendation do.",
+    caseStudyTitle: "Case Study: Document Extraction & Risk Discovery",
+    challenge: "Ask AI to analyze a sample document & extract risks",
+    questionPrompt: "Upload or paste a sample service agreement or PRD. Prompt AI to extract only ambiguities, service level commitments (SLAs), and non-obvious operational risks into a tabular summary.",
+    newExperience: "Information extraction",
+    category: "Document Parsing",
+    promptSuggestion: "Is sample document ya contract ka 3 clear bullet points mein summary do aur key risks highlight karo.",
     completed: false
   },
   {
     day: 6,
-    challenge: "Challenge an AI answer and verify it",
-    newExperience: "Critical thinking",
-    category: "Fact Checking",
-    promptSuggestion: "Kya ye fact bilkul accurate hai? Iska source ya reasoning verify karke batao.",
+    caseStudyTitle: "Case Study: Multi-Criteria Competitive Analysis",
+    challenge: "Compare two alternatives using AI with scoring",
+    questionPrompt: "Ask AI to compare two competing product approaches (e.g. In-house AI model fine-tuning vs Third-party API orchestration). Generate a decision matrix scoring cost, latency, data privacy, and engineering overhead.",
+    newExperience: "Decision-making",
+    category: "Tradeoff Analysis",
+    promptSuggestion: "Option A aur Option B ke pros, cons aur long-term tradeoffs compare karke recommendation matrix banao.",
     completed: false
   },
   {
     day: 7,
-    challenge: "Improve one solution you created in class",
-    newExperience: "Iteration",
-    category: "Reusable Template",
-    promptSuggestion: "Maine class mein jo task solve kiya tha, use ek 1-click reusable template mein convert karo.",
+    caseStudyTitle: "Case Study: Hallucination Interrogation & Output Auditing",
+    challenge: "Challenge an AI answer, verify it and document findings",
+    questionPrompt: "Ask AI a question with subtle misleading premises or niche trivia. Stress-test its output, demand citations, and document how you verified the accuracy of its reasoning.",
+    newExperience: "Critical thinking",
+    category: "Fact Checking",
+    promptSuggestion: "Kya ye fact bilkul accurate hai? Iska source ya reasoning step-by-step verify karke batao.",
     completed: false
   }
 ];
 
-export default function AiBeginnersLms() {
+// ─── MODULE 0 DRAWER ITEMS (Exact 1:1 match to media_1795517348125_8cc6c6b5.jpg) ───
+const MODULE_0_DRAWER_ITEMS = [
+  { index: 0, label: "1. AI", duration: "2 min" },
+  { index: 1, label: "2. Imagine having an assista...", duration: "5 min" },
+  { index: 2, label: "3. AI as your personal assist...", duration: "3 min" },
+  { index: 3, label: "4. AI as your personal teach...", duration: "3 min" },
+  { index: 4, label: "5. AI as your communication...", duration: "3 min" },
+  { index: 5, label: "6. What did we just discover...", duration: "4 min" },
+  { index: 6, label: "7. Now it's your turn! Don't j...", duration: "10 min" },
+  { index: 7, label: "8. AI is not just a chatbot", duration: "5 min" },
+  { index: 8, label: "9. Feed AI diverse modalitie...", duration: "5 min" },
+  { index: 9, label: "10. Where can AI help in you...", duration: "5 min" },
+  { index: 10, label: "11. Let's brainstorm together", duration: "5 min" },
+  { index: 11, label: "12. The Big Question", duration: "5 min" },
+  { index: 12, label: "13. Your First AI Commitment", duration: "5 min" },
+  { index: 13, label: "14. Before we finish", duration: "5 min" }
+];
+
+// ─── TOP PEERS LEADERBOARD DATA (Exact match to media_1795517501723_eecef4ad.jpg) ───
+const LEADERBOARD_PEERS = [
+  { rank: 1, initials: 'AN', name: 'Ankitha G Nayaka', pts: 36, bg: '#fce7f3', color: '#be185d' },
+  { rank: 2, initials: 'JM', name: 'Jiya Maikhuri', pts: 34, bg: '#e0f2fe', color: '#0284c7' },
+  { rank: 3, initials: 'AS', name: 'Aditya Partap Singh', pts: 34, bg: '#dcfce7', color: '#16a34a' },
+  { rank: 4, initials: 'SP', name: 'Sai Bharadwaj Pisipati', pts: 17, bg: '#ffedd5', color: '#ea580c' },
+  { rank: 5, initials: 'ES', name: 'Errollu Srinivas', pts: 10, bg: '#f3e8ff', color: '#9333ea' },
+  { rank: 6, initials: 'AA', name: 'Ananya Awasthi', pts: 4, bg: '#ccfbf1', color: '#0f766e' }
+];
+
+// ─── WEEKLY REMINDERS (Exact match to media_1795517501723_eecef4ad.jpg) ───
+const WEEKLY_REMINDERS = [
+  { title: 'Assignment Discussions', time: 'Wednesday 9:30-10:30 Pm' },
+  { title: 'Root Cause Analysis', time: 'Saturday 3:30-5:00 Pm' },
+  { title: 'User Interviews and Survey Creation', time: 'Sunday 12:30-2:00 PM' },
+  { title: 'Spotify Segmentation and Hypothesis', time: 'Sunday 12:30 PM' },
+  { title: 'PM Positioining - Recreation', time: '22 July' }
+];
+
+// ─── HELPER: EXTRACT HIGH-CLARITY PRESENTATION BULLETS (Matches media_1795506493984_2c4c823d.png) ───
+const getSlideBullets = (slide: Module0Slide, lang: 'hindi' | 'english'): string[] => {
+  const content = lang === 'hindi' ? slide.hindi : slide.english;
+  if (content.bullets && content.bullets.length > 0) return content.bullets;
+  
+  if (lang === 'hindi') {
+    switch (slide.slideNumber) {
+      case 1:
+        return [
+          'Roz ke mushkil kaam aur padhai ko AI ki madad se aasan banayein',
+          'Zero technical background required — curiosity is the only prerequisite',
+          "Let's experiment! Pehle experience karo, phir mechanics samjho",
+          'Aaj hum AI ko real tasks ke saath hands-on use karke dekhenge'
+        ];
+      case 2:
+        return [
+          'Difficult topics samjhane mein (school teacher ki tarah step-by-step)',
+          'Emails aur presentations likhne mein (drafts ready in 10 seconds)',
+          'Daily schedule organize karne mein (realistic priorities & buffer time)',
+          'Naye ideas sochne mein (brainstorming & creative angles)',
+          'Problems solve karne mein (tradeoffs, calculations & decisions)'
+        ];
+      case 3:
+        return [
+          'Sunday evening hai... Agla hafta kaafi busy hone wala hai',
+          'Tasks: 4 din gym, Wednesday work presentation, groceries, 2 hours learning, 3 meetings, family time, electricity bill',
+          'Challenge: Itne saare tasks ko burnout ke bina realistic schedule mein kaise organize karein?',
+          'AI Solution: Instant priority-driven timetable with buffer times'
+        ];
+      case 4:
+        return [
+          'Shopping karte waqt discount samajhna hai: Shirt price ₹1,000, discount 20%',
+          'Discount kitna hoga? Aapko kitne paise pay karne honge? Calculation kaise karoge?',
+          'AI se sirf direct answer nahi, underlying concept step-by-step samjho',
+          'Socratic method: AI school teacher ki tarah sikhata hai bina solution reveal kiye'
+        ];
+      case 5:
+        return [
+          'Situation: Project Wednesday tak complete nahi ho payega due to dependencies delay',
+          'Goal: Manager ko inform karna — responsibility accept karna, delay explain karna, Friday deadline suggest karna',
+          'Challenge: Professional sound karna hai, excuses nahi dene, aur trust maintain karna hai',
+          'AI Advantage: 10 seconds mein polished first draft create ho jata hai'
+        ];
+      case 6:
+        return [
+          'Organize: Apna schedule aur weekly commitments efficiently plan karo',
+          'Understand: Mushkil concepts aur naye subjects ko personalized bhasha mein seekho',
+          'Communicate: High-stakes emails, reports aur presentation outlines structure karo',
+          'Core Takeaway: AI aapka cognitive load reduce karta hai aur execution speed 5x badhata hai'
+        ];
+      case 7:
+        return [
+          '1. Apni real life se ek pressing problem identify karo (Student / Working Pro / Job Seeker)',
+          '2. ChatGPT ya Claude open karo aur apni problem plain Hinglish/English mein explain karo',
+          '3. AI ke response ko improve karne ke liye follow-up questions poochho',
+          'Golden Rule: Perfect prompt ka wait mat karo. Problem se start karo!'
+        ];
+      case 8:
+        return [
+          '1. Images: Handwritten notes, whiteboards aur diagrams se text & checklist extract karo',
+          '2. Documents: Long PDFs aur reports ko 2 minute mein bulleted summary mein convert karo',
+          '3. Data: Excel spreadsheets se key revenue trends aur patterns automatically calculate karo',
+          '4. Voice: Bolkar interact karo — rough thoughts ko prioritized action items banao'
+        ];
+      case 9:
+        return [
+          'Demo 1 (Image): Handwritten notes upload karke clear bullet summary aur action points banana',
+          'Demo 2 (Document): Sample PDF upload karke top 5 key takeaways Hinglish mein nikalna',
+          'Demo 3 (Data): Sales spreadsheet analyze karke top revenue drivers aur patterns dhoondna',
+          'Demo 4 (Voice): Spoken raw thoughts ko structured execution plan mein convert karna'
+        ];
+      case 10:
+        return [
+          'Tasks I repeat: Main kaunsa kaam baar-baar karta/karti hoon? (Emails, reports, scheduling, meeting notes)',
+          'Things I want to understand: Kaunsi cheez samajhne mein mushkil lagti hai? (Finance, tech jargon, English)',
+          'Things I want to accomplish: Aisa kya hai jo start karna chahte ho? (Side project, portfolio, new skill)',
+          'Your task: Har category mein kam se kam ek real example socho aur Activity Journal mein likho'
+        ];
+      case 11:
+        return [
+          'Problem vs AI Solution Matrix (Live Class Brainstorm):',
+          'Interview preparation → AI mock interviews with instant rubrics and feedback',
+          'English improve karni hai → Conversational roleplay and targeted grammar suggestions',
+          'Presentation banani hai → Narrative storyline, slide outlines and talking cues',
+          'Bank statement samajhna → Expense categorization and hidden subscription audits',
+          'Business start karna hai → Validate value proposition & customer discovery questions'
+        ];
+      case 12:
+        return [
+          'The big question: How does a machine generate an intelligent response?',
+          'Curiosity experiment: "The sun rises in the ______" → East!',
+          'Aapko kaise pata chala ki agla word "East" hoga? Pattern & Context memory!',
+          'Machine memory: Na Google search, na human conscious mind — mathematical probability prediction!',
+          'Next-token prediction is the foundation of modern Large Language Models (LLMs)'
+        ];
+      case 13:
+        return [
+          'Your first AI commitment: Kal se AI ka use kis kaam ke liye karoge?',
+          'Complete this sentence: “Ek cheez jiske liye main kal se AI use karna start karunga/karungi...”',
+          'Write it down in your Activity Journal directly below this slide pane',
+          'Share with your peer or mentor for accountability',
+          'Start your 7-Day AI Gym streak tomorrow morning!'
+        ];
+      case 14:
+        return [
+          '1. Experiment karo: Perfect prompt ka wait mat karo. First draft se iterate karo',
+          '2. Verify karo: AI ke answers ko blindly trust mat karo. Sanity-check and fact-check',
+          '3. Think better: AI ko apni thinking replace karne nahi, thinking improve karne ke liye use karo',
+          'Next Session Preview → The Anatomy of AI: Tokens, Context Windows & System Directives!'
+        ];
+      default:
+        return [];
+    }
+  } else {
+    switch (slide.slideNumber) {
+      case 1:
+        return [
+          'Discover how AI can help you learn, work, and solve everyday problems',
+          'Zero technical background required — curiosity is the only prerequisite',
+          "Let's experiment! Experience the power first, understand the mechanics second",
+          'Today we start by actually using AI on real-world situations hands-on'
+        ];
+      case 2:
+        return [
+          'Explaining difficult concepts (breaks down complex ideas with simple analogies)',
+          'Writing emails and presentations (drafts polished text in seconds)',
+          'Organizing daily schedules (allocates buffer time and realistic priorities)',
+          'Brainstorming creative ideas (angles, hooks, and frameworks)',
+          'Solving daily problems (tradeoffs, calculations, and decisions)'
+        ];
+      case 3:
+        return [
+          'Sunday evening... Upcoming week is jammed with conflicting commitments',
+          'Tasks: 4 gym sessions, Wednesday presentation, groceries, 2 hrs study, 3 meetings, family time, bills',
+          'Challenge: How do you fit all priorities without missing deadlines or burning out?',
+          'AI Solution: Instant structured schedule with realistic buffer times'
+        ];
+      case 4:
+        return [
+          'Shopping problem: A shirt costs ₹1,000 with a 20% discount',
+          'What is the discount amount? What do you pay? How do you calculate it?',
+          'Key Insight: Use AI as a personalized tutor who explains the underlying concept step-by-step',
+          'Socratic method: The model guides you to think through the solution rather than spoonfeeding answers'
+        ];
+      case 5:
+        return [
+          'Situation: Project will miss Wednesday deadline due to third-party dependencies',
+          'Goal: Own responsibility, explain cause with clarity, propose Friday revised deadline',
+          'Tone: Professional and constructive without sounding defensive or robotic',
+          'AI Advantage: Transforms rough thoughts into an executive-ready message in 10 seconds'
+        ];
+      case 6:
+        return [
+          'Organize: Streamline your chaotic week with structured agendas',
+          'Understand: Master complex ideas through personalized explanations',
+          'Communicate: Produce clearer, higher-impact emails and presentations',
+          'Core Takeaway: AI eliminates blank-page syndrome and accelerates execution speed by 5x'
+        ];
+      case 7:
+        return [
+          '1. Identify one real, pressing problem from your daily work or studies',
+          '2. Open ChatGPT or Claude and describe your problem in natural plain language',
+          '3. Ask iterative follow-up questions to refine and improve the response',
+          'Golden Rule: Never wait for a perfect prompt. Start from the friction point and iterate!'
+        ];
+      case 8:
+        return [
+          '1. Images: Upload handwritten whiteboards, receipts or diagrams for instant extraction',
+          '2. Documents: Upload lengthy PDFs and contracts for bulleted summaries and risk points',
+          '3. Data: Upload spreadsheets to detect outliers, trends, and revenue drivers instantly',
+          '4. Voice: Speak your rough, chaotic thoughts and get a structured execution plan'
+        ];
+      case 9:
+        return [
+          'Demo 1 (Image): Upload handwritten notes -> Generate simple summary and action checklist',
+          'Demo 2 (Document): Upload sample PDF -> Extract top 5 takeaways and why they matter',
+          'Demo 3 (Data): Upload spreadsheet -> Identify top performers and hidden growth patterns',
+          'Demo 4 (Voice): Voice dictation -> Convert rambling voice thoughts into prioritized steps'
+        ];
+      case 10:
+        return [
+          'Tasks I repeat: What repetitive tasks consume your energy? (Emails, status reports, note-taking)',
+          'Things I want to understand: What topics feel intimidating? (Financial metrics, tech stacks, concepts)',
+          'Things I want to accomplish: What high-value goals have you delayed? (Side venture, portfolio, new skill)',
+          'Action: Fill out at least one concrete example under each category in your Activity Journal below'
+        ];
+      case 11:
+        return [
+          'Problem vs AI Solution Matrix (Classroom Brainstorm):',
+          'Interview preparation → Simulated mock interviews with immediate critique',
+          'Improving English fluency → Conversational practice and real-time sentence polish',
+          'Creating slide decks → Structural narrative outlines and executive summary points',
+          'Understanding bank statements → Automated expense categorization and spending patterns',
+          'Launching a new business → Value proposition stress-testing and customer research scripts'
+        ];
+      case 12:
+        return [
+          'The big question: How does an AI model actually generate intelligent text?',
+          'Curiosity experiment: "The sun rises in the ______" → East!',
+          'How did you know the next word is East? Probability based on language patterns and context!',
+          'AI mechanics: It is neither a Google crawler nor conscious thought — it predicts the most probable next token',
+          'Next-token prediction underpins modern generative AI and Large Language Models (LLMs)'
+        ];
+      case 13:
+        return [
+          'Your first AI commitment: What concrete task will you use AI for starting tomorrow?',
+          'Complete this sentence: "One repetitive task I commit to executing with AI starting tomorrow is..."',
+          'Record your commitment in the Activity Journal form below',
+          'Share your pledge with the person next to you for peer accountability',
+          'Kick off Day 1 of your 7-Day AI Gym Challenge tomorrow morning!'
+        ];
+      case 14:
+        return [
+          '1. Experiment boldly: Never wait for a perfect prompt. Iterate with follow-ups',
+          '2. Verify rigorously: Never trust outputs blindly. Sanity-check facts, numbers, and logic',
+          '3. Think better: Use AI to augment and elevate your own thinking, never to outsource it entirely',
+          'Next Session Preview → The Anatomy of AI: Tokens, Context Windows, and Persona Directives!'
+        ];
+      default:
+        return [];
+    }
+  }
+};
+
+interface AiBeginnersLmsProps {
+  standaloneDeck?: boolean;
+}
+
+export default function AiBeginnersLms({ standaloneDeck = false }: AiBeginnersLmsProps) {
   // Navigation & Mode States
-  const [activeNav, setActiveNav] = useState<MainNavTab>('courses');
+  const [activeNav, setActiveNav] = useState<MainNavTab>('home');
   const [courseSubTab, setCourseSubTab] = useState<CourseSubTab>('slides');
   const [currentMode, setCurrentMode] = useState<ModeType>('learner');
   const [slideLang, setSlideLang] = useState<SlideLang>('hindi');
@@ -751,6 +1041,45 @@ export default function AiBeginnersLms() {
   const [showInstructorNotes, setShowInstructorNotes] = useState<boolean>(true);
   const [activeGymModalDay, setActiveGymModalDay] = useState<GymChallengeDay | null>(null);
   const [gymResponseInput, setGymResponseInput] = useState<string>('');
+
+  // Fullscreen and Slide Pane Ref (Matches media_1795506493984_2c4c823d.png)
+  const slidePaneRef = React.useRef<HTMLDivElement>(null);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+  const toggleFullScreen = () => {
+    if (!slidePaneRef.current) return;
+    if (!document.fullscreenElement) {
+      slidePaneRef.current.requestFullscreen().catch((err) => {
+        console.log('Error enabling fullscreen:', err);
+      });
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen().catch(() => {});
+      setIsFullscreen(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  // Keyboard navigation for presentation slides (ArrowLeft / ArrowRight)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        setActiveSlideIndex(prev => Math.min(MODULE_0_SLIDES.length - 1, prev + 1));
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        setActiveSlideIndex(prev => Math.max(0, prev - 1));
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Persist Gamification
   useEffect(() => {
@@ -815,16 +1144,23 @@ export default function AiBeginnersLms() {
     showToast('🎉 Activity Journal saved! Earned +25 XP');
   };
 
-  // Complete Gym Day Challenge
+  // Complete Gym Day Challenge (20 XP if today's challenge; 8 XP if catch-up attempt for missed day)
   const handleCompleteGymDay = () => {
     if (!activeGymModalDay) return;
+    const isToday = activeGymModalDay.day === TODAY_GYM_DAY;
+    const pointsAwarded = isToday ? 20 : 8;
+
     const updated = gymChallenges.map(c =>
-      c.day === activeGymModalDay.day ? { ...c, completed: true } : c
+      c.day === activeGymModalDay.day ? { ...c, completed: true, scoreAwarded: pointsAwarded } : c
     );
     setGymChallenges(updated);
-    setXp(prev => prev + 20);
-    setStreakDays(prev => Math.min(7, prev + 1));
-    showToast(`🔥 Day ${activeGymModalDay.day} Gym Challenge complete! +20 XP`);
+    setXp(prev => prev + pointsAwarded);
+    if (isToday) {
+      setStreakDays(prev => Math.min(7, prev + 1));
+      showToast(`🔥 Day ${activeGymModalDay.day} Completed! +${pointsAwarded} XP awarded for today's challenge!`);
+    } else {
+      showToast(`⚡ Day ${activeGymModalDay.day} Completed (Catch-up)! +${pointsAwarded} XP awarded (missed day penalty applied).`);
+    }
     setActiveGymModalDay(null);
     setGymResponseInput('');
   };
@@ -836,6 +1172,158 @@ export default function AiBeginnersLms() {
   };
 
   const currentContent = slideLang === 'hindi' ? currentSlide.hindi : currentSlide.english;
+  const bulletsToRender = getSlideBullets(currentSlide, slideLang);
+
+  // ─── STANDALONE DECK VIEW (For "Open in new tab" window) ───
+  if (standaloneDeck) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#0f172a', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', color: '#fff', maxWidth: '1100px', width: '100%', margin: '0 auto 1rem auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={styles.railBrandMark}>S</div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: '1.15rem' }}>StepSmart Slide Deck</div>
+              <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Module 0: AI - Ab kaam karne ka tareeka badalne wala hai!</div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={styles.langToggleBox}>
+              <button
+                type="button"
+                onClick={() => setSlideLang('hindi')}
+                style={{
+                  ...styles.langToggleBtn,
+                  ...(slideLang === 'hindi' ? styles.langToggleBtnActive : {})
+                }}
+              >
+                🇮🇳 Hindi
+              </button>
+              <button
+                type="button"
+                onClick={() => setSlideLang('english')}
+                style={{
+                  ...styles.langToggleBtn,
+                  ...(slideLang === 'english' ? styles.langToggleBtnActive : {})
+                }}
+              >
+                🇬🇧 English
+              </button>
+            </div>
+
+            <Link to="/ai-lms" style={{ color: '#38bdf8', fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <ArrowLeft size={16} />
+              <span>Back to LMS</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Center Slide Pane */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', maxWidth: '1100px', width: '100%', margin: '0 auto' }}>
+          <div ref={slidePaneRef} style={styles.slideViewerOuterBezel}>
+            {/* 16:9 Canvas */}
+            <div style={styles.slideCanvas169}>
+              <div style={styles.slideCanvasTopHeader}>
+                <h2 style={styles.slideCanvasTitle}>{currentContent.heading}</h2>
+                <span style={styles.slideBrandWatermark}>stepsmart</span>
+              </div>
+
+              {currentContent.subheading && (
+                <div style={styles.slideCanvasSubheading}>{currentContent.subheading}</div>
+              )}
+
+              {bulletsToRender && bulletsToRender.length > 0 && (
+                <ul style={styles.slideCanvasBulletList}>
+                  {bulletsToRender.map((bullet, bIdx) => (
+                    <li key={bIdx} style={styles.slideCanvasBulletItem}>
+                      <span style={styles.slideCanvasBulletDot} />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {currentContent.promptBox && (
+                <div style={styles.slidePromptBox}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#027A9B', textTransform: 'uppercase' }}>
+                      {currentContent.promptBox.label}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyPrompt(currentContent.promptBox!.text, currentSlide.id)}
+                      style={styles.copySmallBtn}
+                    >
+                      {copiedId === currentSlide.id ? <Check size={12} color="#10b981" /> : <Copy size={12} />}
+                      <span>{copiedId === currentSlide.id ? 'Copied' : 'Copy Prompt'}</span>
+                    </button>
+                  </div>
+                  <pre style={styles.promptPre}>{currentContent.promptBox.text}</pre>
+                </div>
+              )}
+
+              {currentContent.table && (
+                <div style={styles.slideTableContainer}>
+                  <table style={styles.slideTable}>
+                    <thead>
+                      <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+                        <th style={styles.thCell}>Real-World Problem</th>
+                        <th style={styles.thCell}>AI Ka Possible Solution</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentContent.table.map((row, rIdx) => (
+                        <tr key={rIdx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <td style={{ ...styles.tdCell, fontWeight: 700, color: '#0f172a' }}>{row.problem}</td>
+                          <td style={{ ...styles.tdCell, color: '#027A9B' }}>{row.solution}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              <div style={styles.slideCanvasFooter}>
+                <span style={styles.slideFooterCourseText}>Product Manager Fellowship · Systems Thinking & AI · Module 0</span>
+                <span style={styles.slideFooterPageNum}>{activeSlideIndex + 1}</span>
+              </div>
+            </div>
+
+            {/* Dark Bottom Bar */}
+            <div style={styles.slidePlayerBottomBar}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                <button
+                  type="button"
+                  disabled={activeSlideIndex === 0}
+                  onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
+                  style={{ ...styles.slidePlayerArrowBtn, opacity: activeSlideIndex === 0 ? 0.35 : 1 }}
+                  title="Previous Slide (←)"
+                >
+                  <ChevronLeft size={22} color="#ffffff" />
+                </button>
+                <span style={styles.slidePlayerCounterText}>{activeSlideIndex + 1} of {MODULE_0_SLIDES.length}</span>
+                <button
+                  type="button"
+                  disabled={activeSlideIndex === MODULE_0_SLIDES.length - 1}
+                  onClick={() => setActiveSlideIndex(prev => Math.min(MODULE_0_SLIDES.length - 1, prev + 1))}
+                  style={{ ...styles.slidePlayerArrowBtn, opacity: activeSlideIndex === MODULE_0_SLIDES.length - 1 ? 0.35 : 1 }}
+                  title="Next Slide (→)"
+                >
+                  <ChevronRight size={22} color="#ffffff" />
+                </button>
+              </div>
+
+              <div style={{ position: 'absolute', right: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                <button type="button" onClick={toggleFullScreen} style={styles.fullscreenIconBtn}>
+                  {isFullscreen ? <Minimize2 size={16} color="#cbd5e1" /> : <Maximize2 size={16} color="#cbd5e1" />}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.pageRoot}>
@@ -1180,105 +1668,75 @@ export default function AiBeginnersLms() {
 
               <h3 style={styles.courseContentsTitle}>Course Contents</h3>
 
-              {/* Week 1 Accordion */}
-              <div style={styles.drawerWeekAccordion}>
-                <div
-                  onClick={() => setDrawerWeek1Open(!drawerWeek1Open)}
-                  style={styles.drawerWeekHeader}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Folder size={16} color="#027A9B" />
-                    <span style={{ fontWeight: 700, fontSize: '0.9rem', color: '#0f172a' }}>Week 1</span>
-                  </div>
-                  {drawerWeek1Open ? <ChevronUp size={16} color="#64748b" /> : <ChevronDown size={16} color="#64748b" />}
-                </div>
-
-                {drawerWeek1Open && (
-                  <div style={styles.drawerSlidesList}>
-                    {/* Active Module Banner */}
-                    <div style={styles.drawerActiveModuleBanner}>
-                      <Play size={12} fill="#027A9B" color="#027A9B" />
-                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        Module 0: AI - Ab kaam karne ka tareeka...
-                      </span>
-                    </div>
-
-                    {/* All 14 Slides Navigation */}
-                    {MODULE_0_SLIDES.map((slide, sIdx) => (
-                      <div
-                        key={slide.id}
-                        onClick={() => setActiveSlideIndex(sIdx)}
-                        style={{
-                          ...styles.drawerSlideRow,
-                          ...(activeSlideIndex === sIdx ? styles.drawerSlideRowActive : {})
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
-                          <span style={{
-                            width: '7px',
-                            height: '7px',
-                            borderRadius: '50%',
-                            background: activeSlideIndex === sIdx ? '#027A9B' : '#94a3b8',
-                            flexShrink: 0
-                          }} />
-                          <span style={{
-                            fontSize: '0.78rem',
-                            color: activeSlideIndex === sIdx ? '#027A9B' : '#334155',
-                            fontWeight: activeSlideIndex === sIdx ? 800 : 500,
-                            whiteSpace: 'nowrap',
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden'
-                          }}>
-                            {slide.slideNumber}. {slide.english.heading.split(':')[0]}
-                          </span>
-                        </div>
-                        <span style={{ fontSize: '0.68rem', color: '#94a3b8', flexShrink: 0 }}>
-                          {slide.instructorGuide.time}
+              {/* Direct Module 0 slide items matching media_1795517348125_8cc6c6b5.jpg */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', marginTop: '0.75rem' }}>
+                {MODULE_0_DRAWER_ITEMS.map((item) => {
+                  const isActive = activeSlideIndex === item.index;
+                  return (
+                    <div
+                      key={item.index}
+                      onClick={() => setActiveSlideIndex(item.index)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '0.6rem 0.75rem',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                        background: isActive ? '#f0f9ff' : 'transparent',
+                        borderLeft: isActive ? '4px solid #027A9B' : '4px solid transparent',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', overflow: 'hidden' }}>
+                        <span style={{
+                          width: '7px',
+                          height: '7px',
+                          borderRadius: '50%',
+                          background: isActive ? '#027A9B' : '#94a3b8',
+                          flexShrink: 0
+                        }} />
+                        <span style={{
+                          fontSize: '0.82rem',
+                          color: isActive ? '#027A9B' : '#334155',
+                          fontWeight: isActive ? 700 : 500,
+                          whiteSpace: 'nowrap',
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden'
+                        }}>
+                          {item.label}
                         </span>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Week 2 Preview (Collapsed) */}
-              <div style={styles.drawerWeekAccordion}>
-                <div style={{ ...styles.drawerWeekHeader, opacity: 0.65 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Folder size={16} color="#94a3b8" />
-                    <span style={{ fontWeight: 600, fontSize: '0.85rem', color: '#64748b' }}>Week 2: Prompt Mastery</span>
-                  </div>
-                  <span style={{ fontSize: '0.68rem', color: '#94a3b8' }}>Soon</span>
-                </div>
-              </div>
-
-              {/* Week 3 Preview (Collapsed) */}
-              <div style={styles.drawerWeekAccordion}>
-                <div style={{ ...styles.drawerWeekHeader, opacity: 0.65 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Folder size={16} color="#94a3b8" />
-                    <span style={{ fontWeight: 600, fontSize: '0.85rem', color: '#64748b' }}>Week 3: AI Automation</span>
-                  </div>
-                  <span style={{ fontSize: '0.68rem', color: '#94a3b8' }}>Soon</span>
-                </div>
+                      <span style={{
+                        fontSize: '0.72rem',
+                        color: isActive ? '#027A9B' : '#94a3b8',
+                        fontWeight: isActive ? 600 : 400,
+                        flexShrink: 0,
+                        marginLeft: '0.5rem'
+                      }}>
+                        {item.duration}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
             {/* ─── RIGHT MAIN CANVAS: SLIDE PRESENTATION & ACTIVITY JOURNAL ─── */}
             <div style={styles.playerMainCanvas}>
               
-              {/* Heading of the slide (Exact match to Screenshot 2 heading style) */}
-              <div style={{ marginBottom: '1.25rem' }}>
-                <h1 style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.4rem 0', letterSpacing: '-0.02em' }}>
-                  {currentContent.heading}
-                </h1>
-                
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600 }}>
-                    Module 0 · Slide {currentSlide.slideNumber} of 14 · {currentSlide.timeRange}
-                  </span>
-                  <span style={{ color: '#cbd5e1' }}>•</span>
-                  
+              {/* ─── SLIDE DECK TOP BAR (Matching media_1795506493984_2c4c823d.png) ─── */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div>
+                  <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.35rem 0', letterSpacing: '-0.02em' }}>
+                    Slide Deck
+                  </h1>
+                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0, fontWeight: 600 }}>
+                    Module 0: AI - Ab kaam karne ka tareeka badalne wala hai!
+                  </p>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                   {/* Language Toggle: Hindi vs English */}
                   <div style={styles.langToggleBox}>
                     <button
@@ -1289,7 +1747,7 @@ export default function AiBeginnersLms() {
                         ...(slideLang === 'hindi' ? styles.langToggleBtnActive : {})
                       }}
                     >
-                      🇮🇳 Hindi (Hinglish)
+                      🇮🇳 Hindi
                     </button>
                     <button
                       type="button"
@@ -1307,7 +1765,7 @@ export default function AiBeginnersLms() {
                   <span style={{
                     fontSize: '0.75rem',
                     fontWeight: 800,
-                    padding: '0.2rem 0.65rem',
+                    padding: '0.35rem 0.75rem',
                     borderRadius: '999px',
                     background: currentMode === 'instructor' ? '#fee2e2' : '#e0f2fe',
                     color: currentMode === 'instructor' ? '#dc2626' : '#027a9b',
@@ -1315,156 +1773,168 @@ export default function AiBeginnersLms() {
                   }}>
                     {currentMode === 'instructor' ? '👨‍🏫 INSTRUCTOR MODE' : '🎓 LEARNER MODE'}
                   </span>
+
+                  {/* Open in new tab button matching Screenshot */}
+                  <a
+                    href="/ai-deck"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={styles.openInNewTabBtn}
+                  >
+                    <span>Open in new tab</span>
+                    <ExternalLink size={14} />
+                  </a>
                 </div>
               </div>
 
-              {/* ─── THE BIG SLIDE PRESENTATION BOX (Matches attached deck) ─── */}
-              <div style={styles.presentationSlideBox}>
-                
-                {/* Top Slide Badge */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f1f5f9', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#027A9B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                    PM-X · Module 0 · Discover the power of AI
-                  </span>
-                  <div style={{ display: 'flex', gap: '0.35rem' }}>
-                    {MODULE_0_SLIDES.map((_, dotIdx) => (
-                      <button
-                        key={dotIdx}
-                        type="button"
-                        onClick={() => setActiveSlideIndex(dotIdx)}
-                        style={{
-                          width: activeSlideIndex === dotIdx ? '18px' : '7px',
-                          height: '7px',
-                          borderRadius: '999px',
-                          background: activeSlideIndex === dotIdx ? '#027A9B' : '#cbd5e1',
-                          border: 'none',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease'
-                        }}
-                      />
-                    ))}
+              {/* ─── THE SLIDE DECK PANE (Exact match to media_1795506493984_2c4c823d.png) ─── */}
+              <div ref={slidePaneRef} style={styles.slideViewerOuterBezel}>
+                {/* 16:9 Slide Canvas */}
+                <div style={styles.slideCanvas169}>
+                  {/* Top Header Row inside slide */}
+                  <div style={styles.slideCanvasTopHeader}>
+                    <h2 style={styles.slideCanvasTitle}>
+                      {currentContent.heading}
+                    </h2>
+                    <span style={styles.slideBrandWatermark}>
+                      stepsmart
+                    </span>
                   </div>
-                </div>
 
-                {/* Main Slide Title & Subtitle */}
-                <div style={{ marginBottom: '1.25rem' }}>
-                  <h3 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.35rem 0', letterSpacing: '-0.02em' }}>
-                    {currentContent.heading}
-                  </h3>
-                  <p style={{ fontSize: '1.05rem', color: '#027A9B', fontWeight: 700, margin: '0 0 0.5rem 0' }}>
-                    {currentContent.subheading}
-                  </p>
-                  {currentContent.description && (
-                    <p style={{ fontSize: '0.925rem', color: '#475569', margin: 0, fontStyle: 'italic', lineHeight: 1.5 }}>
-                      {currentContent.description}
-                    </p>
+                  {/* Subheading / Description if present */}
+                  {currentContent.subheading && (
+                    <div style={styles.slideCanvasSubheading}>
+                      {currentContent.subheading}
+                    </div>
                   )}
-                </div>
 
-                {/* Slide Cards Grid */}
-                {currentContent.cards && currentContent.cards.length > 0 && (
-                  <div style={styles.slideCardsGrid}>
-                    {currentContent.cards.map((c, cIdx) => (
-                      <div key={cIdx} style={styles.slideCardItem}>
-                        <div style={{ fontSize: '1.6rem', marginBottom: '0.35rem' }}>{c.icon}</div>
-                        <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f172a', marginBottom: '0.2rem' }}>
-                          {c.title}
-                        </div>
-                        <div style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.45 }}>
-                          {c.desc}
-                        </div>
+                  {/* Bullets List (Matching the clean bold bullets in media_1795506493984_2c4c823d.png) */}
+                  {bulletsToRender && bulletsToRender.length > 0 && (
+                    <ul style={styles.slideCanvasBulletList}>
+                      {bulletsToRender.map((bullet, bIdx) => (
+                        <li key={bIdx} style={styles.slideCanvasBulletItem}>
+                          <span style={styles.slideCanvasBulletDot} />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {/* Prompt Box with 1-Click Copy */}
+                  {currentContent.promptBox && (
+                    <div style={styles.slidePromptBox}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#027A9B', textTransform: 'uppercase' }}>
+                          {currentContent.promptBox.label}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyPrompt(currentContent.promptBox!.text, currentSlide.id)}
+                          style={styles.copySmallBtn}
+                        >
+                          {copiedId === currentSlide.id ? <Check size={12} color="#10b981" /> : <Copy size={12} />}
+                          <span>{copiedId === currentSlide.id ? 'Copied' : 'Copy Prompt'}</span>
+                        </button>
                       </div>
-                    ))}
-                  </div>
-                )}
+                      <pre style={styles.promptPre}>
+                        {currentContent.promptBox.text}
+                      </pre>
+                    </div>
+                  )}
 
-                {/* Table for Slide 11 */}
-                {currentContent.table && (
-                  <div style={styles.slideTableContainer}>
-                    <table style={styles.slideTable}>
-                      <thead>
-                        <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                          <th style={styles.thCell}>Real-World Problem</th>
-                          <th style={styles.thCell}>AI Ka Possible Solution</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {currentContent.table.map((row, rIdx) => (
-                          <tr key={rIdx} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                            <td style={{ ...styles.tdCell, fontWeight: 700, color: '#0f172a' }}>{row.problem}</td>
-                            <td style={{ ...styles.tdCell, color: '#027A9B' }}>{row.solution}</td>
+                  {/* Table for Slide 11 */}
+                  {currentContent.table && (
+                    <div style={styles.slideTableContainer}>
+                      <table style={styles.slideTable}>
+                        <thead>
+                          <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+                            <th style={styles.thCell}>Real-World Problem</th>
+                            <th style={styles.thCell}>AI Ka Possible Solution</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {/* Prompt Box with 1-Click Copy */}
-                {currentContent.promptBox && (
-                  <div style={styles.slidePromptBox}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#027A9B', textTransform: 'uppercase' }}>
-                        {currentContent.promptBox.label}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => handleCopyPrompt(currentContent.promptBox!.text, currentSlide.id)}
-                        style={styles.copySmallBtn}
-                      >
-                        {copiedId === currentSlide.id ? <Check size={12} color="#10b981" /> : <Copy size={12} />}
-                        <span>{copiedId === currentSlide.id ? 'Copied' : 'Copy Prompt'}</span>
-                      </button>
+                        </thead>
+                        <tbody>
+                          {currentContent.table.map((row, rIdx) => (
+                            <tr key={rIdx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                              <td style={{ ...styles.tdCell, fontWeight: 700, color: '#0f172a' }}>{row.problem}</td>
+                              <td style={{ ...styles.tdCell, color: '#027A9B' }}>{row.solution}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                    <pre style={styles.promptPre}>
-                      {currentContent.promptBox.text}
-                    </pre>
-                  </div>
-                )}
+                  )}
 
-                {/* Discussion Callout */}
-                {currentContent.discussion && (
-                  <div style={styles.slideDiscussionBox}>
-                    <HelpCircle size={18} color="#027A9B" style={{ flexShrink: 0, marginTop: '2px' }} />
-                    <div style={{ fontSize: '0.9rem', color: '#0f172a', fontWeight: 700, whiteSpace: 'pre-line' }}>
-                      {currentContent.discussion}
+                  {/* Discussion Callout */}
+                  {currentContent.discussion && (
+                    <div style={styles.slideDiscussionBox}>
+                      <HelpCircle size={18} color="#027A9B" style={{ flexShrink: 0, marginTop: '2px' }} />
+                      <div style={{ fontSize: '0.9rem', color: '#0f172a', fontWeight: 700, whiteSpace: 'pre-line' }}>
+                        {currentContent.discussion}
+                      </div>
                     </div>
+                  )}
+
+                  {/* Bottom Footer Row inside slide */}
+                  <div style={styles.slideCanvasFooter}>
+                    <span style={styles.slideFooterCourseText}>
+                      Product Manager Fellowship · Systems Thinking & AI · Module 0
+                    </span>
+                    <span style={styles.slideFooterPageNum}>
+                      {activeSlideIndex + 1}
+                    </span>
                   </div>
-                )}
-
-                {/* Slide Bottom Controls */}
-                <div style={styles.slideBottomNav}>
-                  <button
-                    type="button"
-                    disabled={activeSlideIndex === 0}
-                    onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
-                    style={{
-                      ...styles.navBtn,
-                      opacity: activeSlideIndex === 0 ? 0.35 : 1
-                    }}
-                  >
-                    <ChevronLeft size={16} />
-                    <span>Previous Slide</span>
-                  </button>
-
-                  <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#64748b' }}>
-                    Slide {activeSlideIndex + 1} of 14
-                  </div>
-
-                  <button
-                    type="button"
-                    disabled={activeSlideIndex === MODULE_0_SLIDES.length - 1}
-                    onClick={() => setActiveSlideIndex(prev => Math.min(MODULE_0_SLIDES.length - 1, prev + 1))}
-                    style={{
-                      ...styles.navBtn,
-                      opacity: activeSlideIndex === MODULE_0_SLIDES.length - 1 ? 0.35 : 1
-                    }}
-                  >
-                    <span>Next Slide</span>
-                    <ChevronRight size={16} />
-                  </button>
                 </div>
 
+                {/* Dark Bottom Control Bar (< 5 of 45 > style matching media_1795506493984_2c4c823d.png) */}
+                <div style={styles.slidePlayerBottomBar}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                    <button
+                      type="button"
+                      disabled={activeSlideIndex === 0}
+                      onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
+                      style={{
+                        ...styles.slidePlayerArrowBtn,
+                        opacity: activeSlideIndex === 0 ? 0.35 : 1
+                      }}
+                      title="Previous Slide (←)"
+                    >
+                      <ChevronLeft size={22} color="#ffffff" />
+                    </button>
+
+                    <span style={styles.slidePlayerCounterText}>
+                      {activeSlideIndex + 1} of {MODULE_0_SLIDES.length}
+                    </span>
+
+                    <button
+                      type="button"
+                      disabled={activeSlideIndex === MODULE_0_SLIDES.length - 1}
+                      onClick={() => setActiveSlideIndex(prev => Math.min(MODULE_0_SLIDES.length - 1, prev + 1))}
+                      style={{
+                        ...styles.slidePlayerArrowBtn,
+                        opacity: activeSlideIndex === MODULE_0_SLIDES.length - 1 ? 0.35 : 1
+                      }}
+                      title="Next Slide (→)"
+                    >
+                      <ChevronRight size={22} color="#ffffff" />
+                    </button>
+                  </div>
+
+                  {/* Right controls inside dark bar */}
+                  <div style={{ position: 'absolute', right: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                    <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                      <Clock size={12} />
+                      {currentSlide.instructorGuide.time}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={toggleFullScreen}
+                      style={styles.fullscreenIconBtn}
+                      title={isFullscreen ? 'Exit Full Screen' : 'Full Screen'}
+                    >
+                      {isFullscreen ? <Minimize2 size={16} color="#cbd5e1" /> : <Maximize2 size={16} color="#cbd5e1" />}
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* ─── INSTRUCTOR PRIVATE PLAYBOOK (When Instructor Mode is Active) ─── */}
@@ -1689,18 +2159,23 @@ export default function AiBeginnersLms() {
 
             {/* 7-Day Table (Strictly from user brief) */}
             <div style={styles.gymTableCard}>
-              <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <div>
                   <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.2rem 0' }}>
                     Your 7-Day Micro-Challenge Roadmap
                   </h3>
                   <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
-                    One practical exercise each day with a distinct learning goal
+                    One practical exercise daily (20 XP on the active day · 8 XP catch-up if attempted later)
                   </div>
                 </div>
-                <span style={{ background: '#e0f2fe', color: '#0369a1', fontSize: '0.75rem', fontWeight: 800, padding: '0.25rem 0.65rem', borderRadius: '999px' }}>
-                  {gymChallenges.filter(c => c.completed).length} / 7 Completed
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                  <span style={{ background: '#fef3c7', color: '#b45309', fontSize: '0.72rem', fontWeight: 700, padding: '0.2rem 0.55rem', borderRadius: '4px' }}>
+                    Today: Day {TODAY_GYM_DAY} (20 XP)
+                  </span>
+                  <span style={{ background: '#e0f2fe', color: '#0369a1', fontSize: '0.75rem', fontWeight: 800, padding: '0.25rem 0.65rem', borderRadius: '999px' }}>
+                    {gymChallenges.filter(c => c.completed).length} / 7 Completed
+                  </span>
+                </div>
               </div>
 
               <div style={{ overflowX: 'auto' }}>
@@ -1708,58 +2183,94 @@ export default function AiBeginnersLms() {
                   <thead>
                     <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
                       <th style={styles.thCell}>Day</th>
-                      <th style={styles.thCell}>Challenge</th>
+                      <th style={styles.thCell}>Case Study & Challenge</th>
                       <th style={styles.thCell}>New Experience</th>
+                      <th style={styles.thCell}>Points</th>
                       <th style={styles.thCell}>Status</th>
                       <th style={styles.thCell}>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {gymChallenges.map((ch) => (
-                      <tr key={ch.day} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                        <td style={{ ...styles.tdCell, fontWeight: 800, color: '#027A9B' }}>
-                          Day {ch.day}
-                        </td>
-                        <td style={{ ...styles.tdCell, fontWeight: 700, color: '#0f172a' }}>
-                          {ch.challenge}
-                        </td>
-                        <td style={styles.tdCell}>
-                          <span style={{ background: '#e0f2fe', color: '#0284c7', fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
-                            {ch.newExperience}
-                          </span>
-                        </td>
-                        <td style={styles.tdCell}>
-                          <span style={{
-                            fontSize: '0.75rem',
-                            fontWeight: 700,
-                            padding: '0.2rem 0.6rem',
-                            borderRadius: '999px',
-                            background: ch.completed ? '#f0fdf4' : '#f1f5f9',
-                            color: ch.completed ? '#166534' : '#64748b'
-                          }}>
-                            {ch.completed ? 'Completed ✓' : 'Pending'}
-                          </span>
-                        </td>
-                        <td style={styles.tdCell}>
-                          <button
-                            type="button"
-                            onClick={() => setActiveGymModalDay(ch)}
-                            style={{
-                              border: '1px solid #cbd5e1',
-                              background: ch.completed ? '#f8fafc' : '#ffffff',
-                              color: ch.completed ? '#64748b' : '#027A9B',
-                              borderRadius: '6px',
-                              padding: '0.35rem 0.75rem',
+                    {gymChallenges.map((ch) => {
+                      const isToday = ch.day === TODAY_GYM_DAY;
+                      const isMissed = ch.day < TODAY_GYM_DAY && !ch.completed;
+                      const rewardPoints = isToday ? 20 : 8;
+
+                      return (
+                        <tr key={ch.day} style={{ borderBottom: '1px solid #f1f5f9', background: isToday ? '#f0fdfa' : '#ffffff' }}>
+                          <td style={{ ...styles.tdCell, fontWeight: 800, color: '#027A9B', whiteSpace: 'nowrap' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                              <span>Day {ch.day}</span>
+                              {isToday && (
+                                <span style={{ background: '#027A9B', color: '#fff', fontSize: '0.65rem', padding: '0.1rem 0.4rem', borderRadius: '4px', fontWeight: 800 }}>
+                                  TODAY
+                                </span>
+                              )}
+                              {isMissed && (
+                                <span style={{ background: '#fef3c7', color: '#b45309', fontSize: '0.65rem', padding: '0.1rem 0.4rem', borderRadius: '4px', fontWeight: 700 }}>
+                                  MISSED
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td style={{ ...styles.tdCell, maxWidth: '380px' }}>
+                            <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.85rem', marginBottom: '0.2rem' }}>
+                              {ch.caseStudyTitle}
+                            </div>
+                            <div style={{ fontSize: '0.8rem', color: '#475569', lineHeight: 1.4 }}>
+                              {ch.challenge}
+                            </div>
+                          </td>
+                          <td style={styles.tdCell}>
+                            <span style={{ background: '#e0f2fe', color: '#0284c7', fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '4px', whiteSpace: 'nowrap' }}>
+                              {ch.newExperience}
+                            </span>
+                          </td>
+                          <td style={styles.tdCell}>
+                            <span style={{
+                              fontWeight: 800,
+                              fontSize: '0.8rem',
+                              color: isToday ? '#027A9B' : '#64748b',
+                              whiteSpace: 'nowrap'
+                            }}>
+                              {ch.completed ? `+${ch.scoreAwarded || rewardPoints} XP` : `${rewardPoints} XP`}
+                            </span>
+                          </td>
+                          <td style={styles.tdCell}>
+                            <span style={{
                               fontSize: '0.75rem',
                               fontWeight: 700,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            {ch.completed ? 'Review Drill' : 'Start Drill ➜'}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                              padding: '0.2rem 0.6rem',
+                              borderRadius: '999px',
+                              background: ch.completed ? '#f0fdf4' : isToday ? '#e0f2fe' : '#f1f5f9',
+                              color: ch.completed ? '#166534' : isToday ? '#0369a1' : '#64748b',
+                              whiteSpace: 'nowrap'
+                            }}>
+                              {ch.completed ? `Completed (+${ch.scoreAwarded || rewardPoints} XP) ✓` : isToday ? 'Active Today' : 'Pending'}
+                            </span>
+                          </td>
+                          <td style={styles.tdCell}>
+                            <button
+                              type="button"
+                              onClick={() => setActiveGymModalDay(ch)}
+                              style={{
+                                border: isToday ? '1px solid #027A9B' : '1px solid #cbd5e1',
+                                background: ch.completed ? '#f8fafc' : isToday ? '#027A9B' : '#ffffff',
+                                color: ch.completed ? '#64748b' : isToday ? '#ffffff' : '#027A9B',
+                                borderRadius: '6px',
+                                padding: '0.35rem 0.75rem',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                whiteSpace: 'nowrap'
+                              }}
+                            >
+                              {ch.completed ? 'Review Drill' : isToday ? 'Solve Today (20 XP) ➜' : 'Solve Catch-up (8 XP) ➜'}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -1829,62 +2340,321 @@ export default function AiBeginnersLms() {
         )}
 
         {/* ═════════════════════════════════════════════════════════════ */}
-        {/* VIEW 4: HOME DASHBOARD                                        */}
+        {/* VIEW 4: HOME DASHBOARD (Exact match to media_1795517501723_eecef4ad.jpg) */}
         {/* ═════════════════════════════════════════════════════════════ */}
         {activeNav === 'home' && (
           <div style={styles.syllabusPageContainer}>
-            <div style={styles.aiGymBanner}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
-                <img src="/pm_gym_brain.png" alt="Brain" style={{ width: '84px', height: '84px', objectFit: 'contain' }} />
+            
+            {/* ─── PM GYM / AI GYM TOP BANNER ─── */}
+            <div style={styles.dashboardGymBanner}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flex: 1, minWidth: '320px' }}>
+                <img
+                  src="/pm_gym_brain.png"
+                  alt="Brain Mascot"
+                  style={{ width: '74px', height: '74px', objectFit: 'contain', flexShrink: 0 }}
+                />
                 <div>
-                  <h2 style={{ fontSize: '1.65rem', fontWeight: 800, margin: '0 0 0.25rem 0', color: '#ffffff' }}>AI Gym</h2>
-                  <p style={{ fontSize: '0.925rem', color: '#e0f2fe', margin: 0 }}>
-                    Active 7-Day Streak Challenge: Day {streakDays} of 7. Keep your learning momentum alive!
+                  <h2 style={{ fontSize: '1.45rem', fontWeight: 800, margin: '0 0 0.2rem 0', color: '#ffffff', letterSpacing: '-0.01em' }}>
+                    PM Gym
+                  </h2>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#e0f2fe', marginBottom: '0.35rem' }}>
+                    [Case Study: Design a Group Food Ordering Experience for Swiggy · Day 2 of 7]
+                  </div>
+                  <p style={{ fontSize: '0.82rem', color: '#f0fdfa', margin: 0, lineHeight: 1.45, opacity: 0.95, maxWidth: '640px' }}>
+                    Assume the primary goal is driving weekday lunch frequency and AOV in metro tech parks. Segment the potential group ordering market into 3 distinct user groups, and state in ONE sentence which group Swiggy should target for the MVP and why.
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setActiveNav('gym')}
-                style={styles.gymSolveBtn}
-              >
-                <span>Open 7-Day Gym ➜</span>
-              </button>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const todayChallenge = gymChallenges.find(c => c.day === TODAY_GYM_DAY) || gymChallenges[1];
+                    setActiveGymModalDay(todayChallenge);
+                  }}
+                  style={styles.dashboardSolveBtn}
+                >
+                  Solve Challenge
+                </button>
+
+                {/* WEEKLY GOAL Days Indicator */}
+                <div style={{ textAlign: 'center', color: '#ffffff' }}>
+                  <div style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem', color: '#e0f2fe' }}>
+                    WEEKLY GOAL
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    {[
+                      { day: 'M', completed: true, active: false },
+                      { day: 'T', completed: false, active: true },
+                      { day: 'W', completed: false, active: false },
+                      { day: 'Th', completed: false, active: false },
+                      { day: 'F', completed: false, active: false },
+                      { day: 'Sa', completed: false, active: false },
+                      { day: 'Su', completed: false, active: false },
+                    ].map((d, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          background: d.active ? 'rgba(255,255,255,0.3)' : d.completed ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
+                          border: d.active ? '1.5px solid #ffffff' : 'none',
+                          color: '#ffffff',
+                          fontSize: '0.65rem',
+                          fontWeight: 700,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          position: 'relative'
+                        }}
+                      >
+                        {d.day}
+                        {d.active && (
+                          <span style={{
+                            position: 'absolute',
+                            bottom: '-6px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            width: '14px',
+                            height: '2px',
+                            background: '#ffffff',
+                            borderRadius: '2px'
+                          }} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div style={{ marginTop: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
-              <div style={styles.statCard}>
-                <div style={styles.statCardLabel}>Active Module</div>
-                <div style={styles.statCardValue}>Module 0</div>
-                <div style={styles.statCardMeta}>AI: Ab kaam karne ka tareeka badalne wala hai!</div>
+            {/* ─── 4 METRIC CARDS (Exact match to media_1795517501723_eecef4ad.jpg) ─── */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '1.25rem', marginTop: '1.25rem' }}>
+              
+              {/* Card 1: Lessons */}
+              <div style={styles.metricCard}>
+                <div style={styles.metricCardLabel}>Lessons</div>
+                <div style={styles.metricCardValue}>2<span style={{ fontSize: '1.1rem', color: '#94a3b8', fontWeight: 600 }}>/32</span></div>
+                <div style={{ width: '100%', height: '4px', background: '#e2e8f0', borderRadius: '2px', margin: '0.65rem 0' }}>
+                  <div style={{ width: '6.25%', height: '100%', background: '#027A9B', borderRadius: '2px' }} />
+                </div>
+                <div style={styles.metricCardFooter}>
+                  <Clock size={12} color="#64748b" />
+                  <span>1 lesson from 1.1</span>
+                </div>
               </div>
-              <div style={styles.statCard}>
-                <div style={styles.statCardLabel}>Day Streak</div>
-                <div style={{ ...styles.statCardValue, color: '#f59e0b' }}>🔥 {streakDays} Days</div>
-                <div style={styles.statCardMeta}>Active in offline cohort</div>
+
+              {/* Card 2: Assignments */}
+              <div style={styles.metricCard}>
+                <div style={styles.metricCardLabel}>Assignments</div>
+                <div style={styles.metricCardValue}>0<span style={{ fontSize: '1.1rem', color: '#94a3b8', fontWeight: 600 }}>/9</span></div>
+                <div style={{ width: '100%', height: '4px', background: '#e2e8f0', borderRadius: '2px', margin: '0.65rem 0' }}>
+                  <div style={{ width: '0%', height: '100%', background: '#64748b', borderRadius: '2px' }} />
+                </div>
+                <div style={styles.metricCardFooter}>
+                  <Clock size={12} color="#64748b" />
+                  <span>Submit soon</span>
+                </div>
               </div>
-              <div style={styles.statCard}>
-                <div style={styles.statCardLabel}>Total XP</div>
-                <div style={{ ...styles.statCardValue, color: '#10b981' }}>⚡ {xp} XP</div>
-                <div style={styles.statCardMeta}>Level 2: AI Explorer</div>
+
+              {/* Card 3: Streak */}
+              <div style={styles.metricCard}>
+                <div style={styles.metricCardLabel}>Streak</div>
+                <div style={{ ...styles.metricCardValue, color: '#0f172a' }}>0 days</div>
+                <div style={{ marginTop: '0.9rem', fontSize: '0.8rem', color: '#64748b' }}>
+                  Total Streaks: <strong style={{ color: '#0f172a' }}>5 days</strong>
+                </div>
               </div>
+
+              {/* Card 4: Nov 2026 Daily Calendar */}
+              <div style={{ ...styles.metricCard, padding: '0.85rem 1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#027A9B' }}>Nov 2026</span>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B' }}>Daily Calendar</span>
+                </div>
+                {/* Mini Calendar Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', fontSize: '0.65rem', color: '#64748b', fontWeight: 700, rowGap: '4px', columnGap: '2px' }}>
+                  <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                  <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+                  <span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
+                  <span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span>
+                  <span>22</span><span>23</span>
+                  <span style={{
+                    background: '#027A9B',
+                    color: '#ffffff',
+                    borderRadius: '50%',
+                    fontWeight: 800,
+                    width: '18px',
+                    height: '18px',
+                    lineHeight: '18px',
+                    margin: '0 auto',
+                    display: 'inline-block'
+                  }}>
+                    24
+                  </span>
+                  <span>25</span><span>26</span><span>27</span><span>28</span>
+                  <span>29</span><span>30</span>
+                </div>
+              </div>
+
             </div>
+
+            {/* ─── LOWER SECTION: ACTIVE COURSE & REMINDERS (LEFT) vs TOP PEERS (RIGHT) ─── */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.45fr) minmax(280px, 1fr)', gap: '1.25rem', marginTop: '1.25rem' }}>
+              
+              {/* Left Column */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                
+                {/* Active Course Card */}
+                <div style={styles.dashboardWhiteCard}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.35rem' }}>
+                    ACTIVE COURSE: PM -X Accelerator Batch 2 (Week 1)
+                  </div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#027A9B', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.2rem' }}>
+                    CONTINUE LEARNING
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.85rem 0' }}>
+                    1.1 • Introduction to Production Management
+                  </h3>
+
+                  {/* Segmented Progress Bar (6 dashes) */}
+                  <div style={{ display: 'flex', gap: '6px', marginBottom: '1.15rem' }}>
+                    {[1, 2, 3, 4, 5, 6].map((seg, idx) => (
+                      <div
+                        key={seg}
+                        style={{
+                          flex: 1,
+                          height: '6px',
+                          borderRadius: '3px',
+                          background: idx < 2 ? '#027A9B' : '#e2e8f0'
+                        }}
+                      />
+                    ))}
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveNav('courses');
+                        setCourseViewMode('player');
+                      }}
+                      style={styles.resumeLessonBtn}
+                    >
+                      <Play size={14} fill="#ffffff" color="#ffffff" />
+                      <span>Resume Lesson</span>
+                    </button>
+                    <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                      Up next: 1.5 • Understanding Business Growth
+                    </span>
+                  </div>
+                </div>
+
+                {/* Weekly Reminder Card */}
+                <div style={styles.dashboardWhiteCard}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
+                    <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                      Weekly Reminder
+                    </h4>
+                    <span style={{ fontSize: '1.1rem' }}>⏰</span>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                    {WEEKLY_REMINDERS.map((rem, idx) => (
+                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem' }}>
+                        <span style={{ color: '#0f172a', fontWeight: 600 }}>• {rem.title}</span>
+                        <span style={{ color: '#027A9B', fontWeight: 700, fontSize: '0.78rem' }}>{rem.time}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Right Column: Top Peers Leaderboard */}
+              <div style={styles.dashboardWhiteCard}>
+                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.15rem 0' }}>
+                  Top Peers
+                </h4>
+                <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 1.25rem 0' }}>
+                  Track your performance against the cohort.
+                </p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                  {LEADERBOARD_PEERS.map((peer) => (
+                    <div
+                      key={peer.rank}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '0.4rem 0',
+                        borderBottom: peer.rank < 6 ? '1px solid #f1f5f9' : 'none'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{
+                          width: '38px',
+                          height: '38px',
+                          borderRadius: '50%',
+                          background: peer.bg,
+                          color: peer.color,
+                          fontWeight: 800,
+                          fontSize: '0.82rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          {peer.initials}
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.86rem', fontWeight: 700, color: '#0f172a' }}>
+                            {peer.name}
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                            {peer.pts} pts
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>
+                        {peer.rank}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+
           </div>
         )}
 
       </div>
 
-      {/* ─── GYM DRILL MODAL ─── */}
+      {/* ─── GYM DRILL MODAL (Shows 20 XP for today vs 8 XP for catch-up) ─── */}
       {activeGymModalDay && (
         <div style={styles.modalOverlay}>
           <div style={styles.modalCard}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <div>
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#027a9b', textTransform: 'uppercase' }}>
-                  DAY {activeGymModalDay.day} DRILL · {activeGymModalDay.newExperience}
+                <span style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  color: activeGymModalDay.day === TODAY_GYM_DAY ? '#027a9b' : '#b45309',
+                  textTransform: 'uppercase',
+                  background: activeGymModalDay.day === TODAY_GYM_DAY ? '#e0f2fe' : '#fef3c7',
+                  padding: '0.2rem 0.5rem',
+                  borderRadius: '4px'
+                }}>
+                  {activeGymModalDay.day === TODAY_GYM_DAY
+                    ? `DAY ${activeGymModalDay.day} DRILL · TODAY'S CHALLENGE (+20 XP)`
+                    : `DAY ${activeGymModalDay.day} DRILL · CATCH-UP DRILL (+8 XP)`}
                 </span>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', margin: '0.15rem 0 0 0' }}>
-                  {activeGymModalDay.challenge}
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: '0.35rem 0 0 0' }}>
+                  {activeGymModalDay.caseStudyTitle}
                 </h3>
               </div>
               <button type="button" onClick={() => setActiveGymModalDay(null)} style={styles.closeBtn}>
@@ -1892,21 +2662,39 @@ export default function AiBeginnersLms() {
               </button>
             </div>
 
-            <div style={{ background: '#f8fafc', padding: '0.85rem', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#475569', marginBottom: '0.2rem' }}>
+            {/* Question prompt */}
+            <div style={{ background: '#f8fafc', padding: '0.9rem', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '0.85rem' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#475569', marginBottom: '0.35rem' }}>
+                Case Study Prompt:
+              </div>
+              <p style={{ fontSize: '0.88rem', color: '#0f172a', margin: 0, fontWeight: 600, lineHeight: 1.5 }}>
+                {activeGymModalDay.questionPrompt}
+              </p>
+            </div>
+
+            {/* Suggested starting prompt */}
+            <div style={{ background: '#f0f9ff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #bae6fd', marginBottom: '0.85rem' }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#027A9B', marginBottom: '0.2rem' }}>
                 Suggested Starting Prompt:
               </div>
-              <p style={{ fontSize: '0.85rem', color: '#027A9B', margin: 0, fontStyle: 'italic' }}>
+              <p style={{ fontSize: '0.85rem', color: '#0369a1', margin: 0, fontStyle: 'italic' }}>
                 "{activeGymModalDay.promptSuggestion}"
               </p>
             </div>
 
+            {/* Catch-up info callout if not today */}
+            {activeGymModalDay.day !== TODAY_GYM_DAY && (
+              <div style={{ background: '#fffbeb', border: '1px solid #fef3c7', padding: '0.55rem 0.75rem', borderRadius: '6px', marginBottom: '0.85rem', fontSize: '0.75rem', color: '#92400e' }}>
+                ℹ️ <strong>Catch-up Mode:</strong> You are attempting this challenge after its active date. Solving it will award <strong>8 XP</strong> (reduced points) instead of 20 XP.
+              </div>
+            )}
+
             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: '0.35rem' }}>
-              Your Response / Discovery:
+              Your Response / Solution:
             </label>
             <textarea
               rows={3}
-              placeholder="Maine AI par ye prompt run kiya aur mujhe ye output mila..."
+              placeholder="Enter your market segmentation, target persona justification, or AI output analysis here..."
               value={gymResponseInput}
               onChange={(e) => setGymResponseInput(e.target.value)}
               style={styles.journalTextarea}
@@ -1918,7 +2706,11 @@ export default function AiBeginnersLms() {
               </button>
               <button type="button" onClick={handleCompleteGymDay} style={styles.primaryBtn}>
                 <Zap size={14} fill="#fff" />
-                <span>Mark Day {activeGymModalDay.day} Complete (+20 XP)</span>
+                <span>
+                  {activeGymModalDay.day === TODAY_GYM_DAY
+                    ? `Submit & Complete Day ${activeGymModalDay.day} (+20 XP)`
+                    : `Submit Catch-up Day ${activeGymModalDay.day} (+8 XP)`}
+                </span>
               </button>
             </div>
           </div>
@@ -2398,6 +3190,80 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
     cursor: 'pointer'
   },
+  dashboardGymBanner: {
+    background: 'linear-gradient(90deg, #015D77 0%, #027A9B 100%)',
+    borderRadius: '12px',
+    padding: '1.35rem 1.75rem',
+    color: '#ffffff',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '1.5rem',
+    flexWrap: 'wrap',
+    boxShadow: '0 4px 15px rgba(2, 122, 155, 0.15)'
+  },
+  dashboardSolveBtn: {
+    background: '#ffffff',
+    color: '#027A9B',
+    border: 'none',
+    borderRadius: '999px',
+    padding: '0.65rem 1.5rem',
+    fontSize: '0.875rem',
+    fontWeight: 800,
+    cursor: 'pointer',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    transition: 'all 0.15s ease'
+  },
+  metricCard: {
+    background: '#ffffff',
+    borderRadius: '12px',
+    padding: '1.15rem 1.25rem',
+    border: '1px solid #e2e8f0',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
+  metricCardLabel: {
+    fontSize: '0.8rem',
+    fontWeight: 700,
+    color: '#64748b',
+    marginBottom: '0.35rem'
+  },
+  metricCardValue: {
+    fontSize: '1.65rem',
+    fontWeight: 800,
+    color: '#0f172a'
+  },
+  metricCardFooter: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.4rem',
+    fontSize: '0.75rem',
+    color: '#64748b',
+    marginTop: 'auto'
+  },
+  dashboardWhiteCard: {
+    background: '#ffffff',
+    borderRadius: '12px',
+    padding: '1.35rem',
+    border: '1px solid #e2e8f0',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+  },
+  resumeLessonBtn: {
+    background: '#027A9B',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '8px',
+    padding: '0.6rem 1.25rem',
+    fontSize: '0.85rem',
+    fontWeight: 700,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    cursor: 'pointer',
+    boxShadow: '0 2px 6px rgba(2, 122, 155, 0.2)'
+  },
   aiGymBanner: {
     background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)',
     borderRadius: '20px',
@@ -2684,5 +3550,154 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: '2rem 2.5rem',
     maxWidth: '1100px',
     overflowY: 'auto'
+  },
+  // Slide Viewer Bezel (Exact match to uploaded media_1795506493984_2c4c823d.png)
+  slideViewerOuterBezel: {
+    background: '#23272e',
+    border: '2px solid #1a1d23',
+    borderRadius: '16px',
+    boxShadow: '0 12px 36px rgba(0,0,0,0.22)',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: '1.5rem',
+    position: 'relative'
+  },
+  slideCanvas169: {
+    background: '#ffffff',
+    margin: '12px 12px 0 12px',
+    borderRadius: '8px',
+    padding: '2.5rem 3.25rem',
+    minHeight: '450px',
+    display: 'flex',
+    flexDirection: 'column',
+    boxSizing: 'border-box'
+  },
+  slideCanvasTopHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: '1.25rem',
+    gap: '1rem'
+  },
+  slideCanvasTitle: {
+    fontSize: '1.85rem',
+    fontWeight: 800,
+    color: '#0f172a',
+    margin: 0,
+    letterSpacing: '-0.025em',
+    lineHeight: 1.25
+  },
+  slideBrandWatermark: {
+    fontSize: '0.95rem',
+    fontWeight: 700,
+    color: '#64748b',
+    letterSpacing: '-0.01em',
+    flexShrink: 0,
+    marginTop: '4px'
+  },
+  slideCanvasSubheading: {
+    fontSize: '1.05rem',
+    fontWeight: 700,
+    color: '#027a9b',
+    marginBottom: '1.25rem',
+    lineHeight: 1.45
+  },
+  slideCanvasBulletList: {
+    listStyle: 'none',
+    padding: 0,
+    margin: '0 0 1.25rem 0',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.95rem'
+  },
+  slideCanvasBulletItem: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '0.85rem',
+    fontSize: '1.1rem',
+    fontWeight: 600,
+    color: '#1e293b',
+    lineHeight: 1.55
+  },
+  slideCanvasBulletDot: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    background: '#0f172a',
+    marginTop: '0.55rem',
+    flexShrink: 0
+  },
+  slideCanvasFooter: {
+    marginTop: 'auto',
+    paddingTop: '1.25rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    fontSize: '0.78rem',
+    color: '#94a3b8',
+    fontWeight: 600
+  },
+  slideFooterCourseText: {
+    color: '#64748b',
+    letterSpacing: '0.02em'
+  },
+  slideFooterPageNum: {
+    fontWeight: 800,
+    color: '#0f172a'
+  },
+  slidePlayerBottomBar: {
+    background: '#111827',
+    height: '48px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    padding: '0 1.25rem'
+  },
+  slidePlayerArrowBtn: {
+    background: 'transparent',
+    border: 'none',
+    color: '#ffffff',
+    cursor: 'pointer',
+    padding: '0.35rem 0.65rem',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '6px',
+    transition: 'background 0.15s ease'
+  },
+  slidePlayerCounterText: {
+    color: '#ffffff',
+    fontSize: '0.95rem',
+    fontWeight: 700,
+    minWidth: '70px',
+    textAlign: 'center',
+    userSelect: 'none'
+  },
+  fullscreenIconBtn: {
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '0.25rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  openInNewTabBtn: {
+    background: '#0f172a',
+    color: '#ffffff',
+    padding: '0.55rem 1.15rem',
+    borderRadius: '8px',
+    fontSize: '0.85rem',
+    fontWeight: 700,
+    textDecoration: 'none',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.45rem',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+    transition: 'all 0.15s ease',
+    cursor: 'pointer',
+    border: 'none'
   }
 };

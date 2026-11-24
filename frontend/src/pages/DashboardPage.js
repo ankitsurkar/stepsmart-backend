@@ -6,7 +6,7 @@ import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../u
 import AssignmentUpload from '../components/AssignmentUpload';
 import PeerSessionsTab from '../components/PeerSessionsTab';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Book, Briefcase, Clock, ClipboardList, Calendar, Folder, Users, Settings, Bell, Trophy, HelpCircle, Bookmark, CheckCircle2, Copy, Filter } from 'lucide-react';
+import { Home, Book, Briefcase, Clock, ClipboardList, Calendar, Folder, Users, Settings, Bell, Trophy, HelpCircle, Bookmark, CheckCircle2, Copy, Filter, Flame, Zap, Play, ChevronLeft, ChevronRight, Check, ExternalLink } from 'lucide-react';
 import { addDays, subDays, startOfMonth as startOfMonthFn, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, getDaysInMonth, getDate, isSameMonth, isSameDay, getDay, addMonths } from 'date-fns';
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import { toast } from 'sonner';
@@ -14,6 +14,16 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { INTERVIEW_CATEGORIES, INTERVIEW_COMPANIES, ALL_INTERVIEW_QUESTIONS } from '../utils/interviewQuestions';
 import { BATCH_2_PRODUCT_DESIGN_CASE_STUDY } from '../utils/batch2GymQuestions';
+import {
+  MODULE_0_SLIDES,
+  TODAY_GYM_DAY,
+  INITIAL_GYM_CHALLENGES,
+  MODULE_0_DRAWER_ITEMS,
+  LEADERBOARD_PEERS,
+  WEEKLY_REMINDERS,
+  getSlideBullets,
+  AI_PROMPT_LIBRARY
+} from '../utils/aiCohortData';
 
 const TIMEZONE_IST = 'Asia/Kolkata';
 
@@ -22,7 +32,6 @@ const COURSE_NAME_OVERRIDES = {
   'course-002': 'PM -X Accelerator (Batch 2)',
   'course-ai-001': 'AI Seekho, AI Apnao',
 };
-
 
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Home', icon: 'home' },
@@ -36,9 +45,21 @@ const NAV_ITEMS = [
   { id: 'settings', label: 'Profile', icon: 'settings' },
 ];
 
+const AI_NAV_ITEMS = [
+  { id: 'dashboard', label: 'Home', icon: 'home' },
+  { id: 'courses', label: 'Courses', icon: 'book' },
+  { id: 'gym', label: 'AI Gym', icon: 'flame' },
+  { id: 'prompts', label: 'Prompt Library', icon: 'folder' },
+  { id: 'assignments', label: 'Assignments', icon: 'clipboard' },
+  { id: 'resources', label: 'Resources', icon: 'folder' },
+  { id: 'scheduling', label: 'Sessions', icon: 'clock' },
+  { id: 'cohort', label: 'Cohort', icon: 'users' },
+  { id: 'settings', label: 'Profile', icon: 'settings' },
+];
+
 function getInitialDashboardView(searchParams) {
   const requestedView = searchParams.get('view');
-  return NAV_ITEMS.some((item) => item.id === requestedView) ? requestedView : 'dashboard';
+  return [...NAV_ITEMS, ...AI_NAV_ITEMS].some((item) => item.id === requestedView) ? requestedView : 'dashboard';
 }
 
 const BADGE = {
@@ -1918,6 +1939,7 @@ function StatusBadge({ status }) {
 function SidebarIcon({ kind }) {
   if (kind === 'home') return <Home size={21} strokeWidth={2} />;
   if (kind === 'book') return <Book size={21} strokeWidth={2} />;
+  if (kind === 'flame') return <Flame size={21} strokeWidth={2} />;
   if (kind === 'jobs') return <Briefcase size={21} strokeWidth={2} />;
   if (kind === 'clock') return <Clock size={21} strokeWidth={2} />;
   if (kind === 'clipboard') return <ClipboardList size={21} strokeWidth={2} />;
@@ -2463,6 +2485,82 @@ export default function DashboardPage() {
 
   const [activeView, setActiveView] = useState(() => getInitialDashboardView(searchParams));
 
+  // AI Beginners Cohort states
+  const isAiCohort = Boolean(
+    (activeCourse?.name && activeCourse.name.toLowerCase().includes('ai')) ||
+    (activeCourse?.title && activeCourse.title.toLowerCase().includes('ai')) ||
+    (activeCourse?.courseId && activeCourse.courseId.toLowerCase().includes('ai')) ||
+    (activeCourse?.courseName && activeCourse.courseName.toLowerCase().includes('ai'))
+  );
+
+  const [aiLang, setAiLang] = useState(() => localStorage.getItem('stepsmart_ai_lang') || 'hindi');
+  const handleToggleAiLang = (lang) => {
+    setAiLang(lang);
+    localStorage.setItem('stepsmart_ai_lang', lang);
+  };
+
+  const [aiSlideIndex, setAiSlideIndex] = useState(0);
+  const [aiMode, setAiMode] = useState('learner');
+  const [aiGymChallenges, setAiGymChallenges] = useState(() => {
+    try {
+      const saved = localStorage.getItem('stepsmart_ai_gym_challenges_v1');
+      return saved ? JSON.parse(saved) : INITIAL_GYM_CHALLENGES;
+    } catch {
+      return INITIAL_GYM_CHALLENGES;
+    }
+  });
+
+  const [aiGymModalDay, setAiGymModalDay] = useState(null);
+  const [aiGymInput, setAiGymInput] = useState('');
+  const [aiCopiedId, setAiCopiedId] = useState(null);
+
+  // Activity Journal states
+  const [journalTask, setJournalTask] = useState(() => localStorage.getItem('stepsmart_j_task') || '');
+  const [journalHelp, setJournalHelp] = useState(() => localStorage.getItem('stepsmart_j_help') || '');
+  const [journalTimeBefore, setJournalTimeBefore] = useState(() => localStorage.getItem('stepsmart_j_before') || '');
+  const [journalTimeWith, setJournalTimeWith] = useState(() => localStorage.getItem('stepsmart_j_with') || '');
+  const [journalReusable, setJournalReusable] = useState(() => localStorage.getItem('stepsmart_j_reuse') || '');
+  const [journalSubmitted, setJournalSubmitted] = useState(() => localStorage.getItem('stepsmart_j_submitted') === 'true');
+
+  const handleSaveJournal = (e) => {
+    e.preventDefault();
+    localStorage.setItem('stepsmart_j_task', journalTask);
+    localStorage.setItem('stepsmart_j_help', journalHelp);
+    localStorage.setItem('stepsmart_j_before', journalTimeBefore);
+    localStorage.setItem('stepsmart_j_with', journalTimeWith);
+    localStorage.setItem('stepsmart_j_reuse', journalReusable);
+    localStorage.setItem('stepsmart_j_submitted', 'true');
+    setJournalSubmitted(true);
+    toast.success('Activity journal saved! +25 XP awarded.');
+  };
+
+  const handleCompleteAiGymDay = () => {
+    if (!aiGymModalDay) return;
+    const isToday = aiGymModalDay.day === TODAY_GYM_DAY;
+    const pointsAwarded = isToday ? 20 : 8;
+
+    const updated = aiGymChallenges.map(c =>
+      c.day === aiGymModalDay.day ? { ...c, completed: true, scoreAwarded: pointsAwarded } : c
+    );
+    setAiGymChallenges(updated);
+    localStorage.setItem('stepsmart_ai_gym_challenges_v1', JSON.stringify(updated));
+
+    if (isToday) {
+      toast.success(`🎉 Day ${aiGymModalDay.day} Completed! Full +${pointsAwarded} XP awarded for today's drill!`);
+    } else {
+      toast.success(`⏱️ Day ${aiGymModalDay.day} Completed (Catch-up)! +${pointsAwarded} XP awarded.`);
+    }
+    setAiGymModalDay(null);
+    setAiGymInput('');
+  };
+
+  const handleCopyAiPrompt = (text, id) => {
+    navigator.clipboard.writeText(text);
+    setAiCopiedId(id);
+    toast.success('Prompt copied to clipboard!');
+    setTimeout(() => setAiCopiedId(null), 2500);
+  };
+
   // Global Resources States
   const [expandedResources, setExpandedResources] = useState({});
   const toggleResource = (id) => {
@@ -2672,18 +2770,41 @@ export default function DashboardPage() {
 
         // If the resolved course matches what we pre-fetched in parallel, use the results immediately
         if (actualCourse.courseId === preferredCourseId && initialWeeksResult.status === 'fulfilled' && initialProgressResult.status === 'fulfilled') {
-          weeksData = initialWeeksResult.value.data.weeks || [];
-          suppData = initialWeeksResult.value.data.supplementalContent || null;
+          weeksData = initialWeeksResult.value.data?.weeks || [];
+          suppData = initialWeeksResult.value.data?.supplementalContent || null;
           progressData = initialProgressResult.value.data || {};
         } else {
           // In the rare event the active course was different, fetch for the actual course
           const [weeksRes, progressRes] = await Promise.all([
-            getCourseWeeks(actualCourse.courseId),
-            getProgress(actualCourse.courseId, { includeLeaderboard: true, clientDate: todayStr }),
+            getCourseWeeks(actualCourse.courseId).catch(() => ({ data: { weeks: [] } })),
+            getProgress(actualCourse.courseId, { includeLeaderboard: true, clientDate: todayStr }).catch(() => ({ data: {} })),
           ]);
-          weeksData = weeksRes.data.weeks || [];
-          suppData = weeksRes.data.supplementalContent || null;
-          progressData = progressRes.data || {};
+          weeksData = weeksRes?.data?.weeks || [];
+          suppData = weeksRes?.data?.supplementalContent || null;
+          progressData = progressRes?.data || {};
+        }
+
+        const isActualCourseAi = Boolean(
+          actualCourse?.name?.toLowerCase().includes('ai') ||
+          actualCourse?.courseId?.toLowerCase().includes('ai') ||
+          actualCourse?.title?.toLowerCase().includes('ai')
+        );
+        if (weeksData.length === 0 && isActualCourseAi) {
+          weeksData = [{
+            weekId: 'ai-week-0',
+            weekNumber: 1,
+            displayWeekNumber: 'Module 0',
+            weekTitle: 'AI Foundations & Everyday Assistant',
+            lessons: [{
+              weekId: 'ai-week-0',
+              courseId: actualCourse.courseId,
+              displayWeekNumber: 'Module 0',
+              weekNumber: 1,
+              title: 'AI: Ab kaam karne ka tareeka badalne wala hai!',
+              description: '14 interactive presentation slides and hands-on micro-experiments.',
+              status: 'in-progress'
+            }]
+          }];
         }
       } else {
         // Fallback synthetic course path
@@ -2783,13 +2904,38 @@ export default function DashboardPage() {
   async function loadCourse(courseId, courseList) {
     try {
       const todayStr = toDateKey(new Date());
+      const currentSelectedCourse = (courseList || courses || []).find(c => c.courseId === courseId) || activeCourse || (courseList && courseList[0]) || (courses && courses[0]);
+      const isCourseAi = Boolean(
+        courseId?.toLowerCase().includes('ai') ||
+        currentSelectedCourse?.name?.toLowerCase().includes('ai') ||
+        currentSelectedCourse?.title?.toLowerCase().includes('ai')
+      );
+
       const [weeksRes, progressRes] = await Promise.all([
-        getCourseWeeks(courseId),
-        getProgress(courseId, { includeLeaderboard: true, clientDate: todayStr }),
+        getCourseWeeks(courseId).catch(() => ({ data: { weeks: [] } })),
+        getProgress(courseId, { includeLeaderboard: true, clientDate: todayStr }).catch(() => ({ data: {} })),
       ]);
 
-      const weeksData = weeksRes.data.weeks || [];
-      let suppData = weeksRes.data.supplementalContent || null;
+      let weeksData = weeksRes?.data?.weeks || [];
+      if (weeksData.length === 0 && isCourseAi) {
+        weeksData = [{
+          weekId: 'ai-week-0',
+          weekNumber: 1,
+          displayWeekNumber: 'Module 0',
+          weekTitle: 'AI Foundations & Everyday Assistant',
+          lessons: [{
+            weekId: 'ai-week-0',
+            courseId: courseId,
+            displayWeekNumber: 'Module 0',
+            weekNumber: 1,
+            title: 'AI: Ab kaam karne ka tareeka badalne wala hai!',
+            description: '14 interactive presentation slides and hands-on micro-experiments.',
+            status: 'in-progress'
+          }]
+        }];
+      }
+
+      let suppData = weeksRes?.data?.supplementalContent || null;
       if (!suppData) {
         const suppWeek = (weeksData || []).find((w) => w.weekId === '__supplemental__');
         if (suppWeek) {
@@ -2805,27 +2951,24 @@ export default function DashboardPage() {
       setWeeks(weeksData);
 
       const nextProgressMap = {};
-      for (const progress of (progressRes.data.progress || [])) {
+      for (const progress of (progressRes?.data?.progress || [])) {
         nextProgressMap[progress.weekId] = progress;
       }
 
       setProgressMap(nextProgressMap);
-      const leaderboardData = progressRes.data.leaderboard || [];
+      const leaderboardData = progressRes?.data?.leaderboard || [];
       setLeaderboard(leaderboardData);
 
       setSupplementalContent(suppData);
 
-      // Resolve the selected course correctly using courseId instead of stale activeCourse state
-      const currentSelectedCourse = (courseList || courses || []).find(c => c.courseId === courseId) || activeCourse || (courseList && courseList[0]) || (courses && courses[0]);
-
-      const nextGymProgress = progressRes.data.gymProgress || [];
-      let nextGymQuestions = progressRes.data.gymQuestions || [];
+      const nextGymProgress = progressRes?.data?.gymProgress || [];
+      let nextGymQuestions = progressRes?.data?.gymQuestions || [];
       const existingDates = new Set(nextGymQuestions.map(q => q.date));
       if (!existingDates.has(todayStr) || currentSelectedCourse?.name?.toLowerCase().includes('batch 2') || currentSelectedCourse?.name?.toLowerCase().includes('accelerator')) {
         const merged = [...nextGymQuestions, ...BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter(q => !existingDates.has(q.date))];
         nextGymQuestions = merged.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
       }
-      const nextGymStreak = progressRes.data.gymStreak || 0;
+      const nextGymStreak = progressRes?.data?.gymStreak || 0;
 
       setGymProgress(nextGymProgress);
       setGymQuestions(nextGymQuestions);
@@ -3081,11 +3224,12 @@ export default function DashboardPage() {
     // Weekly Reminder Card
     const renderWeeklyReminderCard = () => {
       const suppWeek = (weeks || []).find((w) => w.weekId === '__supplemental__');
+      const defaultReminders = isAiCohort ? WEEKLY_REMINDERS : [];
       const reminders = (supplementalContent?.reminders && supplementalContent.reminders.length > 0)
         ? supplementalContent.reminders
         : (suppWeek?.reminders && suppWeek.reminders.length > 0)
           ? suppWeek.reminders
-          : [];
+          : defaultReminders;
       return (
         <div
           ref={weeklyReminderCardRef}
@@ -4084,15 +4228,37 @@ export default function DashboardPage() {
               }}
             />
             <div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.35rem 0', letterSpacing: '-0.02em', color: '#ffffff' }}>PM Gym</h3>
-              <p style={{ fontSize: '0.9rem', color: '#e0f2fe', margin: 0, opacity: 0.9 }}>
-                {isClosedDay
-                  ? 'Closed today for resting. Rest up, or review previous answers!'
-                  : todayQuestion
-                    ? todayQuestion.text
-                    : loading
-                      ? "Loading today's daily challenge..."
-                      : 'No daily question scheduled for today. Check back later!'
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
+                  {isAiCohort ? 'AI Gym' : 'PM Gym'}
+                </h3>
+                {isAiCohort && (
+                  <span style={{
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    color: '#ffffff',
+                    fontSize: '0.72rem',
+                    fontWeight: 800,
+                    padding: '0.2rem 0.55rem',
+                    borderRadius: '999px',
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                  }}>
+                    7-Day Streak Challenge • Day 2 of 7
+                  </span>
+                )}
+              </div>
+              <p style={{ fontSize: '0.88rem', color: '#e0f2fe', margin: 0, opacity: 0.95, lineHeight: 1.45, maxWidth: '680px' }}>
+                {isAiCohort
+                  ? (aiLang === 'hindi'
+                    ? "Swiggy Group Order Feature: Weekday office lunches mein frequency aur AOV badhana hai. Metro tech parks ke 3 distinct user groups identify karein aur 1 line mein batayein Swiggy ko pehle kisse target karna chahiye aur kyun?"
+                    : "[Case Study: Design a Group Food Ordering Experience for Swiggy · Day 2 of 7] Assume the primary goal is driving weekday lunch frequency and AOV in metro tech parks. Segment the potential group ordering market into 3 distinct user groups, and state in ONE sentence which group Swiggy should target for the MVP and why.")
+                  : (isClosedDay
+                    ? 'Closed today for resting. Rest up, or review previous answers!'
+                    : todayQuestion
+                      ? todayQuestion.text
+                      : loading
+                        ? "Loading today's daily challenge..."
+                        : 'No daily question scheduled for today. Check back later!')
                 }
               </p>
             </div>
@@ -4106,7 +4272,59 @@ export default function DashboardPage() {
             justifyContent: isCompact ? 'center' : 'flex-start',
             flexDirection: isMobile ? 'column' : 'row'
           }}>
-            {!isClosedDay && todayQuestion ? (
+            {isAiCohort ? (
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto' }}>
+                {aiGymChallenges.find(c => c.day === 2)?.completed ? (
+                  <button
+                    type="button"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '999px',
+                      padding: '0.75rem 1.5rem',
+                      fontSize: '0.95rem',
+                      fontWeight: 700,
+                      cursor: 'not-allowed',
+                      width: isCompact ? '100%' : 'auto',
+                      minWidth: isCompact ? '0' : '180px',
+                      boxSizing: 'border-box',
+                    }}
+                    disabled
+                  >
+                    Completed ✓ (+20 XP)
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const day2 = aiGymChallenges.find(c => c.day === 2);
+                      setAiGymModalDay(day2);
+                    }}
+                    style={{
+                      background: '#ffffff',
+                      color: '#027A9B',
+                      border: 'none',
+                      borderRadius: '999px',
+                      padding: '0.75rem 1.5rem',
+                      fontSize: '0.95rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                      transition: 'transform 0.15s ease',
+                      whiteSpace: 'nowrap',
+                      width: isCompact ? '100%' : 'auto',
+                      minWidth: isCompact ? '0' : '180px',
+                      boxSizing: 'border-box',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    Solve Challenge
+                  </button>
+                )}
+              </div>
+            ) : (!isClosedDay && todayQuestion ? (
               hasSolvedToday ? (
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto' }}>
                   <button
@@ -4182,7 +4400,7 @@ export default function DashboardPage() {
                   {isClosedDay ? 'Closed Today 💤' : 'No Question Active'}
                 </span>
               </div>
-            )}
+            ))}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: isCompact ? '100%' : 'auto', minWidth: isCompact ? '0' : '180px', boxSizing: 'border-box' }}>
@@ -4190,74 +4408,120 @@ export default function DashboardPage() {
               Weekly Goal
             </div>
             <div style={{ display: 'flex', justifyContent: isCompact ? 'center' : 'space-between', gap: isCompact ? '0.75rem' : '0.35rem' }}>
-              <Tooltip.Provider delayDuration={150}>
-                {weeklyGoalDays.map((day, idx) => {
-                  const isPast = !day.isToday && !day.isFuture;
+              {isAiCohort ? (
+                ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su'].map((label, idx) => {
+                  const dayNum = idx + 1;
+                  const challenge = aiGymChallenges.find(c => c.day === dayNum);
+                  const isDone = challenge?.completed;
+                  const isTodayDay = dayNum === 2;
+
                   return (
-                    <Tooltip.Root key={idx}>
-                      <Tooltip.Trigger asChild>
-                        <button
-                          onClick={() => {
-                            if (isPast && day.question) {
-                              setSelectedGymDetailDay(day);
-                            }
-                          }}
-                          style={{
-                          width: '24px',
-                          height: '24px',
-                          borderRadius: '50%',
-                          background: day.active
-                            ? '#ffffff'
-                            : day.isFuture
-                              ? 'rgba(255, 255, 255, 0.2)'
-                              : 'rgba(255, 255, 255, 0.4)',
-                          color: day.active ? '#027A9B' : '#ffffff',
-                          fontSize: '0.7rem',
-                          fontWeight: 700,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                          border: 'none',
-                          padding: 0,
-                          outline: 'none',
-                          transition: 'all 0.15s ease',
-                        }}
-                      >
-                        {day.active ? '✓' : day.label}
-                      </button>
-                    </Tooltip.Trigger>
-                    
-                    <Tooltip.Portal>
-                      <Tooltip.Content
-                        side="top"
-                        align="center"
-                        sideOffset={8}
-                        avoidCollisions={true}
-                        collisionPadding={12}
-                        style={{
-                          width: '240px',
-                          background: '#ffffff',
-                          borderRadius: '16px',
-                          padding: '1rem',
-                          boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-                          border: '1px solid rgba(2,122,155,0.15)',
-                          color: '#0f172a',
-                          zIndex: 9999,
-                          textAlign: 'left',
-                        }}
-                      >
-                        {renderWeeklyGoalTooltipContent(day)}
-                        <Tooltip.Arrow style={{ fill: '#ffffff' }} />
-                      </Tooltip.Content>
-                    </Tooltip.Portal>
-                  </Tooltip.Root>
+                    <button
+                      key={dayNum}
+                      type="button"
+                      onClick={() => {
+                        if (challenge) setAiGymModalDay(challenge);
+                      }}
+                      title={`Day ${dayNum}: ${challenge?.challenge || ''}`}
+                      style={{
+                        width: '26px',
+                        height: '26px',
+                        borderRadius: '50%',
+                        background: isDone ? '#ffffff' : isTodayDay ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.3)',
+                        color: isDone || isTodayDay ? '#027A9B' : '#ffffff',
+                        fontSize: '0.7rem',
+                        fontWeight: 800,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        border: isTodayDay ? '2px solid #ffffff' : 'none',
+                        padding: 0,
+                        outline: 'none',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      {isDone ? '✓' : label}
+                    </button>
                   );
-                })}
-              </Tooltip.Provider>
+                })
+              ) : (
+                <Tooltip.Provider delayDuration={150}>
+                  {weeklyGoalDays.map((day, idx) => {
+                    const isPast = !day.isToday && !day.isFuture;
+                    return (
+                      <Tooltip.Root key={idx}>
+                        <Tooltip.Trigger asChild>
+                          <button
+                            onClick={() => {
+                              if (isPast && day.question) {
+                                setSelectedGymDetailDay(day);
+                              }
+                            }}
+                            style={{
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            background: day.active
+                              ? '#ffffff'
+                              : day.isFuture
+                                ? 'rgba(255, 255, 255, 0.2)'
+                                : 'rgba(255, 255, 255, 0.4)',
+                            color: day.active ? '#027A9B' : '#ffffff',
+                            fontSize: '0.7rem',
+                            fontWeight: 700,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            border: 'none',
+                            padding: 0,
+                            outline: 'none',
+                            transition: 'all 0.15s ease',
+                          }}
+                        >
+                          {day.active ? '✓' : day.label}
+                        </button>
+                      </Tooltip.Trigger>
+                      
+                      <Tooltip.Portal>
+                        <Tooltip.Content
+                          side="top"
+                          align="center"
+                          sideOffset={8}
+                          avoidCollisions={true}
+                          collisionPadding={12}
+                          style={{
+                            width: '240px',
+                            background: '#ffffff',
+                            borderRadius: '16px',
+                            padding: '1rem',
+                            boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                            border: '1px solid rgba(2,122,155,0.15)',
+                            color: '#0f172a',
+                            zIndex: 9999,
+                            textAlign: 'left',
+                          }}
+                        >
+                          {renderWeeklyGoalTooltipContent(day)}
+                          <Tooltip.Arrow style={{ fill: '#ffffff' }} />
+                        </Tooltip.Content>
+                      </Tooltip.Portal>
+                    </Tooltip.Root>
+                    );
+                  })}
+                </Tooltip.Provider>
+              )}
             </div>
             <div style={{ height: '4px', background: 'rgba(255, 255, 255, 0.25)', borderRadius: '999px', overflow: 'hidden', marginTop: '0.2rem' }}>
-              <div style={{ height: '100%', background: '#ffffff', width: `${(weeklyGoalDays.filter(d => d.active).length / 4) * 100}%`, transition: 'width 0.3s ease' }} />
+              <div style={{
+                height: '100%',
+                background: '#ffffff',
+                width: isAiCohort
+                  ? `${(aiGymChallenges.filter(c => c.completed).length / 7) * 100}%`
+                  : `${(weeklyGoalDays.filter(d => d.active).length / 4) * 100}%`,
+                transition: 'width 0.3s ease'
+              }} />
             </div>
           </div>
         </div>
@@ -4296,20 +4560,26 @@ export default function DashboardPage() {
                     Lessons
                   </div>
                   <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'baseline' }}>
-                    <span>{completedCount}</span>
-                    <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{lessonsWeeks.length}</span>
+                    <span>{isAiCohort ? '1' : completedCount}</span>
+                    <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{isAiCohort ? '1' : lessonsWeeks.length}</span>
                   </div>
                 </div>
                 <div>
                   <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
-                    <div style={{ height: '100%', borderRadius: '999px', background: 'var(--primary)', width: `${lessonsWeeks.length > 0 ? (completedCount / lessonsWeeks.length) * 100 : 0}%`, transition: 'width 0.3s ease' }} />
+                    <div style={{
+                      height: '100%',
+                      borderRadius: '999px',
+                      background: 'var(--primary)',
+                      width: isAiCohort ? '100%' : `${lessonsWeeks.length > 0 ? (completedCount / lessonsWeeks.length) * 100 : 0}%`,
+                      transition: 'width 0.3s ease'
+                    }} />
                   </div>
                   <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
                       <circle cx="12" cy="12" r="10" />
                       <polyline points="12 6 12 12 16 14" />
                     </svg>
-                    <span>{activeLesson ? `1 lesson from ${activeLesson.displayWeekNumber || ('Week ' + (activeLesson.weekNumber || activeLesson.groupNumber || '1'))}` : 'All complete'}</span>
+                    <span>{isAiCohort ? 'Module 0 Presentation Active' : (activeLesson ? `1 lesson from ${activeLesson.displayWeekNumber || ('Week ' + (activeLesson.weekNumber || activeLesson.groupNumber || '1'))}` : 'All complete')}</span>
                   </div>
                 </div>
               </div>
@@ -4334,13 +4604,21 @@ export default function DashboardPage() {
                     Assignments
                   </div>
                   <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'baseline' }}>
-                    <span>{assignmentsSubmittedCount}</span>
-                    <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{assignmentsTotal}</span>
+                    <span>{isAiCohort ? (journalSubmitted ? '1' : '0') : assignmentsSubmittedCount}</span>
+                    <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{isAiCohort ? '1' : assignmentsTotal}</span>
                   </div>
                 </div>
                 <div>
                   <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
-                    <div style={{ height: '100%', borderRadius: '999px', background: 'var(--primary)', width: `${assignmentsTotal > 0 ? (assignmentsSubmittedCount / assignmentsTotal) * 100 : 0}%`, transition: 'width 0.3s ease' }} />
+                    <div style={{
+                      height: '100%',
+                      borderRadius: '999px',
+                      background: 'var(--primary)',
+                      width: isAiCohort
+                        ? (journalSubmitted ? '100%' : '0%')
+                        : `${assignmentsTotal > 0 ? (assignmentsSubmittedCount / assignmentsTotal) * 100 : 0}%`,
+                      transition: 'width 0.3s ease'
+                    }} />
                   </div>
                   <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
@@ -4348,7 +4626,7 @@ export default function DashboardPage() {
                       <line x1="12" y1="8" x2="12" y2="12" />
                       <line x1="12" y1="16" x2="12.01" y2="16" />
                     </svg>
-                    <span>Submit soon</span>
+                    <span>{isAiCohort ? (journalSubmitted ? 'Journal Completed ✓' : 'Activity Journal Pending') : 'Submit soon'}</span>
                   </div>
                 </div>
               </div>
@@ -4373,12 +4651,15 @@ export default function DashboardPage() {
                     Streak
                   </div>
                   <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>
-                    {((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak)} {((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak) === 1 ? 'day' : 'days'}
+                    {isAiCohort
+                      ? `${aiGymChallenges.filter(c => c.completed).length} ${aiGymChallenges.filter(c => c.completed).length === 1 ? 'day' : 'days'}`
+                      : `${((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak)} ${((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak) === 1 ? 'day' : 'days'}`
+                    }
                   </div>
                 </div>
                 <div>
                   <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem' }}>
-                    Total Streaks: {gymProgress.length} {gymProgress.length === 1 ? 'day' : 'days'}
+                    Total Streaks: {isAiCohort ? aiGymChallenges.filter(c => c.completed).length : gymProgress.length} {(isAiCohort ? aiGymChallenges.filter(c => c.completed).length : gymProgress.length) === 1 ? 'day' : 'days'}
                   </div>
                 </div>
               </div>
@@ -4390,22 +4671,28 @@ export default function DashboardPage() {
             {/* Row 2: Active Course & Daily Reminders side-by-side */}
             <div style={{ display: 'grid', gridTemplateColumns: isCompact ? '1fr' : '1.6fr 1fr', gap: '1.25rem', alignItems: 'stretch' }}>
               <div style={s.continueCard}>
-                <div style={s.activeCourse}>{activeCourseLine}</div>
+                <div style={s.activeCourse}>
+                  {isAiCohort ? 'ACTIVE COURSE: AI Beginners (Week 1)' : activeCourseLine}
+                </div>
                 <div style={{ ...s.headerEyebrow, marginBottom: '0.5rem', color: '#0f172a' }}>
                   Continue Learning
                 </div>
                 <div style={s.continueTitle}>
-                  {continueLesson
-                    ? `${continueLesson.displayWeekNumber} • ${continueLesson.title}`
-                    : 'No lesson available yet'}
+                  {isAiCohort
+                    ? (aiLang === 'hindi'
+                      ? 'Module 0 • AI: Ab kaam karne ka tareeka badalne wala hai!'
+                      : 'Module 0 • AI: How We Work is About to Change Forever!')
+                    : (continueLesson
+                      ? `${continueLesson.displayWeekNumber} • ${continueLesson.title}`
+                      : 'No lesson available yet')
+                  }
                 </div>
 
                 <div style={s.segmentedTrack}>
                   {Array.from({ length: 5 }, (_, index) => {
-                    const segmentPercent = Math.max(
-                      0,
-                      Math.min(100, (continueLessonPercent - (index * 20)) * 5),
-                    );
+                    const segmentPercent = isAiCohort
+                      ? (index < 2 ? 100 : 0)
+                      : Math.max(0, Math.min(100, (continueLessonPercent - (index * 20)) * 5));
                     return (
                       <div key={index} style={s.segmentedBar}>
                         <div style={{ ...s.segmentedFill, width: `${segmentPercent}%` }} />
@@ -4414,7 +4701,16 @@ export default function DashboardPage() {
                   })}
                 </div>
 
-                {continueLesson ? (
+                {isAiCohort ? (
+                  <button
+                    type="button"
+                    onClick={() => setActiveView('courses')}
+                    style={{ ...s.resumeButton, cursor: 'pointer', border: 'none' }}
+                  >
+                    <span>▶</span>
+                    <span>Resume Lesson</span>
+                  </button>
+                ) : continueLesson ? (
                   <Link
                     to={`/learn/${continueLesson.courseId}/${continueLesson.weekId}`}
                     style={s.resumeButton}
@@ -4430,12 +4726,14 @@ export default function DashboardPage() {
                 )}
 
                 <div style={s.upNext}>
-                  Up next:{' '}
-                  {upcomingLesson
-                    ? `${upcomingLesson.displayWeekNumber} • ${upcomingLesson.title}`
-                    : continueLesson
-                      ? `${continueLesson.displayWeekNumber} • ${continueLesson.title}`
-                      : 'No upcoming lesson yet'}
+                  {isAiCohort
+                    ? 'Up next: Module 1 • Prompt Engineering & Daily Workflows'
+                    : `Up next: ${upcomingLesson
+                      ? `${upcomingLesson.displayWeekNumber} • ${upcomingLesson.title}`
+                      : continueLesson
+                        ? `${continueLesson.displayWeekNumber} • ${continueLesson.title}`
+                        : 'No upcoming lesson yet'}`
+                  }
                 </div>
               </div>
 
@@ -4444,7 +4742,62 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {topLeaderboard.length === 0 ? (
+          {isAiCohort ? (
+            <div style={{
+              ...s.dashboardRight,
+              width: isCompact ? '100%' : '320px',
+              flexShrink: 0,
+            }}>
+              <div style={s.railHeaderTitle}>Top Peers</div>
+              <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', marginTop: '0.75rem' }}>
+                {LEADERBOARD_PEERS.map((peer, idx) => (
+                  <div
+                    key={peer.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '0.65rem 0.85rem',
+                      borderRadius: '12px',
+                      background: '#ffffff',
+                      border: '1px solid rgba(20, 49, 86, 0.08)',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                      <div
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          background: peer.color || '#e0f2fe',
+                          color: '#0f172a',
+                          fontWeight: 700,
+                          fontSize: '0.75rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        {peer.avatar}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '0.84rem', fontWeight: 700, color: '#0f172a' }}>
+                          {peer.name}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                          {peer.points} pts
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '1rem', fontWeight: 800, color: idx < 3 ? '#027A9B' : '#94a3b8' }}>
+                      {idx + 1}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : topLeaderboard.length === 0 ? (
             <div style={{
               ...s.dashboardRight,
               width: isCompact ? '100%' : '320px',
@@ -4479,6 +4832,661 @@ export default function DashboardPage() {
   }
 
   function renderCoursesView() {
+    if (isAiCohort) {
+      const currentSlide = MODULE_0_SLIDES[aiSlideIndex] || MODULE_0_SLIDES[0];
+      const slideContent = aiLang === 'hindi' ? currentSlide.hindi : currentSlide.english;
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
+          {/* Top Control Bar */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '1rem',
+            background: '#ffffff',
+            padding: '0.85rem 1.25rem',
+            borderRadius: '16px',
+            border: '1px solid rgba(20, 49, 86, 0.08)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                style={{
+                  ...s.courseTab,
+                  ...s.courseTabActive,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                }}
+              >
+                <span>📽️</span>
+                <span>Module 0 Slides Deck</span>
+              </button>
+              <button
+                type="button"
+                style={{ ...s.courseTab, opacity: 0.7 }}
+                onClick={() => toast.info('Video lecture recording will be uploaded once this offline session concludes.')}
+              >
+                <span>📹</span>
+                <span>Video Lectures (Post Session)</span>
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              {/* Mode Toggle: Learner vs Instructor */}
+              <div style={{
+                display: 'inline-flex',
+                background: '#f1f5f9',
+                borderRadius: '999px',
+                padding: '3px',
+                border: '1px solid #e2e8f0',
+              }}>
+                <button
+                  type="button"
+                  onClick={() => setAiMode('learner')}
+                  style={{
+                    border: 'none',
+                    background: aiMode === 'learner' ? '#027A9B' : 'transparent',
+                    color: aiMode === 'learner' ? '#ffffff' : '#64748b',
+                    padding: '0.35rem 0.85rem',
+                    borderRadius: '999px',
+                    fontSize: '0.78rem',
+                    fontWeight: aiMode === 'learner' ? 700 : 500,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  🎓 Learner Mode
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAiMode('instructor')}
+                  style={{
+                    border: 'none',
+                    background: aiMode === 'instructor' ? '#027A9B' : 'transparent',
+                    color: aiMode === 'instructor' ? '#ffffff' : '#64748b',
+                    padding: '0.35rem 0.85rem',
+                    borderRadius: '999px',
+                    fontSize: '0.78rem',
+                    fontWeight: aiMode === 'instructor' ? 700 : 500,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  👨‍🏫 Instructor Mode
+                </button>
+              </div>
+
+              {/* Language Toggle */}
+              <div style={{
+                display: 'inline-flex',
+                background: '#e0f2fe',
+                borderRadius: '999px',
+                padding: '3px',
+                border: '1.5px solid #0284c7',
+              }}>
+                <button
+                  type="button"
+                  onClick={() => handleToggleAiLang('hindi')}
+                  style={{
+                    border: 'none',
+                    background: aiLang === 'hindi' ? '#0284c7' : 'transparent',
+                    color: aiLang === 'hindi' ? '#ffffff' : '#0369a1',
+                    padding: '0.35rem 0.85rem',
+                    borderRadius: '999px',
+                    fontSize: '0.78rem',
+                    fontWeight: aiLang === 'hindi' ? 700 : 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  🇮🇳 Hindi
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleToggleAiLang('english')}
+                  style={{
+                    border: 'none',
+                    background: aiLang === 'english' ? '#0284c7' : 'transparent',
+                    color: aiLang === 'english' ? '#ffffff' : '#0369a1',
+                    padding: '0.35rem 0.85rem',
+                    borderRadius: '999px',
+                    fontSize: '0.78rem',
+                    fontWeight: aiLang === 'english' ? 700 : 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  🇬🇧 English
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Two Column Layout: Left Drawer + Main Presentation */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isCompact ? '1fr' : '280px 1fr',
+            gap: '1.25rem',
+            alignItems: 'start',
+          }}>
+            {/* Left Drawer (Course Contents) */}
+            <div style={{
+              background: '#ffffff',
+              borderRadius: '20px',
+              border: '1px solid rgba(20, 49, 86, 0.08)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+              padding: '1.25rem 0',
+              overflow: 'hidden',
+            }}>
+              <div style={{ padding: '0 1.25rem 0.85rem 1.25rem', borderBottom: '1px solid #f1f5f9' }}>
+                <div
+                  style={{ fontSize: '0.78rem', fontWeight: 600, color: '#027A9B', marginBottom: '0.25rem', cursor: 'pointer' }}
+                  onClick={() => setActiveView('dashboard')}
+                >
+                  ← Back to course
+                </div>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  Course Contents
+                </h4>
+              </div>
+
+              <div style={{ padding: '0.75rem 1.25rem 0.4rem 1.25rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 700, fontSize: '0.85rem', color: '#1e293b' }}>
+                  <span>📁 Module 0</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>14 slides</span>
+                </div>
+              </div>
+
+              {/* 14 Slides List matching Screenshot 1 */}
+              <div style={{ maxHeight: '620px', overflowY: 'auto', padding: '0.25rem 0.75rem' }}>
+                {MODULE_0_DRAWER_ITEMS.map((item, idx) => {
+                  const isActive = aiSlideIndex === idx;
+                  const isDone = aiSlideIndex > idx;
+
+                  return (
+                    <button
+                      key={item.index ?? idx}
+                      type="button"
+                      onClick={() => setAiSlideIndex(idx)}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '0.6rem 0.75rem',
+                        borderRadius: '10px',
+                        border: 'none',
+                        background: isActive ? '#f0f9ff' : 'transparent',
+                        color: isActive ? '#0284c7' : '#334155',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                        marginBottom: '2px',
+                        borderLeft: isActive ? '3.5px solid #0284c7' : '3.5px solid transparent',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', overflow: 'hidden' }}>
+                        <span style={{
+                          width: '18px',
+                          height: '18px',
+                          borderRadius: '50%',
+                          background: isDone ? '#10b981' : isActive ? '#0284c7' : '#e2e8f0',
+                          color: '#ffffff',
+                          fontSize: '0.65rem',
+                          fontWeight: 700,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                        }}>
+                          {isDone ? '✓' : idx + 1}
+                        </span>
+                        <span style={{
+                          fontSize: '0.8rem',
+                          fontWeight: isActive ? 700 : 500,
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}>
+                          {item.label || item.title}
+                        </span>
+                      </div>
+                      <span style={{ fontSize: '0.7rem', color: '#94a3b8', flexShrink: 0, marginLeft: '0.35rem' }}>
+                        {item.duration}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Right Presentation Stage */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {/* Slide Title Bar */}
+              <div style={{
+                background: '#ffffff',
+                borderRadius: '16px',
+                padding: '1rem 1.5rem',
+                border: '1px solid rgba(20, 49, 86, 0.08)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+              }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.2rem' }}>
+                  Slide {aiSlideIndex + 1} of {MODULE_0_SLIDES.length} • {currentSlide.categoryTag}
+                </div>
+                <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  {slideContent.heading}
+                </h2>
+              </div>
+
+              {/* Presentation Slide Canvas (Matching Screenshot 3) */}
+              <div
+                style={{
+                  background: '#ffffff',
+                  borderRadius: '20px',
+                  border: '1.5px solid #0f172a',
+                  boxShadow: '0 12px 36px rgba(0,0,0,0.08)',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative',
+                  minHeight: '440px',
+                }}
+              >
+                {/* Slide Top Badge bar inside canvas */}
+                <div style={{
+                  padding: '1rem 1.75rem',
+                  borderBottom: '1px solid #f1f5f9',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{
+                      background: '#e0f2fe',
+                      color: '#0284c7',
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      padding: '0.2rem 0.55rem',
+                      borderRadius: '999px',
+                      textTransform: 'uppercase',
+                    }}>
+                      {currentSlide.categoryTag}
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
+                      ⏱️ {currentSlide.durationMin} mins ({currentSlide.timeRange})
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0f172a', opacity: 0.7 }}>
+                    StepSmart AI Academy
+                  </span>
+                </div>
+
+                {/* Main Slide Inner Content */}
+                <div style={{ padding: '2rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  {aiMode === 'learner' ? (
+                    <div>
+                      {slideContent.subheading && (
+                        <div style={{ fontSize: '1.1rem', fontWeight: 600, color: '#334155', marginBottom: '1.25rem' }}>
+                          {slideContent.subheading}
+                        </div>
+                      )}
+
+                      {/* Render Visual Cards / Points */}
+                      {slideContent.cards && (
+                        <div style={{
+                          display: 'grid',
+                          gridTemplateColumns: slideContent.cards.length > 3 ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
+                          gap: '1rem',
+                          marginBottom: '1.25rem',
+                        }}>
+                          {slideContent.cards.map((card, cIdx) => (
+                            <div
+                              key={cIdx}
+                              style={{
+                                background: '#f8fafc',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '14px',
+                                padding: '1rem',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '0.35rem',
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <span style={{ fontSize: '1.2rem' }}>{card.icon || '📌'}</span>
+                                <span style={{ fontSize: '0.92rem', fontWeight: 700, color: '#0f172a' }}>{card.title}</span>
+                              </div>
+                              <p style={{ fontSize: '0.82rem', color: '#64748b', margin: 0, lineHeight: 1.45 }}>
+                                {card.desc}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Copyable Prompts or Interactive Code if available */}
+                      {slideContent.prompt && (
+                        <div style={{
+                          background: '#0f172a',
+                          color: '#f8fafc',
+                          borderRadius: '14px',
+                          padding: '1.25rem',
+                          marginBottom: '1.25rem',
+                          position: 'relative',
+                        }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase' }}>
+                              Prompt Example ({aiLang === 'hindi' ? 'Hinglish' : 'English'})
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleCopyAiPrompt(slideContent.prompt, `slide-${aiSlideIndex}`)}
+                              style={{
+                                background: 'rgba(255,255,255,0.15)',
+                                color: '#ffffff',
+                                border: 'none',
+                                borderRadius: '6px',
+                                padding: '0.35rem 0.75rem',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                              }}
+                            >
+                              {aiCopiedId === `slide-${aiSlideIndex}` ? 'Copied ✓' : 'Copy Prompt'}
+                            </button>
+                          </div>
+                          <div style={{ fontSize: '0.85rem', lineHeight: 1.5, fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
+                            {slideContent.prompt}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Discussion Question */}
+                      {slideContent.discussion && (
+                        <div style={{
+                          background: 'rgba(2, 122, 155, 0.08)',
+                          borderLeft: '4px solid #027A9B',
+                          borderRadius: '8px',
+                          padding: '0.85rem 1.25rem',
+                        }}>
+                          <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.2rem' }}>
+                            Discussion Question
+                          </div>
+                          <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0f172a' }}>
+                            {slideContent.discussion}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    /* Instructor Guide Mode */
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <div style={{
+                        background: '#fffbeb',
+                        border: '1px solid #fde68a',
+                        borderRadius: '12px',
+                        padding: '1rem',
+                      }}>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#b45309', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                          🎯 Teaching Objective & Purpose
+                        </div>
+                        <p style={{ fontSize: '0.9rem', color: '#78350f', margin: 0, lineHeight: 1.5 }}>
+                          {currentSlide.instructorGuide.purpose}
+                        </p>
+                      </div>
+
+                      <div style={{
+                        background: '#f8fafc',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '12px',
+                        padding: '1rem',
+                      }}>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                          🎙️ What to Say (Script)
+                        </div>
+                        <p style={{ fontSize: '0.9rem', color: '#0f172a', margin: 0, fontStyle: 'italic', lineHeight: 1.5 }}>
+                          {currentSlide.instructorGuide.sayScript}
+                        </p>
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+                        <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '12px', padding: '0.85rem' }}>
+                          <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#166534', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                            💡 Teaching Tip
+                          </div>
+                          <p style={{ fontSize: '0.82rem', color: '#14532d', margin: 0 }}>
+                            {currentSlide.instructorGuide.teachingTip}
+                          </p>
+                        </div>
+                        <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '12px', padding: '0.85rem' }}>
+                          <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#991b1b', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                            ❓ Questions to Ask Room
+                          </div>
+                          <ul style={{ fontSize: '0.82rem', color: '#7f1d1d', margin: 0, paddingLeft: '1.1rem' }}>
+                            {(currentSlide.instructorGuide.questionsToAsk || []).map((q, qIdx) => (
+                              <li key={qIdx}>{q}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Slide Player Controls Bar (Black bar at bottom matching screenshot 3) */}
+                <div style={{
+                  background: '#0f172a',
+                  color: '#ffffff',
+                  padding: '0.75rem 1.5rem',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '1.5rem',
+                }}>
+                  <button
+                    type="button"
+                    onClick={() => setAiSlideIndex(prev => Math.max(0, prev - 1))}
+                    disabled={aiSlideIndex === 0}
+                    style={{
+                      border: 'none',
+                      background: 'transparent',
+                      color: aiSlideIndex === 0 ? '#475569' : '#ffffff',
+                      fontSize: '1.2rem',
+                      cursor: aiSlideIndex === 0 ? 'not-allowed' : 'pointer',
+                      padding: '0.2rem 0.5rem',
+                    }}
+                  >
+                    ❮
+                  </button>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f8fafc' }}>
+                    {aiSlideIndex + 1} of {MODULE_0_SLIDES.length}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setAiSlideIndex(prev => Math.min(MODULE_0_SLIDES.length - 1, prev + 1))}
+                    disabled={aiSlideIndex === MODULE_0_SLIDES.length - 1}
+                    style={{
+                      border: 'none',
+                      background: 'transparent',
+                      color: aiSlideIndex === MODULE_0_SLIDES.length - 1 ? '#475569' : '#ffffff',
+                      fontSize: '1.2rem',
+                      cursor: aiSlideIndex === MODULE_0_SLIDES.length - 1 ? 'not-allowed' : 'pointer',
+                      padding: '0.2rem 0.5rem',
+                    }}
+                  >
+                    ❯
+                  </button>
+                </div>
+              </div>
+
+              {/* Activity Journal Form (Below Slide Deck) */}
+              <div style={{
+                background: '#ffffff',
+                borderRadius: '20px',
+                padding: '1.75rem',
+                border: '1px solid rgba(20, 49, 86, 0.08)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
+                  <div>
+                    <span style={{
+                      background: 'rgba(2, 122, 155, 0.08)',
+                      color: '#027A9B',
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      padding: '0.2rem 0.55rem',
+                      borderRadius: '999px',
+                      textTransform: 'uppercase',
+                    }}>
+                      Module 0 Activity Assignment
+                    </span>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: '0.25rem 0 0 0' }}>
+                      Complete this activity journal.
+                    </h3>
+                  </div>
+                  {journalSubmitted && (
+                    <span style={{ background: '#dcfce7', color: '#166534', padding: '0.35rem 0.85rem', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 700 }}>
+                      ✓ Submitted (+25 XP)
+                    </span>
+                  )}
+                </div>
+
+                <form onSubmit={handleSaveJournal} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.35rem' }}>
+                      1. Which repetitive task did you select?
+                    </label>
+                    <input
+                      type="text"
+                      value={journalTask}
+                      onChange={(e) => setJournalTask(e.target.value)}
+                      placeholder="e.g. Planning my weekly workout & meetings schedule"
+                      style={{
+                        width: '100%',
+                        boxSizing: 'border-box',
+                        padding: '0.75rem',
+                        border: '1.5px solid #cbd5e1',
+                        borderRadius: '10px',
+                        fontSize: '0.88rem',
+                      }}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.35rem' }}>
+                      2. How did AI help you?
+                    </label>
+                    <textarea
+                      value={journalHelp}
+                      onChange={(e) => setJournalHelp(e.target.value)}
+                      placeholder="e.g. Structured my priority tasks with buffers and prevented burnout overlaps"
+                      rows={2}
+                      style={{
+                        width: '100%',
+                        boxSizing: 'border-box',
+                        padding: '0.75rem',
+                        border: '1.5px solid #cbd5e1',
+                        borderRadius: '10px',
+                        fontSize: '0.88rem',
+                        fontFamily: 'inherit',
+                      }}
+                      required
+                    />
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: isCompact ? '1fr' : '1fr 1fr', gap: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.35rem' }}>
+                        3. How long did it take before using AI?
+                      </label>
+                      <input
+                        type="text"
+                        value={journalTimeBefore}
+                        onChange={(e) => setJournalTimeBefore(e.target.value)}
+                        placeholder="e.g. 45 minutes"
+                        style={{
+                          width: '100%',
+                          boxSizing: 'border-box',
+                          padding: '0.75rem',
+                          border: '1.5px solid #cbd5e1',
+                          borderRadius: '10px',
+                          fontSize: '0.88rem',
+                        }}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.35rem' }}>
+                        4. How long did it take with AI?
+                      </label>
+                      <input
+                        type="text"
+                        value={journalTimeWith}
+                        onChange={(e) => setJournalTimeWith(e.target.value)}
+                        placeholder="e.g. 3 minutes"
+                        style={{
+                          width: '100%',
+                          boxSizing: 'border-box',
+                          padding: '0.75rem',
+                          border: '1.5px solid #cbd5e1',
+                          borderRadius: '10px',
+                          fontSize: '0.88rem',
+                        }}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem' }}>
+                      5. Can you reuse this solution?
+                    </label>
+                    <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+                      {['Yes', 'No', 'Need to improve'].map((opt) => (
+                        <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, color: '#334155' }}>
+                          <input
+                            type="radio"
+                            name="reuse"
+                            value={opt}
+                            checked={journalReusable === opt}
+                            onChange={(e) => setJournalReusable(e.target.value)}
+                            required
+                          />
+                          {opt}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                    <button
+                      type="submit"
+                      style={{
+                        border: 'none',
+                        background: '#027A9B',
+                        color: '#ffffff',
+                        padding: '0.75rem 1.75rem',
+                        borderRadius: '10px',
+                        fontSize: '0.9rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 12px rgba(2, 122, 155, 0.25)',
+                      }}
+                    >
+                      {journalSubmitted ? 'Update Activity Journal' : 'Save Activity Journal (+25 XP)'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     const showingVideos = activeCoursesTab === 'videos';
     const activeGroups = showingVideos ? weekGroups : recordedSessionGroups;
 
@@ -5419,14 +6427,593 @@ export default function DashboardPage() {
     );
   }
 
+  function renderAiGymView() {
+    const completedDays = aiGymChallenges.filter(c => c.completed).length;
+    const totalPoints = aiGymChallenges.reduce((sum, c) => sum + (c.completed ? (c.scoreAwarded || 20) : 0), 0);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
+        {/* Top Header Card */}
+        <div
+          style={{
+            background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)',
+            borderRadius: '24px',
+            padding: '1.5rem 2rem',
+            color: '#ffffff',
+            boxShadow: '0 10px 30px rgba(2, 122, 155, 0.15)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '1.25rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+            <img
+              src={process.env.PUBLIC_URL + '/pm_gym_brain.png'}
+              alt="AI Gym Brain Mascot"
+              style={{ width: '84px', height: '84px', objectFit: 'contain' }}
+            />
+            <div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe' }}>
+                7-Day AI Intuition Gym & Streak Tracker
+              </div>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 800, margin: '0.2rem 0', color: '#ffffff' }}>
+                {aiLang === 'hindi' ? 'AI Seekho, AI Apnao • Daily Micro-Experiments' : 'Hands-On AI Practice • 1 Question Everyday'}
+              </h2>
+              <p style={{ fontSize: '0.88rem', color: '#e0f2fe', margin: 0, opacity: 0.95, maxWidth: '640px' }}>
+                {aiLang === 'hindi'
+                  ? 'Har din 1 micro-experiment karein (20 XP). Agar koi din miss ho jaye, toh AI Gym mein catch-up karke 8 XP earn karein.'
+                  : 'Solve 1 drill daily for 20 XP on the scheduled day. Missed days can be completed anytime here for 8 XP catch-up.'}
+              </p>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <div style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(8px)', borderRadius: '16px', padding: '0.75rem 1.25rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#e0f2fe', textTransform: 'uppercase' }}>Streak</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ffffff' }}>{completedDays} / 7</div>
+            </div>
+            <div style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(8px)', borderRadius: '16px', padding: '0.75rem 1.25rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#e0f2fe', textTransform: 'uppercase' }}>XP Earned</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fef08a' }}>+{totalPoints} XP</div>
+            </div>
+          </div>
+        </div>
+
+        {/* 7-Day Roadmap Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+          {aiGymChallenges.map((challenge) => {
+            const isToday = challenge.day === TODAY_GYM_DAY;
+            const isCompleted = challenge.completed;
+            const isPast = challenge.day < TODAY_GYM_DAY;
+
+            return (
+              <div
+                key={challenge.day}
+                style={{
+                  background: '#ffffff',
+                  border: isToday ? '2px solid #027A9B' : '1px solid rgba(20, 49, 86, 0.08)',
+                  borderRadius: '20px',
+                  padding: '1.35rem 1.6rem',
+                  boxShadow: isToday ? '0 8px 24px rgba(2, 122, 155, 0.12)' : '0 4px 16px rgba(15, 40, 80, 0.04)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '1rem',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+                {isToday && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      width: '6px',
+                      background: '#027A9B',
+                    }}
+                  />
+                )}
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flex: 1, minWidth: '280px' }}>
+                  <div
+                    style={{
+                      width: '48px',
+                      height: '48px',
+                      borderRadius: '16px',
+                      background: isCompleted ? '#ecfdf5' : isToday ? '#e0f2fe' : '#f8fafc',
+                      color: isCompleted ? '#059669' : isToday ? '#027A9B' : '#94a3b8',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 800,
+                      fontSize: '0.85rem',
+                      border: isCompleted ? '1.5px solid #10b981' : isToday ? '1.5px solid #027A9B' : '1px solid #e2e8f0',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <span>DAY</span>
+                    <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>{challenge.day}</span>
+                  </div>
+
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+                      <span
+                        style={{
+                          background: isCompleted ? '#dcfce7' : isToday ? '#e0f2fe' : '#f1f5f9',
+                          color: isCompleted ? '#166534' : isToday ? '#0369a1' : '#64748b',
+                          fontSize: '0.72rem',
+                          fontWeight: 800,
+                          padding: '0.2rem 0.55rem',
+                          borderRadius: '999px',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        {isCompleted ? '✓ Completed' : isToday ? '🔥 Active Today (20 XP)' : isPast ? '⏱️ Missed (Catch-up: 8 XP)' : '🔒 Upcoming'}
+                      </span>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b' }}>
+                        {challenge.newExperience} • {challenge.category}
+                      </span>
+                    </div>
+
+                    <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
+                      {challenge.caseStudyTitle || challenge.challenge}
+                    </h4>
+                    <p style={{ fontSize: '0.85rem', color: '#475569', margin: 0, lineHeight: 1.45, maxWidth: '720px' }}>
+                      {aiLang === 'hindi' && challenge.day === 2
+                        ? "Swiggy Group Order Feature: Weekday office lunches mein frequency aur AOV badhana hai. Metro tech parks ke 3 distinct user groups identify karein aur 1 line mein batayein Swiggy ko pehle kisse target karna chahiye aur kyun?"
+                        : challenge.questionPrompt || challenge.challenge
+                      }
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  {isCompleted ? (
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#059669' }}>
+                        +{challenge.scoreAwarded || 20} XP
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setAiGymModalDay(challenge)}
+                        style={{
+                          border: '1px solid #cbd5e1',
+                          background: '#ffffff',
+                          color: '#475569',
+                          borderRadius: '999px',
+                          padding: '0.4rem 0.9rem',
+                          fontSize: '0.78rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          marginTop: '0.25rem',
+                        }}
+                      >
+                        Review Solution
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setAiGymModalDay(challenge)}
+                      style={{
+                        background: isToday ? '#027A9B' : '#ffffff',
+                        color: isToday ? '#ffffff' : '#027A9B',
+                        border: isToday ? 'none' : '1.5px solid #027A9B',
+                        borderRadius: '999px',
+                        padding: '0.65rem 1.4rem',
+                        fontSize: '0.85rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        boxShadow: isToday ? '0 4px 12px rgba(2, 122, 155, 0.25)' : 'none',
+                        transition: 'all 0.15s ease',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {isToday ? 'Solve Today (+20 XP)' : isPast ? 'Catch Up (+8 XP)' : 'Preview Drill'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  function renderPromptLibraryView() {
+    const categories = ['All', 'Personal Assistant', 'Concept Teacher', 'Email & Writing', 'Analysis & Strategy', 'Multimodal'];
+    const filtered = activeCoursesTab === 'All' || !activeCoursesTab || !categories.includes(activeCoursesTab)
+      ? AI_PROMPT_LIBRARY
+      : AI_PROMPT_LIBRARY.filter(p => p.category === activeCoursesTab);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.25rem 0' }}>
+              Curated AI Prompt Repository
+            </h3>
+            <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0 }}>
+              Tested, production-grade bilingual prompts ready to copy and paste into ChatGPT, Claude or Gemini.
+            </p>
+          </div>
+        </div>
+
+        {/* Categories Tabs */}
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          {categories.map((cat) => {
+            const isSelected = (cat === 'All' && (!activeCoursesTab || !categories.includes(activeCoursesTab) || activeCoursesTab === 'All')) || activeCoursesTab === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCoursesTab(cat)}
+                style={{
+                  border: isSelected ? '1px solid #027A9B' : '1px solid #e2e8f0',
+                  background: isSelected ? '#027A9B' : '#ffffff',
+                  color: isSelected ? '#ffffff' : '#475569',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '999px',
+                  fontSize: '0.82rem',
+                  fontWeight: isSelected ? 700 : 500,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Prompt Cards Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: isCompact ? '1fr' : 'repeat(2, 1fr)', gap: '1rem' }}>
+          {filtered.map((item) => {
+            const promptText = aiLang === 'hindi' ? item.hindiPrompt : item.englishPrompt;
+            const isCopied = aiCopiedId === item.id;
+
+            return (
+              <div
+                key={item.id}
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid rgba(20, 49, 86, 0.08)',
+                  borderRadius: '20px',
+                  padding: '1.35rem',
+                  boxShadow: '0 4px 16px rgba(15, 40, 80, 0.04)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <span style={{
+                      background: 'rgba(2, 122, 155, 0.08)',
+                      color: '#027A9B',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      padding: '0.2rem 0.55rem',
+                      borderRadius: '999px',
+                      textTransform: 'uppercase',
+                    }}>
+                      {item.category}
+                    </span>
+                    <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600 }}>
+                      {item.tag}
+                    </span>
+                  </div>
+
+                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                    {item.title}
+                  </h4>
+                  <p style={{ fontSize: '0.82rem', color: '#64748b', margin: '0 0 1rem 0', lineHeight: 1.45 }}>
+                    {item.description}
+                  </p>
+
+                  <div
+                    style={{
+                      background: '#f8fafc',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '12px',
+                      padding: '0.9rem',
+                      fontSize: '0.84rem',
+                      color: '#1e293b',
+                      lineHeight: 1.5,
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      maxHeight: '180px',
+                      overflowY: 'auto',
+                      fontFamily: 'monospace',
+                    }}
+                  >
+                    {promptText}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px solid #f1f5f9' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>
+                    Language: {aiLang === 'hindi' ? '🇮🇳 Hinglish' : '🇬🇧 English'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyAiPrompt(promptText, item.id)}
+                    style={{
+                      border: 'none',
+                      background: isCopied ? '#10b981' : '#027A9B',
+                      color: '#ffffff',
+                      borderRadius: '8px',
+                      padding: '0.45rem 1rem',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    {isCopied ? 'Copied ✓' : 'Copy Prompt'}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  function renderAiGymModal() {
+    if (!aiGymModalDay) return null;
+    const isToday = aiGymModalDay.day === TODAY_GYM_DAY;
+    const pointsAwarded = isToday ? 20 : 8;
+
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(15, 23, 42, 0.45)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999,
+          padding: '1rem',
+          boxSizing: 'border-box',
+        }}
+        onClick={() => setAiGymModalDay(null)}
+      >
+        <div
+          style={{
+            background: '#ffffff',
+            borderRadius: '24px',
+            padding: '1.75rem',
+            width: '100%',
+            maxWidth: '620px',
+            maxHeight: 'min(90vh, 760px)',
+            boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
+            boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'auto',
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              marginBottom: '1rem',
+              borderBottom: '1px solid #e2e8f0',
+              paddingBottom: '0.75rem',
+            }}
+          >
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                <span style={{
+                  background: isToday ? '#e0f2fe' : '#fef3c7',
+                  color: isToday ? '#0284c7' : '#d97706',
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  padding: '0.2rem 0.55rem',
+                  borderRadius: '999px',
+                  textTransform: 'uppercase',
+                }}>
+                  Day {aiGymModalDay.day} of 7 • {isToday ? 'Active Today (+20 XP)' : 'Catch-up Drill (+8 XP)'}
+                </span>
+                <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
+                  {aiGymModalDay.newExperience}
+                </span>
+              </div>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                {aiGymModalDay.caseStudyTitle || aiGymModalDay.challenge}
+              </h3>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAiGymModalDay(null)}
+              style={{
+                background: 'rgba(15, 23, 42, 0.06)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1rem',
+                cursor: 'pointer',
+              }}
+            >
+              ✕
+            </button>
+          </div>
+
+          <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{
+              background: '#f8fafc',
+              border: '1px solid #e2e8f0',
+              borderRadius: '14px',
+              padding: '1rem',
+              marginBottom: '1rem',
+            }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                Challenge Question / Prompt
+              </div>
+              <p style={{ fontSize: '0.95rem', color: '#1e293b', fontWeight: 600, lineHeight: 1.5, margin: 0 }}>
+                {aiLang === 'hindi' && aiGymModalDay.day === 2
+                  ? "Swiggy Group Order Feature: Weekday office lunches mein frequency aur AOV badhana hai. Metro tech parks ke 3 distinct user groups identify karein aur 1 line mein batayein Swiggy ko pehle kisse target karna chahiye aur kyun?"
+                  : aiGymModalDay.questionPrompt || aiGymModalDay.challenge
+                }
+              </p>
+            </div>
+
+            {aiGymModalDay.promptSuggestion && (
+              <div style={{
+                background: 'rgba(2, 122, 155, 0.06)',
+                border: '1px dashed #027A9B',
+                borderRadius: '12px',
+                padding: '0.85rem 1rem',
+                marginBottom: '1rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: '0.75rem',
+              }}>
+                <div>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase' }}>
+                    Suggested AI Prompt to Try
+                  </div>
+                  <div style={{ fontSize: '0.85rem', color: '#0f172a', fontStyle: 'italic', marginTop: '0.2rem' }}>
+                    "{aiGymModalDay.promptSuggestion}"
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleCopyAiPrompt(aiGymModalDay.promptSuggestion, `gym-p-${aiGymModalDay.day}`)}
+                  style={{
+                    background: '#027A9B',
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '0.4rem 0.75rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {aiCopiedId === `gym-p-${aiGymModalDay.day}` ? 'Copied ✓' : 'Copy'}
+                </button>
+              </div>
+            )}
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.4rem' }}>
+                Your Answer / AI Discovery Notes:
+              </label>
+              <textarea
+                value={aiGymInput}
+                onChange={(e) => setAiGymInput(e.target.value)}
+                placeholder="Share your response or paste what you discovered testing this challenge..."
+                rows={4}
+                style={{
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  border: '1.5px solid #cbd5e1',
+                  borderRadius: '12px',
+                  padding: '0.85rem',
+                  fontSize: '0.9rem',
+                  fontFamily: 'inherit',
+                  outline: 'none',
+                  resize: 'vertical',
+                }}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+            <button
+              type="button"
+              onClick={() => setAiGymModalDay(null)}
+              style={{
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
+                color: '#475569',
+                borderRadius: '10px',
+                padding: '0.65rem 1.25rem',
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleCompleteAiGymDay}
+              style={{
+                border: 'none',
+                background: '#027A9B',
+                color: '#ffffff',
+                borderRadius: '10px',
+                padding: '0.65rem 1.4rem',
+                fontSize: '0.875rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(2, 122, 155, 0.25)',
+              }}
+            >
+              Submit & Claim +{pointsAwarded} XP
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   let viewEyebrow = 'Student Dashboard';
   let viewTitle = `Welcome back, ${displayName}`;
   let viewSubtitle = '';
 
+  if (isAiCohort && activeView === 'dashboard') {
+    viewEyebrow = 'STUDENT DASHBOARD';
+    viewTitle = `Welcome back, ${displayName}`;
+    viewSubtitle = '';
+  }
+
   if (activeView === 'courses') {
     viewEyebrow = 'My Courses';
     viewTitle = activeCourse?.name || 'My Courses';
-    viewSubtitle = activeCourse?.description || 'Browse your course videos and live sessions grouped by week.';
+    viewSubtitle = isAiCohort
+      ? 'Module 0: 14 Interactive Presentation Slides & Daily Hands-On Experiments'
+      : (activeCourse?.description || 'Browse your course videos and live sessions grouped by week.');
+  }
+
+  if (activeView === 'gym') {
+    viewEyebrow = 'AI Gym';
+    viewTitle = '7-Day AI Intuition Gym';
+    viewSubtitle = aiLang === 'hindi'
+      ? 'Roz ek naya AI micro-experiment karein aur apni AI intuition build karein.'
+      : 'Daily micro-experiments to build your practical, real-world AI intuition.';
+  }
+
+  if (activeView === 'prompts') {
+    viewEyebrow = 'Prompt Library';
+    viewTitle = 'Curated Prompt Repository';
+    viewSubtitle = 'Curated, tested bilingual prompts ready for 1-click copying.';
   }
 
   if (activeView === 'jobs') {
@@ -5838,7 +7425,7 @@ export default function DashboardPage() {
             </div>
             
             <div className="mobile-scroll-tabs" style={{ margin: '0 -0.5rem -0.25rem -0.5rem', padding: '0.25rem 0.5rem 0.4rem 0.5rem' }}>
-              {NAV_ITEMS.map((item) => {
+              {(isAiCohort ? AI_NAV_ITEMS : NAV_ITEMS).map((item) => {
                 const isActive = activeView === item.id;
                 return (
                   <button
@@ -5877,7 +7464,7 @@ export default function DashboardPage() {
             </div>
 
             <div style={s.navStack}>
-              {NAV_ITEMS.map((item) => (
+              {(isAiCohort ? AI_NAV_ITEMS : NAV_ITEMS).map((item) => (
                 <button
                   key={item.id}
                   type="button"
@@ -5970,23 +7557,75 @@ export default function DashboardPage() {
               >
                 <span>Open Full Portal ↗</span>
               </a>
-            ) : courses.length > 1 ? (
-              <div style={s.courseTabs}>
-                {courses.map((course) => (
-                  <button
-                    key={course.courseId}
-                    type="button"
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                {isAiCohort && (
+                  <div
                     style={{
-                      ...s.courseTab,
-                      ...(activeCourse?.courseId === course.courseId ? s.courseTabActive : {}),
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      background: 'rgba(2, 122, 155, 0.08)',
+                      border: '1.5px solid #027A9B',
+                      borderRadius: '999px',
+                      padding: '3px',
+                      gap: '4px',
                     }}
-                    onClick={() => handleSelectCourse(course)}
                   >
-                    {course.name}
-                  </button>
-                ))}
+                    <button
+                      type="button"
+                      onClick={() => handleToggleAiLang('hindi')}
+                      style={{
+                        border: 'none',
+                        background: aiLang === 'hindi' ? '#027A9B' : 'transparent',
+                        color: aiLang === 'hindi' ? '#ffffff' : '#015D77',
+                        fontWeight: aiLang === 'hindi' ? 700 : 600,
+                        fontSize: '0.8rem',
+                        padding: '0.35rem 0.85rem',
+                        borderRadius: '999px',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      🇮🇳 Hindi
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleToggleAiLang('english')}
+                      style={{
+                        border: 'none',
+                        background: aiLang === 'english' ? '#027A9B' : 'transparent',
+                        color: aiLang === 'english' ? '#ffffff' : '#015D77',
+                        fontWeight: aiLang === 'english' ? 700 : 600,
+                        fontSize: '0.8rem',
+                        padding: '0.35rem 0.85rem',
+                        borderRadius: '999px',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      🇬🇧 English
+                    </button>
+                  </div>
+                )}
+                {courses.length > 1 && (
+                  <div style={s.courseTabs}>
+                    {courses.map((course) => (
+                      <button
+                        key={course.courseId}
+                        type="button"
+                        style={{
+                          ...s.courseTab,
+                          ...(activeCourse?.courseId === course.courseId ? s.courseTabActive : {}),
+                        }}
+                        onClick={() => handleSelectCourse(course)}
+                      >
+                        {course.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-            ) : null}
+            )}
           </div>
 
           <AnimatePresence mode="wait">
@@ -5999,6 +7638,8 @@ export default function DashboardPage() {
             >
               {activeView === 'dashboard' && renderDashboardView()}
               {activeView === 'courses' && renderCoursesView()}
+              {activeView === 'gym' && renderAiGymView()}
+              {activeView === 'prompts' && renderPromptLibraryView()}
               {activeView === 'jobs' && renderJobsView()}
               {activeView === 'cohort' && renderCohortView()}
               {activeView === 'scheduling' && renderSchedulingView()}
@@ -6008,6 +7649,8 @@ export default function DashboardPage() {
               {activeView === 'settings' && renderSettingsView()}
             </motion.div>
           </AnimatePresence>
+
+          {aiGymModalDay && renderAiGymModal()}
 
         </main>
       </div>

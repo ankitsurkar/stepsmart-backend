@@ -4278,6 +4278,8 @@ export default function App() {
           <Route path="/pm-gym" element={<Navigate to="/resources" replace />} />
           <Route path="/resources/gym" element={<Navigate to="/resources" replace />} />
           <Route path="/ai-lms" element={<AiBeginnersLms />} />
+          <Route path="/ai-deck" element={<AiBeginnersLms standaloneDeck />} />
+          <Route path="/ai-slides-tab" element={<AiBeginnersLms standaloneDeck />} />
           <Route path="/ai-beginners" element={<AiBeginnersLms />} />
           <Route path="/ai" element={<AiBeginnersLms />} />
           <Route path="/ai-seekho" element={<AiBeginnersLms />} />

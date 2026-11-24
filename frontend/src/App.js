@@ -13,11 +13,23 @@ import { Toaster } from 'sonner';
 // A request to stepsmart.net/learn/dashboard is seen by React Router as /dashboard.
 // React Router also prepends /learn to any links it generates (e.g. <Navigate to="/dashboard">
 // becomes a navigation to /learn/dashboard in the real URL).
+// Automatic redirect for direct root access on localhost (e.g. http://localhost:3000 -> http://localhost:3000/learn/dashboard)
+if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/learn')) {
+  const currentPath = window.location.pathname;
+  const search = window.location.search || '';
+  const hash = window.location.hash || '';
+  const target = '/learn' + (currentPath === '/' ? '/dashboard' : currentPath) + search + hash;
+  window.location.replace(target);
+}
+
 export default function App() {
+  const isLearnPath = typeof window !== 'undefined' && window.location.pathname.startsWith('/learn');
+  const basename = isLearnPath ? '/learn' : '';
+
   return (
     <AuthProvider>
       <Toaster richColors position="top-right" />
-      <BrowserRouter basename="/learn">
+      <BrowserRouter basename={basename}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
 
