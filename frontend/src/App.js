@@ -23,13 +23,18 @@ if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/lear
 }
 
 export default function App() {
-  const isLearnPath = typeof window !== 'undefined' && window.location.pathname.startsWith('/learn');
-  const basename = isLearnPath ? '/learn' : '';
+  if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/learn')) {
+    return (
+      <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', background: '#f4f7fb', fontFamily: 'Inter, sans-serif' }}>
+        <p style={{ color: '#64748b', fontSize: '0.95rem' }}>Loading StepSmart...</p>
+      </div>
+    );
+  }
 
   return (
     <AuthProvider>
       <Toaster richColors position="top-right" />
-      <BrowserRouter basename={basename}>
+      <BrowserRouter basename="/learn">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
 

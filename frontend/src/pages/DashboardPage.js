@@ -2742,7 +2742,9 @@ export default function DashboardPage() {
 
     try {
       const todayStr = toDateKey(new Date());
-      const preferredCourseId = activeCourse?.courseId || clientDashboardCache?.activeCourse?.courseId || 'course-001';
+      const savedCourseId = typeof window !== 'undefined' ? localStorage.getItem('stepsmart_selected_course_id') : null;
+      const urlCourseParam = searchParams.get('course') || searchParams.get('cohort');
+      const preferredCourseId = urlCourseParam || savedCourseId || activeCourse?.courseId || clientDashboardCache?.activeCourse?.courseId || 'course-001';
 
       // Parallelize courses, weeks, and progress requests to eliminate waterfall
       const [coursesResult, initialWeeksResult, initialProgressResult] = await Promise.allSettled([
@@ -2765,8 +2767,14 @@ export default function DashboardPage() {
 
       if (courseList.length > 0) {
         setCourses(courseList);
-        actualCourse = courseList.find(c => c.courseId === preferredCourseId) || courseList[0];
+        actualCourse = courseList.find(c =>
+          c.courseId === preferredCourseId ||
+          (urlCourseParam && (c.name?.toLowerCase().includes(urlCourseParam.toLowerCase()) || c.courseId?.toLowerCase().includes(urlCourseParam.toLowerCase())))
+        ) || courseList[0];
         setActiveCourse(actualCourse);
+        if (typeof window !== 'undefined' && actualCourse?.courseId) {
+          try { localStorage.setItem('stepsmart_selected_course_id', actualCourse.courseId); } catch (_) {}
+        }
 
         // If the resolved course matches what we pre-fetched in parallel, use the results immediately
         if (actualCourse.courseId === preferredCourseId && initialWeeksResult.status === 'fulfilled' && initialProgressResult.status === 'fulfilled') {
@@ -3002,6 +3010,9 @@ export default function DashboardPage() {
   async function handleSelectCourse(course) {
     if (!course || course.courseId === activeCourse?.courseId) return;
     setActiveCourse(course);
+    if (typeof window !== 'undefined' && course?.courseId) {
+      try { localStorage.setItem('stepsmart_selected_course_id', course.courseId); } catch (_) {}
+    }
     setLoading(true);
     setError('');
 
