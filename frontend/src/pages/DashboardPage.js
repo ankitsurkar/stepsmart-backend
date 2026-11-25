@@ -2544,6 +2544,10 @@ export default function DashboardPage() {
 
   const handleCompleteAiGymDay = () => {
     if (!aiGymModalDay) return;
+    if (aiGymModalDay.day > TODAY_GYM_DAY) {
+      toast.error(aiLang === 'hindi' ? '🔒 यह चुनौती अभी लॉक है और सबमिट नहीं की जा सकती।' : '🔒 This challenge is locked and cannot be submitted yet.');
+      return;
+    }
     const isToday = aiGymModalDay.day === TODAY_GYM_DAY;
     const pointsAwarded = isToday ? 20 : 8;
 
@@ -4474,38 +4478,59 @@ export default function DashboardPage() {
                     const challenge = aiGymChallenges.find(c => c.day === dayNum);
                     const isDone = challenge?.completed;
                     const isTodayDay = dayNum === TODAY_GYM_DAY;
+                    const isLocked = dayNum > TODAY_GYM_DAY;
                     const aiWeekDayNames = ['Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday'];
                     const aiWeekDayNamesHi = ['बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार', 'रविवार', 'सोमवार', 'मंगलवार'];
+                    const dayName = aiLang === 'hindi' ? aiWeekDayNamesHi[idx] : aiWeekDayNames[idx];
 
                     return (
                       <button
                         key={dayNum}
                         type="button"
                         onClick={() => {
+                          if (isLocked) {
+                            toast.info(aiLang === 'hindi'
+                              ? `🔒 दिन ${dayNum} (${dayName}) की चुनौती ${dayName} को ही अनलॉक होगी। रोज़ाना एक नया AI प्रयोग सीखें!`
+                              : `🔒 Day ${dayNum} (${dayName}) is locked until ${dayName}! Practice one drill every day.`);
+                            return;
+                          }
                           if (challenge) setAiGymModalDay(challenge);
                         }}
-                        title={aiLang === 'hindi'
-                          ? `दिन ${dayNum} (${aiWeekDayNamesHi[idx]}): ${challenge?.challengeHi || challenge?.challenge || ''}`
-                          : `Day ${dayNum} (${aiWeekDayNames[idx]}): ${challenge?.challenge || ''}`}
+                        title={isLocked
+                          ? (aiLang === 'hindi' ? `🔒 दिन ${dayNum} (${dayName}): लॉक है (${dayName} को अनलॉक होगा)` : `🔒 Day ${dayNum} (${dayName}): Locked (Unlocks ${dayName})`)
+                          : (aiLang === 'hindi'
+                            ? `दिन ${dayNum} (${dayName}): ${challenge?.challengeHi || challenge?.challenge || ''}`
+                            : `Day ${dayNum} (${dayName}): ${challenge?.challenge || ''}`)}
                         style={{
                           width: '28px',
                           height: '28px',
                           borderRadius: '50%',
-                          background: isDone ? '#ffffff' : isTodayDay ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.3)',
-                          color: isDone || isTodayDay ? '#027A9B' : '#ffffff',
-                          fontSize: '0.72rem',
+                          background: isDone
+                            ? '#ffffff'
+                            : isTodayDay
+                              ? 'rgba(255, 255, 255, 0.95)'
+                              : isLocked
+                                ? 'rgba(255, 255, 255, 0.12)'
+                                : 'rgba(255, 255, 255, 0.3)',
+                          color: isDone || isTodayDay
+                            ? '#027A9B'
+                            : isLocked
+                              ? 'rgba(255, 255, 255, 0.5)'
+                              : '#ffffff',
+                          fontSize: isLocked ? '0.62rem' : '0.72rem',
                           fontWeight: 800,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          cursor: 'pointer',
-                          border: isTodayDay ? '2px solid #ffffff' : 'none',
+                          cursor: isLocked ? 'not-allowed' : 'pointer',
+                          border: isTodayDay ? '2px solid #ffffff' : isLocked ? '1px dashed rgba(255, 255, 255, 0.3)' : 'none',
                           padding: 0,
                           outline: 'none',
                           transition: 'all 0.15s ease',
+                          opacity: isLocked ? 0.75 : 1,
                         }}
                       >
-                        {isDone ? '✓' : label}
+                        {isDone ? '✓' : isLocked ? '🔒' : label}
                       </button>
                     );
                   })
@@ -6511,6 +6536,7 @@ export default function DashboardPage() {
             const isToday = challenge.day === TODAY_GYM_DAY;
             const isCompleted = challenge.completed;
             const isPast = challenge.day < TODAY_GYM_DAY;
+            const isFuture = challenge.day > TODAY_GYM_DAY;
             const aiWeekDays = ['Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday'];
             const aiWeekDaysHi = ['बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार', 'रविवार', 'सोमवार', 'मंगलवार'];
             const dayWeekday = aiLang === 'hindi' ? aiWeekDaysHi[challenge.day - 1] : aiWeekDays[challenge.day - 1];
@@ -6519,11 +6545,15 @@ export default function DashboardPage() {
               <div
                 key={challenge.day}
                 style={{
-                  background: '#ffffff',
-                  border: isToday ? '2px solid #027A9B' : '1px solid rgba(20, 49, 86, 0.08)',
+                  background: isFuture ? '#f8fafc' : '#ffffff',
+                  border: isToday
+                    ? '2px solid #027A9B'
+                    : isFuture
+                      ? '1px dashed #cbd5e1'
+                      : '1px solid rgba(20, 49, 86, 0.08)',
                   borderRadius: isMobile ? '16px' : '20px',
                   padding: isMobile ? '1.15rem 1rem' : '1.35rem 1.6rem',
-                  boxShadow: isToday ? '0 8px 24px rgba(2, 122, 155, 0.12)' : '0 4px 16px rgba(15, 40, 80, 0.04)',
+                  boxShadow: isToday ? '0 8px 24px rgba(2, 122, 155, 0.12)' : isFuture ? 'none' : '0 4px 16px rgba(15, 40, 80, 0.04)',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: isMobile ? 'stretch' : 'center',
@@ -6531,6 +6561,7 @@ export default function DashboardPage() {
                   gap: '1rem',
                   position: 'relative',
                   overflow: 'hidden',
+                  opacity: isFuture ? 0.88 : 1,
                 }}
               >
                 {isToday && (
@@ -6552,15 +6583,15 @@ export default function DashboardPage() {
                       width: isMobile ? '46px' : '52px',
                       height: isMobile ? '46px' : '52px',
                       borderRadius: '14px',
-                      background: isCompleted ? '#ecfdf5' : isToday ? '#e0f2fe' : '#f8fafc',
-                      color: isCompleted ? '#059669' : isToday ? '#027A9B' : '#94a3b8',
+                      background: isCompleted ? '#ecfdf5' : isToday ? '#e0f2fe' : isFuture ? '#f1f5f9' : '#f8fafc',
+                      color: isCompleted ? '#059669' : isToday ? '#027A9B' : isFuture ? '#94a3b8' : '#94a3b8',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontWeight: 800,
                       fontSize: '0.8rem',
-                      border: isCompleted ? '1.5px solid #10b981' : isToday ? '1.5px solid #027A9B' : '1px solid #e2e8f0',
+                      border: isCompleted ? '1.5px solid #10b981' : isToday ? '1.5px solid #027A9B' : '1px dashed #cbd5e1',
                       flexShrink: 0,
                     }}
                   >
@@ -6572,8 +6603,8 @@ export default function DashboardPage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
                       <span
                         style={{
-                          background: isCompleted ? '#dcfce7' : isToday ? '#e0f2fe' : '#f1f5f9',
-                          color: isCompleted ? '#166534' : isToday ? '#0369a1' : '#64748b',
+                          background: isCompleted ? '#dcfce7' : isToday ? '#e0f2fe' : isFuture ? '#f1f5f9' : '#fef3c7',
+                          color: isCompleted ? '#166534' : isToday ? '#0369a1' : isFuture ? '#64748b' : '#b45309',
                           fontSize: '0.72rem',
                           fontWeight: 800,
                           padding: '0.2rem 0.55rem',
@@ -6587,7 +6618,7 @@ export default function DashboardPage() {
                             ? (aiLang === 'hindi' ? `🔥 आज सक्रिय (${dayWeekday} • 20 XP)` : `🔥 Active Today (${dayWeekday} • 20 XP)`)
                             : isPast
                               ? (aiLang === 'hindi' ? `⏱️ छूटा हुआ (${dayWeekday} • 8 XP)` : `⏱️ Missed (${dayWeekday} • 8 XP)`)
-                              : (aiLang === 'hindi' ? `🔒 आगामी (${dayWeekday})` : `🔒 Upcoming (${dayWeekday})`)
+                              : (aiLang === 'hindi' ? `🔒 आगामी (${dayWeekday} को अनलॉक होगा)` : `🔒 Locked (Unlocks on ${dayWeekday})`)
                         }
                       </span>
                       <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b' }}>
@@ -6595,18 +6626,30 @@ export default function DashboardPage() {
                       </span>
                     </div>
 
-                    <h4 style={{ fontSize: isMobile ? '0.98rem' : '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
+                    <h4 style={{ fontSize: isMobile ? '0.98rem' : '1.05rem', fontWeight: 700, color: isFuture ? '#334155' : '#0f172a', margin: '0 0 0.35rem 0' }}>
                       {aiLang === 'hindi'
                         ? (challenge.caseStudyTitleHi || challenge.challengeHi || challenge.caseStudyTitle)
                         : (challenge.caseStudyTitle || challenge.challenge)
                       }
                     </h4>
-                    <p style={{ fontSize: isMobile ? '0.82rem' : '0.85rem', color: '#475569', margin: 0, lineHeight: 1.45, maxWidth: '720px' }}>
-                      {aiLang === 'hindi'
-                        ? (challenge.questionPromptHi || challenge.challengeHi || challenge.questionPrompt)
-                        : (challenge.questionPrompt || challenge.challenge)
-                      }
-                    </p>
+
+                    {isFuture ? (
+                      <p style={{ fontSize: isMobile ? '0.82rem' : '0.85rem', color: '#64748b', margin: 0, lineHeight: 1.45, fontStyle: 'italic', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <span>🔒</span>
+                        <span>
+                          {aiLang === 'hindi'
+                            ? `यह चुनौती ${dayWeekday} को अनलॉक होगी। सीखने की गति और आदत बनाए रखने के लिए हर दिन केवल एक चुनौती खुलती है!`
+                            : `This challenge unlocks on ${dayWeekday}. Challenges unlock day-by-day to maintain steady learning habits!`}
+                        </span>
+                      </p>
+                    ) : (
+                      <p style={{ fontSize: isMobile ? '0.82rem' : '0.85rem', color: '#475569', margin: 0, lineHeight: 1.45, maxWidth: '720px' }}>
+                        {aiLang === 'hindi'
+                          ? (challenge.questionPromptHi || challenge.challengeHi || challenge.questionPrompt)
+                          : (challenge.questionPrompt || challenge.challenge)
+                        }
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -6633,6 +6676,35 @@ export default function DashboardPage() {
                         {aiLang === 'hindi' ? 'समाधान देखें' : 'Review Solution'}
                       </button>
                     </div>
+                  ) : isFuture ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        toast.info(aiLang === 'hindi'
+                          ? `🔒 दिन ${challenge.day} की चुनौती ${dayWeekday} को अनलॉक होगी। आज की चुनौती (दिन 1) हल करें!`
+                          : `🔒 Day ${challenge.day} unlocks on ${dayWeekday}. Complete today's Day 1 challenge first!`);
+                      }}
+                      style={{
+                        background: '#f1f5f9',
+                        color: '#64748b',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '999px',
+                        padding: '0.75rem 1.4rem',
+                        fontSize: isMobile ? '0.9rem' : '0.85rem',
+                        fontWeight: 700,
+                        cursor: 'not-allowed',
+                        whiteSpace: 'nowrap',
+                        width: isMobile ? '100%' : 'auto',
+                        minHeight: '44px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.4rem',
+                      }}
+                    >
+                      <span>🔒</span>
+                      <span>{aiLang === 'hindi' ? `${dayWeekday} को अनलॉक होगा` : `Locked (${dayWeekday})`}</span>
+                    </button>
                   ) : (
                     <button
                       type="button"
@@ -6655,9 +6727,7 @@ export default function DashboardPage() {
                     >
                       {isToday
                         ? (aiLang === 'hindi' ? 'आज हल करें (+20 XP)' : 'Solve Today (+20 XP)')
-                        : isPast
-                          ? (aiLang === 'hindi' ? 'कैच अप (+8 XP)' : 'Catch Up (+8 XP)')
-                          : (aiLang === 'hindi' ? 'पूर्वावलोकन' : 'Preview Drill')
+                        : (aiLang === 'hindi' ? 'कैच अप (+8 XP)' : 'Catch Up (+8 XP)')
                       }
                     </button>
                   )}
@@ -6834,7 +6904,74 @@ export default function DashboardPage() {
   function renderAiGymModal() {
     if (!aiGymModalDay) return null;
     const isToday = aiGymModalDay.day === TODAY_GYM_DAY;
+    const isFuture = aiGymModalDay.day > TODAY_GYM_DAY;
     const pointsAwarded = isToday ? 20 : 8;
+
+    if (isFuture) {
+      const aiWeekDays = ['Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday'];
+      const aiWeekDaysHi = ['बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार', 'रविवार', 'सोमवार', 'मंगलवार'];
+      const unlockDay = aiLang === 'hindi' ? aiWeekDaysHi[aiGymModalDay.day - 1] : aiWeekDays[aiGymModalDay.day - 1];
+
+      return (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.45)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 99999,
+            padding: '1rem',
+            boxSizing: 'border-box',
+          }}
+          onClick={() => setAiGymModalDay(null)}
+        >
+          <div
+            style={{
+              background: '#ffffff',
+              borderRadius: isMobile ? '20px' : '24px',
+              padding: isMobile ? '1.5rem 1.25rem' : '2rem',
+              maxWidth: '460px',
+              width: '100%',
+              textAlign: 'center',
+              boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
+              boxSizing: 'border-box',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ fontSize: '3rem', marginBottom: '0.75rem' }}>🔒</div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+              {aiLang === 'hindi' ? `दिन ${aiGymModalDay.day} की चुनौती अभी लॉक है` : `Day ${aiGymModalDay.day} Challenge is Locked`}
+            </h3>
+            <p style={{ fontSize: '0.92rem', color: '#475569', lineHeight: 1.55, margin: '0 0 1.5rem 0' }}>
+              {aiLang === 'hindi'
+                ? `यह चुनौती ${unlockDay} को खुलेगी। रोज़ाना एक नया AI प्रयोग सीखें ताकि नियमित आदत बने और लर्निंग प्रभावी रहे!`
+                : `This drill unlocks on ${unlockDay}. One challenge unlocks per day to reinforce steady, habit-based AI learning!`}
+            </p>
+            <button
+              type="button"
+              onClick={() => setAiGymModalDay(null)}
+              style={{
+                background: '#027A9B',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '999px',
+                padding: '0.75rem 2rem',
+                fontSize: '0.95rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(2, 122, 155, 0.25)',
+              }}
+            >
+              {aiLang === 'hindi' ? 'समझ गया' : 'Got it'}
+            </button>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div
