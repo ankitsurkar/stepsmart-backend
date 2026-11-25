@@ -45,15 +45,15 @@ const NAV_ITEMS = [
 ];
 
 const AI_NAV_ITEMS = [
-  { id: 'dashboard', label: 'Home', icon: 'home' },
-  { id: 'courses', label: 'Courses', icon: 'book' },
-  { id: 'gym', label: 'AI Gym', icon: 'flame' },
-  { id: 'prompts', label: 'Prompt Library', icon: 'folder' },
-  { id: 'assignments', label: 'Assignments', icon: 'clipboard' },
-  { id: 'resources', label: 'Resources', icon: 'folder' },
-  { id: 'scheduling', label: 'Sessions', icon: 'clock' },
-  { id: 'cohort', label: 'Cohort', icon: 'users' },
-  { id: 'settings', label: 'Profile', icon: 'settings' },
+  { id: 'dashboard', label: 'Home', labelHi: 'होम', icon: 'home' },
+  { id: 'courses', label: 'Courses', labelHi: 'कोर्स', icon: 'book' },
+  { id: 'gym', label: 'AI Gym', labelHi: 'AI जिम', icon: 'flame' },
+  { id: 'prompts', label: 'Prompt Library', labelHi: 'प्रॉम्प्ट लाइब्रेरी', icon: 'folder' },
+  { id: 'assignments', label: 'Assignments', labelHi: 'असाइनमेंट', icon: 'clipboard' },
+  { id: 'resources', label: 'Resources', labelHi: 'रिसोर्सेज', icon: 'folder' },
+  { id: 'scheduling', label: 'Sessions', labelHi: 'सेशन्स', icon: 'clock' },
+  { id: 'cohort', label: 'Cohort', labelHi: 'कोहॉर्ट', icon: 'users' },
+  { id: 'settings', label: 'Profile', labelHi: 'प्रोफाइल', icon: 'settings' },
 ];
 
 function getInitialDashboardView(searchParams) {
@@ -2503,7 +2503,16 @@ export default function DashboardPage() {
   const [aiGymChallenges, setAiGymChallenges] = useState(() => {
     try {
       const saved = localStorage.getItem('stepsmart_ai_gym_challenges_v2');
-      return saved ? JSON.parse(saved) : INITIAL_GYM_CHALLENGES;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return INITIAL_GYM_CHALLENGES.map(initC => {
+            const found = parsed.find(p => p.day === initC.day);
+            return found ? { ...initC, completed: Boolean(found.completed), scoreAwarded: found.scoreAwarded || initC.scoreAwarded, answer: found.answer || '' } : initC;
+          });
+        }
+      }
+      return INITIAL_GYM_CHALLENGES;
     } catch {
       return INITIAL_GYM_CHALLENGES;
     }
@@ -4240,7 +4249,7 @@ export default function DashboardPage() {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
                 <h3 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
-                  {isAiCohort ? 'AI Gym' : 'PM Gym'}
+                  {isAiCohort ? (aiLang === 'hindi' ? 'AI Gym' : 'AI Gym') : 'PM Gym'}
                 </h3>
                 {isAiCohort && (
                   <span style={{
@@ -4253,14 +4262,14 @@ export default function DashboardPage() {
                     letterSpacing: '0.04em',
                     textTransform: 'uppercase',
                   }}>
-                    7-Day Streak Challenge • Day 2 of 7
+                    {aiLang === 'hindi' ? '7-दिवसीय स्ट्रीक चैलेंज • दिन 2 / 7' : '7-Day Streak Challenge • Day 2 of 7'}
                   </span>
                 )}
               </div>
               <p style={{ fontSize: '0.88rem', color: '#e0f2fe', margin: 0, opacity: 0.95, lineHeight: 1.45, maxWidth: '680px' }}>
                 {isAiCohort
                   ? (aiLang === 'hindi'
-                    ? "[AI Micro-Experiment · Day 2 of 7: Communication] Apni kisi existing writing (email, message ya draft) ko AI se refine karwayein. AI se tone, clarity aur conciseness improve karne ko kahein. (+20 XP Today)"
+                    ? "[AI माइक्रो-एक्सपेरिमेंट · दिन 2 / 7: बातचीत व लेखन] अपनी किसी मौजूदा राइटिंग (ईमेल, मैसेज या ड्राफ्ट) को AI से सुधारें। AI को देकर टोन, स्पष्टता और संक्षिप्तता सुधारने को कहें। (+20 XP आज)"
                     : "[AI Micro-Experiment · Day 2 of 7: Communication] Use AI to improve an existing piece of writing. Paste an email, message, or draft into AI and prompt it to polish clarity, brevity, and tone. (+20 XP Today)")
                   : (isClosedDay
                     ? 'Closed today for resting. Rest up, or review previous answers!'
@@ -4302,7 +4311,7 @@ export default function DashboardPage() {
                     }}
                     disabled
                   >
-                    Completed ✓ (+20 XP)
+                    {aiLang === 'hindi' ? 'पूर्ण ✓ (+20 XP)' : 'Completed ✓ (+20 XP)'}
                   </button>
                 ) : (
                   <button
@@ -4330,7 +4339,7 @@ export default function DashboardPage() {
                     onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                     onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                   >
-                    Solve Challenge
+                    {aiLang === 'hindi' ? 'चुनौती हल करें' : 'Solve Challenge'}
                   </button>
                 )}
               </div>
@@ -4718,7 +4727,7 @@ export default function DashboardPage() {
                     style={{ ...s.resumeButton, cursor: 'pointer', border: 'none' }}
                   >
                     <span>▶</span>
-                    <span>Resume Lesson</span>
+                    <span>{aiLang === 'hindi' ? 'सीखना जारी रखें (Resume)' : 'Resume Lesson'}</span>
                   </button>
                 ) : continueLesson ? (
                   <Link
@@ -4737,7 +4746,9 @@ export default function DashboardPage() {
 
                 <div style={s.upNext}>
                   {isAiCohort
-                    ? 'Up next: Module 1 • Prompt Engineering & Daily Workflows'
+                    ? (aiLang === 'hindi'
+                      ? 'आगे: मॉड्यूल 1 • प्रॉम्प्ट इंजीनियरिंग व दैनिक वर्कफ़्लोज़'
+                      : 'Up next: Module 1 • Prompt Engineering & Daily Workflows')
                     : `Up next: ${upcomingLesson
                       ? `${upcomingLesson.displayWeekNumber} • ${upcomingLesson.title}`
                       : continueLesson
@@ -4747,8 +4758,8 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Redesigned Card 4: Weekly Reminder Card */}
-              {renderWeeklyReminderCard()}
+              {/* Redesigned Card 4: Weekly Reminder Card - Only for non-AI cohorts */}
+              {!isAiCohort && renderWeeklyReminderCard()}
             </div>
           </div>
 
@@ -4758,9 +4769,9 @@ export default function DashboardPage() {
               width: isCompact ? '100%' : '320px',
               flexShrink: 0,
             }}>
-              <div style={s.railHeaderTitle}>Top Peers</div>
-              <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
-              <div style={s.empty}>Leaderboard points will appear after lessons and assignments are completed.</div>
+              <div style={s.railHeaderTitle}>{aiLang === 'hindi' && isAiCohort ? 'शीर्ष साथी (Top Peers)' : 'Top Peers'}</div>
+              <div style={s.railHeaderSub}>{aiLang === 'hindi' && isAiCohort ? 'सहपाठियों के मुकाबले अपनी प्रगति ट्रैक करें।' : 'Track your performance against the cohort.'}</div>
+              <div style={s.empty}>{aiLang === 'hindi' && isAiCohort ? 'लेसन्स और असाइनमेंट पूरे होने के बाद लीडरबोर्ड पॉइंट्स दिखाई देंगे।' : 'Leaderboard points will appear after lessons and assignments are completed.'}</div>
             </div>
           ) : (
             <DashboardLeaderboard
@@ -4790,6 +4801,7 @@ export default function DashboardPage() {
     if (isAiCohort) {
       const currentSlide = MODULE_0_SLIDES[aiSlideIndex] || MODULE_0_SLIDES[0];
       const slideContent = aiLang === 'hindi' ? currentSlide.hindi : currentSlide.english;
+      const bullets = getSlideBullets(currentSlide, aiLang);
 
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
@@ -4874,48 +4886,6 @@ export default function DashboardPage() {
                   👨‍🏫 Instructor Mode
                 </button>
               </div>
-
-              {/* Language Toggle */}
-              <div style={{
-                display: 'inline-flex',
-                background: '#e0f2fe',
-                borderRadius: '999px',
-                padding: '3px',
-                border: '1.5px solid #0284c7',
-              }}>
-                <button
-                  type="button"
-                  onClick={() => handleToggleAiLang('hindi')}
-                  style={{
-                    border: 'none',
-                    background: aiLang === 'hindi' ? '#0284c7' : 'transparent',
-                    color: aiLang === 'hindi' ? '#ffffff' : '#0369a1',
-                    padding: '0.35rem 0.85rem',
-                    borderRadius: '999px',
-                    fontSize: '0.78rem',
-                    fontWeight: aiLang === 'hindi' ? 700 : 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  🇮🇳 Hindi
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleToggleAiLang('english')}
-                  style={{
-                    border: 'none',
-                    background: aiLang === 'english' ? '#0284c7' : 'transparent',
-                    color: aiLang === 'english' ? '#ffffff' : '#0369a1',
-                    padding: '0.35rem 0.85rem',
-                    borderRadius: '999px',
-                    fontSize: '0.78rem',
-                    fontWeight: aiLang === 'english' ? 700 : 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  🇬🇧 English
-                </button>
-              </div>
             </div>
           </div>
 
@@ -4940,17 +4910,17 @@ export default function DashboardPage() {
                   style={{ fontSize: '0.78rem', fontWeight: 600, color: '#027A9B', marginBottom: '0.25rem', cursor: 'pointer' }}
                   onClick={() => setActiveView('dashboard')}
                 >
-                  ← Back to course
+                  {aiLang === 'hindi' ? '← कोर्स पर वापस जाएं' : '← Back to course'}
                 </div>
                 <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Course Contents
+                  {aiLang === 'hindi' ? 'कोर्स सामग्री (Course Contents)' : 'Course Contents'}
                 </h4>
               </div>
 
               <div style={{ padding: '0.75rem 1.25rem 0.4rem 1.25rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 700, fontSize: '0.85rem', color: '#1e293b' }}>
-                  <span>📁 Module 0</span>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>14 slides</span>
+                  <span>{aiLang === 'hindi' ? '📁 मॉड्यूल 0' : '📁 Module 0'}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{aiLang === 'hindi' ? '14 स्लाइड्स' : '14 slides'}</span>
                 </div>
               </div>
 
@@ -4959,6 +4929,7 @@ export default function DashboardPage() {
                 {MODULE_0_DRAWER_ITEMS.map((item, idx) => {
                   const isActive = aiSlideIndex === idx;
                   const isDone = aiSlideIndex > idx;
+                  const displayLabel = (aiLang === 'hindi' ? item.labelHi : item.label) || item.label || item.title;
 
                   return (
                     <button
@@ -5005,7 +4976,7 @@ export default function DashboardPage() {
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                         }}>
-                          {item.label || item.title}
+                          {displayLabel}
                         </span>
                       </div>
                       <span style={{ fontSize: '0.7rem', color: '#94a3b8', flexShrink: 0, marginLeft: '0.35rem' }}>
@@ -5028,7 +4999,7 @@ export default function DashboardPage() {
                 boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
               }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.2rem' }}>
-                  Slide {aiSlideIndex + 1} of {MODULE_0_SLIDES.length} • {currentSlide.categoryTag}
+                  {aiLang === 'hindi' ? `स्लाइड ${aiSlideIndex + 1} / ${MODULE_0_SLIDES.length}` : `Slide ${aiSlideIndex + 1} of ${MODULE_0_SLIDES.length}`} • {currentSlide.categoryTag}
                 </div>
                 <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
                   {slideContent.heading}
@@ -5088,8 +5059,15 @@ export default function DashboardPage() {
                         </div>
                       )}
 
+                      {/* Optional Slide Description */}
+                      {slideContent.description && (
+                        <p style={{ fontSize: '0.95rem', color: '#475569', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                          {slideContent.description}
+                        </p>
+                      )}
+
                       {/* Render Visual Cards / Points */}
-                      {slideContent.cards && (
+                      {slideContent.cards && slideContent.cards.length > 0 && (
                         <div style={{
                           display: 'grid',
                           gridTemplateColumns: slideContent.cards.length > 3 ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -5121,8 +5099,27 @@ export default function DashboardPage() {
                         </div>
                       )}
 
+                      {/* High-Clarity Bullets when no cards are defined */}
+                      {bullets && bullets.length > 0 && (!slideContent.cards || slideContent.cards.length === 0) && (
+                        <div style={{
+                          background: '#f8fafc',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '14px',
+                          padding: '1.25rem 1.5rem',
+                          marginBottom: '1.25rem',
+                        }}>
+                          <ul style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                            {bullets.map((b, bIdx) => (
+                              <li key={bIdx} style={{ fontSize: '0.92rem', color: '#1e293b', lineHeight: 1.55 }}>
+                                {b}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
                       {/* Copyable Prompts or Interactive Code if available */}
-                      {slideContent.prompt && (
+                      {(slideContent.promptBox || slideContent.prompt) && (
                         <div style={{
                           background: '#0f172a',
                           color: '#f8fafc',
@@ -5130,14 +5127,15 @@ export default function DashboardPage() {
                           padding: '1.25rem',
                           marginBottom: '1.25rem',
                           position: 'relative',
+                          boxShadow: '0 4px 14px rgba(15, 23, 42, 0.15)',
                         }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase' }}>
-                              Prompt Example ({aiLang === 'hindi' ? 'Hinglish' : 'English'})
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.65rem' }}>
+                            <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                              {slideContent.promptBox?.label || (aiLang === 'hindi' ? 'प्रॉम्प्ट उदाहरण (लाइव क्लासरूम डेमो)' : 'Prompt Example')}
                             </span>
                             <button
                               type="button"
-                              onClick={() => handleCopyAiPrompt(slideContent.prompt, `slide-${aiSlideIndex}`)}
+                              onClick={() => handleCopyAiPrompt(slideContent.promptBox?.text || slideContent.prompt, `slide-${aiSlideIndex}`)}
                               style={{
                                 background: 'rgba(255,255,255,0.15)',
                                 color: '#ffffff',
@@ -5149,11 +5147,14 @@ export default function DashboardPage() {
                                 cursor: 'pointer',
                               }}
                             >
-                              {aiCopiedId === `slide-${aiSlideIndex}` ? 'Copied ✓' : 'Copy Prompt'}
+                              {aiCopiedId === `slide-${aiSlideIndex}`
+                                ? (aiLang === 'hindi' ? 'कॉपी हो गया ✓' : 'Copied ✓')
+                                : (aiLang === 'hindi' ? 'प्रॉम्प्ट कॉपी करें' : 'Copy Prompt')
+                              }
                             </button>
                           </div>
-                          <div style={{ fontSize: '0.85rem', lineHeight: 1.5, fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
-                            {slideContent.prompt}
+                          <div style={{ fontSize: '0.86rem', lineHeight: 1.55, fontFamily: 'monospace', whiteSpace: 'pre-wrap', color: '#e2e8f0' }}>
+                            {slideContent.promptBox?.text || slideContent.prompt}
                           </div>
                         </div>
                       )}
@@ -5165,11 +5166,12 @@ export default function DashboardPage() {
                           borderLeft: '4px solid #027A9B',
                           borderRadius: '8px',
                           padding: '0.85rem 1.25rem',
+                          marginTop: '0.5rem',
                         }}>
                           <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.2rem' }}>
-                            Discussion Question
+                            {aiLang === 'hindi' ? 'चर्चा प्रश्न (Discussion Question)' : 'Discussion Question'}
                           </div>
-                          <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0f172a' }}>
+                          <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#0f172a', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
                             {slideContent.discussion}
                           </div>
                         </div>
@@ -5256,7 +5258,7 @@ export default function DashboardPage() {
                     ❮
                   </button>
                   <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f8fafc' }}>
-                    {aiSlideIndex + 1} of {MODULE_0_SLIDES.length}
+                    {aiLang === 'hindi' ? `स्लाइड ${aiSlideIndex + 1} / ${MODULE_0_SLIDES.length}` : `${aiSlideIndex + 1} of ${MODULE_0_SLIDES.length}`}
                   </span>
                   <button
                     type="button"
@@ -5295,15 +5297,15 @@ export default function DashboardPage() {
                       borderRadius: '999px',
                       textTransform: 'uppercase',
                     }}>
-                      Module 0 Activity Assignment
+                      {aiLang === 'hindi' ? 'मॉड्यूल 0 असाइनमेंट' : 'Module 0 Activity Assignment'}
                     </span>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: '0.25rem 0 0 0' }}>
-                      Complete this activity journal.
+                      {aiLang === 'hindi' ? 'यह गतिविधि जर्नल पूरा करें।' : 'Complete this activity journal.'}
                     </h3>
                   </div>
                   {journalSubmitted && (
                     <span style={{ background: '#dcfce7', color: '#166534', padding: '0.35rem 0.85rem', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 700 }}>
-                      ✓ Submitted (+25 XP)
+                      {aiLang === 'hindi' ? '✓ सबमिट किया गया (+25 XP)' : '✓ Submitted (+25 XP)'}
                     </span>
                   )}
                 </div>
@@ -5311,13 +5313,13 @@ export default function DashboardPage() {
                 <form onSubmit={handleSaveJournal} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.35rem' }}>
-                      1. Which repetitive task did you select?
+                      {aiLang === 'hindi' ? '1. आपने कौन सा दोहराया जाने वाला काम चुना?' : '1. Which repetitive task did you select?'}
                     </label>
                     <input
                       type="text"
                       value={journalTask}
                       onChange={(e) => setJournalTask(e.target.value)}
-                      placeholder="e.g. Planning my weekly workout & meetings schedule"
+                      placeholder={aiLang === 'hindi' ? 'जैसे: अपना साप्ताहिक वर्कआउट और मीटिंग्स शेड्यूल प्लान करना' : 'e.g. Planning my weekly workout & meetings schedule'}
                       style={{
                         width: '100%',
                         boxSizing: 'border-box',
@@ -5332,12 +5334,12 @@ export default function DashboardPage() {
 
                   <div>
                     <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.35rem' }}>
-                      2. How did AI help you?
+                      {aiLang === 'hindi' ? '2. AI ने आपकी कैसे मदद की?' : '2. How did AI help you?'}
                     </label>
                     <textarea
                       value={journalHelp}
                       onChange={(e) => setJournalHelp(e.target.value)}
-                      placeholder="e.g. Structured my priority tasks with buffers and prevented burnout overlaps"
+                      placeholder={aiLang === 'hindi' ? 'जैसे: प्राथमिकताओं को बफर समय के साथ शेड्यूल किया और बर्नआउट से बचाया' : 'e.g. Structured my priority tasks with buffers and prevented burnout overlaps'}
                       rows={2}
                       style={{
                         width: '100%',
@@ -5355,13 +5357,13 @@ export default function DashboardPage() {
                   <div style={{ display: 'grid', gridTemplateColumns: isCompact ? '1fr' : '1fr 1fr', gap: '1rem' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.35rem' }}>
-                        3. How long did it take before using AI?
+                        {aiLang === 'hindi' ? '3. AI के इस्तेमाल से पहले इसमें कितना समय लगता था?' : '3. How long did it take before using AI?'}
                       </label>
                       <input
                         type="text"
                         value={journalTimeBefore}
                         onChange={(e) => setJournalTimeBefore(e.target.value)}
-                        placeholder="e.g. 45 minutes"
+                        placeholder={aiLang === 'hindi' ? 'जैसे: 45 मिनट' : 'e.g. 45 minutes'}
                         style={{
                           width: '100%',
                           boxSizing: 'border-box',
@@ -5375,13 +5377,13 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.35rem' }}>
-                        4. How long did it take with AI?
+                        {aiLang === 'hindi' ? '4. AI के साथ कितना समय लगा?' : '4. How long did it take with AI?'}
                       </label>
                       <input
                         type="text"
                         value={journalTimeWith}
                         onChange={(e) => setJournalTimeWith(e.target.value)}
-                        placeholder="e.g. 3 minutes"
+                        placeholder={aiLang === 'hindi' ? 'जैसे: 3 मिनट' : 'e.g. 3 minutes'}
                         style={{
                           width: '100%',
                           boxSizing: 'border-box',
@@ -5397,20 +5399,24 @@ export default function DashboardPage() {
 
                   <div>
                     <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem' }}>
-                      5. Can you reuse this solution?
+                      {aiLang === 'hindi' ? '5. क्या आप इस समाधान को दोबारा इस्तेमाल कर सकते हैं?' : '5. Can you reuse this solution?'}
                     </label>
                     <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-                      {['Yes', 'No', 'Need to improve'].map((opt) => (
-                        <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, color: '#334155' }}>
+                      {[
+                        { key: 'Yes', label: aiLang === 'hindi' ? 'हाँ (Yes)' : 'Yes' },
+                        { key: 'No', label: aiLang === 'hindi' ? 'नहीं (No)' : 'No' },
+                        { key: 'Need to improve', label: aiLang === 'hindi' ? 'सुधार की ज़रूरत है (Need to improve)' : 'Need to improve' }
+                      ].map((opt) => (
+                        <label key={opt.key} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, color: '#334155' }}>
                           <input
                             type="radio"
                             name="reuse"
-                            value={opt}
-                            checked={journalReusable === opt}
+                            value={opt.key}
+                            checked={journalReusable === opt.key}
                             onChange={(e) => setJournalReusable(e.target.value)}
                             required
                           />
-                          {opt}
+                          {opt.label}
                         </label>
                       ))}
                     </div>
@@ -5431,7 +5437,10 @@ export default function DashboardPage() {
                         boxShadow: '0 4px 12px rgba(2, 122, 155, 0.25)',
                       }}
                     >
-                      {journalSubmitted ? 'Update Activity Journal' : 'Save Activity Journal (+25 XP)'}
+                      {aiLang === 'hindi'
+                        ? (journalSubmitted ? 'गतिविधि जर्नल अपडेट करें' : 'गतिविधि जर्नल सेव करें (+25 XP)')
+                        : (journalSubmitted ? 'Update Activity Journal' : 'Save Activity Journal (+25 XP)')
+                      }
                     </button>
                   </div>
                 </form>
@@ -6492,7 +6501,7 @@ export default function DashboardPage() {
                       flexShrink: 0,
                     }}
                   >
-                    <span>DAY</span>
+                    <span>{aiLang === 'hindi' ? 'दिन' : 'DAY'}</span>
                     <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>{challenge.day}</span>
                   </div>
 
@@ -6509,20 +6518,30 @@ export default function DashboardPage() {
                           textTransform: 'uppercase',
                         }}
                       >
-                        {isCompleted ? '✓ Completed' : isToday ? '🔥 Active Today (20 XP)' : isPast ? '⏱️ Missed (Catch-up: 8 XP)' : '🔒 Upcoming'}
+                        {isCompleted
+                          ? (aiLang === 'hindi' ? '✓ पूर्ण' : '✓ Completed')
+                          : isToday
+                            ? (aiLang === 'hindi' ? '🔥 आज सक्रिय (20 XP)' : '🔥 Active Today (20 XP)')
+                            : isPast
+                              ? (aiLang === 'hindi' ? '⏱️ छूटा हुआ (कैच-अप: 8 XP)' : '⏱️ Missed (Catch-up: 8 XP)')
+                              : (aiLang === 'hindi' ? '🔒 आगामी' : '🔒 Upcoming')
+                        }
                       </span>
                       <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b' }}>
-                        {challenge.newExperience} • {challenge.category}
+                        {(aiLang === 'hindi' ? challenge.newExperienceHi : challenge.newExperience) || challenge.newExperience} • {(aiLang === 'hindi' ? challenge.categoryHi : challenge.category) || challenge.category}
                       </span>
                     </div>
 
                     <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
-                      {challenge.caseStudyTitle || challenge.challenge}
+                      {aiLang === 'hindi'
+                        ? (challenge.caseStudyTitleHi || challenge.challengeHi || challenge.caseStudyTitle)
+                        : (challenge.caseStudyTitle || challenge.challenge)
+                      }
                     </h4>
                     <p style={{ fontSize: '0.85rem', color: '#475569', margin: 0, lineHeight: 1.45, maxWidth: '720px' }}>
-                      {aiLang === 'hindi' && challenge.day === 2
-                        ? "Swiggy Group Order Feature: Weekday office lunches mein frequency aur AOV badhana hai. Metro tech parks ke 3 distinct user groups identify karein aur 1 line mein batayein Swiggy ko pehle kisse target karna chahiye aur kyun?"
-                        : challenge.questionPrompt || challenge.challenge
+                      {aiLang === 'hindi'
+                        ? (challenge.questionPromptHi || challenge.challengeHi || challenge.questionPrompt)
+                        : (challenge.questionPrompt || challenge.challenge)
                       }
                     </p>
                   </div>
@@ -6549,7 +6568,7 @@ export default function DashboardPage() {
                           marginTop: '0.25rem',
                         }}
                       >
-                        Review Solution
+                        {aiLang === 'hindi' ? 'समाधान देखें' : 'Review Solution'}
                       </button>
                     </div>
                   ) : (
@@ -6570,7 +6589,12 @@ export default function DashboardPage() {
                         whiteSpace: 'nowrap',
                       }}
                     >
-                      {isToday ? 'Solve Today (+20 XP)' : isPast ? 'Catch Up (+8 XP)' : 'Preview Drill'}
+                      {isToday
+                        ? (aiLang === 'hindi' ? 'आज हल करें (+20 XP)' : 'Solve Today (+20 XP)')
+                        : isPast
+                          ? (aiLang === 'hindi' ? 'कैच अप (+8 XP)' : 'Catch Up (+8 XP)')
+                          : (aiLang === 'hindi' ? 'पूर्वावलोकन' : 'Preview Drill')
+                      }
                     </button>
                   )}
                 </div>
@@ -6594,10 +6618,12 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.25rem 0' }}>
-              Curated AI Prompt Repository
+              {aiLang === 'hindi' ? 'प्रमाणित AI प्रॉम्प्ट रिपॉजिटरी' : 'Curated AI Prompt Repository'}
             </h3>
             <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0 }}>
-              Tested, production-grade bilingual prompts ready to copy and paste into ChatGPT, Claude or Gemini.
+              {aiLang === 'hindi'
+                ? 'क्लासरूम टेस्टेड, प्रोडक्शन-ग्रेड प्रॉम्प्ट्स जिन्हें आप ChatGPT, Claude या Gemini में सीधे कॉपी-पेस्ट कर सकते हैं।'
+                : 'Tested, production-grade bilingual prompts ready to copy and paste into ChatGPT, Claude or Gemini.'}
             </p>
           </div>
         </div>
@@ -6623,7 +6649,7 @@ export default function DashboardPage() {
                   transition: 'all 0.15s ease',
                 }}
               >
-                {cat}
+                {cat === 'All' && aiLang === 'hindi' ? 'सभी प्रॉम्प्ट्स' : cat}
               </button>
             );
           })}
@@ -6632,7 +6658,10 @@ export default function DashboardPage() {
         {/* Prompt Cards Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: isCompact ? '1fr' : 'repeat(2, 1fr)', gap: '1rem' }}>
           {filtered.map((item) => {
-            const promptText = aiLang === 'hindi' ? item.hindiPrompt : item.englishPrompt;
+            const promptText = aiLang === 'hindi' ? (item.hindi || item.hindiPrompt) : (item.english || item.englishPrompt);
+            const itemTitle = (aiLang === 'hindi' ? item.titleHi : item.title) || item.title;
+            const itemCat = (aiLang === 'hindi' ? item.categoryHi : item.category) || item.category;
+            const itemDesc = (aiLang === 'hindi' ? item.descriptionHi : item.description) || item.description;
             const isCopied = aiCopiedId === item.id;
 
             return (
@@ -6660,7 +6689,7 @@ export default function DashboardPage() {
                       borderRadius: '999px',
                       textTransform: 'uppercase',
                     }}>
-                      {item.category}
+                      {itemCat}
                     </span>
                     <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600 }}>
                       {item.tag}
@@ -6668,10 +6697,10 @@ export default function DashboardPage() {
                   </div>
 
                   <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                    {item.title}
+                    {itemTitle}
                   </h4>
                   <p style={{ fontSize: '0.82rem', color: '#64748b', margin: '0 0 1rem 0', lineHeight: 1.45 }}>
-                    {item.description}
+                    {itemDesc}
                   </p>
 
                   <div
@@ -6716,7 +6745,8 @@ export default function DashboardPage() {
                       transition: 'all 0.15s ease',
                     }}
                   >
-                    {isCopied ? 'Copied ✓' : 'Copy Prompt'}
+                    <span>{isCopied ? '✓' : '📋'}</span>
+                    <span>{isCopied ? (aiLang === 'hindi' ? 'कॉपी हो गया' : 'Copied') : (aiLang === 'hindi' ? 'प्रॉम्प्ट कॉपी करें' : 'Copy Prompt')}</span>
                   </button>
                 </div>
               </div>
@@ -6786,14 +6816,20 @@ export default function DashboardPage() {
                   borderRadius: '999px',
                   textTransform: 'uppercase',
                 }}>
-                  Day {aiGymModalDay.day} of 7 • {isToday ? 'Active Today (+20 XP)' : 'Catch-up Drill (+8 XP)'}
+                  {aiLang === 'hindi'
+                    ? `दिन ${aiGymModalDay.day} / 7 • ${isToday ? 'आज सक्रिय (+20 XP)' : 'कैच-अप ड्रिल (+8 XP)'}`
+                    : `Day ${aiGymModalDay.day} of 7 • ${isToday ? 'Active Today (+20 XP)' : 'Catch-up Drill (+8 XP)'}`
+                  }
                 </span>
                 <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
-                  {aiGymModalDay.newExperience}
+                  {(aiLang === 'hindi' ? aiGymModalDay.newExperienceHi : aiGymModalDay.newExperience) || aiGymModalDay.newExperience}
                 </span>
               </div>
               <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                {aiGymModalDay.caseStudyTitle || aiGymModalDay.challenge}
+                {aiLang === 'hindi'
+                  ? (aiGymModalDay.caseStudyTitleHi || aiGymModalDay.challengeHi || aiGymModalDay.caseStudyTitle)
+                  : (aiGymModalDay.caseStudyTitle || aiGymModalDay.challenge)
+                }
               </h3>
             </div>
             <button
@@ -6825,17 +6861,17 @@ export default function DashboardPage() {
               marginBottom: '1rem',
             }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
-                Challenge Question / Prompt
+                {aiLang === 'hindi' ? 'चुनौती प्रश्न / प्रॉम्प्ट' : 'Challenge Question / Prompt'}
               </div>
               <p style={{ fontSize: '0.95rem', color: '#1e293b', fontWeight: 600, lineHeight: 1.5, margin: 0 }}>
-                {aiLang === 'hindi' && aiGymModalDay.day === 2
-                  ? "Swiggy Group Order Feature: Weekday office lunches mein frequency aur AOV badhana hai. Metro tech parks ke 3 distinct user groups identify karein aur 1 line mein batayein Swiggy ko pehle kisse target karna chahiye aur kyun?"
-                  : aiGymModalDay.questionPrompt || aiGymModalDay.challenge
+                {aiLang === 'hindi'
+                  ? (aiGymModalDay.questionPromptHi || aiGymModalDay.challengeHi || aiGymModalDay.questionPrompt)
+                  : (aiGymModalDay.questionPrompt || aiGymModalDay.challenge)
                 }
               </p>
             </div>
 
-            {aiGymModalDay.promptSuggestion && (
+            {(aiGymModalDay.promptSuggestion || aiGymModalDay.promptSuggestionHi) && (
               <div style={{
                 background: 'rgba(2, 122, 155, 0.06)',
                 border: '1px dashed #027A9B',
@@ -6849,15 +6885,15 @@ export default function DashboardPage() {
               }}>
                 <div>
                   <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase' }}>
-                    Suggested AI Prompt to Try
+                    {aiLang === 'hindi' ? 'आज़माने के लिए सुझाई गई AI प्रॉम्प्ट' : 'Suggested AI Prompt to Try'}
                   </div>
                   <div style={{ fontSize: '0.85rem', color: '#0f172a', fontStyle: 'italic', marginTop: '0.2rem' }}>
-                    "{aiGymModalDay.promptSuggestion}"
+                    "{aiLang === 'hindi' ? (aiGymModalDay.promptSuggestionHi || aiGymModalDay.promptSuggestion) : aiGymModalDay.promptSuggestion}"
                   </div>
                 </div>
                 <button
                   type="button"
-                  onClick={() => handleCopyAiPrompt(aiGymModalDay.promptSuggestion, `gym-p-${aiGymModalDay.day}`)}
+                  onClick={() => handleCopyAiPrompt(aiLang === 'hindi' ? (aiGymModalDay.promptSuggestionHi || aiGymModalDay.promptSuggestion) : aiGymModalDay.promptSuggestion, `gym-p-${aiGymModalDay.day}`)}
                   style={{
                     background: '#027A9B',
                     color: '#ffffff',
@@ -6870,19 +6906,22 @@ export default function DashboardPage() {
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  {aiCopiedId === `gym-p-${aiGymModalDay.day}` ? 'Copied ✓' : 'Copy'}
+                  {aiCopiedId === `gym-p-${aiGymModalDay.day}`
+                    ? (aiLang === 'hindi' ? 'कॉपी हो गया ✓' : 'Copied ✓')
+                    : (aiLang === 'hindi' ? 'कॉपी करें' : 'Copy')
+                  }
                 </button>
               </div>
             )}
 
             <div>
               <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.4rem' }}>
-                Your Answer / AI Discovery Notes:
+                {aiLang === 'hindi' ? 'आपका उत्तर / AI के साथ क्या अनुभव रहा:' : 'Your Answer / AI Discovery Notes:'}
               </label>
               <textarea
                 value={aiGymInput}
                 onChange={(e) => setAiGymInput(e.target.value)}
-                placeholder="Share your response or paste what you discovered testing this challenge..."
+                placeholder={aiLang === 'hindi' ? 'अपना उत्तर साझा करें या AI के साथ जो टेस्ट किया वह यहाँ लिखें...' : 'Share your response or paste what you discovered testing this challenge...'}
                 rows={4}
                 style={{
                   width: '100%',
@@ -6914,7 +6953,7 @@ export default function DashboardPage() {
                 cursor: 'pointer',
               }}
             >
-              Cancel
+              {aiLang === 'hindi' ? 'रद्द करें' : 'Cancel'}
             </button>
             <button
               type="button"
@@ -6931,7 +6970,7 @@ export default function DashboardPage() {
                 boxShadow: '0 4px 12px rgba(2, 122, 155, 0.25)',
               }}
             >
-              Submit & Claim +{pointsAwarded} XP
+              {aiLang === 'hindi' ? `उत्तर सबमिट करें (+${pointsAwarded} XP)` : `Submit & Claim +${pointsAwarded} XP`}
             </button>
           </div>
         </div>
@@ -7403,7 +7442,7 @@ export default function DashboardPage() {
                     }}
                   >
                     <SidebarIcon kind={item.icon} />
-                    <span>{item.label}</span>
+                    <span>{isAiCohort && aiLang === 'hindi' ? (item.labelHi || item.label) : item.label}</span>
                   </button>
                 );
               })}
@@ -7433,7 +7472,7 @@ export default function DashboardPage() {
                   <span style={s.navButtonIcon}>
                     <SidebarIcon kind={item.icon} />
                   </span>
-                  {item.label}
+                  {isAiCohort && aiLang === 'hindi' ? (item.labelHi || item.label) : item.label}
                 </button>
               ))}
             </div>
