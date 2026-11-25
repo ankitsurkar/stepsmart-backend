@@ -2632,10 +2632,10 @@ export default function DashboardPage() {
     }
   }, [user]);
   const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.innerWidth < 576 : false
+    typeof window !== 'undefined' ? window.innerWidth < 768 : false
   );
   const [isTablet, setIsTablet] = useState(
-    typeof window !== 'undefined' ? (window.innerWidth >= 576 && window.innerWidth < 980) : false
+    typeof window !== 'undefined' ? (window.innerWidth >= 768 && window.innerWidth < 1024) : false
   );
   const isCompact = isMobile || isTablet;
   const [loading, setLoading] = useState(() => {
@@ -2660,8 +2660,8 @@ export default function DashboardPage() {
   useEffect(() => {
     function handleResize() {
       const w = window.innerWidth;
-      setIsMobile(w < 576);
-      setIsTablet(w >= 576 && w < 980);
+      setIsMobile(w < 768);
+      setIsTablet(w >= 768 && w < 1024);
     }
 
     handleResize();
@@ -3425,21 +3425,21 @@ export default function DashboardPage() {
 
       const totalCells = firstDay + numDays;
       const numRows = Math.ceil(totalCells / 7);
-      const cellHeight = isMobile ? (numRows > 5 ? 13 : 15) : (numRows > 5 ? 16 : 18);
-      const rowGap = isMobile ? '1px' : (numRows > 5 ? '2px' : '4px');
+      const cellHeight = isCompact ? (numRows > 5 ? 13 : 15) : (numRows > 5 ? 16 : 18);
+      const rowGap = isCompact ? '1px' : (numRows > 5 ? '2px' : '4px');
 
       return (
         <div
           style={{
             background: '#ffffff',
             border: '1px solid rgba(20, 49, 86, 0.08)',
-            borderRadius: isMobile ? '16px' : '20px',
-            padding: isMobile ? '0.45rem 0.45rem' : '0.5rem 0.6rem',
+            borderRadius: isCompact ? '16px' : '20px',
+            padding: isCompact ? '0.45rem 0.45rem' : '0.5rem 0.6rem',
             boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            height: isMobile ? '145px' : '170px',
+            height: isCompact ? '150px' : '170px',
             boxSizing: 'border-box',
           }}
         >
@@ -4221,42 +4221,44 @@ export default function DashboardPage() {
         
         {/* PM Gym Banner */}
         <div
+          className="lms-gym-banner"
           style={{
             background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)',
-            borderRadius: isMobile ? '18px' : '24px',
-            padding: isMobile ? '1.15rem 1rem' : '1.25rem 2rem',
+            borderRadius: isCompact ? '18px' : '24px',
+            padding: isCompact ? '1.15rem 1rem' : '1.25rem 2rem',
             color: '#ffffff',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: isMobile ? 'stretch' : 'center',
+            alignItems: isCompact ? 'stretch' : 'center',
             boxShadow: '0 10px 30px rgba(2, 122, 155, 0.15)',
-            flexDirection: isMobile ? 'column' : 'row',
-            gap: isMobile ? '1rem' : '1.25rem',
+            flexDirection: isCompact ? 'column' : 'row',
+            gap: isCompact ? '1rem' : '1.5rem',
             width: '100%',
             boxSizing: 'border-box',
           }}
         >
           <div style={{
             display: 'flex',
-            alignItems: isMobile ? 'flex-start' : 'center',
-            gap: isMobile ? '0.75rem' : '1.5rem',
-            flexDirection: 'row',
+            flexDirection: 'column',
+            gap: '0.65rem',
             textAlign: 'left',
-            flex: 1
+            flex: 1,
+            minWidth: 0,
+            width: '100%',
           }}>
-            <img
-              src={process.env.PUBLIC_URL + '/pm_gym_brain.png'}
-              alt="PM Gym Brain mascot"
-              style={{
-                width: isMobile ? '52px' : '96px',
-                height: isMobile ? '52px' : '96px',
-                objectFit: 'contain',
-                flexShrink: 0,
-              }}
-            />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
-                <h3 style={{ fontSize: isMobile ? '1.25rem' : '1.5rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: isCompact ? '0.75rem' : '1rem' }}>
+              <img
+                src={process.env.PUBLIC_URL + '/pm_gym_brain.png'}
+                alt="PM Gym Brain mascot"
+                style={{
+                  width: isCompact ? '48px' : '72px',
+                  height: isCompact ? '48px' : '72px',
+                  objectFit: 'contain',
+                  flexShrink: 0,
+                }}
+              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <h3 style={{ fontSize: isCompact ? '1.25rem' : '1.5rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
                   {isAiCohort ? (aiLang === 'hindi' ? 'AI Gym' : 'AI Gym') : 'PM Gym'}
                 </h3>
                 {isAiCohort && (
@@ -4269,52 +4271,73 @@ export default function DashboardPage() {
                     borderRadius: '999px',
                     letterSpacing: '0.04em',
                     textTransform: 'uppercase',
+                    whiteSpace: 'nowrap',
                   }}>
                     {aiLang === 'hindi' ? '7-दिवसीय स्ट्रीक चैलेंज • दिन 2 / 7' : '7-Day Streak Challenge • Day 2 of 7'}
                   </span>
                 )}
               </div>
-              <p style={{ fontSize: isMobile ? '0.84rem' : '0.88rem', color: '#e0f2fe', margin: 0, opacity: 0.95, lineHeight: 1.45, maxWidth: '680px' }}>
-                {isAiCohort
-                  ? (aiLang === 'hindi'
-                    ? "[AI माइक्रो-एक्सपेरिमेंट · दिन 2 / 7: बातचीत व लेखन] अपनी किसी मौजूदा राइटिंग (ईमेल, मैसेज या ड्राफ्ट) को AI से सुधारें। AI को देकर टोन, स्पष्टता और संक्षिप्तता सुधारने को कहें। (+20 XP आज)"
-                    : "[AI Micro-Experiment · Day 2 of 7: Communication] Use AI to improve an existing piece of writing. Paste an email, message, or draft into AI and prompt it to polish clarity, brevity, and tone. (+20 XP Today)")
-                  : (isClosedDay
-                    ? 'Closed today for resting. Rest up, or review previous answers!'
-                    : todayQuestion
-                      ? todayQuestion.text
-                      : loading
-                        ? "Loading today's daily challenge..."
-                        : 'No daily question scheduled for today. Check back later!')
-                }
-              </p>
             </div>
+
+            <p
+              className="lms-gym-banner-text"
+              style={{
+                fontSize: isCompact ? '0.88rem' : '0.9rem',
+                color: '#e0f2fe',
+                margin: 0,
+                opacity: 0.95,
+                lineHeight: 1.55,
+                maxWidth: isCompact ? '100%' : '720px',
+                width: '100%',
+                wordBreak: 'normal',
+                overflowWrap: 'break-word',
+              }}
+            >
+              {isAiCohort
+                ? (aiLang === 'hindi'
+                  ? "[AI माइक्रो-एक्सपेरिमेंट · दिन 2 / 7: बातचीत व लेखन] अपनी किसी मौजूदा राइटिंग (ईमेल, मैसेज या ड्राफ्ट) को AI से सुधारें। AI को देकर टोन, स्पष्टता और संक्षिप्तता सुधारने को कहें। (+20 XP आज)"
+                  : "[AI Micro-Experiment · Day 2 of 7: Communication] Use AI to improve an existing piece of writing. Paste an email, message, or draft into AI and prompt it to polish clarity, brevity, and tone. (+20 XP Today)")
+                : (isClosedDay
+                  ? 'Closed today for resting. Rest up, or review previous answers!'
+                  : todayQuestion
+                    ? todayQuestion.text
+                    : loading
+                      ? "Loading today's daily challenge..."
+                      : 'No daily question scheduled for today. Check back later!')
+              }
+            </p>
           </div>
 
-          <div style={{
-            display: 'flex',
-            gap: '0.75rem',
-            alignItems: 'center',
-            width: isCompact ? '100%' : 'auto',
-            justifyContent: isCompact ? 'center' : 'flex-start',
-            flexDirection: isMobile ? 'column' : 'row'
-          }}>
+          <div
+            className="lms-gym-actions"
+            style={{
+              display: 'flex',
+              gap: isCompact ? '0.75rem' : '1.25rem',
+              alignItems: 'center',
+              width: isCompact ? '100%' : 'auto',
+              justifyContent: isCompact ? 'space-between' : 'flex-start',
+              flexDirection: isMobile ? 'column' : isTablet ? 'row' : 'row',
+              flexShrink: 0,
+              boxSizing: 'border-box',
+            }}
+          >
             {isAiCohort ? (
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isMobile ? '100%' : 'auto' }}>
                 {aiGymChallenges.find(c => c.day === 2)?.completed ? (
                   <button
                     type="button"
+                    className="lms-gym-solve-btn"
                     style={{
                       background: 'rgba(255, 255, 255, 0.2)',
                       color: '#ffffff',
                       border: 'none',
                       borderRadius: '999px',
                       padding: '0.8rem 1.5rem',
-                      fontSize: isMobile ? '1rem' : '0.95rem',
+                      fontSize: '0.95rem',
                       fontWeight: 700,
                       cursor: 'not-allowed',
-                      width: isCompact ? '100%' : 'auto',
-                      minWidth: isCompact ? '0' : '180px',
+                      width: isMobile ? '100%' : 'auto',
+                      minWidth: isMobile ? '0' : '180px',
                       minHeight: '44px',
                       boxSizing: 'border-box',
                     }}
@@ -4325,6 +4348,7 @@ export default function DashboardPage() {
                 ) : (
                   <button
                     type="button"
+                    className="lms-gym-solve-btn"
                     onClick={() => {
                       const day2 = aiGymChallenges.find(c => c.day === 2);
                       setAiGymModalDay(day2);
@@ -4335,14 +4359,14 @@ export default function DashboardPage() {
                       border: 'none',
                       borderRadius: '999px',
                       padding: '0.8rem 1.5rem',
-                      fontSize: isMobile ? '1rem' : '0.95rem',
+                      fontSize: '0.95rem',
                       fontWeight: 700,
                       cursor: 'pointer',
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                       transition: 'transform 0.15s ease',
                       whiteSpace: 'nowrap',
-                      width: isCompact ? '100%' : 'auto',
-                      minWidth: isCompact ? '0' : '180px',
+                      width: isMobile ? '100%' : 'auto',
+                      minWidth: isMobile ? '0' : '180px',
                       minHeight: '44px',
                       boxSizing: 'border-box',
                     }}
@@ -4355,20 +4379,21 @@ export default function DashboardPage() {
               </div>
             ) : (!isClosedDay && todayQuestion ? (
               hasSolvedToday ? (
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isMobile ? '100%' : 'auto' }}>
                   <button
                     type="button"
+                    className="lms-gym-solve-btn"
                     style={{
                       background: 'rgba(255, 255, 255, 0.2)',
                       color: '#ffffff',
                       border: 'none',
                       borderRadius: '999px',
                       padding: '0.8rem 1.5rem',
-                      fontSize: isMobile ? '1rem' : '0.95rem',
+                      fontSize: '0.95rem',
                       fontWeight: 700,
                       cursor: 'not-allowed',
-                      width: isCompact ? '100%' : 'auto',
-                      minWidth: isCompact ? '0' : '180px',
+                      width: isMobile ? '100%' : 'auto',
+                      minWidth: isMobile ? '0' : '180px',
                       minHeight: '44px',
                       boxSizing: 'border-box',
                     }}
@@ -4378,9 +4403,10 @@ export default function DashboardPage() {
                   </button>
                 </div>
               ) : (
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isMobile ? '100%' : 'auto' }}>
                   <button
                     type="button"
+                    className="lms-gym-solve-btn"
                     onClick={() => {
                       setTempSelectedOption(undefined);
                       setTempTextAnswer('');
@@ -4393,14 +4419,14 @@ export default function DashboardPage() {
                       border: 'none',
                       borderRadius: '999px',
                       padding: '0.8rem 1.5rem',
-                      fontSize: isMobile ? '1rem' : '0.95rem',
+                      fontSize: '0.95rem',
                       fontWeight: 700,
                       cursor: 'pointer',
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                       transition: 'transform 0.15s ease',
                       whiteSpace: 'nowrap',
-                      width: isCompact ? '100%' : 'auto',
-                      minWidth: isCompact ? '0' : '180px',
+                      width: isMobile ? '100%' : 'auto',
+                      minWidth: isMobile ? '0' : '180px',
                       minHeight: '44px',
                       boxSizing: 'border-box',
                     }}
@@ -4412,154 +4438,158 @@ export default function DashboardPage() {
                 </div>
               )
             ) : (
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isCompact ? '100%' : 'auto' }}>
-                <span style={{
-                  background: 'rgba(255, 255, 255, 0.15)',
-                  color: '#ffffff',
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
-                  borderRadius: '999px',
-                  padding: '0.8rem 1.5rem',
-                  fontSize: isMobile ? '1rem' : '0.95rem',
-                  fontWeight: 700,
-                  whiteSpace: 'nowrap',
-                  display: 'inline-block',
-                  textAlign: 'center',
-                  width: isCompact ? '100%' : 'auto',
-                  minWidth: isCompact ? '0' : '180px',
-                  minHeight: '44px',
-                  boxSizing: 'border-box',
-                }}>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isMobile ? '100%' : 'auto' }}>
+                <span
+                  className="lms-gym-solve-btn"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    color: '#ffffff',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    borderRadius: '999px',
+                    padding: '0.8rem 1.5rem',
+                    fontSize: '0.95rem',
+                    fontWeight: 700,
+                    whiteSpace: 'nowrap',
+                    display: 'inline-block',
+                    textAlign: 'center',
+                    width: isMobile ? '100%' : 'auto',
+                    minWidth: isMobile ? '0' : '180px',
+                    minHeight: '44px',
+                    boxSizing: 'border-box',
+                  }}
+                >
                   {isClosedDay ? 'Closed Today 💤' : 'No Question Active'}
                 </span>
               </div>
             ))}
-          </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', width: isCompact ? '100%' : 'auto', minWidth: isCompact ? '0' : '180px', boxSizing: 'border-box' }}>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe', opacity: 0.9, textAlign: 'center' }}>
-              Weekly Goal
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '0.55rem' : isCompact ? '0.75rem' : '0.35rem', flexWrap: 'nowrap' }}>
-              {isAiCohort ? (
-                ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su'].map((label, idx) => {
-                  const dayNum = idx + 1;
-                  const challenge = aiGymChallenges.find(c => c.day === dayNum);
-                  const isDone = challenge?.completed;
-                  const isTodayDay = dayNum === 2;
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', width: isMobile ? '100%' : 'auto', minWidth: isMobile ? '0' : '180px', boxSizing: 'border-box' }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe', opacity: 0.9, textAlign: 'center' }}>
+                Weekly Goal
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: isCompact ? '0.55rem' : '0.35rem', flexWrap: 'nowrap' }}>
+                {isAiCohort ? (
+                  ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su'].map((label, idx) => {
+                    const dayNum = idx + 1;
+                    const challenge = aiGymChallenges.find(c => c.day === dayNum);
+                    const isDone = challenge?.completed;
+                    const isTodayDay = dayNum === 2;
 
-                  return (
-                    <button
-                      key={dayNum}
-                      type="button"
-                      onClick={() => {
-                        if (challenge) setAiGymModalDay(challenge);
-                      }}
-                      title={`Day ${dayNum}: ${challenge?.challenge || ''}`}
-                      style={{
-                        width: isMobile ? '28px' : '26px',
-                        height: isMobile ? '28px' : '26px',
-                        borderRadius: '50%',
-                        background: isDone ? '#ffffff' : isTodayDay ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.3)',
-                        color: isDone || isTodayDay ? '#027A9B' : '#ffffff',
-                        fontSize: isMobile ? '0.72rem' : '0.7rem',
-                        fontWeight: 800,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        border: isTodayDay ? '2px solid #ffffff' : 'none',
-                        padding: 0,
-                        outline: 'none',
-                        transition: 'all 0.15s ease',
-                      }}
-                    >
-                      {isDone ? '✓' : label}
-                    </button>
-                  );
-                })
-              ) : (
-                <Tooltip.Provider delayDuration={150}>
-                  {weeklyGoalDays.map((day, idx) => {
-                    const isPast = !day.isToday && !day.isFuture;
                     return (
-                      <Tooltip.Root key={idx}>
-                        <Tooltip.Trigger asChild>
-                          <button
-                            onClick={() => {
-                              if (isPast && day.question) {
-                                setSelectedGymDetailDay(day);
-                              }
-                            }}
-                            style={{
-                            width: isMobile ? '28px' : '24px',
-                            height: isMobile ? '28px' : '24px',
-                            borderRadius: '50%',
-                            background: day.active
-                              ? '#ffffff'
-                              : day.isFuture
-                                ? 'rgba(255, 255, 255, 0.2)'
-                                : 'rgba(255, 255, 255, 0.4)',
-                            color: day.active ? '#027A9B' : '#ffffff',
-                            fontSize: isMobile ? '0.72rem' : '0.7rem',
-                            fontWeight: 700,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            border: 'none',
-                            padding: 0,
-                            outline: 'none',
-                            transition: 'all 0.15s ease',
-                          }}
-                        >
-                          {day.active ? '✓' : day.label}
-                        </button>
-                      </Tooltip.Trigger>
-                      
-                      <Tooltip.Portal>
-                        <Tooltip.Content
-                          side="top"
-                          align="center"
-                          sideOffset={8}
-                          avoidCollisions={true}
-                          collisionPadding={12}
-                          style={{
-                            width: '240px',
-                            background: '#ffffff',
-                            borderRadius: '16px',
-                            padding: '1rem',
-                            boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-                            border: '1px solid rgba(2,122,155,0.15)',
-                            color: '#0f172a',
-                            zIndex: 9999,
-                            textAlign: 'left',
-                          }}
-                        >
-                          {renderWeeklyGoalTooltipContent(day)}
-                          <Tooltip.Arrow style={{ fill: '#ffffff' }} />
-                        </Tooltip.Content>
-                      </Tooltip.Portal>
-                    </Tooltip.Root>
+                      <button
+                        key={dayNum}
+                        type="button"
+                        onClick={() => {
+                          if (challenge) setAiGymModalDay(challenge);
+                        }}
+                        title={`Day ${dayNum}: ${challenge?.challenge || ''}`}
+                        style={{
+                          width: '28px',
+                          height: '28px',
+                          borderRadius: '50%',
+                          background: isDone ? '#ffffff' : isTodayDay ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.3)',
+                          color: isDone || isTodayDay ? '#027A9B' : '#ffffff',
+                          fontSize: '0.72rem',
+                          fontWeight: 800,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          border: isTodayDay ? '2px solid #ffffff' : 'none',
+                          padding: 0,
+                          outline: 'none',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        {isDone ? '✓' : label}
+                      </button>
                     );
-                  })}
-                </Tooltip.Provider>
-              )}
-            </div>
-            <div style={{ height: '4px', background: 'rgba(255, 255, 255, 0.25)', borderRadius: '999px', overflow: 'hidden', marginTop: '0.2rem' }}>
-              <div style={{
-                height: '100%',
-                background: '#ffffff',
-                width: isAiCohort
-                  ? `${(aiGymChallenges.filter(c => c.completed).length / 7) * 100}%`
-                  : `${(weeklyGoalDays.filter(d => d.active).length / 4) * 100}%`,
-                transition: 'width 0.3s ease'
-              }} />
+                  })
+                ) : (
+                  <Tooltip.Provider delayDuration={150}>
+                    {weeklyGoalDays.map((day, idx) => {
+                      const isPast = !day.isToday && !day.isFuture;
+                      return (
+                        <Tooltip.Root key={idx}>
+                          <Tooltip.Trigger asChild>
+                            <button
+                              onClick={() => {
+                                if (isPast && day.question) {
+                                  setSelectedGymDetailDay(day);
+                                }
+                              }}
+                              style={{
+                              width: '28px',
+                              height: '28px',
+                              borderRadius: '50%',
+                              background: day.active
+                                ? '#ffffff'
+                                : day.isFuture
+                                  ? 'rgba(255, 255, 255, 0.2)'
+                                  : 'rgba(255, 255, 255, 0.4)',
+                              color: day.active ? '#027A9B' : '#ffffff',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              border: 'none',
+                              padding: 0,
+                              outline: 'none',
+                              transition: 'all 0.15s ease',
+                            }}
+                          >
+                            {day.active ? '✓' : day.label}
+                          </button>
+                        </Tooltip.Trigger>
+                        
+                        <Tooltip.Portal>
+                          <Tooltip.Content
+                            side="top"
+                            align="center"
+                            sideOffset={8}
+                            avoidCollisions={true}
+                            collisionPadding={12}
+                            style={{
+                              width: '240px',
+                              background: '#ffffff',
+                              borderRadius: '16px',
+                              padding: '1rem',
+                              boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                              border: '1px solid rgba(2,122,155,0.15)',
+                              color: '#0f172a',
+                              zIndex: 9999,
+                              textAlign: 'left',
+                            }}
+                          >
+                            {renderWeeklyGoalTooltipContent(day)}
+                            <Tooltip.Arrow style={{ fill: '#ffffff' }} />
+                          </Tooltip.Content>
+                        </Tooltip.Portal>
+                      </Tooltip.Root>
+                      );
+                    })}
+                  </Tooltip.Provider>
+                )}
+              </div>
+              <div style={{ height: '4px', background: 'rgba(255, 255, 255, 0.25)', borderRadius: '999px', overflow: 'hidden', marginTop: '0.2rem' }}>
+                <div style={{
+                  height: '100%',
+                  background: '#ffffff',
+                  width: isAiCohort
+                    ? `${(aiGymChallenges.filter(c => c.completed).length / 7) * 100}%`
+                    : `${(weeklyGoalDays.filter(d => d.active).length / 4) * 100}%`,
+                  transition: 'width 0.3s ease'
+                }} />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Hero Section */}
         <div
+          className="lms-dashboard-hero"
           style={{
             ...s.dashboardHero,
             gridTemplateColumns: isCompact ? '1fr' : s.dashboardHero.gridTemplateColumns,
@@ -4567,10 +4597,11 @@ export default function DashboardPage() {
         >
           <div style={s.dashboardLeft}>
             <div
+              className="lms-metric-cards-grid"
               style={{
                 ...s.metricCards,
-                gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : isTablet ? 'repeat(2, 1fr)' : 'repeat(4, minmax(0, 1fr))',
-                gap: isMobile ? '0.75rem' : '1.25rem',
+                gridTemplateColumns: isCompact ? 'repeat(2, 1fr)' : 'repeat(4, minmax(0, 1fr))',
+                gap: isCompact ? '0.75rem' : '1.25rem',
               }}
             >
               {/* Redesigned Card 1: Lessons */}
@@ -4578,27 +4609,27 @@ export default function DashboardPage() {
                 style={{
                   background: '#ffffff',
                   border: '1px solid rgba(20, 49, 86, 0.08)',
-                  borderRadius: isMobile ? '16px' : '20px',
-                  padding: isMobile ? '0.85rem 0.9rem' : '1.25rem',
+                  borderRadius: isCompact ? '16px' : '20px',
+                  padding: isCompact ? '0.85rem 0.9rem' : '1.25rem',
                   boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  height: isMobile ? '145px' : '170px',
+                  height: isCompact ? '150px' : '170px',
                   boxSizing: 'border-box',
                 }}
               >
                 <div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.8rem' : '0.875rem', fontWeight: 500, marginBottom: '0.35rem' }}>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isCompact ? '0.8rem' : '0.875rem', fontWeight: 500, marginBottom: '0.35rem' }}>
                     Lessons
                   </div>
-                  <div style={{ fontSize: isMobile ? '1.4rem' : '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: isMobile ? '0.35rem' : '0.75rem', display: 'flex', alignItems: 'baseline' }}>
+                  <div style={{ fontSize: isCompact ? '1.4rem' : '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: isCompact ? '0.35rem' : '0.75rem', display: 'flex', alignItems: 'baseline' }}>
                     <span>{isAiCohort ? '1' : completedCount}</span>
-                    <span style={{ fontSize: isMobile ? '1.05rem' : '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{isAiCohort ? '1' : lessonsWeeks.length}</span>
+                    <span style={{ fontSize: isCompact ? '1.05rem' : '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{isAiCohort ? '1' : lessonsWeeks.length}</span>
                   </div>
                 </div>
                 <div>
-                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: isMobile ? '0.45rem' : '0.75rem' }}>
+                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: isCompact ? '0.45rem' : '0.75rem' }}>
                     <div style={{
                       height: '100%',
                       borderRadius: '999px',
@@ -4607,7 +4638,7 @@ export default function DashboardPage() {
                       transition: 'width 0.3s ease'
                     }} />
                   </div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.75rem' : '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isCompact ? '0.75rem' : '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7, flexShrink: 0 }}>
                       <circle cx="12" cy="12" r="10" />
                       <polyline points="12 6 12 12 16 14" />
@@ -4622,27 +4653,27 @@ export default function DashboardPage() {
                 style={{
                   background: '#ffffff',
                   border: '1px solid rgba(20, 49, 86, 0.08)',
-                  borderRadius: isMobile ? '16px' : '20px',
-                  padding: isMobile ? '0.85rem 0.9rem' : '1.25rem',
+                  borderRadius: isCompact ? '16px' : '20px',
+                  padding: isCompact ? '0.85rem 0.9rem' : '1.25rem',
                   boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  height: isMobile ? '145px' : '170px',
+                  height: isCompact ? '150px' : '170px',
                   boxSizing: 'border-box',
                 }}
               >
                 <div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.8rem' : '0.875rem', fontWeight: 500, marginBottom: '0.35rem' }}>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isCompact ? '0.8rem' : '0.875rem', fontWeight: 500, marginBottom: '0.35rem' }}>
                     Assignments
                   </div>
-                  <div style={{ fontSize: isMobile ? '1.4rem' : '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: isMobile ? '0.35rem' : '0.75rem', display: 'flex', alignItems: 'baseline' }}>
+                  <div style={{ fontSize: isCompact ? '1.4rem' : '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: isCompact ? '0.35rem' : '0.75rem', display: 'flex', alignItems: 'baseline' }}>
                     <span>{isAiCohort ? (journalSubmitted ? '1' : '0') : assignmentsSubmittedCount}</span>
-                    <span style={{ fontSize: isMobile ? '1.05rem' : '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{isAiCohort ? '1' : assignmentsTotal}</span>
+                    <span style={{ fontSize: isCompact ? '1.05rem' : '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{isAiCohort ? '1' : assignmentsTotal}</span>
                   </div>
                 </div>
                 <div>
-                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: isMobile ? '0.45rem' : '0.75rem' }}>
+                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: isCompact ? '0.45rem' : '0.75rem' }}>
                     <div style={{
                       height: '100%',
                       borderRadius: '999px',
@@ -4653,7 +4684,7 @@ export default function DashboardPage() {
                       transition: 'width 0.3s ease'
                     }} />
                   </div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.75rem' : '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isCompact ? '0.75rem' : '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7, flexShrink: 0 }}>
                       <circle cx="12" cy="12" r="10" />
                       <line x1="12" y1="8" x2="12" y2="12" />
@@ -4669,21 +4700,21 @@ export default function DashboardPage() {
                 style={{
                   background: '#ffffff',
                   border: '1px solid rgba(20, 49, 86, 0.08)',
-                  borderRadius: isMobile ? '16px' : '20px',
-                  padding: isMobile ? '0.85rem 0.9rem' : '1.25rem',
+                  borderRadius: isCompact ? '16px' : '20px',
+                  padding: isCompact ? '0.85rem 0.9rem' : '1.25rem',
                   boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  height: isMobile ? '145px' : '170px',
+                  height: isCompact ? '150px' : '170px',
                   boxSizing: 'border-box',
                 }}
               >
                 <div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.8rem' : '0.875rem', fontWeight: 500, marginBottom: '0.35rem' }}>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isCompact ? '0.8rem' : '0.875rem', fontWeight: 500, marginBottom: '0.35rem' }}>
                     Streak
                   </div>
-                  <div style={{ fontSize: isMobile ? '1.4rem' : '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: isMobile ? '0.35rem' : '0.75rem' }}>
+                  <div style={{ fontSize: isCompact ? '1.4rem' : '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: isCompact ? '0.35rem' : '0.75rem' }}>
                     {isAiCohort
                       ? `${aiGymChallenges.filter(c => c.completed).length} ${aiGymChallenges.filter(c => c.completed).length === 1 ? 'day' : 'days'}`
                       : `${((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak)} ${((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak) === 1 ? 'day' : 'days'}`
@@ -4691,7 +4722,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.75rem' : '0.8125rem' }}>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isCompact ? '0.75rem' : '0.8125rem' }}>
                     Total: {isAiCohort ? aiGymChallenges.filter(c => c.completed).length : gymProgress.length} {(isAiCohort ? aiGymChallenges.filter(c => c.completed).length : gymProgress.length) === 1 ? 'day' : 'days'}
                   </div>
                 </div>
@@ -7100,9 +7131,9 @@ export default function DashboardPage() {
     const isSidebarAdmin = user && (user.isAdmin || user.username === 'admin');
     return (
       <div style={s.page}>
-        <div style={shellStyle}>
+        <div className="lms-dashboard-shell" style={shellStyle}>
           {isCompact ? (
-            <header style={{
+            <header className="lms-mobile-header" style={{
               position: 'sticky',
               top: 0,
               zIndex: 1000,
@@ -7179,7 +7210,7 @@ export default function DashboardPage() {
               </div>
             </header>
           ) : (
-            <aside style={sidebarStyle}>
+            <aside className="lms-desktop-sidebar" style={sidebarStyle}>
               <div style={s.sidebarGlow} />
 
               <div style={s.brand}>
@@ -7223,7 +7254,7 @@ export default function DashboardPage() {
             </aside>
           )}
 
-          <main style={mainStyle}>
+          <main className="lms-dashboard-main" style={mainStyle}>
             <div style={s.header}>
               <div>
                 <div style={s.headerEyebrow}>{viewEyebrow}</div>
@@ -7415,9 +7446,9 @@ export default function DashboardPage() {
 
   return (
     <div style={s.page}>
-      <div style={shellStyle}>
+      <div className="lms-dashboard-shell" style={shellStyle}>
         {isCompact ? (
-          <header style={{
+          <header className="lms-mobile-header" style={{
             position: 'sticky',
             top: 0,
             zIndex: 1000,
@@ -7499,7 +7530,7 @@ export default function DashboardPage() {
             </div>
           </header>
         ) : (
-          <aside style={sidebarStyle}>
+          <aside className="lms-desktop-sidebar" style={sidebarStyle}>
             <div style={s.sidebarGlow} />
 
             <div style={s.brand}>
@@ -7542,7 +7573,7 @@ export default function DashboardPage() {
           </aside>
         )}
 
-        <main style={mainStyle}>
+        <main className="lms-dashboard-main" style={mainStyle}>
           <div style={s.header}>
             <div>
               <div style={s.headerEyebrow}>{viewEyebrow}</div>
