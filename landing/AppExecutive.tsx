@@ -185,14 +185,6 @@ export function AppExecutive() {
               <span>Which PM Are You?</span>
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
             </Link>
-            <Link
-              to="/ai-lms"
-              className="flex items-center gap-1.5 bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#027A9B] px-3 py-1 rounded-full border-2 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all font-black text-xs uppercase"
-            >
-              <span>🤖</span>
-              <span>AI LMS</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            </Link>
             <button onClick={() => scrollToSection('system')} className="hover:text-[#188ab2] transition-colors cursor-pointer font-extrabold">
               Cohort
             </button>
@@ -251,19 +243,6 @@ export function AppExecutive() {
               </span>
               <span className="text-[10px] font-mono font-black uppercase bg-[#6B21A8] text-white px-2 py-0.5 rounded-full border border-[#141413]">
                 Teaser
-              </span>
-            </Link>
-            <Link
-              to="/ai-lms"
-              onClick={() => setIsMenuOpen(false)}
-              className="text-left font-black text-lg py-2.5 px-3 rounded-xl border-2 border-[#141413] bg-[#EFF6FF] shadow-[2px_2px_0px_0px_#141413] flex items-center justify-between text-[#027A9B]"
-            >
-              <span className="flex items-center gap-2">
-                <span className="text-xl">🤖</span>
-                <span>AI Seekho, AI Apnao (AI LMS)</span>
-              </span>
-              <span className="text-[10px] font-mono font-black uppercase bg-[#027A9B] text-white px-2 py-0.5 rounded-full border border-[#141413]">
-                New
               </span>
             </Link>
             <button onClick={() => scrollToSection('system')} className="text-left font-black text-lg py-2 border-b-2 border-[#141413]/10">
