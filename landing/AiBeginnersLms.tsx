@@ -655,73 +655,73 @@ const TODAY_GYM_DAY = 2; // Nov 24, 2026 - Day 2 active today
 const INITIAL_GYM_CHALLENGES: GymChallengeDay[] = [
   {
     day: 1,
-    caseStudyTitle: "Case Study: AI Personal Learning Companion",
+    caseStudyTitle: "Micro-Experiment 1: AI as Personal Learning Companion",
     challenge: "Ask AI to explain something you don't understand",
-    questionPrompt: "Ask AI to explain a complex topic using an everyday life analogy (e.g. explain how APIs or neural networks work like a restaurant order). Evaluate whether the explanation clarified the concept or oversimplified it.",
+    questionPrompt: "Pick a complex or confusing concept you encounter in work, studies, or daily life. Ask AI to explain it step-by-step using a real-world analogy. Evaluate whether the explanation clarified the concept or oversimplified it.",
     newExperience: "Learning",
     category: "Concept Breakdown",
-    promptSuggestion: "Mujhe [Topic] bilkul basic level se school teacher ki tarah step-by-step samjhao.",
+    promptSuggestion: "Explain [Topic/Concept] to me like I am 12 years old using a simple real-life analogy. Break it into 3 clear bullet points.",
     completed: true,
     scoreAwarded: 20
   },
   {
     day: 2,
-    caseStudyTitle: "Case Study: Design a Group Food Ordering Experience for Swiggy",
-    challenge: "Segment potential group ordering market & state target for MVP",
-    questionPrompt: "Assume the primary goal is driving weekday lunch frequency and AOV in metro tech parks. Segment the potential group ordering market into 3 distinct user groups, and state in ONE sentence which group Swiggy should target for the MVP and why.",
-    newExperience: "Communication & Strategy",
-    category: "Market Segmentation",
-    promptSuggestion: "Assume metro tech park context. Segment Swiggy group lunch ordering into 3 distinct user cohorts with clear pain points, and define the single MVP target persona.",
+    caseStudyTitle: "Micro-Experiment 2: AI as Communication & Tone Editor",
+    challenge: "Use AI to improve an existing piece of writing",
+    questionPrompt: "Take an email, a message, or a proposal draft you recently wrote. Ask AI to polish it for clarity, brevity, and tone (e.g. concise, professional, or persuasive). Note the improvements.",
+    newExperience: "Communication",
+    category: "Writing Refinement",
+    promptSuggestion: "Here is a rough message draft: '[Paste your draft here]'. Rewrite it in 2 distinct tones: 1) Short & direct for Slack/WhatsApp, 2) Polished & respectful for an official email.",
     completed: false
   },
   {
     day: 3,
-    caseStudyTitle: "Case Study: Executive Communication Polish & Tone Calibration",
-    challenge: "Use AI to improve an existing piece of writing",
-    questionPrompt: "Take an unstructured or aggressive email draft. Prompt AI to create 3 variations: Executive Summary for C-Suite, Collaborative Slack for peers, and Direct Action Items for vendors. Evaluate which format delivers maximum clarity.",
-    newExperience: "Communication",
-    category: "Tone Polish",
-    promptSuggestion: "Mera ye draft message padho aur ise 3 distinct professional tones mein rewrite karo.",
+    caseStudyTitle: "Micro-Experiment 3: AI as Planning & Scheduling Assistant",
+    challenge: "Give AI a real planning problem",
+    questionPrompt: "Give AI a realistic scheduling or organizational dilemma (e.g. 5 competing tasks across 2 days with limited time). Ask it to generate a time-blocked priority plan with buffer blocks.",
+    newExperience: "Organization",
+    category: "Time Blocking",
+    promptSuggestion: "I have these 5 tasks to finish by Friday with limited hours: [List tasks]. Create a prioritized, time-blocked action plan considering high-impact vs low-effort.",
     completed: false
   },
   {
     day: 4,
-    caseStudyTitle: "Case Study: Real-World Time Blocking & Constraint Optimization",
-    challenge: "Give AI a real planning problem with conflicting priorities",
-    questionPrompt: "Provide AI with a real-life list of 6 conflicting weekly tasks (office deadlines, skill development, health, family commitments). Demand a realistic schedule with 20% buffer blocks and explain the tradeoff logic.",
-    newExperience: "Organization",
-    category: "Schedule & Buffers",
-    promptSuggestion: "Mera agla hafta kaafi busy hai. Mere in 6 tasks ke liye realistic buffer time ke saath schedule banao.",
+    caseStudyTitle: "Micro-Experiment 4: Document Intelligence & Extraction",
+    challenge: "Ask AI to analyze a sample document",
+    questionPrompt: "Paste an article excerpt, policy document, or meeting notes into AI. Prompt AI to extract key takeaways, potential risks, and action items in under 150 words.",
+    newExperience: "Information extraction",
+    category: "Document Parsing",
+    promptSuggestion: "Summarize the key decisions, actionable next steps, and potential blindspots from this text in under 150 words: [Paste text].",
     completed: false
   },
   {
     day: 5,
-    caseStudyTitle: "Case Study: Document Extraction & Risk Discovery",
-    challenge: "Ask AI to analyze a sample document & extract risks",
-    questionPrompt: "Upload or paste a sample service agreement or PRD. Prompt AI to extract only ambiguities, service level commitments (SLAs), and non-obvious operational risks into a tabular summary.",
-    newExperience: "Information extraction",
-    category: "Document Parsing",
-    promptSuggestion: "Is sample document ya contract ka 3 clear bullet points mein summary do aur key risks highlight karo.",
+    caseStudyTitle: "Micro-Experiment 5: Structured Decision Matrix & Trade-offs",
+    challenge: "Compare two alternatives using AI",
+    questionPrompt: "Frame a real decision between two options (e.g. two tools, two career paths, or two product approaches). Ask AI to build a structured comparison matrix of pros, cons, and hidden trade-offs.",
+    newExperience: "Decision-making",
+    category: "Tradeoff Analysis",
+    promptSuggestion: "Help me decide between Option A: [Option 1] and Option B: [Option 2]. Compare them on cost, effort, risk, and long-term value in a table format.",
     completed: false
   },
   {
     day: 6,
-    caseStudyTitle: "Case Study: Multi-Criteria Competitive Analysis",
-    challenge: "Compare two alternatives using AI with scoring",
-    questionPrompt: "Ask AI to compare two competing product approaches (e.g. In-house AI model fine-tuning vs Third-party API orchestration). Generate a decision matrix scoring cost, latency, data privacy, and engineering overhead.",
-    newExperience: "Decision-making",
-    category: "Tradeoff Analysis",
-    promptSuggestion: "Option A aur Option B ke pros, cons aur long-term tradeoffs compare karke recommendation matrix banao.",
+    caseStudyTitle: "Micro-Experiment 6: Verification & Hallucination Spotting",
+    challenge: "Challenge an AI answer and verify it",
+    questionPrompt: "Ask AI a question on a topic where you already know the facts or nuances. Probe its answer, push back with a counter-argument, and check whether it hallucinates or adjusts its logic.",
+    newExperience: "Critical thinking",
+    category: "Fact Checking",
+    promptSuggestion: "You claimed [Statement]. Can you cite the verified source or rationale behind this? What are the strongest counter-arguments against your point?",
     completed: false
   },
   {
     day: 7,
-    caseStudyTitle: "Case Study: Hallucination Interrogation & Output Auditing",
-    challenge: "Challenge an AI answer, verify it and document findings",
-    questionPrompt: "Ask AI a question with subtle misleading premises or niche trivia. Stress-test its output, demand citations, and document how you verified the accuracy of its reasoning.",
-    newExperience: "Critical thinking",
-    category: "Fact Checking",
-    promptSuggestion: "Kya ye fact bilkul accurate hai? Iska source ya reasoning step-by-step verify karke batao.",
+    caseStudyTitle: "Micro-Experiment 7: Iteration & Solution Refinement",
+    challenge: "Improve one solution you created in class",
+    questionPrompt: "Take an artifact or prompt you created during Module 0 (or in earlier gym days) and run a 2nd iteration with deeper constraints, edge cases, and persona context to make it 2x better.",
+    newExperience: "Iteration",
+    category: "Continuous Refinement",
+    promptSuggestion: "Here is my previous prompt and output: [Paste]. Help me elevate this to level 2: add edge case handling, role constraints, and output formatting.",
     completed: false
   }
 ];
@@ -2355,13 +2355,13 @@ export default function AiBeginnersLms({ standaloneDeck = false }: AiBeginnersLm
                 />
                 <div>
                   <h2 style={{ fontSize: '1.45rem', fontWeight: 800, margin: '0 0 0.2rem 0', color: '#ffffff', letterSpacing: '-0.01em' }}>
-                    PM Gym
+                    AI Gym
                   </h2>
                   <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#e0f2fe', marginBottom: '0.35rem' }}>
-                    [Case Study: Design a Group Food Ordering Experience for Swiggy · Day 2 of 7]
+                    [AI Micro-Experiment · Day 2 of 7: Communication]
                   </div>
                   <p style={{ fontSize: '0.82rem', color: '#f0fdfa', margin: 0, lineHeight: 1.45, opacity: 0.95, maxWidth: '640px' }}>
-                    Assume the primary goal is driving weekday lunch frequency and AOV in metro tech parks. Segment the potential group ordering market into 3 distinct user groups, and state in ONE sentence which group Swiggy should target for the MVP and why.
+                    Use AI to improve an existing piece of writing. Paste an email, message, or draft into AI and prompt it to polish clarity, brevity, and tone. (+20 XP Today)
                   </p>
                 </div>
               </div>
@@ -2582,48 +2582,17 @@ export default function AiBeginnersLms({ standaloneDeck = false }: AiBeginnersLm
                   Track your performance against the cohort.
                 </p>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-                  {LEADERBOARD_PEERS.map((peer) => (
-                    <div
-                      key={peer.rank}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '0.4rem 0',
-                        borderBottom: peer.rank < 6 ? '1px solid #f1f5f9' : 'none'
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <div style={{
-                          width: '38px',
-                          height: '38px',
-                          borderRadius: '50%',
-                          background: peer.bg,
-                          color: peer.color,
-                          fontWeight: 800,
-                          fontSize: '0.82rem',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}>
-                          {peer.initials}
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '0.86rem', fontWeight: 700, color: '#0f172a' }}>
-                            {peer.name}
-                          </div>
-                          <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
-                            {peer.pts} pts
-                          </div>
-                        </div>
-                      </div>
-
-                      <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>
-                        {peer.rank}
-                      </div>
-                    </div>
-                  ))}
+                <div style={{
+                  padding: '2rem 1rem',
+                  textAlign: 'center',
+                  color: '#64748b',
+                  fontSize: '0.86rem',
+                  lineHeight: 1.5,
+                  background: '#f8fafc',
+                  borderRadius: '12px',
+                  border: '1px dashed #cbd5e1'
+                }}>
+                  Leaderboard points will appear after lessons and assignments are completed.
                 </div>
               </div>
 

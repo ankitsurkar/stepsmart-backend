@@ -19,7 +19,6 @@ import {
   TODAY_GYM_DAY,
   INITIAL_GYM_CHALLENGES,
   MODULE_0_DRAWER_ITEMS,
-  LEADERBOARD_PEERS,
   WEEKLY_REMINDERS,
   getSlideBullets,
   AI_PROMPT_LIBRARY
@@ -2503,7 +2502,7 @@ export default function DashboardPage() {
   const [aiMode, setAiMode] = useState('learner');
   const [aiGymChallenges, setAiGymChallenges] = useState(() => {
     try {
-      const saved = localStorage.getItem('stepsmart_ai_gym_challenges_v1');
+      const saved = localStorage.getItem('stepsmart_ai_gym_challenges_v2');
       return saved ? JSON.parse(saved) : INITIAL_GYM_CHALLENGES;
     } catch {
       return INITIAL_GYM_CHALLENGES;
@@ -2543,7 +2542,7 @@ export default function DashboardPage() {
       c.day === aiGymModalDay.day ? { ...c, completed: true, scoreAwarded: pointsAwarded } : c
     );
     setAiGymChallenges(updated);
-    localStorage.setItem('stepsmart_ai_gym_challenges_v1', JSON.stringify(updated));
+    localStorage.setItem('stepsmart_ai_gym_challenges_v2', JSON.stringify(updated));
 
     if (isToday) {
       toast.success(`🎉 Day ${aiGymModalDay.day} Completed! Full +${pointsAwarded} XP awarded for today's drill!`);
@@ -4261,8 +4260,8 @@ export default function DashboardPage() {
               <p style={{ fontSize: '0.88rem', color: '#e0f2fe', margin: 0, opacity: 0.95, lineHeight: 1.45, maxWidth: '680px' }}>
                 {isAiCohort
                   ? (aiLang === 'hindi'
-                    ? "Swiggy Group Order Feature: Weekday office lunches mein frequency aur AOV badhana hai. Metro tech parks ke 3 distinct user groups identify karein aur 1 line mein batayein Swiggy ko pehle kisse target karna chahiye aur kyun?"
-                    : "[Case Study: Design a Group Food Ordering Experience for Swiggy · Day 2 of 7] Assume the primary goal is driving weekday lunch frequency and AOV in metro tech parks. Segment the potential group ordering market into 3 distinct user groups, and state in ONE sentence which group Swiggy should target for the MVP and why.")
+                    ? "[AI Micro-Experiment · Day 2 of 7: Communication] Apni kisi existing writing (email, message ya draft) ko AI se refine karwayein. AI se tone, clarity aur conciseness improve karne ko kahein. (+20 XP Today)"
+                    : "[AI Micro-Experiment · Day 2 of 7: Communication] Use AI to improve an existing piece of writing. Paste an email, message, or draft into AI and prompt it to polish clarity, brevity, and tone. (+20 XP Today)")
                   : (isClosedDay
                     ? 'Closed today for resting. Rest up, or review previous answers!'
                     : todayQuestion
@@ -4753,62 +4752,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {isAiCohort ? (
-            <div style={{
-              ...s.dashboardRight,
-              width: isCompact ? '100%' : '320px',
-              flexShrink: 0,
-            }}>
-              <div style={s.railHeaderTitle}>Top Peers</div>
-              <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', marginTop: '0.75rem' }}>
-                {LEADERBOARD_PEERS.map((peer, idx) => (
-                  <div
-                    key={peer.id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '0.65rem 0.85rem',
-                      borderRadius: '12px',
-                      background: '#ffffff',
-                      border: '1px solid rgba(20, 49, 86, 0.08)',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                      <div
-                        style={{
-                          width: '32px',
-                          height: '32px',
-                          borderRadius: '50%',
-                          background: peer.color || '#e0f2fe',
-                          color: '#0f172a',
-                          fontWeight: 700,
-                          fontSize: '0.75rem',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        {peer.avatar}
-                      </div>
-                      <div>
-                        <div style={{ fontSize: '0.84rem', fontWeight: 700, color: '#0f172a' }}>
-                          {peer.name}
-                        </div>
-                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
-                          {peer.points} pts
-                        </div>
-                      </div>
-                    </div>
-                    <div style={{ fontSize: '1rem', fontWeight: 800, color: idx < 3 ? '#027A9B' : '#94a3b8' }}>
-                      {idx + 1}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : topLeaderboard.length === 0 ? (
+          {(isAiCohort || topLeaderboard.length === 0) ? (
             <div style={{
               ...s.dashboardRight,
               width: isCompact ? '100%' : '320px',
