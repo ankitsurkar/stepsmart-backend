@@ -3181,6 +3181,12 @@ export default function DashboardPage() {
     overflowY: isCompact ? 'visible' : 'auto',
   };
 
+  const mainStyle = {
+    ...s.main,
+    padding: isMobile ? '1rem 0.75rem 3.5rem 0.75rem' : isTablet ? '1.5rem 1.25rem 2.5rem 1.25rem' : '2rem',
+    gap: isMobile ? '1rem' : '1.5rem',
+  };
+
   function renderDashboardView() {
     const assignmentsTotal = courseAssignments.length;
     const courseScore = myLeaderboardEntry?.totalPoints || 0;
@@ -3419,21 +3425,21 @@ export default function DashboardPage() {
 
       const totalCells = firstDay + numDays;
       const numRows = Math.ceil(totalCells / 7);
-      const cellHeight = numRows > 5 ? 16 : 18;
-      const rowGap = numRows > 5 ? '2px' : '4px';
+      const cellHeight = isMobile ? (numRows > 5 ? 13 : 15) : (numRows > 5 ? 16 : 18);
+      const rowGap = isMobile ? '1px' : (numRows > 5 ? '2px' : '4px');
 
       return (
         <div
           style={{
             background: '#ffffff',
             border: '1px solid rgba(20, 49, 86, 0.08)',
-            borderRadius: '20px',
-            padding: '0.5rem 0.6rem',
+            borderRadius: isMobile ? '16px' : '20px',
+            padding: isMobile ? '0.45rem 0.45rem' : '0.5rem 0.6rem',
             boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            height: '170px',
+            height: isMobile ? '145px' : '170px',
             boxSizing: 'border-box',
           }}
         >
@@ -3520,16 +3526,16 @@ export default function DashboardPage() {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 99999,
-        padding: '1rem',
+        padding: isMobile ? '0.5rem' : '1rem',
         boxSizing: 'border-box',
       };
       const modalContentStyle = {
         background: '#ffffff',
-        borderRadius: '24px',
-        padding: '1.75rem',
+        borderRadius: isMobile ? '20px' : '24px',
+        padding: isMobile ? '1.15rem 0.9rem' : '1.75rem',
         width: '100%',
         maxWidth: '560px',
-        maxHeight: 'min(90vh, 760px)',
+        maxHeight: isMobile ? '92vh' : 'min(90vh, 760px)',
         boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
         boxSizing: 'border-box',
         display: 'flex',
@@ -3771,7 +3777,7 @@ export default function DashboardPage() {
                     <div>
                       <label style={s.label}>Your Response</label>
                       <textarea
-                        style={{ ...s.textarea, minHeight: '120px' }}
+                        style={{ ...s.textarea, fontSize: '16px', minHeight: isMobile ? '110px' : '120px' }}
                         value={tempTextAnswer}
                         onChange={(e) => setTempTextAnswer(e.target.value)}
                         placeholder="Write your answer details here..."
@@ -3785,6 +3791,7 @@ export default function DashboardPage() {
                     disabled={isQuiz ? tempSelectedOption === undefined : !tempTextAnswer.trim()}
                     style={{
                       width: '100%',
+                      minHeight: '44px',
                       padding: '0.85rem',
                       borderRadius: '12px',
                       fontSize: '0.95rem',
@@ -3824,16 +3831,16 @@ export default function DashboardPage() {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 99999,
-        padding: '1rem',
+        padding: isMobile ? '0.5rem' : '1rem',
         boxSizing: 'border-box',
       };
       const modalContentStyle = {
         background: '#ffffff',
-        borderRadius: '24px',
-        padding: '1.75rem',
+        borderRadius: isMobile ? '20px' : '24px',
+        padding: isMobile ? '1.15rem 0.9rem' : '1.75rem',
         width: '100%',
         maxWidth: '560px',
-        maxHeight: 'min(90vh, 760px)',
+        maxHeight: isMobile ? '92vh' : 'min(90vh, 760px)',
         boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
         boxSizing: 'border-box',
         display: 'flex',
@@ -3984,16 +3991,16 @@ export default function DashboardPage() {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 99999,
-        padding: '1rem',
+        padding: isMobile ? '0.5rem' : '1rem',
         boxSizing: 'border-box',
       };
       const modalContentStyle = {
         background: '#ffffff',
-        borderRadius: '24px',
-        padding: '1.75rem',
+        borderRadius: isMobile ? '20px' : '24px',
+        padding: isMobile ? '1.15rem 0.9rem' : '1.75rem',
         width: '100%',
         maxWidth: '560px',
-        maxHeight: 'min(90vh, 760px)',
+        maxHeight: isMobile ? '92vh' : 'min(90vh, 760px)',
         boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
         boxSizing: 'border-box',
         display: 'flex',
@@ -4216,39 +4223,40 @@ export default function DashboardPage() {
         <div
           style={{
             background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)',
-            borderRadius: '24px',
-            padding: isMobile ? '1.25rem' : '1.25rem 2rem',
+            borderRadius: isMobile ? '18px' : '24px',
+            padding: isMobile ? '1.15rem 1rem' : '1.25rem 2rem',
             color: '#ffffff',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: isMobile ? 'stretch' : 'center',
             boxShadow: '0 10px 30px rgba(2, 122, 155, 0.15)',
             flexDirection: isMobile ? 'column' : 'row',
-            gap: '1.25rem',
+            gap: isMobile ? '1rem' : '1.25rem',
             width: '100%',
             boxSizing: 'border-box',
           }}
         >
           <div style={{
             display: 'flex',
-            alignItems: 'center',
-            gap: isMobile ? '1rem' : '1.5rem',
-            flexDirection: isMobile ? 'column' : 'row',
-            textAlign: isMobile ? 'center' : 'left',
+            alignItems: isMobile ? 'flex-start' : 'center',
+            gap: isMobile ? '0.75rem' : '1.5rem',
+            flexDirection: 'row',
+            textAlign: 'left',
             flex: 1
           }}>
             <img
               src={process.env.PUBLIC_URL + '/pm_gym_brain.png'}
               alt="PM Gym Brain mascot"
               style={{
-                width: isMobile ? '80px' : '96px',
-                height: isMobile ? '80px' : '96px',
+                width: isMobile ? '52px' : '96px',
+                height: isMobile ? '52px' : '96px',
                 objectFit: 'contain',
+                flexShrink: 0,
               }}
             />
-            <div>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
+                <h3 style={{ fontSize: isMobile ? '1.25rem' : '1.5rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
                   {isAiCohort ? (aiLang === 'hindi' ? 'AI Gym' : 'AI Gym') : 'PM Gym'}
                 </h3>
                 {isAiCohort && (
@@ -4266,7 +4274,7 @@ export default function DashboardPage() {
                   </span>
                 )}
               </div>
-              <p style={{ fontSize: '0.88rem', color: '#e0f2fe', margin: 0, opacity: 0.95, lineHeight: 1.45, maxWidth: '680px' }}>
+              <p style={{ fontSize: isMobile ? '0.84rem' : '0.88rem', color: '#e0f2fe', margin: 0, opacity: 0.95, lineHeight: 1.45, maxWidth: '680px' }}>
                 {isAiCohort
                   ? (aiLang === 'hindi'
                     ? "[AI माइक्रो-एक्सपेरिमेंट · दिन 2 / 7: बातचीत व लेखन] अपनी किसी मौजूदा राइटिंग (ईमेल, मैसेज या ड्राफ्ट) को AI से सुधारें। AI को देकर टोन, स्पष्टता और संक्षिप्तता सुधारने को कहें। (+20 XP आज)"
@@ -4301,12 +4309,13 @@ export default function DashboardPage() {
                       color: '#ffffff',
                       border: 'none',
                       borderRadius: '999px',
-                      padding: '0.75rem 1.5rem',
-                      fontSize: '0.95rem',
+                      padding: '0.8rem 1.5rem',
+                      fontSize: isMobile ? '1rem' : '0.95rem',
                       fontWeight: 700,
                       cursor: 'not-allowed',
                       width: isCompact ? '100%' : 'auto',
                       minWidth: isCompact ? '0' : '180px',
+                      minHeight: '44px',
                       boxSizing: 'border-box',
                     }}
                     disabled
@@ -4325,8 +4334,8 @@ export default function DashboardPage() {
                       color: '#027A9B',
                       border: 'none',
                       borderRadius: '999px',
-                      padding: '0.75rem 1.5rem',
-                      fontSize: '0.95rem',
+                      padding: '0.8rem 1.5rem',
+                      fontSize: isMobile ? '1rem' : '0.95rem',
                       fontWeight: 700,
                       cursor: 'pointer',
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
@@ -4334,6 +4343,7 @@ export default function DashboardPage() {
                       whiteSpace: 'nowrap',
                       width: isCompact ? '100%' : 'auto',
                       minWidth: isCompact ? '0' : '180px',
+                      minHeight: '44px',
                       boxSizing: 'border-box',
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
@@ -4353,12 +4363,13 @@ export default function DashboardPage() {
                       color: '#ffffff',
                       border: 'none',
                       borderRadius: '999px',
-                      padding: '0.75rem 1.5rem',
-                      fontSize: '0.95rem',
+                      padding: '0.8rem 1.5rem',
+                      fontSize: isMobile ? '1rem' : '0.95rem',
                       fontWeight: 700,
                       cursor: 'not-allowed',
                       width: isCompact ? '100%' : 'auto',
                       minWidth: isCompact ? '0' : '180px',
+                      minHeight: '44px',
                       boxSizing: 'border-box',
                     }}
                     disabled
@@ -4381,8 +4392,8 @@ export default function DashboardPage() {
                       color: '#027A9B',
                       border: 'none',
                       borderRadius: '999px',
-                      padding: '0.75rem 1.5rem',
-                      fontSize: '0.95rem',
+                      padding: '0.8rem 1.5rem',
+                      fontSize: isMobile ? '1rem' : '0.95rem',
                       fontWeight: 700,
                       cursor: 'pointer',
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
@@ -4390,6 +4401,7 @@ export default function DashboardPage() {
                       whiteSpace: 'nowrap',
                       width: isCompact ? '100%' : 'auto',
                       minWidth: isCompact ? '0' : '180px',
+                      minHeight: '44px',
                       boxSizing: 'border-box',
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
@@ -4406,14 +4418,15 @@ export default function DashboardPage() {
                   color: '#ffffff',
                   border: '1px solid rgba(255, 255, 255, 0.25)',
                   borderRadius: '999px',
-                  padding: '0.75rem 1.5rem',
-                  fontSize: '0.95rem',
+                  padding: '0.8rem 1.5rem',
+                  fontSize: isMobile ? '1rem' : '0.95rem',
                   fontWeight: 700,
                   whiteSpace: 'nowrap',
                   display: 'inline-block',
                   textAlign: 'center',
                   width: isCompact ? '100%' : 'auto',
                   minWidth: isCompact ? '0' : '180px',
+                  minHeight: '44px',
                   boxSizing: 'border-box',
                 }}>
                   {isClosedDay ? 'Closed Today 💤' : 'No Question Active'}
@@ -4422,11 +4435,11 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: isCompact ? '100%' : 'auto', minWidth: isCompact ? '0' : '180px', boxSizing: 'border-box' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe', opacity: 0.9, textAlign: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', width: isCompact ? '100%' : 'auto', minWidth: isCompact ? '0' : '180px', boxSizing: 'border-box' }}>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe', opacity: 0.9, textAlign: 'center' }}>
               Weekly Goal
             </div>
-            <div style={{ display: 'flex', justifyContent: isCompact ? 'center' : 'space-between', gap: isCompact ? '0.75rem' : '0.35rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '0.55rem' : isCompact ? '0.75rem' : '0.35rem', flexWrap: 'nowrap' }}>
               {isAiCohort ? (
                 ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su'].map((label, idx) => {
                   const dayNum = idx + 1;
@@ -4443,12 +4456,12 @@ export default function DashboardPage() {
                       }}
                       title={`Day ${dayNum}: ${challenge?.challenge || ''}`}
                       style={{
-                        width: '26px',
-                        height: '26px',
+                        width: isMobile ? '28px' : '26px',
+                        height: isMobile ? '28px' : '26px',
                         borderRadius: '50%',
                         background: isDone ? '#ffffff' : isTodayDay ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.3)',
                         color: isDone || isTodayDay ? '#027A9B' : '#ffffff',
-                        fontSize: '0.7rem',
+                        fontSize: isMobile ? '0.72rem' : '0.7rem',
                         fontWeight: 800,
                         display: 'flex',
                         alignItems: 'center',
@@ -4478,8 +4491,8 @@ export default function DashboardPage() {
                               }
                             }}
                             style={{
-                            width: '24px',
-                            height: '24px',
+                            width: isMobile ? '28px' : '24px',
+                            height: isMobile ? '28px' : '24px',
                             borderRadius: '50%',
                             background: day.active
                               ? '#ffffff'
@@ -4487,7 +4500,7 @@ export default function DashboardPage() {
                                 ? 'rgba(255, 255, 255, 0.2)'
                                 : 'rgba(255, 255, 255, 0.4)',
                             color: day.active ? '#027A9B' : '#ffffff',
-                            fontSize: '0.7rem',
+                            fontSize: isMobile ? '0.72rem' : '0.7rem',
                             fontWeight: 700,
                             display: 'flex',
                             alignItems: 'center',
@@ -4556,7 +4569,8 @@ export default function DashboardPage() {
             <div
               style={{
                 ...s.metricCards,
-                gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(4, minmax(0, 1fr))',
+                gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : isTablet ? 'repeat(2, 1fr)' : 'repeat(4, minmax(0, 1fr))',
+                gap: isMobile ? '0.75rem' : '1.25rem',
               }}
             >
               {/* Redesigned Card 1: Lessons */}
@@ -4564,27 +4578,27 @@ export default function DashboardPage() {
                 style={{
                   background: '#ffffff',
                   border: '1px solid rgba(20, 49, 86, 0.08)',
-                  borderRadius: '20px',
-                  padding: '1.25rem',
+                  borderRadius: isMobile ? '16px' : '20px',
+                  padding: isMobile ? '0.85rem 0.9rem' : '1.25rem',
                   boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  height: '170px',
+                  height: isMobile ? '145px' : '170px',
                   boxSizing: 'border-box',
                 }}
               >
                 <div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.8rem' : '0.875rem', fontWeight: 500, marginBottom: '0.35rem' }}>
                     Lessons
                   </div>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'baseline' }}>
+                  <div style={{ fontSize: isMobile ? '1.4rem' : '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: isMobile ? '0.35rem' : '0.75rem', display: 'flex', alignItems: 'baseline' }}>
                     <span>{isAiCohort ? '1' : completedCount}</span>
-                    <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{isAiCohort ? '1' : lessonsWeeks.length}</span>
+                    <span style={{ fontSize: isMobile ? '1.05rem' : '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{isAiCohort ? '1' : lessonsWeeks.length}</span>
                   </div>
                 </div>
                 <div>
-                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
+                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: isMobile ? '0.45rem' : '0.75rem' }}>
                     <div style={{
                       height: '100%',
                       borderRadius: '999px',
@@ -4593,12 +4607,12 @@ export default function DashboardPage() {
                       transition: 'width 0.3s ease'
                     }} />
                   </div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.75rem' : '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7, flexShrink: 0 }}>
                       <circle cx="12" cy="12" r="10" />
                       <polyline points="12 6 12 12 16 14" />
                     </svg>
-                    <span>{isAiCohort ? 'Module 0 Presentation Active' : (activeLesson ? `1 lesson from ${activeLesson.displayWeekNumber || ('Week ' + (activeLesson.weekNumber || activeLesson.groupNumber || '1'))}` : 'All complete')}</span>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{isAiCohort ? 'Module 0 Presentation Active' : (activeLesson ? `1 lesson from ${activeLesson.displayWeekNumber || ('Week ' + (activeLesson.weekNumber || activeLesson.groupNumber || '1'))}` : 'All complete')}</span>
                   </div>
                 </div>
               </div>
@@ -4608,27 +4622,27 @@ export default function DashboardPage() {
                 style={{
                   background: '#ffffff',
                   border: '1px solid rgba(20, 49, 86, 0.08)',
-                  borderRadius: '20px',
-                  padding: '1.25rem',
+                  borderRadius: isMobile ? '16px' : '20px',
+                  padding: isMobile ? '0.85rem 0.9rem' : '1.25rem',
                   boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  height: '170px',
+                  height: isMobile ? '145px' : '170px',
                   boxSizing: 'border-box',
                 }}
               >
                 <div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.8rem' : '0.875rem', fontWeight: 500, marginBottom: '0.35rem' }}>
                     Assignments
                   </div>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'baseline' }}>
+                  <div style={{ fontSize: isMobile ? '1.4rem' : '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: isMobile ? '0.35rem' : '0.75rem', display: 'flex', alignItems: 'baseline' }}>
                     <span>{isAiCohort ? (journalSubmitted ? '1' : '0') : assignmentsSubmittedCount}</span>
-                    <span style={{ fontSize: '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{isAiCohort ? '1' : assignmentsTotal}</span>
+                    <span style={{ fontSize: isMobile ? '1.05rem' : '1.25rem', color: '#94a3b8', fontWeight: 500 }}>/{isAiCohort ? '1' : assignmentsTotal}</span>
                   </div>
                 </div>
                 <div>
-                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: '0.75rem' }}>
+                  <div style={{ height: '6px', borderRadius: '999px', width: '100%', background: '#e2e8f0', overflow: 'hidden', marginBottom: isMobile ? '0.45rem' : '0.75rem' }}>
                     <div style={{
                       height: '100%',
                       borderRadius: '999px',
@@ -4639,13 +4653,13 @@ export default function DashboardPage() {
                       transition: 'width 0.3s ease'
                     }} />
                   </div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.75rem' : '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7, flexShrink: 0 }}>
                       <circle cx="12" cy="12" r="10" />
                       <line x1="12" y1="8" x2="12" y2="12" />
                       <line x1="12" y1="16" x2="12.01" y2="16" />
                     </svg>
-                    <span>{isAiCohort ? (journalSubmitted ? 'Journal Completed ✓' : 'Activity Journal Pending') : 'Submit soon'}</span>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{isAiCohort ? (journalSubmitted ? 'Journal Completed ✓' : 'Journal Pending') : 'Submit soon'}</span>
                   </div>
                 </div>
               </div>
@@ -4655,21 +4669,21 @@ export default function DashboardPage() {
                 style={{
                   background: '#ffffff',
                   border: '1px solid rgba(20, 49, 86, 0.08)',
-                  borderRadius: '20px',
-                  padding: '1.25rem',
+                  borderRadius: isMobile ? '16px' : '20px',
+                  padding: isMobile ? '0.85rem 0.9rem' : '1.25rem',
                   boxShadow: '0 8px 24px rgba(15, 40, 80, 0.04)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  height: '170px',
+                  height: isMobile ? '145px' : '170px',
                   boxSizing: 'border-box',
                 }}
               >
                 <div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.8rem' : '0.875rem', fontWeight: 500, marginBottom: '0.35rem' }}>
                     Streak
                   </div>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>
+                  <div style={{ fontSize: isMobile ? '1.4rem' : '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: isMobile ? '0.35rem' : '0.75rem' }}>
                     {isAiCohort
                       ? `${aiGymChallenges.filter(c => c.completed).length} ${aiGymChallenges.filter(c => c.completed).length === 1 ? 'day' : 'days'}`
                       : `${((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak)} ${((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak) === 1 ? 'day' : 'days'}`
@@ -4677,8 +4691,8 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div>
-                  <div style={{ color: 'var(--muted-foreground)', fontSize: '0.8125rem' }}>
-                    Total Streaks: {isAiCohort ? aiGymChallenges.filter(c => c.completed).length : gymProgress.length} {(isAiCohort ? aiGymChallenges.filter(c => c.completed).length : gymProgress.length) === 1 ? 'day' : 'days'}
+                  <div style={{ color: 'var(--muted-foreground)', fontSize: isMobile ? '0.75rem' : '0.8125rem' }}>
+                    Total: {isAiCohort ? aiGymChallenges.filter(c => c.completed).length : gymProgress.length} {(isAiCohort ? aiGymChallenges.filter(c => c.completed).length : gymProgress.length) === 1 ? 'day' : 'days'}
                   </div>
                 </div>
               </div>
@@ -4898,6 +4912,7 @@ export default function DashboardPage() {
           }}>
             {/* Left Drawer (Course Contents) */}
             <div style={{
+              order: isCompact ? 2 : 1,
               background: '#ffffff',
               borderRadius: '20px',
               border: '1px solid rgba(20, 49, 86, 0.08)',
@@ -4925,7 +4940,7 @@ export default function DashboardPage() {
               </div>
 
               {/* 14 Slides List matching Screenshot 1 */}
-              <div style={{ maxHeight: '620px', overflowY: 'auto', padding: '0.25rem 0.75rem' }}>
+              <div style={{ maxHeight: isMobile ? '360px' : '620px', overflowY: 'auto', padding: '0.25rem 0.75rem' }}>
                 {MODULE_0_DRAWER_ITEMS.map((item, idx) => {
                   const isActive = aiSlideIndex === idx;
                   const isDone = aiSlideIndex > idx;
@@ -4989,19 +5004,24 @@ export default function DashboardPage() {
             </div>
 
             {/* Right Presentation Stage */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{
+              order: isCompact ? 1 : 2,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.25rem'
+            }}>
               {/* Slide Title Bar */}
               <div style={{
                 background: '#ffffff',
                 borderRadius: '16px',
-                padding: '1rem 1.5rem',
+                padding: isMobile ? '0.85rem 1rem' : '1rem 1.5rem',
                 border: '1px solid rgba(20, 49, 86, 0.08)',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
               }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#027A9B', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.2rem' }}>
                   {aiLang === 'hindi' ? `स्लाइड ${aiSlideIndex + 1} / ${MODULE_0_SLIDES.length}` : `Slide ${aiSlideIndex + 1} of ${MODULE_0_SLIDES.length}`} • {currentSlide.categoryTag}
                 </div>
-                <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                <h2 style={{ fontSize: isMobile ? '1.2rem' : '1.45rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
                   {slideContent.heading}
                 </h2>
               </div>
@@ -5010,25 +5030,25 @@ export default function DashboardPage() {
               <div
                 style={{
                   background: '#ffffff',
-                  borderRadius: '20px',
+                  borderRadius: isMobile ? '16px' : '20px',
                   border: '1.5px solid #0f172a',
                   boxShadow: '0 12px 36px rgba(0,0,0,0.08)',
                   overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
                   position: 'relative',
-                  minHeight: '440px',
+                  minHeight: isMobile ? '320px' : '440px',
                 }}
               >
                 {/* Slide Top Badge bar inside canvas */}
                 <div style={{
-                  padding: '1rem 1.75rem',
+                  padding: isMobile ? '0.75rem 1rem' : '1rem 1.75rem',
                   borderBottom: '1px solid #f1f5f9',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                     <span style={{
                       background: '#e0f2fe',
                       color: '#0284c7',
@@ -5045,12 +5065,12 @@ export default function DashboardPage() {
                     </span>
                   </div>
                   <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0f172a', opacity: 0.7 }}>
-                    StepSmart AI Academy
+                    StepSmart AI
                   </span>
                 </div>
 
                 {/* Main Slide Inner Content */}
-                <div style={{ padding: '2rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div style={{ padding: isMobile ? '1.25rem 1rem' : '2rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   {aiMode === 'learner' ? (
                     <div>
                       {slideContent.subheading && (
@@ -5282,7 +5302,7 @@ export default function DashboardPage() {
               <div style={{
                 background: '#ffffff',
                 borderRadius: '20px',
-                padding: '1.75rem',
+                padding: isMobile ? '1.25rem 1rem' : '1.75rem',
                 border: '1px solid rgba(20, 49, 86, 0.08)',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
               }}>
@@ -5299,7 +5319,7 @@ export default function DashboardPage() {
                     }}>
                       {aiLang === 'hindi' ? 'मॉड्यूल 0 असाइनमेंट' : 'Module 0 Activity Assignment'}
                     </span>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: '0.25rem 0 0 0' }}>
+                    <h3 style={{ fontSize: isMobile ? '1.1rem' : '1.25rem', fontWeight: 800, color: '#0f172a', margin: '0.25rem 0 0 0' }}>
                       {aiLang === 'hindi' ? 'यह गतिविधि जर्नल पूरा करें।' : 'Complete this activity journal.'}
                     </h3>
                   </div>
@@ -5326,7 +5346,8 @@ export default function DashboardPage() {
                         padding: '0.75rem',
                         border: '1.5px solid #cbd5e1',
                         borderRadius: '10px',
-                        fontSize: '0.88rem',
+                        fontSize: '16px',
+                        minHeight: '44px',
                       }}
                       required
                     />
@@ -5347,7 +5368,7 @@ export default function DashboardPage() {
                         padding: '0.75rem',
                         border: '1.5px solid #cbd5e1',
                         borderRadius: '10px',
-                        fontSize: '0.88rem',
+                        fontSize: '16px',
                         fontFamily: 'inherit',
                       }}
                       required
@@ -5370,7 +5391,8 @@ export default function DashboardPage() {
                           padding: '0.75rem',
                           border: '1.5px solid #cbd5e1',
                           borderRadius: '10px',
-                          fontSize: '0.88rem',
+                          fontSize: '16px',
+                          minHeight: '44px',
                         }}
                         required
                       />
@@ -5390,7 +5412,8 @@ export default function DashboardPage() {
                           padding: '0.75rem',
                           border: '1.5px solid #cbd5e1',
                           borderRadius: '10px',
-                          fontSize: '0.88rem',
+                          fontSize: '16px',
+                          minHeight: '44px',
                         }}
                         required
                       />
@@ -5422,19 +5445,21 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                  <div style={{ display: 'flex', justifyContent: isMobile ? 'stretch' : 'flex-end', marginTop: '0.5rem' }}>
                     <button
                       type="submit"
                       style={{
                         border: 'none',
                         background: '#027A9B',
                         color: '#ffffff',
-                        padding: '0.75rem 1.75rem',
+                        padding: '0.8rem 1.75rem',
                         borderRadius: '10px',
-                        fontSize: '0.9rem',
+                        fontSize: isMobile ? '1rem' : '0.9rem',
                         fontWeight: 700,
                         cursor: 'pointer',
                         boxShadow: '0 4px 12px rgba(2, 122, 155, 0.25)',
+                        width: isMobile ? '100%' : 'auto',
+                        minHeight: '44px',
                       }}
                     >
                       {aiLang === 'hindi'
@@ -6401,31 +6426,31 @@ export default function DashboardPage() {
         <div
           style={{
             background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)',
-            borderRadius: '24px',
-            padding: '1.5rem 2rem',
+            borderRadius: isMobile ? '18px' : '24px',
+            padding: isMobile ? '1.15rem 1rem' : '1.5rem 2rem',
             color: '#ffffff',
             boxShadow: '0 10px 30px rgba(2, 122, 155, 0.15)',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '1.25rem',
+            alignItems: isMobile ? 'stretch' : 'center',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: isMobile ? '1rem' : '1.25rem',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: isMobile ? '0.75rem' : '1.25rem' }}>
             <img
               src={process.env.PUBLIC_URL + '/pm_gym_brain.png'}
               alt="AI Gym Brain Mascot"
-              style={{ width: '84px', height: '84px', objectFit: 'contain' }}
+              style={{ width: isMobile ? '52px' : '84px', height: isMobile ? '52px' : '84px', objectFit: 'contain', flexShrink: 0 }}
             />
             <div>
-              <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e0f2fe' }}>
                 7-Day AI Intuition Gym & Streak Tracker
               </div>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 800, margin: '0.2rem 0', color: '#ffffff' }}>
+              <h2 style={{ fontSize: isMobile ? '1.25rem' : '1.6rem', fontWeight: 800, margin: '0.2rem 0', color: '#ffffff' }}>
                 {aiLang === 'hindi' ? 'AI Seekho, AI Apnao • Daily Micro-Experiments' : 'Hands-On AI Practice • 1 Question Everyday'}
               </h2>
-              <p style={{ fontSize: '0.88rem', color: '#e0f2fe', margin: 0, opacity: 0.95, maxWidth: '640px' }}>
+              <p style={{ fontSize: isMobile ? '0.82rem' : '0.88rem', color: '#e0f2fe', margin: 0, opacity: 0.95, maxWidth: '640px' }}>
                 {aiLang === 'hindi'
                   ? 'Har din 1 micro-experiment karein (20 XP). Agar koi din miss ho jaye, toh AI Gym mein catch-up karke 8 XP earn karein.'
                   : 'Solve 1 drill daily for 20 XP on the scheduled day. Missed days can be completed anytime here for 8 XP catch-up.'}
@@ -6433,12 +6458,12 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <div style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(8px)', borderRadius: '16px', padding: '0.75rem 1.25rem', textAlign: 'center' }}>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', justifyContent: isMobile ? 'space-between' : 'flex-start' }}>
+            <div style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(8px)', borderRadius: '16px', padding: '0.75rem 1.25rem', textAlign: 'center', flex: isMobile ? 1 : 'none' }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#e0f2fe', textTransform: 'uppercase' }}>Streak</div>
               <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ffffff' }}>{completedDays} / 7</div>
             </div>
-            <div style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(8px)', borderRadius: '16px', padding: '0.75rem 1.25rem', textAlign: 'center' }}>
+            <div style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(8px)', borderRadius: '16px', padding: '0.75rem 1.25rem', textAlign: 'center', flex: isMobile ? 1 : 'none' }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#e0f2fe', textTransform: 'uppercase' }}>XP Earned</div>
               <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fef08a' }}>+{totalPoints} XP</div>
             </div>
@@ -6458,13 +6483,13 @@ export default function DashboardPage() {
                 style={{
                   background: '#ffffff',
                   border: isToday ? '2px solid #027A9B' : '1px solid rgba(20, 49, 86, 0.08)',
-                  borderRadius: '20px',
-                  padding: '1.35rem 1.6rem',
+                  borderRadius: isMobile ? '16px' : '20px',
+                  padding: isMobile ? '1.15rem 1rem' : '1.35rem 1.6rem',
                   boxShadow: isToday ? '0 8px 24px rgba(2, 122, 155, 0.12)' : '0 4px 16px rgba(15, 40, 80, 0.04)',
                   display: 'flex',
                   justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
+                  alignItems: isMobile ? 'stretch' : 'center',
+                  flexDirection: isMobile ? 'column' : 'row',
                   gap: '1rem',
                   position: 'relative',
                   overflow: 'hidden',
@@ -6483,12 +6508,12 @@ export default function DashboardPage() {
                   />
                 )}
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flex: 1, minWidth: '280px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: isMobile ? '0.75rem' : '1.25rem', flex: 1, minWidth: 0 }}>
                   <div
                     style={{
-                      width: '48px',
-                      height: '48px',
-                      borderRadius: '16px',
+                      width: isMobile ? '42px' : '48px',
+                      height: isMobile ? '42px' : '48px',
+                      borderRadius: '14px',
                       background: isCompleted ? '#ecfdf5' : isToday ? '#e0f2fe' : '#f8fafc',
                       color: isCompleted ? '#059669' : isToday ? '#027A9B' : '#94a3b8',
                       display: 'flex',
@@ -6496,17 +6521,17 @@ export default function DashboardPage() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontWeight: 800,
-                      fontSize: '0.85rem',
+                      fontSize: '0.8rem',
                       border: isCompleted ? '1.5px solid #10b981' : isToday ? '1.5px solid #027A9B' : '1px solid #e2e8f0',
                       flexShrink: 0,
                     }}
                   >
-                    <span>{aiLang === 'hindi' ? 'दिन' : 'DAY'}</span>
-                    <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>{challenge.day}</span>
+                    <span style={{ fontSize: '0.65rem' }}>{aiLang === 'hindi' ? 'दिन' : 'DAY'}</span>
+                    <span style={{ fontSize: isMobile ? '1rem' : '1.1rem', lineHeight: 1 }}>{challenge.day}</span>
                   </div>
 
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
                       <span
                         style={{
                           background: isCompleted ? '#dcfce7' : isToday ? '#e0f2fe' : '#f1f5f9',
@@ -6532,13 +6557,13 @@ export default function DashboardPage() {
                       </span>
                     </div>
 
-                    <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
+                    <h4 style={{ fontSize: isMobile ? '0.98rem' : '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.35rem 0' }}>
                       {aiLang === 'hindi'
                         ? (challenge.caseStudyTitleHi || challenge.challengeHi || challenge.caseStudyTitle)
                         : (challenge.caseStudyTitle || challenge.challenge)
                       }
                     </h4>
-                    <p style={{ fontSize: '0.85rem', color: '#475569', margin: 0, lineHeight: 1.45, maxWidth: '720px' }}>
+                    <p style={{ fontSize: isMobile ? '0.82rem' : '0.85rem', color: '#475569', margin: 0, lineHeight: 1.45, maxWidth: '720px' }}>
                       {aiLang === 'hindi'
                         ? (challenge.questionPromptHi || challenge.challengeHi || challenge.questionPrompt)
                         : (challenge.questionPrompt || challenge.challenge)
@@ -6547,9 +6572,9 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: isMobile ? 'stretch' : 'flex-end', gap: '0.75rem', width: isMobile ? '100%' : 'auto' }}>
                   {isCompleted ? (
-                    <div style={{ textAlign: 'right' }}>
+                    <div style={{ textAlign: isMobile ? 'left' : 'right', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: isMobile ? '100%' : 'auto' }}>
                       <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#059669' }}>
                         +{challenge.scoreAwarded || 20} XP
                       </div>
@@ -6561,11 +6586,10 @@ export default function DashboardPage() {
                           background: '#ffffff',
                           color: '#475569',
                           borderRadius: '999px',
-                          padding: '0.4rem 0.9rem',
-                          fontSize: '0.78rem',
+                          padding: '0.5rem 1rem',
+                          fontSize: '0.8rem',
                           fontWeight: 600,
                           cursor: 'pointer',
-                          marginTop: '0.25rem',
                         }}
                       >
                         {aiLang === 'hindi' ? 'समाधान देखें' : 'Review Solution'}
@@ -6580,13 +6604,15 @@ export default function DashboardPage() {
                         color: isToday ? '#ffffff' : '#027A9B',
                         border: isToday ? 'none' : '1.5px solid #027A9B',
                         borderRadius: '999px',
-                        padding: '0.65rem 1.4rem',
-                        fontSize: '0.85rem',
+                        padding: '0.75rem 1.4rem',
+                        fontSize: isMobile ? '0.95rem' : '0.85rem',
                         fontWeight: 700,
                         cursor: 'pointer',
                         boxShadow: isToday ? '0 4px 12px rgba(2, 122, 155, 0.25)' : 'none',
                         transition: 'all 0.15s ease',
                         whiteSpace: 'nowrap',
+                        width: isMobile ? '100%' : 'auto',
+                        minHeight: '44px',
                       }}
                     >
                       {isToday
@@ -6629,7 +6655,15 @@ export default function DashboardPage() {
         </div>
 
         {/* Categories Tabs */}
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div style={{
+          display: 'flex',
+          gap: '0.5rem',
+          flexWrap: isMobile ? 'nowrap' : 'wrap',
+          overflowX: isMobile ? 'auto' : 'visible',
+          maxWidth: '100%',
+          paddingBottom: isMobile ? '4px' : '0px',
+          WebkitOverflowScrolling: 'touch',
+        }}>
           {categories.map((cat) => {
             const isSelected = (cat === 'All' && (!activeCoursesTab || !categories.includes(activeCoursesTab) || activeCoursesTab === 'All')) || activeCoursesTab === cat;
             return (
@@ -6641,12 +6675,14 @@ export default function DashboardPage() {
                   border: isSelected ? '1px solid #027A9B' : '1px solid #e2e8f0',
                   background: isSelected ? '#027A9B' : '#ffffff',
                   color: isSelected ? '#ffffff' : '#475569',
-                  padding: '0.5rem 1rem',
+                  padding: isMobile ? '0.45rem 0.85rem' : '0.5rem 1rem',
                   borderRadius: '999px',
-                  fontSize: '0.82rem',
+                  fontSize: isMobile ? '0.78rem' : '0.82rem',
                   fontWeight: isSelected ? 700 : 500,
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
                 }}
               >
                 {cat === 'All' && aiLang === 'hindi' ? 'सभी प्रॉम्प्ट्स' : cat}
@@ -6774,7 +6810,7 @@ export default function DashboardPage() {
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 99999,
-          padding: '1rem',
+          padding: isMobile ? '0.5rem' : '1rem',
           boxSizing: 'border-box',
         }}
         onClick={() => setAiGymModalDay(null)}
@@ -6782,11 +6818,11 @@ export default function DashboardPage() {
         <div
           style={{
             background: '#ffffff',
-            borderRadius: '24px',
-            padding: '1.75rem',
+            borderRadius: isMobile ? '20px' : '24px',
+            padding: isMobile ? '1.15rem 0.9rem' : '1.75rem',
             width: '100%',
             maxWidth: '620px',
-            maxHeight: 'min(90vh, 760px)',
+            maxHeight: isMobile ? '92vh' : 'min(90vh, 760px)',
             boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
             boxSizing: 'border-box',
             display: 'flex',
@@ -6806,7 +6842,7 @@ export default function DashboardPage() {
             }}
           >
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
                 <span style={{
                   background: isToday ? '#e0f2fe' : '#fef3c7',
                   color: isToday ? '#0284c7' : '#d97706',
@@ -6825,7 +6861,7 @@ export default function DashboardPage() {
                   {(aiLang === 'hindi' ? aiGymModalDay.newExperienceHi : aiGymModalDay.newExperience) || aiGymModalDay.newExperience}
                 </span>
               </div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+              <h3 style={{ fontSize: isMobile ? '1.1rem' : '1.2rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
                 {aiLang === 'hindi'
                   ? (aiGymModalDay.caseStudyTitleHi || aiGymModalDay.challengeHi || aiGymModalDay.caseStudyTitle)
                   : (aiGymModalDay.caseStudyTitle || aiGymModalDay.challenge)
@@ -6846,6 +6882,7 @@ export default function DashboardPage() {
                 justifyContent: 'center',
                 fontSize: '1rem',
                 cursor: 'pointer',
+                flexShrink: 0,
               }}
             >
               ✕
@@ -6879,8 +6916,9 @@ export default function DashboardPage() {
                 padding: '0.85rem 1rem',
                 marginBottom: '1rem',
                 display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
                 justifyContent: 'space-between',
-                alignItems: 'center',
+                alignItems: isMobile ? 'flex-start' : 'center',
                 gap: '0.75rem',
               }}>
                 <div>
@@ -6904,6 +6942,7 @@ export default function DashboardPage() {
                     fontWeight: 700,
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
+                    alignSelf: isMobile ? 'flex-end' : 'auto',
                   }}
                 >
                   {aiCopiedId === `gym-p-${aiGymModalDay.day}`
@@ -6929,16 +6968,17 @@ export default function DashboardPage() {
                   border: '1.5px solid #cbd5e1',
                   borderRadius: '12px',
                   padding: '0.85rem',
-                  fontSize: '0.9rem',
+                  fontSize: '16px',
                   fontFamily: 'inherit',
                   outline: 'none',
                   resize: 'vertical',
+                  minHeight: isMobile ? '100px' : 'auto',
                 }}
               />
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', flexDirection: isMobile ? 'column-reverse' : 'row', justifyContent: 'flex-end', gap: '0.75rem' }}>
             <button
               type="button"
               onClick={() => setAiGymModalDay(null)}
@@ -6947,10 +6987,12 @@ export default function DashboardPage() {
                 background: '#ffffff',
                 color: '#475569',
                 borderRadius: '10px',
-                padding: '0.65rem 1.25rem',
-                fontSize: '0.875rem',
+                padding: '0.75rem 1.25rem',
+                fontSize: '0.9rem',
                 fontWeight: 600,
                 cursor: 'pointer',
+                width: isMobile ? '100%' : 'auto',
+                minHeight: '44px',
               }}
             >
               {aiLang === 'hindi' ? 'रद्द करें' : 'Cancel'}
@@ -6963,11 +7005,13 @@ export default function DashboardPage() {
                 background: '#027A9B',
                 color: '#ffffff',
                 borderRadius: '10px',
-                padding: '0.65rem 1.4rem',
-                fontSize: '0.875rem',
+                padding: '0.75rem 1.4rem',
+                fontSize: '0.9rem',
                 fontWeight: 700,
                 cursor: 'pointer',
                 boxShadow: '0 4px 12px rgba(2, 122, 155, 0.25)',
+                width: isMobile ? '100%' : 'auto',
+                minHeight: '44px',
               }}
             >
               {aiLang === 'hindi' ? `उत्तर सबमिट करें (+${pointsAwarded} XP)` : `Submit & Claim +${pointsAwarded} XP`}
@@ -7059,6 +7103,9 @@ export default function DashboardPage() {
         <div style={shellStyle}>
           {isCompact ? (
             <header style={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 1000,
               background: 'linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)',
               color: '#fff',
               padding: '0.85rem 1rem 0.65rem 1rem',
@@ -7176,7 +7223,7 @@ export default function DashboardPage() {
             </aside>
           )}
 
-          <main style={s.main}>
+          <main style={mainStyle}>
             <div style={s.header}>
               <div>
                 <div style={s.headerEyebrow}>{viewEyebrow}</div>
@@ -7371,6 +7418,9 @@ export default function DashboardPage() {
       <div style={shellStyle}>
         {isCompact ? (
           <header style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 1000,
             background: 'linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)',
             color: '#fff',
             padding: '0.85rem 1rem 0.65rem 1rem',
@@ -7492,7 +7542,7 @@ export default function DashboardPage() {
           </aside>
         )}
 
-        <main style={s.main}>
+        <main style={mainStyle}>
           <div style={s.header}>
             <div>
               <div style={s.headerEyebrow}>{viewEyebrow}</div>
@@ -7602,13 +7652,25 @@ export default function DashboardPage() {
                   </div>
                 )}
                 {courses.length > 1 && (
-                  <div style={s.courseTabs}>
+                  <div style={{
+                    ...s.courseTabs,
+                    gap: isMobile ? '0.4rem' : '0.6rem',
+                    flexWrap: isMobile ? 'nowrap' : 'wrap',
+                    overflowX: isMobile ? 'auto' : 'visible',
+                    maxWidth: '100%',
+                    paddingBottom: isMobile ? '4px' : '0px',
+                    WebkitOverflowScrolling: 'touch',
+                  }}>
                     {courses.map((course) => (
                       <button
                         key={course.courseId}
                         type="button"
                         style={{
                           ...s.courseTab,
+                          padding: isMobile ? '0.45rem 0.85rem' : '0.65rem 1rem',
+                          fontSize: isMobile ? '0.78rem' : '0.85rem',
+                          whiteSpace: 'nowrap',
+                          flexShrink: 0,
                           ...(activeCourse?.courseId === course.courseId ? s.courseTabActive : {}),
                         }}
                         onClick={() => handleSelectCourse(course)}
