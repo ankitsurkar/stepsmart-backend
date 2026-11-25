@@ -2502,7 +2502,7 @@ export default function DashboardPage() {
   const [aiMode, setAiMode] = useState('learner');
   const [aiGymChallenges, setAiGymChallenges] = useState(() => {
     try {
-      const saved = localStorage.getItem('stepsmart_ai_gym_challenges_v2');
+      const saved = localStorage.getItem('stepsmart_ai_gym_challenges_v3');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
@@ -2551,7 +2551,7 @@ export default function DashboardPage() {
       c.day === aiGymModalDay.day ? { ...c, completed: true, scoreAwarded: pointsAwarded } : c
     );
     setAiGymChallenges(updated);
-    localStorage.setItem('stepsmart_ai_gym_challenges_v2', JSON.stringify(updated));
+    localStorage.setItem('stepsmart_ai_gym_challenges_v3', JSON.stringify(updated));
 
     if (isToday) {
       toast.success(`🎉 Day ${aiGymModalDay.day} Completed! Full +${pointsAwarded} XP awarded for today's drill!`);
@@ -4273,7 +4273,7 @@ export default function DashboardPage() {
                     textTransform: 'uppercase',
                     whiteSpace: 'nowrap',
                   }}>
-                    {aiLang === 'hindi' ? '7-दिवसीय स्ट्रीक चैलेंज • दिन 2 / 7' : '7-Day Streak Challenge • Day 2 of 7'}
+                    {aiLang === 'hindi' ? `7-दिवसीय स्ट्रीक चैलेंज • दिन ${TODAY_GYM_DAY} / 7 (बुधवार)` : `7-Day Streak Challenge • Day ${TODAY_GYM_DAY} of 7 (Wednesday)`}
                   </span>
                 )}
               </div>
@@ -4295,8 +4295,8 @@ export default function DashboardPage() {
             >
               {isAiCohort
                 ? (aiLang === 'hindi'
-                  ? "[AI माइक्रो-एक्सपेरिमेंट · दिन 2 / 7: बातचीत व लेखन] अपनी किसी मौजूदा राइटिंग (ईमेल, मैसेज या ड्राफ्ट) को AI से सुधारें। AI को देकर टोन, स्पष्टता और संक्षिप्तता सुधारने को कहें। (+20 XP आज)"
-                  : "[AI Micro-Experiment · Day 2 of 7: Communication] Use AI to improve an existing piece of writing. Paste an email, message, or draft into AI and prompt it to polish clarity, brevity, and tone. (+20 XP Today)")
+                  ? "[AI माइक्रो-एक्सपेरिमेंट · दिन 1 / 7 (बुधवार): सीखना] AI से कोई ऐसी चीज़ समझें जो आपको समझ नहीं आती। AI को कोई मुश्किल कॉन्सेप्ट देकर आसान भाषा और उदाहरण के साथ समझाने को कहें। (+20 XP आज)"
+                  : "[AI Micro-Experiment · Day 1 of 7 (Wednesday): Learning] Ask AI to explain something you don't understand. Pick a confusing concept and ask AI to explain it with a real-world analogy. (+20 XP Today)")
                 : (isClosedDay
                   ? 'Closed today for resting. Rest up, or review previous answers!'
                   : todayQuestion
@@ -4323,7 +4323,7 @@ export default function DashboardPage() {
           >
             {isAiCohort ? (
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: isMobile ? '100%' : 'auto' }}>
-                {aiGymChallenges.find(c => c.day === 2)?.completed ? (
+                {aiGymChallenges.find(c => c.day === TODAY_GYM_DAY)?.completed ? (
                   <button
                     type="button"
                     className="lms-gym-solve-btn"
@@ -4350,8 +4350,8 @@ export default function DashboardPage() {
                     type="button"
                     className="lms-gym-solve-btn"
                     onClick={() => {
-                      const day2 = aiGymChallenges.find(c => c.day === 2);
-                      setAiGymModalDay(day2);
+                      const todayChallenge = aiGymChallenges.find(c => c.day === TODAY_GYM_DAY) || aiGymChallenges[0];
+                      setAiGymModalDay(todayChallenge);
                     }}
                     style={{
                       background: '#ffffff',
@@ -4469,11 +4469,13 @@ export default function DashboardPage() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'center', gap: isCompact ? '0.55rem' : '0.35rem', flexWrap: 'nowrap' }}>
                 {isAiCohort ? (
-                  ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su'].map((label, idx) => {
-                    const dayNum = idx + 1;
+                  ['W', 'Th', 'F', 'Sa', 'Su', 'M', 'T'].map((label, idx) => {
+                    const dayNum = idx + 1; // 1 = Wednesday (Today), 2 = Thursday, 3 = Friday, 4 = Saturday, 5 = Sunday, 6 = Monday, 7 = Tuesday
                     const challenge = aiGymChallenges.find(c => c.day === dayNum);
                     const isDone = challenge?.completed;
-                    const isTodayDay = dayNum === 2;
+                    const isTodayDay = dayNum === TODAY_GYM_DAY;
+                    const aiWeekDayNames = ['Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday'];
+                    const aiWeekDayNamesHi = ['बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार', 'रविवार', 'सोमवार', 'मंगलवार'];
 
                     return (
                       <button
@@ -4482,7 +4484,9 @@ export default function DashboardPage() {
                         onClick={() => {
                           if (challenge) setAiGymModalDay(challenge);
                         }}
-                        title={`Day ${dayNum}: ${challenge?.challenge || ''}`}
+                        title={aiLang === 'hindi'
+                          ? `दिन ${dayNum} (${aiWeekDayNamesHi[idx]}): ${challenge?.challengeHi || challenge?.challenge || ''}`
+                          : `Day ${dayNum} (${aiWeekDayNames[idx]}): ${challenge?.challenge || ''}`}
                         style={{
                           width: '28px',
                           height: '28px',
@@ -6507,6 +6511,9 @@ export default function DashboardPage() {
             const isToday = challenge.day === TODAY_GYM_DAY;
             const isCompleted = challenge.completed;
             const isPast = challenge.day < TODAY_GYM_DAY;
+            const aiWeekDays = ['Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday'];
+            const aiWeekDaysHi = ['बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार', 'रविवार', 'सोमवार', 'मंगलवार'];
+            const dayWeekday = aiLang === 'hindi' ? aiWeekDaysHi[challenge.day - 1] : aiWeekDays[challenge.day - 1];
 
             return (
               <div
@@ -6542,8 +6549,8 @@ export default function DashboardPage() {
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: isMobile ? '0.75rem' : '1.25rem', flex: 1, minWidth: 0 }}>
                   <div
                     style={{
-                      width: isMobile ? '42px' : '48px',
-                      height: isMobile ? '42px' : '48px',
+                      width: isMobile ? '46px' : '52px',
+                      height: isMobile ? '46px' : '52px',
                       borderRadius: '14px',
                       background: isCompleted ? '#ecfdf5' : isToday ? '#e0f2fe' : '#f8fafc',
                       color: isCompleted ? '#059669' : isToday ? '#027A9B' : '#94a3b8',
@@ -6557,8 +6564,8 @@ export default function DashboardPage() {
                       flexShrink: 0,
                     }}
                   >
-                    <span style={{ fontSize: '0.65rem' }}>{aiLang === 'hindi' ? 'दिन' : 'DAY'}</span>
-                    <span style={{ fontSize: isMobile ? '1rem' : '1.1rem', lineHeight: 1 }}>{challenge.day}</span>
+                    <span style={{ fontSize: '0.62rem' }}>{aiLang === 'hindi' ? 'दिन' : 'DAY'}</span>
+                    <span style={{ fontSize: isMobile ? '0.95rem' : '1.05rem', lineHeight: 1 }}>{challenge.day}</span>
                   </div>
 
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -6575,12 +6582,12 @@ export default function DashboardPage() {
                         }}
                       >
                         {isCompleted
-                          ? (aiLang === 'hindi' ? '✓ पूर्ण' : '✓ Completed')
+                          ? (aiLang === 'hindi' ? `✓ पूर्ण (${dayWeekday})` : `✓ Completed (${dayWeekday})`)
                           : isToday
-                            ? (aiLang === 'hindi' ? '🔥 आज सक्रिय (20 XP)' : '🔥 Active Today (20 XP)')
+                            ? (aiLang === 'hindi' ? `🔥 आज सक्रिय (${dayWeekday} • 20 XP)` : `🔥 Active Today (${dayWeekday} • 20 XP)`)
                             : isPast
-                              ? (aiLang === 'hindi' ? '⏱️ छूटा हुआ (कैच-अप: 8 XP)' : '⏱️ Missed (Catch-up: 8 XP)')
-                              : (aiLang === 'hindi' ? '🔒 आगामी' : '🔒 Upcoming')
+                              ? (aiLang === 'hindi' ? `⏱️ छूटा हुआ (${dayWeekday} • 8 XP)` : `⏱️ Missed (${dayWeekday} • 8 XP)`)
+                              : (aiLang === 'hindi' ? `🔒 आगामी (${dayWeekday})` : `🔒 Upcoming (${dayWeekday})`)
                         }
                       </span>
                       <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b' }}>

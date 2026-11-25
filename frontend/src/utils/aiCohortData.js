@@ -527,7 +527,7 @@ export const MODULE_0_SLIDES = [
 ];
 
 // ─── 7-DAY AI GYM CHALLENGES (1 per day; missed days can be attempted later for 8 XP instead of 20 XP) ───
-export const TODAY_GYM_DAY = 2; // Nov 24, 2026 - Day 2 active today
+export const TODAY_GYM_DAY = 1; // Wednesday (Nov 25, 2026) - Day 1 active today
 
 export const INITIAL_GYM_CHALLENGES = [
   {
@@ -544,8 +544,7 @@ export const INITIAL_GYM_CHALLENGES = [
     categoryHi: "कॉन्सेप्ट समझना",
     promptSuggestion: "Explain [Topic/Concept] to me like I am 12 years old using a simple real-life analogy. Break it into 3 clear bullet points.",
     promptSuggestionHi: "मुझे [Topic/Concept] बिल्कुल आसान भाषा में एक दैनिक जीवन के उदाहरण के साथ 3 बुलेट पॉइंट्स में समझाओ।",
-    completed: true,
-    scoreAwarded: 20
+    completed: false
   },
   {
     day: 2,
