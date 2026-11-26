@@ -2542,7 +2542,7 @@ export default function DashboardPage() {
     toast.success('Activity journal saved! +25 XP awarded.');
   };
 
-  const handleCompleteAiGymDay = () => {
+  const handleCompleteAiGymDay = async () => {
     if (!aiGymModalDay) return;
     if (aiGymModalDay.day > TODAY_GYM_DAY) {
       toast.error(aiLang === 'hindi' ? '🔒 यह चुनौती अभी लॉक है और सबमिट नहीं की जा सकती।' : '🔒 This challenge is locked and cannot be submitted yet.');
@@ -2550,9 +2550,37 @@ export default function DashboardPage() {
     }
     const isToday = aiGymModalDay.day === TODAY_GYM_DAY;
     const pointsAwarded = isToday ? 20 : 8;
+    const challengeDateKey = aiGymModalDay.date || (
+      aiGymModalDay.day === 1 ? '2026-11-25' :
+      aiGymModalDay.day === 2 ? '2026-11-26' :
+      aiGymModalDay.day === 3 ? '2026-11-27' :
+      aiGymModalDay.day === 4 ? '2026-11-28' :
+      aiGymModalDay.day === 5 ? '2026-11-29' :
+      aiGymModalDay.day === 6 ? '2026-11-30' : '2026-12-01'
+    );
+
+    const submissionPayload = {
+      text: aiGymInput,
+      answer: aiGymInput,
+      day: aiGymModalDay.day,
+      challengeTitle: aiGymModalDay.caseStudyTitle || aiGymModalDay.challenge,
+      score: pointsAwarded,
+      type: 'ai-gym-response',
+    };
+
+    if (activeCourse?.courseId) {
+      try {
+        await submitGymAnswer(activeCourse.courseId, challengeDateKey, submissionPayload);
+        const progRes = await getProgress(activeCourse.courseId);
+        if (progRes?.data?.leaderboard) setLeaderboard(progRes.data.leaderboard);
+        if (progRes?.data?.gymProgress) setGymProgress(progRes.data.gymProgress);
+      } catch (err) {
+        console.error('Failed to submit AI Gym response to backend:', err);
+      }
+    }
 
     const updated = aiGymChallenges.map(c =>
-      c.day === aiGymModalDay.day ? { ...c, completed: true, scoreAwarded: pointsAwarded } : c
+      c.day === aiGymModalDay.day ? { ...c, completed: true, scoreAwarded: pointsAwarded, answer: aiGymInput } : c
     );
     setAiGymChallenges(updated);
     localStorage.setItem('stepsmart_ai_gym_challenges_v3', JSON.stringify(updated));
@@ -2892,6 +2920,16 @@ export default function DashboardPage() {
       setGymQuestions(nextGymQuestions);
       setGymStreak(nextGymStreak);
 
+      if (nextGymProgress.length > 0) {
+        setAiGymChallenges(prev => prev.map(c => {
+          const match = nextGymProgress.find(p => p.date === c.date || p.day === c.day || (p.date && p.date.endsWith(`-${c.day}`)));
+          if (match) {
+            return { ...c, completed: true, scoreAwarded: match.score || 20, answer: match.answer || c.answer };
+          }
+          return c;
+        }));
+      }
+
       // Save to local cache & localStorage (including PM Gym data)
       clientDashboardCache = {
         username: user?.username,
@@ -2993,6 +3031,16 @@ export default function DashboardPage() {
       setGymProgress(nextGymProgress);
       setGymQuestions(nextGymQuestions);
       setGymStreak(nextGymStreak);
+
+      if (nextGymProgress.length > 0) {
+        setAiGymChallenges(prev => prev.map(c => {
+          const match = nextGymProgress.find(p => p.date === c.date || p.day === c.day || (p.date && p.date.endsWith(`-${c.day}`)));
+          if (match) {
+            return { ...c, completed: true, scoreAwarded: match.score || 20, answer: match.answer || c.answer };
+          }
+          return c;
+        }));
+      }
 
       // Save to module cache & localStorage (including PM Gym data)
       clientDashboardCache = {
@@ -4265,21 +4313,32 @@ export default function DashboardPage() {
                 <h3 style={{ fontSize: isCompact ? '1.25rem' : '1.5rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
                   {isAiCohort ? (aiLang === 'hindi' ? 'AI Gym' : 'AI Gym') : 'PM Gym'}
                 </h3>
-                {isAiCohort && (
-                  <span style={{
-                    background: 'rgba(255, 255, 255, 0.2)',
-                    color: '#ffffff',
-                    fontSize: '0.72rem',
-                    fontWeight: 800,
-                    padding: '0.2rem 0.55rem',
-                    borderRadius: '999px',
-                    letterSpacing: '0.04em',
-                    textTransform: 'uppercase',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {aiLang === 'hindi' ? `7-दिवसीय स्ट्रीक चैलेंज • दिन ${TODAY_GYM_DAY} / 7 (बुधवार)` : `7-Day Streak Challenge • Day ${TODAY_GYM_DAY} of 7 (Wednesday)`}
-                  </span>
-                )}
+                {isAiCohort && (() => {
+                  const todayChallenge = aiGymChallenges.find(c => c.day === TODAY_GYM_DAY) || aiGymChallenges[0];
+                  const weekdayStr = TODAY_GYM_DAY === 1 ? (aiLang === 'hindi' ? 'बुधवार' : 'Wednesday')
+                    : TODAY_GYM_DAY === 2 ? (aiLang === 'hindi' ? 'गुरुवार' : 'Thursday')
+                    : TODAY_GYM_DAY === 3 ? (aiLang === 'hindi' ? 'शुक्रवार' : 'Friday')
+                    : TODAY_GYM_DAY === 4 ? (aiLang === 'hindi' ? 'शनिवार' : 'Saturday')
+                    : TODAY_GYM_DAY === 5 ? (aiLang === 'hindi' ? 'रविवार' : 'Sunday')
+                    : TODAY_GYM_DAY === 6 ? (aiLang === 'hindi' ? 'सोमवार' : 'Monday')
+                    : (aiLang === 'hindi' ? 'मंगलवार' : 'Tuesday');
+
+                  return (
+                    <span style={{
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      color: '#ffffff',
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      padding: '0.2rem 0.55rem',
+                      borderRadius: '999px',
+                      letterSpacing: '0.04em',
+                      textTransform: 'uppercase',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {aiLang === 'hindi' ? `7-दिवसीय स्ट्रीक चैलेंज • दिन ${TODAY_GYM_DAY} / 7 (${weekdayStr})` : `7-Day Streak Challenge • Day ${TODAY_GYM_DAY} of 7 (${weekdayStr})`}
+                    </span>
+                  );
+                })()}
               </div>
             </div>
 
@@ -4298,9 +4357,19 @@ export default function DashboardPage() {
               }}
             >
               {isAiCohort
-                ? (aiLang === 'hindi'
-                  ? "[AI माइक्रो-एक्सपेरिमेंट · दिन 1 / 7 (बुधवार): सीखना] AI से कोई ऐसी चीज़ समझें जो आपको समझ नहीं आती। AI को कोई मुश्किल कॉन्सेप्ट देकर आसान भाषा और उदाहरण के साथ समझाने को कहें। (+20 XP आज)"
-                  : "[AI Micro-Experiment · Day 1 of 7 (Wednesday): Learning] Ask AI to explain something you don't understand. Pick a confusing concept and ask AI to explain it with a real-world analogy. (+20 XP Today)")
+                ? (() => {
+                    const todayChallenge = aiGymChallenges.find(c => c.day === TODAY_GYM_DAY) || aiGymChallenges[0];
+                    const weekdayStr = TODAY_GYM_DAY === 1 ? (aiLang === 'hindi' ? 'बुधवार' : 'Wednesday')
+                      : TODAY_GYM_DAY === 2 ? (aiLang === 'hindi' ? 'गुरुवार' : 'Thursday')
+                      : TODAY_GYM_DAY === 3 ? (aiLang === 'hindi' ? 'शुक्रवार' : 'Friday')
+                      : TODAY_GYM_DAY === 4 ? (aiLang === 'hindi' ? 'शनिवार' : 'Saturday')
+                      : TODAY_GYM_DAY === 5 ? (aiLang === 'hindi' ? 'रविवार' : 'Sunday')
+                      : TODAY_GYM_DAY === 6 ? (aiLang === 'hindi' ? 'सोमवार' : 'Monday')
+                      : (aiLang === 'hindi' ? 'मंगलवार' : 'Tuesday');
+                    const categoryText = aiLang === 'hindi' ? (todayChallenge.categoryHi || todayChallenge.newExperienceHi || 'एक्सपेरिमेंट') : (todayChallenge.category || todayChallenge.newExperience || 'Experiment');
+                    const challengeDesc = aiLang === 'hindi' ? (todayChallenge.challengeHi || todayChallenge.questionPromptHi || todayChallenge.challenge) : (todayChallenge.challenge || todayChallenge.questionPrompt);
+                    return `[AI माइक्रो-एक्सपेरिमेंट · दिन ${TODAY_GYM_DAY} / 7 (${weekdayStr}): ${categoryText}] ${challengeDesc} (+20 XP आज)`;
+                  })()
                 : (isClosedDay
                   ? 'Closed today for resting. Rest up, or review previous answers!'
                   : todayQuestion
@@ -4837,7 +4906,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {(isAiCohort || topLeaderboard.length === 0) ? (
+          {(topLeaderboard.length === 0) ? (
             <div style={{
               ...s.dashboardRight,
               width: isCompact ? '100%' : '320px',
@@ -4845,7 +4914,7 @@ export default function DashboardPage() {
             }}>
               <div style={s.railHeaderTitle}>{aiLang === 'hindi' && isAiCohort ? 'शीर्ष साथी (Top Peers)' : 'Top Peers'}</div>
               <div style={s.railHeaderSub}>{aiLang === 'hindi' && isAiCohort ? 'सहपाठियों के मुकाबले अपनी प्रगति ट्रैक करें।' : 'Track your performance against the cohort.'}</div>
-              <div style={s.empty}>{aiLang === 'hindi' && isAiCohort ? 'लेसन्स और असाइनमेंट पूरे होने के बाद लीडरबोर्ड पॉइंट्स दिखाई देंगे।' : 'Leaderboard points will appear after lessons and assignments are completed.'}</div>
+              <div style={s.empty}>{aiLang === 'hindi' && isAiCohort ? 'प्रैक्टिस और असाइनमेंट पूरे होने के बाद लीडरबोर्ड पॉइंट्स दिखाई देंगे।' : 'Leaderboard points will appear after lessons and assignments are completed.'}</div>
             </div>
           ) : (
             <DashboardLeaderboard

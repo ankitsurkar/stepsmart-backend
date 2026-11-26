@@ -20,6 +20,7 @@
 
 const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm');
 const { BATCH_2_PRODUCT_DESIGN_CASE_STUDY } = require('./batch2GymQuestions');
+const { AI_GYM_CHALLENGES } = require('./aiGymQuestions');
 const ssm = new SSMClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 
 let cachedSupaUrl = null;
@@ -410,10 +411,16 @@ async function listWeeks(courseId) {
 
   let gymItems = gymResult.Items || [];
   const existingDates = new Set(gymItems.map((q) => q.date));
-  const todayDateStr = new Date().toISOString().split('T')[0];
-  if (!existingDates.has(todayDateStr) || courseId === 'course-002' || gymItems.length === 0) {
-    const batch2Items = BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter((q) => !existingDates.has(q.date));
-    gymItems = [...gymItems, ...batch2Items];
+  const isAiCourse = String(courseId).toLowerCase().includes('ai');
+  if (isAiCourse) {
+    const aiItems = AI_GYM_CHALLENGES.filter((q) => !existingDates.has(q.date));
+    gymItems = [...gymItems, ...aiItems];
+  } else {
+    const todayDateStr = new Date().toISOString().split('T')[0];
+    if (!existingDates.has(todayDateStr) || courseId === 'course-002' || gymItems.length === 0) {
+      const batch2Items = BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter((q) => !existingDates.has(q.date));
+      gymItems = [...gymItems, ...batch2Items];
+    }
   }
 
   const gymQuestions = gymItems
@@ -877,6 +884,8 @@ async function getCourseProgress(courseId) {
         answer: item.answer,
         score: item.score,
         submittedAt: item.submittedAt,
+        challengeTitle: item.challengeTitle,
+        day: item.day,
       });
     } else {
       progress.push({
@@ -893,7 +902,9 @@ async function getCourseProgress(courseId) {
     }
   }
 
-  return res(200, { progress, gymSubmissions });
+  const aiGymSubmissions = gymSubmissions.filter((s) => s.type === 'ai-gym-response' || s.day != null || (s.challengeTitle && s.challengeTitle.toLowerCase().includes('micro')));
+
+  return res(200, { progress, gymSubmissions, aiGymSubmissions });
 }
 
 // GET /admin/courses/{courseId}/submissions

@@ -527,11 +527,35 @@ export const MODULE_0_SLIDES = [
 ];
 
 // ─── 7-DAY AI GYM CHALLENGES (1 per day; missed days can be attempted later for 8 XP instead of 20 XP) ───
-export const TODAY_GYM_DAY = 1; // Wednesday (Nov 25, 2026) - Day 1 active today
+export function getTodayGymDay() {
+  try {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    const istDateString = formatter.format(new Date()); // "YYYY-MM-DD"
+    const [year, month, day] = istDateString.split('-').map(Number);
+    const currentDate = new Date(Date.UTC(year, month - 1, day));
+    const startDate = new Date(Date.UTC(2026, 10, 25)); // Nov 25, 2026 (Month is 0-indexed: 10 = Nov)
+    const diffDays = Math.floor((currentDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    if (diffDays < 1) return 1;
+    if (diffDays > 7) return 7;
+    return diffDays;
+  } catch (err) {
+    return 2;
+  }
+}
+
+export const TODAY_GYM_DAY = getTodayGymDay();
 
 export const INITIAL_GYM_CHALLENGES = [
   {
     day: 1,
+    date: '2026-11-25',
+    weekday: 'Wednesday',
+    weekdayHi: 'बुधवार',
     caseStudyTitle: "Micro-Experiment 1: AI as Personal Learning Companion",
     caseStudyTitleHi: "माइक्रो-एक्सपेरिमेंट 1: AI आपका पर्सनल टीचर व मार्गदर्शक",
     challenge: "Ask AI to explain something you don't understand",
@@ -548,6 +572,9 @@ export const INITIAL_GYM_CHALLENGES = [
   },
   {
     day: 2,
+    date: '2026-11-26',
+    weekday: 'Thursday',
+    weekdayHi: 'गुरुवार',
     caseStudyTitle: "Micro-Experiment 2: AI as Communication & Tone Editor",
     caseStudyTitleHi: "माइक्रो-एक्सपेरिमेंट 2: AI आपका राइटिंग व टोन एडिटर",
     challenge: "Use AI to improve an existing piece of writing",
@@ -564,6 +591,9 @@ export const INITIAL_GYM_CHALLENGES = [
   },
   {
     day: 3,
+    date: '2026-11-27',
+    weekday: 'Friday',
+    weekdayHi: 'शुक्रवार',
     caseStudyTitle: "Micro-Experiment 3: AI as Planning & Scheduling Assistant",
     caseStudyTitleHi: "माइक्रो-एक्सपेरिमेंट 3: AI आपका शेड्यूलिंग व प्लानिंग असिस्टेंट",
     challenge: "Give AI a real planning problem",
@@ -580,6 +610,9 @@ export const INITIAL_GYM_CHALLENGES = [
   },
   {
     day: 4,
+    date: '2026-11-28',
+    weekday: 'Saturday',
+    weekdayHi: 'शनिवार',
     caseStudyTitle: "Micro-Experiment 4: Document Intelligence & Extraction",
     caseStudyTitleHi: "माइक्रो-एक्सपेरिमेंट 4: डॉक्यूमेंट एनालिसिस व मुख्य बातें निकालना",
     challenge: "Ask AI to analyze a sample document",
@@ -596,6 +629,9 @@ export const INITIAL_GYM_CHALLENGES = [
   },
   {
     day: 5,
+    date: '2026-11-29',
+    weekday: 'Sunday',
+    weekdayHi: 'रविवार',
     caseStudyTitle: "Micro-Experiment 5: Structured Decision Matrix & Trade-offs",
     caseStudyTitleHi: "माइक्रो-एक्सपेरिमेंट 5: दो विकल्पों की तुलना व डिसीजन टेबल",
     challenge: "Compare two alternatives using AI",
@@ -612,6 +648,9 @@ export const INITIAL_GYM_CHALLENGES = [
   },
   {
     day: 6,
+    date: '2026-11-30',
+    weekday: 'Monday',
+    weekdayHi: 'सोमवार',
     caseStudyTitle: "Micro-Experiment 6: Verification & Hallucination Spotting",
     caseStudyTitleHi: "माइक्रो-एक्सपेरिमेंट 6: AI की जांच व फैक्ट चेकिंग",
     challenge: "Challenge an AI answer and verify it",
@@ -628,6 +667,9 @@ export const INITIAL_GYM_CHALLENGES = [
   },
   {
     day: 7,
+    date: '2026-12-01',
+    weekday: 'Tuesday',
+    weekdayHi: 'मंगलवार',
     caseStudyTitle: "Micro-Experiment 7: Iteration & Solution Refinement",
     caseStudyTitleHi: "माइक्रो-एक्सपेरिमेंट 7: प्रॉम्प्ट व समाधान को 2x बेहतर बनाना",
     challenge: "Improve one solution you created in class",

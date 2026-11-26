@@ -1945,6 +1945,7 @@ function SubmissionsNavPills({ currentTab, onSwitchTab }) {
   const items = [
     { id: 'submissions', label: 'Project Submissions', icon: '📄' },
     { id: 'gym-submissions', label: 'PM Gym Responses', icon: '💬' },
+    { id: 'ai-gym-submissions', label: 'AI Gym Responses', icon: '🤖' },
     { id: 'chronicle-submissions', label: 'Ramayana Chronicle Responses', icon: '🏹' },
   ];
   return (
@@ -2473,8 +2474,517 @@ function GymSubmissionsTab({ courseId, onSwitchTab }) {
 }
 
 // ────────────────────────────────────────────────────────────────────────────────
-// Ramayana Chronicle Submissions Tab
+// AI Gym Responses Tab
 // ────────────────────────────────────────────────────────────────────────────────
+function AiGymSubmissionsTab({ courseId, onSwitchTab }) {
+  const [submissions, setSubmissions] = useState([]);
+  const [students, setStudents] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
+  const [selectedDayFilter, setSelectedDayFilter] = useState('all');
+  const [activeModalAnswer, setActiveModalAnswer] = useState(null);
+  const [copiedResponse, setCopiedResponse] = useState(false);
+
+  useEffect(() => {
+    load();
+  }, [courseId]);
+
+  async function load() {
+    setLoading(true);
+    setError('');
+    try {
+      const [progRes, stuRes] = await Promise.all([
+        adminGetAllProgress(courseId),
+        adminGetStudents(courseId),
+      ]);
+
+      let allGym = [...(progRes.data?.gymSubmissions || [])];
+
+      // Check if current course has AI gym submissions. If not, inspect other courses to ensure none are missed
+      const hasAiSubmissions = allGym.some(s => s.type === 'ai-gym-response' || s.day != null || (s.challengeTitle && s.challengeTitle.includes('Micro')));
+      if (!hasAiSubmissions) {
+        try {
+          const coursesRes = await getMyCourses();
+          const otherCourses = (coursesRes.data?.courses || []).filter(c => c.courseId !== courseId);
+          for (const c of otherCourses) {
+            if (c.courseId.toLowerCase().includes('ai') || (c.name && c.name.toLowerCase().includes('ai'))) {
+              const extraProg = await adminGetAllProgress(c.courseId);
+              if (extraProg.data?.gymSubmissions) {
+                allGym = [...allGym, ...extraProg.data.gymSubmissions];
+              }
+            }
+          }
+        } catch (extraErr) {
+          console.warn('Fallback course search warning:', extraErr);
+        }
+      }
+
+      // Filter for AI Gym entries
+      const aiSubs = allGym.filter(s => {
+        if (s.type === 'ai-gym-response') return true;
+        if (s.day != null) return true;
+        if (s.challengeTitle && (s.challengeTitle.includes('Micro') || s.challengeTitle.includes('माइक्रो') || s.challengeTitle.includes('AI'))) return true;
+        if (s.date && (s.date.startsWith('2026-11-25') || s.date.startsWith('2026-11-26') || s.date.startsWith('2026-11-27') || s.date.startsWith('2026-11-28') || s.date.startsWith('2026-11-29') || s.date.startsWith('2026-11-30') || s.date.startsWith('2026-12-01'))) return true;
+        return false;
+      });
+
+      setSubmissions(aiSubs);
+
+      const studentMap = {};
+      for (const st of (stuRes.data?.students || [])) {
+        const info = {
+          name: st.name || st.email || st.Username,
+          email: st.email || '',
+          enrolled: st.enrolled ?? true
+        };
+        if (st.Username) studentMap[st.Username] = info;
+        if (st.email) studentMap[st.email] = info;
+        if (st.sub) studentMap[st.sub] = info;
+      }
+      setStudents(studentMap);
+    } catch (err) {
+      console.error('Failed to load AI Gym responses:', err);
+      setError('Failed to load AI Gym responses.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const aiDaysMeta = [
+    { day: 1, date: '2026-11-25', weekday: 'Wednesday', weekdayHi: 'बुधवार', title: 'Micro-Experiment 1: AI as Personal Learning Companion' },
+    { day: 2, date: '2026-11-26', weekday: 'Thursday', weekdayHi: 'गुरुवार', title: 'Micro-Experiment 2: AI as Communication & Tone Editor' },
+    { day: 3, date: '2026-11-27', weekday: 'Friday', weekdayHi: 'शुक्रवार', title: 'Micro-Experiment 3: AI as Planning & Scheduling Assistant' },
+    { day: 4, date: '2026-11-28', weekday: 'Saturday', weekdayHi: 'शनिवार', title: 'Micro-Experiment 4: Document Intelligence & Extraction' },
+    { day: 5, date: '2026-11-29', weekday: 'Sunday', weekdayHi: 'रविवार', title: 'Micro-Experiment 5: Structured Decision Matrix & Trade-offs' },
+    { day: 6, date: '2026-11-30', weekday: 'Monday', weekdayHi: 'सोमवार', title: 'Micro-Experiment 6: Verification & Hallucination Spotting' },
+    { day: 7, date: '2026-12-01', weekday: 'Tuesday', weekdayHi: 'मंगलवार', title: 'Micro-Experiment 7: Iteration & Solution Refinement' },
+  ];
+
+  const filtered = submissions.filter(sub => {
+    const term = search.toLowerCase();
+    const studentInfo = students[sub.userId] || {};
+    const stSearch = `${studentInfo.name || ''} ${studentInfo.email || ''} ${sub.userId || ''}`.toLowerCase();
+    const titleSearch = (sub.challengeTitle || '').toLowerCase();
+    const ansSearch = (sub.answer || '').toLowerCase();
+    const dateSearch = (sub.date || '').toLowerCase();
+    const matchesTerm = stSearch.includes(term) || titleSearch.includes(term) || ansSearch.includes(term) || dateSearch.includes(term);
+
+    if (!matchesTerm) return false;
+    if (selectedDayFilter !== 'all') {
+      const dayNum = Number(selectedDayFilter);
+      const subDay = sub.day || (sub.date ? (aiDaysMeta.find(m => m.date === sub.date)?.day) : null);
+      if (subDay !== dayNum) return false;
+    }
+    return true;
+  });
+
+  const uniqueStudentCount = new Set(submissions.map(s => s.userId)).size;
+
+  if (loading) return <p style={{ color: 'var(--muted-foreground)' }}>Loading AI Gym responses…</p>;
+  if (error) return <p style={{ color: 'var(--destructive)' }}>{error}</p>;
+
+  const modalOverlayStyle = {
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(15, 23, 42, 0.45)',
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 99999,
+    padding: '1rem',
+    boxSizing: 'border-box',
+  };
+  const modalContentStyle = {
+    background: 'var(--card, #ffffff)',
+    borderRadius: '20px',
+    padding: '1.75rem',
+    width: '100%',
+    maxWidth: '620px',
+    maxHeight: 'min(90vh, 760px)',
+    boxShadow: '0 20px 40px -5px rgba(0, 0, 0, 0.15)',
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    border: '1px solid var(--border, #e2e8f0)',
+  };
+  const modalHeaderStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '1.25rem',
+    borderBottom: '1px solid var(--border, #e2e8f0)',
+    paddingBottom: '0.75rem',
+    flexShrink: 0,
+  };
+  const modalCloseBtnStyle = {
+    background: 'rgba(15, 23, 42, 0.06)',
+    border: 'none',
+    borderRadius: '50%',
+    width: '32px',
+    height: '32px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.1rem',
+    cursor: 'pointer',
+    color: 'var(--foreground, #0f172a)',
+    flexShrink: 0,
+  };
+  const detailLabelStyle = {
+    fontSize: '0.72rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    fontWeight: 700,
+    color: 'var(--muted-foreground)',
+    marginBottom: '0.25rem',
+  };
+  const detailValueStyle = {
+    fontSize: '0.92rem',
+    color: 'var(--foreground)',
+    lineHeight: '1.5',
+  };
+
+  return (
+    <div style={s.card}>
+      <SubmissionsNavPills currentTab="ai-gym-submissions" onSwitchTab={onSwitchTab} />
+
+      {/* Header and Stat Badges */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+        <div>
+          <div style={s.cardTitle}>AI Gym Responses (7-Day Daily Micro-Experiments)</div>
+          <div style={{ fontSize: '0.825rem', color: 'var(--muted-foreground)', marginTop: '0.2rem' }}>
+            Track daily hands-on AI experiments submitted by AI Beginners cohort learners.
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          <span style={{ ...s.badge, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 700 }}>
+            📝 {submissions.length} Total Submissions
+          </span>
+          <span style={{ ...s.badge, background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 700 }}>
+            👥 {uniqueStudentCount} Active Students
+          </span>
+          <span style={{ ...s.badge, background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 700 }}>
+            ⚡ Day 2 Active (Thursday)
+          </span>
+        </div>
+      </div>
+
+      {/* Filters Bar */}
+      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+        <input 
+          style={{ ...s.input, width: '280px', marginBottom: 0 }} 
+          placeholder="Search by student, day, title, response..." 
+          value={search} 
+          onChange={e => setSearch(e.target.value)} 
+        />
+        
+        <select 
+          style={{ ...s.input, width: '220px', marginBottom: 0, paddingRight: '1.5rem' }}
+          value={selectedDayFilter}
+          onChange={e => setSelectedDayFilter(e.target.value)}
+        >
+          <option value="all">All Days (Days 1 to 7)</option>
+          <option value="1">Day 1: Learning Companion (Wed Nov 25)</option>
+          <option value="2">Day 2: Tone & Writing Editor (Thu Nov 26)</option>
+          <option value="3">Day 3: Planning Assistant (Fri Nov 27)</option>
+          <option value="4">Day 4: Document Intelligence (Sat Nov 28)</option>
+          <option value="5">Day 5: Decision Matrix (Sun Nov 29)</option>
+          <option value="6">Day 6: Verification & Facts (Mon Nov 30)</option>
+          <option value="7">Day 7: Solution Refinement (Tue Dec 01)</option>
+        </select>
+      </div>
+
+      {submissions.length === 0 ? (
+        <div style={{ padding: '2rem 1rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🤖</div>
+          <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>No AI Gym responses recorded yet.</div>
+          <div style={{ fontSize: '0.825rem', marginTop: '0.25rem' }}>
+            As learners submit daily micro-experiments in the AI Gym, their responses and +20 XP scores will appear here.
+          </div>
+        </div>
+      ) : (
+        <div className="responsive-table-container">
+          <table style={s.table}>
+            <thead>
+              <tr>
+                <th style={s.th}>Student</th>
+                <th style={s.th}>Day & Challenge</th>
+                <th style={s.th}>XP Earned</th>
+                <th style={s.th}>Submitted Response</th>
+                <th style={s.th}>Submitted At</th>
+                <th style={s.th}>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(() => {
+                const sorted = [...filtered].sort((a, b) => {
+                  return (b.submittedAt || '').localeCompare(a.submittedAt || '');
+                });
+
+                if (sorted.length === 0) {
+                  return (
+                    <tr>
+                      <td colSpan={6} style={{ ...s.td, textAlign: 'center', color: 'var(--muted-foreground)', padding: '2rem' }}>
+                        No submissions match your search or filter.
+                      </td>
+                    </tr>
+                  );
+                }
+
+                return sorted.map((sub, i) => {
+                  const studentInfo = students[sub.userId] || { name: sub.userId?.slice(0, 8) + '…', email: '', enrolled: false };
+                  const subDay = sub.day || (sub.date ? (aiDaysMeta.find(m => m.date === sub.date)?.day) : 1);
+                  const dayMeta = aiDaysMeta.find(m => m.day === subDay) || { weekday: '', weekdayHi: '', title: sub.challengeTitle || `Day ${subDay}` };
+                  const challengeTitle = sub.challengeTitle || dayMeta.title;
+                  const answerText = typeof sub.answer === 'string' ? sub.answer : JSON.stringify(sub.answer);
+                  const isLong = answerText && answerText.length > 70;
+                  const snippet = isLong ? `${answerText.slice(0, 70)}…` : answerText;
+                  const xp = typeof sub.score === 'number' ? sub.score : 20;
+
+                  return (
+                    <tr key={i}>
+                      <td style={s.td}>
+                        <div style={{ fontWeight: 600, color: 'var(--foreground)' }}>
+                          {studentInfo.name}
+                          {studentInfo.enrolled === false && (
+                            <span style={{ ...s.badge, ...s.badgeInfo, fontSize: '0.6rem', marginLeft: '6px', padding: '0.1rem 0.4rem', verticalAlign: 'middle' }}>Staff</span>
+                          )}
+                        </div>
+                        {studentInfo.email && studentInfo.name !== studentInfo.email && (
+                          <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{studentInfo.email}</div>
+                        )}
+                      </td>
+                      <td style={s.td}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.2rem' }}>
+                          <span style={{
+                            background: subDay === 2 ? '#ecfdf5' : '#eff6ff',
+                            color: subDay === 2 ? '#047857' : '#1d4ed8',
+                            fontSize: '0.72rem',
+                            fontWeight: 800,
+                            padding: '0.15rem 0.5rem',
+                            borderRadius: '999px',
+                            border: `1px solid ${subDay === 2 ? '#a7f3d0' : '#bfdbfe'}`,
+                          }}>
+                            Day {subDay} · {dayMeta.weekdayHi} ({dayMeta.weekday})
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--foreground)', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={challengeTitle}>
+                          {challengeTitle}
+                        </div>
+                      </td>
+                      <td style={s.td}>
+                        <span style={{
+                          background: '#ecfdf5',
+                          color: '#047857',
+                          border: '1px solid #a7f3d0',
+                          fontWeight: 700,
+                          fontSize: '0.8rem',
+                          padding: '0.2rem 0.6rem',
+                          borderRadius: '999px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                        }}>
+                          ⚡ +{xp} XP
+                        </span>
+                      </td>
+                      <td style={s.td}>
+                        <div 
+                          onClick={() => setActiveModalAnswer({
+                            studentName: studentInfo.name,
+                            studentEmail: studentInfo.email,
+                            userId: sub.userId,
+                            day: subDay,
+                            date: sub.date,
+                            dayMeta,
+                            challengeTitle,
+                            answerText,
+                            xp,
+                            submittedAt: sub.submittedAt,
+                          })}
+                          style={{ 
+                            maxWidth: '320px', 
+                            wordBreak: 'break-word', 
+                            fontSize: '0.85rem',
+                            cursor: 'pointer',
+                            padding: '0.35rem 0.5rem',
+                            borderRadius: '6px',
+                            background: 'rgba(15, 23, 42, 0.03)',
+                            border: '1px solid rgba(15, 23, 42, 0.06)',
+                            transition: 'all 0.15s ease',
+                          }}
+                          title="Click to view full answer"
+                          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 23, 42, 0.07)'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(15, 23, 42, 0.03)'}
+                        >
+                          <span>{snippet || '—'}</span>
+                          {isLong && (
+                            <span style={{ color: '#027a9b', fontWeight: 700, marginLeft: '6px', fontSize: '0.75rem', textDecoration: 'underline' }}>
+                              (view full)
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td style={s.td}>
+                        <div style={{ fontSize: '0.825rem', color: 'var(--foreground)' }}>
+                          {sub.submittedAt ? new Date(sub.submittedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
+                        </div>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--muted-foreground)' }}>
+                          {sub.submittedAt ? new Date(sub.submittedAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : ''}
+                        </div>
+                      </td>
+                      <td style={s.td}>
+                        <button
+                          type="button"
+                          onClick={() => setActiveModalAnswer({
+                            studentName: studentInfo.name,
+                            studentEmail: studentInfo.email,
+                            userId: sub.userId,
+                            day: subDay,
+                            date: sub.date,
+                            dayMeta,
+                            challengeTitle,
+                            answerText,
+                            xp,
+                            submittedAt: sub.submittedAt,
+                          })}
+                          style={{
+                            background: '#ffffff',
+                            border: '1px solid var(--border)',
+                            borderRadius: '6px',
+                            padding: '0.3rem 0.65rem',
+                            fontSize: '0.78rem',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            color: 'var(--primary)',
+                            transition: 'all 0.15s ease',
+                          }}
+                        >
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                });
+              })()}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* AI Gym Detail Modal */}
+      {activeModalAnswer && (
+        <div style={modalOverlayStyle} onClick={() => setActiveModalAnswer(null)}>
+          <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
+            <div style={modalHeaderStyle}>
+              <div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#027a9b' }}>
+                  AI Gym Submission · Day {activeModalAnswer.day}
+                </div>
+                <h3 style={{ margin: '0.2rem 0 0 0', fontSize: '1.2rem', fontWeight: 800, color: 'var(--foreground)' }}>
+                  {activeModalAnswer.challengeTitle}
+                </h3>
+              </div>
+              <button 
+                type="button" 
+                style={modalCloseBtnStyle} 
+                onClick={() => setActiveModalAnswer(null)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', overflowY: 'auto', paddingRight: '0.25rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', background: 'var(--muted)', padding: '0.75rem 1rem', borderRadius: '12px' }}>
+                <div>
+                  <div style={detailLabelStyle}>Student</div>
+                  <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--foreground)' }}>
+                    {activeModalAnswer.studentName}
+                  </div>
+                  {activeModalAnswer.studentEmail && (
+                    <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+                      {activeModalAnswer.studentEmail}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <div style={detailLabelStyle}>Reward & Status</div>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <span style={{
+                      background: '#ecfdf5',
+                      color: '#047857',
+                      border: '1px solid #a7f3d0',
+                      fontWeight: 800,
+                      fontSize: '0.8rem',
+                      padding: '0.2rem 0.6rem',
+                      borderRadius: '999px',
+                    }}>
+                      ⚡ +{activeModalAnswer.xp} XP
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+                      Completed ✓
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                  <div style={detailLabelStyle}>Submitted Response</div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(activeModalAnswer.answerText);
+                      setCopiedResponse(true);
+                      setTimeout(() => setCopiedResponse(false), 2000);
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#027a9b',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      padding: 0,
+                    }}
+                  >
+                    {copiedResponse ? '✓ Copied' : '📋 Copy Response'}
+                  </button>
+                </div>
+                <div style={{
+                  background: 'var(--background)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '10px',
+                  padding: '1rem',
+                  fontSize: '0.92rem',
+                  lineHeight: 1.6,
+                  color: 'var(--foreground)',
+                  whiteSpace: 'pre-wrap',
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                }}>
+                  {activeModalAnswer.answerText || 'No response text provided.'}
+                </div>
+              </div>
+
+              {activeModalAnswer.submittedAt && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', color: 'var(--muted-foreground)', borderTop: '1px solid var(--border)', paddingTop: '0.75rem' }}>
+                  <span>Submitted on: {new Date(activeModalAnswer.submittedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                  <span>Date Key: {activeModalAnswer.date}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 function ChronicleSubmissionsTab({ courseId, onSwitchTab }) {
   const [rawResponses, setRawResponses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -7980,6 +8490,7 @@ export default function AdminPage() {
       subItems: [
         { id: 'submissions', label: 'Project Submissions', icon: '📄' },
         { id: 'gym-submissions', label: 'PM Gym Responses', icon: '💬' },
+        { id: 'ai-gym-submissions', label: 'AI Gym Responses', icon: '🤖' },
         { id: 'chronicle-submissions', label: 'Ramayana Chronicle', icon: '🏹' },
       ]
     },
@@ -8074,7 +8585,7 @@ export default function AdminPage() {
             MANAGEMENT NAV
           </div>
           {navItems.map((t) => {
-            const isParentActive = tab === t.id || (t.id === 'supplemental' && tab === 'supplemental') || (t.id === 'submissions' && (tab === 'submissions' || tab === 'gym-submissions' || tab === 'chronicle-submissions'));
+            const isParentActive = tab === t.id || (t.id === 'supplemental' && tab === 'supplemental') || (t.id === 'submissions' && (tab === 'submissions' || tab === 'gym-submissions' || tab === 'ai-gym-submissions' || tab === 'chronicle-submissions'));
             const hasSub = t.subItems && t.subItems.length > 0;
             const isOpen = openSubmenus[t.id];
 
@@ -8184,6 +8695,7 @@ export default function AdminPage() {
           {tab === 'progress' && <ProgressTab courseId={currentCourseId} />}
           {tab === 'submissions' && <SubmissionsTab courseId={currentCourseId} onSwitchTab={setTab} />}
           {tab === 'gym-submissions' && <GymSubmissionsTab courseId={currentCourseId} onSwitchTab={setTab} />}
+          {tab === 'ai-gym-submissions' && <AiGymSubmissionsTab courseId={currentCourseId} onSwitchTab={setTab} />}
           {tab === 'chronicle-submissions' && <ChronicleSubmissionsTab courseId={currentCourseId} onSwitchTab={setTab} />}
           {tab === 'leads' && <LeadsTab />}
           {tab === 'blogs' && <BlogsTab courseId={currentCourseId} />}

@@ -131,6 +131,7 @@ function normalizeResource(resource = '') {
 }
 
 const { BATCH_2_PRODUCT_DESIGN_CASE_STUDY } = require('./batch2GymQuestions');
+const { AI_GYM_CHALLENGES } = require('./aiGymQuestions');
 
 const COURSE_NAME_OVERRIDES = {
   'course-001': 'PM -X Accelerator',
@@ -624,11 +625,12 @@ async function buildLeaderboard(courseId, currentUserId, event) {
     if (!itemUserId) continue;
     if (!enrolledUserIds.has(itemUserId)) continue;
 
-    // PM Gym question completion gives 1 point
+    // PM Gym & AI Gym question completion gives score points
     if (item.sk && item.sk.startsWith('GYM#')) {
       const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
-      entry.score += 1;
-      entry.totalPoints += 1;
+      const points = typeof item.score === 'number' ? item.score : 1;
+      entry.score += points;
+      entry.totalPoints += points;
       entry.lastActivity = laterDate(entry.lastActivity, toIso(item.submittedAt));
       continue;
     }
@@ -799,6 +801,8 @@ async function getProgressForCourse(courseId, userId, event) {
     answer: item.answer,
     score: item.score,
     submittedAt: item.submittedAt,
+    challengeTitle: item.challengeTitle,
+    day: item.day,
   }));
 
   const serverDateStr = new Date().toISOString().split('T')[0];
@@ -806,7 +810,11 @@ async function getProgressForCourse(courseId, userId, event) {
 
   let rawGymItems = gymQuestionsResult.Items || [];
   const existingDates = new Set(rawGymItems.map((q) => q.date));
-  if (!existingDates.has(clientDate) || courseId === 'course-002' || rawGymItems.length === 0) {
+  const isAiCohort = String(courseId).toLowerCase().includes('ai');
+  if (isAiCohort) {
+    const aiItems = AI_GYM_CHALLENGES.filter((q) => !existingDates.has(q.date));
+    rawGymItems = [...rawGymItems, ...aiItems];
+  } else if (!existingDates.has(clientDate) || courseId === 'course-002' || rawGymItems.length === 0) {
     const batch2Items = BATCH_2_PRODUCT_DESIGN_CASE_STUDY.filter((q) => !existingDates.has(q.date));
     rawGymItems = [...rawGymItems, ...batch2Items];
   }
@@ -981,8 +989,8 @@ async function submitGymAttempt(userId, body) {
     return res(400, { message: 'Missing required fields: courseId, answers' });
   }
   const date = Object.keys(answers)[0];
-  const answer = answers[date];
-  if (!date || answer === undefined) {
+  const rawAnswer = answers[date];
+  if (!date || rawAnswer === undefined) {
     return res(400, { message: 'Missing date or answer' });
   }
 
@@ -1001,36 +1009,76 @@ async function submitGymAttempt(userId, body) {
     question = BATCH_2_PRODUCT_DESIGN_CASE_STUDY.find((q) => q.date === date);
   }
   if (!question) {
-    return res(404, { message: 'Daily question not found' });
+    const aiChallenge = AI_GYM_CHALLENGES.find((c) => c.date === date || `day-${c.day}` === date || String(c.day) === date);
+    if (aiChallenge) {
+      question = {
+        date: aiChallenge.date,
+        day: aiChallenge.day,
+        text: aiChallenge.title,
+        title: aiChallenge.title,
+        type: 'text',
+        isAiGym: true,
+      };
+    }
+  }
+  if (!question) {
+    if (String(courseId).toLowerCase().includes('ai')) {
+      question = {
+        date,
+        text: `AI Gym Drill ${date}`,
+        title: `AI Gym Drill ${date}`,
+        type: 'text',
+        isAiGym: true,
+      };
+    } else {
+      return res(404, { message: 'Daily question not found' });
+    }
   }
 
+  const answerText = (typeof rawAnswer === 'object' && rawAnswer !== null)
+    ? (rawAnswer.text || rawAnswer.answer || JSON.stringify(rawAnswer))
+    : String(rawAnswer);
+
   let score = 0;
-  if (question.type === 'quiz') {
-    score = (Number(answer) === question.correctIndex) ? 1 : 0;
+  if (question.isAiGym) {
+    if (typeof rawAnswer === 'object' && typeof rawAnswer.score === 'number') {
+      score = rawAnswer.score;
+    } else if (typeof body.score === 'number') {
+      score = body.score;
+    } else {
+      score = 20;
+    }
+  } else if (question.type === 'quiz') {
+    score = (Number(answerText) === question.correctIndex) ? 1 : 0;
   } else {
-    // Text format question gets 1 for completion
     score = 1;
   }
 
   const pk = `USER#${userId}`;
   const sk = `GYM#${courseId}#${date}`;
+  const challengeTitle = (typeof rawAnswer === 'object' && rawAnswer?.challengeTitle)
+    ? rawAnswer.challengeTitle
+    : (question.title || question.text || `Gym Drill ${date}`);
 
   await ddb.send(new UpdateCommand({
     TableName: PROGRESS_TABLE,
     Key: { pk, sk },
-    UpdateExpression: 'SET courseId = :cid, #dt = :dt, #tp = :tp, answer = :ans, score = :score, submittedAt = :now, userId = :uid',
+    UpdateExpression: 'SET courseId = :cid, #dt = :dt, #tp = :tp, answer = :ans, score = :score, submittedAt = :now, userId = :uid, challengeTitle = :title, #day = :day',
     ExpressionAttributeNames: {
       '#dt': 'date',
       '#tp': 'type',
+      '#day': 'day',
     },
     ExpressionAttributeValues: {
       ':cid': courseId,
       ':dt': date,
-      ':tp': question.type,
-      ':ans': answer,
+      ':tp': question.isAiGym ? 'ai-gym-response' : question.type,
+      ':ans': answerText,
       ':score': score,
       ':now': new Date().toISOString(),
       ':uid': userId,
+      ':title': challengeTitle,
+      ':day': question.day || (typeof rawAnswer === 'object' ? rawAnswer.day : null) || null,
     },
   }));
 
