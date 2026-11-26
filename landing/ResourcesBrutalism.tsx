@@ -2020,29 +2020,31 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
       };
 
       r.blockquote = function(token: any) {
-        const text = token.text || (token.tokens ? this.parser.parse(token.tokens) : '');
+        const text = token.tokens ? this.parser.parse(token.tokens) : (token.text || '');
         return `<div class="bg-[#FFF3A7] border-[3px] border-[#111111] p-4 sm:p-5 shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] my-6">
           <div class="flex items-center gap-2 mb-1.5 font-black text-xs uppercase tracking-wider text-[#111111]">
             <span>💡</span>
             <span>Insider Tip & Candidate Insight</span>
           </div>
-          <div class="text-xs sm:text-sm font-bold text-slate-800 leading-relaxed space-y-1">
+          <div class="text-xs sm:text-sm font-bold text-slate-800 leading-relaxed space-y-1 [&>p:last-child]:mb-0">
             ${text}
           </div>
         </div>`;
       };
 
-      r.heading = function({ text, depth }: { text: string; depth: number }) {
+      r.heading = function(token: any) {
+        const content = token.tokens ? this.parser.parseInline(token.tokens) : (token.text || '');
+        const depth = token.depth;
         if (depth === 1) {
-          return `<h1 class="text-2xl sm:text-3xl font-black mt-8 mb-4 border-b-[3px] border-[#111111] pb-2 text-[#111111] uppercase tracking-wide">${text}</h1>`;
+          return `<h1 class="text-2xl sm:text-3xl font-black mt-8 mb-4 border-b-[3px] border-[#111111] pb-2 text-[#111111] uppercase tracking-wide">${content}</h1>`;
         }
         if (depth === 2) {
-          return `<h2 class="text-xl sm:text-2xl font-black mt-8 mb-3 border-b-2 border-[#111111] pb-2 text-[#111111] uppercase tracking-wide">${text}</h2>`;
+          return `<h2 class="text-xl sm:text-2xl font-black mt-8 mb-3 border-b-2 border-[#111111] pb-2 text-[#111111] uppercase tracking-wide">${content}</h2>`;
         }
         if (depth === 3) {
-          return `<h3 class="text-base sm:text-lg font-extrabold mt-6 mb-2 text-[#111111] uppercase tracking-wide">${text}</h3>`;
+          return `<h3 class="text-base sm:text-lg font-extrabold mt-6 mb-2 text-[#111111] uppercase tracking-wide">${content}</h3>`;
         }
-        return `<h4 class="text-sm sm:text-base font-extrabold mt-4 mb-2 text-[#111111]">${text}</h4>`;
+        return `<h4 class="text-sm sm:text-base font-extrabold mt-4 mb-2 text-[#111111]">${content}</h4>`;
       };
 
       r.list = function(token: any) {
@@ -2067,16 +2069,33 @@ export function ResourcesBrutalism({ defaultTab }: { defaultTab?: 'guides' | 'qu
         return `<li class="my-1 leading-relaxed">${text}</li>`;
       };
 
-      renderer.paragraph = function({ text }: { text: string }) {
-        return `<p class="mb-4 text-[#111111] leading-relaxed text-sm font-semibold">${text}</p>`;
+      r.paragraph = function(token: any) {
+        const content = token.tokens ? this.parser.parseInline(token.tokens) : (token.text || '');
+        return `<p class="mb-4 text-[#111111] leading-relaxed text-sm font-semibold">${content}</p>`;
       };
 
-      renderer.link = function({ href, text }: { href: string; text: string }) {
-        let cleanHref = href || '#';
+      r.strong = function(token: any) {
+        const content = token.tokens ? this.parser.parseInline(token.tokens) : (token.text || '');
+        return `<strong class="font-black text-[#111111]">${content}</strong>`;
+      };
+
+      r.link = function(token: any) {
+        const content = token.tokens ? this.parser.parseInline(token.tokens) : (token.text || '');
+        let cleanHref = token.href || '#';
         if (cleanHref.startsWith('/guide/')) {
           cleanHref = cleanHref.replace('/guide/', '/resources/');
+        } else if (
+          cleanHref !== '#' &&
+          !cleanHref.startsWith('/') &&
+          !cleanHref.startsWith('http://') &&
+          !cleanHref.startsWith('https://') &&
+          !cleanHref.startsWith('mailto:')
+        ) {
+          cleanHref = `/resources/${cleanHref}`;
         }
-        return `<a href="${cleanHref}" class="text-[#188ab2] font-black underline hover:text-[#0e4e66] transition-colors">${text}</a>`;
+        const isExternal = cleanHref.startsWith('http://') || cleanHref.startsWith('https://');
+        const extAttrs = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+        return `<a href="${cleanHref}"${extAttrs} class="text-[#188ab2] font-black underline hover:text-[#0e4e66] transition-colors">${content}</a>`;
       };
 
       renderer.hr = function() {
