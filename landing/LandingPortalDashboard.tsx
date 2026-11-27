@@ -31,8 +31,10 @@ import {
   AlertCircle,
   ChevronDown,
   ChevronUp,
-  Download
+  Download,
+  Target
 } from 'lucide-react';
+import { CaseSimulatorPage } from './CaseSimulatorPage';
 
 export const WHATSAPP_BUSINESS_URL = "https://wa.me/message/GH5C7YLAYIEHN1";
 const PUBLIC_API_URL = "https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/prod/public/enroll";
@@ -40,6 +42,7 @@ const PUBLIC_API_URL = "https://6osmrsvdtg.execute-api.eu-north-1.amazonaws.com/
 // ─── Sidebar Navigation (Cohort & Profile removed as requested) ───
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Home', icon: 'home', isLocked: false },
+  { id: 'case-simulator', label: 'PM-X Live Case Simulator', icon: 'target', isLocked: false },
   { id: 'courses', label: 'Courses', icon: 'book', isLocked: true },
   { id: 'scheduling', label: '1:1 Sessions', icon: 'clock', isLocked: false },
   { id: 'resources', label: 'Resources', icon: 'folder', isLocked: false },
@@ -513,6 +516,7 @@ const CURATED_JOBS = [
 
 function SidebarIcon({ kind }: { kind: string }) {
   if (kind === 'home') return <Home size={20} strokeWidth={2} />;
+  if (kind === 'target' || kind === 'case') return <Target size={20} strokeWidth={2} />;
   if (kind === 'book') return <Book size={20} strokeWidth={2} />;
   if (kind === 'jobs') return <Briefcase size={20} strokeWidth={2} />;
   if (kind === 'clock') return <Clock size={20} strokeWidth={2} />;
@@ -1180,6 +1184,42 @@ export function LandingPortalDashboard() {
               </a>
             </div>
           </div>
+
+          {/* ═════════════════════════════════════════════════════════ */}
+          {/* VIEW: PM-X LIVE CASE SIMULATOR                            */}
+          {/* ═════════════════════════════════════════════════════════ */}
+          {activeView === 'case-simulator' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', width: '100%' }}>
+              <div
+                style={{
+                  background: 'linear-gradient(135deg, #188ab2 0%, #0c5770 100%)',
+                  borderRadius: '24px',
+                  padding: '1.5rem 2rem',
+                  color: '#ffffff',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  boxShadow: '0 10px 30px rgba(24, 138, 178, 0.15)',
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.85, marginBottom: '0.25rem' }}>
+                    Interactive Case Simulator
+                  </div>
+                  <h2 style={{ fontSize: '1.5rem', fontWeight: 900, margin: 0 }}>
+                    PM-X Live Case Simulator
+                  </h2>
+                  <p style={{ fontSize: '0.85rem', opacity: 0.9, marginTop: '0.25rem', marginBottom: 0 }}>
+                    Solve live product cases, submit clarifying questions, decompose metric trees, and master executive RCA.
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ background: '#ffffff', borderRadius: '24px', padding: '1.5rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+                <CaseSimulatorPage defaultTab="bluestone-rca" />
+              </div>
+            </div>
+          )}
 
           {/* ═════════════════════════════════════════════════════════ */}
           {/* VIEW 1: HOME (PM GYM + 2 FLAGSHIP COURSES)                */}

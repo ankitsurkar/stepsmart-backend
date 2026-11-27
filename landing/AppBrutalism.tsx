@@ -17,6 +17,7 @@ const RamayanaChroniclePage = lazy(() => import('./RamayanaChroniclePage').then(
 const CaseSimulatorPage = lazy(() => import('./CaseSimulatorPage').then(m => ({ default: m.CaseSimulatorPage })));
 const BlueStoneRcaPage = lazy(() => import('./BlueStoneRcaPage').then(m => ({ default: m.BlueStoneRcaPage })));
 const AiBeginnersLms = lazy(() => import('./AiBeginnersLms'));
+import { AdminCaseSimulatorManager } from './AdminCaseSimulatorManager';
 import { DEFAULT_BLOGS, mergeWithDefaultBlogs } from './blogData';
 
 const PageLoader = () => (
@@ -2972,6 +2973,7 @@ function AdminPage() {
         <div className="flex items-center gap-1 min-w-max">
           {[
             { id: 'weeks', label: 'Manage Weeks' },
+            { id: 'case-simulator', label: 'PM-X Live Case Simulator' },
             { id: 'supplemental', label: 'Supplemental Content' },
             { id: 'reminders', label: 'Weekly Reminder' },
             { id: 'pm-gym', label: 'PM Gym' },
@@ -3003,6 +3005,10 @@ function AdminPage() {
         <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm min-h-[500px]">
           {activeTab === 'events' && (
             <AdminEventsManager />
+          )}
+
+          {activeTab === 'case-simulator' && (
+            <AdminCaseSimulatorManager currentBatch={currentBatch} />
           )}
 
           {activeTab === 'weeks' && (
