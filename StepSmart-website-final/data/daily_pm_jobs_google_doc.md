@@ -1,172 +1,164 @@
-# StepSmart Daily PM Job Board Digest — November 26, 2026
-**Total Fresh Openings:** 165 Verified Roles
+# StepSmart Daily PM Job Board Digest — November 27, 2026
+**Total Fresh Openings:** 157 Verified Roles
 
 ---
 
 ## 📲 LinkedIn-Ready Format (Direct Copy-Paste)
 
-ABB - Product Manager - Weighing Solutions - https://www.naukri.com/job-listings-product-manager-weighing-solutions-abb-india-limited-bengaluru-5-to-8-years-261126031085
-AdvaRisk - Associate Product Manager - https://www.naukri.com/job-listings-associate-product-manager-advarisk-pune-3-to-5-years-261126038280
 Airtel Payments Bank - Senior Product Manager - https://www.instahyre.com/job-478427-senior-product-manager-at-airtel-payments-bank-2-gurgaon/
 Alacriti - Associate Product Manager - https://www.instahyre.com/job-475725-associate-product-manager-at-alacriti-hyderabad/
-Allegis Group - Product Manager - https://www.naukri.com/job-listings-product-manager-allegis-group-bengaluru-6-to-10-years-261126036296
+Alegeus - Product Manager - https://www.instahyre.com/job-439267-product-manager-at-alegeus-bangalore/
+Alegeus - Senior Product Manager - https://www.naukri.com/job-listings-senior-product-manager-alegeus-technologies-india-private-limited-bengaluru-10-to-15-years-291026926763
+Amagi - Product Manager - AgentHelix - https://www.linkedin.com/jobs/view/4493877657
+Amazon - Sr. Product Manager, WW MFN CSBA - https://www.linkedin.com/jobs/view/4495559568
 Anka - Senior Product Manager - https://www.instahyre.com/job-447921-senior-product-manager-at-anka-2-noida/
 Arintra - Senior Product Manager - https://www.instahyre.com/job-436450-senior-product-manager-at-arintra-bangalore/
-Aris Infra - Product Manager - https://www.instahyre.com/job-420586-product-manager-at-aris-infra-bangalore/
-Articore Group - Product Manager - https://www.linkedin.com/jobs/view/4494988547
-AuctionIt - Product Manager - https://www.instahyre.com/job-439724-product-manager-at-auctionit-noida/
+Aris Infra - Product Manager - https://www.instahyre.com/job-499992-product-manager-at-aris-infra-bangalore/
+Avaamo - Product Manager - https://www.naukri.com/job-listings-product-manager-avaamo-bengaluru-5-to-10-years-271126505936
 Big Assets Infra - Product Manager - https://www.instahyre.com/job-441838-product-manager-at-big-assets-infra-kolkata/
 Binary Semantics - Associate Product Manager - https://www.instahyre.com/job-487556-associate-product-manager-at-binary-semantics-gurgaon/
 Binocs.co - Associate Product Manager - https://www.instahyre.com/job-442713-associate-product-manager-at-binocs-2-bangalore/
 Birla Pivot - Senior Product Manager - https://www.instahyre.com/job-443496-senior-product-manager-at-birla-pivot-bangalore/
 Birla Pivot - Associate Product Manager - https://www.instahyre.com/job-423855-associate-product-manager-at-birla-pivot-bangalore/
-BlueOptima - Senior Product Manager - https://www.instahyre.com/job-439669-senior-product-manager-at-blueoptima-bangalore/
-BlueVine - Product Manager - https://www.instahyre.com/job-422372-product-manager-at-bluevine-bangalore/
-Bluno - Product Manager - https://www.instahyre.com/job-495820-product-manager-at-bluno-bangalore/
-Boston Scientific - Product Manager - https://www.naukri.com/job-listings-product-manager-boston-scientific-gurugram-5-to-6-years-261126504150
-CD INFOTECH PVT. LTD - Jewellery Product Manager - https://in.indeed.com/viewjob?jk=7a20918af20d300c
-CDK Global - Associate Product Manager - https://www.instahyre.com/job-491356-associate-product-manager-at-cdk-global-hyderabad/
+Bitkraft Technologies - Product Manager / Business Analyst (Intern) - https://www.naukri.com/job-listings-product-manager-business-analyst-intern-bitkraft-technologies-mumbai-0-to-1-years-271126919699
+Bloom Engineering - Senior Product Manager - DNA - https://www.naukri.com/job-listings-senior-product-manager-dna-bloom-engineering-company-bengaluru-7-to-10-years-271126503985
+Bluno - Product Manager - https://www.instahyre.com/job-447756-product-manager-at-bluno-bangalore/
+Boku - Senior Technical Product Manager - https://www.naukri.com/job-listings-senior-technical-product-manager-boku-mumbai-5-to-7-years-271126920524
 CIMET - Associate Product Manager - https://www.instahyre.com/job-419147-associate-product-manager-at-cimet-jaipur/
-Couchbase - Sr Product Manager - https://www.naukri.com/job-listings-sr-product-manager-couchbase-inc-bengaluru-7-to-12-years-261126503229
+Cognizant - Technical Product Owner / Manager - https://www.naukri.com/job-listings-technical-product-owner-manager-cognizant-kolkata-chennai-bengaluru-9-to-12-years-271126037341
+Consultbae - Director/Senior Product Manager - Artificial Intelligence/B2B SaaS - L - https://www.naukri.com/job-listings-director-senior-product-manager-artificial-intelligence-b2b-saas-l-consultbae-gurugram-6-to-10-years-261026916584
 CoverSure - Associate Product Manager - https://www.instahyre.com/job-434926-associate-product-manager-at-coversure-mumbai/
+Creative Hands HR - Product Manager - https://www.naukri.com/job-listings-product-manager-creative-hands-hr-hyderabad-8-to-11-years-271126044488
+DBS Bank - Senior Associate, Product Manager, Loan Against Property , Consumer Banking Group - https://www.linkedin.com/jobs/view/4443367545
+Daloopa - Product Manager - https://www.instahyre.com/job-499836-product-manager-at-daloopa-noida-work-from-home/
 Daloopa - Senior Product Manager - https://www.instahyre.com/job-445973-senior-product-manager-at-daloopa-noida/
 Digii - Associate Product Manager - https://www.instahyre.com/job-445975-associate-product-manager-at-digii-bangalore/
-Emcure - Product Manager / Senior Product Manager (Cardio Diabetic) - https://www.naukri.com/job-listings-product-manager-senior-product-manager-cardio-diabetic-emcure-pharmaceuticals-gurugram-3-to-8-years-261126913025
-Everest Industries - Product Manager - https://www.naukri.com/job-listings-product-manager-everest-industries-mumbai-all-areas-2-to-5-years-261126017740
+EY - Tech S and T-Product Manager-Senior-GDSF02 - https://www.linkedin.com/jobs/view/4493875835
+Epam Systems - Product Manager - https://www.naukri.com/job-listings-product-manager-epam-systems-coimbatore-jaipur-bengaluru-10-to-13-years-261026030203
+Evident Microscopy - Product Manager - https://www.instahyre.com/job-504094-product-manager-at-evident-microscopy-bangalore/
+FYN Tune Solution - Product Manager - https://www.naukri.com/job-listings-product-manager-fyn-tune-solution-thane-navi-mumbai-mumbai-all-areas-0-to-1-years-271126038419
 Fluent Health - Senior Product Manager - https://www.instahyre.com/job-449329-senior-product-manager-at-fluent-health-mumbai/
+Gametion Technologies Pvt. Ltd. - Product Manager - https://www.linkedin.com/jobs/view/4467839580
 GeoIQ - Associate Product Manager - https://www.instahyre.com/job-499894-associate-product-manager-at-geoiq-bangalore/
-Global Connect Business Solutions - Product Manager - https://www.naukri.com/job-listings-product-manager-global-connect-business-solutions-chennai-tiruchirappalli-coimbatore-5-to-10-years-261126028431
 Glomopay - Product Manager - https://www.instahyre.com/job-447301-product-manager-at-glomopay-bangalore/
 GobbleCube - Associate Product Manager - https://www.instahyre.com/job-446304-associate-product-manager-at-gobblecube-gurgaon/
 Goldcast - Senior Product Manager - https://www.instahyre.com/job-495828-senior-product-manager-at-goldcast-gurgaon/
 GreyOrange - Associate Product Manager - https://www.instahyre.com/job-436080-associate-product-manager-at-greyorange-2-gurgaon/
-Hdfc Bank - CC-Product Manager-Premium Cards Concierge - https://www.naukri.com/job-listings-cc-product-manager-cards-concierge-hdfc-bank-limited-mumbai-0-to-1-years-261126018561
-HelloCounsel.ai - Product Manager - https://www.instahyre.com/job-447965-product-manager-at-hellocounsel-bangalore/
-HighLevel - Sr. Product Manager, Account Integrity - https://in.indeed.com/viewjob?jk=7e4bf6233201fec5
-Hirezy - AI Agent Product Manager - https://in.indeed.com/viewjob?jk=c0468d0faf5a9f73
-Huron Consulting Group - Salesforce Product Manager - https://in.indeed.com/viewjob?jk=2ea2d1e2411ee037
+Gullysystem - Associate Product Manager (APM) Intern - https://www.naukri.com/job-listings-associate-product-manager-apm-intern-gully-system-pvt-ltd-bengaluru-0-to-2-years-271126506274
 Huru - Senior Product Manager - https://www.instahyre.com/job-493308-senior-product-manager-at-huru-delhi-noida/
-IDFC FIRST Bank - Senior Product Manager-Credit Cards - https://www.linkedin.com/jobs/view/4486584865
-InCred Financial Services - Associate Product Manager - https://www.linkedin.com/jobs/view/4494908798
-InMobi - Product Manager - https://www.instahyre.com/job-446747-product-manager-at-inmobi-bangalore/
-IndiaMART InterMESH Limited - Assistant Product Manager - https://www.linkedin.com/jobs/view/4495271276
-Infibeam Avenues Ltd. - Product Manager| Product| Bill Avenue - https://in.indeed.com/viewjob?jk=0f93d89ae6be34fb
+IDFC FIRST Bank - Product Manager - Customer Life Cycle, MSME - https://www.linkedin.com/jobs/view/4495098196
+Instaweb Labs - Product Manager - https://www.naukri.com/job-listings-product-manager-instaweb-labs-pvt-ltd-mumbai-malad-1-to-5-years-271126918562
 JFrog - Senior Product Manager - https://www.instahyre.com/job-435293-senior-product-manager-at-jfrog-bangalore/
+JUSPAY - Associate Product Manager - https://www.instahyre.com/job-502713-associate-product-manager-at-juspay-bangalore/
 JetStream Security - Product Manager - https://www.instahyre.com/job-442056-product-manager-at-jetstream-security-bangalore/
-JioHotstar - Associate Product Manager - https://www.naukri.com/job-listings-associate-product-manager-disney-hotstar-bengaluru-1-to-3-years-261126505668
+JioStar - Senior Product Manager (Ads) - https://www.linkedin.com/jobs/view/4469331120
+Jockey International - Product Manager - https://www.instahyre.com/job-499869-product-manager-at-jockey-international-bangalore/
 Kaleidofin - Product Manager - https://www.instahyre.com/job-449322-product-manager-at-kaleidofin-bangalore-chennai/
 Karta - Product Manager - https://www.instahyre.com/job-446776-product-manager-at-karta-bangalore/
 Klimb.io - Associate Product Manager - https://www.instahyre.com/job-499797-associate-product-manager-at-klimb-bangalore/
 Koch - Associate Product Manager - https://www.instahyre.com/job-492761-associate-product-manager-at-koch-2-bangalore/
-Kotak Life Insurance - Product Manager, Goregaon - https://www.naukri.com/job-listings-product-manager-goregaon-kotak-life-insurance-mumbai-5-to-10-years-261126030213
+LeadSquared - Senior Product Manager - https://www.naukri.com/job-listings-senior-product-manager-leadsquared-bengaluru-5-to-6-years-271126506866
+Lennox Software - Technical Product Manager (TPM) - https://www.naukri.com/job-listings-technical-product-manager-tpm-lennox-software-bengaluru-4-to-8-years-271126505642
 Locus.sh - Senior Product Manager - https://www.instahyre.com/job-462771-senior-product-manager-at-locus-bangalore/
 Luna - Senior Product Manager - https://www.instahyre.com/job-448868-senior-product-manager-at-luna-gurgaon/
-MVPRockets - Product Manager - https://www.instahyre.com/job-288808-product-manager-at-mvprockets-3-bangalore/
-Mac Chem Products - Product Manager - https://www.naukri.com/job-listings-product-manager-mac-chem-products-mumbai-mumbai-suburban-thane-navi-mumbai-virar-2-to-7-years-261126040491
 Mai Labs - Senior Product Manager - https://www.instahyre.com/job-499770-senior-product-manager-at-mai-labs-noida/
-MakeMyTrip - Associate Product Manager - Connect - https://www.linkedin.com/jobs/view/4495282839
 Marzi by Primus - Senior Product Manager - https://www.instahyre.com/job-440960-senior-product-manager-at-marzi-by-primus-bangalore/
 Meraki Labs - Senior Product Manager - https://www.instahyre.com/job-445778-senior-product-manager-at-meraki-labs-bangalore/
-Michael Page - Product Manager - Gurugram - https://www.linkedin.com/jobs/view/4495010565
-Mott MacDonald - Product Manager - https://www.linkedin.com/jobs/view/4487746763
-National Payments Corporation of India (NPCI) - Senior Associate NFS Product Manager - https://www.naukri.com/job-listings-senior-associate-nfs-product-manager-national-payments-corporation-of-india-npci-mumbai-2-to-6-years-261126033951
-Navlakha Management Services - Product Manager - https://www.naukri.com/job-listings-product-manager-navlakha-management-services-mumbai-all-areas-5-to-10-years-261126032982
-Nium India - Staff Product Manager - Digital Assets - https://www.naukri.com/job-listings-staff-product-manager-digital-assets-nium-mumbai-bengaluru-7-to-12-years-261126503058
+Nium India - Sr Product Manager - Payments Platform - https://www.naukri.com/job-listings-sr-product-manager-payments-platform-nium-mumbai-3-to-5-years-271126500401
 NuPlay AI - Product Manager - https://www.instahyre.com/job-432369-product-manager-at-nuplay-ai-bangalore/
 OLX - Associate Product Manager - https://www.instahyre.com/job-483356-associate-product-manager-at-olx-navi-mumbai/
 Onsite - Product Manager - https://www.instahyre.com/job-167584-product-manager-at-onsite-2-bangalore/
-PAR Technology - Senior Product Manager - https://www.linkedin.com/jobs/view/4478858506
+Oolka - Product Manager - https://www.instahyre.com/job-504139-product-manager-at-oolka-bangalore/
+Optum - Technical Product Manager - https://in.indeed.com/viewjob?jk=815b0545434ef017
+Optum - Senior Technical Product Manager, - https://www.linkedin.com/jobs/view/4493854884
+PayU - Product Manager - Lending Platform - https://www.naukri.com/job-listings-product-manager-lending-platform-payu-india-bengaluru-4-to-9-years-271126503445
 Playsimple Games - Product Manager - https://www.instahyre.com/job-435682-product-manager-at-playsimple-games-bangalore/
 Playsimple Games - Associate Product Manager - https://www.instahyre.com/job-439041-associate-product-manager-at-playsimple-games-bangalore/
 Porter - Product Manager - https://www.instahyre.com/job-442962-product-manager-at-porter-bangalore/
-R.K. Bansal Finance - Product Manager - https://www.naukri.com/job-listings-product-manager-r-k-bansal-finance-gurugram-3-to-7-years-261126016373
-RBL Bank - Product Manager - Trade & Forex - https://www.naukri.com/job-listings-product-manager-trade-forex-rbl-bank-mumbai-13-to-17-years-261126026640
+Protech Biosystems - Product Manager - https://www.naukri.com/job-listings-product-manager-protech-biosystems-gurugram-4-to-8-years-271126031009
 RISA Labs - Associate Product Manager - https://www.instahyre.com/job-420276-associate-product-manager-at-risa-labs-bangalore/
 Reliance Jio - Senior Product Manager - https://www.instahyre.com/job-210609-senior-product-manager-at-reliance-jio-bangalore/
 Reliance Jio - Product Manager - https://www.instahyre.com/job-328461-product-manager-at-reliance-jio-bangalore/
 Roadzen - Product Manager - https://www.instahyre.com/job-482610-product-manager-at-roadzen-delhi/
-Sav - Senior / Product Manager - https://www.linkedin.com/jobs/view/4495002683
-ShareChat - Associate Product Manager - https://www.linkedin.com/jobs/view/4484432283
 Shipway - Associate Product Manager - https://www.instahyre.com/job-490213-associate-product-manager-at-shipway-gurgaon/
-SimplePlan Media - Shopify Product Manager - https://in.indeed.com/viewjob?jk=9d909577a535d817
+Siemens Healthineers - Sr. Product Manager, Cloud Web Application - https://www.linkedin.com/jobs/view/4495097652
+Simpel Techlabs - Product Manager - https://www.naukri.com/job-listings-product-manager-simpel-techlabs-bengaluru-4-to-9-years-271126505542
 SmartQ - Associate Product Manager - https://www.instahyre.com/job-478286-associate-product-manager-at-smartq-bangalore/
+Soignesys - Product Manager - https://www.naukri.com/job-listings-product-manager-soignesys-gurugram-3-to-5-years-271126501866
+Soignesys - Senior Product Manager-POS - https://www.naukri.com/job-listings-senior-product-manager-pos-soignesys-gurugram-8-to-12-years-271126501849
 SpotDraft - Product Manager - https://www.instahyre.com/job-404215-product-manager-at-spotdraft-bangalore/
 Stable Money - Associate Product Manager - https://www.instahyre.com/job-445868-associate-product-manager-at-stable-money-bangalore/
 Star Health and Allied Insurance - Product Manager - https://www.instahyre.com/job-443624-product-manager-at-star-health-and-allied-insurance-chennai/
+TELUS International - Product Manager AI - https://www.naukri.com/job-listings-product-manager-ai-telus-digital-ai-data-solutions-bengaluru-2-to-4-years-271126506635
 Tamasha - Senior Product Manager - https://www.instahyre.com/job-499842-senior-product-manager-at-tamasha-bangalore/
 Tamasha - Associate Product Manager - https://www.instahyre.com/job-462719-associate-product-manager-at-tamasha-bangalore/
-Tamasha.live - Senior Product Manager - https://www.linkedin.com/jobs/view/4493815750
-Target in India - Sr. Product Manager - https://www.linkedin.com/jobs/view/4495267139
+Tarlan Ai - Senior Product Manager, Core Platform - https://www.naukri.com/job-listings-senior-product-manager-core-platform-tarlan-ai-bengaluru-5-to-10-years-271126043689
+Tarlan Ai - Senior Product Manager, Logistics and Supply Chain - https://www.naukri.com/job-listings-senior-product-manager-logistics-and-supply-chain-tarlan-ai-bengaluru-5-to-10-years-271126046014
 Tata Consultancy Services - Senior Product Manager - https://www.instahyre.com/job-474540-senior-product-manager-at-tata-consultancy-services-bangalore/
+Tracxn - Tracxn - Senior Associate Product Manager - https://www.naukri.com/job-listings-tracxn-senior-associate-product-manager-tracxn-bengaluru-2-to-5-years-061026010045
 Turing - Product Manager - https://www.instahyre.com/job-499845-product-manager-at-turing-5-work-from-home/
-Uber - Sr Product Manager - Merchant - https://in.indeed.com/viewjob?jk=35257936198cd882
 Urban Harvest - Associate Product Manager - https://www.instahyre.com/job-424858-associate-product-manager-at-urban-harvest-noida/
 Valeo - Product Manager - https://www.instahyre.com/job-157380-product-manager-at-valeo-bangalore/
-WorkIndia - Product Manager-II - https://www.linkedin.com/jobs/view/4487263236
-ZIGRAM - Product Manager - https://www.naukri.com/job-listings-product-manager-zigram-gurugram-6-to-9-years-190326020864
+Visint Health Care - Product Manager - https://www.naukri.com/job-listings-product-manager-visint-health-care-gurugram-3-to-5-years-271126505840
+Visint Health Care - Associate Product Manager - https://www.naukri.com/job-listings-associate-product-manager-visint-health-care-noida-1-to-3-years-271126504367
+Whizhack Technologies - Product Manager - Cyber Security - https://www.naukri.com/job-listings-product-manager-cyber-security-whizhack-technologies-pvt-ltd-gurugram-3-to-5-years-271126504565
+Wockhardt Limited - Product Manager - https://www.naukri.com/job-listings-product-manager-wockhardt-limited-mumbai-all-areas-4-to-7-years-271126014425
+ZIGRAM - Assistant Product Manager - https://www.naukri.com/job-listings-assistant-product-manager-zigram-gurugram-3-to-5-years-271126015193
 ZOOP - Product Manager - https://www.instahyre.com/job-446066-product-manager-at-zoop-pune/
-Zuventus Healthcare Limited - Product Manager - https://www.naukri.com/job-listings-product-manager-zuventus-healthcare-limited-bengaluru-2-to-4-years-261126924946
-365squared - Senior Product Manager - https://www.naukri.com/job-listings-senior-product-manager-365squared-bengaluru-7-to-12-years-251126033086
-AVIZVA - Senior Product Owner - https://www.linkedin.com/jobs/view/4494908802
-Abracon - Associate Product Manager - https://www.linkedin.com/jobs/view/4494656290
-Aftershoot - Senior Product Manager - https://www.linkedin.com/jobs/view/4494623797
-Aionos - Technical product Manager - Airlines - https://www.linkedin.com/jobs/view/4493088843
-Alkem MedTech Pvt. Ltd - Product Manager - https://www.naukri.com/job-listings-product-manager-alkem-medtech-pvt-ltd-mumbai-5-to-10-years-310826011823
-Amazon - Principal Product Manager- Technical, Amazon Finance Technology - https://www.linkedin.com/jobs/view/4487064285
-Amazon - Sr. Product Manager-Tech, Amazon Supply Chain Services - https://www.linkedin.com/jobs/view/4494639089
-Amazon - Senior Product Manager, Amazon Now - https://www.linkedin.com/jobs/view/4478799315
-Blackhawk Network India - Sr. Product Manager - https://www.linkedin.com/jobs/view/4494619513
-Brillio - Product Manager - R01574334 - https://www.naukri.com/job-listings-product-manager-r01574334-brillio-2-bengaluru-7-to-10-years-251126501141
-CodeVyasa - Product Manager (Renewable Energy) - https://www.linkedin.com/jobs/view/4493076947
-CredHive - Product Manager, Data Products - https://www.linkedin.com/jobs/view/4494476861
-Cvent - Product Manager I - https://www.naukri.com/job-listings-product-manager-i-cvent-gurugram-7-to-9-years-251126029492
-Deloitte - Assistant Manager | Product Owner | Bengaluru | Engineering as a Service/ Operate - https://in.indeed.com/viewjob?jk=6d9b0cdf96be027d
-Deservely - Business Analyst/ Product Manager - https://www.naukri.com/job-listings-business-analyst-product-manager-deservely-mumbai-6-to-10-years-251126503625
-Dezerv - Product Manager - https://www.naukri.com/job-listings-product-manager-dezerv-investements-mumbai-2-to-7-years-251126500722
-Digirank - Product Manager - Transactions - https://in.indeed.com/viewjob?jk=87d7c64c5bc5cf2c
-Digirank - AI Product Manager - https://in.indeed.com/viewjob?jk=01db0b1f8adf5e68
-Digirank - Product Manager - Voice AI - https://in.indeed.com/viewjob?jk=9fe9b3b10b8041ab
-Epam Systems - Product Manager - https://www.naukri.com/job-listings-product-manager-epam-systems-coimbatore-jaipur-bengaluru-10-to-13-years-261026030203
-FRND - Associate Product Manager - https://www.linkedin.com/jobs/view/4494640649
-G M Global - Product Manager & Executive - https://www.naukri.com/job-listings-product-manager-executive-g-m-global-bengaluru-3-to-7-years-251126502955
-GSK - Staff, AI Product Manager - https://in.indeed.com/viewjob?jk=c1afe5cf16355dd2
-HuntingCube - Senior Product Manager – Personal AI - https://www.linkedin.com/jobs/view/4494629340
-IBM - Product Manager, Z Security - https://www.naukri.com/job-listings-product-manager-z-security-ibm-india-pvt-limited-bengaluru-7-to-12-years-251126917502
-JioStar - Associate Product Manager - https://www.linkedin.com/jobs/view/4494652177
-Kolte-Patil Developers Limited - Product Manager - https://www.linkedin.com/jobs/view/4494610863
-Kuku Fm - Senior Product Manager - Ads Monetisation & Retention - https://www.naukri.com/job-listings-senior-product-manager-ads-monetisation-retention-kuku-fm-bengaluru-3-to-8-years-251126505010
-MakeMyTrip - Product Manager (Hotels) - https://www.linkedin.com/jobs/view/4478795223
-MakeMyTrip - Lead Product Manager (GCC) - https://www.linkedin.com/jobs/view/4487229291
-Meril - Senior Product Manager Medical Devices (Consumables) - https://www.naukri.com/job-listings-senior-product-manager-medical-devices-consumables-meril-mumbai-all-areas-8-to-10-years-251126032307
-Motadata - Technical Product Manager - https://www.linkedin.com/jobs/view/4494638690
-NIUM - Sr Product Manager - Payments Platform - https://in.indeed.com/viewjob?jk=f053d710d9d783b9
-Nium - Staff Product Manager  – Digital Assets - https://www.linkedin.com/jobs/view/4494490993
-ORGANIC MONK LLP - Product Manager - FMCG - https://in.indeed.com/viewjob?jk=7789b93e6a1206b5
-OYO - Senior Product Manager - https://www.naukri.com/job-listings-senior-product-manager-oyo-gurugram-5-to-8-years-251126013239
-Optum - Senior Technical Product Manager, - https://www.linkedin.com/jobs/view/4493452657
-Optum India - Senior Technical Product Manager - https://www.linkedin.com/jobs/view/4495217601
-PVKL Tech Services Pvt Ltd - Associate Product Manager - https://www.naukri.com/job-listings-associate-product-manager-pvkl-tech-services-pvt-ltd-pune-3-to-7-years-251126025887
-PhonePe - Senior Product Manager - https://www.linkedin.com/jobs/view/4485071775
-PwC Acceleration Center India - AI Product Manager-Senior Manager - https://www.naukri.com/job-listings-ai-product-manager-senior-manager-pwc-hyderabad-bengaluru-12-to-18-years-251126014691
-Qloron Technology - product manager - https://www.naukri.com/job-listings-product-manager-qloron-pvt-ltd-gurugram-2-to-7-years-251126504856
-Razorpay - Product Manager II - https://www.linkedin.com/jobs/view/4494906434
-Reliance Life Sciences (RLS) - Product Manager - https://www.naukri.com/job-listings-product-manager-reliance-life-sciences-rls-navi-mumbai-4-to-9-years-251126033062
-SUN PHARMA - Group Product Manager - Milmet - https://www.linkedin.com/jobs/view/4450322198
-Sitetracker - Senior Product Manager - https://www.naukri.com/job-listings-senior-product-manager-sitetracker-bengaluru-5-to-9-years-251126504343
-SpaceWire Tech - Associate Product Manager - Growth & Monetization - https://www.linkedin.com/jobs/view/4493410338
-Spinny - Product Manager - https://www.naukri.com/job-listings-product-manager-spinny-gurugram-4-to-6-years-251126503058
-Spinny - Senior Product Manager - https://www.naukri.com/job-listings-senior-product-manager-spinny-gurugram-5-to-8-years-251126503057
-Spinny - Associate Product Manager - https://www.naukri.com/job-listings-associate-product-manager-spinny-gurugram-1-to-3-years-251126503060
-Spinny - Group Product Manager - https://www.naukri.com/job-listings-group-product-manager-spinny-gurugram-8-to-12-years-251126503056
-Target - Sr. Product Manager - https://in.indeed.com/viewjob?jk=28185da888893eef
-Times Internet - Senior Product Manager - https://www.linkedin.com/jobs/view/4493408369
-Vivaconnect - Associate Product Manager - https://www.naukri.com/job-listings-associate-product-manager-vivaconnect-mumbai-all-areas-2-to-5-years-251126013385
-WapHire - Senior Product Manager-Trading Tools - https://www.linkedin.com/jobs/view/4494631799
-Weekday AI (YC W21) - Product Manager - https://www.linkedin.com/jobs/view/4494457787
-Weekday AI (YC W21) - Associate Product Manager - https://www.linkedin.com/jobs/view/4494656064
-Zodiac HR Consultants - Product Manager - https://www.naukri.com/job-listings-product-manager-zodiac-hr-consultants-mumbai-all-areas-2-to-7-years-251126034634
-Zurich Cover-More - Senior Product Manager - Case Management & BPM - https://www.linkedin.com/jobs/view/4486304335
-Zurich Cover-More - Product Manager - API & Data Management - https://www.linkedin.com/jobs/view/4486300671
-airtel - AI Product Manager(Security products) - https://www.linkedin.com/jobs/view/4493400264
-eBay - Senior Product Manager, Checkout - https://www.linkedin.com/jobs/view/4485038036
-freshworks - Senior Staff Product Manager - https://in.indeed.com/viewjob?jk=d476238f689fe1cc
+Zolve - Senior Product Manager - https://www.instahyre.com/job-202702-senior-product-manager-at-zolve-2-bangalore/
+eBay - Sr. Product Manager - Case Management - https://www.linkedin.com/jobs/view/4459228865
+myHQ - Product Manager - https://www.instahyre.com/job-429245-product-manager-at-myhq-bangalore/
+nan - Product Manager – Wellness Brand - https://in.indeed.com/viewjob?jk=ebbb565b2b8ac3a5
+AdvaRisk - Associate Product Manager - https://www.naukri.com/job-listings-associate-product-manager-advarisk-pune-3-to-5-years-261126038280
+Allegis Group - Product Manager - https://www.naukri.com/job-listings-product-manager-allegis-group-bengaluru-6-to-10-years-261126036296
+Amazon - Senior Product Manager, Technical, Paragon platform - https://www.linkedin.com/jobs/view/4495532687
+Aptech Limited - Product Manager - https://www.naukri.com/job-listings-product-manager-aptech-limited-mumbai-mumbai-suburban-2-to-4-years-291026010427
+Benchmark IT Solutions - Product Manager, US Estate & Financial Planning (AI) - https://in.indeed.com/viewjob?jk=09584563b541121b
+Boston Scientific - Product Manager - https://www.naukri.com/job-listings-product-manager-boston-scientific-gurugram-5-to-6-years-261126504150
+CD INFOTECH PVT. LTD - Jewellery Product Manager - https://in.indeed.com/viewjob?jk=7a20918af20d300c
+CNH Industrial - Product Manager 46-50HP - https://in.indeed.com/viewjob?jk=68a3a751a0a3e50e
+Couchbase - Sr Product Manager - https://www.naukri.com/job-listings-sr-product-manager-couchbase-inc-bengaluru-7-to-12-years-261126503229
+EY - Product Manager - https://www.naukri.com/job-listings-product-manager-ey-gurugram-delhi-ncr-6-to-11-years-291026036941
+Equinix - Senior Product Manager - Oracle RMCS - https://www.naukri.com/job-listings-senior-product-manager-oracle-rmcs-equinix-india-professional-services-private-limited-bengaluru-7-to-12-years-291026919280
+Everest Industries - Product Manager - https://www.naukri.com/job-listings-product-manager-everest-industries-mumbai-all-areas-2-to-5-years-261126017740
+Fission Infotech - Product Manager - https://www.naukri.com/job-listings-product-manager-fission-infotech-hyderabad-4-to-7-years-261126500902
+Global Connect Business Solutions - Product Manager - https://www.naukri.com/job-listings-product-manager-global-connect-business-solutions-chennai-tiruchirappalli-coimbatore-5-to-10-years-261126028431
+GrayQuest - Product Manager - https://www.linkedin.com/jobs/view/4493491843
+Hdfc Bank - CC-Product Manager-Premium Cards Concierge - https://www.naukri.com/job-listings-cc-product-manager-cards-concierge-hdfc-bank-limited-mumbai-0-to-1-years-261126018561
+HighLevel - Sr. Product Manager, Account Integrity - https://in.indeed.com/viewjob?jk=7e4bf6233201fec5
+Hirezy - AI Agent Product Manager - https://in.indeed.com/viewjob?jk=c0468d0faf5a9f73
+Huron Consulting Group - Salesforce Product Manager - https://in.indeed.com/viewjob?jk=2ea2d1e2411ee037
+IBDIC (Indian Banks' Digital Infrastructure Company) - Senior Product Manager - Trade Finance - https://www.linkedin.com/jobs/view/4495505756
+IDFC FIRST Bank - Product Manager - Gen AI - https://www.linkedin.com/jobs/view/4469965121
+IDFC FIRST Bank - Senior Product Manager-Credit Cards - https://www.linkedin.com/jobs/view/4486584865
+InCred Financial Services - Associate Product Manager - https://www.linkedin.com/jobs/view/4494908798
+Infibeam Avenues Ltd. - Product Manager| Product| Bill Avenue - https://in.indeed.com/viewjob?jk=0f93d89ae6be34fb
+Infosys - Product Manager-AI Platform - https://www.naukri.com/job-listings-product-manager-ai-platform-infosys-limited-bengaluru-8-to-13-years-281026912580
+Kotak Life Insurance - Product Manager, Goregaon - https://www.naukri.com/job-listings-product-manager-goregaon-kotak-life-insurance-mumbai-5-to-10-years-261126030213
+Kotak Mahindra Bank - Product Manager - Cross-Sell & Business Planning - https://www.naukri.com/job-listings-product-manager-cross-sell-business-planning-kotak-mahindra-bank-mumbai-3-to-6-years-021126009274
+LPL Financial - Senior Product Manager - https://www.naukri.com/job-listings-senior-product-manager-lpl-financial-hyderabad-8-to-12-years-021126025428
+Mac Chem Products - Product Manager - https://www.naukri.com/job-listings-product-manager-mac-chem-products-mumbai-mumbai-suburban-thane-navi-mumbai-virar-2-to-7-years-261126040491
+MakeMyTrip - Product Manager (myPartner Platforms) - https://www.linkedin.com/jobs/view/4487576324
+Meesho - Kirana Club : Product Manager II - Commerce - https://in.indeed.com/viewjob?jk=d445cc3d8a3f53cc
+National Payments Corporation of India (NPCI) - Senior Associate NFS Product Manager - https://www.naukri.com/job-listings-senior-associate-nfs-product-manager-national-payments-corporation-of-india-npci-mumbai-2-to-6-years-261126033951
+Navlakha Management Services - Product Manager - https://www.naukri.com/job-listings-product-manager-navlakha-management-services-mumbai-all-areas-5-to-10-years-261126032982
+Opentext - Principal Product Manager - https://www.naukri.com/job-listings-principal-product-manager-opentext-technologies-india-pvt-ltd-bengaluru-8-to-13-years-261126933830
+Optum - Senior Technical Product Manager - https://www.naukri.com/job-listings-senior-technical-product-manager-optum-noida-hyderabad-gurugram-10-to-15-years-021126011160
+PAR Technology - Senior Product Manager - https://www.linkedin.com/jobs/view/4478858506
+Phenom People - Product Manager/Senior Product Manager - https://www.naukri.com/job-listings-product-manager-senior-product-manager-phenom-people-hyderabad-3-to-8-years-281026034423
+PhonePe - Senior Product Manager, Insurance - https://www.linkedin.com/jobs/view/4469710479
+R.K. Bansal Finance - Product Manager - https://www.naukri.com/job-listings-product-manager-r-k-bansal-finance-gurugram-3-to-7-years-261126016373
+RBL Bank - Product Manager - Trade & Forex - https://www.naukri.com/job-listings-product-manager-trade-forex-rbl-bank-mumbai-13-to-17-years-261126026640
+Rybbon - Sr. Product Manager - https://www.naukri.com/job-listings-sr-product-manager-rybbon-bengaluru-8-to-13-years-261126506929
+SUN PHARMA - Assistant Product Manager/ Product Manager - CNS - https://www.linkedin.com/jobs/view/4485527065
+Sav - Senior / Product Manager - https://www.linkedin.com/jobs/view/4495002683
+ShareChat - Associate Product Manager - https://www.linkedin.com/jobs/view/4484432283
+SimplePlan Media - Shopify Product Manager - https://in.indeed.com/viewjob?jk=9d909577a535d817
+Target - Product Manager - Organic Social - https://in.indeed.com/viewjob?jk=e7486e3e2e007c80
+Target in India - Sr. Product Manager - https://www.linkedin.com/jobs/view/4495267139
+U.S. Bancorp India - Product Manager - https://www.naukri.com/job-listings-product-manager-u-s-bancorp-india-private-limited-chennai-8-to-12-years-261126920675
+Uber - Sr Product Manager - Merchant - https://in.indeed.com/viewjob?jk=35257936198cd882
+Weekday AI (YC W21) - Senior Product Manager - https://www.linkedin.com/jobs/view/4495501782
+Weekday AI (YC W21) - Product Manager Devtools - https://www.linkedin.com/jobs/view/4495285811
+ZIGRAM - Product Manager - https://www.naukri.com/job-listings-product-manager-zigram-gurugram-6-to-9-years-190326020864
+wego - Product Manager - https://in.indeed.com/viewjob?jk=6f4ea4e458aaa134
