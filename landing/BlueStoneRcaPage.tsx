@@ -1191,7 +1191,7 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
             </div>
 
             {/* ── QUESTION SELECTOR DROPDOWN ──────────────── */}
-            <div className="bg-[#FFFDF5] border-2 border-[#141413] rounded-xl p-4 sm:p-5 mb-5 shadow-[2.5px_2.5px_0px_0px_#141413]">
+            <div className="bg-[#FFFDF5] border-2 border-[#141413] rounded-xl p-4 sm:p-5 mb-5 shadow-[2.5px_2.5px_0px_0px_#141413] w-full max-w-full overflow-hidden">
               <div className="mb-2.5">
                 <label htmlFor="clarifying-question-dropdown" className="text-xs font-mono font-black uppercase text-[#141413] flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4 text-[#188ab2]" />
@@ -1200,16 +1200,17 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
               </div>
 
               {/* The Flat Dropdown Form (No optgroups, no category labels) */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full min-w-0 max-w-full">
                 <select
                   id="clarifying-question-dropdown"
                   value={selectedDropdownQId}
                   onChange={(e) => setSelectedDropdownQId(e.target.value)}
-                  className="flex-1 bg-white border-2 border-[#141413] px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-[#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2] shadow-[2px_2px_0px_0px_#141413] cursor-pointer"
+                  className="flex-1 min-w-0 w-full max-w-full truncate bg-white border-2 border-[#141413] px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-[#141413] focus:outline-none focus:ring-2 focus:ring-[#188ab2] shadow-[2px_2px_0px_0px_#141413] cursor-pointer"
+                  style={{ maxWidth: '100%', minWidth: 0 }}
                 >
                   <option value="">-- Choose question to ask --</option>
                   {BLUESTONE_QUESTIONS_DATA.map((q) => (
-                    <option key={q.id} value={q.id}>
+                    <option key={q.id} value={q.id} title={q.question}>
                       {q.question}
                     </option>
                   ))}
@@ -1219,7 +1220,7 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
                   type="button"
                   onClick={handleAskFromDropdown}
                   disabled={!selectedDropdownQId}
-                  className="bg-[#188ab2] hover:bg-[#0f6f8f] disabled:opacity-40 text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                  className="bg-[#188ab2] hover:bg-[#0f6f8f] disabled:opacity-40 text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap"
                 >
                   <span>Ask Interviewer</span>
                   <Send className="w-3.5 h-3.5" />
@@ -1317,19 +1318,19 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
                 e.preventDefault();
                 handleAskQuestion();
               }}
-              className="flex items-center gap-2 mb-4"
+              className="flex items-center gap-2 mb-4 w-full min-w-0 max-w-full"
             >
               <input
                 type="text"
                 value={questionInput}
                 onChange={(e) => setQuestionInput(e.target.value)}
                 placeholder="Or type any custom clarifying question (e.g. 'Are we looking at absolute gross profit or margin?')"
-                className="flex-1 bg-white border-2 border-[#141413] px-4 py-3 rounded-xl font-semibold text-xs sm:text-sm text-[#141413] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#188ab2] shadow-[2px_2px_0px_0px_#141413]"
+                className="flex-1 min-w-0 w-full bg-white border-2 border-[#141413] px-4 py-3 rounded-xl font-semibold text-xs sm:text-sm text-[#141413] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#188ab2] shadow-[2px_2px_0px_0px_#141413]"
               />
               <button
                 type="submit"
                 disabled={!questionInput.trim()}
-                className="bg-[#141413] hover:bg-slate-800 disabled:opacity-40 text-white px-5 py-3 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+                className="bg-[#141413] hover:bg-slate-800 disabled:opacity-40 text-white px-5 py-3 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <span>Ask</span>
                 <Send className="w-3.5 h-3.5" />
