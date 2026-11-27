@@ -1946,7 +1946,7 @@ function SubmissionsNavPills({ currentTab, onSwitchTab }) {
     { id: 'submissions', label: 'Project Submissions', icon: '📄' },
     { id: 'gym-submissions', label: 'PM Gym Responses', icon: '💬' },
     { id: 'ai-gym-submissions', label: 'AI Gym Responses', icon: '🤖' },
-    { id: 'chronicle-submissions', label: 'Ramayana Chronicle Responses', icon: '🏹' },
+    { id: 'chronicle-submissions', label: 'Live Case Simulator Responses', icon: '🎮' },
   ];
   return (
     <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
@@ -2985,7 +2985,225 @@ function AiGymSubmissionsTab({ courseId, onSwitchTab }) {
     </div>
   );
 }
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Case Simulator Submissions Data (BlueStone & Causeway)
+// ────────────────────────────────────────────────────────────────────────────────
+const BLUESTONE_SAMPLE_CANDIDATES = [
+  {
+    id: 'cand-bs-1',
+    name: 'Rahul Verma',
+    phone: '+91 9820011223',
+    cleanPhone: '919820011223',
+    batch: 'Batch 2 (course-002)',
+    lastActive: 'Today, 6:42 PM',
+    questions: [
+      {
+        id: 'q1',
+        text: 'Are we trying to understand the decline in absolute gross profit, gross profit margin, or both?',
+        category: 'initial',
+        classification: 'Ask initially',
+        answer: 'Absolute gross profit fell from ₹20 Cr to ₹17.1 Cr (-15%). Gross profit margin fell from 20% to 16.3% (-3.7 percentage points). Revenue increased from ₹100 Cr to ₹105 Cr (+5%).',
+        why: 'Absolute GP and GP margin are different metrics. I need to know exactly what has declined.'
+      },
+      {
+        id: 'q2',
+        text: 'What is the time period over which revenue increased by 5% and gross profit declined by 15%?',
+        category: 'initial',
+        classification: 'Ask initially',
+        answer: 'The comparison is for the most recent quarter (Q3 FY26) compared to the same quarter last year (Q3 FY25).',
+        why: 'Establishes the comparison period and helps identify seasonality or unusual events.'
+      },
+      {
+        id: 'q3',
+        text: 'Is the problem limited to the online business, or does it include both online and offline sales?',
+        category: 'initial',
+        classification: 'Ask initially',
+        answer: 'The issue is concentrated in the digital commerce channel (website and mobile app). Offline stores maintained a stable gross profit margin of 22%.',
+        why: 'Defines the scope of the investigation.'
+      },
+      {
+        id: 'q4',
+        text: 'Has website or app traffic changed during this period?',
+        category: 'later',
+        classification: 'Ask later',
+        answer: 'Diagnostic pushback: Good question for funnel analysis, but first explain how you plan to investigate revenue, costs, and customer behaviour.',
+        why: 'Helps investigate the acquisition part of the product funnel, but premature before structuring.'
+      }
+    ]
+  },
+  {
+    id: 'cand-bs-2',
+    name: 'Priya Sharma',
+    phone: '+91 9811223344',
+    cleanPhone: '919811223344',
+    batch: 'Batch 2 (course-002)',
+    lastActive: 'Today, 6:38 PM',
+    questions: [
+      {
+        id: 'q5',
+        text: 'How does BlueStone define gross profit? Is it revenue minus product cost, or are other costs included?',
+        category: 'initial',
+        classification: 'Ask initially',
+        answer: 'Gross Profit = Net Realised Revenue - Cost of Goods Sold (raw gold/diamonds + making charges + packaging). Payment gateway fees and marketing are below GP.',
+        why: 'Ensures I use the correct metric definition and do not confuse GP with contribution or net profit.'
+      },
+      {
+        id: 'q6',
+        text: 'Has the product category mix changed, for example, gold jewellery versus diamond jewellery?',
+        category: 'later',
+        classification: 'Ask later',
+        answer: 'Diagnostic pushback: A shift towards lower-margin categories could explain declining gross profit, but isolate branch first.',
+        why: 'Diagnostic question for later investigation.'
+      },
+      {
+        id: 'q7',
+        text: 'Have discounts or promotional offers increased?',
+        category: 'later',
+        classification: 'Ask later',
+        answer: 'Diagnostic pushback: Discounts reduce realised selling price, but verify volume growth branch first.',
+        why: 'Diagnostic question for later investigation.'
+      }
+    ]
+  },
+  {
+    id: 'cand-bs-3',
+    name: 'Ananya Mishra',
+    phone: '+91 9988776655',
+    cleanPhone: '919988776655',
+    batch: 'Batch 2 (course-002)',
+    lastActive: 'Today, 6:15 PM',
+    questions: [
+      {
+        id: 'q8',
+        text: 'Are we comparing performance against the previous month, previous year, or a target?',
+        category: 'initial',
+        classification: 'Ask initially',
+        answer: 'Comparing Q3 FY26 against Q3 FY25 (Year-over-Year).',
+        why: 'The comparison baseline changes how I interpret performance.'
+      },
+      {
+        id: 'q9',
+        text: 'Which digital products are in scope?',
+        category: 'initial',
+        classification: 'Ask initially',
+        answer: 'Both the BlueStone website and the iOS/Android mobile apps.',
+        why: 'Defines the digital commerce surface area.'
+      }
+    ]
+  },
+  {
+    id: 'cand-bs-4',
+    name: 'Vikram Patel',
+    phone: '+91 9845012345',
+    cleanPhone: '919845012345',
+    batch: 'Batch 2 (course-002)',
+    lastActive: 'Today, 5:50 PM',
+    questions: [
+      {
+        id: 'q10',
+        text: 'What programming language is the BlueStone website built in?',
+        category: 'irrelevant',
+        classification: 'Not relevant initially',
+        answer: 'Irrelevant pushback: Tech stack details do not explain business gross profit metric movements.',
+        why: 'Tech stack details do not explain business metric movements unless an outage occurred.'
+      },
+      {
+        id: 'q11',
+        text: 'Are we trying to understand the decline in absolute gross profit, gross profit margin, or both?',
+        category: 'initial',
+        classification: 'Ask initially',
+        answer: 'Absolute GP fell 15%, GP margin fell 3.7 percentage points.',
+        why: 'Defines the metric.'
+      }
+    ]
+  },
+  {
+    id: 'cand-bs-5',
+    name: 'Sanket Agarwal',
+    phone: '+91 9876543210',
+    cleanPhone: '919876543210',
+    batch: 'Batch 2 (course-002)',
+    lastActive: 'Today, 5:32 PM',
+    questions: [
+      {
+        id: 'q12',
+        text: 'Is there a specific business objective beyond identifying the reason for the decline?',
+        category: 'initial',
+        classification: 'Ask initially',
+        answer: 'Yes. Identify the root cause and propose a roadmap to recover gross profit margin to 20% within 2 quarters without dropping revenue growth.',
+        why: 'Clarifies desired outcome and frames recommendations.'
+      },
+      {
+        id: 'q13',
+        text: 'Has the cost of raw materials, especially gold and diamonds, increased?',
+        category: 'later',
+        classification: 'Ask later',
+        answer: 'Diagnostic pushback: Input costs affect margins, but verify supplier vs customer behaviour first.',
+        why: 'Diagnostic question for cost branch.'
+      }
+    ]
+  }
+];
+
+const CAUSEWAY_SAMPLE_CANDIDATES = [
+  {
+    id: 'cand-cw-1',
+    name: 'Sanket Agarwal',
+    phone: '+91 9876543210',
+    cleanPhone: '919876543210',
+    estimatedStones: '18,400,000 Stones',
+    dimensions: '48 km (L) × 10 m (W) × 8 m (H)',
+    calculatedVolume: '3,840,000 m³',
+    architectInquiries: 'Asked 3 architect inquiries (depth, width, density)',
+    submittedDate: 'Nov 27, 2026',
+    score: '96/100'
+  },
+  {
+    id: 'cand-cw-2',
+    name: 'Vaibhav Itauriya',
+    phone: '+91 9125156329',
+    cleanPhone: '919125156329',
+    estimatedStones: '24,120,000 Stones',
+    dimensions: '50 km (L) × 12 m (W) × 10 m (H)',
+    calculatedVolume: '6,000,000 m³',
+    architectInquiries: 'Educated assumption on width, asked depth',
+    submittedDate: 'Nov 26, 2026',
+    score: '91/100'
+  },
+  {
+    id: 'cand-cw-3',
+    name: 'Aarav Mehta',
+    phone: '+91 9845012345',
+    cleanPhone: '919845012345',
+    estimatedStones: '15,800,000 Stones',
+    dimensions: '45 km (L) × 8 m (W) × 7 m (H)',
+    calculatedVolume: '2,520,000 m³',
+    architectInquiries: 'Full architectural dimensional inquiry',
+    submittedDate: 'Nov 25, 2026',
+    score: '94/100'
+  },
+  {
+    id: 'cand-cw-4',
+    name: 'Anonymous PM',
+    phone: 'No phone',
+    cleanPhone: '',
+    estimatedStones: '19,500,000 Stones',
+    dimensions: '48 km (L) × 10 m (W) × 9 m (H)',
+    calculatedVolume: '4,320,000 m³',
+    architectInquiries: 'Standard assumption model',
+    submittedDate: 'Nov 27, 2026',
+    score: '89/100'
+  }
+];
+
 function ChronicleSubmissionsTab({ courseId, onSwitchTab }) {
+  const [selectedCase, setSelectedCase] = useState('ramayana'); // 'ramayana' | 'bluestone' | 'causeway'
+  const [selectedBlueStoneCandidate, setSelectedBlueStoneCandidate] = useState(null);
+  const [selectedCausewayCandidate, setSelectedCausewayCandidate] = useState(null);
+  const [bsFilter, setBsFilter] = useState('all');
+  const [bsSearch, setBsSearch] = useState('');
+  const [cwSearch, setCwSearch] = useState('');
   const [rawResponses, setRawResponses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -3316,7 +3534,58 @@ function ChronicleSubmissionsTab({ courseId, onSwitchTab }) {
     setTimeout(() => setCopyFeedback(''), 2500);
   };
 
-  if (loading) return <p style={{ color: 'var(--muted-foreground)' }}>Loading Ramayana Chronicle submissions…</p>;
+  const handleExportBlueStoneCsv = () => {
+    const headers = ['Candidate Name', 'Phone', 'Batch', 'Total Questions', 'Initial Questions', 'Diagnostic Questions', 'Premature Questions', 'Last Active'];
+    const rows = BLUESTONE_SAMPLE_CANDIDATES.map(c => {
+      const initialCount = c.questions.filter(q => q.category === 'initial').length;
+      const laterCount = c.questions.filter(q => q.category === 'later').length;
+      const irrCount = c.questions.filter(q => q.category === 'irrelevant').length;
+      return [
+        `"${c.name}"`,
+        `"${c.phone}"`,
+        `"${c.batch}"`,
+        c.questions.length,
+        initialCount,
+        laterCount,
+        irrCount,
+        `"${c.lastActive}"`
+      ];
+    });
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `bluestone_rca_inquiries_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportCausewayCsv = () => {
+    const headers = ['Candidate Name', 'Phone', 'Estimated Stones', 'Dimensions', 'Calculated Volume', 'Architect Inquiries', 'Submitted Date', 'Score'];
+    const rows = CAUSEWAY_SAMPLE_CANDIDATES.map(c => [
+      `"${c.name}"`,
+      `"${c.phone}"`,
+      `"${c.estimatedStones}"`,
+      `"${c.dimensions}"`,
+      `"${c.calculatedVolume}"`,
+      `"${c.architectInquiries}"`,
+      `"${c.submittedDate}"`,
+      `"${c.score}"`
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `causeway_estimations_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  if (loading) return <p style={{ color: 'var(--muted-foreground)' }}>Loading Case Simulator submissions…</p>;
   if (error) return <p style={{ color: 'var(--destructive)' }}>{error}</p>;
 
   return (
@@ -3325,20 +3594,72 @@ function ChronicleSubmissionsTab({ courseId, onSwitchTab }) {
       <div style={s.card}>
         <SubmissionsNavPills currentTab="chronicle-submissions" onSwitchTab={onSwitchTab} />
 
-        {/* Header & Export Row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
-          <div>
-            <div style={{ ...s.cardTitle, marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span>🏹</span>
-              <span>Ramayana Chronicle Responses</span>
-              <span style={{ ...s.badge, background: '#FEF08A', color: '#854D0E', fontSize: '0.75rem', fontWeight: 800 }}>
-                Live Case Study
-              </span>
-            </div>
-            <div style={{ fontSize: '0.825rem', color: 'var(--muted-foreground)' }}>
-              Candidate diagnostic submissions, discovery matrix entries, and problem statement recommendations.
+        {/* Case Simulator Dropdown Selector */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          padding: '0.85rem 1.15rem',
+          background: 'var(--muted, #f8fafc)',
+          border: '1px solid var(--border)',
+          borderRadius: '12px',
+          marginBottom: '1.25rem',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span style={{ fontSize: '1.25rem' }}>🎮</span>
+            <div>
+              <div style={{ fontSize: '0.725rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+                Case Responses Viewer
+              </div>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--foreground)' }}>
+                Select Case Simulator:
+              </div>
             </div>
           </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <select
+              value={selectedCase}
+              onChange={(e) => setSelectedCase(e.target.value)}
+              style={{
+                padding: '0.55rem 1rem',
+                borderRadius: '8px',
+                border: '2px solid #0f172a',
+                background: '#ffffff',
+                color: '#0f172a',
+                fontSize: '0.875rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                outline: 'none',
+                boxShadow: '2px 2px 0px 0px #0f172a'
+              }}
+            >
+              <option value="ramayana">🏹 Ramayana Chronicle (Diagnostic & Discovery)</option>
+              <option value="bluestone">💎 BlueStone: Product RCA (Gross Profit Crash)</option>
+              <option value="causeway">🪨 Ram Setu Causeway (Stone Estimation Challenge)</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Case 1: Ramayana Chronicle Submissions View */}
+        {selectedCase === 'ramayana' && (
+          <div>
+            {/* Header & Export Row */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
+              <div>
+                <div style={{ ...s.cardTitle, marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span>🏹</span>
+                  <span>Ramayana Chronicle Responses</span>
+                  <span style={{ ...s.badge, background: '#FEF08A', color: '#854D0E', fontSize: '0.75rem', fontWeight: 800 }}>
+                    Live Case Study
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.825rem', color: 'var(--muted-foreground)' }}>
+                  Candidate diagnostic submissions, discovery matrix entries, and problem statement recommendations.
+                </div>
+              </div>
 
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
             <button
@@ -3932,6 +4253,470 @@ function ChronicleSubmissionsTab({ courseId, onSwitchTab }) {
           </div>
         )}
       </div>
+    )}
+
+    {/* Case 2: BlueStone Product RCA Submissions View */}
+    {selectedCase === 'bluestone' && (() => {
+      const candidates = BLUESTONE_SAMPLE_CANDIDATES;
+      const allQuestionsCount = candidates.reduce((acc, c) => acc + c.questions.length, 0);
+      const initialCount = candidates.reduce((acc, c) => acc + c.questions.filter(q => q.category === 'initial').length, 0);
+      const laterCount = candidates.reduce((acc, c) => acc + c.questions.filter(q => q.category === 'later').length, 0);
+      const irrCount = candidates.reduce((acc, c) => acc + c.questions.filter(q => q.category === 'irrelevant').length, 0);
+      const qualityScore = allQuestionsCount > 0 ? Math.round((initialCount / allQuestionsCount) * 100) : 0;
+
+      const filtered = candidates.filter(c => {
+        const term = bsSearch.toLowerCase();
+        const matchSearch = (c.name || '').toLowerCase().includes(term) ||
+          (c.phone || '').toLowerCase().includes(term) ||
+          c.questions.some(q => q.text.toLowerCase().includes(term));
+        if (!matchSearch) return false;
+        if (bsFilter === 'initial') return c.questions.some(q => q.category === 'initial');
+        if (bsFilter === 'later') return c.questions.some(q => q.category === 'later');
+        if (bsFilter === 'irrelevant') return c.questions.some(q => q.category === 'irrelevant');
+        return true;
+      });
+
+      return (
+        <div>
+          {/* Header & Export Row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
+            <div>
+              <div style={{ ...s.cardTitle, marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span>💎</span>
+                <span>BlueStone Product RCA Responses</span>
+                <span style={{ ...s.badge, background: '#DCFCE7', color: '#166534', fontSize: '0.75rem', fontWeight: 800 }}>
+                  Interactive RCA
+                </span>
+              </div>
+              <div style={{ fontSize: '0.825rem', color: 'var(--muted-foreground)' }}>
+                Candidate clarifying question logs, inquiry scoping breakdown, and preliminary diagnostic evaluations.
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <button
+                type="button"
+                onClick={handleExportBlueStoneCsv}
+                style={{
+                  ...s.btn,
+                  ...s.btnSecondary,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.45rem 0.9rem',
+                  fontSize: '0.8rem',
+                }}
+              >
+                <span>⬇️</span>
+                <span>Export CSV</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Quick KPI Stats Bar */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gap: '0.75rem',
+            padding: '1rem',
+            background: 'var(--background)',
+            borderRadius: '10px',
+            border: '1px solid var(--border)',
+            marginBottom: '1.25rem'
+          }}>
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+                Total Candidates
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--foreground)' }}>
+                {candidates.length}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+                Questions Asked
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#188ab2' }}>
+                {allQuestionsCount}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+                Initial (Scoping)
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#16a34a' }}>
+                {initialCount}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+                Diagnostic / Premature
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#d97706' }}>
+                {laterCount + irrCount}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+                Scoping Quality
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#7c3aed' }}>
+                {qualityScore}%
+              </div>
+            </div>
+          </div>
+
+          {/* Toolbar: Category Filters & Search */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.25rem' }}>
+            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'wrap' }}>
+              {[
+                { id: 'all', label: `All Candidates (${candidates.length})` },
+                { id: 'initial', label: '🟢 Initial Only' },
+                { id: 'later', label: '🟡 Diagnostic Only' },
+                { id: 'irrelevant', label: '🔴 Premature Only' }
+              ].map(f => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setBsFilter(f.id)}
+                  style={{
+                    padding: '0.35rem 0.75rem',
+                    borderRadius: '6px',
+                    border: bsFilter === f.id ? '1px solid var(--primary)' : '1px solid var(--border)',
+                    background: bsFilter === f.id ? 'var(--primary)' : 'var(--background)',
+                    color: bsFilter === f.id ? 'var(--primary-foreground)' : 'var(--muted-foreground)',
+                    fontWeight: bsFilter === f.id ? 700 : 500,
+                    fontSize: '0.8rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <input
+                style={{ ...s.input, width: '270px', marginBottom: 0 }}
+                placeholder="Search candidate or question text..."
+                value={bsSearch}
+                onChange={(e) => setBsSearch(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Candidates Table */}
+          <div className="responsive-table-container">
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={s.th}>Candidate</th>
+                  <th style={s.th}>Inquiries</th>
+                  <th style={s.th}>Initial Scoping Questions</th>
+                  <th style={s.th}>Diagnostic / Premature</th>
+                  <th style={s.th}>Last Active</th>
+                  <th style={{ ...s.th, textAlign: 'right' }}>Dossier</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map(cand => {
+                  const initialQs = cand.questions.filter(q => q.category === 'initial');
+                  const otherQs = cand.questions.filter(q => q.category !== 'initial');
+
+                  return (
+                    <tr key={cand.id}>
+                      <td style={s.td}>
+                        <div style={{ fontWeight: 700, color: 'var(--foreground)' }}>{cand.name}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.15rem' }}>
+                          <span>{cand.phone}</span>
+                          {cand.cleanPhone && (
+                            <a
+                              href={`https://wa.me/${cand.cleanPhone}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              style={{ color: '#16a34a', textDecoration: 'none', fontWeight: 700, fontSize: '0.7rem' }}
+                            >
+                              💬 WhatsApp
+                            </a>
+                          )}
+                        </div>
+                      </td>
+
+                      <td style={s.td}>
+                        <span style={{
+                          padding: '0.2rem 0.6rem',
+                          borderRadius: '999px',
+                          background: '#f1f5f9',
+                          border: '1px solid #cbd5e1',
+                          fontWeight: 800,
+                          fontSize: '0.75rem',
+                          color: '#0f172a'
+                        }}>
+                          {cand.questions.length} questions
+                        </span>
+                      </td>
+
+                      <td style={{ ...s.td, maxWidth: '280px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                          {initialQs.slice(0, 2).map((q, idx) => (
+                            <span
+                              key={idx}
+                              title={q.text}
+                              style={{
+                                fontSize: '0.725rem',
+                                fontWeight: 600,
+                                color: '#166534',
+                                background: '#dcfce7',
+                                padding: '0.15rem 0.45rem',
+                                borderRadius: '4px',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                              }}
+                            >
+                              🟢 {q.text}
+                            </span>
+                          ))}
+                          {initialQs.length > 2 && (
+                            <span style={{ fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>
+                              +{initialQs.length - 2} more initial questions
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      <td style={{ ...s.td, maxWidth: '260px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                          {otherQs.slice(0, 2).map((q, idx) => (
+                            <span
+                              key={idx}
+                              title={q.text}
+                              style={{
+                                fontSize: '0.725rem',
+                                fontWeight: 600,
+                                color: q.category === 'later' ? '#854d0e' : '#991b1b',
+                                background: q.category === 'later' ? '#fef9c3' : '#fee2e2',
+                                padding: '0.15rem 0.45rem',
+                                borderRadius: '4px',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                              }}
+                            >
+                              {q.category === 'later' ? '🟡' : '🔴'} {q.text}
+                            </span>
+                          ))}
+                          {otherQs.length === 0 && (
+                            <span style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem' }}>None (Clean Scoping)</span>
+                          )}
+                        </div>
+                      </td>
+
+                      <td style={{ ...s.td, fontSize: '0.775rem', color: 'var(--muted-foreground)' }}>
+                        {cand.lastActive}
+                      </td>
+
+                      <td style={{ ...s.td, textAlign: 'right' }}>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedBlueStoneCandidate(cand)}
+                          style={{
+                            ...s.btn,
+                            padding: '0.35rem 0.75rem',
+                            fontSize: '0.775rem',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.35rem'
+                          }}
+                        >
+                          <span>👁️</span>
+                          <span>Dossier</span>
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    })()}
+
+    {/* Case 3: Causeway Estimation Submissions View */}
+    {selectedCase === 'causeway' && (() => {
+      const candidates = CAUSEWAY_SAMPLE_CANDIDATES.filter(c => {
+        const term = cwSearch.toLowerCase();
+        return (c.name || '').toLowerCase().includes(term) ||
+          (c.phone || '').toLowerCase().includes(term) ||
+          c.estimatedStones.toLowerCase().includes(term);
+      });
+
+      return (
+        <div>
+          {/* Header & Export Row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
+            <div>
+              <div style={{ ...s.cardTitle, marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span>🪨</span>
+                <span>Ram Setu Causeway Responses</span>
+                <span style={{ ...s.badge, background: '#FEF08A', color: '#854D0E', fontSize: '0.75rem', fontWeight: 800 }}>
+                  Estimation Challenge
+                </span>
+              </div>
+              <div style={{ fontSize: '0.825rem', color: 'var(--muted-foreground)' }}>
+                Candidate 3D dimensional guesstimates, stone volume calculations, and leaderboard submissions.
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <button
+                type="button"
+                onClick={handleExportCausewayCsv}
+                style={{
+                  ...s.btn,
+                  ...s.btnSecondary,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.45rem 0.9rem',
+                  fontSize: '0.8rem',
+                }}
+              >
+                <span>⬇️</span>
+                <span>Export CSV</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Quick KPI Stats Bar */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gap: '0.75rem',
+            padding: '1rem',
+            background: 'var(--background)',
+            borderRadius: '10px',
+            border: '1px solid var(--border)',
+            marginBottom: '1.25rem'
+          }}>
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+                Total Candidates
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--foreground)' }}>
+                {candidates.length}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+                Median Estimation
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0284c7' }}>
+                18.95M Stones
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+                Avg Length
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#16a34a' }}>
+                47.75 km
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted-foreground)' }}>
+                Leaderboard Score
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#d97706' }}>
+                92.5/100
+              </div>
+            </div>
+          </div>
+
+          {/* Search Toolbar */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.25rem' }}>
+            <input
+              style={{ ...s.input, width: '270px', marginBottom: 0 }}
+              placeholder="Search candidate or stone estimate..."
+              value={cwSearch}
+              onChange={(e) => setCwSearch(e.target.value)}
+            />
+          </div>
+
+          {/* Table */}
+          <div className="responsive-table-container">
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={s.th}>Candidate</th>
+                  <th style={s.th}>Estimated Stones</th>
+                  <th style={s.th}>Assumed Dimensions</th>
+                  <th style={s.th}>Calculated Volume</th>
+                  <th style={s.th}>Submitted Date</th>
+                  <th style={{ ...s.th, textAlign: 'right' }}>Breakdown</th>
+                </tr>
+              </thead>
+              <tbody>
+                {candidates.map(cand => (
+                  <tr key={cand.id}>
+                    <td style={s.td}>
+                      <div style={{ fontWeight: 700, color: 'var(--foreground)' }}>{cand.name}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', marginTop: '0.15rem' }}>
+                        {cand.phone}
+                      </div>
+                    </td>
+
+                    <td style={s.td}>
+                      <span style={{
+                        padding: '0.2rem 0.6rem',
+                        borderRadius: '6px',
+                        background: '#fef08a',
+                        color: '#854d0e',
+                        fontWeight: 800,
+                        fontSize: '0.8rem'
+                      }}>
+                        🪨 {cand.estimatedStones}
+                      </span>
+                    </td>
+
+                    <td style={{ ...s.td, fontSize: '0.8rem', fontWeight: 600 }}>
+                      {cand.dimensions}
+                    </td>
+
+                    <td style={{ ...s.td, fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>
+                      {cand.calculatedVolume}
+                    </td>
+
+                    <td style={{ ...s.td, fontSize: '0.775rem', color: 'var(--muted-foreground)' }}>
+                      {cand.submittedDate}
+                    </td>
+
+                    <td style={{ ...s.td, textAlign: 'right' }}>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedCausewayCandidate(cand)}
+                        style={{
+                          ...s.btn,
+                          padding: '0.35rem 0.75rem',
+                          fontSize: '0.775rem',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.35rem'
+                        }}
+                      >
+                        <span>👁️</span>
+                        <span>Breakdown</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    })()}
 
       {/* Candidate Dossier Modal */}
       {selectedCandidate && (
@@ -4391,6 +5176,189 @@ function ChronicleSubmissionsTab({ courseId, onSwitchTab }) {
                 type="button"
                 onClick={() => setActiveLogModal(null)}
                 style={{ ...s.btn, fontSize: '0.8rem' }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* BlueStone Candidate Inquiries Modal */}
+      {selectedBlueStoneCandidate && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(15, 23, 42, 0.55)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999,
+          padding: '1.25rem',
+          boxSizing: 'border-box'
+        }}>
+          <div style={{
+            background: 'var(--card, #ffffff)',
+            borderRadius: '16px',
+            width: '100%',
+            maxWidth: '680px',
+            maxHeight: '90vh',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
+            padding: '1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            border: '2px solid var(--border, #e2e8f0)'
+          }}>
+            {/* Modal Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: '#DCFCE7', color: '#166534', fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid #166534' }}>
+                  💎
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: 'var(--foreground)' }}>
+                    {selectedBlueStoneCandidate.name}
+                  </h3>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', marginTop: '0.2rem' }}>
+                    {selectedBlueStoneCandidate.phone} · {selectedBlueStoneCandidate.batch}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedBlueStoneCandidate(null)}
+                style={{ ...s.btn, ...s.btnSecondary, padding: '0.35rem 0.75rem', fontSize: '0.85rem' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Questions Transcript */}
+            <div style={{ overflowY: 'auto', flex: 1, paddingRight: '0.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--muted-foreground)' }}>
+                Clarifying Questions Logged ({selectedBlueStoneCandidate.questions.length})
+              </div>
+
+              {selectedBlueStoneCandidate.questions.map((q, idx) => (
+                <div key={idx} style={{ padding: '0.9rem', borderRadius: '10px', background: 'var(--background)', border: '1px solid var(--border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--foreground)' }}>
+                      #{idx + 1}. {q.text}
+                    </div>
+                    <span style={{
+                      padding: '0.2rem 0.5rem',
+                      borderRadius: '4px',
+                      fontSize: '0.675rem',
+                      fontWeight: 800,
+                      textTransform: 'uppercase',
+                      background: q.category === 'initial' ? '#dcfce7' : (q.category === 'later' ? '#fef9c3' : '#fee2e2'),
+                      color: q.category === 'initial' ? '#166534' : (q.category === 'later' ? '#854d0e' : '#991b1b'),
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {q.category === 'initial' ? '🟢 Ask Initially' : (q.category === 'later' ? '🟡 Ask Later' : '🔴 Premature')}
+                    </span>
+                  </div>
+
+                  <div style={{ fontSize: '0.825rem', color: 'var(--foreground)', marginBottom: '0.5rem', lineHeight: '1.45' }}>
+                    {q.answer}
+                  </div>
+
+                  {q.why && (
+                    <div style={{ padding: '0.5rem 0.75rem', background: 'var(--card)', borderRadius: '6px', border: '1px solid var(--border)', fontSize: '0.75rem', color: '#475569', fontStyle: 'italic' }}>
+                      <strong style={{ fontStyle: 'normal', color: 'var(--foreground)' }}>PM Interview Evaluation:</strong> {q.why}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Modal Footer */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.25rem', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
+              <button
+                type="button"
+                onClick={() => setSelectedBlueStoneCandidate(null)}
+                style={{ ...s.btn, fontSize: '0.8rem', padding: '0.5rem 1rem' }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Causeway Candidate Breakdown Modal */}
+      {selectedCausewayCandidate && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(15, 23, 42, 0.55)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999,
+          padding: '1.25rem',
+          boxSizing: 'border-box'
+        }}>
+          <div style={{
+            background: 'var(--card, #ffffff)',
+            borderRadius: '16px',
+            width: '100%',
+            maxWidth: '560px',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
+            padding: '1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            border: '2px solid var(--border, #e2e8f0)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: '#FEF08A', color: '#854D0E', fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid #854D0E' }}>
+                  🪨
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: 'var(--foreground)' }}>
+                    {selectedCausewayCandidate.name}
+                  </h3>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>
+                    Score: {selectedCausewayCandidate.score} · {selectedCausewayCandidate.submittedDate}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedCausewayCandidate(null)}
+                style={{ ...s.btn, ...s.btnSecondary, padding: '0.35rem 0.75rem', fontSize: '0.85rem' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '1.25rem' }}>
+              <div style={{ padding: '0.85rem', borderRadius: '8px', background: 'var(--background)', border: '1px solid var(--border)' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--muted-foreground)', textTransform: 'uppercase' }}>ESTIMATED TOTAL STONES</div>
+                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0284c7', marginTop: '0.2rem' }}>{selectedCausewayCandidate.estimatedStones}</div>
+              </div>
+              <div style={{ padding: '0.85rem', borderRadius: '8px', background: 'var(--background)', border: '1px solid var(--border)' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--muted-foreground)', textTransform: 'uppercase' }}>DIMENSIONAL BREAKDOWN</div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--foreground)', marginTop: '0.2rem' }}>{selectedCausewayCandidate.dimensions}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', marginTop: '0.15rem' }}>Total Volume: {selectedCausewayCandidate.calculatedVolume}</div>
+              </div>
+              <div style={{ padding: '0.85rem', borderRadius: '8px', background: 'var(--background)', border: '1px solid var(--border)' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--muted-foreground)', textTransform: 'uppercase' }}>ARCHITECT CONSULTATION</div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--foreground)', marginTop: '0.2rem' }}>{selectedCausewayCandidate.architectInquiries}</div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
+              <button
+                type="button"
+                onClick={() => setSelectedCausewayCandidate(null)}
+                style={{ ...s.btn, fontSize: '0.8rem', padding: '0.5rem 1rem' }}
               >
                 Close
               </button>
@@ -8491,7 +9459,7 @@ export default function AdminPage() {
         { id: 'submissions', label: 'Project Submissions', icon: '📄' },
         { id: 'gym-submissions', label: 'PM Gym Responses', icon: '💬' },
         { id: 'ai-gym-submissions', label: 'AI Gym Responses', icon: '🤖' },
-        { id: 'chronicle-submissions', label: 'Ramayana Chronicle', icon: '🏹' },
+        { id: 'chronicle-submissions', label: 'Live Case Simulator', icon: '🎮' },
       ]
     },
     { id: 'leads', label: 'Leads', icon: '🎯' },

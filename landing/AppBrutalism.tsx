@@ -2973,7 +2973,6 @@ function AdminPage() {
         <div className="flex items-center gap-1 min-w-max">
           {[
             { id: 'weeks', label: 'Manage Weeks' },
-            { id: 'case-simulator', label: 'PM-X Live Case Simulator' },
             { id: 'supplemental', label: 'Supplemental Content' },
             { id: 'reminders', label: 'Weekly Reminder' },
             { id: 'pm-gym', label: 'PM Gym' },
@@ -3005,6 +3004,10 @@ function AdminPage() {
         <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm min-h-[500px]">
           {activeTab === 'events' && (
             <AdminEventsManager />
+          )}
+
+          {activeTab === 'submissions' && (
+            <AdminCaseSimulatorManager currentBatch={currentBatch} />
           )}
 
           {activeTab === 'case-simulator' && (

@@ -966,6 +966,15 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
     setQaHistory(prev => [...prev, newPair]);
     setSelectedDropdownQId('');
 
+    try {
+      const existing = JSON.parse(localStorage.getItem('pmx_bluestone_rca_submissions') || '[]');
+      existing.unshift({
+        ...newPair,
+        timestamp: new Date().toISOString()
+      });
+      localStorage.setItem('pmx_bluestone_rca_submissions', JSON.stringify(existing.slice(0, 50)));
+    } catch (_) {}
+
     setTimeout(() => {
       if (chatScrollRef.current) {
         chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
@@ -993,6 +1002,15 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
 
     setQaHistory(prev => [...prev, newPair]);
     setQuestionInput('');
+
+    try {
+      const existing = JSON.parse(localStorage.getItem('pmx_bluestone_rca_submissions') || '[]');
+      existing.unshift({
+        ...newPair,
+        timestamp: new Date().toISOString()
+      });
+      localStorage.setItem('pmx_bluestone_rca_submissions', JSON.stringify(existing.slice(0, 50)));
+    } catch (_) {}
 
     setTimeout(() => {
       if (chatScrollRef.current) {
