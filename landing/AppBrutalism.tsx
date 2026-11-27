@@ -15,6 +15,7 @@ const PrototypeHeroPage = lazy(() => import('./prototype-hero/PrototypeHeroPage'
 const WhichPmSpinnerPage = lazy(() => import('./WhichPmSpinnerPage').then(m => ({ default: m.WhichPmSpinnerPage })));
 const RamayanaChroniclePage = lazy(() => import('./RamayanaChroniclePage').then(m => ({ default: m.RamayanaChroniclePage })));
 const CaseSimulatorPage = lazy(() => import('./CaseSimulatorPage').then(m => ({ default: m.CaseSimulatorPage })));
+const BlueStoneRcaPage = lazy(() => import('./BlueStoneRcaPage').then(m => ({ default: m.BlueStoneRcaPage })));
 const AiBeginnersLms = lazy(() => import('./AiBeginnersLms'));
 import { DEFAULT_BLOGS, mergeWithDefaultBlogs } from './blogData';
 
@@ -4265,11 +4266,14 @@ export default function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/spinner" element={<WhichPmSpinnerPage />} />
           <Route path="/which-pm" element={<Navigate to="/spinner" replace />} />
-          <Route path="/chronicle" element={<Navigate to="/spinner" replace />} />
-          <Route path="/ramayana-chronicle" element={<Navigate to="/spinner" replace />} />
+          <Route path="/chronicle" element={<Navigate to="/case-simulator?tab=ramayana-1" replace />} />
+          <Route path="/ramayana-chronicle" element={<CaseSimulatorPage defaultTab="ramayana-1" />} />
           <Route path="/case-simulator" element={<CaseSimulatorPage />} />
+          <Route path="/bluestone-rca" element={<BlueStoneRcaPage />} />
+          <Route path="/bluestone" element={<Navigate to="/case-simulator?tab=bluestone-rca" replace />} />
+          <Route path="/rca" element={<Navigate to="/case-simulator?tab=bluestone-rca" replace />} />
           <Route path="/cases" element={<Navigate to="/case-simulator" replace />} />
-          <Route path="/guesstimate" element={<Navigate to="/case-simulator" replace />} />
+          <Route path="/guesstimate" element={<Navigate to="/case-simulator?tab=causeway" replace />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:blogId" element={<BlogPage />} />
           <Route path="/resources" element={<ResourcesPage />} />

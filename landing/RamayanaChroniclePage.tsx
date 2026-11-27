@@ -386,7 +386,15 @@ const DEFAULT_DROPS: DropData[] = [
   }
 ];
 
-export function RamayanaChroniclePage() {
+export interface RamayanaChroniclePageProps {
+  initialDay?: number;
+  activeDayProp?: number;
+  onDayChange?: (day: number) => void;
+  isEmbedded?: boolean;
+  onSwitchTab?: (tab: string) => void;
+}
+
+export function RamayanaChroniclePage(props?: RamayanaChroniclePageProps) {
   const [drops, setDrops] = useState<DropData[]>(DEFAULT_DROPS);
   const [currentDateStr, setCurrentDateStr] = useState<string>(() => {
     try {
@@ -400,6 +408,12 @@ export function RamayanaChroniclePage() {
   });
 
   const [activeDay, setActiveDay] = useState<number>(() => {
+    if (props?.activeDayProp && [1, 2, 3].includes(props.activeDayProp)) {
+      return props.activeDayProp;
+    }
+    if (props?.initialDay && [1, 2, 3].includes(props.initialDay)) {
+      return props.initialDay;
+    }
     try {
       const params = new URLSearchParams(window.location.search);
       const d = parseInt(params.get('day') || '', 10);
@@ -412,6 +426,19 @@ export function RamayanaChroniclePage() {
       return 1;
     }
   });
+
+  useEffect(() => {
+    if (props?.activeDayProp && [1, 2, 3].includes(props.activeDayProp)) {
+      setActiveDay(props.activeDayProp);
+    }
+  }, [props?.activeDayProp]);
+
+  const handleSelectDay = (day: number) => {
+    setActiveDay(day);
+    if (props?.onDayChange) {
+      props.onDayChange(day);
+    }
+  };
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Time simulation state for previewing drops (synced to real calendar by default)
@@ -782,116 +809,119 @@ export function RamayanaChroniclePage() {
   return (
     <div className="min-h-screen bg-[#FDFCF7] text-[#141413] font-sans selection:bg-[#FEF08A] selection:text-[#141413] font-medium">
       
+      {!props?.isEmbedded && (
+        <>
+          {/* 1. TOP ANNOUNCEMENT TICKER (Soft Neo-Brutalist Banner) */}
+          <aside aria-label="Ramayana Chronicle Announcement" className="sticky top-0 z-50 w-full bg-[#FEF08A] border-b-2 border-[#141413] text-xs py-2 px-4 font-black">
+            <div className="container mx-auto max-w-7xl flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="bg-[#188ab2] text-white rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_#141413] inline-flex items-center gap-1.5 font-black shrink-0">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  🏹 INTERACTIVE CASE STUDY
+                </span>
+                <span className="text-[#141413] font-black text-xs sm:text-sm">
+                  The Ramayana Chronicle · Ayodhya at Dawn · Day 1 Unlocked Today · Free 3-Day PM Masterclass
+                </span>
+              </div>
 
-      {/* 1. TOP ANNOUNCEMENT TICKER (Soft Neo-Brutalist Banner) */}
-      <aside aria-label="Ramayana Chronicle Announcement" className="sticky top-0 z-50 w-full bg-[#FEF08A] border-b-2 border-[#141413] text-xs py-2 px-4 font-black">
-        <div className="container mx-auto max-w-7xl flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="bg-[#188ab2] text-white rounded-full border-2 border-[#141413] px-2.5 py-0.5 text-[10px] uppercase shadow-[1.5px_1.5px_0px_0px_#141413] inline-flex items-center gap-1.5 font-black shrink-0">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              🏹 INTERACTIVE CASE STUDY
-            </span>
-            <span className="text-[#141413] font-black text-xs sm:text-sm">
-              The Ramayana Chronicle · Ayodhya at Dawn · Day 1 Unlocked Today · Free 3-Day PM Masterclass
-            </span>
-          </div>
+              <Link
+                to="/"
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white rounded-full border-2 border-[#141413] px-3.5 py-1 text-xs uppercase font-black shadow-[2px_2px_0px_0px_#141413] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#141413] transition-all inline-flex items-center gap-1 shrink-0"
+              >
+                <span>← Back to StepSmart</span>
+              </Link>
+            </div>
+          </aside>
 
-          <Link
-            to="/"
-            className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white rounded-full border-2 border-[#141413] px-3.5 py-1 text-xs uppercase font-black shadow-[2px_2px_0px_0px_#141413] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#141413] transition-all inline-flex items-center gap-1 shrink-0"
-          >
-            <span>← Back to StepSmart</span>
-          </Link>
-        </div>
-      </aside>
+          {/* 2. SOFT ARCHITECTURAL NEO-BRUTALIST NAVBAR */}
+          <header className="w-full bg-[#FDFCF7] border-b-2 border-[#141413] relative z-40">
+            <div className="container mx-auto px-6 h-20 max-w-7xl flex items-center justify-between">
+              
+              {/* Brand Wordmark */}
+              <Link to="/" className="flex items-center gap-3 select-none">
+                <img
+                  src="/stepsmart-logo.webp"
+                  alt="StepSmart Logo"
+                  className="w-8 h-8 object-contain"
+                  loading="eager"
+                  width="32"
+                  height="32"
+                />
+                <span className="font-black text-2xl tracking-tight text-[#141413]">
+                  StepSmart
+                </span>
+                <span className="hidden sm:inline-block text-xs font-mono font-bold bg-[#FEF08A] px-2 py-0.5 rounded-full border border-[#141413]">
+                  Chronicle
+                </span>
+              </Link>
 
-      {/* 2. SOFT ARCHITECTURAL NEO-BRUTALIST NAVBAR */}
-      <header className="w-full bg-[#FDFCF7] border-b-2 border-[#141413] relative z-40">
-        <div className="container mx-auto px-6 h-20 max-w-7xl flex items-center justify-between">
-          
-          {/* Brand Wordmark */}
-          <Link to="/" className="flex items-center gap-3 select-none">
-            <img
-              src="/stepsmart-logo.webp"
-              alt="StepSmart Logo"
-              className="w-8 h-8 object-contain"
-              loading="eager"
-              width="32"
-              height="32"
-            />
-            <span className="font-black text-2xl tracking-tight text-[#141413]">
-              StepSmart
-            </span>
-            <span className="hidden sm:inline-block text-xs font-mono font-bold bg-[#FEF08A] px-2 py-0.5 rounded-full border border-[#141413]">
-              Chronicle
-            </span>
-          </Link>
+              {/* Desktop Right Actions */}
+              <div className="hidden md:flex items-center gap-4">
+                {isUserRegistered && (
+                  <div className="flex items-center gap-2 bg-[#ECFDF5] border-2 border-[#141413] px-3.5 py-1.5 rounded-full shadow-[2px_2px_0px_0px_#141413] text-xs font-bold text-[#065F46]">
+                    <UserCheck className="w-4 h-4 text-emerald-600" />
+                    <span>{userName} ({userPhone.slice(-4) ? `••••${userPhone.slice(-4)}` : userPhone})</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingUser(true)}
+                      className="text-[#188ab2] hover:underline ml-1 font-black cursor-pointer"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                )}
 
-          {/* Desktop Right Actions */}
-          <div className="hidden md:flex items-center gap-4">
-            {isUserRegistered && (
-              <div className="flex items-center gap-2 bg-[#ECFDF5] border-2 border-[#141413] px-3.5 py-1.5 rounded-full shadow-[2px_2px_0px_0px_#141413] text-xs font-bold text-[#065F46]">
-                <UserCheck className="w-4 h-4 text-emerald-600" />
-                <span>{userName} ({userPhone.slice(-4) ? `••••${userPhone.slice(-4)}` : userPhone})</span>
-                <button
-                  type="button"
-                  onClick={() => setIsEditingUser(true)}
-                  className="text-[#188ab2] hover:underline ml-1 font-black cursor-pointer"
+                <Link
+                  to="/"
+                  className="px-4 py-2 rounded-full border-2 border-[#141413] bg-white text-[#141413] hover:bg-[#FEF08A] shadow-[2px_2px_0px_0px_#141413] font-extrabold text-xs uppercase"
                 >
-                  Edit
-                </button>
+                  Full Cohort
+                </Link>
+
+                <a
+                  href="/learn"
+                  className="px-5 py-2 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[2px_2px_0px_0px_#141413] text-xs uppercase inline-flex items-center gap-1.5"
+                >
+                  <span>Login</span>
+                  <span>➜</span>
+                </a>
+              </div>
+
+              {/* Mobile Menu Trigger */}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden p-2 rounded-xl border-2 border-[#141413] bg-white shadow-[2px_2px_0px_0px_#141413]"
+                aria-label="Toggle menu"
+              >
+                {isMenuOpen ? <X className="w-6 h-6 text-[#141413]" /> : <Menu className="w-6 h-6 text-[#141413]" />}
+              </button>
+            </div>
+
+            {/* Mobile Nav Menu */}
+            {isMenuOpen && (
+              <div className="md:hidden w-full bg-[#FDFCF7] border-b-2 border-[#141413] p-6 flex flex-col gap-3 shadow-[0px_4px_0px_0px_#141413]">
+                {isUserRegistered && (
+                  <div className="p-3 rounded-xl border-2 border-[#141413] bg-[#ECFDF5] text-xs font-bold text-[#065F46] flex items-center justify-between">
+                    <span>Logged in: {userName}</span>
+                    <button onClick={() => { setIsEditingUser(true); setIsMenuOpen(false); }} className="text-[#188ab2] font-black underline">
+                      Change
+                    </button>
+                  </div>
+                )}
+                <Link to="/" onClick={() => setIsMenuOpen(false)} className="text-left font-black text-base py-2 border-b border-[#141413]/10">
+                  Home
+                </Link>
+                <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="text-left font-black text-base py-2 border-b border-[#141413]/10">
+                  PM Playbooks & Blogs
+                </Link>
+                <a href="/learn" onClick={() => setIsMenuOpen(false)} className="text-left font-black text-base py-2 text-[#188ab2]">
+                  Student Login ➜
+                </a>
               </div>
             )}
-
-            <Link
-              to="/"
-              className="px-4 py-2 rounded-full border-2 border-[#141413] bg-white text-[#141413] hover:bg-[#FEF08A] shadow-[2px_2px_0px_0px_#141413] font-extrabold text-xs uppercase"
-            >
-              Full Cohort
-            </Link>
-
-            <a
-              href="/learn"
-              className="px-5 py-2 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[2px_2px_0px_0px_#141413] text-xs uppercase inline-flex items-center gap-1.5"
-            >
-              <span>Login</span>
-              <span>➜</span>
-            </a>
-          </div>
-
-          {/* Mobile Menu Trigger */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-xl border-2 border-[#141413] bg-white shadow-[2px_2px_0px_0px_#141413]"
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X className="w-6 h-6 text-[#141413]" /> : <Menu className="w-6 h-6 text-[#141413]" />}
-          </button>
-        </div>
-
-        {/* Mobile Nav Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden w-full bg-[#FDFCF7] border-b-2 border-[#141413] p-6 flex flex-col gap-3 shadow-[0px_4px_0px_0px_#141413]">
-            {isUserRegistered && (
-              <div className="p-3 rounded-xl border-2 border-[#141413] bg-[#ECFDF5] text-xs font-bold text-[#065F46] flex items-center justify-between">
-                <span>Logged in: {userName}</span>
-                <button onClick={() => { setIsEditingUser(true); setIsMenuOpen(false); }} className="text-[#188ab2] font-black underline">
-                  Change
-                </button>
-              </div>
-            )}
-            <Link to="/" onClick={() => setIsMenuOpen(false)} className="text-left font-black text-base py-2 border-b border-[#141413]/10">
-              Home
-            </Link>
-            <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="text-left font-black text-base py-2 border-b border-[#141413]/10">
-              PM Playbooks & Blogs
-            </Link>
-            <a href="/learn" onClick={() => setIsMenuOpen(false)} className="text-left font-black text-base py-2 text-[#188ab2]">
-              Student Login ➜
-            </a>
-          </div>
-        )}
-      </header>
+          </header>
+        </>
+      )}
 
       {/* Main Container */}
       <main className="py-10 md:py-14 px-4 sm:px-6 container mx-auto max-w-4xl">
@@ -2200,18 +2230,20 @@ export function RamayanaChroniclePage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t-2 border-[#141413] bg-[#FFFDF5] py-8 px-6 text-center text-xs font-bold text-[#141413]/70">
-        <div className="container mx-auto max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-black text-[#141413]">StepSmart</span>
-            <span>·</span>
-            <span>Ramayana Chronicle Case Study</span>
+      {!props?.isEmbedded && (
+        <footer className="border-t-2 border-[#141413] bg-[#FFFDF5] py-8 px-6 text-center text-xs font-bold text-[#141413]/70">
+          <div className="container mx-auto max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <span className="font-black text-[#141413]">StepSmart</span>
+              <span>·</span>
+              <span>Ramayana Chronicle Case Study</span>
+            </div>
+            <div>
+              Built with modern Soft Architectural Neo-Brutalism for StepSmart Product Management.
+            </div>
           </div>
-          <div>
-            Built with modern Soft Architectural Neo-Brutalism for StepSmart Product Management.
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
 
     </div>
   );

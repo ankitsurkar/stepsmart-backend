@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   MessageSquare,
@@ -20,6 +20,10 @@ import {
   ShieldCheck,
   Sparkles
 } from 'lucide-react';
+import { RamayanaChroniclePage } from './RamayanaChroniclePage';
+import { BlueStoneRcaComponent } from './BlueStoneRcaPage';
+
+export type SimulatorTab = 'ramayana-1' | 'ramayana-2' | 'ramayana-3' | 'causeway' | 'bluestone-rca';
 
 interface RubricDimension {
   id: string;
@@ -670,8 +674,57 @@ function LeaderboardSection({ variant, finalEstimate, userCalculation, correctCo
 }
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────
-export function CaseSimulatorPage() {
-  const [searchParams] = useSearchParams();
+export function CaseSimulatorPage({ defaultTab }: { defaultTab?: SimulatorTab }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [activeTab, setActiveTab] = useState<SimulatorTab>(() => {
+    try {
+      const t = searchParams.get('tab') || searchParams.get('case');
+      if (t === 'ramayana-1' || t === 'drop-1' || t === '1') return 'ramayana-1';
+      if (t === 'ramayana-2' || t === 'drop-2' || t === '2') return 'ramayana-2';
+      if (t === 'ramayana-3' || t === 'drop-3' || t === '3') return 'ramayana-3';
+      if (t === 'causeway' || t === 'bridge' || t === 'ramsetu' || t === 'guesstimate') return 'causeway';
+      if (t === 'bluestone-rca' || t === 'bluestone' || t === 'rca') return 'bluestone-rca';
+      if (defaultTab) return defaultTab;
+      return 'causeway';
+    } catch {
+      return defaultTab || 'causeway';
+    }
+  });
+
+  const handleTabChange = (newTab: SimulatorTab) => {
+    setActiveTab(newTab);
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set('tab', newTab);
+      return next;
+    }, { replace: true });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Top-left case dropdown state & outside click handler
+  const [isCaseDropdownOpen, setIsCaseDropdownOpen] = useState(false);
+  const caseDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (caseDropdownRef.current && !caseDropdownRef.current.contains(e.target as Node)) {
+        setIsCaseDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const CASES_LIST = [
+    { id: 'bluestone-rca' as SimulatorTab, title: 'BlueStone: Product RCA', subtitle: 'Revenue +5%, Gross Profit -15%', icon: '💎', badge: 'Product RCA' },
+    { id: 'causeway' as SimulatorTab, title: 'Ram Setu Causeway', subtitle: 'Stone Estimation Challenge', icon: '🪨', badge: 'Guesstimate' },
+    { id: 'ramayana-1' as SimulatorTab, title: 'Ramayana Chronicle: Drop 1', subtitle: 'The Royal Dilemma at Dawn', icon: '🏹', badge: 'Drop 1' },
+    { id: 'ramayana-2' as SimulatorTab, title: 'Ramayana Chronicle: Drop 2', subtitle: 'The Forest Path & Interviews', icon: '🏹', badge: 'Drop 2' },
+    { id: 'ramayana-3' as SimulatorTab, title: 'Ramayana Chronicle: Drop 3', subtitle: 'Strategic Synthesis & Framework', icon: '🏹', badge: 'Drop 3' },
+  ];
+
+  const selectedCaseInfo = CASES_LIST.find(c => c.id === activeTab) || CASES_LIST[0];
 
   // User requested: keep only Version B for now
   const variant: 'B' = 'B';
@@ -752,31 +805,135 @@ export function CaseSimulatorPage() {
 
   return (
     <div className="min-h-screen bg-[#FDFCF7] text-[#141413] font-sans pb-24 selection:bg-[#FFF3A7]">
-      {/* ── Top Header / Navbar ────────────────────────────────────────── */}
+      {/* ── Top Header / Navbar with Left-hand Top Case Selector Dropdown ── */}
       <header className="w-full bg-white border-b-[3px] border-[#141413] sticky top-0 z-40">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+          
+          {/* Left-hand Side: Back Button & Case Selector Dropdown */}
           <div className="flex items-center gap-3">
             <Link
               to="/"
-              className="p-1.5 rounded-lg border-2 border-[#141413] hover:bg-[#FEF08A] transition-all shadow-[1.5px_1.5px_0px_0px_#141413]"
+              className="p-2 rounded-xl border-2 border-[#141413] bg-white hover:bg-[#FEF08A] transition-all shadow-[1.5px_1.5px_0px_0px_#141413] flex items-center justify-center shrink-0"
               title="Back to Home"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4 text-[#141413]" />
             </Link>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-black uppercase px-2 py-0.5 rounded bg-[#FEF08A] border border-[#141413]">
-                PM LAB
-              </span>
-              <h1 className="font-black text-base sm:text-lg tracking-tight text-[#141413] truncate">
-                Ram Setu Guesstimate Simulator
-              </h1>
+
+            {/* Left Top Side Dropdown */}
+            <div className="relative" ref={caseDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setIsCaseDropdownOpen(!isCaseDropdownOpen)}
+                className="flex items-center gap-2 sm:gap-2.5 bg-[#FFFDF5] hover:bg-[#FEF08A] px-3 sm:px-3.5 py-2 rounded-xl border-2 border-[#141413] shadow-[2.5px_2.5px_0px_0px_#141413] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer font-black text-xs sm:text-sm text-[#141413]"
+              >
+                <span className="text-base">{selectedCaseInfo.icon}</span>
+                <span className="truncate max-w-[160px] sm:max-w-[260px] font-black">{selectedCaseInfo.title}</span>
+                <span className="font-mono text-[9px] uppercase px-1.5 py-0.2 rounded bg-[#FEF08A] border border-[#141413] font-bold hidden md:inline">
+                  {selectedCaseInfo.badge}
+                </span>
+                <ChevronDown className={`w-4 h-4 text-[#141413] transition-transform duration-200 ${isCaseDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isCaseDropdownOpen && (
+                <div className="absolute left-0 top-full mt-2 w-72 sm:w-80 bg-white border-2 sm:border-[2.5px] border-[#141413] rounded-2xl shadow-[4px_4px_0px_0px_#141413] p-2 z-50 animate-in fade-in duration-150">
+                  <div className="px-3 py-1.5 text-[10px] font-mono font-black uppercase text-slate-400 border-b border-[#141413]/10 mb-1 flex items-center justify-between">
+                    <span>Select Live Case</span>
+                    <span>5 Cases</span>
+                  </div>
+                  {CASES_LIST.map((c) => {
+                    const isSelected = activeTab === c.id;
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => {
+                          handleTabChange(c.id);
+                          setIsCaseDropdownOpen(false);
+                        }}
+                        className={`w-full text-left p-2.5 rounded-xl border text-xs font-bold transition-all flex items-center justify-between gap-2 mb-1 cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#188ab2] text-white border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
+                            : 'bg-white hover:bg-[#FEF08A] text-[#141413] border-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 truncate">
+                          <span className="text-base shrink-0">{c.icon}</span>
+                          <div className="truncate">
+                            <div className="font-black truncate">{c.title}</div>
+                            <div className={`text-[10px] truncate ${isSelected ? 'text-white/80' : 'text-slate-500'}`}>{c.subtitle}</div>
+                          </div>
+                        </div>
+                        <span className={`text-[9px] font-mono uppercase px-1.5 py-0.2 rounded border shrink-0 ${
+                          isSelected ? 'bg-white text-[#188ab2] border-white' : 'bg-slate-100 text-slate-600 border-slate-300'
+                        }`}>
+                          {c.badge}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
+          </div>
+
+          {/* Right-hand side of header */}
+          <div className="flex items-center gap-3">
+            <span className="bg-[#FEF08A] text-[#141413] font-mono text-[10px] font-black uppercase px-2.5 py-1 rounded-full border border-[#141413] shadow-[1px_1px_0px_0px_#141413] hidden sm:inline-flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>PM-X Live Simulator</span>
+            </span>
+            <Link
+              to="/"
+              className="px-3.5 py-1.5 rounded-full border-2 border-[#141413] bg-white hover:bg-[#FEF08A] text-[#141413] text-xs font-black shadow-[1.5px_1.5px_0px_0px_#141413] transition-all"
+            >
+              Home
+            </Link>
           </div>
         </div>
       </header>
 
-      {/* ── Main Container ────────────────────────────────────────────── */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 space-y-6">
+      {/* ── Active Case Views ───────────────────────────────────────────── */}
+      {activeTab === 'bluestone-rca' && (
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
+          <BlueStoneRcaComponent isEmbedded={true} />
+        </div>
+      )}
+
+      {activeTab === 'ramayana-1' && (
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-2">
+          <RamayanaChroniclePage
+            isEmbedded={true}
+            activeDayProp={1}
+            onDayChange={(d) => handleTabChange(`ramayana-${d}` as any)}
+            onSwitchTab={(t) => handleTabChange(t as any)}
+          />
+        </div>
+      )}
+
+      {activeTab === 'ramayana-2' && (
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-2">
+          <RamayanaChroniclePage
+            isEmbedded={true}
+            activeDayProp={2}
+            onDayChange={(d) => handleTabChange(`ramayana-${d}` as any)}
+            onSwitchTab={(t) => handleTabChange(t as any)}
+          />
+        </div>
+      )}
+
+      {activeTab === 'ramayana-3' && (
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-2">
+          <RamayanaChroniclePage
+            isEmbedded={true}
+            activeDayProp={3}
+            onDayChange={(d) => handleTabChange(`ramayana-${d}` as any)}
+            onSwitchTab={(t) => handleTabChange(t as any)}
+          />
+        </div>
+      )}
+
+      {activeTab === 'causeway' && (
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 space-y-6">
         {/* ============================================================= */}
         {/* VARIANT B ONLY: Fill-in-the-Boxes (Assume vs Ask Mechanism)   */}
         {/* ============================================================= */}
@@ -1483,7 +1640,8 @@ export function CaseSimulatorPage() {
               )}
             </div>
           </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
