@@ -130,6 +130,9 @@ export const adminSaveGymQuestion = (courseId, question) =>
 export const adminDeleteGymQuestion = (courseId, date) =>
   api.patch(`/admin/courses/${courseId}/weeks/__gym__`, { action: 'delete', date });
 
+export const adminRecordGymSubmission = (courseId, data) =>
+  api.patch(`/admin/courses/${courseId}/weeks/__gym__`, { action: 'record_submission', ...data });
+
 export const submitGymAnswer = (courseId, date, answer) =>
   api.post('/quiz/submit', { courseId, weekId: 'gym', answers: { [date]: answer } });
 

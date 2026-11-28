@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useAuth } from '../context/AuthContext';
-import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer } from '../utils/api';
+import { getMyCourses, getCourseWeeks, getProgress, submitGymAnswer, adminSaveGymQuestion } from '../utils/api';
 import AssignmentUpload from '../components/AssignmentUpload';
 import PeerSessionsTab from '../components/PeerSessionsTab';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -31,6 +31,29 @@ const COURSE_NAME_OVERRIDES = {
   'course-002': 'PM -X Accelerator (Batch 2)',
   'course-ai-001': 'AI Seekho, AI Apnao',
 };
+
+export async function ensureAiGymQuestionsSeeded(courses) {
+  const targetCourses = courses && courses.length > 0 ? courses : [{ courseId: 'course-001' }];
+  for (const c of targetCourses) {
+    if (!c?.courseId) continue;
+    for (const ch of INITIAL_GYM_CHALLENGES) {
+      try {
+        await adminSaveGymQuestion(c.courseId, {
+          date: ch.date,
+          day: ch.day,
+          type: 'text',
+          text: ch.questionPrompt,
+          title: ch.caseStudyTitle,
+          explanation: ch.challenge,
+          isAiGym: true,
+          score: 20,
+        });
+      } catch (e) {
+        console.warn(`Seeding question error for ${c.courseId} ${ch.date}:`, e);
+      }
+    }
+  }
+}
 
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Home', icon: 'home' },
@@ -2108,7 +2131,7 @@ function calculateGymStreak(username) {
   return streak;
 }
 
-function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
+function DashboardLeaderboard({ me, rows, displayName, isCompact, isAiCohort, aiLang }) {
   const AVATAR_GRADIENTS = [
     'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
     'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
@@ -2125,8 +2148,8 @@ function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
       width: isCompact ? '100%' : '320px',
       flexShrink: 0,
     }}>
-      <div style={s.railHeaderTitle}>Top Peers</div>
-      <div style={s.railHeaderSub}>Track your performance against the cohort.</div>
+      <div style={s.railHeaderTitle}>{aiLang === 'hindi' && isAiCohort ? 'शीर्ष साथी (Top Peers)' : 'Top Peers'}</div>
+      <div style={s.railHeaderSub}>{aiLang === 'hindi' && isAiCohort ? 'सहपाठियों के मुकाबले अपनी प्रगति और AI XP पॉइंट्स ट्रैक करें।' : 'Track your performance and AI XP against the cohort.'}</div>
 
       <div
         className="no-scrollbar"
@@ -2139,6 +2162,7 @@ function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
         {rows.map((entry, idx) => {
           const gradient = AVATAR_GRADIENTS[idx % AVATAR_GRADIENTS.length];
           const isMe = entry.isCurrentUser;
+          const rankBadge = entry.rank === 1 ? '🥇 #1' : entry.rank === 2 ? '🥈 #2' : entry.rank === 3 ? '🥉 #3' : `#${entry.rank}`;
           
           return (
             <motion.div
@@ -2153,7 +2177,7 @@ function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
               <div style={{ ...s.railAvatar, background: gradient, border: 'none', color: '#1e293b' }}>
                 {getInitials(entry.displayName)}
               </div>
-              <div style={{ minWidth: 0 }}>
+              <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.25rem' }}>
                   <span style={{ ...s.railName, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: isMe ? '110px' : '150px' }}>
                     {entry.displayName}
@@ -2173,12 +2197,12 @@ function DashboardLeaderboard({ me, rows, displayName, isCompact }) {
                     </span>
                   )}
                 </div>
-                <div style={s.railMeta}>
-                  {entry.totalPoints} pts
+                <div style={{ ...s.railMeta, color: isAiCohort ? '#027a9b' : s.railMeta.color, fontWeight: isAiCohort ? 700 : 500 }}>
+                  {isAiCohort ? `+${entry.totalPoints || entry.score || 0} XP` : `${entry.totalPoints} pts`}
                 </div>
               </div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 650, color: '#0f172a', minWidth: '24px', textAlign: 'right' }}>
-                {entry.rank}
+              <div style={{ fontSize: entry.rank <= 3 ? '1.1rem' : '1rem', fontWeight: 700, color: '#0f172a', minWidth: '36px', textAlign: 'right' }}>
+                {rankBadge}
               </div>
             </motion.div>
           );
@@ -2571,12 +2595,30 @@ export default function DashboardPage() {
     if (activeCourse?.courseId) {
       try {
         await submitGymAnswer(activeCourse.courseId, challengeDateKey, submissionPayload);
-        const progRes = await getProgress(activeCourse.courseId);
+      } catch (err) {
+        console.warn('Initial submit returned error, attempting question seed & retry:', err);
+        try {
+          await adminSaveGymQuestion(activeCourse.courseId, {
+            date: challengeDateKey,
+            day: aiGymModalDay.day,
+            type: 'text',
+            text: aiGymModalDay.questionPrompt,
+            title: aiGymModalDay.caseStudyTitle,
+            explanation: aiGymModalDay.challenge,
+            isAiGym: true,
+            score: pointsAwarded,
+          });
+          await submitGymAnswer(activeCourse.courseId, challengeDateKey, submissionPayload);
+        } catch (retryErr) {
+          console.error('Failed to submit AI Gym response to backend on retry:', retryErr);
+        }
+      }
+
+      try {
+        const progRes = await getProgress(activeCourse.courseId, { includeLeaderboard: true });
         if (progRes?.data?.leaderboard) setLeaderboard(progRes.data.leaderboard);
         if (progRes?.data?.gymProgress) setGymProgress(progRes.data.gymProgress);
-      } catch (err) {
-        console.error('Failed to submit AI Gym response to backend:', err);
-      }
+      } catch (_) {}
     }
 
     const updated = aiGymChallenges.map(c =>
@@ -2930,6 +2972,47 @@ export default function DashboardPage() {
         }));
       }
 
+      // Auto-sync locally completed challenges to server if missing on backend
+      try {
+        const completedLocal = JSON.parse(localStorage.getItem('stepsmart_ai_gym_challenges_v3') || '[]');
+        const missingOnServer = (Array.isArray(completedLocal) ? completedLocal : []).filter(locC =>
+          locC.completed && locC.answer && !nextGymProgress.some(p => p.date === locC.date)
+        );
+        const targetCourseId = actualCourse?.courseId || activeCourse?.courseId;
+        if (missingOnServer.length > 0 && targetCourseId) {
+          Promise.all(missingOnServer.map(async (m) => {
+            try {
+              await submitGymAnswer(targetCourseId, m.date, {
+                text: m.answer,
+                answer: m.answer,
+                day: m.day,
+                challengeTitle: m.caseStudyTitle || m.challenge,
+                score: m.scoreAwarded || 20,
+                type: 'ai-gym-response',
+              });
+            } catch (e) {
+              console.warn('Auto-sync gym answer error:', e);
+            }
+          })).then(() => {
+            getProgress(targetCourseId, { includeLeaderboard: true }).then(res => {
+              if (res.data?.leaderboard) setLeaderboard(res.data.leaderboard);
+              if (res.data?.gymProgress) setGymProgress(res.data.gymProgress);
+            }).catch(() => {});
+          });
+        }
+      } catch (syncErr) {
+        console.warn('Local gym progress sync error:', syncErr);
+      }
+
+      // Auto-seed AI Gym questions in DynamoDB if user is admin
+      const seedTarget = actualCourse || activeCourse;
+      if (user && (user.isAdmin || user.username === 'admin') && seedTarget?.courseId) {
+        if (!sessionStorage.getItem('stepsmart_ai_gym_seeded')) {
+          sessionStorage.setItem('stepsmart_ai_gym_seeded', 'true');
+          ensureAiGymQuestionsSeeded([seedTarget]).catch(() => {});
+        }
+      }
+
       // Save to local cache & localStorage (including PM Gym data)
       clientDashboardCache = {
         username: user?.username,
@@ -3042,6 +3125,47 @@ export default function DashboardPage() {
         }));
       }
 
+      // Auto-sync locally completed challenges to server if missing on backend
+      try {
+        const completedLocal = JSON.parse(localStorage.getItem('stepsmart_ai_gym_challenges_v3') || '[]');
+        const missingOnServer = (Array.isArray(completedLocal) ? completedLocal : []).filter(locC =>
+          locC.completed && locC.answer && !nextGymProgress.some(p => p.date === locC.date)
+        );
+        const targetCourseId = courseId || currentSelectedCourse?.courseId || activeCourse?.courseId;
+        if (missingOnServer.length > 0 && targetCourseId) {
+          Promise.all(missingOnServer.map(async (m) => {
+            try {
+              await submitGymAnswer(targetCourseId, m.date, {
+                text: m.answer,
+                answer: m.answer,
+                day: m.day,
+                challengeTitle: m.caseStudyTitle || m.challenge,
+                score: m.scoreAwarded || 20,
+                type: 'ai-gym-response',
+              });
+            } catch (e) {
+              console.warn('Auto-sync gym answer error:', e);
+            }
+          })).then(() => {
+            getProgress(targetCourseId, { includeLeaderboard: true }).then(res => {
+              if (res.data?.leaderboard) setLeaderboard(res.data.leaderboard);
+              if (res.data?.gymProgress) setGymProgress(res.data.gymProgress);
+            }).catch(() => {});
+          });
+        }
+      } catch (syncErr) {
+        console.warn('Local gym progress sync error:', syncErr);
+      }
+
+      // Auto-seed AI Gym questions in DynamoDB if user is admin
+      const seedTarget = currentSelectedCourse || activeCourse || { courseId };
+      if (user && (user.isAdmin || user.username === 'admin') && seedTarget?.courseId) {
+        if (!sessionStorage.getItem('stepsmart_ai_gym_seeded')) {
+          sessionStorage.setItem('stepsmart_ai_gym_seeded', 'true');
+          ensureAiGymQuestionsSeeded([seedTarget]).catch(() => {});
+        }
+      }
+
       // Save to module cache & localStorage (including PM Gym data)
       clientDashboardCache = {
         username: user?.username,
@@ -3150,12 +3274,45 @@ export default function DashboardPage() {
   const completedCount = lessonsWeeks.filter((week) => weekStatus(week, progressMap[week.weekId]) === 'complete').length;
   const remainingCount = Math.max(lessonsWeeks.length - completedCount, 0);
   const progressPercent = lessonsWeeks.length > 0 ? Math.round((completedCount / lessonsWeeks.length) * 100) : 0;
-  const leaderboardRows = (leaderboard || []).filter((entry) => entry.totalPoints > 0 || entry.isCurrentUser);
-  const myLeaderboardEntry = leaderboardRows.find((entry) => entry.isCurrentUser) || null;
-  const topLeaderboard = leaderboardRows.slice(0, 6);
-  const assignmentsSubmittedCount = myLeaderboardEntry?.assignmentsSubmitted || 0;
-  const currentDateLabel = formatDateLabel();
+  const completedAiDrills = (aiGymChallenges || []).filter(c => c.completed).length;
+  const myAiPoints = isAiCohort
+    ? (completedAiDrills * 20) + (journalSubmitted ? 25 : 0)
+    : 0;
+
   const displayName = getDisplayName(user);
+  let rawLeaderboard = (leaderboard || []).map(entry => ({ ...entry }));
+  let userEntry = rawLeaderboard.find(entry => entry.isCurrentUser);
+
+  if (isAiCohort) {
+    if (userEntry) {
+      userEntry.totalPoints = Math.max(userEntry.totalPoints || 0, myAiPoints);
+      userEntry.score = Math.max(userEntry.score || 0, myAiPoints);
+    } else {
+      userEntry = {
+        userId: user?.userId || user?.username || 'current_user',
+        displayName: displayName || user?.username || 'You',
+        isCurrentUser: true,
+        totalPoints: myAiPoints,
+        score: myAiPoints,
+        completedLectures: completedCount > 0 ? 1 : 0,
+        assignmentsSubmitted: journalSubmitted ? 1 : 0,
+      };
+      rawLeaderboard.push(userEntry);
+    }
+  }
+
+  const leaderboardRows = rawLeaderboard
+    .filter((entry) => (entry.totalPoints > 0) || entry.isCurrentUser)
+    .sort((a, b) => (b.totalPoints || 0) - (a.totalPoints || 0));
+
+  leaderboardRows.forEach((entry, idx) => {
+    entry.rank = idx + 1;
+  });
+
+  const myLeaderboardEntry = userEntry || leaderboardRows.find((entry) => entry.isCurrentUser) || null;
+  const topLeaderboard = leaderboardRows.slice(0, 6);
+  const assignmentsSubmittedCount = myLeaderboardEntry?.assignmentsSubmitted || (isAiCohort && journalSubmitted ? 1 : 0);
+  const currentDateLabel = formatDateLabel();
   const calendarEventDefinitions = buildCalendarEventDefinitions(weeks);
   const calendarEntries = expandCalendarEntries(calendarEventDefinitions);
   const calendarEntriesByDate = buildCalendarEntriesByDate(calendarEntries);
@@ -4277,43 +4434,84 @@ export default function DashboardPage() {
           style={{
             background: 'linear-gradient(135deg, #027A9B 0%, #015D77 100%)',
             borderRadius: isCompact ? '18px' : '24px',
-            padding: isCompact ? '1.15rem 1rem' : '1.25rem 2rem',
+            padding: isCompact ? '1.15rem 1rem' : '1.35rem 2rem',
             color: '#ffffff',
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: isCompact ? 'stretch' : 'center',
+            flexDirection: 'column',
+            gap: isCompact ? '0.85rem' : '1.15rem',
+            alignItems: 'stretch',
             boxShadow: '0 10px 30px rgba(2, 122, 155, 0.15)',
-            flexDirection: isCompact ? 'column' : 'row',
-            gap: isCompact ? '1rem' : '1.5rem',
             width: '100%',
             boxSizing: 'border-box',
           }}
         >
           <div style={{
             display: 'flex',
-            flexDirection: 'column',
-            gap: '0.65rem',
-            textAlign: 'left',
-            flex: 1,
-            minWidth: 0,
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '0.75rem',
+            flexWrap: 'wrap',
             width: '100%',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: isCompact ? '0.75rem' : '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: isCompact ? '0.65rem' : '0.85rem' }}>
               <img
                 src={process.env.PUBLIC_URL + '/pm_gym_brain.png'}
                 alt="PM Gym Brain mascot"
                 style={{
-                  width: isCompact ? '48px' : '72px',
-                  height: isCompact ? '48px' : '72px',
+                  width: isCompact ? '40px' : '52px',
+                  height: isCompact ? '40px' : '52px',
                   objectFit: 'contain',
                   flexShrink: 0,
                 }}
               />
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <h3 style={{ fontSize: isCompact ? '1.25rem' : '1.5rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
-                  {isAiCohort ? (aiLang === 'hindi' ? 'AI Gym' : 'AI Gym') : 'PM Gym'}
-                </h3>
-                {isAiCohort && (() => {
+              <h3 style={{ fontSize: isCompact ? '1.25rem' : '1.5rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
+                {isAiCohort ? (aiLang === 'hindi' ? 'AI Gym' : 'AI Gym') : 'PM Gym'}
+              </h3>
+            </div>
+            {isAiCohort && (() => {
+              const weekdayStr = TODAY_GYM_DAY === 1 ? (aiLang === 'hindi' ? 'बुधवार' : 'Wednesday')
+                : TODAY_GYM_DAY === 2 ? (aiLang === 'hindi' ? 'गुरुवार' : 'Thursday')
+                : TODAY_GYM_DAY === 3 ? (aiLang === 'hindi' ? 'शुक्रवार' : 'Friday')
+                : TODAY_GYM_DAY === 4 ? (aiLang === 'hindi' ? 'शनिवार' : 'Saturday')
+                : TODAY_GYM_DAY === 5 ? (aiLang === 'hindi' ? 'रविवार' : 'Sunday')
+                : TODAY_GYM_DAY === 6 ? (aiLang === 'hindi' ? 'सोमवार' : 'Monday')
+                : (aiLang === 'hindi' ? 'मंगलवार' : 'Tuesday');
+
+              return (
+                <span style={{
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  color: '#ffffff',
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  padding: '0.25rem 0.65rem',
+                  borderRadius: '999px',
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                  whiteSpace: 'normal',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}>
+                  {aiLang === 'hindi' ? `7-दिवसीय स्ट्रीक चैलेंज • दिन ${TODAY_GYM_DAY} / 7 (${weekdayStr})` : `7-Day Streak Challenge • Day ${TODAY_GYM_DAY} of 7 (${weekdayStr})`}
+                </span>
+              );
+            })()}
+          </div>
+
+          <p
+            className="lms-gym-banner-text"
+            style={{
+              fontSize: isCompact ? '0.88rem' : '0.94rem',
+              color: '#e0f2fe',
+              margin: 0,
+              opacity: 0.95,
+              lineHeight: 1.55,
+              width: '100%',
+              wordBreak: 'normal',
+              overflowWrap: 'break-word',
+            }}
+          >
+            {isAiCohort
+              ? (() => {
                   const todayChallenge = aiGymChallenges.find(c => c.day === TODAY_GYM_DAY) || aiGymChallenges[0];
                   const weekdayStr = TODAY_GYM_DAY === 1 ? (aiLang === 'hindi' ? 'बुधवार' : 'Wednesday')
                     : TODAY_GYM_DAY === 2 ? (aiLang === 'hindi' ? 'गुरुवार' : 'Thursday')
@@ -4322,64 +4520,19 @@ export default function DashboardPage() {
                     : TODAY_GYM_DAY === 5 ? (aiLang === 'hindi' ? 'रविवार' : 'Sunday')
                     : TODAY_GYM_DAY === 6 ? (aiLang === 'hindi' ? 'सोमवार' : 'Monday')
                     : (aiLang === 'hindi' ? 'मंगलवार' : 'Tuesday');
-
-                  return (
-                    <span style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      color: '#ffffff',
-                      fontSize: '0.72rem',
-                      fontWeight: 800,
-                      padding: '0.2rem 0.55rem',
-                      borderRadius: '999px',
-                      letterSpacing: '0.04em',
-                      textTransform: 'uppercase',
-                      whiteSpace: 'nowrap',
-                    }}>
-                      {aiLang === 'hindi' ? `7-दिवसीय स्ट्रीक चैलेंज • दिन ${TODAY_GYM_DAY} / 7 (${weekdayStr})` : `7-Day Streak Challenge • Day ${TODAY_GYM_DAY} of 7 (${weekdayStr})`}
-                    </span>
-                  );
-                })()}
-              </div>
-            </div>
-
-            <p
-              className="lms-gym-banner-text"
-              style={{
-                fontSize: isCompact ? '0.88rem' : '0.9rem',
-                color: '#e0f2fe',
-                margin: 0,
-                opacity: 0.95,
-                lineHeight: 1.55,
-                maxWidth: isCompact ? '100%' : '720px',
-                width: '100%',
-                wordBreak: 'normal',
-                overflowWrap: 'break-word',
-              }}
-            >
-              {isAiCohort
-                ? (() => {
-                    const todayChallenge = aiGymChallenges.find(c => c.day === TODAY_GYM_DAY) || aiGymChallenges[0];
-                    const weekdayStr = TODAY_GYM_DAY === 1 ? (aiLang === 'hindi' ? 'बुधवार' : 'Wednesday')
-                      : TODAY_GYM_DAY === 2 ? (aiLang === 'hindi' ? 'गुरुवार' : 'Thursday')
-                      : TODAY_GYM_DAY === 3 ? (aiLang === 'hindi' ? 'शुक्रवार' : 'Friday')
-                      : TODAY_GYM_DAY === 4 ? (aiLang === 'hindi' ? 'शनिवार' : 'Saturday')
-                      : TODAY_GYM_DAY === 5 ? (aiLang === 'hindi' ? 'रविवार' : 'Sunday')
-                      : TODAY_GYM_DAY === 6 ? (aiLang === 'hindi' ? 'सोमवार' : 'Monday')
-                      : (aiLang === 'hindi' ? 'मंगलवार' : 'Tuesday');
-                    const categoryText = aiLang === 'hindi' ? (todayChallenge.categoryHi || todayChallenge.newExperienceHi || 'एक्सपेरिमेंट') : (todayChallenge.category || todayChallenge.newExperience || 'Experiment');
-                    const challengeDesc = aiLang === 'hindi' ? (todayChallenge.challengeHi || todayChallenge.questionPromptHi || todayChallenge.challenge) : (todayChallenge.challenge || todayChallenge.questionPrompt);
-                    return `[AI माइक्रो-एक्सपेरिमेंट · दिन ${TODAY_GYM_DAY} / 7 (${weekdayStr}): ${categoryText}] ${challengeDesc} (+20 XP आज)`;
-                  })()
-                : (isClosedDay
-                  ? 'Closed today for resting. Rest up, or review previous answers!'
-                  : todayQuestion
-                    ? todayQuestion.text
-                    : loading
-                      ? "Loading today's daily challenge..."
-                      : 'No daily question scheduled for today. Check back later!')
-              }
-            </p>
-          </div>
+                  const categoryText = aiLang === 'hindi' ? (todayChallenge.categoryHi || todayChallenge.newExperienceHi || 'एक्सपेरिमेंट') : (todayChallenge.category || todayChallenge.newExperience || 'Experiment');
+                  const challengeDesc = aiLang === 'hindi' ? (todayChallenge.challengeHi || todayChallenge.questionPromptHi || todayChallenge.challenge) : (todayChallenge.challenge || todayChallenge.questionPrompt);
+                  return `[AI माइक्रो-एक्सपेरिमेंट · दिन ${TODAY_GYM_DAY} / 7 (${weekdayStr}): ${categoryText}] ${challengeDesc} (+20 XP आज)`;
+                })()
+              : (isClosedDay
+                ? 'Closed today for resting. Rest up, or review previous answers!'
+                : todayQuestion
+                  ? todayQuestion.text
+                  : loading
+                    ? "Loading today's daily challenge..."
+                    : 'No daily question scheduled for today. Check back later!')
+            }
+          </p>
 
           <div
             className="lms-gym-actions"
@@ -4387,10 +4540,9 @@ export default function DashboardPage() {
               display: 'flex',
               gap: isCompact ? '0.75rem' : '1.25rem',
               alignItems: 'center',
-              width: isCompact ? '100%' : 'auto',
-              justifyContent: isCompact ? 'space-between' : 'flex-start',
-              flexDirection: isMobile ? 'column' : isTablet ? 'row' : 'row',
-              flexShrink: 0,
+              width: '100%',
+              justifyContent: isCompact ? 'stretch' : 'flex-end',
+              flexDirection: isMobile ? 'column' : 'row',
               boxSizing: 'border-box',
             }}
           >
@@ -4793,7 +4945,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Redesigned Card 3: Streak */}
+              {/* Redesigned Card 3: Streak / XP */}
               <div
                 style={{
                   background: '#ffffff',
@@ -4810,18 +4962,23 @@ export default function DashboardPage() {
               >
                 <div>
                   <div style={{ color: 'var(--muted-foreground)', fontSize: isCompact ? '0.8rem' : '0.875rem', fontWeight: 500, marginBottom: '0.35rem' }}>
-                    Streak
+                    {isAiCohort ? (aiLang === 'hindi' ? 'AI XP पॉइंट्स' : 'AI XP Earned') : 'Streak'}
                   </div>
                   <div style={{ fontSize: isCompact ? '1.4rem' : '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: isCompact ? '0.35rem' : '0.75rem' }}>
                     {isAiCohort
-                      ? `${aiGymChallenges.filter(c => c.completed).length} ${aiGymChallenges.filter(c => c.completed).length === 1 ? 'day' : 'days'}`
+                      ? `+${myAiPoints} XP`
                       : `${((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak)} ${((gymStreak === 0 && hasSolvedToday) ? 1 : gymStreak) === 1 ? 'day' : 'days'}`
                     }
                   </div>
                 </div>
                 <div>
                   <div style={{ color: 'var(--muted-foreground)', fontSize: isCompact ? '0.75rem' : '0.8125rem' }}>
-                    Total: {isAiCohort ? aiGymChallenges.filter(c => c.completed).length : gymProgress.length} {(isAiCohort ? aiGymChallenges.filter(c => c.completed).length : gymProgress.length) === 1 ? 'day' : 'days'}
+                    {isAiCohort
+                      ? (aiLang === 'hindi'
+                          ? `स्ट्रीक: ${completedAiDrills} / 7 दिन पूर्ण`
+                          : `Streak: ${completedAiDrills} / 7 days completed`)
+                      : `Total: ${gymProgress.length} ${gymProgress.length === 1 ? 'day' : 'days'}`
+                    }
                   </div>
                 </div>
               </div>
@@ -4922,6 +5079,8 @@ export default function DashboardPage() {
               rows={leaderboardRows}
               displayName={displayName}
               isCompact={isCompact}
+              isAiCohort={isAiCohort}
+              aiLang={aiLang}
             />
           )}
         </div>

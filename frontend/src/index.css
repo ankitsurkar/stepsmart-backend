@@ -357,6 +357,22 @@ body {
 }
 
 /* ─── LMS Responsive Dashboard & Gym Banner ─── */
+.lms-gym-banner {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 1.15rem !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.lms-gym-banner-text {
+  width: 100% !important;
+  max-width: 100% !important;
+  line-height: 1.55 !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+
 @media (max-width: 1024px) {
   .lms-dashboard-shell {
     display: flex !important;
@@ -391,25 +407,26 @@ body {
     gap: 0.75rem !important;
     width: 100% !important;
   }
-  .lms-gym-banner {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 1rem !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  .lms-gym-banner-text {
-    width: 100% !important;
-    max-width: 100% !important;
-    line-height: 1.5 !important;
-  }
   .lms-gym-actions {
     width: 100% !important;
-    flex-direction: column !important;
-    gap: 0.75rem !important;
+    justify-content: stretch !important;
   }
   .lms-gym-solve-btn {
     width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .lms-metric-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+  .lms-gym-banner {
+    padding: 1.15rem 1rem !important;
+    border-radius: 18px !important;
+    gap: 0.85rem !important;
   }
 }
 

@@ -15,6 +15,8 @@ import {
   getMyCourses,
   adminSaveGymQuestion,
   adminDeleteGymQuestion,
+  adminRecordGymSubmission,
+  submitGymAnswer,
   adminSaveBlogPost,
   adminDeleteBlogPost,
   adminSaveEvent,
@@ -23,6 +25,8 @@ import {
   adminDeleteRamayanaDrop,
   getChronicleResponses,
 } from '../utils/api';
+import { toast } from 'sonner';
+import { INITIAL_GYM_CHALLENGES } from '../utils/aiCohortData';
 
 const COURSE_ID = 'course-001';
 
@@ -2289,7 +2293,11 @@ function GymSubmissionsTab({ courseId, onSwitchTab }) {
                 });
 
                 return sorted.map((sub, i) => {
-                  const studentInfo = students[sub.userId] || { name: sub.userId?.slice(0, 8) + '…', email: '', enrolled: false };
+                  const studentInfo = students[sub.userId] || {
+                    name: sub.studentName || (sub.userId && !sub.userId.includes('-') ? sub.userId : `${sub.userId?.slice(0, 8)}…`),
+                    email: sub.studentEmail || '',
+                    enrolled: true,
+                  };
                   const question = gymQuestions[sub.date];
                   const isQuiz = sub.type === 'quiz';
                   
@@ -2486,6 +2494,15 @@ function AiGymSubmissionsTab({ courseId, onSwitchTab }) {
   const [activeModalAnswer, setActiveModalAnswer] = useState(null);
   const [copiedResponse, setCopiedResponse] = useState(false);
 
+  // Manual submission & question seeding states
+  const [showManualModal, setShowManualModal] = useState(false);
+  const [manualStudent, setManualStudent] = useState('');
+  const [manualDay, setManualDay] = useState(2);
+  const [manualAnswer, setManualAnswer] = useState('');
+  const [manualPoints, setManualPoints] = useState(20);
+  const [manualSaving, setManualSaving] = useState(false);
+  const [seeding, setSeeding] = useState(false);
+
   useEffect(() => {
     load();
   }, [courseId]);
@@ -2494,34 +2511,69 @@ function AiGymSubmissionsTab({ courseId, onSwitchTab }) {
     setLoading(true);
     setError('');
     try {
-      const [progRes, stuRes] = await Promise.all([
-        adminGetAllProgress(courseId),
-        adminGetStudents(courseId),
-      ]);
+      let coursesList = [];
+      try {
+        const coursesRes = await getMyCourses();
+        coursesList = coursesRes.data?.courses || [];
+      } catch (cErr) {
+        console.warn('Fallback courses list:', cErr);
+      }
+      if (!coursesList.some(c => c.courseId === courseId)) {
+        coursesList.push({ courseId });
+      }
 
-      let allGym = [...(progRes.data?.gymSubmissions || [])];
+      let allGym = [];
+      const studentMap = {};
 
-      // Check if current course has AI gym submissions. If not, inspect other courses to ensure none are missed
-      const hasAiSubmissions = allGym.some(s => s.type === 'ai-gym-response' || s.day != null || (s.challengeTitle && s.challengeTitle.includes('Micro')));
-      if (!hasAiSubmissions) {
+      for (const c of coursesList) {
         try {
-          const coursesRes = await getMyCourses();
-          const otherCourses = (coursesRes.data?.courses || []).filter(c => c.courseId !== courseId);
-          for (const c of otherCourses) {
-            if (c.courseId.toLowerCase().includes('ai') || (c.name && c.name.toLowerCase().includes('ai'))) {
-              const extraProg = await adminGetAllProgress(c.courseId);
-              if (extraProg.data?.gymSubmissions) {
-                allGym = [...allGym, ...extraProg.data.gymSubmissions];
-              }
+          const [progRes, stuRes] = await Promise.all([
+            adminGetAllProgress(c.courseId),
+            adminGetStudents(c.courseId),
+          ]);
+          if (progRes.data?.gymSubmissions) {
+            allGym.push(...progRes.data.gymSubmissions);
+          }
+          if (progRes.data?.aiGymSubmissions) {
+            allGym.push(...progRes.data.aiGymSubmissions);
+          }
+          for (const s of (progRes.data?.gymSubmissions || [])) {
+            if (s.studentName && s.userId) {
+              studentMap[s.userId] = {
+                name: s.studentName,
+                email: s.studentEmail || '',
+                enrolled: true,
+              };
             }
           }
-        } catch (extraErr) {
-          console.warn('Fallback course search warning:', extraErr);
+          for (const st of (stuRes.data?.students || [])) {
+            const info = {
+              name: st.name || st.email || st.Username,
+              email: st.email || '',
+              enrolled: st.enrolled ?? true
+            };
+            if (st.Username) studentMap[st.Username] = info;
+            if (st.email) studentMap[st.email] = info;
+            if (st.sub) studentMap[st.sub] = info;
+          }
+        } catch (err) {
+          console.warn(`Scan error for ${c.courseId}:`, err);
+        }
+      }
+
+      // Deduplicate submissions by userId + date
+      const seen = new Set();
+      const deduped = [];
+      for (const s of allGym) {
+        const key = `${s.userId}#${s.date}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          deduped.push(s);
         }
       }
 
       // Filter for AI Gym entries
-      const aiSubs = allGym.filter(s => {
+      const aiSubs = deduped.filter(s => {
         if (s.type === 'ai-gym-response') return true;
         if (s.day != null) return true;
         if (s.challengeTitle && (s.challengeTitle.includes('Micro') || s.challengeTitle.includes('माइक्रो') || s.challengeTitle.includes('AI'))) return true;
@@ -2530,24 +2582,101 @@ function AiGymSubmissionsTab({ courseId, onSwitchTab }) {
       });
 
       setSubmissions(aiSubs);
-
-      const studentMap = {};
-      for (const st of (stuRes.data?.students || [])) {
-        const info = {
-          name: st.name || st.email || st.Username,
-          email: st.email || '',
-          enrolled: st.enrolled ?? true
-        };
-        if (st.Username) studentMap[st.Username] = info;
-        if (st.email) studentMap[st.email] = info;
-        if (st.sub) studentMap[st.sub] = info;
-      }
       setStudents(studentMap);
     } catch (err) {
       console.error('Failed to load AI Gym responses:', err);
       setError('Failed to load AI Gym responses.');
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleSeedQuestions() {
+    setSeeding(true);
+    try {
+      const coursesRes = await getMyCourses();
+      const allC = coursesRes.data?.courses || [{ courseId }];
+      for (const c of allC) {
+        for (const ch of INITIAL_GYM_CHALLENGES) {
+          try {
+            await adminSaveGymQuestion(c.courseId, {
+              date: ch.date,
+              day: ch.day,
+              type: 'text',
+              text: ch.questionPrompt,
+              title: ch.caseStudyTitle,
+              explanation: ch.challenge,
+              isAiGym: true,
+              score: 20,
+            });
+          } catch (e) {
+            console.warn(`Seed error for ${c.courseId} ${ch.date}:`, e);
+          }
+        }
+      }
+      toast.success('All 7 AI Gym micro-experiment questions seeded into DynamoDB!');
+      load();
+    } catch (err) {
+      toast.error('Failed to seed questions.');
+    } finally {
+      setSeeding(false);
+    }
+  }
+
+  async function handleSaveManualSubmission(e) {
+    e.preventDefault();
+    if (!manualStudent.trim() || !manualAnswer.trim()) {
+      toast.error('Please specify a student and their submitted answer.');
+      return;
+    }
+    setManualSaving(true);
+    try {
+      const dayMeta = aiDaysMeta.find(m => m.day === Number(manualDay)) || aiDaysMeta[0];
+      const studentKey = manualStudent.trim();
+      const matchedStudent = students[studentKey] || Object.values(students).find(s => s.name === studentKey || s.email === studentKey);
+      const studentName = matchedStudent?.name || studentKey;
+      const studentEmail = matchedStudent?.email || (studentKey.includes('@') ? studentKey : '');
+
+      const payload = {
+        studentId: studentKey,
+        studentName: studentName,
+        studentEmail: studentEmail,
+        date: dayMeta.date,
+        day: Number(manualDay),
+        answer: manualAnswer,
+        challengeTitle: dayMeta.title,
+        score: Number(manualPoints) || 20,
+      };
+
+      await adminRecordGymSubmission(courseId, payload);
+
+      const newSub = {
+        userId: studentKey,
+        studentName: studentName,
+        studentEmail: studentEmail,
+        date: dayMeta.date,
+        day: Number(manualDay),
+        answer: manualAnswer,
+        score: Number(manualPoints) || 20,
+        challengeTitle: dayMeta.title,
+        submittedAt: new Date().toISOString(),
+        type: 'ai-gym-response',
+      };
+
+      setSubmissions(prev => [newSub, ...prev.filter(s => !(s.userId === studentKey && s.date === dayMeta.date))]);
+      if (!students[studentKey]) {
+        setStudents(prev => ({ ...prev, [studentKey]: { name: studentName, email: studentEmail, enrolled: true } }));
+      }
+      toast.success(`Submission recorded and +${manualPoints || 20} XP awarded to ${studentName}!`);
+      setShowManualModal(false);
+      setManualAnswer('');
+      setManualStudent('');
+      load();
+    } catch (err) {
+      console.error('Failed to record submission:', err);
+      toast.error('Failed to record submission to server.');
+    } finally {
+      setManualSaving(false);
     }
   }
 
@@ -2674,29 +2803,76 @@ function AiGymSubmissionsTab({ courseId, onSwitchTab }) {
         </div>
       </div>
 
-      {/* Filters Bar */}
-      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-        <input 
-          style={{ ...s.input, width: '280px', marginBottom: 0 }} 
-          placeholder="Search by student, day, title, response..." 
-          value={search} 
-          onChange={e => setSearch(e.target.value)} 
-        />
-        
-        <select 
-          style={{ ...s.input, width: '220px', marginBottom: 0, paddingRight: '1.5rem' }}
-          value={selectedDayFilter}
-          onChange={e => setSelectedDayFilter(e.target.value)}
-        >
-          <option value="all">All Days (Days 1 to 7)</option>
-          <option value="1">Day 1: Learning Companion (Wed Nov 25)</option>
-          <option value="2">Day 2: Tone & Writing Editor (Thu Nov 26)</option>
-          <option value="3">Day 3: Planning Assistant (Fri Nov 27)</option>
-          <option value="4">Day 4: Document Intelligence (Sat Nov 28)</option>
-          <option value="5">Day 5: Decision Matrix (Sun Nov 29)</option>
-          <option value="6">Day 6: Verification & Facts (Mon Nov 30)</option>
-          <option value="7">Day 7: Solution Refinement (Tue Dec 01)</option>
-        </select>
+      {/* Filters & Actions Bar */}
+      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <input 
+            style={{ ...s.input, width: '260px', marginBottom: 0 }} 
+            placeholder="Search by student, day, title, response..." 
+            value={search} 
+            onChange={e => setSearch(e.target.value)} 
+          />
+          
+          <select 
+            style={{ ...s.input, width: '220px', marginBottom: 0, paddingRight: '1.5rem' }}
+            value={selectedDayFilter}
+            onChange={e => setSelectedDayFilter(e.target.value)}
+          >
+            <option value="all">All Days (Days 1 to 7)</option>
+            <option value="1">Day 1: Learning Companion (Wed Nov 25)</option>
+            <option value="2">Day 2: Tone & Writing Editor (Thu Nov 26)</option>
+            <option value="3">Day 3: Planning Assistant (Fri Nov 27)</option>
+            <option value="4">Day 4: Document Intelligence (Sat Nov 28)</option>
+            <option value="5">Day 5: Decision Matrix (Sun Nov 29)</option>
+            <option value="6">Day 6: Verification & Facts (Mon Nov 30)</option>
+            <option value="7">Day 7: Solution Refinement (Tue Dec 01)</option>
+          </select>
+        </div>
+
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            onClick={handleSeedQuestions}
+            disabled={seeding}
+            style={{
+              background: '#f8fafc',
+              color: '#0f172a',
+              border: '1px solid #cbd5e1',
+              borderRadius: '10px',
+              padding: '0.55rem 0.95rem',
+              fontSize: '0.825rem',
+              fontWeight: 600,
+              cursor: seeding ? 'not-allowed' : 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+            }}
+          >
+            <span>{seeding ? '⏳ Seeding...' : '⚡ Seed / Sync Questions'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowManualModal(true)}
+            style={{
+              background: '#027A9B',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '10px',
+              padding: '0.55rem 1.1rem',
+              fontSize: '0.825rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              boxShadow: '0 2px 8px rgba(2, 122, 155, 0.25)',
+            }}
+          >
+            <span>➕</span>
+            <span>Record WhatsApp / Offline Submission</span>
+          </button>
+        </div>
       </div>
 
       {submissions.length === 0 ? (
@@ -2737,7 +2913,11 @@ function AiGymSubmissionsTab({ courseId, onSwitchTab }) {
                 }
 
                 return sorted.map((sub, i) => {
-                  const studentInfo = students[sub.userId] || { name: sub.userId?.slice(0, 8) + '…', email: '', enrolled: false };
+                  const studentInfo = students[sub.userId] || {
+                    name: sub.studentName || (sub.userId && !sub.userId.includes('-') ? sub.userId : `${sub.userId?.slice(0, 8)}…`),
+                    email: sub.studentEmail || '',
+                    enrolled: true,
+                  };
                   const subDay = sub.day || (sub.date ? (aiDaysMeta.find(m => m.date === sub.date)?.day) : 1);
                   const dayMeta = aiDaysMeta.find(m => m.day === subDay) || { weekday: '', weekdayHi: '', title: sub.challengeTitle || `Day ${subDay}` };
                   const challengeTitle = sub.challengeTitle || dayMeta.title;
@@ -2874,6 +3054,130 @@ function AiGymSubmissionsTab({ courseId, onSwitchTab }) {
               })()}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Manual Submission Recording Modal */}
+      {showManualModal && (
+        <div style={modalOverlayStyle} onClick={() => setShowManualModal(false)}>
+          <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
+            <div style={modalHeaderStyle}>
+              <div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#027a9b' }}>
+                  Record Submission & Award XP
+                </div>
+                <h3 style={{ margin: '0.2rem 0 0 0', fontSize: '1.2rem', fontWeight: 800, color: 'var(--foreground)' }}>
+                  Manually Add WhatsApp / Offline Answer
+                </h3>
+              </div>
+              <button 
+                type="button" 
+                style={modalCloseBtnStyle} 
+                onClick={() => setShowManualModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveManualSubmission} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', overflowY: 'auto' }}>
+              <div>
+                <label style={{ ...detailLabelStyle, display: 'block', marginBottom: '0.35rem' }}>Select or Enter Student Name / Email / Username</label>
+                <input
+                  style={{ ...s.input, width: '100%', boxSizing: 'border-box' }}
+                  list="students-datalist"
+                  placeholder="e.g. ankit@gmail.com or Sanket or pick from enrolled"
+                  value={manualStudent}
+                  onChange={(e) => setManualStudent(e.target.value)}
+                  required
+                />
+                <datalist id="students-datalist">
+                  {Object.entries(students).map(([key, st]) => (
+                    <option key={key} value={st.email || key}>
+                      {st.name} {st.email && st.email !== st.name ? `(${st.email})` : ''}
+                    </option>
+                  ))}
+                </datalist>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div>
+                  <label style={{ ...detailLabelStyle, display: 'block', marginBottom: '0.35rem' }}>Challenge Day</label>
+                  <select
+                    style={{ ...s.input, width: '100%', boxSizing: 'border-box' }}
+                    value={manualDay}
+                    onChange={(e) => setManualDay(Number(e.target.value))}
+                  >
+                    <option value={1}>Day 1: Learning Companion (Wed Nov 25)</option>
+                    <option value={2}>Day 2: Tone & Writing Editor (Thu Nov 26)</option>
+                    <option value={3}>Day 3: Planning Assistant (Fri Nov 27)</option>
+                    <option value={4}>Day 4: Document Intelligence (Sat Nov 28)</option>
+                    <option value={5}>Day 5: Decision Matrix (Sun Nov 29)</option>
+                    <option value={6}>Day 6: Verification & Facts (Mon Nov 30)</option>
+                    <option value={7}>Day 7: Solution Refinement (Tue Dec 01)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ ...detailLabelStyle, display: 'block', marginBottom: '0.35rem' }}>XP Points to Award</label>
+                  <input
+                    type="number"
+                    style={{ ...s.input, width: '100%', boxSizing: 'border-box' }}
+                    value={manualPoints}
+                    onChange={(e) => setManualPoints(Number(e.target.value))}
+                    min={0}
+                    max={100}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ ...detailLabelStyle, display: 'block', marginBottom: '0.35rem' }}>Submitted Answer / Reflection (from WhatsApp or Email)</label>
+                <textarea
+                  style={{ ...s.input, width: '100%', minHeight: '120px', resize: 'vertical', boxSizing: 'border-box', fontFamily: 'inherit' }}
+                  placeholder="Paste the student's answer or reflection here..."
+                  value={manualAnswer}
+                  onChange={(e) => setManualAnswer(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowManualModal(false)}
+                  style={{
+                    background: '#ffffff',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    padding: '0.6rem 1.25rem',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    color: 'var(--muted-foreground)',
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={manualSaving}
+                  style={{
+                    background: '#027a9b',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '0.6rem 1.4rem',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    cursor: manualSaving ? 'not-allowed' : 'pointer',
+                    color: '#ffffff',
+                    boxShadow: '0 4px 12px rgba(2, 122, 155, 0.25)',
+                  }}
+                >
+                  {manualSaving ? 'Saving...' : `Save & Award +${manualPoints} XP`}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 
@@ -5366,6 +5670,7 @@ function ChronicleSubmissionsTab({ courseId, onSwitchTab }) {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

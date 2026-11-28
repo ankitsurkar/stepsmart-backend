@@ -506,6 +506,55 @@ async function updateGymQuestion(courseId, body) {
       Key: { pk: `COURSE#${courseId}`, sk: `GYM#${date}` },
     }));
     return res(200, { message: 'Gym question deleted successfully', date });
+  } else if (action === 'record_submission') {
+    const { studentId, studentEmail, studentName, date, answer, score, challengeTitle, day } = body;
+    const userId = (studentId || studentEmail || studentName || `student_${Date.now()}`).replace(/^USER#/, '');
+    const pk = `USER#${userId}`;
+    const sk = `GYM#${courseId}#${date}`;
+    const points = typeof score === 'number' ? score : (Number(score) || 20);
+    const title = challengeTitle || `AI Gym Drill ${date}`;
+    const submittedTime = body.submittedAt || new Date().toISOString();
+
+    await ddb.send(new UpdateCommand({
+      TableName: PROGRESS_TABLE,
+      Key: { pk, sk },
+      UpdateExpression: 'SET courseId = :cid, #dt = :dt, #tp = :tp, answer = :ans, score = :score, submittedAt = :now, userId = :uid, challengeTitle = :title, #day = :day, studentName = :sname, studentEmail = :semail',
+      ExpressionAttributeNames: {
+        '#dt': 'date',
+        '#tp': 'type',
+        '#day': 'day',
+      },
+      ExpressionAttributeValues: {
+        ':cid': courseId,
+        ':dt': date,
+        ':tp': 'ai-gym-response',
+        ':ans': String(answer || ''),
+        ':score': points,
+        ':now': submittedTime,
+        ':uid': userId,
+        ':title': title,
+        ':day': day ? Number(day) : null,
+        ':sname': studentName || userId,
+        ':semail': studentEmail || '',
+      },
+    }));
+
+    return res(200, {
+      message: 'Submission recorded successfully and XP points awarded.',
+      submission: {
+        userId,
+        date,
+        type: 'ai-gym-response',
+        answer: String(answer || ''),
+        score: points,
+        submittedAt: submittedTime,
+        challengeTitle: title,
+        day: day ? Number(day) : null,
+        studentName: studentName || userId,
+        studentEmail: studentEmail || '',
+        courseId,
+      },
+    });
   }
   return res(400, { message: 'Invalid action for gym content' });
 }
@@ -866,11 +915,13 @@ async function deleteWeek(courseId, weekId) {
 // At 20 students × ~10 weeks = 200 items, a Scan is fine.
 // At larger scale, add a GSI on (courseId, weekId).
 async function getCourseProgress(courseId) {
-  const result = await ddb.send(new ScanCommand({
-    TableName: PROGRESS_TABLE,
-    FilterExpression: 'courseId = :cid',
-    ExpressionAttributeValues: { ':cid': courseId },
-  }));
+  const isAi = String(courseId).toLowerCase().includes('ai');
+  const scanParams = { TableName: PROGRESS_TABLE };
+  if (!isAi) {
+    scanParams.FilterExpression = 'courseId = :cid';
+    scanParams.ExpressionAttributeValues = { ':cid': courseId };
+  }
+  const result = await ddb.send(new ScanCommand(scanParams));
 
   const progress = [];
   const gymSubmissions = [];
@@ -886,8 +937,11 @@ async function getCourseProgress(courseId) {
         submittedAt: item.submittedAt,
         challengeTitle: item.challengeTitle,
         day: item.day,
+        studentName: item.studentName || null,
+        studentEmail: item.studentEmail || null,
+        courseId: item.courseId || courseId,
       });
-    } else {
+    } else if (!isAi || item.courseId === courseId) {
       progress.push({
         userId: item.userId || (item.pk ? item.pk.replace('USER#', '') : ''),
         weekId: item.weekId,

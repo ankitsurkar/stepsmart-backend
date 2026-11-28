@@ -474,17 +474,20 @@ function laterDate(a, b) {
   return a > b ? a : b;
 }
 
-function makeDisplayName(profile, userId) {
-  if (profile?.name) return profile.name;
-  if (profile?.email) return profile.email;
+function makeDisplayName(profile, userId, item) {
+  if (item?.studentName && item.studentName.trim()) return item.studentName.trim();
+  if (profile?.name && profile.name.trim()) return profile.name.trim();
+  if (item?.studentEmail && item.studentEmail.trim()) return item.studentEmail.trim().split('@')[0];
+  if (profile?.email && profile.email.trim()) return profile.email.trim().split('@')[0];
+  if (userId && !userId.includes('-') && !userId.startsWith('student_')) return userId;
   return `Student ${String(userId || '').slice(-6) || 'Unknown'}`;
 }
 
-function makeLeaderboardEntry(userId, profile, currentUserId) {
+function makeLeaderboardEntry(userId, profile, currentUserId, item) {
   return {
     userId,
-    displayName: makeDisplayName(profile, userId),
-    email: profile?.email || '',
+    displayName: makeDisplayName(profile, userId, item),
+    email: profile?.email || item?.studentEmail || '',
     linkedinUrl: profile?.website || '',
     lecturePoints: 0,
     assignmentPoints: 0,
@@ -539,15 +542,28 @@ async function listUsersBySub(userPoolId) {
   return usersBySub;
 }
 
-function getOrCreateEntry(entries, userId, profiles, currentUserId) {
-  if (!entries.has(userId)) {
-    entries.set(userId, makeLeaderboardEntry(userId, profiles.get(userId), currentUserId));
+function getOrCreateEntry(entries, userId, profiles, currentUserId, item) {
+  let entry = entries.get(userId);
+  if (!entry) {
+    entry = makeLeaderboardEntry(userId, profiles.get(userId), currentUserId, item);
+    entries.set(userId, entry);
+  } else if (item?.studentName && entry.displayName.startsWith('Student ')) {
+    entry.displayName = item.studentName;
   }
-  return entries.get(userId);
+  return entry;
 }
 
+// Builds the complete leaderboard for a course.
+// Returns an array of student ranking objects sorted by totalPoints descending.
 async function buildLeaderboard(courseId, currentUserId, event) {
   const userPoolId = deriveUserPoolId(event);
+  const isAiCourse = String(courseId).toLowerCase().includes('ai');
+  const progressScanParams = { TableName: PROGRESS_TABLE };
+  if (!isAiCourse) {
+    progressScanParams.FilterExpression = 'courseId = :cid';
+    progressScanParams.ExpressionAttributeValues = { ':cid': courseId };
+  }
+
   const [weeksResult, progressResult, userProfiles, enrollmentsResult] = await Promise.all([
     ddb.send(new QueryCommand({
       TableName: COURSES_TABLE,
@@ -560,11 +576,7 @@ async function buildLeaderboard(courseId, currentUserId, event) {
       console.error('Course weeks query failed while building leaderboard:', err);
       return { Items: [] };
     }),
-    ddb.send(new ScanCommand({
-      TableName: PROGRESS_TABLE,
-      FilterExpression: 'courseId = :cid',
-      ExpressionAttributeValues: { ':cid': courseId },
-    })).catch((err) => {
+    ddb.send(new ScanCommand(progressScanParams)).catch((err) => {
       console.error('Progress scan failed while building leaderboard:', err);
       return { Items: [] };
     }),
@@ -583,6 +595,9 @@ async function buildLeaderboard(courseId, currentUserId, event) {
   ]);
 
   const enrolledUserIds = new Set((enrollmentsResult.Items || []).map(item => item.enrollmentId));
+  for (const item of (enrollmentsResult.Items || [])) {
+    if (item.userId) enrolledUserIds.add(item.userId);
+  }
 
   function hasSupplementalStudentContent(week) {
     return (week.assignments?.length || 0) > 0
@@ -623,12 +638,22 @@ async function buildLeaderboard(courseId, currentUserId, event) {
   for (const item of (progressResult.Items || [])) {
     const itemUserId = item.userId || (item.pk ? item.pk.replace('USER#', '') : null);
     if (!itemUserId) continue;
-    if (!enrolledUserIds.has(itemUserId)) continue;
+
+    if (!isAiCourse) {
+      if (item.courseId && item.courseId !== courseId) continue;
+      if (enrolledUserIds.size > 0 && !enrolledUserIds.has(itemUserId) && !enrolledUserIds.has(item.userId)) continue;
+    } else {
+      // For AI courses, match any AI challenge or submission belonging to this course
+      const isAiItem = item.courseId === courseId ||
+        item.type === 'ai-gym-response' ||
+        (item.sk && item.sk.startsWith('GYM#') && (item.day != null || (item.challengeTitle && item.challengeTitle.toLowerCase().includes('micro'))));
+      if (!isAiItem) continue;
+    }
 
     // PM Gym & AI Gym question completion gives score points
     if (item.sk && item.sk.startsWith('GYM#')) {
-      const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId);
-      const points = typeof item.score === 'number' ? item.score : 1;
+      const entry = getOrCreateEntry(leaderboardEntries, itemUserId, userProfiles, currentUserId, item);
+      const points = typeof item.score === 'number' ? item.score : (isAiCourse ? 20 : 1);
       entry.score += points;
       entry.totalPoints += points;
       entry.lastActivity = laterDate(entry.lastActivity, toIso(item.submittedAt));
@@ -983,7 +1008,7 @@ async function recordHeartbeat(userId, body) {
   });
 }
 
-async function submitGymAttempt(userId, body) {
+async function submitGymAttempt(userId, body, event) {
   const { courseId, answers } = body;
   if (!courseId || !answers || typeof answers !== 'object') {
     return res(400, { message: 'Missing required fields: courseId, answers' });
@@ -1039,22 +1064,26 @@ async function submitGymAttempt(userId, body) {
     ? (rawAnswer.text || rawAnswer.answer || JSON.stringify(rawAnswer))
     : String(rawAnswer);
 
+  const claimsName = event?.requestContext?.authorizer?.claims?.name;
+  const claimsEmail = event?.requestContext?.authorizer?.claims?.email;
+  const studentName = body.studentName || body.name || (typeof rawAnswer === 'object' ? rawAnswer.studentName : '') || claimsName || '';
+  const studentEmail = body.studentEmail || body.email || (typeof rawAnswer === 'object' ? rawAnswer.studentEmail : '') || claimsEmail || '';
+
   let score = 0;
-  if (question.isAiGym) {
-    if (typeof rawAnswer === 'object' && typeof rawAnswer.score === 'number') {
-      score = rawAnswer.score;
-    } else if (typeof body.score === 'number') {
-      score = body.score;
-    } else {
-      score = 20;
-    }
+  if (typeof rawAnswer === 'object' && typeof rawAnswer.score === 'number') {
+    score = rawAnswer.score;
+  } else if (typeof body.score === 'number') {
+    score = body.score;
+  } else if (question.isAiGym || (typeof rawAnswer === 'object' && rawAnswer.type === 'ai-gym-response') || String(courseId).toLowerCase().includes('ai')) {
+    score = 20;
   } else if (question.type === 'quiz') {
     score = (Number(answerText) === question.correctIndex) ? 1 : 0;
   } else {
     score = 1;
   }
 
-  const pk = `USER#${userId}`;
+  const effectiveUserId = (body.targetUserId || body.studentId || userId).replace(/^USER#/, '');
+  const pk = `USER#${effectiveUserId}`;
   const sk = `GYM#${courseId}#${date}`;
   const challengeTitle = (typeof rawAnswer === 'object' && rawAnswer?.challengeTitle)
     ? rawAnswer.challengeTitle
@@ -1063,7 +1092,7 @@ async function submitGymAttempt(userId, body) {
   await ddb.send(new UpdateCommand({
     TableName: PROGRESS_TABLE,
     Key: { pk, sk },
-    UpdateExpression: 'SET courseId = :cid, #dt = :dt, #tp = :tp, answer = :ans, score = :score, submittedAt = :now, userId = :uid, challengeTitle = :title, #day = :day',
+    UpdateExpression: 'SET courseId = :cid, #dt = :dt, #tp = :tp, answer = :ans, score = :score, submittedAt = :now, userId = :uid, challengeTitle = :title, #day = :day, studentName = :sname, studentEmail = :semail',
     ExpressionAttributeNames: {
       '#dt': 'date',
       '#tp': 'type',
@@ -1072,13 +1101,15 @@ async function submitGymAttempt(userId, body) {
     ExpressionAttributeValues: {
       ':cid': courseId,
       ':dt': date,
-      ':tp': question.isAiGym ? 'ai-gym-response' : question.type,
+      ':tp': question.isAiGym || String(courseId).toLowerCase().includes('ai') ? 'ai-gym-response' : question.type,
       ':ans': answerText,
       ':score': score,
       ':now': new Date().toISOString(),
-      ':uid': userId,
+      ':uid': effectiveUserId,
       ':title': challengeTitle,
       ':day': question.day || (typeof rawAnswer === 'object' ? rawAnswer.day : null) || null,
+      ':sname': studentName || effectiveUserId,
+      ':semail': studentEmail || '',
     },
   }));
 
@@ -1089,7 +1120,7 @@ async function submitGymAttempt(userId, body) {
   });
 }
 
-async function submitQuizAttempt(userId, body) {
+async function submitQuizAttempt(userId, body, event) {
   const { courseId, weekId, answers } = body;
   if (!courseId || !weekId || !answers || typeof answers !== 'object') {
     return res(400, { message: 'Missing required fields: courseId, weekId, answers' });
@@ -1104,7 +1135,7 @@ async function submitQuizAttempt(userId, body) {
   }
 
   if (weekId === 'gym') {
-    return await submitGymAttempt(userId, body);
+    return await submitGymAttempt(userId, body, event);
   }
 
   let weekItem;
@@ -1742,7 +1773,7 @@ exports.handler = async (event) => {
     if (method === 'POST' && resource === '/courses/{courseId}/weeks/{weekId}/qa') return await postQAQuestion(courseId, params.weekId, userId, body, event);
     if (method === 'GET' && resource === '/progress/{courseId}') return await getProgressForCourse(courseId, userId, event);
     if (method === 'POST' && resource === '/progress/heartbeat') return await recordHeartbeat(userId, body);
-    if (method === 'POST' && resource === '/quiz/submit') return await submitQuizAttempt(userId, body);
+    if (method === 'POST' && resource === '/quiz/submit') return await submitQuizAttempt(userId, body, event);
 
     // Peer-to-Peer Session routes
     if (method === 'GET' && resource === '/courses/{courseId}/peer-sessions') return await listOpenPeerSessions(courseId, userId);
