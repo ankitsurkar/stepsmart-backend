@@ -14,7 +14,8 @@ import {
   ShieldAlert,
   ChevronDown,
   ChevronUp,
-  AlertCircle
+  AlertCircle,
+  ArrowRight
 } from 'lucide-react';
 
 export interface QnAPair {
@@ -907,7 +908,142 @@ export function matchClarifyingQuestion(query: string): {
   };
 }
 
+// ────────────────────────────────────────────────────────────────────────────────
+// 7-Stage Daily Unlocking Schedule (Automatic Day-by-Day Unlocking)
+// ────────────────────────────────────────────────────────────────────────────────
+export interface BlueStoneStageMeta {
+  key: 'clarify' | 'tree' | 'funnel' | 'category' | 'control' | 'prioritize' | 'pitch';
+  dayNumber: number;
+  label: string;
+  shortLabel: string;
+  icon: any;
+  unlockDate: string; // YYYY-MM-DD
+  unlockDateLabel: string;
+  cliffhanger: string;
+}
+
+export function getBlueStoneTodayDateString(): string {
+  try {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    return formatter.format(now);
+  } catch (_) {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+}
+
+export const BLUESTONE_STAGES_SCHEDULE: BlueStoneStageMeta[] = [
+  {
+    key: 'clarify',
+    dayNumber: 1,
+    unlockDate: '2026-11-27',
+    unlockDateLabel: 'Nov 27th',
+    label: '1. Clarifying Questions',
+    shortLabel: 'Clarifying',
+    icon: MessageSquare,
+    cliffhanger: 'Step into the interview room and ask your clarifying questions to diagnose digital commerce scope and product status.'
+  },
+  {
+    key: 'tree',
+    dayNumber: 2,
+    unlockDate: '2026-11-28',
+    unlockDateLabel: 'Nov 28th',
+    label: '2. Metric Tree',
+    shortLabel: 'Metric Tree',
+    icon: Layers,
+    cliffhanger: 'Decompose the 15% gross profit drop into customer-facing experience vs. product economics.'
+  },
+  {
+    key: 'funnel',
+    dayNumber: 3,
+    unlockDate: '2026-11-29',
+    unlockDateLabel: 'Nov 29th',
+    label: '3. Customer Funnel',
+    shortLabel: 'Funnel',
+    icon: BarChart3,
+    cliffhanger: 'Analyze full-funnel drop-offs across sessions, PDP views, add-to-cart, and checkout.'
+  },
+  {
+    key: 'category',
+    dayNumber: 4,
+    unlockDate: '2026-11-30',
+    unlockDateLabel: 'Nov 30th',
+    label: '4. Category Margins',
+    shortLabel: 'Category Mix',
+    icon: Target,
+    cliffhanger: 'Investigate Gold vs. Diamond revenue and margins to find where the profit leaked.'
+  },
+  {
+    key: 'control',
+    dayNumber: 5,
+    unlockDate: '2026-12-01',
+    unlockDateLabel: 'Dec 1st',
+    label: '5. Controllability',
+    shortLabel: 'Controllability',
+    icon: ShieldAlert,
+    cliffhanger: 'Separate product-controlled factors from external market commodity price spikes.'
+  },
+  {
+    key: 'prioritize',
+    dayNumber: 6,
+    unlockDate: '2026-12-02',
+    unlockDateLabel: 'Dec 2nd',
+    label: '6. Prioritization',
+    shortLabel: 'Prioritization',
+    icon: Sparkles,
+    cliffhanger: 'Map candidate interventions on a 2x2 Impact vs Effort matrix.'
+  },
+  {
+    key: 'pitch',
+    dayNumber: 7,
+    unlockDate: '2026-12-03',
+    unlockDateLabel: 'Dec 3rd',
+    label: '7. Leadership Pitch & Quiz',
+    shortLabel: 'Leadership Pitch',
+    icon: Award,
+    cliffhanger: 'Deliver the 5-minute pitch to BlueStone leadership and test your PM mastery.'
+  }
+];
+
 export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boolean }) {
+  // Calendar-based automatic day unlocking state
+  const todayDateStr = getBlueStoneTodayDateString();
+  const [isUnlockAllStages, setIsUnlockAllStages] = useState(false);
+
+  // Automatic day unlock calculation: each day unlocks automatically on its calendar date
+  const isStageUnlocked = (stage: BlueStoneStageMeta) => {
+    if (isUnlockAllStages) return true;
+    return todayDateStr >= stage.unlockDate;
+  };
+
+  const isStageLiveToday = (stage: BlueStoneStageMeta) => {
+    return todayDateStr === stage.unlockDate;
+  };
+
+  // Find the highest stage currently unlocked for today
+  const highestUnlockedStage = [...BLUESTONE_STAGES_SCHEDULE].reverse().find(s => isStageUnlocked(s)) || BLUESTONE_STAGES_SCHEDULE[0];
+
+  // Default active tab to highest unlocked stage (or URL search param if present)
+  const [activeStageTab, setActiveStageTab] = useState<'clarify' | 'tree' | 'funnel' | 'category' | 'control' | 'prioritize' | 'pitch'>(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const stageParam = params.get('stage');
+      if (stageParam && BLUESTONE_STAGES_SCHEDULE.some(s => s.key === stageParam)) {
+        return stageParam as any;
+      }
+    } catch (_) {}
+    return highestUnlockedStage.key;
+  });
+
   // Clarifying Questions State
   const [questionInput, setQuestionInput] = useState('');
   const [selectedDropdownQId, setSelectedDropdownQId] = useState('');
@@ -927,9 +1063,6 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
     ];
   });
 
-  // Stage Gating: By default, ONLY 'clarify' is open today!
-  const [activeStageTab, setActiveStageTab] = useState<'clarify' | 'tree' | 'funnel' | 'category' | 'control' | 'prioritize' | 'pitch'>('clarify');
-  const [isUnlockAllStages, setIsUnlockAllStages] = useState(false);
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
   const handleAskFromDropdown = () => {
@@ -1023,19 +1156,9 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [showPitchSummary, setShowPitchSummary] = useState(false);
 
-  // All 7 Stages metadata (Day 1 is unlocked today; Days 2-7 unlock on subsequent days)
-  const STAGES = [
-    { key: 'clarify', dayNumber: 1, label: 'Ask Clarifying Questions', icon: MessageSquare, isUnlockedToday: true, cliffhanger: 'Step into the interview room and ask your clarifying questions to diagnose digital commerce scope and product status.' },
-    { key: 'tree', dayNumber: 2, label: '2. Metric Tree', icon: Layers, isUnlockedToday: false, cliffhanger: 'Decompose the 15% gross profit drop into customer-facing experience vs. product economics.' },
-    { key: 'funnel', dayNumber: 3, label: '3. Customer Funnel', icon: BarChart3, isUnlockedToday: false, cliffhanger: 'Analyze full-funnel drop-offs across sessions, PDP views, add-to-cart, and checkout.' },
-    { key: 'category', dayNumber: 4, label: '4. Category Margins', icon: Target, isUnlockedToday: false, cliffhanger: 'Investigate Gold vs. Diamond revenue and margins to find where the profit leaked.' },
-    { key: 'control', dayNumber: 5, label: '5. Controllability', icon: ShieldAlert, isUnlockedToday: false, cliffhanger: 'Separate product-controlled factors from external market commodity price spikes.' },
-    { key: 'prioritize', dayNumber: 6, label: '6. Prioritization', icon: Sparkles, isUnlockedToday: false, cliffhanger: 'Map candidate interventions on a 2x2 Impact vs Effort matrix.' },
-    { key: 'pitch', dayNumber: 7, label: '7. Leadership Pitch & Quiz', icon: Award, isUnlockedToday: false, cliffhanger: 'Deliver the 5-minute pitch to BlueStone leadership and test your PM mastery.' }
-  ];
-
-  const currentStageMeta = STAGES.find(s => s.key === activeStageTab) || STAGES[0];
-  const isCurrentStageUnlocked = currentStageMeta.isUnlockedToday || isUnlockAllStages;
+  // Current stage meta and unlock state
+  const currentStageMeta = BLUESTONE_STAGES_SCHEDULE.find(s => s.key === activeStageTab) || BLUESTONE_STAGES_SCHEDULE[0];
+  const isCurrentStageUnlocked = isStageUnlocked(currentStageMeta);
 
   return (
     <div className={`w-full ${isEmbedded ? '' : 'min-h-screen bg-[#FDFCF7] text-[#141413] pb-20'}`}>
@@ -1060,7 +1183,7 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
               title="Toggle reviewer mode to preview all stages"
             >
               {isUnlockAllStages ? <Unlock className="w-3 h-3 text-[#059669]" /> : <Lock className="w-3 h-3 text-slate-500" />}
-              <span>{isUnlockAllStages ? 'Reviewer Mode: All Stages Unlocked' : 'Day 1 Mode: Stages 2-7 Gated'}</span>
+              <span>{isUnlockAllStages ? 'Reviewer Mode: All 7 Stages Unlocked' : `Day ${highestUnlockedStage.dayNumber} Live: Stages ${highestUnlockedStage.dayNumber + 1}-7 Gated`}</span>
             </button>
           </div>
         </div>
@@ -1097,15 +1220,16 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
 
       {/* Navigation Sub-tabs with Day Gating */}
       <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar">
-        {STAGES.map((tab) => {
+        {BLUESTONE_STAGES_SCHEDULE.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeStageTab === tab.key;
-          const isUnlocked = tab.isUnlockedToday || isUnlockAllStages;
+          const isUnlocked = isStageUnlocked(tab);
+          const isLiveToday = isStageLiveToday(tab);
 
           return (
             <button
               key={tab.key}
-              onClick={() => setActiveStageTab(tab.key as any)}
+              onClick={() => setActiveStageTab(tab.key)}
               className={`px-4 py-2.5 rounded-xl border-2 border-[#141413] font-bold text-xs uppercase whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
                 isActive
                   ? 'bg-[#188ab2] text-white shadow-[3px_3px_0px_0px_#141413] translate-y-[-1px]'
@@ -1116,16 +1240,22 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
             >
               <Icon className="w-4 h-4" />
               <span>{tab.label}</span>
-              {tab.isUnlockedToday ? (
+              {isLiveToday ? (
                 <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-black border ${
                   isActive ? 'bg-white text-[#188ab2] border-white' : 'bg-[#D1FAE5] text-[#065F46] border-[#065F46]'
                 }`}>
                   LIVE TODAY
                 </span>
+              ) : isUnlocked ? (
+                <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-black border ${
+                  isActive ? 'bg-white/20 text-white border-white/40' : 'bg-[#DCFCE7] text-[#166534] border-[#166534]'
+                }`}>
+                  UNLOCKED
+                </span>
               ) : (
                 <span className="text-[9px] px-1.5 py-0.2 rounded-full font-mono font-bold bg-slate-200 text-slate-600 border border-slate-300 flex items-center gap-1">
                   <Lock className="w-2.5 h-2.5" />
-                  <span>Day {tab.dayNumber}</span>
+                  <span>Day {tab.dayNumber} · {tab.unlockDateLabel}</span>
                 </span>
               )}
             </button>
@@ -1140,7 +1270,7 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
             <Lock className="w-8 h-8 text-[#141413]" />
           </div>
           <span className="inline-block bg-[#FEE2E2] text-[#991B1B] border border-[#141413] text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider">
-            Stage Locked · Unlocks on Day {currentStageMeta.dayNumber}
+            Stage Locked · Unlocks on Day {currentStageMeta.dayNumber} ({currentStageMeta.unlockDateLabel})
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-[#141413]">
             {currentStageMeta.label}
@@ -1151,20 +1281,20 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
 
           <div className="bg-[#FFFDF5] rounded-xl border-2 border-dashed border-[#141413] p-5 max-w-md mx-auto text-left">
             <div className="font-mono font-bold text-xs uppercase text-slate-500 mb-1">
-              Today's Objective (Day 1):
+              Currently Live (Day {highestUnlockedStage.dayNumber}):
             </div>
             <div className="text-xs sm:text-sm text-[#141413] font-medium leading-relaxed">
-              In real executive interviews, complete problem clarification first before looking at metric trees or solutions. Use the <strong>Ask Clarifying Questions</strong> tab today to uncover digital products in scope, recent changes, performance status, and conversion drop-offs.
+              Stage {highestUnlockedStage.dayNumber} ({highestUnlockedStage.label}) is live today! Master this stage before moving forward.
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <button
               type="button"
-              onClick={() => setActiveStageTab('clarify')}
+              onClick={() => setActiveStageTab(highestUnlockedStage.key)}
               className="px-6 py-2.5 rounded-full font-black border-2 border-[#141413] bg-[#188ab2] hover:bg-[#0f6f8f] text-white shadow-[2px_2px_0px_0px_#141413] text-xs sm:text-sm uppercase cursor-pointer"
             >
-              ← Return to Ask Clarifying Questions
+              ← Go to Day {highestUnlockedStage.dayNumber} ({highestUnlockedStage.label})
             </button>
             <button
               type="button"
@@ -1188,9 +1318,15 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
                   <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
                     STAGE 1 • INTERVIEWER CLARIFYING DESK
                   </span>
-                  <span className="bg-[#D1FAE5] text-[#065F46] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#065F46]">
-                    LIVE TODAY
-                  </span>
+                  {isStageLiveToday(BLUESTONE_STAGES_SCHEDULE[0]) ? (
+                    <span className="bg-[#D1FAE5] text-[#065F46] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#065F46]">
+                      LIVE TODAY
+                    </span>
+                  ) : (
+                    <span className="bg-[#DCFCE7] text-[#166534] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#166534]">
+                      UNLOCKED · DAY 1
+                    </span>
+                  )}
                 </div>
                 <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
                   Ask Clarifying Questions
@@ -1458,6 +1594,23 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
                 <span>Unmatched queries are marked outside the scope</span>
               </span>
             </div>
+
+            {/* Advance to Stage 2 Button if Unlocked */}
+            {isStageUnlocked(BLUESTONE_STAGES_SCHEDULE[1]) && (
+              <div className="mt-6 pt-4 border-t-2 border-[#141413] flex items-center justify-between flex-wrap gap-3">
+                <div className="text-xs font-semibold text-[#141413]/80">
+                  Finished scoping the problem? Advance to <strong>Stage 2: Metric Decomposition Tree</strong>.
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveStageTab('tree')}
+                  className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>Advance to Stage 2: Metric Tree</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -1466,9 +1619,20 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
       {isCurrentStageUnlocked && activeStageTab === 'tree' && (
         <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-6">
           <div>
-            <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
-              STAGE 2 • METRIC DECOMPOSITION
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
+                STAGE 2 • METRIC DECOMPOSITION
+              </span>
+              {isStageLiveToday(BLUESTONE_STAGES_SCHEDULE[1]) ? (
+                <span className="bg-[#D1FAE5] text-[#065F46] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#065F46]">
+                  LIVE TODAY
+                </span>
+              ) : (
+                <span className="bg-[#DCFCE7] text-[#166534] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#166534]">
+                  UNLOCKED · DAY 2
+                </span>
+              )}
+            </div>
             <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
               Product RCA Issue Tree: Gross Profit (-15%)
             </h2>
@@ -1531,6 +1695,32 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
                 </li>
               </ul>
             </div>
+          </div>
+
+          {/* Navigation Controls */}
+          <div className="mt-6 pt-4 border-t-2 border-[#141413] flex items-center justify-between flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setActiveStageTab('clarify')}
+              className="bg-white hover:bg-slate-50 text-[#141413] px-4 py-2.5 rounded-xl border-2 border-[#141413] font-bold text-xs uppercase shadow-[2px_2px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>← Back to Clarifying Questions</span>
+            </button>
+            {isStageUnlocked(BLUESTONE_STAGES_SCHEDULE[2]) ? (
+              <button
+                type="button"
+                onClick={() => setActiveStageTab('funnel')}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Advance to Stage 3: Funnel & Analytics</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            ) : (
+              <div className="text-xs font-mono font-bold text-slate-500 bg-slate-100 border border-slate-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-slate-400" />
+                <span>Stage 3 (Customer Funnel) unlocks automatically on {BLUESTONE_STAGES_SCHEDULE[2].unlockDateLabel}</span>
+              </div>
+            )}
           </div>
         </div>
       )}
