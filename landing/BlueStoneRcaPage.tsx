@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   MessageSquare,
@@ -24,7 +24,19 @@ import {
   Crosshair,
   Scale,
   Zap,
-  Split
+  Split,
+  Activity,
+  PackageCheck,
+  Truck,
+  Repeat,
+  Sliders,
+  DollarSign,
+  HelpCircle,
+  Info,
+  FileText,
+  TrendingDown,
+  TrendingUp,
+  ArrowUpRight
 } from 'lucide-react';
 
 export interface QnAPair {
@@ -920,8 +932,21 @@ export function matchClarifyingQuestion(query: string): {
 // ────────────────────────────────────────────────────────────────────────────────
 // 7-Stage Daily Unlocking Schedule (Automatic Day-by-Day Unlocking)
 // ────────────────────────────────────────────────────────────────────────────────
+export type BlueStoneStageKey =
+  | 'clarify'
+  | 'tree'
+  | 'journey'
+  | 'control'
+  | 'data_read'
+  | 'leak'
+  | 'bridge'
+  | 'funnel'
+  | 'category'
+  | 'prioritize'
+  | 'pitch';
+
 export interface BlueStoneStageMeta {
-  key: 'clarify' | 'tree' | 'funnel' | 'category' | 'control' | 'prioritize' | 'pitch';
+  key: BlueStoneStageKey;
   dayNumber: number;
   label: string;
   shortLabel: string;
@@ -950,6 +975,64 @@ export function getBlueStoneTodayDateString(): string {
   }
 }
 
+// ────────────────────────────────────────────────────────────────────────────────
+// Central Reconciled Case Data (Single Source of Truth)
+// ────────────────────────────────────────────────────────────────────────────────
+export const BLUESTONE_CASE_DATA = {
+  // Stage 5 table
+  stage5: {
+    sessions: { prev: 1000000, curr: 1100000 },
+    conversion: { prev: 0.02, curr: 0.019 }, // 2.0% to 1.9%
+    orders: { prev: 20000, curr: 20900 },
+    aov: { prev: 50000, curr: 50240 },
+    revenueCr: { prev: 100, curr: 105 },
+    gpCr: { prev: 20.0, curr: 17.1 }
+  },
+  // Stage 6 full funnel (reconciled; use exactly this)
+  stage6: {
+    pdpViews: { prev: 500000, curr: 550000, pdpPerSession: 0.50 },
+    addToCartRate: { prev: 0.12, curr: 0.11 }, // carts / PDP views
+    carts: { prev: 60000, curr: 60500 },
+    checkoutInitiationRate: { prev: 0.70, curr: 0.68 }, // checkouts / carts
+    checkoutsStarted: { prev: 42000, curr: 41140 },
+    paymentCompletionRate: { prev: 47.6, curr: 50.8 }, // orders / checkouts %
+    orders: { prev: 20000, curr: 20900 },
+    relativeDeltas: {
+      pdpViews: '+10.0%',
+      addToCart: '-8.3%',
+      checkoutInitiation: '-2.9%',
+      paymentCompletion: '+6.7% (improved)'
+    }
+  },
+  // Stage 7 categories
+  stage7: {
+    gold: {
+      revPrevCr: 60, revCurrCr: 75,
+      gmPrev: 0.22, gmCurr: 0.14,
+      gpPrevCr: 13.20, gpCurrCr: 10.50
+    },
+    diamond: {
+      revPrevCr: 40, revCurrCr: 30,
+      gmPrev: 0.17, gmCurr: 0.22,
+      gpPrevCr: 6.80, gpCurrCr: 6.60
+    },
+    totals: {
+      revPrevCr: 100, revCurrCr: 105,
+      gpPrevCr: 20.00, gpCurrCr: 17.10, // -14.5%, shown as about -15%
+      overallGmPrev: 0.20, overallGmCurr: 0.162857 // 20.0% to 16.3%
+    },
+    goldShareOfSales: 75 / 105, // 71%
+    profitBridge: {
+      goldVolume: 3.30,   // (75 - 60) * 0.22 = +3.30
+      goldMargin: -6.00,  // 75 * (0.14 - 0.22) = -6.00
+      diamondVolume: -1.70, // (30 - 40) * 0.17 = -1.70
+      diamondMargin: 1.50, // 30 * (0.22 - 0.17) = +1.50
+      net: -2.90          // +3.30 - 6.00 - 1.70 + 1.50 = -2.90
+    }
+  }
+};
+
+
 export const BLUESTONE_STAGES_SCHEDULE: BlueStoneStageMeta[] = [
   {
     key: 'clarify',
@@ -972,54 +1055,54 @@ export const BLUESTONE_STAGES_SCHEDULE: BlueStoneStageMeta[] = [
     cliffhanger: 'Decompose the 15% gross profit drop into customer-facing experience vs. product economics.'
   },
   {
-    key: 'funnel',
+    key: 'journey',
     dayNumber: 3,
     unlockDate: '2026-11-29',
     unlockDateLabel: 'Nov 29th',
-    label: '3. Customer Funnel',
-    shortLabel: 'Funnel',
+    label: '3. Customer Journey',
+    shortLabel: 'Journey',
     icon: BarChart3,
-    cliffhanger: 'Analyze full-funnel drop-offs across sessions, PDP views, add-to-cart, and checkout.'
-  },
-  {
-    key: 'category',
-    dayNumber: 4,
-    unlockDate: '2026-11-30',
-    unlockDateLabel: 'Nov 30th',
-    label: '4. Category Margins',
-    shortLabel: 'Category Mix',
-    icon: Target,
-    cliffhanger: 'Investigate Gold vs. Diamond revenue and margins to find where the profit leaked.'
+    cliffhanger: 'Reconstruct the 8-stage jewellery buyer journey, match primary metrics, and identify critical PDP trust factors.'
   },
   {
     key: 'control',
+    dayNumber: 4,
+    unlockDate: '2026-11-30',
+    unlockDateLabel: 'Nov 30th',
+    label: '4. Controllable vs External',
+    shortLabel: 'Controllability',
+    icon: ShieldAlert,
+    cliffhanger: 'Separate product-controlled factors from macro commodity price spikes and assign functional owners.'
+  },
+  {
+    key: 'data_read',
     dayNumber: 5,
     unlockDate: '2026-12-01',
     unlockDateLabel: 'Dec 1st',
-    label: '5. Controllability',
-    shortLabel: 'Controllability',
-    icon: ShieldAlert,
-    cliffhanger: 'Separate product-controlled factors from external market commodity price spikes.'
+    label: '5. Data & First Read',
+    shortLabel: 'First Read',
+    icon: FileText,
+    cliffhanger: 'Build the 5-part data request, audit baseline metrics, and avoid false conversion conclusions.'
   },
   {
-    key: 'prioritize',
+    key: 'leak',
     dayNumber: 6,
     unlockDate: '2026-12-02',
     unlockDateLabel: 'Dec 2nd',
-    label: '6. Prioritization',
-    shortLabel: 'Prioritization',
-    icon: Sparkles,
-    cliffhanger: 'Map candidate interventions on a 2x2 Impact vs Effort matrix.'
+    label: '6. Find the Leak',
+    shortLabel: 'Funnel Leak',
+    icon: Target,
+    cliffhanger: 'Isolate the drop-off in the reconciled funnel and simulate conversion vs. margin intervention trade-offs.'
   },
   {
-    key: 'pitch',
+    key: 'bridge',
     dayNumber: 7,
     unlockDate: '2026-12-03',
     unlockDateLabel: 'Dec 3rd',
-    label: '7. Leadership Pitch & Quiz',
-    shortLabel: 'Leadership Pitch',
+    label: '7. Profit Bridge & Synthesis',
+    shortLabel: 'Profit Bridge',
     icon: Award,
-    cliffhanger: 'Deliver the 5-minute pitch to BlueStone leadership and test your PM mastery.'
+    cliffhanger: 'Build the category waterfall bridge (Gold vs Diamond) and synthesize the executive recommendations.'
   }
 ];
 
@@ -1281,6 +1364,395 @@ export const STAGE2_PREDICTION_OPTIONS = [
   }
 ];
 
+// ────────────────────────────────────────────────────────────────────────────────
+// Stage 3: Customer Journey Interactive Data
+// ────────────────────────────────────────────────────────────────────────────────
+export const STAGE3_JOURNEY_STEPS = [
+  { id: 'visit', order: 1, label: '1. Visit (Landing & App Open)', hint: 'Top-of-funnel traffic arriving on web/app' },
+  { id: 'discover', order: 2, label: '2. Discover (Search & Category Browse)', hint: 'Navigating collections and searching for styles' },
+  { id: 'view_pdp', order: 3, label: '3. View Product (PDP Engagement)', hint: 'Evaluating product specs, designs, and gold weight' },
+  { id: 'add_to_cart', order: 4, label: '4. Add to Cart', hint: 'Committing to purchasing a specific piece' },
+  { id: 'checkout', order: 5, label: '5. Checkout Initiation', hint: 'Entering address and delivery details' },
+  { id: 'pay', order: 6, label: '6. Pay (Payment Transaction)', hint: 'Selecting payment mode and completing payment' },
+  { id: 'receive', order: 7, label: '7. Receive (Delivery & Unboxing)', hint: 'Insured courier fulfillment and unboxing experience' },
+  { id: 'return_repeat', order: 8, label: '8. Return / Repeat Purchase', hint: 'Exchanges, returns policy, and lifetime customer value' }
+];
+
+export const STAGE3_STAGE_MATCHING = [
+  {
+    id: 'acq',
+    stage: 'Acquisition',
+    primaryMetric: 'Sessions, Traffic Source',
+    likelyIssue: 'Low-quality or non-intent traffic'
+  },
+  {
+    id: 'disc',
+    stage: 'Discovery',
+    primaryMetric: 'Search Success, CTR',
+    likelyIssue: 'Cannot find relevant products or styles'
+  },
+  {
+    id: 'cons',
+    stage: 'Consideration',
+    primaryMetric: 'PDP Engagement, Time on Page',
+    likelyIssue: 'Insufficient product information or missing trust details'
+  },
+  {
+    id: 'intent',
+    stage: 'Purchase Intent',
+    primaryMetric: 'Add-to-Cart Rate',
+    likelyIssue: 'Price sticker shock or product mismatch'
+  },
+  {
+    id: 'check',
+    stage: 'Checkout',
+    primaryMetric: 'Checkout Conversion',
+    likelyIssue: 'Payment gateway failures or unexpected shipping fees'
+  },
+  {
+    id: 'post',
+    stage: 'Post-Purchase',
+    primaryMetric: 'Returns Rate, Repeat Rate',
+    likelyIssue: 'Poor unboxing experience, sizing issues, or delayed transit'
+  }
+];
+
+export const STAGE3_PDP_FACTORS = [
+  { id: 'purity', label: 'Gold purity and certification (BIS Hallmarking)', isCorrect: true },
+  { id: 'price_breakup', label: 'Price breakup (Gold weight + Making charges + GST)', isCorrect: true },
+  { id: 'weight', label: 'Exact gold weight and physical dimensions', isCorrect: true },
+  { id: 'reviews', label: 'Customer reviews & real unboxing photos', isCorrect: true },
+  { id: 'returns_policy', label: 'Transparent returns & exchange policy', isCorrect: true },
+  { id: 'delivery', label: 'Delivery timelines & insured shipping details', isCorrect: true },
+  { id: 'bigger_btn', label: 'Bigger, pulsing Buy Now button', isCorrect: false, feedback: 'Urgency tricks do not fix missing buyer confidence in high-AOV jewellery.' },
+  { id: 'countdown', label: 'Countdown timer with artificial scarcity ("Deal ends in 04:59")', isCorrect: false, feedback: 'Countdown timers erode brand trust in fine jewellery purchases.' },
+  { id: 'animated_banners', label: 'Flashing animated promotional discount banners', isCorrect: false, feedback: 'Animated banners distract high-intent buyers seeking certified product specifications.' }
+];
+
+export const STAGE3_SEGMENT_CUTS = [
+  { id: 'new_returning', label: 'New vs Returning customers', isCorrect: true },
+  { id: 'gold_diamond', label: 'Gold jewellery vs Diamond jewellery', isCorrect: true },
+  { id: 'app_web', label: 'Mobile App vs Website platforms', isCorrect: true },
+  { id: 'paid_organic', label: 'Paid acquisition vs Organic / Direct traffic', isCorrect: true },
+  { id: 'aov_tiers', label: 'High vs Low order value tiers (<₹20k vs >₹50k)', isCorrect: true },
+  { id: 'time_of_day', label: 'Time of day (Purchases at 11 AM vs 9 PM)', isCorrect: false, feedback: 'Time of day adds noise without behavioral segmentation.' }
+];
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Stage 4: Controllability & Ownership Data
+// ────────────────────────────────────────────────────────────────────────────────
+export const STAGE4_BUCKET_CARDS = [
+  {
+    id: 'search_relevance',
+    label: 'Search relevance and catalog filtering',
+    bucket: 'controllable',
+    owner: 'Product and Engineering',
+    explanation: 'Product algorithms and search ranking directly determine relevance.'
+  },
+  {
+    id: 'checkout_friction',
+    label: 'Checkout UI friction and payment gateway drops',
+    bucket: 'controllable',
+    owner: 'Product and Engineering',
+    explanation: 'Directly owned by product funnel and UX teams.'
+  },
+  {
+    id: 'gold_prices',
+    label: 'Higher global gold commodity prices',
+    bucket: 'uncontrollable',
+    owner: 'Procurement and Finance',
+    explanation: 'Macro commodity spot price set by international markets.'
+  },
+  {
+    id: 'competitor_promos',
+    label: 'Competitor promotions and heavy discount campaigns',
+    bucket: 'uncontrollable',
+    owner: 'Strategy and Commercial',
+    explanation: 'External competitor pricing actions cannot be prevented directly.'
+  },
+  {
+    id: 'customer_preference',
+    label: 'Customer macroeconomic preference shift towards daily wear',
+    bucket: 'uncontrollable',
+    owner: 'Strategy and Commercial',
+    explanation: 'Macro consumer spending climate and lifestyle trends.'
+  },
+  {
+    id: 'low_stock',
+    label: 'Low stock availability on popular high-margin designs',
+    bucket: 'influenceable',
+    acceptAlso: 'controllable',
+    owner: 'Merchandising',
+    explanation: 'Operations/merchandising manage reorders, while product manages out-of-stock visibility and alternatives.'
+  },
+  {
+    id: 'supplier_delivery',
+    label: 'Supplier delivery reliability and transit lead times',
+    bucket: 'influenceable',
+    owner: 'Operations',
+    explanation: 'SLA enforcement and supply chain partnerships influence delivery speed.'
+  },
+  {
+    id: 'supplier_pricing',
+    label: 'Supplier price negotiation and contract vendor terms',
+    bucket: 'influenceable',
+    owner: 'Procurement and Finance',
+    explanation: 'Internal negotiations directly influence supplier margins and bulk discounts.'
+  }
+];
+
+export const STAGE4_SCENARIO_ACTIONS = [
+  {
+    id: 'price_alert',
+    label: 'Build a price-alert notification feature',
+    isCorrect: false,
+    healthDelta: -10,
+    feedback: 'A feature cannot fix a commodity price. Gold prices will keep rising, and alerts just delay purchases.'
+  },
+  {
+    id: 'ignore',
+    label: 'Ignore it—commodity prices are completely external to product',
+    isCorrect: false,
+    healthDelta: -10,
+    feedback: 'Giving up is not product leadership. You can still influence dynamic pricing, assortment curation, and lightweight product exposure.'
+  },
+  {
+    id: 'partner',
+    label: 'Partner with merchandising and finance on pricing, assortment and exposure',
+    isCorrect: true,
+    healthDelta: 15,
+    feedback: 'Spot on. Product collaborates across functions to adjust discoverability, lightweight assortments, and price pass-through.'
+  }
+];
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Stage 5: Data Request & First Read Audit
+// ────────────────────────────────────────────────────────────────────────────────
+export const STAGE5_DATA_REQUEST_CARDS = [
+  { id: 'acq', label: '1. Acquisition Data (Sessions, traffic source, campaign CAC)', isCorrect: true },
+  { id: 'disc', label: '2. Discovery Data (Search queries, zero-result rates, CTR)', isCorrect: true },
+  { id: 'conv', label: '3. Conversion Data (PDP views, add-to-cart, checkout, orders)', isCorrect: true },
+  { id: 'behav', label: '4. Behaviour Data (New vs repeat buyers, returns, cancellations)', isCorrect: true },
+  { id: 'econ', label: '5. Product Economics (ASP, units sold, category gross margin %, unit COGS)', isCorrect: true },
+  { id: 'totals_only', label: '6. Last month\'s total revenue number only', isCorrect: false, feedback: 'You need two comparative periods, segment cuts, and margin data, not just an aggregated total.' },
+  { id: 'pii', label: '7. Customer phone numbers and personal email addresses', isCorrect: false, feedback: 'Diagnostic RCA requires aggregated cohort behavior, not raw PII.' },
+  { id: 'web_only', label: '8. Website data only (excluding mobile app)', isCorrect: false, feedback: 'BlueStone is omnichannel. Excluding the mobile app ignores a huge chunk of your customer journey.' }
+];
+
+export const STAGE5_TRUE_FALSE_QUESTIONS = [
+  {
+    id: 'tf1',
+    statement: 'Conversion fell (2.0% → 1.9%), so revenue must have fallen.',
+    expected: false,
+    explanation: 'False. Traffic growth (+10%) outran the conversion drop (-5% relative); orders rose 4.5% (20,000 to 20,900) and revenue grew +5%.'
+  },
+  {
+    id: 'tf2',
+    statement: 'AOV rose (₹50,000 → ₹50,240), so unit margin must have improved.',
+    expected: false,
+    explanation: 'False. AOV says nothing about margin! Higher ticket price was driven by gold commodity inflation, while gross margin plummeted from 20% to 16.3%.'
+  },
+  {
+    id: 'tf3',
+    statement: 'Revenue growth (+5%) is traffic-driven, not efficiency-driven.',
+    expected: true,
+    explanation: 'True. More visitors were acquired via marketing (+10% sessions), but they converted at a lower rate (1.9% vs 2.0%).'
+  },
+  {
+    id: 'tf4',
+    statement: 'The conversion dip is clearly the primary root cause of the -15% GP drop.',
+    expected: false,
+    explanation: 'Not proven / False. Total revenue increased by ₹5 Cr. If unit economics were healthy, gross profit would have risen. A 15% profit collapse cannot be explained by conversion alone.'
+  }
+];
+
+export const STAGE5_NEXT_CUT_OPTIONS = [
+  { id: 'funnel', label: 'Decompose full funnel stages to locate where conversion leaked', isCorrect: true },
+  { id: 'category', label: 'Segment gross margin and revenue by product categories (Gold vs Diamond)', isCorrect: true },
+  { id: 'platform', label: 'Compare App vs Website funnel drop-offs and platform metrics', isCorrect: true },
+  { id: 'marketing_spend', label: 'Immediately increase marketing ad spend to bring in more sessions', isCorrect: false, isMarginTrap: true, feedback: 'Margin trap! You would buy more of the traffic that is already converting worse, inflating CAC and accelerating the profit bleed.' }
+];
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Stage 6: Find the Leak & Scenario Simulator
+// ────────────────────────────────────────────────────────────────────────────────
+export const STAGE6_FUNNEL_STAGES = [
+  {
+    id: 'pdp',
+    name: '1. PDP Views',
+    prev: '500,000',
+    curr: '550,000',
+    delta: '+10.0%',
+    status: 'Healthy (+10%)',
+    isBiggestLeak: false,
+    feedback: 'Discovery is healthy (+10%). PDP views per session is flat at 0.50 in both years. Customers are finding products, then stalling at cart.'
+  },
+  {
+    id: 'add_to_cart',
+    name: '2. Add-to-Cart Rate',
+    prev: '12.0%',
+    curr: '11.0%',
+    delta: '-8.3% (rel)',
+    status: 'CRITICAL LEAK (-8.3% rel)',
+    isBiggestLeak: true,
+    feedback: 'Correct! -8.3% relative drop is the largest single drop in the entire customer funnel. Customers view products but hesitate to add to cart due to price shock.'
+  },
+  {
+    id: 'checkout',
+    name: '3. Checkout Initiation',
+    prev: '70.0%',
+    curr: '68.0%',
+    delta: '-2.9% (rel)',
+    status: 'Secondary Leak (-2.9% rel)',
+    isBiggestLeak: false,
+    feedback: 'A real leak, but smaller (-2.9% relative). Absolute-point drops mislead: 2 percentage points of 70 is less than 1 percentage point of 12.'
+  },
+  {
+    id: 'payment',
+    name: '4. Payment Completion Rate',
+    prev: '47.6%',
+    curr: '50.8%',
+    delta: '+6.7% (rel)',
+    status: 'Improved (+6.7% rel)',
+    isBiggestLeak: false,
+    feedback: 'Payment completion actually improved (+6.7% relative, from 47.6% to 50.8%). Do not assume payment failures are the problem because they are the usual suspect.'
+  }
+];
+
+export const STAGE6_INTERVENTION_SCENARIOS = [
+  {
+    id: 'discount',
+    title: 'A. Launch a sitewide 10% discount on gold jewellery',
+    convMeter: +3,
+    marginMeter: -3,
+    isMarginTrap: true,
+    isCorrect: false,
+    healthDelta: -20,
+    feedback: 'MARGIN TRAP! Wins the conversion metric, loses the company profit. Gold margin is already collapsing; discounting accelerates the bleed.'
+  },
+  {
+    id: 'checkout_ui',
+    title: 'B. Redesign the checkout page to remove address fields',
+    convMeter: 0,
+    marginMeter: 0,
+    isMarginTrap: false,
+    isCorrect: false,
+    healthDelta: -5,
+    feedback: 'Misdirected effort. The biggest drop is before checkout initiation; buyers are stalling at product evaluation, not address entry.'
+  },
+  {
+    id: 'urgency',
+    title: 'C. Add countdown urgency timers on PDPs ("Only 2 left at this price!")',
+    convMeter: +1,
+    marginMeter: 0,
+    isMarginTrap: false,
+    isCorrect: false,
+    healthDelta: -5,
+    feedback: 'Short-term cosmetic lift that erodes customer trust. High-ticket jewellery buyers need transparency, not artificial panic.'
+  },
+  {
+    id: 'transparency',
+    title: 'D. Show gold weight transparency, lightweight alternative filters, transparent making charges, and EMI options',
+    convMeter: +2,
+    marginMeter: +1,
+    isMarginTrap: false,
+    isCorrect: true,
+    healthDelta: 15,
+    feedback: 'CORRECT! Solves customer hesitation cleanly: provides price transparency, lightweight discovery for budget shoppers, and protects product margins without discounting.'
+  }
+];
+
+export const STAGE6_GATE_CAUSES = [
+  { id: 'pricing', label: 'Pricing changes & making charge transparency', isTopPriority: true },
+  { id: 'product_info', label: 'Product information quality & certification clarity', isTopPriority: true },
+  { id: 'delivery', label: 'Delivery charges, shipping timelines & insurance', isTopPriority: true },
+  { id: 'availability', label: 'SKU stock availability', isTopPriority: false, isPartial: true },
+  { id: 'reviews', label: 'Customer reviews & social proof', isTopPriority: false, isPartial: true },
+  { id: 'payment_failures', label: 'Payment gateway failures', isTopPriority: false, isFlagged: true, feedback: 'Worth monitoring, but payment completion actually improved (+6.7%). It is not where the loss is.' }
+];
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Stage 7: Product Mix, Profit Bridge & Leadership Synthesis
+// ────────────────────────────────────────────────────────────────────────────────
+export const STAGE7_CATEGORY_TABLE = [
+  {
+    category: 'Gold Jewellery',
+    revPrevCr: 60,
+    revCurrCr: 75,
+    gmPrev: '22.0%',
+    gmCurr: '14.0%',
+    expectedGpPrev: 13.20,
+    expectedGpCurr: 10.50,
+    gpDeltaCr: -2.70
+  },
+  {
+    category: 'Diamond Jewellery',
+    revPrevCr: 40,
+    revCurrCr: 30,
+    gmPrev: '17.0%',
+    gmCurr: '22.0%',
+    expectedGpPrev: 6.80,
+    expectedGpCurr: 6.60,
+    gpDeltaCr: -0.20
+  }
+];
+
+export const STAGE7_PROFIT_BRIDGE = [
+  {
+    component: 'Gold Volume Effect',
+    formula: 'Δ Revenue × Prev Margin = (75 - 60) × 22%',
+    impactCr: +3.30,
+    isPositive: true,
+    note: 'Higher gold sales volume generated ₹3.30 Cr of gross profit'
+  },
+  {
+    component: 'Gold Margin Effect',
+    formula: 'Curr Revenue × Δ Margin = 75 × (14% - 22%)',
+    impactCr: -6.00,
+    isPositive: false,
+    isCriticalRootCause: true,
+    note: 'Gold gross margin drop from 22% to 14% wiped out ₹6.00 Cr of profit!'
+  },
+  {
+    component: 'Diamond Volume Effect',
+    formula: 'Δ Revenue × Prev Margin = (30 - 40) × 17%',
+    impactCr: -1.70,
+    isPositive: false,
+    note: 'Diamond sales fell ₹10 Cr, costing ₹1.70 Cr of gross profit'
+  },
+  {
+    component: 'Diamond Margin Effect',
+    formula: 'Curr Revenue × Δ Margin = 30 × (22% - 17%)',
+    impactCr: +1.50,
+    isPositive: true,
+    note: 'Diamond margin improved to 22%, saving ₹1.50 Cr of gross profit'
+  }
+];
+
+export const STAGE7_TRAP_SOLUTIONS = [
+  {
+    id: 'push_diamond_promo',
+    label: 'A. Run heavy diamond discount promotions to pump up diamond sales',
+    isCorrect: false,
+    healthDelta: -15,
+    feedback: 'If customers shifted away from diamond for macroeconomic affordability reasons, promotions will not bring them back and will degrade diamond\'s healthy 22% margin.'
+  },
+  {
+    id: 'push_gold_volume',
+    label: 'B. Push gold sales even harder since gold volume is growing fast',
+    isCorrect: false,
+    healthDelta: -15,
+    feedback: 'Gold is now a lower-margin category (14%). Pushing more low-margin gold without fixing the unit economics deepens the profit hole.'
+  },
+  {
+    id: 'root_cause_discovery',
+    label: 'C. Diagnose why diamond dropped (preferences, price tiers, search filters), optimize lightweight discovery, and dynamically calibrate gold making charges',
+    isCorrect: true,
+    healthDelta: 20,
+    feedback: 'CORRECT! The objective of an executive PM is sustainable gross profit, not isolated diamond revenue or vanity volume.'
+  }
+];
+
 export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boolean }) {
   // Calendar-based automatic day unlocking state
   const todayDateStr = getBlueStoneTodayDateString();
@@ -1300,15 +1772,21 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
   const highestUnlockedStage = [...BLUESTONE_STAGES_SCHEDULE].reverse().find(s => isStageUnlocked(s)) || BLUESTONE_STAGES_SCHEDULE[0];
 
   // Default active tab to highest unlocked stage (or URL search param if present)
-  const [activeStageTab, setActiveStageTab] = useState<'clarify' | 'tree' | 'funnel' | 'category' | 'control' | 'prioritize' | 'pitch'>(() => {
+  const [activeStageTab, setActiveStageTab] = useState<BlueStoneStageKey>(() => {
     try {
       const params = new URLSearchParams(window.location.search);
       const stageParam = params.get('stage');
-      if (stageParam && BLUESTONE_STAGES_SCHEDULE.some(s => s.key === stageParam)) {
-        return stageParam as any;
+      if (stageParam) {
+        if (stageParam === 'funnel') return 'journey';
+        if (stageParam === 'category') return 'control';
+        if (stageParam === 'prioritize') return 'leak';
+        if (stageParam === 'pitch') return 'bridge';
+        if (BLUESTONE_STAGES_SCHEDULE.some(s => s.key === stageParam)) {
+          return stageParam as BlueStoneStageKey;
+        }
       }
     } catch (_) {}
-    return highestUnlockedStage.key;
+    return highestUnlockedStage.key as BlueStoneStageKey;
   });
 
   // Clarifying Questions State
@@ -1434,6 +1912,162 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
   const [isDataRevealed, setIsDataRevealed] = useState<boolean>(false);
   const [showAdvancedTrees, setShowAdvancedTrees] = useState<boolean>(false);
 
+  // ── Global Case & Scoring Tracker State ───────────────────────────────
+  const [learnerScore, setLearnerScore] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('pmx_bluestone_progress_v3');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.learnerScore === 'number') return parsed.learnerScore;
+      }
+    } catch (_) {}
+    return 0;
+  });
+  const [caseHealth, setCaseHealth] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('pmx_bluestone_progress_v3');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.caseHealth === 'number') return parsed.caseHealth;
+      }
+    } catch (_) {}
+    return 50; // Starts at 50, bounds 0 to 100
+  });
+  const [latestInterviewerReaction, setLatestInterviewerReaction] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('pmx_bluestone_progress_v3');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.latestInterviewerReaction) return parsed.latestInterviewerReaction;
+      }
+    } catch (_) {}
+    return 'BlueStone revenue grew +5% while Gross Profit fell -15%. A disciplined PM explores before jumping to conclusions.';
+  });
+  const [attemptsByStep, setAttemptsByStep] = useState<Record<string, number>>(() => {
+    try {
+      const saved = localStorage.getItem('pmx_bluestone_progress_v3');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.attemptsByStep) return parsed.attemptsByStep;
+      }
+    } catch (_) {}
+    return {};
+  });
+  const [hintsUsed, setHintsUsed] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem('pmx_bluestone_progress_v3');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.hintsUsed) return parsed.hintsUsed;
+      }
+    } catch (_) {}
+    return {};
+  });
+  const [completedSteps, setCompletedSteps] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem('pmx_bluestone_progress_v3');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.completedSteps) return parsed.completedSteps;
+      }
+    } catch (_) {}
+    return {};
+  });
+
+  // Persist progress to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('pmx_bluestone_progress_v3', JSON.stringify({
+        learnerScore,
+        caseHealth,
+        latestInterviewerReaction,
+        attemptsByStep,
+        hintsUsed,
+        completedSteps
+      }));
+    } catch (_) {}
+  }, [learnerScore, caseHealth, latestInterviewerReaction, attemptsByStep, hintsUsed, completedSteps]);
+
+  // Scoring helper: First try = +10, Second try = +5, Hint penalty = -3
+  const applyStepResult = (stepId: string, isCorrect: boolean, feedback: string, interviewerQuote: string, healthDelta = 0) => {
+    const attempts = (attemptsByStep[stepId] || 0) + 1;
+    setAttemptsByStep(prev => ({ ...prev, [stepId]: attempts }));
+
+    if (isCorrect && !completedSteps[stepId]) {
+      const hintDeduction = hintsUsed[stepId] ? 3 : 0;
+      const basePoints = attempts === 1 ? 10 : 5;
+      const pointsAwarded = Math.max(0, basePoints - hintDeduction);
+      setLearnerScore(prev => prev + pointsAwarded);
+      setCompletedSteps(prev => ({ ...prev, [stepId]: true }));
+    }
+
+    setCaseHealth(prev => Math.min(100, Math.max(0, prev + healthDelta)));
+    setLatestInterviewerReaction(interviewerQuote);
+  };
+
+  const useHintForStep = (stepId: string) => {
+    if (!hintsUsed[stepId]) {
+      setHintsUsed(prev => ({ ...prev, [stepId]: true }));
+      setLearnerScore(prev => Math.max(0, prev - 3));
+    }
+  };
+
+  // ── Stage 3 State (Customer Journey) ──────────────────────────────────
+  const [stage3JourneyOrder, setStage3JourneyOrder] = useState<string[]>([
+    'discover', 'visit', 'add_to_cart', 'view_pdp', 'pay', 'checkout', 'return_repeat', 'receive'
+  ]);
+  const [stage3OrderSubmitted, setStage3OrderSubmitted] = useState<boolean>(false);
+  const [stage3OrderFeedback, setStage3OrderFeedback] = useState<string>('');
+  const [stage3OrderIsCorrect, setStage3OrderIsCorrect] = useState<boolean>(false);
+  const [stage3Matches, setStage3Matches] = useState<Record<string, { metric: string; issue: string }>>({});
+  const [stage3MatchesSubmitted, setStage3MatchesSubmitted] = useState<boolean>(false);
+  const [stage3PdpSelected, setStage3PdpSelected] = useState<string[]>([]);
+  const [stage3PdpSubmitted, setStage3PdpSubmitted] = useState<boolean>(false);
+  const [stage3PdpFeedback, setStage3PdpFeedback] = useState<string>('');
+  const [stage3SegmentsSelected, setStage3SegmentsSelected] = useState<string[]>([]);
+  const [stage3SegmentsSubmitted, setStage3SegmentsSubmitted] = useState<boolean>(false);
+  const [stage3SegmentsFeedback, setStage3SegmentsFeedback] = useState<string>('');
+
+  // ── Stage 4 State (Controllability) ───────────────────────────────────
+  const [stage4Buckets, setStage4Buckets] = useState<Record<string, 'controllable' | 'influenceable' | 'uncontrollable'>>({});
+  const [stage4BucketsSubmitted, setStage4BucketsSubmitted] = useState<boolean>(false);
+  const [stage4Owners, setStage4Owners] = useState<Record<string, string>>({});
+  const [stage4OwnersSubmitted, setStage4OwnersSubmitted] = useState<boolean>(false);
+  const [stage4ScenarioChoice, setStage4ScenarioChoice] = useState<string>('');
+  const [stage4ScenarioSubmitted, setStage4ScenarioSubmitted] = useState<boolean>(false);
+  const [stage4ScenarioFeedback, setStage4ScenarioFeedback] = useState<string>('');
+
+  // ── Stage 5 State (Data Request & First Read) ─────────────────────────
+  const [stage5DataPicks, setStage5DataPicks] = useState<string[]>([]);
+  const [stage5DataSubmitted, setStage5DataSubmitted] = useState<boolean>(false);
+  const [stage5DataFeedback, setStage5DataFeedback] = useState<string>('');
+  const [stage5TfAnswers, setStage5TfAnswers] = useState<Record<string, boolean>>({});
+  const [stage5TfSubmitted, setStage5TfSubmitted] = useState<boolean>(false);
+  const [stage5NextCutChoice, setStage5NextCutChoice] = useState<string>('');
+  const [stage5NextCutSubmitted, setStage5NextCutSubmitted] = useState<boolean>(false);
+  const [stage5NextCutFeedback, setStage5NextCutFeedback] = useState<string>('');
+
+  // ── Stage 6 State (Find the Leak & Simulator) ─────────────────────────
+  const [stage6ClickedStageId, setStage6ClickedStageId] = useState<string | null>(null);
+  const [stage6LeakSubmitted, setStage6LeakSubmitted] = useState<boolean>(false);
+  const [stage6LeakFeedback, setStage6LeakFeedback] = useState<string>('');
+  const [stage6LeakIsCorrect, setStage6LeakIsCorrect] = useState<boolean>(false);
+  const [stage6ScenarioChoice, setStage6ScenarioChoice] = useState<string>('');
+  const [stage6ScenarioSubmitted, setStage6ScenarioSubmitted] = useState<boolean>(false);
+  const [stage6ScenarioFeedback, setStage6ScenarioFeedback] = useState<string>('');
+  const [stage6GateChoices, setStage6GateChoices] = useState<string[]>([]);
+  const [stage6GateSubmitted, setStage6GateSubmitted] = useState<boolean>(false);
+  const [stage6GateFeedback, setStage6GateFeedback] = useState<string>('');
+
+  // ── Stage 7 State (Profit Bridge & Synthesis) ──────────────────────────
+  const [stage7CategoryPrediction, setStage7CategoryPrediction] = useState<'gold' | 'diamond' | null>(null);
+  const [stage7PredictionSubmitted, setStage7PredictionSubmitted] = useState<boolean>(false);
+  const [stage7PredictionFeedback, setStage7PredictionFeedback] = useState<string>('');
+  const [stage7CalcRevealed, setStage7CalcRevealed] = useState<boolean>(false);
+  const [stage7TrapChoice, setStage7TrapChoice] = useState<string>('');
+  const [stage7TrapSubmitted, setStage7TrapSubmitted] = useState<boolean>(false);
+  const [stage7TrapFeedback, setStage7TrapFeedback] = useState<string>('');
+
   // Current stage meta and unlock state
   const currentStageMeta = BLUESTONE_STAGES_SCHEDULE.find(s => s.key === activeStageTab) || BLUESTONE_STAGES_SCHEDULE[0];
   const isCurrentStageUnlocked = isStageUnlocked(currentStageMeta);
@@ -1474,24 +2108,83 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
           As <strong>Product Manager for Digital Commerce</strong> (Web & Mobile App), your mandate is to diagnose product-side root causes, prioritize actionable interventions, and restore profitability without hurting customer trust.
         </p>
 
-        {/* Core Stat Badges */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-md">
+        {/* Core Stat Badges (4-Box Responsive Grid) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
           <div className="bg-[#FFFDF5] border-2 border-[#141413] p-3.5 rounded-xl shadow-[2px_2px_0px_0px_#141413]">
-            <div className="text-[11px] font-mono uppercase font-black text-[#141413]/70">Revenue</div>
-            <div className="text-xl sm:text-2xl font-black text-[#059669] flex items-center gap-1.5 mt-0.5">
-              <span>₹105 Cr</span>
-              <span className="text-xs font-bold text-[#059669] bg-[#D1FAE5] px-1.5 py-0.2 rounded border border-[#059669]">+5%</span>
+            <div className="text-[10px] sm:text-[11px] font-mono uppercase font-black text-[#141413]/70">Revenue</div>
+            <div className="text-lg sm:text-2xl font-black text-[#059669] flex items-center gap-1.5 mt-0.5">
+              <span>₹{BLUESTONE_CASE_DATA.stage5.revenueCr.curr} Cr</span>
+              <span className="text-[10px] sm:text-xs font-bold text-[#059669] bg-[#D1FAE5] px-1.5 py-0.2 rounded border border-[#059669]">+5%</span>
             </div>
-            <div className="text-[10px] text-[#141413]/60 font-medium mt-1">Previous: ₹100 Cr</div>
+            <div className="text-[10px] text-[#141413]/60 font-medium mt-1">Previous: ₹{BLUESTONE_CASE_DATA.stage5.revenueCr.prev} Cr</div>
           </div>
 
           <div className="bg-[#FFFDF5] border-2 border-[#141413] p-3.5 rounded-xl shadow-[2px_2px_0px_0px_#141413]">
-            <div className="text-[11px] font-mono uppercase font-black text-[#141413]/70">Gross Profit</div>
-            <div className="text-xl sm:text-2xl font-black text-[#DC2626] flex items-center gap-1.5 mt-0.5">
-              <span>₹17.1 Cr</span>
-              <span className="text-xs font-bold text-[#DC2626] bg-[#FEE2E2] px-1.5 py-0.2 rounded border border-[#DC2626]">-15%</span>
+            <div className="text-[10px] sm:text-[11px] font-mono uppercase font-black text-[#141413]/70">Gross Profit</div>
+            <div className="text-lg sm:text-2xl font-black text-[#DC2626] flex items-center gap-1.5 mt-0.5">
+              <span>₹{BLUESTONE_CASE_DATA.stage5.gpCr.curr} Cr</span>
+              <span className="text-[10px] sm:text-xs font-bold text-[#DC2626] bg-[#FEE2E2] px-1.5 py-0.2 rounded border border-[#DC2626]">-15%</span>
             </div>
-            <div className="text-[10px] text-[#141413]/60 font-medium mt-1">Previous: ₹20.0 Cr</div>
+            <div className="text-[10px] text-[#141413]/60 font-medium mt-1">Previous: ₹{BLUESTONE_CASE_DATA.stage5.gpCr.prev.toFixed(1)} Cr</div>
+          </div>
+
+          <div className="bg-[#FFFDF5] border-2 border-[#141413] p-3.5 rounded-xl shadow-[2px_2px_0px_0px_#141413]">
+            <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono uppercase font-black text-[#141413]/70">
+              <span>Case Health</span>
+              <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold ${
+                caseHealth >= 65 ? 'bg-[#D1FAE5] text-[#065F46]' : caseHealth >= 40 ? 'bg-[#FEF3C7] text-[#92400E]' : 'bg-[#FEE2E2] text-[#991B1B]'
+              }`}>{caseHealth}/100</span>
+            </div>
+            <div className="w-full bg-slate-100 rounded-full h-2.5 border border-[#141413] mt-2 overflow-hidden">
+              <div
+                className={`h-full transition-all duration-500 ${
+                  caseHealth >= 65 ? 'bg-[#059669]' : caseHealth >= 40 ? 'bg-[#F59E0B]' : 'bg-[#DC2626]'
+                }`}
+                style={{ width: `${Math.min(100, Math.max(0, caseHealth))}%` }}
+              />
+            </div>
+            <div className="text-[10px] text-[#141413]/70 font-semibold mt-1 truncate">
+              {caseHealth >= 70 ? '🟢 Profit-First Execution' : caseHealth >= 45 ? '🟡 Commercial Balance' : '🔴 Margin Bleed Risk'}
+            </div>
+          </div>
+
+          <div className="bg-[#FFFDF5] border-2 border-[#141413] p-3.5 rounded-xl shadow-[2px_2px_0px_0px_#141413]">
+            <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono uppercase font-black text-[#141413]/70">
+              <span>Learner Score</span>
+              <span className="text-[9px] font-mono text-[#188ab2] font-black">1st Try: +10</span>
+            </div>
+            <div className="text-lg sm:text-2xl font-black text-[#188ab2] mt-0.5">
+              {learnerScore} <span className="text-xs font-mono text-[#141413]/70 font-bold">PTS</span>
+            </div>
+            <div className="text-[10px] text-[#141413]/60 font-medium mt-1">
+              Hint: -3 pts | Retry: +5 pts
+            </div>
+          </div>
+        </div>
+
+        {/* Case Model Verification Note */}
+        <div className="flex items-center justify-between flex-wrap gap-2 text-[11px] font-mono text-slate-500 border-t border-[#141413]/10 pt-3">
+          <span className="italic">
+            * Illustrative figures for case practice · Reconciled unit economics model
+          </span>
+          <span className="font-bold text-[#141413]/80">
+            Role: Digital PM (Web & Mobile App)
+          </span>
+        </div>
+
+        {/* Latest Interviewer Observation Speech Bubble */}
+        <div className="bg-[#FFFDF5] border-2 border-[#141413] rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_0px_#141413] flex items-start gap-3 mt-4">
+          <div className="w-8 h-8 rounded-full bg-[#141413] text-[#FEF08A] font-black text-xs flex items-center justify-center shrink-0 border border-[#141413]">
+            🎙️
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="text-[10px] font-mono uppercase font-black text-[#141413]/60 flex items-center gap-1.5">
+              <span>Interviewer Reaction & Diagnostic Feedback</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+            </div>
+            <div className="text-xs sm:text-sm font-semibold text-[#141413] mt-0.5 leading-snug">
+              "{latestInterviewerReaction}"
+            </div>
           </div>
         </div>
       </div>
@@ -2574,7 +3267,7 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
             {isStageUnlocked(BLUESTONE_STAGES_SCHEDULE[2]) ? (
               <button
                 type="button"
-                onClick={() => setActiveStageTab('funnel')}
+                onClick={() => setActiveStageTab('journey')}
                 className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Advance to Stage 3: Funnel & Analytics</span>
@@ -2590,305 +3283,1600 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
         </div>
       )}
 
-      {/* ── STAGE 3: CUSTOMER JOURNEY & FUNNEL ───────────────────────────── */}
-      {isCurrentStageUnlocked && activeStageTab === 'funnel' && (
-        <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-6">
-          <div>
-            <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
-              STAGE 3 & 5 • FUNNEL & BEHAVIORAL ANALYTICS
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
-              Full Funnel Comparison: Previous Year vs Current Year
-            </h2>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs sm:text-sm border-collapse border-2 border-[#141413]">
-              <thead>
-                <tr className="bg-[#141413] text-white font-mono uppercase text-[11px]">
-                  <th className="p-3 border border-[#141413]">Funnel Stage / Metric</th>
-                  <th className="p-3 border border-[#141413]">Previous Year</th>
-                  <th className="p-3 border border-[#141413]">Current Year</th>
-                  <th className="p-3 border border-[#141413]">Delta</th>
-                  <th className="p-3 border border-[#141413]">PM Inference</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#141413]">
-                <tr className="bg-white">
-                  <td className="p-3 font-bold">1. Website/App Sessions</td>
-                  <td className="p-3">10 Lakh</td>
-                  <td className="p-3 font-black text-[#059669]">11 Lakh</td>
-                  <td className="p-3 font-mono font-bold text-[#059669]">+10.0%</td>
-                  <td className="p-3 text-[#141413]/70">Acquisition healthy; top-of-funnel traffic expanded.</td>
-                </tr>
-                <tr className="bg-[#FFFDF5]">
-                  <td className="p-3 font-bold">2. Product Page (PDP) Views</td>
-                  <td className="p-3">5.0 Lakh</td>
-                  <td className="p-3 font-black text-[#059669]">5.5 Lakh</td>
-                  <td className="p-3 font-mono font-bold text-[#059669]">+10.0%</td>
-                  <td className="p-3 text-[#141413]/70">Discovery is strong; users are finding product listings.</td>
-                </tr>
-                <tr className="bg-white">
-                  <td className="p-3 font-bold">3. Add-to-Cart Rate</td>
-                  <td className="p-3 font-bold">12.0%</td>
-                  <td className="p-3 font-black text-[#DC2626]">11.0%</td>
-                  <td className="p-3 font-mono font-bold text-[#DC2626]">-1.0% (pts)</td>
-                  <td className="p-3 text-[#DC2626] font-semibold">Drop-off: Price hesitation & missing transparency.</td>
-                </tr>
-                <tr className="bg-[#FFFDF5]">
-                  <td className="p-3 font-bold">4. Checkout Conversion</td>
-                  <td className="p-3 font-bold">70.0%</td>
-                  <td className="p-3 font-black text-[#DC2626]">68.0%</td>
-                  <td className="p-3 font-mono font-bold text-[#DC2626]">-2.0% (pts)</td>
-                  <td className="p-3 text-[#DC2626] font-semibold">Friction at final payment & delivery charges.</td>
-                </tr>
-                <tr className="bg-white">
-                  <td className="p-3 font-bold">5. Purchase Conversion</td>
-                  <td className="p-3 font-bold">2.0%</td>
-                  <td className="p-3 font-black text-[#D97706]">1.9%</td>
-                  <td className="p-3 font-mono font-bold text-[#D97706]">-0.1% (pts)</td>
-                  <td className="p-3 text-[#141413]/70">Slight dip, but orders still rose because traffic rose 10%.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* ── STAGE 4: CATEGORY PROFITABILITY DEEP-DIVE ─────────────────────── */}
-      {isCurrentStageUnlocked && activeStageTab === 'category' && (
-        <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-6">
-          <div>
-            <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
-              STAGE 7 • THE REVEAL & CORE ROOT CAUSE
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
-              Category Profitability: Gold vs Diamond Breakdown
-            </h2>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs sm:text-sm border-collapse border-2 border-[#141413]">
-              <thead>
-                <tr className="bg-[#141413] text-white font-mono uppercase text-[11px]">
-                  <th className="p-3 border border-[#141413]">Category</th>
-                  <th className="p-3 border border-[#141413]">Prev Revenue</th>
-                  <th className="p-3 border border-[#141413]">Curr Revenue</th>
-                  <th className="p-3 border border-[#141413]">Prev Margin</th>
-                  <th className="p-3 border border-[#141413]">Curr Margin</th>
-                  <th className="p-3 border border-[#141413]">GP Change</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#141413]">
-                <tr className="bg-[#FEE2E2]/30">
-                  <td className="p-3 font-black text-[#DC2626]">Gold Jewellery</td>
-                  <td className="p-3">₹60 Cr</td>
-                  <td className="p-3 font-bold text-[#059669]">₹75 Cr (+25%)</td>
-                  <td className="p-3">22.0%</td>
-                  <td className="p-3 font-black text-[#DC2626]">14.0% (-8%)</td>
-                  <td className="p-3 font-black text-[#DC2626]">-₹2.70 Cr (93% of loss)</td>
-                </tr>
-                <tr className="bg-[#D1FAE5]/30">
-                  <td className="p-3 font-black text-[#065F46]">Diamond Jewellery</td>
-                  <td className="p-3">₹40 Cr</td>
-                  <td className="p-3 font-bold text-[#DC2626]">₹30 Cr (-25%)</td>
-                  <td className="p-3">17.0%</td>
-                  <td className="p-3 font-black text-[#059669]">22.0% (+5%)</td>
-                  <td className="p-3 font-black text-[#D97706]">-₹0.20 Cr</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* ── STAGE 5: CONTROLLABILITY MATRIX ─────────────────────────────── */}
-      {isCurrentStageUnlocked && activeStageTab === 'control' && (
-        <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-6">
-          <div>
-            <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
-              STAGE 4 • CONTROLLABILITY & ACCOUNTABILITY
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
-              Separating Product-Controlled from External Factors
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-[#D1FAE5]/40 border-2 border-[#065F46] rounded-xl p-4 shadow-[2px_2px_0px_0px_#065F46]">
-              <div className="font-mono text-xs font-black uppercase text-[#065F46] mb-2">
-                1. Controllable (Product & Tech)
+      {/* ── STAGE 3: CUSTOMER JOURNEY (ORDER, METRICS, PDP TRUST, SEGMENTS) ── */}
+      {isCurrentStageUnlocked && (activeStageTab === 'journey' || activeStageTab === 'funnel') && (
+        <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-8">
+          {/* Header */}
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
+                  STAGE 3 • CUSTOMER JOURNEY & FUNNEL
+                </span>
+                <span className="bg-[#DCFCE7] text-[#166534] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#166534]">
+                  UNLOCKED · DAY 3
+                </span>
               </div>
-              <ul className="text-xs font-medium space-y-2 text-[#141413]">
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#065F46]" /> Poor search relevance & PDP filters</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#065F46]" /> Checkout friction & payment failure drops</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#065F46]" /> Inaccurate product specs & gold weight clarity</li>
-              </ul>
-            </div>
-
-            <div className="bg-[#FEF3C7]/40 border-2 border-[#D97706] rounded-xl p-4 shadow-[2px_2px_0px_0px_#D97706]">
-              <div className="font-mono text-xs font-black uppercase text-[#D97706] mb-2">
-                2. Influenceable (Partnership with Ops)
-              </div>
-              <ul className="text-xs font-medium space-y-2 text-[#141413]">
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#D97706]" /> Low stock availability</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#D97706]" /> Supplier delivery reliability</li>
-              </ul>
-            </div>
-
-            <div className="bg-[#FEE2E2]/40 border-2 border-[#991B1B] rounded-xl p-4 shadow-[2px_2px_0px_0px_#991B1B]">
-              <div className="font-mono text-xs font-black uppercase text-[#991B1B] mb-2">
-                3. Uncontrollable (Macro Market)
-              </div>
-              <ul className="text-xs font-medium space-y-2 text-[#141413]">
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#991B1B]" /> Higher global gold commodity prices</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#991B1B]" /> Competitor promotions</li>
-              </ul>
+              <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
+                Reconstruct the 8-Stage Jewellery Customer Journey
+              </h2>
+              <p className="text-xs sm:text-sm text-[#141413]/70 font-semibold mt-1">
+                Jewellery is a high-ticket trust purchase. Structure the journey from first arrival to lifetime repeat purchase.
+              </p>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* ── STAGE 6: PRIORITIZATION ─────────────────────────────────────── */}
-      {isCurrentStageUnlocked && activeStageTab === 'prioritize' && (
-        <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-6">
-          <div>
-            <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
-              STAGE 8 • 2x2 PRIORITIZATION MATRIX
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
-              Actionable Product Opportunities
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-5 rounded-xl border-2 border-[#141413] bg-[#D1FAE5]/30">
-              <div className="font-mono text-xs font-black uppercase text-[#065F46] mb-1">
-                ⚡ Quick Wins (High Impact / Low Effort)
+          {/* ── STEP 1: JOURNEY SEQUENCER ────────────────────────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 1 of 4: Chronological Sequence</span>
+                <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                  Order the 8 Journey Steps
+                </h3>
               </div>
-              <ul className="text-xs font-semibold space-y-2 mt-3 text-[#141413]">
-                <li>• <strong>Transparent Pricing:</strong> Show gold weight, purity & making charges transparently on PDP.</li>
-                <li>• <strong>Payment Recovery:</strong> Auto-switch to UPI/Netbanking when card transactions stall.</li>
-                <li>• <strong>Lightweight Tagging:</strong> Filter products by weight budget (&lt;5g, 5-10g).</li>
-              </ul>
+              <button
+                type="button"
+                onClick={() => useHintForStep('stage3_order')}
+                disabled={hintsUsed['stage3_order']}
+                className="text-[11px] font-mono font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50"
+              >
+                <span>💡 Need a hint? (-3 pts)</span>
+              </button>
             </div>
 
-            <div className="p-5 rounded-xl border-2 border-[#141413] bg-[#E0F2FE]/40">
-              <div className="font-mono text-xs font-black uppercase text-[#0369A1] mb-1">
-                🎯 Strategic Bets (High Impact / High Effort)
+            {hintsUsed['stage3_order'] && (
+              <div className="bg-[#FEF3C7] border border-[#D97706] p-3 rounded-lg text-xs font-medium text-[#92400E]">
+                <strong>Hint:</strong> The customer journey doesn't end when payment succeeds. High-AOV jewellery profitability is heavily impacted by insured delivery, unboxing trust, and post-purchase returns/exchanges.
               </div>
-              <ul className="text-xs font-semibold space-y-2 mt-3 text-[#141413]">
-                <li>• <strong>Margin-Aware Discovery:</strong> Dynamic recommendation ranker balancing user preference & margin.</li>
-                <li>• <strong>Assortment Optimization:</strong> Partner with Merchandising to introduce higher-margin everyday wear designs.</li>
-              </ul>
+            )}
+
+            <p className="text-xs font-semibold text-[#141413]/80">
+              Use the <span className="font-mono font-bold">↑</span> and <span className="font-mono font-bold">↓</span> buttons to arrange the cards into chronological order:
+            </p>
+
+            <div className="space-y-2">
+              {stage3JourneyOrder.map((stepId, idx) => {
+                const card = STAGE3_JOURNEY_STEPS.find(s => s.id === stepId)!;
+                return (
+                  <div
+                    key={stepId}
+                    className="flex items-center justify-between bg-white border-2 border-[#141413] p-3 rounded-xl shadow-[1.5px_1.5px_0px_0px_#141413]"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="w-7 h-7 rounded-lg bg-[#FEF08A] border border-[#141413] font-mono font-black text-xs flex items-center justify-center shrink-0">
+                        {idx + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="font-bold text-xs sm:text-sm text-[#141413] truncate">{card.label}</div>
+                        <div className="text-[11px] text-[#141413]/60 font-medium truncate">{card.hint}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (idx === 0) return;
+                          const copy = [...stage3JourneyOrder];
+                          [copy[idx], copy[idx - 1]] = [copy[idx - 1], copy[idx]];
+                          setStage3JourneyOrder(copy);
+                        }}
+                        disabled={idx === 0 || (stage3OrderSubmitted && stage3OrderIsCorrect)}
+                        className="w-7 h-7 rounded border border-[#141413] bg-[#F8FAFC] hover:bg-slate-200 disabled:opacity-30 font-bold text-xs flex items-center justify-center cursor-pointer"
+                        title="Move Up"
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (idx === stage3JourneyOrder.length - 1) return;
+                          const copy = [...stage3JourneyOrder];
+                          [copy[idx], copy[idx + 1]] = [copy[idx + 1], copy[idx]];
+                          setStage3JourneyOrder(copy);
+                        }}
+                        disabled={idx === stage3JourneyOrder.length - 1 || (stage3OrderSubmitted && stage3OrderIsCorrect)}
+                        className="w-7 h-7 rounded border border-[#141413] bg-[#F8FAFC] hover:bg-slate-200 disabled:opacity-30 font-bold text-xs flex items-center justify-center cursor-pointer"
+                        title="Move Down"
+                      >
+                        ↓
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          </div>
-        </div>
-      )}
 
-      {/* ── STAGE 7: LEADERSHIP PITCH & QUIZ ────────────────────────────── */}
-      {isCurrentStageUnlocked && activeStageTab === 'pitch' && (
-        <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-6">
-          <div>
-            <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
-              STAGE 11 • LEADERSHIP PITCH & SELF-TEST
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
-              The 5-Minute Leadership Pitch & PM Quiz
-            </h2>
-          </div>
+            <div className="flex items-center justify-between flex-wrap gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const correctSequence = ['visit', 'discover', 'view_pdp', 'add_to_cart', 'checkout', 'pay', 'receive', 'return_repeat'];
+                  const isEndingAtPayment = stage3JourneyOrder[stage3JourneyOrder.length - 1] === 'pay' || stage3JourneyOrder.indexOf('pay') > stage3JourneyOrder.indexOf('receive');
+                  const isCorrect = JSON.stringify(stage3JourneyOrder) === JSON.stringify(correctSequence);
 
-          <div className="bg-[#FFFDF5] border-2 border-[#141413] rounded-xl p-5 shadow-[2px_2px_0px_0px_#141413]">
-            <button
-              onClick={() => setShowPitchSummary(!showPitchSummary)}
-              className="w-full flex items-center justify-between font-black text-sm uppercase text-[#141413] cursor-pointer"
-            >
-              <span className="flex items-center gap-2">
-                <span>🎙️</span>
-                <span>Read the 5-Minute Pitch to BlueStone Leadership</span>
-              </span>
-              {showPitchSummary ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-            </button>
-            {showPitchSummary && (
-              <div className="mt-4 pt-4 border-t border-[#141413]/20 text-xs sm:text-sm font-medium leading-relaxed space-y-3 text-[#141413]">
-                <p>
-                  <strong>“Gross profit is down 15% while revenue is up 5%.</strong> I diagnosed this as both a profitability challenge and a product experience mismatch.
-                </p>
-                <p>
-                  <strong>What I found:</strong> Sessions rose 10%, but purchase conversion fell from 2.0% to 1.9%, with drop-offs in add-to-cart and checkout. However, the macro driver sits in product economics: Gold sales rose from ₹60 Cr to ₹75 Cr, but Gold margin collapsed from 22% to 14%—losing ₹2.7 Cr of profit alone.
-                </p>
-                <p>
-                  <strong>Recommendations:</strong> Improve digital transparency on PDP, prioritize lightweight gold discovery, and shift mindset from conversion in isolation to profitable transactions.”
-                </p>
+                  setStage3OrderSubmitted(true);
+                  if (isCorrect) {
+                    setStage3OrderIsCorrect(true);
+                    setStage3OrderFeedback('CORRECT! High-ticket jewellery value and unit margins are preserved post-sale through insured transit, size exchanges, and lifetime repeat purchases.');
+                    applyStepResult('stage3_order', true, 'Correct sequence', 'Good. You understand that customer value and returns extend well beyond the payment gateway.', 5);
+                  } else if (isEndingAtPayment) {
+                    setStage3OrderIsCorrect(false);
+                    setStage3OrderFeedback('Profit is also decided after the sale, through returns and repeat purchase. Do not truncate the journey at the payment gateway.');
+                    applyStepResult('stage3_order', false, 'Truncated at payment', 'Profit is also decided after the sale, through returns and repeat purchase.', -5);
+                  } else {
+                    setStage3OrderIsCorrect(false);
+                    setStage3OrderFeedback('Sequence order mismatch. Remember: Visit → Discovery → PDP View → Add to Cart → Checkout → Pay → Delivery & Unboxing → Returns & Repeat.');
+                    applyStepResult('stage3_order', false, 'Incorrect sequence', 'Review the logical progression of high-intent digital shopping.', 0);
+                  }
+                }}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] cursor-pointer"
+              >
+                Validate Journey Sequence
+              </button>
+
+              {stage3OrderSubmitted && !stage3OrderIsCorrect && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStage3OrderSubmitted(false);
+                  }}
+                  className="bg-white hover:bg-slate-50 text-[#141413] px-3.5 py-2 rounded-xl border border-[#141413] font-bold text-xs uppercase flex items-center gap-1 cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Try Again (+5 pts retry)</span>
+                </button>
+              )}
+            </div>
+
+            {stage3OrderSubmitted && (
+              <div className={`p-3.5 rounded-xl border-2 text-xs font-semibold leading-relaxed ${
+                stage3OrderIsCorrect ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]' : 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B]'
+              }`}>
+                <strong>{stage3OrderIsCorrect ? '✓ Verified Sequence:' : '⚠ Diagnostic Review:'}</strong> {stage3OrderFeedback}
               </div>
             )}
           </div>
 
-          {/* Test Questions */}
-          <div className="space-y-4 pt-4">
-            <h3 className="font-mono text-xs font-black uppercase text-[#141413]">
-              Test Your PM Mastery (From Handout):
-            </h3>
+          {/* ── STEP 2: STAGE-TO-METRIC & LIKELY ISSUE MATCHING ──────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div>
+              <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 2 of 4: Metric & Issue Matching</span>
+              <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                Stage Diagnostic Indicators
+              </h3>
+              <p className="text-xs text-[#141413]/70 font-semibold mt-1">
+                Each journey stage has a specific health metric and signature symptom of failure:
+              </p>
+            </div>
 
-            {[
-              {
-                id: 1,
-                question: 'Traffic rises 20%, but revenue only rises 5%. What do you investigate first?',
-                options: [
-                  'Immediately launch a full redesign of the homepage',
-                  'Decompose into conversion and AOV, then segment by marketing channel',
-                  'Double marketing ad spend on Google and Instagram'
-                ],
-                correct: 1,
-                reason: 'Find where the conversion or order value leaks before spending more marketing capital.'
-              },
-              {
-                id: 2,
-                question: 'Conversion improves 10%, but gross profit declines. What is your next step?',
-                options: [
-                  'Celebrate conversion gains with the product team',
-                  'Investigate gross margin, product mix, discounts, and COGS',
-                  'Fire the analytics lead'
-                ],
-                correct: 1,
-                reason: 'Conversion is not profit! You could be selling low-margin loss-leaders.'
-              }
-            ].map((q) => {
-              const selected = selectedAnswers[q.id];
-              const hasAnswered = selected !== undefined;
-              const isCorrect = selected === q.correct;
-              return (
-                <div key={q.id} className="p-4 rounded-xl border-2 border-[#141413] bg-white space-y-3">
-                  <div className="font-bold text-xs sm:text-sm text-[#141413]">
-                    {q.id}. {q.question}
-                  </div>
-                  <div className="space-y-2">
-                    {q.options.map((opt, optIdx) => (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse border-2 border-[#141413] bg-white">
+                <thead>
+                  <tr className="bg-[#141413] text-white font-mono uppercase text-[10px]">
+                    <th className="p-3 border border-[#141413]">Journey Stage</th>
+                    <th className="p-3 border border-[#141413]">Primary Health Metric</th>
+                    <th className="p-3 border border-[#141413]">Signature Diagnostic Issue</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#141413]">
+                  {STAGE3_STAGE_MATCHING.map((m) => (
+                    <tr key={m.id} className="hover:bg-slate-50">
+                      <td className="p-3 font-black text-[#141413]">{m.stage}</td>
+                      <td className="p-3 font-mono font-bold text-[#188ab2]">{m.primaryMetric}</td>
+                      <td className="p-3 text-[#141413]/80 font-medium">{m.likelyIssue}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* ── STEP 3: PDP TRUST FACTORS (MULTI-SELECT WITH TRAPS) ── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 3 of 4: Product Experience</span>
+                <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                  Scenario: Add-to-Cart Conversion Fell. What does a jewellery buyer need on the PDP?
+                </h3>
+                <p className="text-xs text-[#141413]/70 font-semibold mt-1">
+                  Select all elements that genuinely build buyer confidence for ₹50,000+ jewellery:
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => useHintForStep('stage3_pdp')}
+                disabled={hintsUsed['stage3_pdp']}
+                className="text-[11px] font-mono font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50"
+              >
+                <span>💡 Need a hint? (-3 pts)</span>
+              </button>
+            </div>
+
+            {hintsUsed['stage3_pdp'] && (
+              <div className="bg-[#FEF3C7] border border-[#D97706] p-3 rounded-lg text-xs font-medium text-[#92400E]">
+                <strong>Hint:</strong> Fine jewellery is not an impulse purchase. Fake urgency mechanisms degrade credibility for premium brand perception.
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {STAGE3_PDP_FACTORS.map((item) => {
+                const isSelected = stage3PdpSelected.includes(item.id);
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      if (stage3PdpSubmitted) return;
+                      setStage3PdpSelected(prev =>
+                        prev.includes(item.id) ? prev.filter(x => x !== item.id) : [...prev, item.id]
+                      );
+                    }}
+                    className={`w-full text-left p-3 rounded-xl border-2 transition-all flex items-start gap-2.5 cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#E0F2FE] border-[#0284C7] shadow-[2px_2px_0px_0px_#0284C7]'
+                        : 'bg-white border-[#141413] hover:bg-slate-50 shadow-[1.5px_1.5px_0px_0px_#141413]'
+                    }`}
+                  >
+                    <div className={`w-4 h-4 rounded border mt-0.5 flex items-center justify-center shrink-0 ${
+                      isSelected ? 'bg-[#0284C7] border-[#0284C7] text-white' : 'border-[#141413] bg-white'
+                    }`}>
+                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                    </div>
+                    <span className="text-xs font-bold text-[#141413]">{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center justify-between flex-wrap gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const selectedItems = STAGE3_PDP_FACTORS.filter(f => stage3PdpSelected.includes(f.id));
+                  const pickedTrap = selectedItems.find(f => !f.isCorrect);
+
+                  setStage3PdpSubmitted(true);
+                  if (pickedTrap) {
+                    setStage3PdpFeedback(pickedTrap.feedback || 'Jewellery is a trust purchase. Urgency tricks do not fix missing confidence.');
+                    applyStepResult('stage3_pdp', false, 'Urgency trap chosen', 'Jewellery is a trust purchase. Urgency tricks do not fix missing confidence.', -5);
+                  } else if (stage3PdpSelected.length >= 4) {
+                    setStage3PdpFeedback('Spot on! High-AOV jewellery purchases demand purity certification, detailed weight/making-charge breakups, and insured delivery guarantees.');
+                    applyStepResult('stage3_pdp', true, 'Trust factors selected', 'Accurate product UX intuition. Certified hallmarking and price transparency convert high-intent buyers.', 10);
+                  } else {
+                    setStage3PdpFeedback('Please select all essential confidence-building trust specifications before submitting.');
+                  }
+                }}
+                disabled={stage3PdpSelected.length === 0}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] disabled:opacity-40 text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] cursor-pointer"
+              >
+                Submit PDP Factors
+              </button>
+
+              {stage3PdpSubmitted && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStage3PdpSubmitted(false);
+                  }}
+                  className="bg-white hover:bg-slate-50 text-[#141413] px-3.5 py-2 rounded-xl border border-[#141413] font-bold text-xs uppercase flex items-center gap-1 cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Try Again (+5 pts retry)</span>
+                </button>
+              )}
+            </div>
+
+            {stage3PdpSubmitted && (
+              <div className={`p-3.5 rounded-xl border-2 text-xs font-semibold leading-relaxed ${
+                stage3PdpFeedback.includes('Spot on') ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]' : 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B]'
+              }`}>
+                {stage3PdpFeedback}
+              </div>
+            )}
+          </div>
+
+          {/* ── STEP 4: SEGMENT CUTS ──────────────────────────────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div>
+              <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 4 of 4: Analytical Segmentation</span>
+              <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                Which Segment Cuts Will Isolate the Profit Leak?
+              </h3>
+              <p className="text-xs text-[#141413]/70 font-semibold mt-1">
+                Averages hide the truth; segments reveal it. Select the most actionable cuts:
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {STAGE3_SEGMENT_CUTS.map((item) => {
+                const isSelected = stage3SegmentsSelected.includes(item.id);
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      if (stage3SegmentsSubmitted) return;
+                      setStage3SegmentsSelected(prev =>
+                        prev.includes(item.id) ? prev.filter(x => x !== item.id) : [...prev, item.id]
+                      );
+                    }}
+                    className={`w-full text-left p-3 rounded-xl border-2 transition-all flex items-start gap-2.5 cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#E0F2FE] border-[#0284C7] shadow-[2px_2px_0px_0px_#0284C7]'
+                        : 'bg-white border-[#141413] hover:bg-slate-50 shadow-[1.5px_1.5px_0px_0px_#141413]'
+                    }`}
+                  >
+                    <div className={`w-4 h-4 rounded border mt-0.5 flex items-center justify-center shrink-0 ${
+                      isSelected ? 'bg-[#0284C7] border-[#0284C7] text-white' : 'border-[#141413] bg-white'
+                    }`}>
+                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                    </div>
+                    <span className="text-xs font-bold text-[#141413]">{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center justify-between flex-wrap gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const hasTimeOfDay = stage3SegmentsSelected.includes('time_of_day');
+                  setStage3SegmentsSubmitted(true);
+                  if (hasTimeOfDay) {
+                    setStage3SegmentsFeedback('Time of day adds noise without behavioral segmentation. In retail jewellery, gold vs diamond and app vs web are far more revealing.');
+                    applyStepResult('stage3_segments', false, 'Noise cut selected', 'Time of day adds noise without behavioral segmentation.', -5);
+                  } else {
+                    setStage3SegmentsFeedback('CORRECT! Top-tier cuts: New vs returning, Gold vs diamond, App vs web, and AOV tiers isolate whether the bleed is behavioral or product economics.');
+                    applyStepResult('stage3_segments', true, 'Valid cuts', 'Superb analytical rigor. Segments tell the truth while macro averages hide it.', 10);
+                  }
+                }}
+                disabled={stage3SegmentsSelected.length === 0}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] disabled:opacity-40 text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] cursor-pointer"
+              >
+                Validate Segment Cuts
+              </button>
+            </div>
+
+            {stage3SegmentsSubmitted && (
+              <div className={`p-3.5 rounded-xl border-2 text-xs font-semibold leading-relaxed ${
+                stage3SegmentsFeedback.includes('CORRECT') ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]' : 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B]'
+              }`}>
+                {stage3SegmentsFeedback}
+              </div>
+            )}
+          </div>
+
+          {/* Navigation Controls */}
+          <div className="pt-4 border-t-2 border-[#141413] flex items-center justify-between flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setActiveStageTab('tree')}
+              className="bg-white hover:bg-slate-50 text-[#141413] px-4 py-2.5 rounded-xl border-2 border-[#141413] font-bold text-xs uppercase shadow-[2px_2px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>← Back to Stage 2: Metric Tree</span>
+            </button>
+            {isStageUnlocked(BLUESTONE_STAGES_SCHEDULE[3]) ? (
+              <button
+                type="button"
+                onClick={() => setActiveStageTab('control')}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Advance to Stage 4: Controllability</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            ) : (
+              <div className="text-xs font-mono font-bold text-slate-500 bg-slate-100 border border-slate-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-slate-400" />
+                <span>Stage 4 unlocks on {BLUESTONE_STAGES_SCHEDULE[3].unlockDateLabel}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── STAGE 4: CONTROLLABLE VS EXTERNAL (SORT 8 CARDS & SCENARIOS) ── */}
+      {isCurrentStageUnlocked && (activeStageTab === 'control' || activeStageTab === 'category') && (
+        <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-8">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
+                STAGE 4 • CONTROLLABILITY & ACCOUNTABILITY
+              </span>
+              <span className="bg-[#DCFCE7] text-[#166534] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#166534]">
+                UNLOCKED · DAY 4
+              </span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
+              Controllable, Influenceable & External Factors
+            </h2>
+            <p className="text-xs sm:text-sm text-[#141413]/70 font-semibold mt-1">
+              Separate internal product levers from macro commodity price swings, assign cross-functional owners, and handle macro shocks.
+            </p>
+          </div>
+
+          {/* ── STEP 1: 3-BUCKET CARD SORTER ────────────────────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 1 of 2: 3-Bucket Sorter</span>
+                <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                  Sort Each Factor by Level of Control
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => useHintForStep('stage4_sort')}
+                disabled={hintsUsed['stage4_sort']}
+                className="text-[11px] font-mono font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50"
+              >
+                <span>💡 Need a hint? (-3 pts)</span>
+              </button>
+            </div>
+
+            {hintsUsed['stage4_sort'] && (
+              <div className="bg-[#FEF3C7] border border-[#D97706] p-3 rounded-lg text-xs font-medium text-[#92400E]">
+                <strong>Hint:</strong> Global gold spot prices and competitor sales are external market realities. Product teams control UX and discovery, and influence stock/supplier SLA through cross-functional partnerships.
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {STAGE4_BUCKET_CARDS.map((card) => {
+                const currentPick = stage4Buckets[card.id];
+                return (
+                  <div
+                    key={card.id}
+                    className="p-3.5 rounded-xl border-2 border-[#141413] bg-white shadow-[1.5px_1.5px_0px_0px_#141413] space-y-2.5"
+                  >
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <span className="font-bold text-xs sm:text-sm text-[#141413]">{card.label}</span>
+                      <span className="text-[10px] font-mono font-black uppercase text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-300">
+                        Owner: {card.owner}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
                       <button
-                        key={optIdx}
-                        onClick={() => setSelectedAnswers(prev => ({ ...prev, [q.id]: optIdx }))}
-                        className={`w-full text-left p-2.5 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
-                          selected === optIdx
-                            ? optIdx === q.correct
-                              ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]'
-                              : 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B]'
-                            : 'bg-[#F8FAFC] hover:bg-slate-100 border-[#141413]/30 text-[#141413]'
+                        type="button"
+                        onClick={() => setStage4Buckets(prev => ({ ...prev, [card.id]: 'controllable' }))}
+                        className={`p-2 rounded-lg border text-xs font-black uppercase transition-all cursor-pointer ${
+                          currentPick === 'controllable'
+                            ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46] shadow-[2px_2px_0px_0px_#065F46]'
+                            : 'bg-[#F8FAFC] hover:bg-slate-100 border-slate-300 text-slate-700'
                         }`}
                       >
-                        {opt}
+                        Controllable
                       </button>
-                    ))}
-                  </div>
-                  {hasAnswered && (
-                    <div className={`text-xs font-medium p-2.5 rounded-lg border ${
-                      isCorrect ? 'bg-[#D1FAE5]/60 text-[#065F46] border-[#065F46]' : 'bg-[#FEF3C7] text-[#92400E] border-[#D97706]'
-                    }`}>
-                      <strong>{isCorrect ? 'Correct!' : 'Interviewer Insight:'}</strong> {q.reason}
+                      <button
+                        type="button"
+                        onClick={() => setStage4Buckets(prev => ({ ...prev, [card.id]: 'influenceable' }))}
+                        className={`p-2 rounded-lg border text-xs font-black uppercase transition-all cursor-pointer ${
+                          currentPick === 'influenceable'
+                            ? 'bg-[#FEF3C7] border-[#D97706] text-[#92400E] shadow-[2px_2px_0px_0px_#D97706]'
+                            : 'bg-[#F8FAFC] hover:bg-slate-100 border-slate-300 text-slate-700'
+                        }`}
+                      >
+                        Influenceable
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setStage4Buckets(prev => ({ ...prev, [card.id]: 'uncontrollable' }))}
+                        className={`p-2 rounded-lg border text-xs font-black uppercase transition-all cursor-pointer ${
+                          currentPick === 'uncontrollable'
+                            ? 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B] shadow-[2px_2px_0px_0px_#991B1B]'
+                            : 'bg-[#F8FAFC] hover:bg-slate-100 border-slate-300 text-slate-700'
+                        }`}
+                      >
+                        Uncontrollable
+                      </button>
                     </div>
-                  )}
+
+                    {stage4BucketsSubmitted && (
+                      <div className="text-[11px] font-medium text-[#141413]/70 pt-1 border-t border-slate-100">
+                        <strong>Insight:</strong> {card.explanation}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setStage4BucketsSubmitted(true);
+                  let correctCount = 0;
+                  STAGE4_BUCKET_CARDS.forEach(c => {
+                    const pick = stage4Buckets[c.id];
+                    if (pick === c.bucket || (c.acceptAlso && pick === c.acceptAlso)) {
+                      correctCount++;
+                    }
+                  });
+                  if (correctCount >= 7) {
+                    applyStepResult('stage4_sort', true, 'Matrix verified', 'Strong structural awareness. A great PM never wastes engineering cycles fighting commodity prices.', 10);
+                  } else {
+                    applyStepResult('stage4_sort', false, 'Some misplaced buckets', 'Review the boundary between direct product levers and commercial/macro factors.', 0);
+                  }
+                }}
+                disabled={Object.keys(stage4Buckets).length < STAGE4_BUCKET_CARDS.length}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] disabled:opacity-40 text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] cursor-pointer"
+              >
+                Validate Controllability Matrix
+              </button>
+            </div>
+          </div>
+
+          {/* ── STEP 2: SCENARIO: GOLD PRICES SPIKED ────────────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div>
+              <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 2 of 2: Executive Scenario</span>
+              <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                Macro Shock: "Gold commodity prices spiked 20% in the quarter. Choose your action as Digital PM."
+              </h3>
+            </div>
+
+            <div className="space-y-2.5">
+              {STAGE4_SCENARIO_ACTIONS.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => {
+                    setStage4ScenarioChoice(opt.id);
+                    setStage4ScenarioSubmitted(true);
+                    setStage4ScenarioFeedback(opt.feedback);
+                    if (opt.isCorrect) {
+                      applyStepResult('stage4_scenario', true, opt.feedback, 'Spot on. Product collaborates across functions to adjust discoverability, lightweight assortments, and price pass-through.', opt.healthDelta);
+                    } else {
+                      applyStepResult('stage4_scenario', false, opt.feedback, 'A feature cannot fix a commodity price. Partner with commercial and merchandising.', opt.healthDelta);
+                    }
+                  }}
+                  className={`w-full text-left p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                    stage4ScenarioChoice === opt.id
+                      ? opt.isCorrect
+                        ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46] shadow-[2px_2px_0px_0px_#065F46]'
+                        : 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B] shadow-[2px_2px_0px_0px_#991B1B]'
+                      : 'bg-white border-[#141413] hover:bg-slate-50 shadow-[1.5px_1.5px_0px_0px_#141413] text-[#141413]'
+                  }`}
+                >
+                  <div className="font-bold text-xs sm:text-sm">{opt.label}</div>
+                </button>
+              ))}
+            </div>
+
+            {stage4ScenarioSubmitted && (
+              <div className={`p-3.5 rounded-xl border-2 text-xs font-semibold leading-relaxed ${
+                stage4ScenarioChoice === 'partner' ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]' : 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B]'
+              }`}>
+                <strong>{stage4ScenarioChoice === 'partner' ? '✓ Strategic Execution:' : '⚠ Misguided PM Reaction:'}</strong> {stage4ScenarioFeedback}
+              </div>
+            )}
+          </div>
+
+          {/* Navigation Controls */}
+          <div className="pt-4 border-t-2 border-[#141413] flex items-center justify-between flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setActiveStageTab('journey')}
+              className="bg-white hover:bg-slate-50 text-[#141413] px-4 py-2.5 rounded-xl border-2 border-[#141413] font-bold text-xs uppercase shadow-[2px_2px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>← Back to Stage 3: Customer Journey</span>
+            </button>
+            {isStageUnlocked(BLUESTONE_STAGES_SCHEDULE[4]) ? (
+              <button
+                type="button"
+                onClick={() => setActiveStageTab('data_read')}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Advance to Stage 5: Data & First Read</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            ) : (
+              <div className="text-xs font-mono font-bold text-slate-500 bg-slate-100 border border-slate-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-slate-400" />
+                <span>Stage 5 unlocks on {BLUESTONE_STAGES_SCHEDULE[4].unlockDateLabel}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── STAGE 5: DATA AND FIRST READ (REQUEST, AUDIT, NEXT CUT) ───────── */}
+      {isCurrentStageUnlocked && activeStageTab === 'data_read' && (
+        <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-8">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
+                STAGE 5 • DATA REQUEST & AUDIT
+              </span>
+              <span className="bg-[#DCFCE7] text-[#166534] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#166534]">
+                UNLOCKED · DAY 5
+              </span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
+              Build the Data Request & First Read Audit
+            </h2>
+            <p className="text-xs sm:text-sm text-[#141413]/70 font-semibold mt-1">
+              Select the 5 essential diagnostic data packages, audit top-line metrics against deceptive assumptions, and pick the next analytical cut.
+            </p>
+          </div>
+
+          {/* ── STEP 1: PICK 5 OF 8 DATA REQUESTS ────────────────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 1 of 3: Formulate Data Request</span>
+                <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                  Pick the 5 Essential Data Packages (Selected: {stage5DataPicks.length}/5)
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => useHintForStep('stage5_req')}
+                disabled={hintsUsed['stage5_req']}
+                className="text-[11px] font-mono font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50"
+              >
+                <span>💡 Need a hint? (-3 pts)</span>
+              </button>
+            </div>
+
+            {hintsUsed['stage5_req'] && (
+              <div className="bg-[#FEF3C7] border border-[#D97706] p-3 rounded-lg text-xs font-medium text-[#92400E]">
+                <strong>Hint:</strong> Diagnostic RCA requires comparative metrics across the entire funnel and product economics (COGS, margins). Avoid single totals, PII, or single-channel subsets.
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {STAGE5_DATA_REQUEST_CARDS.map((card) => {
+                const isSelected = stage5DataPicks.includes(card.id);
+                return (
+                  <button
+                    key={card.id}
+                    type="button"
+                    onClick={() => {
+                      if (stage5DataSubmitted) return;
+                      setStage5DataPicks(prev =>
+                        prev.includes(card.id) ? prev.filter(x => x !== card.id) : prev.length < 5 ? [...prev, card.id] : prev
+                      );
+                    }}
+                    className={`w-full text-left p-3 rounded-xl border-2 transition-all flex items-start gap-2.5 cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#E0F2FE] border-[#0284C7] shadow-[2px_2px_0px_0px_#0284C7]'
+                        : 'bg-white border-[#141413] hover:bg-slate-50 shadow-[1.5px_1.5px_0px_0px_#141413]'
+                    }`}
+                  >
+                    <div className={`w-4 h-4 rounded border mt-0.5 flex items-center justify-center shrink-0 ${
+                      isSelected ? 'bg-[#0284C7] border-[#0284C7] text-white' : 'border-[#141413] bg-white'
+                    }`}>
+                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                    </div>
+                    <span className="text-xs font-bold text-[#141413]">{card.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const selectedCards = STAGE5_DATA_REQUEST_CARDS.filter(c => stage5DataPicks.includes(c.id));
+                  const pickedTrap = selectedCards.find(c => !c.isCorrect);
+
+                  setStage5DataSubmitted(true);
+                  if (pickedTrap) {
+                    setStage5DataFeedback(pickedTrap.feedback || 'You need two comparative periods, segment cuts, and margin data, not just aggregated totals or PII.');
+                    applyStepResult('stage5_req', false, 'Trap selected', 'You need two comparative periods, segment cuts, and margin data, not just totals.', -10);
+                  } else if (stage5DataPicks.length === 5) {
+                    setStage5DataFeedback('CORRECT! All 5 essential data cuts requested: Acquisition, Discovery, Conversion, Behaviour, and Product Economics.');
+                    applyStepResult('stage5_req', true, 'Valid 5 packages', 'Disciplined data request. You demanded both operational funnel metrics and product unit economics.', 10);
+                  } else {
+                    setStage5DataFeedback('Please select exactly 5 data packages.');
+                  }
+                }}
+                disabled={stage5DataPicks.length !== 5}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] disabled:opacity-40 text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] cursor-pointer"
+              >
+                Submit Data Request (5 Selected)
+              </button>
+            </div>
+
+            {stage5DataSubmitted && (
+              <div className={`p-3.5 rounded-xl border-2 text-xs font-semibold leading-relaxed ${
+                stage5DataFeedback.includes('CORRECT') ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]' : 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B]'
+              }`}>
+                {stage5DataFeedback}
+              </div>
+            )}
+          </div>
+
+          {/* ── STEP 2: STAGE 5 TABLE & TRUE/FALSE AUDIT ─────────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div>
+              <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 2 of 3: First Read Data Audit</span>
+              <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                Baseline Performance Metrics (Previous vs Current Year)
+              </h3>
+            </div>
+
+            {/* Stage 5 Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse border-2 border-[#141413] bg-white">
+                <thead>
+                  <tr className="bg-[#141413] text-white font-mono uppercase text-[10px]">
+                    <th className="p-3 border border-[#141413]">Metric</th>
+                    <th className="p-3 border border-[#141413]">Previous Year</th>
+                    <th className="p-3 border border-[#141413]">Current Year</th>
+                    <th className="p-3 border border-[#141413]">Change</th>
+                    <th className="p-3 border border-[#141413]">First Read PM Note</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#141413]">
+                  <tr>
+                    <td className="p-3 font-bold">1. Sessions (Traffic)</td>
+                    <td className="p-3 font-mono">{BLUESTONE_CASE_DATA.stage5.sessions.prev.toLocaleString()}</td>
+                    <td className="p-3 font-mono font-black text-[#059669]">{BLUESTONE_CASE_DATA.stage5.sessions.curr.toLocaleString()}</td>
+                    <td className="p-3 font-mono font-bold text-[#059669]">+10.0%</td>
+                    <td className="p-3 text-slate-600">Acquisition expanded top-of-funnel traffic</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-bold">2. Conversion Rate (Orders / Sessions)</td>
+                    <td className="p-3 font-mono">{(BLUESTONE_CASE_DATA.stage5.conversion.prev * 100).toFixed(1)}%</td>
+                    <td className="p-3 font-mono font-black text-[#DC2626]">{(BLUESTONE_CASE_DATA.stage5.conversion.curr * 100).toFixed(1)}%</td>
+                    <td className="p-3 font-mono font-bold text-[#DC2626]">-5.0% (rel)</td>
+                    <td className="p-3 text-slate-600">Slight dip, but orders still grew because sessions grew +10%</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-bold">3. Total Orders</td>
+                    <td className="p-3 font-mono">{BLUESTONE_CASE_DATA.stage5.orders.prev.toLocaleString()}</td>
+                    <td className="p-3 font-mono font-black text-[#059669]">{BLUESTONE_CASE_DATA.stage5.orders.curr.toLocaleString()}</td>
+                    <td className="p-3 font-mono font-bold text-[#059669]">+4.5%</td>
+                    <td className="p-3 text-slate-600">Orders increased from 20,000 to 20,900</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-bold">4. Average Order Value (AOV)</td>
+                    <td className="p-3 font-mono">₹{BLUESTONE_CASE_DATA.stage5.aov.prev.toLocaleString()}</td>
+                    <td className="p-3 font-mono font-bold text-[#059669]">₹{BLUESTONE_CASE_DATA.stage5.aov.curr.toLocaleString()}</td>
+                    <td className="p-3 font-mono font-bold text-[#059669]">+0.48%</td>
+                    <td className="p-3 text-slate-600">AOV stable/slight increase; says nothing about margin</td>
+                  </tr>
+                  <tr className="bg-[#FFFDF5]">
+                    <td className="p-3 font-bold">5. Total Revenue</td>
+                    <td className="p-3 font-mono">₹{BLUESTONE_CASE_DATA.stage5.revenueCr.prev} Cr</td>
+                    <td className="p-3 font-mono font-black text-[#059669]">₹{BLUESTONE_CASE_DATA.stage5.revenueCr.curr} Cr</td>
+                    <td className="p-3 font-mono font-bold text-[#059669]">+5.0%</td>
+                    <td className="p-3 text-[#059669] font-bold">Top line expanded by ₹5 Cr</td>
+                  </tr>
+                  <tr className="bg-[#FEE2E2]/30">
+                    <td className="p-3 font-black text-[#991B1B]">6. Gross Profit</td>
+                    <td className="p-3 font-mono">₹{BLUESTONE_CASE_DATA.stage5.gpCr.prev.toFixed(1)} Cr</td>
+                    <td className="p-3 font-mono font-black text-[#DC2626]">₹{BLUESTONE_CASE_DATA.stage5.gpCr.curr.toFixed(1)} Cr</td>
+                    <td className="p-3 font-mono font-bold text-[#DC2626]">-14.5% (~ -15%)</td>
+                    <td className="p-3 text-[#DC2626] font-bold">Critical bleed: ₹2.9 Cr gross profit disappeared</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* True/False Audit Questions */}
+            <div className="space-y-3 pt-3">
+              <h4 className="font-mono text-xs font-black uppercase text-[#141413]">
+                Audit the Metrics: True or False?
+              </h4>
+
+              {STAGE5_TRUE_FALSE_QUESTIONS.map((q) => {
+                const answer = stage5TfAnswers[q.id];
+                const hasAnswered = answer !== undefined;
+                const isCorrect = hasAnswered && answer === q.expected;
+
+                return (
+                  <div key={q.id} className="p-3.5 rounded-xl border border-[#141413] bg-white space-y-2">
+                    <div className="font-bold text-xs sm:text-sm text-[#141413]">"{q.statement}"</div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setStage5TfAnswers(prev => ({ ...prev, [q.id]: true }))}
+                        className={`px-3 py-1.5 rounded-lg border text-xs font-black uppercase transition-all cursor-pointer ${
+                          answer === true
+                            ? 'bg-[#188ab2] border-[#188ab2] text-white'
+                            : 'bg-[#F8FAFC] hover:bg-slate-100 border-slate-300 text-slate-700'
+                        }`}
+                      >
+                        True
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setStage5TfAnswers(prev => ({ ...prev, [q.id]: false }))}
+                        className={`px-3 py-1.5 rounded-lg border text-xs font-black uppercase transition-all cursor-pointer ${
+                          answer === false
+                            ? 'bg-[#188ab2] border-[#188ab2] text-white'
+                            : 'bg-[#F8FAFC] hover:bg-slate-100 border-slate-300 text-slate-700'
+                        }`}
+                      >
+                        False
+                      </button>
+                    </div>
+
+                    {hasAnswered && (
+                      <div className={`p-2.5 rounded-lg border text-xs font-medium leading-relaxed ${
+                        isCorrect ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]' : 'bg-[#FEF3C7] border-[#D97706] text-[#92400E]'
+                      }`}>
+                        <strong>{isCorrect ? '✓ Correct:' : '⚠ Diagnostic Review:'}</strong> {q.explanation}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── STEP 3: PICK THE NEXT ANALYTICAL CUT ────────────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div>
+              <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 3 of 3: Next Analytical Cut</span>
+              <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                Where should you cut the data next?
+              </h3>
+            </div>
+
+            <div className="space-y-2.5">
+              {STAGE5_NEXT_CUT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => {
+                    setStage5NextCutChoice(opt.id);
+                    setStage5NextCutSubmitted(true);
+                    setStage5NextCutFeedback(opt.feedback || '');
+                    if (opt.isMarginTrap) {
+                      applyStepResult('stage5_next_cut', false, opt.feedback || '', 'Never pump marketing spend into a leaking, margin-depressed funnel.', -15);
+                    } else {
+                      applyStepResult('stage5_next_cut', true, 'Valid diagnostic cut', 'Spot on. Let us pinpoint the exact drop-off in the funnel and decompose category margins.', 10);
+                    }
+                  }}
+                  className={`w-full text-left p-3.5 rounded-xl border-2 transition-all cursor-pointer ${
+                    stage5NextCutChoice === opt.id
+                      ? opt.isMarginTrap
+                        ? 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B] shadow-[2px_2px_0px_0px_#991B1B]'
+                        : 'bg-[#D1FAE5] border-[#065F46] text-[#065F46] shadow-[2px_2px_0px_0px_#065F46]'
+                      : 'bg-white border-[#141413] hover:bg-slate-50 shadow-[1.5px_1.5px_0px_0px_#141413] text-[#141413]'
+                  }`}
+                >
+                  <div className="font-bold text-xs sm:text-sm">{opt.label}</div>
+                </button>
+              ))}
+            </div>
+
+            {stage5NextCutSubmitted && (
+              <div className={`p-3.5 rounded-xl border-2 text-xs font-semibold leading-relaxed ${
+                stage5NextCutChoice === 'marketing_spend' ? 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B]' : 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]'
+              }`}>
+                {stage5NextCutChoice === 'marketing_spend' ? (
+                  <span><strong>⚠ MARGIN TRAP!</strong> {stage5NextCutFeedback}</span>
+                ) : (
+                  <span><strong>✓ Correct Diagnostic Step:</strong> Excellent choice. We will decompose the full funnel in Stage 6 and category margins in Stage 7.</span>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Navigation Controls */}
+          <div className="pt-4 border-t-2 border-[#141413] flex items-center justify-between flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setActiveStageTab('control')}
+              className="bg-white hover:bg-slate-50 text-[#141413] px-4 py-2.5 rounded-xl border-2 border-[#141413] font-bold text-xs uppercase shadow-[2px_2px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>← Back to Stage 4: Controllability</span>
+            </button>
+            {isStageUnlocked(BLUESTONE_STAGES_SCHEDULE[5]) ? (
+              <button
+                type="button"
+                onClick={() => setActiveStageTab('leak')}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Advance to Stage 6: Find the Leak</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            ) : (
+              <div className="text-xs font-mono font-bold text-slate-500 bg-slate-100 border border-slate-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-slate-400" />
+                <span>Stage 6 unlocks on {BLUESTONE_STAGES_SCHEDULE[5].unlockDateLabel}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── STAGE 6: FIND THE LEAK (FUNNEL TABLE, INTERVENTION METERS, GATE) ── */}
+      {isCurrentStageUnlocked && (activeStageTab === 'leak' || activeStageTab === 'prioritize') && (
+        <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-8">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
+                STAGE 6 • FUNNEL DIAGNOSTICS & SIMULATOR
+              </span>
+              <span className="bg-[#DCFCE7] text-[#166534] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#166534]">
+                UNLOCKED · DAY 6
+              </span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
+              Find the Leak & Simulate Product Interventions
+            </h2>
+            <p className="text-xs sm:text-sm text-[#141413]/70 font-semibold mt-1">
+              Click the exact drop-off stage in the reconciled funnel, simulate dual Conversion & Margin trade-offs, and check pre-redesign root causes.
+            </p>
+          </div>
+
+          {/* ── STEP 1: INTERACTIVE FUNNEL TABLE: CLICK THE LEAK ────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 1 of 3: Locate the Leak</span>
+                <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                  Click the stage with the biggest relative leak:
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => useHintForStep('stage6_leak')}
+                disabled={hintsUsed['stage6_leak']}
+                className="text-[11px] font-mono font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50"
+              >
+                <span>💡 Need a hint? (-3 pts)</span>
+              </button>
+            </div>
+
+            {hintsUsed['stage6_leak'] && (
+              <div className="bg-[#FEF3C7] border border-[#D97706] p-3 rounded-lg text-xs font-medium text-[#92400E]">
+                <strong>Hint:</strong> Calculate relative drop ((Curr - Prev) / Prev), not just absolute percentage points. Also verify whether payment completion actually dropped or improved!
+              </div>
+            )}
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse border-2 border-[#141413] bg-white">
+                <thead>
+                  <tr className="bg-[#141413] text-white font-mono uppercase text-[10px]">
+                    <th className="p-3 border border-[#141413]">Funnel Stage</th>
+                    <th className="p-3 border border-[#141413]">Previous Year</th>
+                    <th className="p-3 border border-[#141413]">Current Year</th>
+                    <th className="p-3 border border-[#141413]">Relative Delta</th>
+                    <th className="p-3 border border-[#141413]">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#141413]">
+                  {STAGE6_FUNNEL_STAGES.map((row) => {
+                    const isSelected = stage6ClickedStageId === row.id;
+                    return (
+                      <tr
+                        key={row.id}
+                        onClick={() => {
+                          setStage6ClickedStageId(row.id);
+                          setStage6LeakSubmitted(true);
+                          setStage6LeakFeedback(row.feedback);
+                          if (row.isBiggestLeak) {
+                            setStage6LeakIsCorrect(true);
+                            applyStepResult('stage6_leak', true, row.feedback, 'Accurate diagnosis. The biggest relative leak is at Add-to-Cart (-8.3%), not checkout.', 10);
+                          } else if (row.id === 'payment') {
+                            setStage6LeakIsCorrect(false);
+                            applyStepResult('stage6_leak', false, row.feedback, 'Never assume payment failure is the culprit without checking the conversion delta. It actually rose 6.7%!', -10);
+                          } else {
+                            setStage6LeakIsCorrect(false);
+                            applyStepResult('stage6_leak', false, row.feedback, 'Check the relative drop percentage carefully.', 0);
+                          }
+                        }}
+                        className={`cursor-pointer transition-all ${
+                          isSelected
+                            ? row.isBiggestLeak
+                              ? 'bg-[#D1FAE5]/60 font-bold'
+                              : 'bg-[#FEE2E2]/60 font-bold'
+                            : 'hover:bg-slate-50'
+                        }`}
+                      >
+                        <td className="p-3 font-bold flex items-center gap-2">
+                          <span>{row.name}</span>
+                          {isSelected && (
+                            row.isBiggestLeak
+                              ? <span className="text-[10px] bg-[#059669] text-white px-1.5 py-0.2 rounded font-black">LARGEST LEAK</span>
+                              : <span className="text-[10px] bg-[#DC2626] text-white px-1.5 py-0.2 rounded font-black">INCORRECT PICK</span>
+                          )}
+                        </td>
+                        <td className="p-3 font-mono">{row.prev}</td>
+                        <td className="p-3 font-mono font-bold">{row.curr}</td>
+                        <td className={`p-3 font-mono font-bold ${
+                          row.delta.startsWith('+') ? 'text-[#059669]' : 'text-[#DC2626]'
+                        }`}>{row.delta}</td>
+                        <td className="p-3">
+                          <button
+                            type="button"
+                            className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold border ${
+                              isSelected ? 'bg-[#141413] text-white border-[#141413]' : 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+                            }`}
+                          >
+                            {isSelected ? 'Selected' : 'Click to Diagnose'}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {stage6LeakSubmitted && (
+              <div className={`p-3.5 rounded-xl border-2 text-xs font-semibold leading-relaxed ${
+                stage6LeakIsCorrect ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]' : 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B]'
+              }`}>
+                <strong>{stage6LeakIsCorrect ? '✓ Verified Finding:' : '⚠ Diagnostic Review:'}</strong> {stage6LeakFeedback}
+              </div>
+            )}
+          </div>
+
+          {/* ── STEP 2: INTERVENTION SIMULATOR WITH METERS ──────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div>
+              <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 2 of 3: Intervention Trade-offs</span>
+              <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                Scenario: Gold prices rose. Users view products but do not add to cart.
+              </h3>
+              <p className="text-xs text-[#141413]/70 font-semibold mt-1">
+                Choose an intervention. Watch the visual meters for Conversion vs Gross Margin:
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {STAGE6_INTERVENTION_SCENARIOS.map((scenario) => {
+                const isSelected = stage6ScenarioChoice === scenario.id;
+                return (
+                  <button
+                    key={scenario.id}
+                    type="button"
+                    onClick={() => {
+                      setStage6ScenarioChoice(scenario.id);
+                      setStage6ScenarioSubmitted(true);
+                      setStage6ScenarioFeedback(scenario.feedback);
+                      if (scenario.isCorrect) {
+                        applyStepResult('stage6_scenario', true, scenario.feedback, 'Superb. You solved buyer price hesitation without destroying gross margin.', scenario.healthDelta);
+                      } else {
+                        applyStepResult('stage6_scenario', false, scenario.feedback, 'Beware of margin traps that win conversion metrics but lose the company profit.', scenario.healthDelta);
+                      }
+                    }}
+                    className={`w-full text-left p-4 rounded-xl border-2 transition-all cursor-pointer space-y-3 ${
+                      isSelected
+                        ? scenario.isCorrect
+                          ? 'bg-[#D1FAE5] border-[#065F46] shadow-[2px_2px_0px_0px_#065F46]'
+                          : 'bg-[#FEE2E2] border-[#991B1B] shadow-[2px_2px_0px_0px_#991B1B]'
+                        : 'bg-white border-[#141413] hover:bg-slate-50 shadow-[1.5px_1.5px_0px_0px_#141413]'
+                    }`}
+                  >
+                    <div className="font-bold text-xs sm:text-sm text-[#141413]">{scenario.title}</div>
+
+                    {/* Dual Meters: Conversion and Margin */}
+                    <div className="grid grid-cols-2 gap-3 pt-1">
+                      <div className="bg-[#FFFDF5] border border-[#141413]/30 p-2 rounded-lg">
+                        <div className="text-[10px] font-mono font-black uppercase text-[#141413]/70 flex items-center justify-between">
+                          <span>Conversion Meter</span>
+                          <span className={scenario.convMeter > 0 ? 'text-[#059669]' : scenario.convMeter < 0 ? 'text-[#DC2626]' : 'text-slate-600'}>
+                            {scenario.convMeter > 0 ? `+${scenario.convMeter}` : scenario.convMeter}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 mt-1.5">
+                          {[-3, -2, -1, 1, 2, 3].map((val) => (
+                            <div
+                              key={val}
+                              className={`h-2 flex-1 rounded-sm ${
+                                (scenario.convMeter > 0 && val > 0 && val <= scenario.convMeter)
+                                  ? 'bg-[#059669]'
+                                  : (scenario.convMeter < 0 && val < 0 && val >= scenario.convMeter)
+                                  ? 'bg-[#DC2626]'
+                                  : 'bg-slate-200'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="bg-[#FFFDF5] border border-[#141413]/30 p-2 rounded-lg">
+                        <div className="text-[10px] font-mono font-black uppercase text-[#141413]/70 flex items-center justify-between">
+                          <span>Gross Margin Meter</span>
+                          <span className={scenario.marginMeter > 0 ? 'text-[#059669]' : scenario.marginMeter < 0 ? 'text-[#DC2626]' : 'text-slate-600'}>
+                            {scenario.marginMeter > 0 ? `+${scenario.marginMeter}` : scenario.marginMeter}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 mt-1.5">
+                          {[-3, -2, -1, 1, 2, 3].map((val) => (
+                            <div
+                              key={val}
+                              className={`h-2 flex-1 rounded-sm ${
+                                (scenario.marginMeter > 0 && val > 0 && val <= scenario.marginMeter)
+                                  ? 'bg-[#059669]'
+                                  : (scenario.marginMeter < 0 && val < 0 && val >= scenario.marginMeter)
+                                  ? 'bg-[#DC2626]'
+                                  : 'bg-slate-200'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {stage6ScenarioSubmitted && (
+              <div className={`p-3.5 rounded-xl border-2 text-xs font-semibold leading-relaxed ${
+                stage6ScenarioChoice === 'transparency' ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]' : 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B]'
+              }`}>
+                {stage6ScenarioFeedback}
+              </div>
+            )}
+          </div>
+
+          {/* ── STEP 3: PRE-REDESIGN GATE (PICK 3 CAUSES) ──────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div>
+              <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 3 of 3: Diagnostic Pre-requisite Gate</span>
+              <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                Pick 3 Root Causes to Audit Before Redesigning Anything:
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {STAGE6_GATE_CAUSES.map((cause) => {
+                const isSelected = stage6GateChoices.includes(cause.id);
+                return (
+                  <button
+                    key={cause.id}
+                    type="button"
+                    onClick={() => {
+                      if (stage6GateSubmitted) return;
+                      setStage6GateChoices(prev =>
+                        prev.includes(cause.id) ? prev.filter(x => x !== cause.id) : prev.length < 3 ? [...prev, cause.id] : prev
+                      );
+                    }}
+                    className={`w-full text-left p-3 rounded-xl border-2 transition-all flex items-start gap-2.5 cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#E0F2FE] border-[#0284C7] shadow-[2px_2px_0px_0px_#0284C7]'
+                        : 'bg-white border-[#141413] hover:bg-slate-50 shadow-[1.5px_1.5px_0px_0px_#141413]'
+                    }`}
+                  >
+                    <div className={`w-4 h-4 rounded border mt-0.5 flex items-center justify-center shrink-0 ${
+                      isSelected ? 'bg-[#0284C7] border-[#0284C7] text-white' : 'border-[#141413] bg-white'
+                    }`}>
+                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                    </div>
+                    <span className="text-xs font-bold text-[#141413]">{cause.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setStage6GateSubmitted(true);
+                  if (stage6GateChoices.includes('payment_failures')) {
+                    setStage6GateFeedback('Worth monitoring, but payment completion actually improved (+6.7%, from 47.6% to 50.8%). It is not where the loss is.');
+                    applyStepResult('stage6_gate', false, 'Payment trap chosen', 'Payment completion actually rose +6.7%. Do not blame the usual suspect without data.', -5);
+                  } else {
+                    setStage6GateFeedback('CORRECT! Pricing transparency, product specs, and delivery charges explain buyer hesitation at Add-to-Cart without wasting engineering cycles on unnecessary redesigns.');
+                    applyStepResult('stage6_gate', true, 'Valid causes', 'P0 focus locked: Fix add-to-cart price friction and transparency before considering redesigns.', 10);
+                  }
+                }}
+                disabled={stage6GateChoices.length !== 3}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] disabled:opacity-40 text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] cursor-pointer"
+              >
+                Validate Root Causes (3 Selected)
+              </button>
+            </div>
+
+            {stage6GateSubmitted && (
+              <div className={`p-3.5 rounded-xl border-2 text-xs font-semibold leading-relaxed ${
+                stage6GateChoices.includes('payment_failures') ? 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B]' : 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]'
+              }`}>
+                {stage6GateFeedback}
+              </div>
+            )}
+          </div>
+
+          {/* Navigation Controls */}
+          <div className="pt-4 border-t-2 border-[#141413] flex items-center justify-between flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setActiveStageTab('data_read')}
+              className="bg-white hover:bg-slate-50 text-[#141413] px-4 py-2.5 rounded-xl border-2 border-[#141413] font-bold text-xs uppercase shadow-[2px_2px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>← Back to Stage 5: Data & First Read</span>
+            </button>
+            {isStageUnlocked(BLUESTONE_STAGES_SCHEDULE[6]) ? (
+              <button
+                type="button"
+                onClick={() => setActiveStageTab('bridge')}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-5 py-2.5 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2.5px_2.5px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Advance to Stage 7: Profit Bridge</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            ) : (
+              <div className="text-xs font-mono font-bold text-slate-500 bg-slate-100 border border-slate-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-slate-400" />
+                <span>Stage 7 unlocks on {BLUESTONE_STAGES_SCHEDULE[6].unlockDateLabel}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── STAGE 7: PROFIT BRIDGE & EXECUTIVE SYNTHESIS ────────────────── */}
+      {isCurrentStageUnlocked && (activeStageTab === 'bridge' || activeStageTab === 'pitch') && (
+        <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-8">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
+                STAGE 7 • PROFIT BRIDGE & EXECUTIVE SYNTHESIS
+              </span>
+              <span className="bg-[#DCFCE7] text-[#166534] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#166534]">
+                FINAL STAGE · DAY 7
+              </span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
+              The Category Profit Bridge & Executive Pitch
+            </h2>
+            <p className="text-xs sm:text-sm text-[#141413]/70 font-semibold mt-1">
+              Decompose category unit economics into Volume and Margin effects, avoid false commercial solutions, and review the final PM scorecard.
+            </p>
+          </div>
+
+          {/* ── STEP 1: PREDICT BEFORE REVEAL ───────────────────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div>
+              <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 1 of 4: Predict First</span>
+              <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                Total Revenue grew +5% (₹100 Cr → ₹105 Cr). Which category's gross profit fell the most?
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setStage7CategoryPrediction('gold');
+                  setStage7PredictionSubmitted(true);
+                  setStage7PredictionFeedback('CORRECT! Gold revenue rose from ₹60 Cr to ₹75 Cr, but Gold margin collapsed from 22% to 14%, losing ₹2.70 Cr of gross profit (93% of the total company loss).');
+                  applyStepResult('stage7_predict', true, 'Correct prediction', 'Spot on. Revenue growth in Gold masked a catastrophic unit margin collapse.', 10);
+                }}
+                className={`p-4 rounded-xl border-2 text-left transition-all cursor-pointer ${
+                  stage7CategoryPrediction === 'gold'
+                    ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46] shadow-[2px_2px_0px_0px_#065F46]'
+                    : 'bg-white border-[#141413] hover:bg-slate-50 shadow-[1.5px_1.5px_0px_0px_#141413]'
+                }`}
+              >
+                <div className="font-black text-sm text-[#141413]">Gold Jewellery Category</div>
+                <div className="text-xs text-[#141413]/70 mt-1 font-medium">Revenue rose +25% (₹60 Cr → ₹75 Cr)</div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setStage7CategoryPrediction('diamond');
+                  setStage7PredictionSubmitted(true);
+                  setStage7PredictionFeedback('Diamond revenue fell from ₹40 Cr to ₹30 Cr (-25%), but Diamond gross margin expanded from 17% to 22%. Diamond gross profit only fell by ₹0.20 Cr.');
+                  applyStepResult('stage7_predict', false, 'Diamond chosen', 'Diamond volume fell, but margin expansion cushioned the profit impact. Gold took the hit.', -5);
+                }}
+                className={`p-4 rounded-xl border-2 text-left transition-all cursor-pointer ${
+                  stage7CategoryPrediction === 'diamond'
+                    ? 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B] shadow-[2px_2px_0px_0px_#991B1B]'
+                    : 'bg-white border-[#141413] hover:bg-slate-50 shadow-[1.5px_1.5px_0px_0px_#141413]'
+                }`}
+              >
+                <div className="font-black text-sm text-[#141413]">Diamond Jewellery Category</div>
+                <div className="text-xs text-[#141413]/70 mt-1 font-medium">Revenue dropped -25% (₹40 Cr → ₹30 Cr)</div>
+              </button>
+            </div>
+
+            {stage7PredictionSubmitted && (
+              <div className={`p-3.5 rounded-xl border-2 text-xs font-semibold leading-relaxed ${
+                stage7CategoryPrediction === 'gold' ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]' : 'bg-[#FEF3C7] border-[#D97706] text-[#92400E]'
+              }`}>
+                {stage7PredictionFeedback}
+              </div>
+            )}
+          </div>
+
+          {/* ── STEP 2: CATEGORY ECONOMICS CALCULATION TABLE ─────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div>
+              <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 2 of 4: Unit Economics Breakdown</span>
+              <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                Category Economics: Revenue, Gross Margin & Profit
+              </h3>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse border-2 border-[#141413] bg-white">
+                <thead>
+                  <tr className="bg-[#141413] text-white font-mono uppercase text-[10px]">
+                    <th className="p-3 border border-[#141413]">Category</th>
+                    <th className="p-3 border border-[#141413]">Prev Revenue</th>
+                    <th className="p-3 border border-[#141413]">Curr Revenue</th>
+                    <th className="p-3 border border-[#141413]">Prev Margin</th>
+                    <th className="p-3 border border-[#141413]">Curr Margin</th>
+                    <th className="p-3 border border-[#141413]">Prev GP</th>
+                    <th className="p-3 border border-[#141413]">Curr GP</th>
+                    <th className="p-3 border border-[#141413]">GP Change</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#141413]">
+                  <tr className="bg-[#FEE2E2]/20">
+                    <td className="p-3 font-black text-[#991B1B]">Gold Jewellery</td>
+                    <td className="p-3 font-mono">₹60.0 Cr</td>
+                    <td className="p-3 font-mono font-bold text-[#059669]">₹75.0 Cr (+25%)</td>
+                    <td className="p-3 font-mono">22.0%</td>
+                    <td className="p-3 font-mono font-black text-[#DC2626]">14.0% (-8.0% pts)</td>
+                    <td className="p-3 font-mono">₹13.20 Cr</td>
+                    <td className="p-3 font-mono font-black text-[#DC2626]">₹10.50 Cr</td>
+                    <td className="p-3 font-mono font-black text-[#DC2626]">-₹2.70 Cr (93% of loss)</td>
+                  </tr>
+                  <tr className="bg-[#D1FAE5]/20">
+                    <td className="p-3 font-black text-[#065F46]">Diamond Jewellery</td>
+                    <td className="p-3 font-mono">₹40.0 Cr</td>
+                    <td className="p-3 font-mono font-bold text-[#DC2626]">₹30.0 Cr (-25%)</td>
+                    <td className="p-3 font-mono">17.0%</td>
+                    <td className="p-3 font-mono font-black text-[#059669]">22.0% (+5.0% pts)</td>
+                    <td className="p-3 font-mono">₹6.80 Cr</td>
+                    <td className="p-3 font-mono font-bold">₹6.60 Cr</td>
+                    <td className="p-3 font-mono font-bold text-amber-700">-₹0.20 Cr (cushioned)</td>
+                  </tr>
+                  <tr className="bg-[#141413] text-white font-bold">
+                    <td className="p-3 uppercase font-mono">Total Company</td>
+                    <td className="p-3 font-mono">₹100.0 Cr</td>
+                    <td className="p-3 font-mono text-[#FEF08A]">₹105.0 Cr (+5.0%)</td>
+                    <td className="p-3 font-mono">20.0%</td>
+                    <td className="p-3 font-mono text-[#F87171]">16.3% (-3.7% pts)</td>
+                    <td className="p-3 font-mono">₹20.00 Cr</td>
+                    <td className="p-3 font-mono text-[#F87171]">₹17.10 Cr</td>
+                    <td className="p-3 font-mono text-[#F87171]">-₹2.90 Cr (-14.5%)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="bg-[#FFFDF5] border border-[#141413] p-3 rounded-lg text-xs font-semibold text-[#141413]">
+              <strong>Critical Share Shift:</strong> Gold's share of company revenue surged from <strong>60%</strong> to <strong>71.4%</strong> (₹75 Cr / ₹105 Cr). The company sold significantly more volume of a product category whose gross margin cratered.
+            </div>
+          </div>
+
+          {/* ── STEP 3: PROFIT BRIDGE WATERFALL ─────────────────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div>
+              <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 3 of 4: Waterfall Decomposition</span>
+              <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                The BlueStone Gross Profit Bridge (₹20.00 Cr → ₹17.10 Cr)
+              </h3>
+            </div>
+
+            <div className="space-y-3">
+              {STAGE7_PROFIT_BRIDGE.map((item, idx) => (
+                <div
+                  key={idx}
+                  className={`p-3.5 rounded-xl border-2 flex items-center justify-between flex-wrap gap-2 ${
+                    item.isCriticalRootCause
+                      ? 'bg-[#FEE2E2] border-[#991B1B] shadow-[2px_2px_0px_0px_#991B1B]'
+                      : item.isPositive
+                      ? 'bg-[#D1FAE5]/60 border-[#065F46]'
+                      : 'bg-[#FFFDF5] border-[#141413]'
+                  }`}
+                >
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-black text-xs sm:text-sm text-[#141413]">{item.component}</span>
+                      {item.isCriticalRootCause && (
+                        <span className="bg-[#991B1B] text-white font-mono text-[9px] font-black uppercase px-2 py-0.2 rounded">
+                          CRITICAL ROOT CAUSE
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[11px] font-mono text-[#141413]/70 font-semibold mt-0.5">{item.formula}</div>
+                    <div className="text-[11px] text-[#141413]/80 font-medium mt-0.5">{item.note}</div>
+                  </div>
+                  <div className={`text-base sm:text-lg font-black font-mono shrink-0 ${
+                    item.impactCr > 0 ? 'text-[#065F46]' : 'text-[#991B1B]'
+                  }`}>
+                    {item.impactCr > 0 ? `+₹${item.impactCr.toFixed(2)} Cr` : `-₹${Math.abs(item.impactCr).toFixed(2)} Cr`}
+                  </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
+
+            <div className="bg-[#FEF08A] border-2 border-[#141413] p-4 rounded-xl shadow-[2px_2px_0px_0px_#141413]">
+              <div className="font-mono text-xs font-black uppercase text-[#141413] flex items-center gap-1.5 mb-1">
+                <span>🎯</span>
+                <span>Executive Bridge Takeaway:</span>
+              </div>
+              <p className="text-xs sm:text-sm font-bold text-[#141413] leading-relaxed">
+                "Gold's margin drop (-₹6.00 Cr), not weak sales, is the main cause. Volume grew profitably (+₹3.30 Cr), but commodity inflation and inadequate making charge pass-through destroyed ₹6.00 Cr."
+              </p>
+            </div>
+          </div>
+
+          {/* ── STEP 4: TRAP QUESTION ON DIAMOND PROMOTIONS ─────────── */}
+          <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] shadow-[2px_2px_0px_0px_#141413] space-y-4">
+            <div>
+              <span className="font-mono text-xs font-black uppercase text-[#188ab2]">Step 4 of 4: Strategic Direction</span>
+              <h3 className="font-black text-sm sm:text-base text-[#141413] mt-0.5">
+                Trap Question: "Would you simply run heavy diamond promotions to fix Gross Profit?"
+              </h3>
+            </div>
+
+            <div className="space-y-2.5">
+              {STAGE7_TRAP_SOLUTIONS.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => {
+                    setStage7TrapChoice(opt.id);
+                    setStage7TrapSubmitted(true);
+                    setStage7TrapFeedback(opt.feedback);
+                    if (opt.isCorrect) {
+                      applyStepResult('stage7_trap', true, opt.feedback, 'Executive level synthesis. You connected product UX with unit economics and gross profit.', opt.healthDelta);
+                    } else {
+                      applyStepResult('stage7_trap', false, opt.feedback, 'Promotions degrade unit margins and fail to address the underlying macro problem.', opt.healthDelta);
+                    }
+                  }}
+                  className={`w-full text-left p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                    stage7TrapChoice === opt.id
+                      ? opt.isCorrect
+                        ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46] shadow-[2px_2px_0px_0px_#065F46]'
+                        : 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B] shadow-[2px_2px_0px_0px_#991B1B]'
+                      : 'bg-white border-[#141413] hover:bg-slate-50 shadow-[1.5px_1.5px_0px_0px_#141413] text-[#141413]'
+                  }`}
+                >
+                  <div className="font-bold text-xs sm:text-sm">{opt.label}</div>
+                </button>
+              ))}
+            </div>
+
+            {stage7TrapSubmitted && (
+              <div className={`p-3.5 rounded-xl border-2 text-xs font-semibold leading-relaxed ${
+                stage7TrapChoice === 'root_cause_discovery' ? 'bg-[#D1FAE5] border-[#065F46] text-[#065F46]' : 'bg-[#FEE2E2] border-[#991B1B] text-[#991B1B]'
+              }`}>
+                {stage7TrapFeedback}
+              </div>
+            )}
+          </div>
+
+          {/* ── STEP 5 / END SCREEN: FINAL EVALUATION & PM ROADMAP ───── */}
+          <div className="border-[3px] border-[#141413] rounded-2xl p-6 bg-gradient-to-b from-[#FFFDF5] to-white shadow-[4px_4px_0px_0px_#141413] space-y-6">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-3 py-1 rounded-full border border-[#141413]">
+                  🎓 CASE COMPLETION & EVALUATION
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
+                  Candidate Final Scorecard & PM Roadmap
+                </h3>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <div className="text-[10px] font-mono uppercase font-black text-slate-500">Total Score</div>
+                  <div className="text-2xl font-black text-[#188ab2]">{learnerScore} PTS</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[10px] font-mono uppercase font-black text-slate-500">Case Health</div>
+                  <div className={`text-2xl font-black ${
+                    caseHealth >= 65 ? 'text-[#059669]' : caseHealth >= 40 ? 'text-[#F59E0B]' : 'text-[#DC2626]'
+                  }`}>{caseHealth}/100</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Performance Tier Rating */}
+            <div className="p-4 rounded-xl border-2 border-[#141413] bg-[#FEF08A]/40 flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <div className="text-[10px] font-mono font-black uppercase text-[#141413]/70">Performance Benchmark</div>
+                <div className="text-sm sm:text-base font-black text-[#141413]">
+                  {learnerScore >= 70 && caseHealth >= 65
+                    ? '🏆 Executive PM / Director Standard (Flawless Commercial Acumen)'
+                    : learnerScore >= 45
+                    ? '🎖️ Senior PM Standard (Solid Diagnosis, Watch Margin Traps)'
+                    : '💡 Associate PM Track (Revisit Unit Economics & MECE Trees)'}
+                </div>
+              </div>
+              <span className="text-xs font-mono font-bold bg-white border border-[#141413] px-3 py-1 rounded-full shadow-[1px_1px_0px_0px_#141413]">
+                PM-X Handout Certified
+              </span>
+            </div>
+
+            {/* The 4 Executive Rules of Product RCA */}
+            <div className="border-2 border-[#141413] rounded-xl p-5 bg-white space-y-3">
+              <h4 className="font-mono text-xs font-black uppercase text-[#141413]">
+                The 4 Golden Rules of Product RCA:
+              </h4>
+              <ul className="text-xs sm:text-sm font-semibold space-y-2 text-[#141413]">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#059669] font-black">1.</span>
+                  <span><strong>Do not assume a conversion problem because profit fell.</strong> Revenue grew +5% and orders grew +4.5%; the profit collapse was driven by unit margin erosion.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#059669] font-black">2.</span>
+                  <span><strong>Segments tell the truth, averages hide it.</strong> The total company looked like a mild dip (-14.5%), but Gold alone lost ₹2.70 Cr while Diamond held its profit.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#059669] font-black">3.</span>
+                  <span><strong>Do not assume the usual suspect; read the data.</strong> Payment completion actually improved from 47.6% to 50.8%. Checkout was not the leak.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#059669] font-black">4.</span>
+                  <span><strong>Optimise profitable transactions, not isolated vanity metrics.</strong> Slashing prices or pumping marketing ad spend accelerates gross profit bleed.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Actionable Roadmap */}
+            <div className="border-2 border-[#141413] rounded-xl p-5 bg-[#FFFDF5] space-y-3">
+              <h4 className="font-mono text-xs font-black uppercase text-[#141413]">
+                Prioritised Action Plan for BlueStone Leadership:
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-lg border-2 border-[#141413] bg-[#D1FAE5]/50">
+                  <div className="font-mono text-[10px] font-black uppercase text-[#065F46] mb-1">P0 • Immediate Sprint</div>
+                  <div className="text-xs font-bold text-[#141413]">Fix Add-to-Cart Friction</div>
+                  <p className="text-[11px] text-[#141413]/75 font-medium mt-1">
+                    Display BIS hallmarking, exact gold weight, making charge breakup, and insured shipping details directly on PDP.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-lg border-2 border-[#141413] bg-[#E0F2FE]/50">
+                  <div className="font-mono text-[10px] font-black uppercase text-[#0369A1] mb-1">P1 • Strategic Assortment</div>
+                  <div className="text-xs font-bold text-[#141413]">Lightweight Gold Discovery</div>
+                  <p className="text-[11px] text-[#141413]/75 font-medium mt-1">
+                    Introduce &lt;5g lightweight everyday wear filters, clear EMI options, and partner with merchandising to adjust making charges.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-lg border-2 border-[#141413] bg-slate-100">
+                  <div className="font-mono text-[10px] font-black uppercase text-slate-600 mb-1">P2 • Monitor Only</div>
+                  <div className="text-xs font-bold text-[#141413]">Payment Gateway SLA</div>
+                  <p className="text-[11px] text-[#141413]/75 font-medium mt-1">
+                    Payment completion is healthy at 50.8% (+6.7% rel). Maintain automated gateway failover without diverting core engineering.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Restart Button */}
+            <div className="pt-2 flex items-center justify-between flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  try {
+                    localStorage.removeItem('pmx_bluestone_progress_v3');
+                  } catch (_) {}
+                  setLearnerScore(0);
+                  setCaseHealth(50);
+                  setAttemptsByStep({});
+                  setHintsUsed({});
+                  setCompletedSteps({});
+                  setActiveStageTab('clarify');
+                }}
+                className="bg-white hover:bg-slate-50 text-[#141413] px-4 py-2 rounded-xl border-2 border-[#141413] font-bold text-xs uppercase shadow-[1.5px_1.5px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Restart Simulator from Day 1</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveStageTab('clarify')}
+                className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-5 py-2 rounded-xl border-2 border-[#141413] font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141413] transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Back to Day 1: Clarifying Questions</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
