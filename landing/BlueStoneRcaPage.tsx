@@ -15,7 +15,16 @@ import {
   ChevronDown,
   ChevronUp,
   AlertCircle,
-  ArrowRight
+  ArrowRight,
+  CheckCircle2,
+  XCircle,
+  RotateCcw,
+  BrainCircuit,
+  GitFork,
+  Crosshair,
+  Scale,
+  Zap,
+  Split
 } from 'lucide-react';
 
 export interface QnAPair {
@@ -1014,6 +1023,264 @@ export const BLUESTONE_STAGES_SCHEDULE: BlueStoneStageMeta[] = [
   }
 ];
 
+// ────────────────────────────────────────────────────────────────────────────────
+// Stage 2: Metric Trees Data & Interactive Challenge
+// ────────────────────────────────────────────────────────────────────────────────
+export interface CandidateTree {
+  id: 'tree-revenue' | 'tree-org' | 'tree-solution' | 'tree-mixed' | 'tree-correct';
+  letter: string;
+  name: string;
+  badge: string;
+  title: string;
+  isCorrect: boolean;
+  branches: {
+    name: string;
+    subBranches: string[];
+  }[];
+  whyFailsOrSucceeds: string;
+  interviewerVerdict: string;
+}
+
+export const CANDIDATE_TREES: CandidateTree[] = [
+  {
+    id: 'tree-revenue',
+    letter: 'A',
+    name: 'Tree A: Revenue-Only Tree',
+    badge: 'Common Interview Mistake',
+    title: 'Gross Profit → Traffic, Conversion, AOV',
+    isCorrect: false,
+    branches: [
+      {
+        name: 'Traffic (Sessions)',
+        subBranches: ['Organic Search', 'Paid Ads & CAC', 'Direct / App Installs']
+      },
+      {
+        name: 'Conversion Rate',
+        subBranches: ['Add-to-Cart %', 'Checkout Success %']
+      },
+      {
+        name: 'Average Order Value (AOV)',
+        subBranches: ['Items per Order', 'Average Selling Price (ASP)']
+      }
+    ],
+    whyFailsOrSucceeds: "It ignores COGS. Revenue grew 5%, so a tree that only decomposes revenue can't explain a 15% profit drop. It sends you to fix conversion when the problem is margin. This is the most common mistake.",
+    interviewerVerdict: "Candidate conflates top-line growth with bottom-line profitability and overlooks unit economics."
+  },
+  {
+    id: 'tree-correct',
+    letter: 'Formula / MECE',
+    name: 'The Correct Tree: Formula-Based MECE Tree',
+    badge: 'Executive Interview Standard',
+    title: 'Gross Profit = Revenue - COGS',
+    isCorrect: true,
+    branches: [
+      {
+        name: '1. Revenue (Customer & Product Performance)',
+        subBranches: ['Acquisition (Traffic/CAC)', 'Discovery (Search/PDP)', 'Conversion (Cart/Checkout)', 'Basket Value (AOV)', 'Retention']
+      },
+      {
+        name: '2. COGS (Product Economics & Operations)',
+        subBranches: ['Product Mix (Gold vs Diamond)', 'Procurement (Raw Gold Costs)', 'Manufacturing (Making Charges)', 'Inventory & Stock Availability']
+      }
+    ],
+    whyFailsOrSucceeds: "Starts directly from the mathematical formula: Gross Profit = Revenue - COGS. Both sides appear, every branch is a measurable metric (not a team or solution), branches are mutually exclusive and collectively exhaustive (MECE), and every leaf has an operational owner.",
+    interviewerVerdict: "Demonstrates strong structured PM thinking; establishes MECE boundaries before zeroing in on root causes."
+  },
+  {
+    id: 'tree-org',
+    letter: 'B',
+    name: 'Tree B: Org-Chart Tree',
+    badge: 'Structural Error',
+    title: 'Gross Profit → Marketing, Product, Operations, Finance',
+    isCorrect: false,
+    branches: [
+      {
+        name: 'Marketing Team',
+        subBranches: ['Ad Campaigns', 'Influencer Spend']
+      },
+      {
+        name: 'Product Team',
+        subBranches: ['App Experience', 'Feature Releases']
+      },
+      {
+        name: 'Operations Team',
+        subBranches: ['Fulfillment', 'Delivery Logistics']
+      },
+      {
+        name: 'Finance Team',
+        subBranches: ['Accounting', 'Margin Reporting']
+      }
+    ],
+    whyFailsOrSucceeds: "It splits by team, not by metric. You can't measure or add up the branches, and nothing links them to the GP formula. It also overlaps: is a checkout payment failure Product or Finance?",
+    interviewerVerdict: "Doesn't know how to break a metric down mathematically or MECE-style."
+  },
+  {
+    id: 'tree-solution',
+    letter: 'C',
+    name: 'Tree C: Solution-First Tree',
+    badge: 'Premature Fixes',
+    title: 'Gross Profit → Fix checkout, Add discounts, Improve search, Redesign app',
+    isCorrect: false,
+    branches: [
+      {
+        name: 'Fix Checkout Drop-offs',
+        subBranches: ['Reduce checkout steps', 'Auto-switch gateway']
+      },
+      {
+        name: 'Add Discounts & Promo Offers',
+        subBranches: ['Festive flash deals', 'First-order coupons']
+      },
+      {
+        name: 'Improve Search Experience',
+        subBranches: ['Relevance tuning', 'Filter presets']
+      },
+      {
+        name: 'Redesign Mobile App',
+        subBranches: ['Modern UI revamp', 'New design system']
+      }
+    ],
+    whyFailsOrSucceeds: "It jumps to fixes before finding causes. Discounts would likely lower margin further. It also ignores the interviewer's note that there were no redesigns.",
+    interviewerVerdict: "Lacks structured diagnostic discipline; jumps to preconceived solutions without diagnostic data."
+  },
+  {
+    id: 'tree-mixed',
+    letter: 'D',
+    name: 'Tree D: Mixed-Level Tree (Advanced)',
+    badge: 'Double-Counting Error',
+    title: 'Gross Profit → Traffic, Orders, Conversion, Gold prices, Revenue',
+    isCorrect: false,
+    branches: [
+      {
+        name: 'Traffic & Sessions',
+        subBranches: ['Top-of-funnel users']
+      },
+      {
+        name: 'Orders & Conversions',
+        subBranches: ['Orders count', 'Checkout conversion']
+      },
+      {
+        name: 'Gold Prices (Commodity)',
+        subBranches: ['Global spot prices']
+      },
+      {
+        name: 'Top-Line Revenue',
+        subBranches: ['Gross merchandise value']
+      }
+    ],
+    whyFailsOrSucceeds: "It puts metrics, causes and outcomes at the same level. Orders already equals Traffic × Conversion, so branches double-count. Gold prices is an external cause sitting next to a metric.",
+    interviewerVerdict: "Lacks MECE rigor; mixes causes with outcomes and double-counts metrics."
+  }
+];
+
+export const FOUR_MECE_TESTS = [
+  {
+    num: '1',
+    title: 'Starts from the Formula',
+    rule: 'Gross Profit = Revenue - COGS',
+    description: 'Both sides must appear. If you omit COGS or Revenue, you cannot mathematically explain divergent movements like revenue growing 5% while gross profit falls 15%.'
+  },
+  {
+    num: '2',
+    title: 'Branches Don\'t Overlap & Cover Everything (MECE)',
+    rule: 'Mutually Exclusive & Collectively Exhaustive',
+    description: 'Each root cause has exactly one logical home. No double-counting (such as listing Orders alongside Traffic and Conversion).'
+  },
+  {
+    num: '3',
+    title: 'Every Branch is a Measurable Metric',
+    rule: 'Not a team and not a premature solution',
+    description: 'Never split by teams (Marketing/Product/Finance) or premature solutions (Fix checkout, Add discounts). Split by measurable mathematical drivers.'
+  },
+  {
+    num: '4',
+    title: 'Every Leaf Has an Operational Owner',
+    rule: 'Direct accountability at the lowest branch',
+    description: 'Product, merchandising, procurement, or operations can each take direct action on specific leaf branches once the issue tree pinpoints the drop.'
+  }
+];
+
+export const EIGHT_LEAF_BRANCHES = [
+  {
+    id: '1.1',
+    branch: 'Revenue Branch',
+    name: '1.1 Acquisition (Traffic & CAC)',
+    description: 'Marketing ad spend, top-of-funnel visitor sessions, and CAC efficiency.',
+    isPrimaryCause: false
+  },
+  {
+    id: '1.2',
+    branch: 'Revenue Branch',
+    name: '1.2 Discovery (Search & PDP Views)',
+    description: 'Catalogue exploration, search filter usability, and product detail page views.',
+    isPrimaryCause: false
+  },
+  {
+    id: '1.3',
+    branch: 'Revenue Branch',
+    name: '1.3 Conversion (Cart & Checkout Drop)',
+    description: 'Friction between add-to-cart (12%→11%) and checkout completion (70%→68%).',
+    isPrimaryCause: false
+  },
+  {
+    id: '1.4',
+    branch: 'Revenue Branch',
+    name: '1.4 Basket Value (AOV & Items/Order)',
+    description: 'Average order value (₹50,000 → ₹50,240) and units purchased per cart.',
+    isPrimaryCause: false
+  },
+  {
+    id: '2.1',
+    branch: 'COGS Branch',
+    name: '2.1 Product Mix (Gold vs Diamond Contribution)',
+    description: 'Shift in category sales volume toward lower-margin gold jewellery.',
+    isPrimaryCause: true // PRIMARY ROOT CAUSE!
+  },
+  {
+    id: '2.2',
+    branch: 'COGS Branch',
+    name: '2.2 Procurement (Raw Gold Inflation)',
+    description: 'Global gold commodity price spikes absorbed by the business without price pass-through.',
+    isPrimaryCause: false
+  },
+  {
+    id: '2.3',
+    branch: 'COGS Branch',
+    name: '2.3 Manufacturing & Making Charges',
+    description: 'Making charges failing to calibrate dynamically for lightweight designs.',
+    isPrimaryCause: false
+  },
+  {
+    id: '2.4',
+    branch: 'COGS Branch',
+    name: '2.4 Inventory & Stock Availability',
+    description: 'Out-of-stock SKUs on high-margin diamond rings forcing customers to gold.',
+    isPrimaryCause: false
+  }
+];
+
+export const STAGE2_PREDICTION_OPTIONS = [
+  {
+    id: 'formula',
+    label: 'Gross Profit = Revenue - COGS (Cost of Goods Sold)',
+    hint: 'Decompose accounting equation into top-line revenue vs product cost'
+  },
+  {
+    id: 'funnel',
+    label: 'Gross Profit = Traffic × Conversion Rate × Average Order Value (AOV)',
+    hint: 'Decompose by digital customer acquisition & checkout funnel'
+  },
+  {
+    id: 'teams',
+    label: 'Gross Profit = Marketing + Product + Operations + Finance Teams',
+    hint: 'Decompose by organizational departments and teams'
+  },
+  {
+    id: 'solutions',
+    label: 'Gross Profit = Fix Checkout + Add Discounts + Improve Search + App Redesign',
+    hint: 'Decompose by candidate product feature fixes and solutions'
+  }
+];
+
 export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boolean }) {
   // Calendar-based automatic day unlocking state
   const todayDateStr = getBlueStoneTodayDateString();
@@ -1155,6 +1422,17 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
   // Self-assessment quiz state
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [showPitchSummary, setShowPitchSummary] = useState(false);
+
+  // Stage 2 Interactive Tree Challenge State
+  type Stage2Step = 'predict' | 'compare' | 'feedback' | 'gut_check' | 'revealed';
+  const [stage2Step, setStage2Step] = useState<Stage2Step>('predict');
+  const [predictedBranchChoice, setPredictedBranchChoice] = useState<string>('');
+  const [customPredictionInput, setCustomPredictionInput] = useState<string>('');
+  const [selectedTreeId, setSelectedTreeId] = useState<string>('tree-revenue');
+  const [hasSubmittedTree, setHasSubmittedTree] = useState<boolean>(false);
+  const [gutCheckLeaf, setGutCheckLeaf] = useState<string>('');
+  const [isDataRevealed, setIsDataRevealed] = useState<boolean>(false);
+  const [showAdvancedTrees, setShowAdvancedTrees] = useState<boolean>(false);
 
   // Current stage meta and unlock state
   const currentStageMeta = BLUESTONE_STAGES_SCHEDULE.find(s => s.key === activeStageTab) || BLUESTONE_STAGES_SCHEDULE[0];
@@ -1615,87 +1893,674 @@ export function BlueStoneRcaComponent({ isEmbedded = false }: { isEmbedded?: boo
         </div>
       )}
 
-{/* ── STAGE 2: METRIC DECOMPOSITION TREE ───────────────────────────── */}
+{/* ── STAGE 2: METRIC DECOMPOSITION TREE (PREDICT → COMPARE → TESTS → GUT CHECK → REVEAL) ── */}
       {isCurrentStageUnlocked && activeStageTab === 'tree' && (
         <div className="bg-white border-2 sm:border-[3px] border-[#141413] rounded-2xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_#141413] space-y-6">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
-                STAGE 2 • METRIC DECOMPOSITION
-              </span>
-              {isStageLiveToday(BLUESTONE_STAGES_SCHEDULE[1]) ? (
-                <span className="bg-[#D1FAE5] text-[#065F46] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#065F46]">
-                  LIVE TODAY
+          {/* Header */}
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="bg-[#FEF08A] text-[#141413] font-mono text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-[#141413]">
+                  STAGE 2 • METRIC DECOMPOSITION CHALLENGE
                 </span>
-              ) : (
-                <span className="bg-[#DCFCE7] text-[#166534] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#166534]">
-                  UNLOCKED · DAY 2
-                </span>
-              )}
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
-              Product RCA Issue Tree: Gross Profit (-15%)
-            </h2>
-            <p className="text-xs sm:text-sm text-[#141413]/70 font-semibold mt-1">
-              Gross Profit = Revenue - COGS. Decompose the outcome into customer performance vs product economics.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-[#F8FAFC] border-2 border-[#141413] rounded-xl p-5 shadow-[3px_3px_0px_0px_#141413]">
-              <div className="flex items-center justify-between border-b-2 border-[#141413] pb-3 mb-4">
-                <span className="font-mono text-xs font-black uppercase text-[#141413]">
-                  1. REVENUE (Customer & Product Experience)
-                </span>
-                <span className="text-xs font-black bg-[#D1FAE5] text-[#065F46] px-2 py-0.5 rounded border border-[#065F46]">
-                  +5% (₹105 Cr)
-                </span>
+                {isStageLiveToday(BLUESTONE_STAGES_SCHEDULE[1]) ? (
+                  <span className="bg-[#D1FAE5] text-[#065F46] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#065F46]">
+                    LIVE TODAY
+                  </span>
+                ) : (
+                  <span className="bg-[#DCFCE7] text-[#166534] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#166534]">
+                    UNLOCKED · DAY 2
+                  </span>
+                )}
               </div>
-              <ul className="space-y-3 text-xs sm:text-sm">
-                <li className="p-3 bg-white border border-[#141413] rounded-lg">
-                  <div className="font-black text-[#141413]">1.1 Acquisition: Traffic & CAC</div>
-                  <div className="text-[#141413]/75 mt-0.5">Sessions grew from 10L to 11L (+10%). Marketing drove more top-of-funnel users.</div>
-                </li>
-                <li className="p-3 bg-white border border-[#141413] rounded-lg">
-                  <div className="font-black text-[#141413]">1.2 Discovery: Search & PDP Views</div>
-                  <div className="text-[#141413]/75 mt-0.5">Product page views rose from 5.0L to 5.5L (+10%). Users are discovering products.</div>
-                </li>
-                <li className="p-3 bg-white border border-[#141413] rounded-lg">
-                  <div className="font-black text-[#141413]">1.3 Conversion: Cart & Checkout</div>
-                  <div className="text-[#DC2626] font-semibold mt-0.5">Add-to-cart dropped from 12% to 11%. Checkout conversion dropped from 70% to 68%.</div>
-                </li>
-                <li className="p-3 bg-white border border-[#141413] rounded-lg">
-                  <div className="font-black text-[#141413]">1.4 Basket Value: AOV & Items/Order</div>
-                  <div className="text-[#141413]/75 mt-0.5">AOV grew slightly from ₹50,000 to ₹50,240 (driven by higher gold prices, not more items).</div>
-                </li>
-              </ul>
+              <h2 className="text-xl sm:text-2xl font-black text-[#141413] mt-2">
+                Product RCA Issue Tree: Gross Profit (-15%)
+              </h2>
+              <p className="text-xs sm:text-sm text-[#141413]/70 font-semibold mt-1">
+                Predict first-level branches, compare candidate trees, test with the 4 MECE rules, and reveal the primary profit leakage.
+              </p>
             </div>
 
-            <div className="bg-[#FFFDF5] border-2 border-[#141413] rounded-xl p-5 shadow-[3px_3px_0px_0px_#141413]">
-              <div className="flex items-center justify-between border-b-2 border-[#141413] pb-3 mb-4">
-                <span className="font-mono text-xs font-black uppercase text-[#141413]">
-                  2. COGS (Product Economics & Mix)
-                </span>
-                <span className="text-xs font-black bg-[#FEE2E2] text-[#991B1B] px-2 py-0.5 rounded border border-[#991B1B]">
-                  CRITICAL SQUEEZE
-                </span>
-              </div>
-              <ul className="space-y-3 text-xs sm:text-sm">
-                <li className="p-3 bg-white border-2 border-[#DC2626] rounded-lg">
-                  <div className="font-black text-[#DC2626]">2.1 Product Mix: Gold vs Diamond Contribution</div>
-                  <div className="text-[#141413] font-medium mt-0.5">Gold grew to 71% of sales, but its margin dropped from 22% to 14%. Squeezed ₹2.7 Cr of profit!</div>
-                </li>
-                <li className="p-3 bg-white border border-[#141413] rounded-lg">
-                  <div className="font-black text-[#141413]">2.2 Procurement: Raw Gold Inflation</div>
-                  <div className="text-[#141413]/75 mt-0.5">Global gold prices spiked. The business absorbed part of this without full pass-through.</div>
-                </li>
-                <li className="p-3 bg-white border border-[#141413] rounded-lg">
-                  <div className="font-black text-[#141413]">2.3 Manufacturing & Making Charges</div>
-                  <div className="text-[#141413]/75 mt-0.5">Making charges were not dynamically calibrated for lightweight gold designs.</div>
-                </li>
-              </ul>
-            </div>
+            {/* Re-test button */}
+            {(hasSubmittedTree || isDataRevealed) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setStage2Step('predict');
+                  setPredictedBranchChoice('');
+                  setCustomPredictionInput('');
+                  setSelectedTreeId('tree-revenue');
+                  setHasSubmittedTree(false);
+                  setGutCheckLeaf('');
+                  setIsDataRevealed(false);
+                }}
+                className="px-3 py-1.5 rounded-xl border-2 border-[#141413] bg-[#FFFDF5] hover:bg-[#FEF08A] text-xs font-mono font-black uppercase flex items-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#141413] transition-all cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset Tree Challenge</span>
+              </button>
+            )}
           </div>
+
+          {/* Stepper Tabs */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b-2 border-[#141413]/10 text-xs font-mono font-bold no-scrollbar">
+            {[
+              { key: 'predict', stepNum: '1', title: 'Predict First', unlocked: true },
+              { key: 'compare', stepNum: '2', title: 'Compare Trees', unlocked: !!predictedBranchChoice || hasSubmittedTree },
+              { key: 'feedback', stepNum: '3', title: 'Feedback & 4 Tests', unlocked: hasSubmittedTree },
+              { key: 'gut_check', stepNum: '4', title: 'Gut Check', unlocked: hasSubmittedTree },
+              { key: 'revealed', stepNum: '5', title: 'Data Reveal', unlocked: isDataRevealed }
+            ].map(s => {
+              const isActive = stage2Step === s.key;
+              return (
+                <button
+                  key={s.key}
+                  disabled={!s.unlocked}
+                  onClick={() => setStage2Step(s.key as any)}
+                  className={`px-3 py-1.5 rounded-lg border flex items-center gap-1.5 whitespace-nowrap transition-all ${
+                    isActive
+                      ? 'bg-[#188ab2] text-white border-[#141413] shadow-[2px_2px_0px_0px_#141413]'
+                      : s.unlocked
+                      ? 'bg-white hover:bg-slate-50 text-[#141413] border-[#141413]/40 cursor-pointer'
+                      : 'bg-slate-100 text-slate-400 border-dashed border-slate-300 opacity-60 cursor-not-allowed'
+                  }`}
+                >
+                  <span className="w-4 h-4 rounded-full bg-black/10 flex items-center justify-center text-[10px]">
+                    {s.stepNum}
+                  </span>
+                  <span>{s.title}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* ── STEP 1: PREDICT FIRST ────────────────────────────────────────── */}
+          {stage2Step === 'predict' && (
+            <div className="bg-[#FFFDF5] border-2 border-[#141413] rounded-xl p-5 sm:p-6 shadow-[3px_3px_0px_0px_#141413] space-y-5 animate-in fade-in duration-200">
+              <div className="border-b-2 border-[#141413] pb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="bg-[#FEF08A] text-[#141413] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#141413]">
+                    STEP 1 OF 5 • COMMIT TO A GUESS
+                  </span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-black text-[#141413]">
+                  What are the first-level branches of your tree?
+                </h3>
+                <p className="text-xs sm:text-sm text-[#141413]/80 font-medium mt-1">
+                  In an executive interview, never look for pre-packaged templates. Commit to your own hypothesis first:
+                  Revenue is <strong>+5% (₹100 Cr → ₹105 Cr)</strong>, but Gross Profit is <strong>-15% (₹20 Cr → ₹17.1 Cr)</strong>.
+                  How must the top-level metric split?
+                </p>
+              </div>
+
+              {/* Prediction Options */}
+              <div className="space-y-2.5">
+                {STAGE2_PREDICTION_OPTIONS.map((opt) => {
+                  const isSelected = predictedBranchChoice === opt.id;
+                  return (
+                    <div
+                      key={opt.id}
+                      onClick={() => setPredictedBranchChoice(opt.id)}
+                      className={`p-3.5 sm:p-4 rounded-xl border-2 transition-all cursor-pointer flex items-start gap-3 ${
+                        isSelected
+                          ? 'bg-[#FEF08A] border-[#141413] shadow-[3px_3px_0px_0px_#141413] translate-x-[2px]'
+                          : 'bg-white hover:bg-slate-50 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
+                      }`}
+                    >
+                      <div className={`w-5 h-5 rounded-full border-2 border-[#141413] flex items-center justify-center shrink-0 mt-0.5 ${
+                        isSelected ? 'bg-[#188ab2] text-white' : 'bg-white'
+                      }`}>
+                        {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-mono text-xs sm:text-sm font-black text-[#141413]">
+                          {opt.label}
+                        </div>
+                        <div className="text-[11px] sm:text-xs text-[#141413]/70 font-medium mt-0.5">
+                          {opt.hint}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Or custom guess input */}
+              <div>
+                <label className="block text-xs font-mono font-black uppercase text-[#141413] mb-1.5">
+                  Or type your own custom hypothesis:
+                </label>
+                <input
+                  type="text"
+                  value={customPredictionInput}
+                  onChange={(e) => {
+                    setCustomPredictionInput(e.target.value);
+                    if (e.target.value.trim()) {
+                      setPredictedBranchChoice('custom');
+                    }
+                  }}
+                  placeholder="e.g., Gross Profit splits into Unit Selling Price, Unit Cost, and Volume..."
+                  className="w-full bg-white border-2 border-[#141413] px-3.5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-[#141413] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#188ab2] shadow-[2px_2px_0px_0px_#141413]"
+                />
+              </div>
+
+              {/* Submit Prediction */}
+              <div className="pt-2 flex justify-end">
+                <button
+                  type="button"
+                  disabled={!predictedBranchChoice && !customPredictionInput.trim()}
+                  onClick={() => setStage2Step('compare')}
+                  className="bg-[#188ab2] hover:bg-[#0f6f8f] disabled:opacity-40 text-white px-6 py-3 rounded-xl border-2 border-[#141413] font-black text-xs sm:text-sm uppercase shadow-[3px_3px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Commit Guess & Compare Three Trees</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP 2: COMPARE THREE TREES ──────────────────────────────────── */}
+          {stage2Step === 'compare' && (
+            <div className="space-y-5 animate-in fade-in duration-200">
+              <div className="bg-[#FFFDF5] border-2 border-[#141413] rounded-xl p-4 sm:p-5 shadow-[2.5px_2.5px_0px_0px_#141413]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="bg-[#FEF08A] text-[#141413] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#141413]">
+                    STEP 2 OF 5 • COMPARE THREE TREES
+                  </span>
+                  <span className="text-xs font-mono text-[#141413]/70 font-semibold">
+                    Two are wrong. One is right. Which one would you defend in an interview?
+                  </span>
+                </div>
+                <p className="text-xs text-[#141413]/80 font-medium">
+                  Inspect the candidate structures below. Notice how each handles the mathematical relationship between revenue, volume, costs, and teams.
+                </p>
+              </div>
+
+              {/* 3 Trees in Shuffled Order */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  CANDIDATE_TREES[0], // Tree A: Revenue-Only
+                  CANDIDATE_TREES[1], // The Correct Tree (Formula-Based)
+                  CANDIDATE_TREES[2]  // Tree B: Org-Chart Tree
+                ].map((tree) => {
+                  const isSelected = selectedTreeId === tree.id;
+                  return (
+                    <div
+                      key={tree.id}
+                      onClick={() => setSelectedTreeId(tree.id)}
+                      className={`rounded-xl border-2 border-[#141413] p-4 flex flex-col justify-between transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#FEF08A] shadow-[4px_4px_0px_0px_#141413] translate-y-[-2px]'
+                          : 'bg-white hover:bg-slate-50 shadow-[2px_2px_0px_0px_#141413]'
+                      }`}
+                    >
+                      <div>
+                        {/* Tree Header */}
+                        <div className="flex items-center justify-between gap-1 mb-2">
+                          <span className="font-mono text-[10px] font-black uppercase bg-white border border-[#141413] px-2 py-0.5 rounded-full">
+                            {tree.name}
+                          </span>
+                          <span className={`text-[9px] font-mono font-black uppercase px-1.5 py-0.2 rounded border ${
+                            tree.isCorrect ? 'bg-[#D1FAE5] text-[#065F46] border-[#065F46]' : 'bg-slate-100 text-slate-600 border-slate-300'
+                          }`}>
+                            {tree.badge}
+                          </span>
+                        </div>
+
+                        <div className="font-mono text-xs font-black text-[#141413] mb-3">
+                          {tree.title}
+                        </div>
+
+                        {/* Visual Breakdown Diagram */}
+                        <div className="bg-[#FFFDF5] border border-[#141413] rounded-lg p-2.5 space-y-2 text-xs font-mono mb-3">
+                          {tree.branches.map((b, bIdx) => (
+                            <div key={bIdx} className="bg-white border border-[#141413]/30 p-2 rounded">
+                              <div className="font-bold text-[#141413] text-[11px] flex items-center gap-1">
+                                <GitFork className="w-3 h-3 text-[#188ab2]" />
+                                <span>{b.name}</span>
+                              </div>
+                              <div className="text-[10px] text-slate-600 pl-4 mt-0.5 leading-tight">
+                                {b.subBranches.join(' · ')}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Select Button */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedTreeId(tree.id);
+                        }}
+                        className={`w-full py-2 rounded-lg border-2 border-[#141413] font-mono text-xs font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#188ab2] text-white shadow-[2px_2px_0px_0px_#141413]'
+                            : 'bg-white hover:bg-slate-100 text-[#141413]'
+                        }`}
+                      >
+                        {isSelected ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : null}
+                        <span>{isSelected ? 'Selected Tree' : 'Select This Tree'}</span>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Advanced / Optional Trees Accordion */}
+              <div className="border-2 border-[#141413] rounded-xl bg-[#F8FAFC] p-3.5 shadow-[2px_2px_0px_0px_#141413]">
+                <button
+                  type="button"
+                  onClick={() => setShowAdvancedTrees(!showAdvancedTrees)}
+                  className="w-full flex items-center justify-between text-xs font-mono font-black uppercase text-[#141413] cursor-pointer"
+                >
+                  <span className="flex items-center gap-2">
+                    <BrainCircuit className="w-4 h-4 text-[#188ab2]" />
+                    <span>View More Structural Errors (Tree C: Solution-First & Tree D: Mixed-Level)</span>
+                  </span>
+                  {showAdvancedTrees ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+
+                {showAdvancedTrees && (
+                  <div className="mt-3 pt-3 border-t border-[#141413]/20 grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {[CANDIDATE_TREES[3], CANDIDATE_TREES[4]].map(advTree => {
+                      const isSelected = selectedTreeId === advTree.id;
+                      return (
+                        <div
+                          key={advTree.id}
+                          onClick={() => setSelectedTreeId(advTree.id)}
+                          className={`p-3 rounded-lg border-2 border-[#141413] cursor-pointer ${
+                            isSelected ? 'bg-[#FEF08A]' : 'bg-white'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-mono text-xs font-black">{advTree.name}</span>
+                            <span className="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.2 rounded font-mono font-bold">
+                              {advTree.badge}
+                            </span>
+                          </div>
+                          <div className="text-xs font-mono text-[#141413]/80 mb-2">{advTree.title}</div>
+                          <p className="text-[11px] text-[#141413]/70 italic mb-2">{advTree.whyFailsOrSucceeds}</p>
+                          <button
+                            type="button"
+                            className={`w-full py-1 text-xs font-mono font-bold rounded border border-[#141413] ${
+                              isSelected ? 'bg-[#188ab2] text-white' : 'bg-slate-100 text-[#141413]'
+                            }`}
+                          >
+                            {isSelected ? 'Selected' : 'Pick to Defend'}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Submit Selection Button */}
+              <div className="flex items-center justify-between flex-wrap gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setStage2Step('predict')}
+                  className="px-4 py-2.5 rounded-xl border-2 border-[#141413] bg-white hover:bg-slate-50 text-xs font-bold uppercase transition-all cursor-pointer"
+                >
+                  ← Back to Prediction
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setHasSubmittedTree(true);
+                    setStage2Step('feedback');
+                  }}
+                  className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-6 py-3 rounded-xl border-2 border-[#141413] font-black text-xs sm:text-sm uppercase shadow-[3px_3px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Lock in Choice & See Interviewer Feedback</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP 3: FEEDBACK PER TREE & THE 4 GOLDEN TESTS ───────────────── */}
+          {stage2Step === 'feedback' && (
+            <div className="space-y-6 animate-in fade-in duration-200">
+              {/* Feedback on Selected Tree */}
+              {(() => {
+                const currentTree = CANDIDATE_TREES.find(t => t.id === selectedTreeId) || CANDIDATE_TREES[0];
+                return (
+                  <div className={`p-5 sm:p-6 rounded-xl border-2 sm:border-[3px] border-[#141413] shadow-[4px_4px_0px_0px_#141413] ${
+                    currentTree.isCorrect ? 'bg-[#D1FAE5]' : 'bg-[#FEE2E2]'
+                  }`}>
+                    <div className="flex items-center gap-2 mb-2">
+                      {currentTree.isCorrect ? (
+                        <CheckCircle2 className="w-6 h-6 text-[#065F46]" />
+                      ) : (
+                        <XCircle className="w-6 h-6 text-[#991B1B]" />
+                      )}
+                      <span className="font-mono text-xs font-black uppercase tracking-wider">
+                        {currentTree.isCorrect
+                          ? '✅ Defensible Choice: Executive PM Interview Standard!'
+                          : `❌ Interviewer Rejection: Why ${currentTree.name} Fails`}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-black text-[#141413] mt-1 mb-2">
+                      {currentTree.title}
+                    </h3>
+
+                    <div className="bg-white border-2 border-[#141413] p-4 rounded-lg space-y-2 text-xs sm:text-sm">
+                      <div>
+                        <strong className="text-[#141413] font-mono uppercase text-[11px] block">
+                          Why it {currentTree.isCorrect ? 'succeeds' : 'fails'}:
+                        </strong>
+                        <p className="text-[#141413]/85 font-medium mt-0.5 leading-relaxed">
+                          {currentTree.whyFailsOrSucceeds}
+                        </p>
+                      </div>
+
+                      <div className="pt-2 border-t border-[#141413]/20">
+                        <strong className="text-[#141413] font-mono uppercase text-[11px] block">
+                          What interviewers conclude about the candidate:
+                        </strong>
+                        <p className="italic text-[#141413]/90 font-semibold mt-0.5">
+                          "{currentTree.interviewerVerdict}"
+                        </p>
+                      </div>
+                    </div>
+
+                    {!currentTree.isCorrect && (
+                      <div className="mt-4 flex items-center justify-between flex-wrap gap-2">
+                        <span className="text-xs font-semibold text-[#991B1B]">
+                          Switch to the formula-based tree to pass the interview:
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedTreeId('tree-correct')}
+                          className="px-4 py-2 bg-[#141413] text-white rounded-lg text-xs font-mono font-black uppercase hover:bg-slate-800 transition-all cursor-pointer"
+                        >
+                          Adopt The Formula-Based Tree →
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* ── THE 4 TESTS OF A CORRECT TREE ─────────────────────────────── */}
+              <div className="bg-[#FFFDF5] border-2 border-[#141413] rounded-xl p-5 sm:p-6 shadow-[3px_3px_0px_0px_#141413]">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="bg-[#FEF08A] text-[#141413] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#141413]">
+                    THE 4 GOLDEN TESTS
+                  </span>
+                  <span className="text-xs font-mono font-black uppercase text-[#141413]">
+                    How to verify any issue tree yourself
+                  </span>
+                </div>
+                <h3 className="text-base sm:text-lg font-black text-[#141413] mb-4">
+                  What makes the formula-based tree universally correct:
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {FOUR_MECE_TESTS.map((test) => (
+                    <div key={test.num} className="bg-white border-2 border-[#141413] p-4 rounded-xl shadow-[2px_2px_0px_0px_#141413]">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="w-5 h-5 rounded-full bg-[#FEF08A] border border-[#141413] flex items-center justify-center font-mono text-xs font-black">
+                          {test.num}
+                        </span>
+                        <span className="font-mono text-xs font-black text-[#141413] uppercase">
+                          {test.title}
+                        </span>
+                      </div>
+                      <div className="font-bold text-xs text-[#188ab2] mb-1">
+                        {test.rule}
+                      </div>
+                      <p className="text-[11px] text-[#141413]/75 font-medium leading-relaxed">
+                        {test.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Advance to Gut Check Button */}
+                <div className="mt-5 pt-4 border-t-2 border-[#141413] flex items-center justify-between flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setStage2Step('compare')}
+                    className="px-4 py-2.5 rounded-xl border-2 border-[#141413] bg-white hover:bg-slate-50 text-xs font-bold uppercase transition-all cursor-pointer"
+                  >
+                    ← Revisit Tree Comparison
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setStage2Step('gut_check')}
+                    className="bg-[#188ab2] hover:bg-[#0f6f8f] text-white px-6 py-3 rounded-xl border-2 border-[#141413] font-black text-xs sm:text-sm uppercase shadow-[3px_3px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-2 cursor-pointer"
+                  >
+                    <span>Advance to Gut Check: Which Leaf Matters Most?</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP 4: GUT CHECK: WHICH BRANCH MATTERS MOST? ─────────────────── */}
+          {stage2Step === 'gut_check' && (
+            <div className="bg-[#FFFDF5] border-2 border-[#141413] rounded-xl p-5 sm:p-6 shadow-[3px_3px_0px_0px_#141413] space-y-5 animate-in fade-in duration-200">
+              <div className="border-b-2 border-[#141413] pb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="bg-[#FEF08A] text-[#141413] font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded border border-[#141413]">
+                    STEP 4 OF 5 • GUT CHECK PREDICTION
+                  </span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-black text-[#141413]">
+                  Which leaf branch matters most to this gross profit collapse?
+                </h3>
+                <p className="text-xs sm:text-sm text-[#141413]/80 font-medium mt-1">
+                  You now have the full 8-leaf tree. Before the data is revealed, rank your gut instinct: Which specific leaf branch caused the 15% profit drop?
+                </p>
+              </div>
+
+              {/* 8 Leaf Cards in 2 Columns */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                {/* Revenue Leaves */}
+                <div className="space-y-2.5">
+                  <div className="font-mono text-xs font-black uppercase text-[#188ab2] px-1">
+                    Revenue Leaves (Customer Experience)
+                  </div>
+                  {EIGHT_LEAF_BRANCHES.slice(0, 4).map(leaf => {
+                    const isSelected = gutCheckLeaf === leaf.id;
+                    return (
+                      <div
+                        key={leaf.id}
+                        onClick={() => setGutCheckLeaf(leaf.id)}
+                        className={`p-3 rounded-xl border-2 transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#FEF08A] border-[#141413] shadow-[3px_3px_0px_0px_#141413] translate-x-[2px]'
+                            : 'bg-white hover:bg-slate-50 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-xs font-black text-[#141413]">
+                            {leaf.name}
+                          </span>
+                          {isSelected && <span className="text-[10px] bg-[#141413] text-white px-2 py-0.2 rounded font-mono font-bold">YOUR PICK</span>}
+                        </div>
+                        <p className="text-[11px] text-[#141413]/70 font-medium mt-0.5">
+                          {leaf.description}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* COGS Leaves */}
+                <div className="space-y-2.5">
+                  <div className="font-mono text-xs font-black uppercase text-[#DC2626] px-1">
+                    COGS Leaves (Product Economics)
+                  </div>
+                  {EIGHT_LEAF_BRANCHES.slice(4).map(leaf => {
+                    const isSelected = gutCheckLeaf === leaf.id;
+                    return (
+                      <div
+                        key={leaf.id}
+                        onClick={() => setGutCheckLeaf(leaf.id)}
+                        className={`p-3 rounded-xl border-2 transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#FEF08A] border-[#141413] shadow-[3px_3px_0px_0px_#141413] translate-x-[2px]'
+                            : 'bg-white hover:bg-slate-50 border-[#141413] shadow-[1.5px_1.5px_0px_0px_#141413]'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-xs font-black text-[#141413]">
+                            {leaf.name}
+                          </span>
+                          {isSelected && <span className="text-[10px] bg-[#141413] text-white px-2 py-0.2 rounded font-mono font-bold">YOUR PICK</span>}
+                        </div>
+                        <p className="text-[11px] text-[#141413]/70 font-medium mt-0.5">
+                          {leaf.description}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Reveal Button */}
+              <div className="pt-3 border-t-2 border-[#141413] flex items-center justify-between flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStage2Step('feedback')}
+                  className="px-4 py-2.5 rounded-xl border-2 border-[#141413] bg-white hover:bg-slate-50 text-xs font-bold uppercase transition-all cursor-pointer"
+                >
+                  ← Back to The 4 Tests
+                </button>
+
+                <button
+                  type="button"
+                  disabled={!gutCheckLeaf}
+                  onClick={() => {
+                    setIsDataRevealed(true);
+                    setStage2Step('revealed');
+                  }}
+                  className="bg-[#141413] hover:bg-slate-800 disabled:opacity-40 text-white px-6 py-3 rounded-xl border-2 border-[#141413] font-black text-xs sm:text-sm uppercase shadow-[3px_3px_0px_0px_#141413] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <Crosshair className="w-4 h-4 text-[#FEF08A]" />
+                  <span>Reveal Case Diagnostic Data & Check My Gut</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP 5: REVEAL CORRECT TREE WITH RED 2.1 HIGHLIGHT ───────────── */}
+          {stage2Step === 'revealed' && isDataRevealed && (
+            <div className="space-y-6 animate-in fade-in duration-200">
+              {/* Gut Check Evaluation Banner */}
+              {(() => {
+                const pickedLeafObj = EIGHT_LEAF_BRANCHES.find(l => l.id === gutCheckLeaf);
+                const isGutCorrect = gutCheckLeaf === '2.1';
+                return (
+                  <div className={`p-4 sm:p-5 rounded-xl border-2 sm:border-[3px] border-[#141413] shadow-[3px_3px_0px_0px_#141413] ${
+                    isGutCorrect ? 'bg-[#D1FAE5]' : 'bg-[#FEF3C7]'
+                  }`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      {isGutCorrect ? (
+                        <CheckCircle2 className="w-5 h-5 text-[#065F46]" />
+                      ) : (
+                        <Scale className="w-5 h-5 text-[#B45309]" />
+                      )}
+                      <span className="font-mono text-xs font-black uppercase text-[#141413]">
+                        {isGutCorrect ? '🎯 Bullseye! Your Gut Instinct Was 100% Correct' : '💡 Diagnostic Reality Check: Data vs Gut'}
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm font-semibold text-[#141413] leading-relaxed">
+                      {isGutCorrect ? (
+                        <span>
+                          You hypothesized <strong>{pickedLeafObj?.name}</strong>. The empirical data below proves that Product Mix was the single largest profit drain, responsible for <strong>93% of the gross profit collapse (-₹2.7 Cr)</strong>!
+                        </span>
+                      ) : (
+                        <span>
+                          You hypothesized <strong>{pickedLeafObj?.name}</strong>. While that branch saw minor friction, the empirical numbers reveal that <strong>2.1 Product Mix</strong> was the primary killer, wiping out <strong>₹2.7 Cr of profit</strong> alone! Notice the red highlight below.
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                );
+              })()}
+
+              {/* The Correct Tree (with Red 2.1 Highlight appearing now) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* 1. Revenue */}
+                <div className="bg-[#F8FAFC] border-2 border-[#141413] rounded-xl p-5 shadow-[3px_3px_0px_0px_#141413]">
+                  <div className="flex items-center justify-between border-b-2 border-[#141413] pb-3 mb-4">
+                    <span className="font-mono text-xs font-black uppercase text-[#141413]">
+                      1. REVENUE (Customer & Product Experience)
+                    </span>
+                    <span className="text-xs font-black bg-[#D1FAE5] text-[#065F46] px-2 py-0.5 rounded border border-[#065F46]">
+                      +5% (₹105 Cr)
+                    </span>
+                  </div>
+                  <ul className="space-y-3 text-xs sm:text-sm">
+                    <li className="p-3 bg-white border border-[#141413] rounded-lg">
+                      <div className="font-black text-[#141413]">1.1 Acquisition: Traffic & CAC</div>
+                      <div className="text-[#141413]/75 mt-0.5">Sessions grew from 10L to 11L (+10%). Marketing drove more top-of-funnel users.</div>
+                    </li>
+                    <li className="p-3 bg-white border border-[#141413] rounded-lg">
+                      <div className="font-black text-[#141413]">1.2 Discovery: Search & PDP Views</div>
+                      <div className="text-[#141413]/75 mt-0.5">Product page views rose from 5.0L to 5.5L (+10%). Users are discovering products.</div>
+                    </li>
+                    <li className="p-3 bg-white border border-[#141413] rounded-lg">
+                      <div className="font-black text-[#141413]">1.3 Conversion: Cart & Checkout</div>
+                      <div className="text-[#DC2626] font-semibold mt-0.5">Add-to-cart dropped from 12% to 11%. Checkout conversion dropped from 70% to 68%.</div>
+                    </li>
+                    <li className="p-3 bg-white border border-[#141413] rounded-lg">
+                      <div className="font-black text-[#141413]">1.4 Basket Value: AOV & Items/Order</div>
+                      <div className="text-[#141413]/75 mt-0.5">AOV grew slightly from ₹50,000 to ₹50,240 (driven by higher gold prices, not more items).</div>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* 2. COGS with RED HIGHLIGHT ON 2.1 */}
+                <div className="bg-[#FFFDF5] border-2 border-[#141413] rounded-xl p-5 shadow-[3px_3px_0px_0px_#141413]">
+                  <div className="flex items-center justify-between border-b-2 border-[#141413] pb-3 mb-4">
+                    <span className="font-mono text-xs font-black uppercase text-[#141413]">
+                      2. COGS (Product Economics & Mix)
+                    </span>
+                    <span className="text-xs font-black bg-[#FEE2E2] text-[#991B1B] px-2 py-0.5 rounded border border-[#991B1B]">
+                      CRITICAL SQUEEZE
+                    </span>
+                  </div>
+                  <ul className="space-y-3 text-xs sm:text-sm">
+                    {/* RED HIGHLIGHT ONLY AFTER USER ANSWERS */}
+                    <li className="p-3.5 bg-[#FEF2F2] border-[2.5px] border-[#DC2626] rounded-xl shadow-[2px_2px_0px_0px_#DC2626] relative">
+                      <div className="flex items-center justify-between gap-1 mb-1">
+                        <span className="font-mono text-[10px] font-black uppercase bg-[#DC2626] text-white px-2 py-0.5 rounded">
+                          CRITICAL ROOT CAUSE (93% OF LOSS)
+                        </span>
+                        <span className="text-xs font-mono font-black text-[#DC2626]">-₹2.7 Cr</span>
+                      </div>
+                      <div className="font-black text-[#DC2626] text-sm">
+                        2.1 Product Mix: Gold vs Diamond Contribution
+                      </div>
+                      <div className="text-[#141413] font-semibold text-xs mt-1 leading-relaxed">
+                        Gold grew to 71% of total sales, but its margin dropped from 22% to 14%. Squeezed ₹2.7 Cr of profit out of the total ₹2.9 Cr decline!
+                      </div>
+                    </li>
+
+                    <li className="p-3 bg-white border border-[#141413] rounded-lg">
+                      <div className="font-black text-[#141413]">2.2 Procurement: Raw Gold Inflation</div>
+                      <div className="text-[#141413]/75 mt-0.5">Global gold prices spiked. The business absorbed part of this without full pass-through.</div>
+                    </li>
+                    <li className="p-3 bg-white border border-[#141413] rounded-lg">
+                      <div className="font-black text-[#141413]">2.3 Manufacturing & Making Charges</div>
+                      <div className="text-[#141413]/75 mt-0.5">Making charges were not dynamically calibrated for lightweight gold designs.</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Navigation Controls */}
           <div className="mt-6 pt-4 border-t-2 border-[#141413] flex items-center justify-between flex-wrap gap-3">
